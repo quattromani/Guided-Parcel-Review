@@ -172,13 +172,16 @@ function imageButton(src, caption, label) {
 }
 
 function renderPropertyDetails(data) {
-  const details = [
+  const identityDetails = [
     ["Owner", data.parcel.owner],
     ["Situs address", data.parcel.situsAddress],
     ["Legal description", data.parcel.legalDescription],
     ["Status", data.classification.status],
     ["Zoning", data.classification.zoning],
-    ["Lot size", data.classification.lotSize],
+    ["Lot size", data.classification.lotSize]
+  ];
+
+  const physicalDetails = [
     ["Year built", data.residential.yearBuilt],
     ["Style", data.residential.style],
     ["Building size", `${data.residential.buildingSize.toLocaleString()} sq. ft.`],
@@ -189,19 +192,22 @@ function renderPropertyDetails(data) {
     ["Exterior", data.residential.exterior]
   ];
 
+  const renderCards = details => details.map(([label, value]) => `
+    <div class="details-card">
+      <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</dt>
+      <dd class="mt-1 text-sm font-medium text-slate-900">${value}</dd>
+    </div>
+  `).join("");
+
   document.getElementById("propertyDetails").innerHTML = [
+    renderCards(identityDetails),
     assessedValuesData(data),
     classificationDetails(data),
-    propertyNotes(data),
     landInformation(data),
     dwellingData(data),
-    details.map(([label, value]) => `
-      <div class="details-card">
-        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</dt>
-        <dd class="mt-1 text-sm font-medium text-slate-900">${value}</dd>
-      </div>
-    `).join(""),
+    renderCards(physicalDetails),
     outbuildingData(data),
+    propertyNotes(data),
     reportErrorLink()
   ].join("");
 }
