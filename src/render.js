@@ -602,23 +602,15 @@ function assessedValuesData(data) {
 }
 
 function renderEtrSummary(data) {
-  const finalRows = data.taxpayerHistory.filter(row => row.taxes !== null);
-  const first = finalRows[0];
-  const latest = finalRows.at(-1);
-  const firstEtr = calculateEtr(first);
-  const latestEtr = calculateEtr(latest);
-  const etrReduction = firstEtr && latestEtr ? (firstEtr - latestEtr) / firstEtr : null;
-  const valueIncrease = first.assessedValue && latest.assessedValue
-    ? (latest.assessedValue - first.assessedValue) / first.assessedValue
-    : null;
-
   document.getElementById("etrSummary").innerHTML = `
     <p class="text-sm leading-7 text-slate-700">
-      From ${first.year} to ${latest.year}, this property's effective tax rate declined from
-      <strong>${formatNullablePercent(firstEtr)}</strong> to <strong>${formatNullablePercent(latestEtr)}</strong>,
-      a reduction of roughly <strong>${Math.round(etrReduction * 100)}%</strong>.
+      Effective tax rate helps show the relationship between assessed value and the final tax bill.
+      When assessed values rise faster than the budgets they support, the levy generally has to move
+      down because the same budget need is being spread across more taxable value.
       <br><br>
-      During the same period, assessed value increased by roughly <strong>${Math.round(valueIncrease * 100)}%</strong>.
+      That does not mean every tax bill goes down. If value increases are modest, values and taxes may
+      still move in the same direction. Larger value increases make the levy adjustment more visible,
+      especially when budget growth is smaller than the growth in assessed value.
     </p>
   `;
 }
