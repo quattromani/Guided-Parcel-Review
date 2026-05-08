@@ -91,7 +91,7 @@ function renderHeader(data, imageModal) {
     <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
       <div class="min-w-0 flex-1">
         <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">${data.snapshotYear} Property Snapshot</p>
-        <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-950">${data.parcel.situsAddress}</h1>
+        <h2 class="mt-1 text-3xl font-bold tracking-tight text-slate-950">${data.parcel.situsAddress}</h2>
         <p class="mt-2 text-base text-slate-600">${data.parcel.accountType} - ${data.parcel.schoolDistrict} - ${data.classification.location}</p>
       </div>
 
