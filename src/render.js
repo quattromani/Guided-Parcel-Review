@@ -67,6 +67,20 @@ function getCurrentStageText(calendar) {
   return activeStages.map(stage => stage.label).join(" + ");
 }
 
+function renderPageTitle() {
+  const title = document.getElementById("pageTitle");
+
+  title.innerHTML = `
+    <h1 class="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+      Property Value & Tax Snapshot
+    </h1>
+
+    <p class="mt-2 text-base text-slate-600">
+      Assessment-year property information, taxes, levies, and market context in one unified view.
+    </p>
+  `;
+}
+
 function renderHeader(data, imageModal) {
   const snapshot = getSnapshotHistory(data);
   const latestFinal = getLatestFinalTaxHistory(data);
