@@ -21,6 +21,7 @@ const toneClass = {
 };
 
 export function renderPage(data, imageModal, calendar) {
+  renderPageTitle();
   renderHeader(data, imageModal);
   renderHeaderTimeline(calendar);
   renderPropertyDetails(data);
