@@ -92,7 +92,15 @@ function renderHeader(data, imageModal) {
       <div class="min-w-0 flex-1">
         <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">${data.snapshotYear} Property Snapshot</p>
         <h2 class="mt-1 text-3xl font-bold tracking-tight text-slate-950">${data.parcel.situsAddress}</h2>
-        <p class="mt-2 text-base text-slate-600">${data.parcel.accountType} - ${data.parcel.schoolDistrict} - ${data.classification.location}</p>
+        <p class="mt-2 text-base text-slate-600">
+          <span class="font-medium text-slate-700">
+            ${data.parcel.accountType} Property
+          </span>
+          <span class="text-slate-400">•</span>
+          School District ${data.parcel.schoolDistrict.replace("SCH ", "")}
+          <span class="text-slate-400">•</span>
+          ${data.classification.location}
+        </p>      
       </div>
 
       <div class="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4 lg:grid-cols-2">
