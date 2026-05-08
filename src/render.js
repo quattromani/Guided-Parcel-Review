@@ -90,7 +90,7 @@ function renderPageTitle() {
       <img
         src="assets/images/gage-county-map.png"
         alt="Map of Nebraska highlighting Gage County"
-        class="hidden h-20 w-auto shrink-0 opacity-80 sm:block"
+        class="hidden h-20 w-auto shrink-0 opacity-80 sm:block grayscale"
       />
     </div>
   `;
