@@ -446,10 +446,10 @@ function renderSummary(data) {
           ["#tax-cycle", "Tax cycle"],
           ["#value-history", "Value & tax history"],
           ["#indexed-trends", "Indexed trends"],
-          ["#etr-trend", "ETR trend"],
           ["#levy-history", "Levy history"],
           ["#tax-distribution", "Tax distribution"],
-          ["#comparables", "Comparable sales"]
+          ["#etr-trend", "ETR trend"],
+          ["#comparables", "Nearby sales"]
         ].map(([href, label]) => `<a href="${href}" data-jump-target="${href.slice(1)}" class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-200 transition hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-400">${label}</a>`).join("")}
       </div>
     </div>
