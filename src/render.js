@@ -120,7 +120,7 @@ function renderHeaderTimeline(calendar) {
   document.getElementById("headerTimeline").innerHTML = `
     <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
       <div class="min-w-0">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Nebraska assessment calendar</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property tax timeline</p>
         <p class="mt-1 text-sm text-slate-600">Current stage: <strong class="text-blue-700">${getCurrentStageText(calendar)}</strong></p>
       </div>
 
