@@ -204,8 +204,8 @@ function renderPropertyDetails(data) {
     assessedValuesData(data),
     classificationDetails(data),
     landInformation(data),
-    dwellingData(data),
     renderCards(physicalDetails),
+    dwellingData(data),
     outbuildingData(data),
     propertyNotes(data),
     reportErrorLink()
@@ -335,7 +335,7 @@ function dwellingData(data) {
   const totalValue = data.dwellingData.reduce((sum, row) => sum + row.value, 0);
   const itemLabel = data.dwellingData.length === 1 ? "item" : "items";
 
-  return disclosure("How is the home described in the record?", `${data.dwellingData.length} ${itemLabel} · ${money.format(totalValue)}`, `
+  return disclosure("What additional features contribute to value?", `${data.dwellingData.length} ${itemLabel} · ${money.format(totalValue)}`, `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
       <thead class="bg-slate-50">
         <tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Value</th></tr>
