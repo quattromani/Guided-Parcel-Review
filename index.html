@@ -9,19 +9,16 @@
   <link rel="stylesheet" href="src/styles.css" />
 </head>
 <body class="bg-slate-100 text-slate-900">
-  <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+  <main class="mx-auto max-w-7xl overflow-x-hidden p-4 sm:p-6 lg:p-8">
 
     <!-- PAGE TITLE --> 
     <section id="pageTitle" class="mb-4 px-1"></section>
   
     <!-- PROPERTY HEADER -->
-    <header
-      id="pageHeader"
-      class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"
-    ></header>
+    <header id="pageHeader" class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"></header>
 
-    <section id="headerTimeline" class="mb-6 mt-4 rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-slate-200"></section>
-
+    <section id="headerTimeline" class="mb-6 mt-4 overflow-x-auto rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-slate-200"></section>
+    
     <section class="mb-6 grid gap-6 lg:grid-cols-12">
       <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-7">
         <h2 class="text-xl font-bold text-slate-950">Property details</h2>
@@ -49,7 +46,7 @@
           Current stage: Assessment
         </span>
       </div>
-      <div id="processTimeline" class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-6"></div>
+      <div id="processTimeline" class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-6"></div>
     </section>
 
     <section class="mb-6 grid gap-6 lg:grid-cols-5">
@@ -60,7 +57,7 @@
             <p class="mt-1 text-sm text-slate-600">Assessment-year view: current value first, with prior finalized tax bills for context.</p>
           </div>
         </div>
-        <div class="mt-4 overflow-hidden rounded-xl ring-1 ring-slate-200">
+        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
           <table class="min-w-full divide-y divide-slate-200 text-sm">
             <thead class="bg-slate-50">
               <tr>
@@ -83,9 +80,10 @@
           </div>
           <p id="baseYearNote" class="text-xs font-medium text-slate-500"></p>
         </div>
-        <div class="mt-4 h-72">
+        <div class="mt-4 h-64 sm:h-72">
           <canvas id="indexedChart"></canvas>
         </div>
+        
       </article>
     </section>
 
@@ -93,7 +91,7 @@
       <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
         <h2 class="text-xl font-bold text-slate-950">What organizations make up the tax levy?</h2>
         <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill will depend on finalized budgets, levies, credits, and exemptions.</p>
-        <div class="mt-4 overflow-hidden rounded-xl ring-1 ring-slate-200">
+        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
           <table class="min-w-full divide-y divide-slate-200 text-sm">
             <thead class="bg-slate-50">
               <tr>
@@ -113,7 +111,7 @@
         <p class="mt-1 text-sm text-slate-600">Based on the latest finalized levy components. Current-year distribution appears after levies are finalized.</p>
         <div class="mt-4 grid gap-4 md:grid-cols-2 md:items-center">
           <div id="distributionNotes" class="space-y-3 text-sm text-slate-700"></div>
-          <div class="h-72">
+          <div class="h-64 sm:h-72">
             <canvas id="distributionChart"></canvas>
           </div>
         </div>
@@ -128,7 +126,7 @@
             <p class="mt-1 text-sm text-slate-600">Technical/government view. Use this to explain levy movement separately from taxpayer burden.</p>
           </div>
         </div>
-        <div class="mt-4 overflow-hidden rounded-xl ring-1 ring-slate-200">
+        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
           <table class="min-w-full divide-y divide-slate-200 text-sm">
             <thead class="bg-slate-50">
               <tr>
@@ -146,7 +144,7 @@
       <article id="etr-trend" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
         <h2 class="text-xl font-bold text-slate-950">What share of value went to property taxes?</h2>
         <p class="mt-1 text-sm text-slate-600">ETR shows the final tax bill as a share of assessed value. It helps explain whether taxes are rising faster or slower than value.</p>
-        <div class="mt-4 h-72">
+        <div class="mt-4 h-64 sm:h-72">
           <canvas id="etrChart"></canvas>
         </div>
         <div id="etrSummary" class="mt-4 rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200"></div>
@@ -171,7 +169,7 @@
           For placement only
         </span>
       </div>
-      <div id="comparableCards" class="mt-5 grid gap-4 lg:grid-cols-4"></div>
+      <div id="comparableCards" class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"></div>
     </section>
 
     <section class="mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
