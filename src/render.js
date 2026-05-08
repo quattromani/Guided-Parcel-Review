@@ -72,13 +72,27 @@ function renderPageTitle() {
   const title = document.getElementById("pageTitle");
 
   title.innerHTML = `
-    <h1 class="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-      Property Value & Tax Snapshot
-    </h1>
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Gage County, Nebraska
+        </p>
 
-    <p class="mt-2 text-base text-slate-600">
-      Assessment-year property information, taxes, levies, and market context in one unified view.
-    </p>
+        <h1 class="mt-1 text-4xl font-bold tracking-tight text-slate-950">
+          Property Value &amp; Tax Snapshot
+        </h1>
+
+        <p class="mt-2 max-w-3xl text-base text-slate-600">
+          Assessment-year property information, taxes, levies, and market context in one unified view.
+        </p>
+      </div>
+
+      <img
+        src="assets/images/gage-county-map.png"
+        alt="Map of Nebraska highlighting Gage County"
+        class="hidden h-20 w-auto shrink-0 opacity-80 sm:block"
+      />
+    </div>
   `;
 }
 
