@@ -269,7 +269,7 @@ function disclosure(title, meta, content) {
 }
 
 function classificationDetails(data) {
-  return disclosure("Property classification", "6 fields", `
+  return disclosure("How is this property classified?", "6 fields", `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
       <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
         <tr>
@@ -301,7 +301,7 @@ function propertyNotes(data) {
     : `<tr><td class="px-3 py-3 text-slate-500" colspan="2">No public property notes listed.</td></tr>`;
   const meta = data.propertyNotes.length === 1 ? "1 note" : `${data.propertyNotes.length} notes`;
 
-  return disclosure("Property notes", meta, `
+  return disclosure("Are there notes or special conditions?", meta, `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
       <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Date</th><th class="px-3 py-2 text-left font-semibold">Note</th></tr></thead>
       <tbody class="divide-y divide-slate-200">${rows}</tbody>
@@ -312,7 +312,7 @@ function propertyNotes(data) {
 function landInformation(data) {
   const meta = data.landInformation.length === 1 ? "1 land record" : `${data.landInformation.length} land records`;
 
-  return disclosure("Land information", meta, `
+  return disclosure("How is the land described?", meta, `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
       <thead class="bg-slate-50">
         <tr><th class="px-3 py-2 text-left font-semibold">Lot width (ft)</th><th class="px-3 py-2 text-left font-semibold">Lot depth (ft)</th><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Lot size</th></tr>
@@ -335,7 +335,7 @@ function dwellingData(data) {
   const totalValue = data.dwellingData.reduce((sum, row) => sum + row.value, 0);
   const itemLabel = data.dwellingData.length === 1 ? "item" : "items";
 
-  return disclosure("Dwelling data", `${data.dwellingData.length} ${itemLabel} · ${money.format(totalValue)}`, `
+  return disclosure("How is the home described in the record?", `${data.dwellingData.length} ${itemLabel} · ${money.format(totalValue)}`, `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
       <thead class="bg-slate-50">
         <tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Value</th></tr>
@@ -361,7 +361,7 @@ function outbuildingData(data) {
     ? data.outbuildingData.length === 1 ? "1 outbuilding" : `${data.outbuildingData.length} outbuildings`
     : "No records";
 
-  return disclosure("Outbuilding data", meta, `
+  return disclosure("What additional structures are included?", meta, `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
       <thead class="bg-slate-50">
         <tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Year Built</th><th class="px-3 py-2 text-right font-semibold">Cost</th></tr>
