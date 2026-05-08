@@ -506,34 +506,54 @@ function renderHistoryTable(data) {
 }
 
 function assessedValuesData(data) {
-  const rows = (data.assessedValueBreakdown || []).slice().sort((a, b) => b.year - a.year);
+  const rows = (data.assessedValueBreakdown || [])
+    .slice()
+    .sort((a, b) => b.year - a.year);
+
   const currentRow = rows[0];
   const rowLabel = rows.length === 1 ? "year" : "years";
 
-  return disclosure("Assessed values", `${rows.length} ${rowLabel} · ${formatNullableMoney(currentRow?.total)}`, `
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50">
-        <tr>
-          <th class="px-3 py-2 text-left font-semibold">Year</th>
-          <th class="px-3 py-2 text-right font-semibold">Improvements (Dwelling)</th>
-          <th class="px-3 py-2 text-right font-semibold">Land</th>
-          <th class="px-3 py-2 text-right font-semibold">Outbuilding</th>
-          <th class="px-3 py-2 text-right font-semibold">Total</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-slate-200 bg-white">
-        ${rows.map((row, index) => `
-          <tr class="${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
-            <td class="px-3 py-2 font-medium">${row.year}</td>
-            <td class="px-3 py-2 text-right">${formatNullableMoney(row.dwelling)}</td>
-            <td class="px-3 py-2 text-right">${formatNullableMoney(row.land)}</td>
-            <td class="px-3 py-2 text-right">${formatNullableMoney(row.outbuilding)}</td>
-            <td class="px-3 py-2 text-right font-semibold">${formatNullableMoney(row.total)}</td>
+  return disclosure(
+    "What makes up this property’s assessed value?",
+    `${rows.length} ${rowLabel} · ${formatNullableMoney(currentRow?.total)}`,
+    `
+      <table class="min-w-full divide-y divide-slate-200 text-sm">
+        <thead class="bg-slate-50">
+          <tr>
+            <th class="px-3 py-2 text-left font-semibold">Year</th>
+            <th class="px-3 py-2 text-right font-semibold">Total</th>
+            <th class="px-3 py-2 text-right font-semibold">Land</th>
+            <th class="px-3 py-2 text-right font-semibold">Dwelling / Improvements</th>
+            <th class="px-3 py-2 text-right font-semibold">Outbuilding</th>
           </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `);
+        </thead>
+
+        <tbody class="divide-y divide-slate-200 bg-white">
+          ${rows.map((row, index) => `
+            <tr class="${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
+              <td class="px-3 py-2 font-medium">${row.year}</td>
+
+              <td class="px-3 py-2 text-right font-semibold">
+                ${formatNullableMoney(row.total)}
+              </td>
+
+              <td class="px-3 py-2 text-right">
+                ${formatNullableMoney(row.land)}
+              </td>
+
+              <td class="px-3 py-2 text-right">
+                ${formatNullableMoney(row.dwelling)}
+              </td>
+
+              <td class="px-3 py-2 text-right">
+                ${formatNullableMoney(row.outbuilding)}
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `
+  );
 }
 
 function renderEtrSummary(data) {
