@@ -1,0 +1,115 @@
+{
+  "jurisdiction": "Nebraska",
+  "name": "Nebraska Assessment Calendar",
+  "currentStageRule": "Stages are active when the current month/day falls inside a stage range. Overlapping ranges can activate more than one stage at the same time.",
+  "stages": [
+    {
+      "id": "assessment",
+      "label": "Assessment",
+      "timing": "Jan 1 - May 31",
+      "start": {
+        "month": 1,
+        "day": 1
+      },
+      "end": {
+        "month": 5,
+        "day": 31
+      },
+      "description": "Assessment stage. Property value is established for the assessment year.",
+      "link": {
+        "label": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "protest",
+      "label": "Protest",
+      "timing": "Jun 1 - Jun 30",
+      "start": {
+        "month": 6,
+        "day": 1
+      },
+      "end": {
+        "month": 6,
+        "day": 30
+      },
+      "description": "Property owners may file valuation protests during the June protest window.",
+      "link": {
+        "label": "Form 422 Property Valuation Protest",
+        "url": "https://revenue.nebraska.gov/sites/default/files/doc/pad/forms/422_Property_Valuation_Protest.pdf"
+      }
+    },
+    {
+      "id": "review",
+      "label": "Review",
+      "timing": "Jun 1 - Jul 25",
+      "start": {
+        "month": 6,
+        "day": 1
+      },
+      "end": {
+        "month": 7,
+        "day": 25
+      },
+      "description": "County Board of Equalization review period. This overlaps the June protest stage.",
+      "link": {
+        "label": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "budgets",
+      "label": "Budgets",
+      "timing": "August - September",
+      "start": {
+        "month": 8,
+        "day": 1
+      },
+      "end": {
+        "month": 9,
+        "day": 30
+      },
+      "description": "Taxing entities prepare and finalize budget needs.",
+      "link": {
+        "label": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "levies",
+      "label": "Levies",
+      "timing": "October",
+      "start": {
+        "month": 10,
+        "day": 1
+      },
+      "end": {
+        "month": 10,
+        "day": 31
+      },
+      "description": "Certified levies are set against taxable value.",
+      "link": {
+        "label": "",
+        "url": ""
+      }
+    },
+    {
+      "id": "tax-bills",
+      "label": "Final tax bills",
+      "timing": "December",
+      "start": {
+        "month": 12,
+        "day": 1
+      },
+      "end": {
+        "month": 12,
+        "day": 31
+      },
+      "description": "Final tax bills are issued after values, budgets, levies, credits, and exemptions are applied.",
+      "link": {
+        "label": "",
+        "url": ""
+      }
+    }
+  ]
+}

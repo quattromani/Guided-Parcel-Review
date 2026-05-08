@@ -1,0 +1,64 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+}
+
+button,
+summary,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+.metric-card {
+  border-radius: 0.75rem;
+  background: rgb(248 250 252);
+  padding: 0.75rem;
+  box-shadow: inset 0 0 0 1px rgb(226 232 240);
+}
+
+.details-card {
+  border-radius: 0.75rem;
+  background: rgb(248 250 252);
+  padding: 0.75rem;
+  box-shadow: inset 0 0 0 1px rgb(226 232 240);
+}
+
+.table-shell {
+  overflow: hidden;
+  border-radius: 0 0 0.75rem 0.75rem;
+}
+
+.focus-card {
+  border-radius: 1rem;
+  background: rgb(239 246 255);
+  padding: 0.75rem;
+  box-shadow: inset 0 0 0 1px rgb(191 219 254);
+}
+
+
+[id] {
+  scroll-margin-top: 1rem;
+}
+
+.jump-target-active {
+  animation: jump-target-pulse 1.4s ease-out;
+}
+
+@keyframes jump-target-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(37 99 235 / 0.36), inset 0 0 0 1px rgb(37 99 235 / 0.34);
+  }
+  45% {
+    box-shadow: 0 0 0 8px rgb(37 99 235 / 0.12), inset 0 0 0 1px rgb(37 99 235 / 0.34);
+  }
+  100% {
+    box-shadow: 0 0 0 14px rgb(37 99 235 / 0), inset 0 0 0 1px rgb(226 232 240);
+  }
+}
