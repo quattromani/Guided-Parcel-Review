@@ -310,22 +310,45 @@ function propertyNotes(data) {
 }
 
 function landInformation(data) {
-  const meta = data.landInformation.length === 1 ? "1 land record" : `${data.landInformation.length} land records`;
+  const rows = data.landInformation || [];
+  const meta = rows.length === 1 ? "1 land record" : `${rows.length} land records`;
+
+  const totalSquareFeet = rows.reduce(
+    (sum, row) => sum + (Number(row.squareFeet) || 0),
+    0
+  );
+
+  const totalAcres = totalSquareFeet / 43560;
 
   return disclosure("How is the land described?", meta, `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
       <thead class="bg-slate-50">
-        <tr><th class="px-3 py-2 text-left font-semibold">Lot width (ft)</th><th class="px-3 py-2 text-left font-semibold">Lot depth (ft)</th><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Lot size</th></tr>
+        <tr>
+          <th class="px-3 py-2 text-left font-semibold">Description</th>
+          <th class="px-3 py-2 text-right font-semibold">Width</th>
+          <th class="px-3 py-2 text-right font-semibold">Depth</th>
+          <th class="px-3 py-2 text-right font-semibold">Area</th>
+        </tr>
       </thead>
+
       <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
-        ${data.landInformation.map(row => `
+        ${rows.map(row => `
           <tr>
-            <td class="px-3 py-2">${row.lotWidthFeet}</td>
-            <td class="px-3 py-2">${row.lotDepthFeet}</td>
-            <td class="px-3 py-2">${row.description}</td>
-            <td class="px-3 py-2 text-right">${row.lotSize}</td>
+            <td class="px-3 py-2 font-medium">${row.description}</td>
+            <td class="px-3 py-2 text-right">${row.widthFeet} ft.</td>
+            <td class="px-3 py-2 text-right">${row.depthFeet} ft.</td>
+            <td class="px-3 py-2 text-right">${Number(row.squareFeet).toLocaleString()} sq. ft.</td>
           </tr>
         `).join("")}
+
+        <tr class="border-t-2 border-slate-300 bg-slate-100 font-semibold">
+          <td class="px-3 py-3">Total land area</td>
+          <td class="px-3 py-3 text-right">—</td>
+          <td class="px-3 py-3 text-right">—</td>
+          <td class="px-3 py-3 text-right">
+            ${totalSquareFeet.toLocaleString()} sq. ft. · ${totalAcres.toFixed(2)} ac.
+          </td>
+        </tr>
       </tbody>
     </table>
   `);
