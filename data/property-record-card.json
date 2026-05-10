@@ -1,0 +1,339 @@
+{
+  "source": {
+    "system": "MIPS Inc.",
+    "county": "Gage County",
+    "reportName": "Real Estate Breakdown Report / Appraisal Property Record Card",
+    "recordType": "RECORDCARD",
+    "printedAt": "2025-06-25T11:54:00",
+    "sourceImages": [
+      "IMG_1524.jpg",
+      "IMG_1525.jpg"
+    ],
+    "notes": "Captured from photographed MIPS property record cards. Values should be verified against original system export before production use."
+  },
+  "parcelIdentifiers": {
+    "parcelId": "010496000",
+    "cardFilePerm": "010496000",
+    "cadastralId": "00001-00078-00021",
+    "padClassCode": "01-01-01-01-03-03",
+    "stateGeo": "4213-00-0-10090-012-0000",
+    "appraiserId": "4009"
+  },
+  "locationModel": {
+    "countyArea": "1 - Rural",
+    "neighborhood": "80",
+    "locationGroup": "3 - Beatrice",
+    "valuationGroup": "3 - Beatrice & Beatrice Sub",
+    "district": "157 - TD 93",
+    "school": "34-0015",
+    "model": "73",
+    "method": "02 SqFoot"
+  },
+  "landModel": {
+    "description": "Level Residential All",
+    "lotSize": 22890,
+    "recordedLotValue": 23025,
+    "frontage": 0,
+    "spotCode": "N",
+    "cutoffSchedule": [
+      {
+        "cutoff": 10000,
+        "value": 1.4
+      },
+      {
+        "cutoff": 30000,
+        "value": 0.7
+      },
+      {
+        "cutoff": 999999,
+        "value": 0.35
+      }
+    ]
+  },
+  "currentCardValue": {
+    "previous": {
+      "buildings": 252265,
+      "improvement": 0,
+      "landLots": 23025,
+      "total": 275290
+    },
+    "current": {
+      "buildings": 277490,
+      "improvement": 0,
+      "landLots": 23025,
+      "total": 300515
+    }
+  },
+  "ownershipHistory": [
+    {
+      "saleDate": "2020-08-25",
+      "book": "2020",
+      "page": "2792",
+      "owner": "QUATTROMANI, MAX A & PATRICIA D",
+      "amount": 324000
+    },
+    {
+      "saleDate": "2018-02-27",
+      "book": "2018",
+      "page": "0528",
+      "owner": "SCHOEN, AARON R",
+      "amount": 130499
+    },
+    {
+      "saleDate": "2015-10-05",
+      "book": "2016",
+      "page": "0142",
+      "owner": "FEDERAL NATIONAL MORTGAGE ASSOC.",
+      "amount": 113134
+    },
+    {
+      "saleDate": "2015-10-05",
+      "book": "2015",
+      "page": "2970",
+      "owner": "PHH MORTGAGE CORP",
+      "amount": 113134
+    },
+    {
+      "saleDate": "2004-09-22",
+      "book": "2004",
+      "page": "4202",
+      "owner": "JONES, ROBERT K & PATRICIA M",
+      "amount": 160000
+    }
+  ],
+  "valuationHistory": [
+    {
+      "year": 2024,
+      "statement": "12788",
+      "district": "157",
+      "building": 252265,
+      "other": 0,
+      "land": 23025,
+      "total": 275290,
+      "exempt": 0,
+      "taxable": 275290,
+      "totalTax": 3579.58,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2023,
+      "statement": "12748",
+      "district": "157",
+      "building": 229330,
+      "other": 0,
+      "land": 23025,
+      "total": 252355,
+      "exempt": 0,
+      "taxable": 252355,
+      "totalTax": 4374.72,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2022,
+      "statement": "11277",
+      "district": "157",
+      "building": 196010,
+      "other": 0,
+      "land": 23025,
+      "total": 219035,
+      "exempt": 0,
+      "taxable": 219035,
+      "totalTax": 4007.52,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2021,
+      "statement": "11263",
+      "district": "157",
+      "building": 175010,
+      "other": 0,
+      "land": 23025,
+      "total": 198035,
+      "exempt": 0,
+      "taxable": 198035,
+      "totalTax": 3752.08,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2020,
+      "statement": "11231",
+      "district": "157",
+      "building": 175010,
+      "other": 0,
+      "land": 23025,
+      "total": 198035,
+      "exempt": 0,
+      "taxable": 198035,
+      "totalTax": 3797.28,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2019,
+      "statement": "11194",
+      "district": "157",
+      "building": 149915,
+      "other": 0,
+      "land": 23025,
+      "total": 172940,
+      "exempt": 0,
+      "taxable": 172940,
+      "totalTax": 3384.66,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2018,
+      "statement": "11175",
+      "district": "157",
+      "building": 136285,
+      "other": 0,
+      "land": 23025,
+      "total": 159310,
+      "exempt": 0,
+      "taxable": 159310,
+      "totalTax": 3155.38,
+      "penaltyTax": 0
+    }
+  ],
+  "propertyValuation": {
+    "buildings": 177925,
+    "improvement": 0,
+    "landLot": 23025,
+    "total": 200950
+  },
+  "reviewHistory": [
+    {
+      "date": "2006-10-19",
+      "action": "Entered",
+      "initials": "JY"
+    },
+    {
+      "date": "2006-09-26",
+      "action": "Inspect",
+      "initials": "LG"
+    }
+  ],
+  "residentialInformation": {
+    "type": "Single-family Residence",
+    "quality": "4.00 - Good",
+    "condition": "3.00 - Average",
+    "architecture": "1 - 1 STORY",
+    "baseTotalArea": "1,707 / 1,707",
+    "style": "100% - One Story",
+    "exteriorWall": "95% - Frame, Stucco; 5% - Frame, Siding, Wood",
+    "heatingCooling": "100% - Warmed & Cooled Air",
+    "roofCover": "Composition Shingle",
+    "areaOfSlab": 0,
+    "areaOfCrawl": 0,
+    "fixtureRoughin": "8 / 0",
+    "bedBathroom": "3 / 1.5",
+    "basementArea": "1,707 512 Min"
+  },
+  "costApproach": {
+    "yearEffectiveAge": "1948 / 28",
+    "baseCost": 111.73,
+    "adjustments": {
+      "roofing": -1.66,
+      "subfloor": 0,
+      "heatCool": 2.44,
+      "plumbing": -4.88,
+      "basement": 23.86
+    },
+    "adjustedCost": 131.49,
+    "rcn": 224455,
+    "totalMiscImprovements": 34540,
+    "garageCost": 16310,
+    "totalRcn": 275305,
+    "depreciation": {
+      "physicalPercent": 41,
+      "functionalPercent": 0,
+      "amount": 112875
+    },
+    "depreciatedMiscImprovements": 0,
+    "depreciatedGarages": 15495,
+    "rcnld": 177925,
+    "adjustedRcnld": 177925,
+    "costPerSquareFoot": 104.23
+  },
+  "garageCostLines": [
+    {
+      "code": "701",
+      "description": "Attached Garage (SF)",
+      "units": "440 sqft",
+      "unitCost": 37.07,
+      "depreciation": "0.000%, 0.000%",
+      "rcnld": 16310
+    },
+    {
+      "code": "701",
+      "description": "Attached Garage (SF)",
+      "units": "440 sqft",
+      "yearIn": 2019,
+      "unitCost": 37.07,
+      "depreciation": "5.000%, 0.000%",
+      "rcnld": 15495
+    }
+  ],
+  "miscImprovements": [
+    {
+      "code": "SWP",
+      "description": "Solid Wall Porch",
+      "costSource": "MS Residential",
+      "size": 126,
+      "units": 126,
+      "unitCost": 76.76,
+      "depreciation": "0.000%",
+      "value": 9670
+    },
+    {
+      "code": "SWP",
+      "description": "Enclosed Wood Solid Wall",
+      "costSource": "MS Residential",
+      "size": 140,
+      "units": 140,
+      "unitCost": 74.35,
+      "depreciation": "0.000%",
+      "value": 10410
+    },
+    {
+      "code": "S1FP",
+      "description": "Fireplace",
+      "costSource": "MS Residential",
+      "size": 1,
+      "units": 1,
+      "unitCost": 3618.78,
+      "depreciation": "0.000%",
+      "value": 3620
+    },
+    {
+      "code": "WOD",
+      "description": "Wood Deck",
+      "costSource": "MS Residential",
+      "size": 125,
+      "yearIn": 2003,
+      "units": 125,
+      "unitCost": 25.94,
+      "depreciation": "0.000%",
+      "value": 3245
+    },
+    {
+      "code": "WOD",
+      "description": "Wood Deck",
+      "costSource": "MS Residential",
+      "size": 272,
+      "units": 272,
+      "unitCost": 17.71,
+      "depreciation": "0.000%",
+      "value": 4815
+    },
+    {
+      "code": "OSP",
+      "description": "Open Slab Porch",
+      "costSource": "MS Residential",
+      "size": 338,
+      "units": 338,
+      "unitCost": 8.22,
+      "depreciation": "0.000%",
+      "value": 2780
+    }
+  ]
+}

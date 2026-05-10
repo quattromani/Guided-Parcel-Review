@@ -13,13 +13,34 @@
 
     <!-- PAGE TITLE --> 
     <section id="pageTitle" class="mb-4 px-1"></section>
+
+    <nav aria-label="Snapshot views" class="mb-4 overflow-x-auto rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200">
+      <div id="viewTabs" class="flex min-w-max gap-2">
+        <button type="button" data-view-tab="property" class="view-tab-active rounded-xl px-4 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+          Property View
+        </button>
+        <button type="button" data-view-tab="market" class="rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+          Market Area View
+        </button>
+        <button type="button" data-view-tab="county" class="rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+          County View
+        </button>
+        <button type="button" data-view-tab="statewide" class="rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+          Statewide View
+        </button>
+        <button type="button" data-view-tab="demographics" class="rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+          Demographics
+        </button>
+      </div>
+    </nav>
   
+    <div data-view-panel="property">
     <!-- PROPERTY HEADER -->
     <header id="pageHeader" class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"></header>
 
-    <section id="headerTimeline" class="mb-6 mt-4 overflow-x-auto rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-slate-200"></section>
+    <section id="headerTimeline" class="hidden mb-6 mt-4 overflow-x-auto rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-slate-200"></section>
     
-    <section class="mb-6 grid gap-6 lg:grid-cols-12">
+    <section class="mb-6 mt-6 grid gap-6 lg:grid-cols-12">
       <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-7">
         <h2 class="text-xl font-bold text-slate-950">Property details</h2>
         <p class="mt-1 text-sm text-slate-600">
@@ -39,13 +60,14 @@
         <div>
           <h2 class="text-xl font-bold text-slate-950">Where are we in this property’s tax process?</h2>
           <p class="mt-1 text-sm text-slate-600">
-            The value notice is the first step. The final tax bill is calculated later, after budgets, levies, credits, and exemptions are applied.
+            PAD calendar milestones frame where the property sits before values, protests, budgets, levies, and tax bills are final.
           </p>
         </div>
-        <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-200">
+        <span data-current-stage class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-200">
           Current stage: Assessment
         </span>
       </div>
+      <p data-calendar-source class="mt-3 text-xs leading-5 text-slate-500"></p>
       <div id="processTimeline" class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-6"></div>
     </section>
 
@@ -85,6 +107,14 @@
         </div>
         
       </article>
+    </section>
+
+    <section id="property-movement-summary" class="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <h2 class="text-xl font-bold text-slate-950">How much has this property changed?</h2>
+      <p class="mt-1 text-sm text-slate-600">
+        Summary movement over the same historical range used throughout the snapshot. Tax and ETR movement use finalized tax years only.
+      </p>
+      <div id="propertyMovementSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
     </section>
 
     <section id="tax-distribution" class="mb-6 grid gap-6 lg:grid-cols-5">
@@ -179,37 +209,487 @@
       </p>
       <div id="sourceCards" class="mt-4 grid gap-3 text-sm md:grid-cols-3"></div>
     </section>
+    </div>
+
+    <section data-view-panel="market" class="hidden space-y-6">
+      <article id="market-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Market Area View</p>
+        <div class="mt-1 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-950">How is this property’s market area performing?</h2>
+            <p id="marketSourceNote" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              PAD R&O residential statistics show how the property’s valuation group compares with the countywide residential study.
+            </p>
+          </div>
+          <label class="min-w-72 text-sm font-semibold text-slate-700">
+            Viewing market area
+            <select id="marketAreaSelect" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-950 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"></select>
+          </label>
+        </div>
+        <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
+        <div id="marketNarrative" class="mt-4 rounded-xl bg-blue-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-blue-200"></div>
+      </article>
+
+      <section class="grid gap-6 lg:grid-cols-5">
+        <article id="market-indexed" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
+          <h2 class="text-xl font-bold text-slate-950">How does this market area compare with the county?</h2>
+          <p class="mt-1 text-sm text-slate-600">Selected valuation group compared with all Gage County residential qualified sales.</p>
+          <div class="mt-4 h-72">
+            <canvas id="marketRatioChart"></canvas>
+          </div>
+        </article>
+        <article id="market-etr" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
+          <h2 class="text-xl font-bold text-slate-950">What prices are represented?</h2>
+          <p class="mt-1 text-sm text-slate-600">Average adjusted sale price and average assessed value for the selected group.</p>
+          <div class="mt-4 h-72">
+            <canvas id="marketValueChart"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <article id="market-tax-district" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <h2 class="text-xl font-bold text-slate-950">What do the residential valuation groups show?</h2>
+        <p class="mt-1 text-sm text-slate-600">The selected row follows this property’s valuation group by default. Users can switch groups above without creating an adversarial side-by-side comparison.</p>
+        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
+          <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <thead class="bg-slate-50">
+              <tr>
+                <th class="px-3 py-2 text-left font-semibold">Valuation group</th>
+                <th class="px-3 py-2 text-right font-semibold">Sales</th>
+                <th class="px-3 py-2 text-right font-semibold">Median</th>
+                <th class="px-3 py-2 text-right font-semibold">Wgt. mean</th>
+                <th class="px-3 py-2 text-right font-semibold">COD</th>
+                <th class="px-3 py-2 text-right font-semibold">PRD</th>
+                <th class="px-3 py-2 text-right font-semibold">95% median C.I.</th>
+              </tr>
+            </thead>
+            <tbody id="marketValuationGroupRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <h2 class="text-xl font-bold text-slate-950">Which sale-price bands shape the study?</h2>
+        <p class="mt-1 text-sm text-slate-600">Incremental residential sale-price ranges from the same PAD R&O pages help reviewers understand where the qualified sales are concentrated.</p>
+        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
+          <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <thead class="bg-slate-50">
+              <tr>
+                <th class="px-3 py-2 text-left font-semibold">Sale price range</th>
+                <th class="px-3 py-2 text-right font-semibold">Sales</th>
+                <th class="px-3 py-2 text-right font-semibold">Median</th>
+                <th class="px-3 py-2 text-right font-semibold">COD</th>
+                <th class="px-3 py-2 text-right font-semibold">PRD</th>
+                <th class="px-3 py-2 text-right font-semibold">Avg. adj. sale price</th>
+              </tr>
+            </thead>
+            <tbody id="marketSalePriceRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section data-view-panel="county" class="hidden space-y-6">
+      <article id="county-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County View</p>
+        <h2 class="mt-1 text-2xl font-bold text-slate-950">How is Gage County moving as a whole?</h2>
+        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+          This placement view can summarize countywide value growth, tax-burden movement, and whether this property’s district is moving with or away from the broader county pattern.
+        </p>
+      </article>
+
+      <article id="assessment-accuracy" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Assessment Ratio Analysis</p>
+            <h2 class="mt-1 text-2xl font-bold text-slate-950">How close are county appraisals to market value?</h2>
+            <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              COD, PRD, level of value, and COV show whether assessments are moving toward tighter, more equitable results. The selected class defaults to this property’s class.
+            </p>
+          </div>
+          <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
+        </div>
+        <div id="assessmentAccuracySummary" class="mt-5 grid gap-3 md:grid-cols-4"></div>
+        <section class="mt-5 grid gap-6 lg:grid-cols-5">
+          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
+            <h3 class="text-lg font-bold text-slate-950">How are equalization measures moving?</h3>
+            <p class="mt-1 text-sm text-slate-600">Common-scale view where closer to the target line means stronger assessment accuracy.</p>
+            <div class="mt-4 h-80">
+              <canvas id="assessmentAccuracyChart"></canvas>
+            </div>
+          </article>
+          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
+            <h3 class="text-lg font-bold text-slate-950">What changed by year?</h3>
+            <p class="mt-1 text-sm text-slate-600">Latest years first, preserving the workbook measures for reviewer context.</p>
+            <div class="mt-4 max-h-80 overflow-auto rounded-xl bg-white ring-1 ring-slate-200">
+              <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <thead class="sticky top-0 bg-slate-50">
+                  <tr>
+                    <th class="px-3 py-2 text-left font-semibold">Year</th>
+                    <th class="px-3 py-2 text-right font-semibold">Sales</th>
+                    <th class="px-3 py-2 text-right font-semibold">LOV</th>
+                    <th class="px-3 py-2 text-right font-semibold">COD</th>
+                    <th class="px-3 py-2 text-right font-semibold">PRD</th>
+                    <th class="px-3 py-2 text-right font-semibold">COV</th>
+                  </tr>
+                </thead>
+                <tbody id="assessmentMeasureRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </article>
+
+      <section class="grid gap-6 lg:grid-cols-5">
+        <article id="county-indexed" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
+          <h2 class="text-xl font-bold text-slate-950">How are county values and taxes moving?</h2>
+          <p class="mt-1 text-sm text-slate-600">Illustrative indexed view for countywide taxable value and tax movement.</p>
+          <div id="countyIndexedChartLegend" class="mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
+          <div class="mt-4 h-72">
+            <canvas id="countyIndexedChart"></canvas>
+          </div>
+        </article>
+        <article id="county-etr" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
+          <h2 class="text-xl font-bold text-slate-950">What share of county value becomes taxes?</h2>
+          <p class="mt-1 text-sm text-slate-600">Countywide ETR context gives reviewers a broader baseline.</p>
+          <div class="mt-4 h-72">
+            <canvas id="countyEtrChart"></canvas>
+          </div>
+        </article>
+      </section>
+      <article id="county-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <h2 class="text-xl font-bold text-slate-950">County summary</h2>
+        <p class="mt-1 text-sm text-slate-600">Certified CTL movement from 2019 through 2025.</p>
+        <div id="countyCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
+      </article>
+    </section>
+
+    <section data-view-panel="statewide" class="hidden space-y-6">
+      <article id="statewide-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Statewide View</p>
+        <h2 class="mt-1 text-2xl font-bold text-slate-950">How does this pattern compare statewide?</h2>
+        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+          This view is designed for statewide context: whether local value growth, tax movement, and ETR changes are broadly typical or unusual.
+        </p>
+      </article>
+
+      <article id="county-comparison" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County Comparison</p>
+            <h2 class="mt-1 text-2xl font-bold text-slate-950">How does the property’s county compare?</h2>
+            <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              Compare the current county against the statewide baseline or one other Nebraska county using certified CTL values, taxes levied, and average tax rate.
+            </p>
+          </div>
+          <div class="grid gap-2 text-sm sm:min-w-80">
+            <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="countyComparisonTarget">Compare with</label>
+            <select id="countyComparisonTarget" class="rounded-xl bg-white px-3 py-2 font-semibold text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400"></select>
+          </div>
+        </div>
+        <div id="countyComparisonSummary" class="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
+        <section class="mt-5 grid gap-6 lg:grid-cols-5">
+          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
+            <h3 class="text-lg font-bold text-slate-950">How do value and tax growth compare?</h3>
+            <p id="countyComparisonIndexedNote" class="mt-1 text-sm text-slate-600"></p>
+            <div class="mt-4 h-80">
+              <canvas id="countyComparisonIndexedChart"></canvas>
+            </div>
+          </article>
+          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
+            <h3 class="text-lg font-bold text-slate-950">How do average tax rates compare?</h3>
+            <p id="countyComparisonRateNote" class="mt-1 text-sm text-slate-600"></p>
+            <div class="mt-4 h-80">
+              <canvas id="countyComparisonRateChart"></canvas>
+            </div>
+          </article>
+        </section>
+      </article>
+
+      <section class="grid gap-6 lg:grid-cols-5">
+        <article id="state-indexed" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
+          <h2 class="text-xl font-bold text-slate-950">How are statewide values and taxes moving?</h2>
+          <p class="mt-1 text-sm text-slate-600">Illustrative indexed view for statewide comparison.</p>
+          <div class="mt-4 h-72">
+            <canvas id="stateIndexedChart"></canvas>
+          </div>
+        </article>
+        <article id="state-etr" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
+          <h2 class="text-xl font-bold text-slate-950">How is statewide ETR trending?</h2>
+          <p class="mt-1 text-sm text-slate-600">A statewide ETR benchmark helps place local tax burden in context.</p>
+          <div class="mt-4 h-72">
+            <canvas id="stateEtrChart"></canvas>
+          </div>
+        </article>
+      </section>
+      <article id="state-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <h2 class="text-xl font-bold text-slate-950">Statewide summary</h2>
+        <p class="mt-1 text-sm leading-6 text-slate-600">
+          Certified CTL movement from 2019 through 2025 gives a statewide baseline for comparing county and market-area patterns.
+        </p>
+        <div id="stateCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
+      </article>
+    </section>
+
+    <section data-view-panel="demographics" class="hidden space-y-6">
+      <article id="demographics-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County Profile</p>
+        <h2 class="mt-1 text-2xl font-bold text-slate-950">Who and what make up Gage County?</h2>
+        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+          This view combines the workbook’s county profile and demographics sheets into a quick context page for population, housing, economy, and valuation-base composition.
+        </p>
+        <div id="demographicProfileCards" class="mt-5 grid gap-3 md:grid-cols-3 xl:grid-cols-6"></div>
+      </article>
+
+      <section class="grid gap-6 lg:grid-cols-6">
+        <article id="county-value-mix" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
+          <h2 class="text-xl font-bold text-slate-950">What makes up the county value base?</h2>
+          <p class="mt-1 text-sm text-slate-600">Major valuation categories from the county profile extraction.</p>
+          <div class="mt-4 h-80">
+            <canvas id="countyValueMixChart"></canvas>
+          </div>
+        </article>
+        <article id="county-age-mix" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
+          <h2 class="text-xl font-bold text-slate-950">How is the population distributed by age?</h2>
+          <p class="mt-1 text-sm text-slate-600">County age cohorts from the demographics worksheet.</p>
+          <div class="mt-4 h-80">
+            <canvas id="countyAgeMixChart"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <section class="grid gap-6 lg:grid-cols-6">
+        <article id="community-population" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-4">
+          <h2 class="text-xl font-bold text-slate-950">Where is the population concentrated?</h2>
+          <p class="mt-1 text-sm text-slate-600">Municipal population context pulled from the county profile worksheet.</p>
+          <div class="mt-4 h-80">
+            <canvas id="communityPopulationChart"></canvas>
+          </div>
+        </article>
+        <article id="household-signals" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
+          <h2 class="text-xl font-bold text-slate-950">What household signals stand out?</h2>
+          <p class="mt-1 text-sm text-slate-600">Selected household counts from demographic source rows.</p>
+          <div class="mt-4 h-80">
+            <canvas id="householdSignalsChart"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <article id="demographic-facts" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <h2 class="text-xl font-bold text-slate-950">County profile facts</h2>
+        <p class="mt-1 text-sm text-slate-600">A compact combined table from the County Profile and Demographics worksheets.</p>
+        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
+          <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <thead class="bg-slate-50">
+              <tr>
+                <th class="px-3 py-2 text-left font-semibold">Source</th>
+                <th class="px-3 py-2 text-left font-semibold">Category</th>
+                <th class="px-3 py-2 text-left font-semibold">Metric</th>
+                <th class="px-3 py-2 text-left font-semibold">Subgroup</th>
+                <th class="px-3 py-2 text-right font-semibold">Value</th>
+                <th class="px-3 py-2 text-left font-semibold">Year</th>
+              </tr>
+            </thead>
+            <tbody id="demographicFactsRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
   </main>
 
-  <div id="reportErrorModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 p-6 backdrop-blur-sm">
-    <section role="dialog" aria-modal="true" aria-labelledby="reportErrorTitle" class="w-full max-w-xl rounded-2xl bg-white p-6 text-slate-800 shadow-2xl ring-1 ring-slate-200">
-      <div class="flex items-start justify-between gap-4">
+  <footer class="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8" aria-label="Site footer">
+    <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">For placement only</p>
-          <h2 id="reportErrorTitle" class="mt-1 text-xl font-bold text-slate-950">Report an error</h2>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property Value & Tax Snapshot</p>
+          <h2 class="mt-1 text-xl font-bold text-slate-950">More information</h2>
+          <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600">
+            Reference pages, user guidance, forms, and supporting material for people who want to understand the data behind the snapshot.
+          </p>
         </div>
-        <button type="button" data-close-report-error class="flex h-9 w-9 items-center justify-center rounded-full text-xl font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-800" aria-label="Close report error concept">
+        <nav aria-label="Footer menu" class="flex flex-wrap gap-2">
+          <button type="button" data-footer-target="about" class="footer-link-active rounded-full px-3 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">About</button>
+          <button type="button" data-footer-target="terms" class="rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Terms of Use</button>
+          <button type="button" data-footer-target="privacy" class="rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Privacy Policy</button>
+          <button type="button" data-footer-target="accessibility" class="rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Accessibility</button>
+          <button type="button" data-footer-target="faq" class="rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">FAQs</button>
+          <button type="button" data-footer-target="forms" class="rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Forms</button>
+          <button type="button" data-footer-target="learn" class="rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Learn</button>
+          <button type="button" data-footer-target="resources" class="rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Resources</button>
+          <button type="button" data-footer-target="contact" class="rounded-full px-3 py-1.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Contact</button>
+        </nav>
+      </div>
+
+      <div id="footerContent" class="mt-5 border-t border-slate-200 pt-5">
+        <section data-footer-panel="about" class="footer-panel">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">About</p>
+          <h3 class="mt-1 text-lg font-bold text-slate-950">What this snapshot is meant to do</h3>
+          <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
+            This prototype brings property records, assessment-year value, finalized tax history, levy distribution, market context, and countywide benchmarks into a single review surface. It is intended to help an intelligent reviewer understand what is known, what is pending, and which view best answers their question.
+          </p>
+        </section>
+
+        <section data-footer-panel="terms" class="footer-panel hidden">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Terms of Use</p>
+          <h3 class="mt-1 text-lg font-bold text-slate-950">Use of this prototype</h3>
+          <div class="mt-2 grid gap-3 text-sm leading-6 text-slate-600 md:grid-cols-3">
+            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">This page is a working interface prototype and should not be treated as a certified tax statement, appeal filing, or legal determination.</p>
+            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Final tax bills depend on certified levies, budgets, credits, exemptions, and other official adjustments that may not appear in current-year assessment data.</p>
+            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Production versions should link directly to the governing jurisdiction’s adopted terms and official records policy.</p>
+          </div>
+        </section>
+
+        <section data-footer-panel="privacy" class="footer-panel hidden">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Privacy Policy</p>
+          <h3 class="mt-1 text-lg font-bold text-slate-950">Privacy and data handling</h3>
+          <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
+            The current prototype uses static demonstration data and does not submit forms, store user-entered information, or upload files. A production version should clearly describe analytics, file uploads, form submissions, retention rules, public-record treatment, and any third-party services used to process information.
+          </p>
+        </section>
+
+        <section data-footer-panel="accessibility" class="footer-panel hidden">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Accessibility</p>
+          <h3 class="mt-1 text-lg font-bold text-slate-950">Accessibility statement</h3>
+          <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
+            This interface is being structured with semantic headings, keyboard-operable controls, visible focus states, descriptive link text, and chart-adjacent data tables or notes. Before production release, it should receive a formal WCAG review, assistive-technology testing, and color-contrast verification against the final brand palette.
+          </p>
+        </section>
+
+        <section data-footer-panel="faq" class="footer-panel hidden">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">FAQs</p>
+          <h3 class="mt-1 text-lg font-bold text-slate-950">Questions this snapshot can answer</h3>
+          <div class="mt-4 grid gap-3 lg:grid-cols-2">
+            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <summary class="cursor-pointer list-none font-semibold text-slate-950">Where am I in the assessment and tax calendar?</summary>
+              <p class="mt-2 text-sm leading-6 text-slate-600">The tax process timeline explains the current stage, overlapping protest and review windows, and what happens before final bills are issued.</p>
+              <button type="button" data-view-link="property" data-jump-target="tax-cycle" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show the tax process timeline</button>
+            </details>
+            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <summary class="cursor-pointer list-none font-semibold text-slate-950">Why is the current assessed value different from last year?</summary>
+              <p class="mt-2 text-sm leading-6 text-slate-600">The value and tax history table separates the current assessment year from prior finalized tax years.</p>
+              <button type="button" data-view-link="property" data-jump-target="value-history" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show value and tax history</button>
+            </details>
+            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <summary class="cursor-pointer list-none font-semibold text-slate-950">Are values and taxes moving together?</summary>
+              <p class="mt-2 text-sm leading-6 text-slate-600">The indexed chart resets value and taxes to a common starting point so their movement can be compared directly.</p>
+              <button type="button" data-view-link="property" data-jump-target="indexed-trends" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show indexed trends</button>
+            </details>
+            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <summary class="cursor-pointer list-none font-semibold text-slate-950">Where does the tax bill go?</summary>
+              <p class="mt-2 text-sm leading-6 text-slate-600">The levy distribution view shows the latest finalized taxing-body components and their share of the total levy.</p>
+              <button type="button" data-view-link="property" data-jump-target="tax-distribution" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show tax distribution</button>
+            </details>
+            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <summary class="cursor-pointer list-none font-semibold text-slate-950">How does this property compare to nearby market activity?</summary>
+              <p class="mt-2 text-sm leading-6 text-slate-600">The market area view is designed to compare local value movement, ETR movement, and tax-district context.</p>
+              <button type="button" data-view-link="market" data-jump-target="market-indexed" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show market-area movement</button>
+            </details>
+            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <summary class="cursor-pointer list-none font-semibold text-slate-950">Are county appraisals moving closer to market value?</summary>
+              <p class="mt-2 text-sm leading-6 text-slate-600">The county assessment-ratio view tracks level of value, COD, PRD, and COV on a common scale.</p>
+              <button type="button" data-view-link="county" data-jump-target="assessment-accuracy" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show county equalization measures</button>
+            </details>
+            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <summary class="cursor-pointer list-none font-semibold text-slate-950">How does this county compare with another county or the state?</summary>
+              <p class="mt-2 text-sm leading-6 text-slate-600">The statewide comparison lets the current county be compared against statewide totals or one other Nebraska county at a time.</p>
+              <button type="button" data-view-link="statewide" data-jump-target="county-comparison" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show county comparison</button>
+            </details>
+            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <summary class="cursor-pointer list-none font-semibold text-slate-950">What county demographic context may matter?</summary>
+              <p class="mt-2 text-sm leading-6 text-slate-600">The demographics view combines county profile and demographics worksheets into population, household, and value-base visuals.</p>
+              <button type="button" data-view-link="demographics" data-jump-target="demographics-overview" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show demographics</button>
+            </details>
+          </div>
+        </section>
+
+        <section data-footer-panel="forms" class="footer-panel hidden">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Forms</p>
+          <h3 class="mt-1 text-lg font-bold text-slate-950">Common forms</h3>
+          <div class="mt-3 grid gap-3 md:grid-cols-3">
+            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
+              <span class="font-semibold text-slate-950">Property valuation protest</span>
+              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
+            </a>
+            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
+              <span class="font-semibold text-slate-950">Homestead exemption</span>
+              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
+            </a>
+            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
+              <span class="font-semibold text-slate-950">Report a property-record concern</span>
+              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
+            </a>
+          </div>
+        </section>
+
+        <section data-footer-panel="learn" class="footer-panel hidden">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Learn</p>
+          <h3 class="mt-1 text-lg font-bold text-slate-950">Glossary and math notes</h3>
+          <div class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <p class="font-semibold text-slate-950">Assessed value</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">The value used for taxation after the assessment process determines the property’s taxable basis.</p>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <p class="font-semibold text-slate-950">Effective tax rate</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Final taxes divided by assessed value. It helps compare tax burden across years even when value changes.</p>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <p class="font-semibold text-slate-950">Indexed trend</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">A chart where each series starts at 100, making relative movement easier to compare.</p>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <p class="font-semibold text-slate-950">COD, PRD, LOV, COV</p>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Assessment-ratio measures used to evaluate uniformity, price-related fairness, level of value, and reliability.</p>
+            </div>
+          </div>
+        </section>
+
+        <section data-footer-panel="resources" class="footer-panel hidden">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Resources</p>
+          <h3 class="mt-1 text-lg font-bold text-slate-950">Reference resources</h3>
+          <div class="mt-3 grid gap-3 md:grid-cols-3">
+            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
+              <span class="font-semibold text-slate-950">Nebraska Department of Revenue PAD</span>
+              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
+            </a>
+            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
+              <span class="font-semibold text-slate-950">County assessor resources</span>
+              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
+            </a>
+            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
+              <span class="font-semibold text-slate-950">Public assessment reports</span>
+              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
+            </a>
+          </div>
+        </section>
+
+        <section data-footer-panel="contact" class="footer-panel hidden">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Contact</p>
+          <h3 class="mt-1 text-lg font-bold text-slate-950">Contact and support</h3>
+          <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
+            FPO: production versions should point users to the correct assessor, treasurer, clerk, or state resource depending on whether the question is about records, valuation, exemptions, levies, or payment.
+          </p>
+        </section>
+      </div>
+    </section>
+  </footer>
+
+  <div id="reportErrorModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm sm:p-6">
+    <section role="dialog" aria-modal="true" aria-labelledby="reportErrorTitle" class="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl bg-white text-slate-800 shadow-2xl ring-1 ring-slate-200">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-200 p-5">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property record correction request</p>
+          <h2 id="reportErrorTitle" class="mt-1 text-2xl font-bold text-slate-950">Report a property record discrepancy</h2>
+          <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">
+            Review the record details below and mark each item as confirmed, incorrect, or unsure. Draft entries are kept on this device if the form is closed before submission.
+          </p>
+        </div>
+        <button type="button" data-close-report-error class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-800" aria-label="Close property record correction form">
           ×
         </button>
       </div>
 
-      <div class="mt-4 space-y-3 text-sm leading-6 text-slate-700">
-        <p>
-          In a production version, this action could open a templated narrative selection form that helps a property owner identify and describe the type of record concern they are reporting.
-        </p>
-        <p>
-          The form could also support optional uploads, such as photos, documents, or other supporting material, so reviewer staff receive a clearer submission with consistent context.
-        </p>
-        <p class="rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600 ring-1 ring-slate-200">
-          This placeholder does not submit information or start a formal appeal. It is intended to demonstrate where an error-reporting workflow could live in the final product.
-        </p>
-      </div>
-
-      <div class="mt-5 flex justify-end">
-        <button type="button" data-close-report-error class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">
-          Close
-        </button>
-      </div>
+      <div id="reportErrorFormContent" class="overflow-y-auto p-5"></div>
     </section>
   </div>
 
