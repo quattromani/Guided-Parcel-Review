@@ -9,42 +9,78 @@ async function loadJson(path, label) {
 }
 
 const DATA_PATHS = {
-  propertyData: "data/properties/residential-property-data.json",
-  propertyRecordCard: "data/property-records/mips/residential-010496000-record-card.json",
-  assessmentCalendar: "data/calendars/pad_main_calendar_2025.json",
-  certifiedTaxesLevied: "data/statewide/certified-taxes-levied.json",
-  assessmentRatioAnalysis: "data/counties/gage/assessment-ratio-analysis.json",
-  countyContext: "data/counties/gage/county-context.json",
-  padRatioStatistics: "data/counties/gage/pad-ratio-statistics-2026-gage.json"
+  manifest: "data/app/property-manifest.json"
 };
 
+let manifestPromise;
+
+export function loadPropertyManifest() {
+  manifestPromise ??= loadJson(DATA_PATHS.manifest, "property manifest");
+
+  return manifestPromise;
+}
+
+async function getActivePropertyEntry() {
+  const manifest = await loadPropertyManifest();
+  const property = manifest.properties.find(item => item.id === manifest.activePropertyId);
+
+  if (!property) {
+    throw new Error(`Active property '${manifest.activePropertyId}' is not listed in the property manifest.`);
+  }
+
+  return { manifest, property };
+}
+
+async function getActiveCountyEntry() {
+  const { manifest, property } = await getActivePropertyEntry();
+  const county = manifest.sharedData.counties[property.county];
+
+  if (!county) {
+    throw new Error(`County '${property.county}' is not listed in the property manifest.`);
+  }
+
+  return { manifest, property, county };
+}
+
 export function loadPropertyData() {
-  return loadJson(DATA_PATHS.propertyData, "property data");
+  return getActivePropertyEntry()
+    .then(({ property }) => loadJson(property.propertyDataPath, "property data"));
 }
 
 export function loadPropertyRecordCard() {
-  return loadJson(DATA_PATHS.propertyRecordCard, "property record card");
+  return getActivePropertyEntry()
+    .then(({ property }) => loadJson(property.recordCardPath, "property record card"));
 }
 
 export function loadAssessmentCalendar() {
-  return loadJson(DATA_PATHS.assessmentCalendar, "PAD main assessment calendar")
+  return loadPropertyManifest()
+    .then(manifest => loadJson(manifest.sharedData.calendarPath, "PAD main assessment calendar"))
     .then(normalizePadCalendar);
 }
 
 export function loadCertifiedTaxesLevied() {
-  return loadJson(DATA_PATHS.certifiedTaxesLevied, "certified taxes levied");
+  return loadPropertyManifest()
+    .then(manifest => loadJson(manifest.sharedData.statewideCtlPath, "certified taxes levied"));
 }
 
 export function loadAssessmentRatioAnalysis() {
-  return loadJson(DATA_PATHS.assessmentRatioAnalysis, "assessment ratio analysis");
+  return getActiveCountyEntry()
+    .then(({ county }) => loadJson(county.assessmentRatioPath, "assessment ratio analysis"));
 }
 
 export function loadCountyContext() {
-  return loadJson(DATA_PATHS.countyContext, "county context");
+  return getActiveCountyEntry()
+    .then(({ county }) => loadJson(county.countyContextPath, "county context"));
 }
 
 export function loadPadRatioStatistics() {
-  return loadJson(DATA_PATHS.padRatioStatistics, "PAD ratio statistics");
+  return getActiveCountyEntry()
+    .then(({ county }) => loadJson(county.padRatioStatisticsPath, "PAD ratio statistics"));
+}
+
+export function loadValuationGroups() {
+  return getActiveCountyEntry()
+    .then(({ county }) => loadJson(county.valuationGroupsPath, "valuation groups"));
 }
 
 export function getSnapshotHistory(data) {

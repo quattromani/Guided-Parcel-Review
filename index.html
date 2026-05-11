@@ -199,6 +199,7 @@
           For placement only
         </span>
       </div>
+      <div id="comparableValueScale" class="mt-5"></div>
       <div id="comparableCards" class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"></div>
     </section>
 
@@ -254,7 +255,7 @@
           <table class="min-w-full divide-y divide-slate-200 text-sm">
             <thead class="bg-slate-50">
               <tr>
-                <th class="px-3 py-2 text-left font-semibold">Valuation group</th>
+                <th class="px-3 py-2 text-left font-semibold">Valuation / listing group</th>
                 <th class="px-3 py-2 text-right font-semibold">Sales</th>
                 <th class="px-3 py-2 text-right font-semibold">Median</th>
                 <th class="px-3 py-2 text-right font-semibold">Wgt. mean</th>
@@ -268,25 +269,6 @@
         </div>
       </article>
 
-      <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <h2 class="text-xl font-bold text-slate-950">Which sale-price bands shape the study?</h2>
-        <p class="mt-1 text-sm text-slate-600">Incremental residential sale-price ranges from the same PAD R&O pages help reviewers understand where the qualified sales are concentrated.</p>
-        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-          <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="bg-slate-50">
-              <tr>
-                <th class="px-3 py-2 text-left font-semibold">Sale price range</th>
-                <th class="px-3 py-2 text-right font-semibold">Sales</th>
-                <th class="px-3 py-2 text-right font-semibold">Median</th>
-                <th class="px-3 py-2 text-right font-semibold">COD</th>
-                <th class="px-3 py-2 text-right font-semibold">PRD</th>
-                <th class="px-3 py-2 text-right font-semibold">Avg. adj. sale price</th>
-              </tr>
-            </thead>
-            <tbody id="marketSalePriceRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-          </table>
-        </div>
-      </article>
     </section>
 
     <section data-view-panel="county" class="hidden space-y-6">
@@ -338,6 +320,37 @@
             </div>
           </article>
         </section>
+      </article>
+
+      <article id="county-sale-price-bands" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <h2 class="text-xl font-bold text-slate-950">Which sale-price bands shape the study?</h2>
+        <p class="mt-1 text-sm text-slate-600">Incremental residential sale-price ranges from the same PAD R&O pages help reviewers understand where the qualified sales are concentrated.</p>
+        <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
+          <div class="overflow-x-auto rounded-xl ring-1 ring-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 text-xs">
+              <thead class="bg-slate-50">
+                <tr>
+                  <th class="px-2 py-2 text-left font-semibold">Sale price range</th>
+                  <th class="px-2 py-2 text-right font-semibold">Sales</th>
+                  <th class="px-2 py-2 text-right font-semibold">Median</th>
+                  <th class="px-2 py-2 text-right font-semibold">COD</th>
+                  <th class="px-2 py-2 text-right font-semibold">PRD</th>
+                  <th class="px-2 py-2 text-right font-semibold">Avg. sale</th>
+                </tr>
+              </thead>
+              <tbody id="marketSalePriceRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+            </table>
+          </div>
+          <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sales distribution</p>
+              <p class="mt-1 text-sm leading-5 text-slate-600">Qualified sales by price band, including empty upper bands.</p>
+            </div>
+            <div class="mt-3 h-64">
+              <canvas id="marketSalePriceChart"></canvas>
+            </div>
+          </div>
+        </div>
       </article>
 
       <section class="grid gap-6 lg:grid-cols-5">

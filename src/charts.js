@@ -28,6 +28,7 @@ let countyComparisonIndexedChart;
 let countyComparisonRateChart;
 let marketRatioChart;
 let marketValueChart;
+let marketSalePriceChart;
 
 const assessmentDisplayYears = {
   start: 2019,
@@ -417,6 +418,35 @@ function marketAreaSignal(selected, summary) {
   return `${selected.label} includes ${integer.format(selected.count)} qualified residential sales. Its median ratio is ${formatRatio(selected.median)}, ${medianText}, and its COD is ${formatRatio(selected.cod)}, ${codText}.`;
 }
 
+function valuationGroupLookup(valuationGroups, propertyClass = "Residential") {
+  return new Map((valuationGroups?.valuationGroups || [])
+    .filter(item => item.class === propertyClass)
+    .map(item => [String(item.valuationGroup), item]));
+}
+
+function enrichedMarketGroups(groups, valuationGroups, propertyClass = "Residential") {
+  const lookup = valuationGroupLookup(valuationGroups, propertyClass);
+
+  return groups.map(group => {
+    const listing = lookup.get(String(group.group));
+    const description = listing?.description || group.description || "";
+    const marketGroup = listing?.marketGroup || null;
+    const descriptiveLabel = description
+      ? `Valuation Group ${group.group} - ${description}`
+      : group.label;
+    const marketGroupLabel = marketGroup ? `${marketGroup} market` : "";
+
+    return {
+      ...group,
+      description,
+      marketGroup,
+      label: descriptiveLabel,
+      optionLabel: marketGroupLabel ? `${descriptiveLabel} (${marketGroupLabel})` : descriptiveLabel,
+      shortLabel: description ? `VG ${group.group} - ${description}` : group.label
+    };
+  });
+}
+
 function renderMarketSignalCards(selected, summary) {
   const container = document.getElementById("marketSignalCards");
   if (!container) return;
@@ -448,11 +478,12 @@ function renderMarketRows(groups, selectedGroup) {
   if (!table) return;
 
   table.innerHTML = groups.map(row => {
-    const active = row.group === selectedGroup;
+    const active = String(row.group) === String(selectedGroup);
     return `
       <tr class="${active ? "bg-blue-50" : ""}">
         <td class="px-3 py-2 font-medium text-slate-950">
-          ${row.label}
+          <span class="block">${row.label}</span>
+          ${row.marketGroup ? `<span class="mt-0.5 block text-xs font-medium text-slate-500">${row.marketGroup}</span>` : ""}
           ${active ? `<span class="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">Selected</span>` : ""}
         </td>
         <td class="px-3 py-2 text-right">${integer.format(row.count)}</td>
@@ -471,23 +502,128 @@ function renderMarketSalePriceRows(padRatioData) {
   if (!table) return;
 
   const rows = padRatioData.salePriceRanges
-    .filter(row => row.section === "Incremental Ranges" && row.count > 0);
+    .filter(row => row.section === "Incremental Ranges");
+  const totalRow = padRatioData.salePriceRanges
+    .find(row => row.range === "ALL" || row.section === "All") ?? {
+      count: padRatioData.summary.numberOfSales,
+      median: padRatioData.summary.median,
+      cod: padRatioData.summary.cod,
+      prd: padRatioData.summary.prd,
+      averageAdjustedSalePrice: padRatioData.summary.averageAdjustedSalePrice
+    };
 
-  table.innerHTML = rows.map(row => `
+  const dataRows = rows.map(row => `
     <tr>
-      <td class="px-3 py-2 font-medium text-slate-950">${row.range}</td>
-      <td class="px-3 py-2 text-right">${integer.format(row.count)}</td>
-      <td class="px-3 py-2 text-right">${formatRatio(row.median)}</td>
-      <td class="px-3 py-2 text-right">${formatRatio(row.cod)}</td>
-      <td class="px-3 py-2 text-right">${formatRatio(row.prd)}</td>
-      <td class="px-3 py-2 text-right">${wholeMoney.format(row.averageAdjustedSalePrice)}</td>
+      <td class="px-2 py-2 font-medium text-slate-950">${row.range}</td>
+      <td class="px-2 py-2 text-right">${integer.format(row.count)}</td>
+      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.median) : "—"}</td>
+      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.cod) : "—"}</td>
+      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.prd) : "—"}</td>
+      <td class="px-2 py-2 text-right">${row.count ? wholeMoney.format(row.averageAdjustedSalePrice) : "—"}</td>
     </tr>
   `).join("");
+  const footerRow = totalRow ? `
+    <tr class="bg-slate-950 font-semibold text-white">
+      <td class="px-2 py-2">Total / average</td>
+      <td class="px-2 py-2 text-right">${integer.format(totalRow.count)}</td>
+      <td class="px-2 py-2 text-right">${formatRatio(totalRow.median)}</td>
+      <td class="px-2 py-2 text-right">${formatRatio(totalRow.cod)}</td>
+      <td class="px-2 py-2 text-right">${formatRatio(totalRow.prd)}</td>
+      <td class="px-2 py-2 text-right">${wholeMoney.format(totalRow.averageAdjustedSalePrice)}</td>
+    </tr>
+  ` : "";
+
+  table.innerHTML = dataRows + footerRow;
+  renderMarketSalePriceChart(rows);
+}
+
+function shortPriceBandLabel(range) {
+  const compactBandNumber = value => {
+    if (value >= 1000000) return `$${integer.format(value / 1000000)}M`;
+    if (value >= 1000) return `$${integer.format(Math.round(value / 1000))}K`;
+    return `$${integer.format(value)}`;
+  };
+  const numbers = range.match(/\d[\d,]*/g)?.map(value => Number(value.replace(/,/g, ""))) ?? [];
+
+  if (range.includes("+") && numbers.length) return `${compactBandNumber(numbers[0])}+`;
+  if (numbers.length >= 2) return `${compactBandNumber(numbers[0])}-${compactBandNumber(numbers[1] + 1)}`;
+
+  return range;
+}
+
+function renderMarketSalePriceChart(rows) {
+  const canvas = document.getElementById("marketSalePriceChart");
+  if (!canvas) return;
+
+  marketSalePriceChart?.destroy();
+  marketSalePriceChart = new Chart(canvas, {
+    data: {
+      labels: rows.map(row => shortPriceBandLabel(row.range)),
+      datasets: [
+        {
+          type: "bar",
+          label: "Sales",
+          data: rows.map(row => row.count),
+          backgroundColor: "rgba(37, 99, 235, 0.18)",
+          borderColor: chartColors.contextValue,
+          borderWidth: 2,
+          borderRadius: 6,
+          order: 2
+        },
+        {
+          type: "line",
+          label: "Distribution curve",
+          data: rows.map(row => row.count),
+          tension: 0.38,
+          borderWidth: 3,
+          borderColor: chartColors.contextTax,
+          backgroundColor: "rgba(244, 63, 94, 0.12)",
+          pointBackgroundColor: chartColors.contextTax,
+          pointRadius: 3,
+          fill: true,
+          order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: {
+          labels: {
+            boxWidth: 28,
+            boxHeight: 9
+          }
+        },
+        tooltip: {
+          callbacks: {
+            title: context => rows[context[0].dataIndex]?.range ?? "",
+            label: context => `${context.dataset.label}: ${integer.format(context.parsed.y)}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            maxRotation: 45,
+            minRotation: 45
+          }
+        },
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: "Qualified sales" },
+          ticks: { precision: 0 }
+        }
+      }
+    }
+  });
 }
 
 function renderMarketRatioChart(selected, summary) {
   const canvas = document.getElementById("marketRatioChart");
   if (!canvas) return;
+  const selectedLabel = selected.shortLabel || selected.label;
 
   marketRatioChart?.destroy();
   marketRatioChart = new Chart(canvas, {
@@ -496,7 +632,7 @@ function renderMarketRatioChart(selected, summary) {
       labels: ["Median", "Weighted mean", "Mean", "PRD"],
       datasets: [
         {
-          label: selected.label,
+          label: selectedLabel,
           data: [selected.median, selected.weightedMean, selected.mean, selected.prd],
           backgroundColor: "rgba(37, 99, 235, 0.24)",
           borderColor: chartColors.contextValue,
@@ -527,6 +663,7 @@ function renderMarketRatioChart(selected, summary) {
 function renderMarketValueChart(selected, summary) {
   const canvas = document.getElementById("marketValueChart");
   if (!canvas) return;
+  const selectedLabel = selected.shortLabel || selected.label;
 
   marketValueChart?.destroy();
   marketValueChart = new Chart(canvas, {
@@ -535,7 +672,7 @@ function renderMarketValueChart(selected, summary) {
       labels: ["Avg. adjusted sale price", "Avg. assessed value"],
       datasets: [
         {
-          label: selected.label,
+          label: selectedLabel,
           data: [selected.averageAdjustedSalePrice, selected.averageAssessedValue],
           backgroundColor: "rgba(20, 184, 166, 0.28)",
           borderColor: "#14b8a6",
@@ -569,23 +706,24 @@ function renderMarketValueChart(selected, summary) {
   });
 }
 
-export function initMarketAreaView(data, recordCard, padRatioData) {
+export function initMarketAreaView(data, recordCard, padRatioData, valuationGroups) {
   const select = document.getElementById("marketAreaSelect");
   if (!select || !padRatioData?.valuationGroups?.length) return;
 
-  const groups = padRatioData.valuationGroups;
+  const groups = enrichedMarketGroups(padRatioData.valuationGroups, valuationGroups, padRatioData.source.propertyClass);
   const defaultGroup = extractValuationGroupId(recordCard) ?? groups[0].group;
   const sourceNote = document.getElementById("marketSourceNote");
   if (sourceNote) {
-    sourceNote.textContent = `${padRatioData.source.title}, ${padRatioData.source.countyName} County ${padRatioData.source.propertyClass}, pages ${padRatioData.source.sourcePages.join("-")}. The property default follows ${recordCard.locationModel.valuationGroup}.`;
+    const defaultListing = groups.find(group => String(group.group) === String(defaultGroup));
+    sourceNote.textContent = `${padRatioData.source.title}, ${padRatioData.source.countyName} County ${padRatioData.source.propertyClass}, pages ${padRatioData.source.sourcePages.join("-")}. The property default follows ${defaultListing?.label ?? recordCard.locationModel.valuationGroup}.`;
   }
 
   select.innerHTML = groups.map(group => `
-    <option value="${group.group}">${group.label}</option>
+    <option value="${group.group}">${group.optionLabel ?? group.label}</option>
   `).join("");
 
   const update = groupId => {
-    const selected = groups.find(group => group.group === groupId) ?? groups[0];
+    const selected = groups.find(group => String(group.group) === String(groupId)) ?? groups[0];
     select.value = selected.group;
     renderMarketSignalCards(selected, padRatioData.summary);
     renderMarketNarrative(selected, padRatioData.summary);

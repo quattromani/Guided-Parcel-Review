@@ -1582,6 +1582,8 @@ function renderLevyTable(data) {
 }
 
 function renderComparables(data) {
+  renderComparableValueScale(data);
+
   document.getElementById("comparableCards").innerHTML = data.comparables.map(item => {
     const isSubject = item.accent === "subject";
 
@@ -1602,6 +1604,152 @@ function renderComparables(data) {
       </article>
     `;
   }).join("");
+}
+
+function parseMoneyValue(value) {
+  if (typeof value === "number") return value;
+  if (typeof value !== "string") return null;
+
+  const parsed = Number(value.replace(/[^0-9.-]/g, ""));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function roundScale(value, direction) {
+  const step = 25000;
+  const method = direction === "down"
+    ? Math.floor
+    : direction === "nearest"
+      ? Math.round
+      : Math.ceil;
+
+  return method(value / step) * step;
+}
+
+function getMetricValue(comparable, labels) {
+  const metric = comparable.metrics.find(item => labels.includes(item.label));
+
+  return parseMoneyValue(metric?.value);
+}
+
+function getSubjectComparableValue(data) {
+  const snapshot = getSnapshotHistory(data);
+  const currentValue = snapshot?.assessedValue ?? null;
+
+  if (currentValue !== null && currentValue !== undefined) {
+    return {
+      value: currentValue,
+      label: `${snapshot.year} assessed value`,
+      pending: false
+    };
+  }
+
+  const latestFinal = data.taxpayerHistory
+    .filter(row => row.assessedValue !== null && row.assessedValue !== undefined)
+    .sort((a, b) => a.year - b.year)
+    .at(-1);
+
+  return {
+    value: latestFinal?.assessedValue ?? null,
+    label: latestFinal ? `${latestFinal.year} assessed value` : "Assessed value",
+    pending: true
+  };
+}
+
+function markerPosition(value, min, max) {
+  if (value === null || value === undefined || max <= min) return 0;
+
+  return Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
+}
+
+function renderComparableValueScale(data) {
+  const container = document.getElementById("comparableValueScale");
+  if (!container) return;
+
+  const subject = data.comparables.find(item => item.accent === "subject");
+  const comps = data.comparables
+    .filter(item => item.accent !== "subject")
+    .map((item, index) => ({
+      id: index + 1,
+      title: item.title,
+      value: getMetricValue(item, ["Sale price", "Assessed value"])
+    }))
+    .filter(item => item.value !== null && item.value !== undefined);
+  const subjectValue = getSubjectComparableValue(data);
+  const points = [
+    ...(subjectValue.value !== null && subjectValue.value !== undefined ? [{
+      id: "S",
+      title: subject?.title || "This property",
+      value: subjectValue.value,
+      type: "subject"
+    }] : []),
+    ...comps.map(item => ({ ...item, type: "comp" }))
+  ];
+
+  if (points.length < 2) {
+    container.innerHTML = "";
+    return;
+  }
+
+  const rawMin = Math.min(...points.map(item => item.value));
+  const rawMax = Math.max(...points.map(item => item.value));
+  const range = rawMax - rawMin || rawMax * 0.1;
+  const min = Math.max(0, roundScale(rawMin - range * 0.12, "down"));
+  const max = roundScale(rawMax + range * 0.12, "up");
+  const mid = roundScale((min + max) / 2, "nearest");
+
+  container.innerHTML = `
+    <section class="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200" aria-labelledby="comparativeValueTitle">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h3 id="comparativeValueTitle" class="text-lg font-bold text-slate-950">How does this property compare by value?</h3>
+          <p class="mt-1 text-sm leading-6 text-slate-600">
+            The subject marker uses ${subjectValue.pending ? "the latest finalized assessed value while the current year is pending" : "the current assessed value"}.
+            Nearby markers use listed comparable sale prices.
+          </p>
+        </div>
+        <span class="self-start rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-200">
+          ${subjectValue.label}
+        </span>
+      </div>
+
+      <div class="relative mt-8 px-3 pb-14 pt-8">
+        <div class="absolute left-3 right-3 top-12 h-1 rounded-full bg-slate-300"></div>
+        ${points.map(point => {
+          const left = markerPosition(point.value, min, max);
+          const isSubject = point.type === "subject";
+          return `
+            <div class="absolute top-7 -translate-x-1/2" style="left: ${left}%">
+              <div class="flex flex-col items-center gap-1">
+                <span class="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold shadow-sm ring-2 ring-white ${isSubject ? "bg-slate-950 text-white" : "bg-blue-700 text-white"}">
+                  ${point.id}
+                </span>
+                <span class="hidden max-w-28 text-center text-xs font-semibold leading-4 text-slate-600 sm:block">
+                  ${formatNullableMoney(point.value)}
+                </span>
+              </div>
+            </div>
+          `;
+        }).join("")}
+        <div class="absolute inset-x-3 bottom-0 flex justify-between text-lg font-bold text-slate-500 sm:text-2xl">
+          <span>${formatNullableMoney(min)}</span>
+          <span>${formatNullableMoney(mid)}</span>
+          <span>${formatNullableMoney(max)}</span>
+        </div>
+      </div>
+
+      <div class="mt-2 grid gap-2 text-xs text-slate-600 sm:grid-cols-2 lg:grid-cols-4">
+        ${points.map(point => `
+          <div class="flex items-center gap-2 rounded-xl bg-white px-3 py-2 ring-1 ring-slate-200">
+            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${point.type === "subject" ? "bg-slate-950 text-white" : "bg-blue-700 text-white"}">${point.id}</span>
+            <span class="min-w-0">
+              <span class="block truncate font-semibold text-slate-900">${point.title}</span>
+              <span class="block">${formatNullableMoney(point.value)}</span>
+            </span>
+          </div>
+        `).join("")}
+      </div>
+    </section>
+  `;
 }
 
 function renderSources(data) {

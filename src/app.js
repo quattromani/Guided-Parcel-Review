@@ -16,20 +16,22 @@ import {
   loadCountyContext,
   loadPropertyData,
   loadPropertyRecordCard,
-  loadPadRatioStatistics
+  loadPadRatioStatistics,
+  loadValuationGroups
 } from "./data-service.js";
 import { initImageModal } from "./modal.js";
 import { renderPage, renderViewHeader } from "./render.js";
 
 async function main() {
-  const [data, recordCard, calendar, ctlData, ratioData, countyContext, padRatioData] = await Promise.all([
+  const [data, recordCard, calendar, ctlData, ratioData, countyContext, padRatioData, valuationGroups] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
     loadAssessmentCalendar(),
     loadCertifiedTaxesLevied(),
     loadAssessmentRatioAnalysis(),
     loadCountyContext(),
-    loadPadRatioStatistics()
+    loadPadRatioStatistics(),
+    loadValuationGroups()
   ]);
   const imageModal = initImageModal(data.assets);
 
@@ -38,7 +40,7 @@ async function main() {
   buildEtrChart(data);
   buildDistributionChart(data);
   buildOverviewCharts(data, ctlData);
-  initMarketAreaView(data, recordCard, padRatioData);
+  initMarketAreaView(data, recordCard, padRatioData, valuationGroups);
   buildCtlSummary(data, ctlData);
   initCountyComparison(data, ctlData);
   initAssessmentRatioAnalysis(data, ratioData);
