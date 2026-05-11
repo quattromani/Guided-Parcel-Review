@@ -12,6 +12,8 @@ const DATA_PATHS = {
   manifest: "data/app/property-manifest.json"
 };
 
+export const PROPERTY_SAMPLE_STORAGE_KEY = "property-snapshot:active-property-id";
+
 let manifestPromise;
 
 export function loadPropertyManifest() {
@@ -20,12 +22,26 @@ export function loadPropertyManifest() {
   return manifestPromise;
 }
 
+export function getActivePropertyId(manifest) {
+  const storedPropertyId = typeof localStorage === "undefined"
+    ? null
+    : localStorage.getItem(PROPERTY_SAMPLE_STORAGE_KEY);
+  const storedProperty = manifest.properties.find(item => item.id === storedPropertyId);
+
+  return storedProperty?.id ?? manifest.activePropertyId;
+}
+
+export function setActivePropertyId(propertyId) {
+  localStorage.setItem(PROPERTY_SAMPLE_STORAGE_KEY, propertyId);
+}
+
 async function getActivePropertyEntry() {
   const manifest = await loadPropertyManifest();
-  const property = manifest.properties.find(item => item.id === manifest.activePropertyId);
+  const activePropertyId = getActivePropertyId(manifest);
+  const property = manifest.properties.find(item => item.id === activePropertyId);
 
   if (!property) {
-    throw new Error(`Active property '${manifest.activePropertyId}' is not listed in the property manifest.`);
+    throw new Error(`Active property '${activePropertyId}' is not listed in the property manifest.`);
   }
 
   return { manifest, property };
@@ -81,6 +97,11 @@ export function loadPadRatioStatistics() {
 export function loadValuationGroups() {
   return getActiveCountyEntry()
     .then(({ county }) => loadJson(county.valuationGroupsPath, "valuation groups"));
+}
+
+export function loadIaaoStandards() {
+  return loadPropertyManifest()
+    .then(manifest => loadJson(manifest.sharedData.standards.iaaoStandardsPath, "IAAO standards"));
 }
 
 export function getSnapshotHistory(data) {

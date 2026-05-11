@@ -14,16 +14,21 @@ import {
   loadAssessmentRatioAnalysis,
   loadCertifiedTaxesLevied,
   loadCountyContext,
+  loadPropertyManifest,
   loadPropertyData,
   loadPropertyRecordCard,
   loadPadRatioStatistics,
-  loadValuationGroups
+  loadValuationGroups,
+  loadIaaoStandards,
+  getActivePropertyId,
+  setActivePropertyId
 } from "./data-service.js";
 import { initImageModal } from "./modal.js";
 import { renderPage, renderViewHeader } from "./render.js";
 
 async function main() {
-  const [data, recordCard, calendar, ctlData, ratioData, countyContext, padRatioData, valuationGroups] = await Promise.all([
+  const manifest = await loadPropertyManifest();
+  const [data, recordCard, calendar, ctlData, ratioData, countyContext, padRatioData, valuationGroups, iaaoStandards] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
     loadAssessmentCalendar(),
@@ -31,10 +36,12 @@ async function main() {
     loadAssessmentRatioAnalysis(),
     loadCountyContext(),
     loadPadRatioStatistics(),
-    loadValuationGroups()
+    loadValuationGroups(),
+    loadIaaoStandards()
   ]);
   const imageModal = initImageModal(data.assets);
 
+  initAdminStateTestControl(manifest);
   renderPage(data, imageModal, calendar, recordCard);
   buildIndexedChart(data);
   buildEtrChart(data);
@@ -43,7 +50,7 @@ async function main() {
   initMarketAreaView(data, recordCard, padRatioData, valuationGroups);
   buildCtlSummary(data, ctlData);
   initCountyComparison(data, ctlData);
-  initAssessmentRatioAnalysis(data, ratioData);
+  initAssessmentRatioAnalysis(data, ratioData, iaaoStandards);
   initDemographicsView(countyContext);
   initViewNavigation();
   initFooterNavigation();
@@ -60,6 +67,39 @@ main().catch(error => {
     </main>
   `;
 });
+
+function initAdminStateTestControl(manifest) {
+  const container = document.getElementById("adminStateTestControl");
+  if (!container || !manifest?.testingSwitcher?.enabled) return;
+
+  const activePropertyId = getActivePropertyId(manifest);
+
+  container.innerHTML = `
+    <div class="rounded-xl border border-dashed border-slate-500 bg-slate-700 px-4 py-3 text-white shadow-sm">
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div class="min-w-0">
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-300">Admin state test control · Proof of concept only</p>
+          <p class="mt-1 text-sm text-slate-300">Local sample-property switcher. Not production UI, not taxpayer-facing, and not a certified state.</p>
+        </div>
+        <label class="flex shrink-0 flex-col gap-1 text-xs font-semibold uppercase tracking-wide text-slate-300 sm:min-w-72">
+          Active fixture
+          <select id="adminPropertyFixtureSelect" class="rounded-lg border-0 bg-white px-3 py-2 text-sm font-semibold normal-case tracking-normal text-slate-700 ring-1 ring-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            ${manifest.properties.map(property => `
+              <option value="${property.id}" ${property.id === activePropertyId ? "selected" : ""}>
+                ${property.label} · ${property.propertyClass}
+              </option>
+            `).join("")}
+          </select>
+        </label>
+      </div>
+    </div>
+  `;
+
+  container.querySelector("#adminPropertyFixtureSelect")?.addEventListener("change", event => {
+    setActivePropertyId(event.target.value);
+    window.location.reload();
+  });
+}
 
 function initViewNavigation() {
   const tabs = document.querySelectorAll("[data-view-tab]");

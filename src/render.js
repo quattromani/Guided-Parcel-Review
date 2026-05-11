@@ -120,7 +120,7 @@ export function renderViewHeader(view = "property") {
           ${content.eyebrow}
         </p>
 
-        <h1 class="mt-1 text-4xl font-bold tracking-tight text-slate-950">
+        <h1 class="mt-1 text-4xl font-bold tracking-tight text-slate-700">
           ${content.title}
         </h1>
 
@@ -147,7 +147,7 @@ function renderHeader(data, imageModal) {
     <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
       <div class="min-w-0 flex-1">
         <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">${data.snapshotYear} Property Snapshot</p>
-        <h2 class="mt-1 text-3xl font-bold tracking-tight text-slate-950">${data.parcel.situsAddress}</h2>
+        <h2 class="mt-1 text-3xl font-bold tracking-tight text-slate-700">${data.parcel.situsAddress}</h2>
         <p class="mt-2 text-base text-slate-600">
           <span class="font-medium text-slate-700">
             ${data.parcel.accountType} Property
@@ -217,7 +217,7 @@ function metric(label, value, tone = "slate") {
   return `
     <div class="rounded-xl p-3 ring-1 ${color}">
       <p>${label}</p>
-      <p class="font-semibold text-slate-950">${value}</p>
+      <p class="font-semibold text-slate-700">${value}</p>
       ${tone === "blue" ? `<p class="mt-1 text-[11px] font-medium uppercase tracking-wide">Current assessment year</p>` : ""}
       ${tone === "emerald" ? `<p class="mt-1 text-[11px] font-medium uppercase tracking-wide">Most recent finalized taxes</p>` : ""}
     </div>
@@ -244,22 +244,12 @@ function renderPropertyDetails(data, recordCard) {
     ["Zoning", data.classification.zoning],
     ["Lot size", data.classification.lotSize]
   ];
-
-  const physicalDetails = [
-    ["Year built", data.residential.yearBuilt],
-    ["Style", data.residential.style],
-    ["Building size", `${data.residential.buildingSize.toLocaleString()} sq. ft.`],
-    ["Basement size", `${data.residential.basementSize.toLocaleString()} sq. ft.`],
-    ["Bedrooms / bathrooms", `${data.residential.bedrooms} / ${data.residential.bathrooms}`],
-    ["Quality / condition", `${data.residential.quality} / ${data.residential.condition}`],
-    ["Garage", `${data.residential.garage1}; ${data.residential.garage2}`],
-    ["Exterior", data.residential.exterior]
-  ];
+  const physicalDetails = physicalDetailsForProperty(data);
 
   const renderCards = details => details.map(([label, value]) => `
     <div class="details-card">
       <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</dt>
-      <dd class="mt-1 text-sm font-medium text-slate-900">${value}</dd>
+      <dd class="mt-1 text-sm font-medium text-slate-700">${displayValue(value)}</dd>
     </div>
   `).join("");
 
@@ -306,7 +296,47 @@ function displayValue(value) {
   return value;
 }
 
+function formatSquareFeet(value) {
+  return value === null || value === undefined ? "Not listed" : `${Number(value).toLocaleString()} sq. ft.`;
+}
+
+function hasDetailedRecordCard(recordCard) {
+  return Boolean(recordCard?.parcelIdentifiers && recordCard?.locationModel);
+}
+
+function physicalDetailsForProperty(data) {
+  if (data.commercial?.buildingDatasheet?.length || data.classification.propertyClass === "Commercial") {
+    return [
+      ["Primary occupancy", data.commercial?.primaryOccupancy],
+      ["Year built", data.commercial?.yearBuilt],
+      ["Building size", formatSquareFeet(data.commercial?.buildingSize)],
+      ["Perimeter", data.commercial?.perimeter ? `${data.commercial.perimeter} ft.` : null],
+      ["Land use", data.commercial?.landUse],
+      ["Construction", data.commercial?.constructionType],
+      ["Quality / condition", [data.commercial?.quality, data.commercial?.condition].filter(Boolean).join(" / ")],
+      ["Heating / cooling", data.commercial?.heatingCooling]
+    ];
+  }
+
+  return [
+    ["Year built", data.residential?.yearBuilt],
+    ["Style", data.residential?.style],
+    ["Building size", formatSquareFeet(data.residential?.buildingSize)],
+    ["Basement size", formatSquareFeet(data.residential?.basementSize)],
+    ["Bedrooms / bathrooms", [data.residential?.bedrooms, data.residential?.bathrooms].every(value => value !== null && value !== undefined) ? `${data.residential.bedrooms} / ${data.residential.bathrooms}` : null],
+    ["Quality / condition", [data.residential?.quality, data.residential?.condition].filter(Boolean).join(" / ")],
+    ["Garage", [data.residential?.garage1, data.residential?.garage2].filter(Boolean).join("; ")],
+    ["Exterior", data.residential?.exterior]
+  ];
+}
+
 function discrepancyRows(data, recordCard) {
+  const detailedRecordCard = hasDetailedRecordCard(recordCard);
+  const residential = data.residential || {};
+  const landRows = data.landInformation || [];
+  const dwellingRows = data.dwellingData || [];
+  const outbuildingRows = data.outbuildingData || [];
+  const noteRows = data.propertyNotes || [];
   const rows = [
     ["Parcel ID", data.parcel.parcelId, "Submission information"],
     ["Map number", data.parcel.mapNumber, "Submission information"],
@@ -319,7 +349,7 @@ function discrepancyRows(data, recordCard) {
     ["School district", data.parcel.schoolDistrict, "Submission information"],
     ["Account type", data.parcel.accountType, "Submission information"],
     ["Legal description", data.parcel.legalDescription, "Submission information"],
-    ...(recordCard ? [
+    ...(detailedRecordCard ? [
       ["Card / perm", recordCard.parcelIdentifiers.cardFilePerm, "Record card identifiers"],
       ["Cadastral ID", recordCard.parcelIdentifiers.cadastralId, "Record card identifiers"],
       ["PAD class code", recordCard.parcelIdentifiers.padClassCode, "Record card identifiers"],
@@ -336,7 +366,7 @@ function discrepancyRows(data, recordCard) {
     ["City size", data.classification.citySize, "Classification"],
     ["Zoning", data.classification.zoning, "Classification"],
     ["Lot size", data.classification.lotSize, "Classification"],
-    ...(recordCard ? [
+    ...(detailedRecordCard && recordCard.residentialInformation ? [
       ["Record-card condition", recordCard.residentialInformation.condition, "Record-card dwelling information"],
       ["Record-card quality", recordCard.residentialInformation.quality, "Record-card dwelling information"],
       ["Record-card exterior wall", recordCard.residentialInformation.exteriorWall, "Record-card dwelling information"],
@@ -345,42 +375,42 @@ function discrepancyRows(data, recordCard) {
       ["Record-card basement area", recordCard.residentialInformation.basementArea, "Record-card dwelling information"],
       ["Last record action", `${recordCard.reviewHistory[0].date} ${recordCard.reviewHistory[0].action} ${recordCard.reviewHistory[0].initials}`, "Record review history"]
     ] : []),
-    ...data.landInformation.flatMap((row, index) => [
+    ...landRows.flatMap((row, index) => [
       [`Land ${index + 1} description`, row.description, "Land information"],
       [`Land ${index + 1} width`, `${row.widthFeet} ft.`, "Land information"],
       [`Land ${index + 1} depth`, `${row.depthFeet} ft.`, "Land information"],
       [`Land ${index + 1} area`, `${Number(row.squareFeet).toLocaleString()} sq. ft.`, "Land information"]
     ]),
-    ["Year built", data.residential.yearBuilt, "Dwelling information"],
-    ["Style", data.residential.style, "Dwelling information"],
-    ["Building size", `${data.residential.buildingSize.toLocaleString()} sq. ft.`, "Dwelling information"],
-    ["Basement size", `${data.residential.basementSize.toLocaleString()} sq. ft.`, "Dwelling information"],
-    ["Bedrooms", data.residential.bedrooms, "Dwelling information"],
-    ["Bathrooms", data.residential.bathrooms, "Dwelling information"],
-    ["Plumbing fixtures", data.residential.plumbingFixtures, "Dwelling information"],
-    ["Quality", data.residential.quality, "Dwelling information"],
-    ["Condition", data.residential.condition, "Dwelling information"],
-    ["Exterior", data.residential.exterior, "Dwelling information"],
-    ["Heating / cooling", data.residential.heatingCooling, "Dwelling information"],
-    ["Garage 1", data.residential.garage1, "Dwelling information"],
-    ["Garage 2", data.residential.garage2, "Dwelling information"],
-    ["Minimum finish", `${data.residential.minFinish.toLocaleString()} sq. ft.`, "Dwelling information"],
-    ["Part finish", `${data.residential.partFinish.toLocaleString()} sq. ft.`, "Dwelling information"],
-    ...data.dwellingData.flatMap((row, index) => [
+    ["Year built", residential.yearBuilt, "Dwelling information"],
+    ["Style", residential.style, "Dwelling information"],
+    ["Building size", formatSquareFeet(residential.buildingSize), "Dwelling information"],
+    ["Basement size", formatSquareFeet(residential.basementSize), "Dwelling information"],
+    ["Bedrooms", residential.bedrooms, "Dwelling information"],
+    ["Bathrooms", residential.bathrooms, "Dwelling information"],
+    ["Plumbing fixtures", residential.plumbingFixtures, "Dwelling information"],
+    ["Quality", residential.quality, "Dwelling information"],
+    ["Condition", residential.condition, "Dwelling information"],
+    ["Exterior", residential.exterior, "Dwelling information"],
+    ["Heating / cooling", residential.heatingCooling, "Dwelling information"],
+    ["Garage 1", residential.garage1, "Dwelling information"],
+    ["Garage 2", residential.garage2, "Dwelling information"],
+    ["Minimum finish", formatSquareFeet(residential.minFinish), "Dwelling information"],
+    ["Part finish", formatSquareFeet(residential.partFinish), "Dwelling information"],
+    ...dwellingRows.flatMap((row, index) => [
       [`Additional feature ${index + 1}`, row.description, "Additional dwelling features"],
       [`Additional feature ${index + 1} units`, row.units, "Additional dwelling features"],
       [`Additional feature ${index + 1} value`, money.format(row.value), "Additional dwelling features"]
     ]),
-    ...(data.outbuildingData.length
-      ? data.outbuildingData.flatMap((row, index) => [
+    ...(outbuildingRows.length
+      ? outbuildingRows.flatMap((row, index) => [
         [`Outbuilding ${index + 1}`, row.description, "Outbuilding information"],
         [`Outbuilding ${index + 1} units`, row.units, "Outbuilding information"],
         [`Outbuilding ${index + 1} year built`, row.yearBuilt, "Outbuilding information"],
         [`Outbuilding ${index + 1} cost`, row.cost, "Outbuilding information"]
       ])
       : [["Outbuilding records", "No outbuilding records listed for this property.", "Outbuilding information"]]),
-    ...(data.propertyNotes.length
-      ? data.propertyNotes.flatMap((row, index) => [
+    ...(noteRows.length
+      ? noteRows.flatMap((row, index) => [
         [`Property note ${index + 1} date`, row.date, "Property notes"],
         [`Property note ${index + 1}`, row.note, "Property notes"]
       ])
@@ -435,7 +465,7 @@ function renderDiscrepancyForm(data, recordCard) {
         ].map(([label, value]) => `
           <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-            <p class="mt-1 text-sm font-semibold leading-5 text-slate-950">${escapeHtml(value)}</p>
+            <p class="mt-1 text-sm font-semibold leading-5 text-slate-700">${escapeHtml(value)}</p>
           </div>
         `).join("")}
       </section>
@@ -443,7 +473,7 @@ function renderDiscrepancyForm(data, recordCard) {
       <section>
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h3 class="text-lg font-bold text-slate-950">Review property record details</h3>
+            <h3 class="text-lg font-bold text-slate-700">Review property record details</h3>
             <p class="mt-1 text-sm leading-6 text-slate-600">
               Mark every item you can verify. Use ? when you are not sure whether the record is correct.
             </p>
@@ -467,7 +497,7 @@ function renderDiscrepancyForm(data, recordCard) {
               ${rows.map((row, index) => `
                 <tr class="${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
                   <td class="px-3 py-2 align-top text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(row.section)}</td>
-                  <td class="px-3 py-2 align-top font-medium text-slate-950">${escapeHtml(row.label)}</td>
+                  <td class="px-3 py-2 align-top font-medium text-slate-700">${escapeHtml(row.label)}</td>
                   <td class="px-3 py-2 align-top text-slate-700">${escapeHtml(row.value)}</td>
                   ${discrepancyChoiceCells(row)}
                 </tr>
@@ -479,13 +509,13 @@ function renderDiscrepancyForm(data, recordCard) {
 
       <section class="grid gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2">
-          <label for="discrepancyComments" class="text-sm font-semibold text-slate-950">Comments or correction narrative</label>
-          <textarea id="discrepancyComments" name="comments" rows="5" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm leading-6 text-slate-800 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Describe what appears incorrect and what the record should show."></textarea>
+          <label for="discrepancyComments" class="text-sm font-semibold text-slate-700">Comments or correction narrative</label>
+          <textarea id="discrepancyComments" name="comments" rows="5" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Describe what appears incorrect and what the record should show."></textarea>
         </div>
 
         <div class="space-y-3">
           <fieldset class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
-            <legend class="text-sm font-semibold text-slate-950">Preferred contact method</legend>
+            <legend class="text-sm font-semibold text-slate-700">Preferred contact method</legend>
             <div class="mt-2 space-y-2 text-sm text-slate-700">
               ${[
                 ["office", "In-office visit"],
@@ -501,13 +531,13 @@ function renderDiscrepancyForm(data, recordCard) {
           </fieldset>
 
           <div>
-            <label for="discrepancyEmail" class="text-sm font-semibold text-slate-950">Email</label>
-            <input id="discrepancyEmail" name="email" type="email" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-800 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="name@example.com" />
+            <label for="discrepancyEmail" class="text-sm font-semibold text-slate-700">Email</label>
+            <input id="discrepancyEmail" name="email" type="email" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="name@example.com" />
           </div>
 
           <div>
-            <label for="discrepancyPhone" class="text-sm font-semibold text-slate-950">Phone</label>
-            <input id="discrepancyPhone" name="phone" type="tel" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-800 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="(555) 555-5555" />
+            <label for="discrepancyPhone" class="text-sm font-semibold text-slate-700">Phone</label>
+            <input id="discrepancyPhone" name="phone" type="tel" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="(555) 555-5555" />
           </div>
         </div>
       </section>
@@ -525,7 +555,7 @@ function renderDiscrepancyForm(data, recordCard) {
           <button type="button" data-close-report-error class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50">
             Save draft and close
           </button>
-          <button type="submit" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">
+          <button type="submit" class="rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">
             Submit correction request
           </button>
         </div>
@@ -644,7 +674,7 @@ function initReportErrorModal(data) {
 function disclosure(title, meta, content) {
   return `
     <details class="sm:col-span-2 rounded-xl bg-white ring-1 ring-slate-200">
-      <summary class="cursor-pointer list-none rounded-xl bg-slate-50 px-4 py-3 font-semibold text-slate-950">
+      <summary class="cursor-pointer list-none rounded-xl bg-slate-50 px-4 py-3 font-semibold text-slate-700">
         <div class="flex items-center justify-between gap-3">
           <span>${title}</span>
           <span class="flex shrink-0 items-center gap-2 text-sm">
@@ -660,6 +690,15 @@ function disclosure(title, meta, content) {
 
 function recordCardSource(recordCard) {
   if (!recordCard) return "";
+
+  if (!hasDetailedRecordCard(recordCard)) {
+    return disclosure("What source record is this based on?", recordCard.recordStatus || "Pending", `
+      <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+        <p class="font-semibold text-slate-700">${escapeHtml(recordCard.source || "Source record pending")}</p>
+        <p class="mt-1">${escapeHtml(recordCard.notes || "Detailed record-card fields are not available for this sample fixture.")}</p>
+      </div>
+    `);
+  }
 
   const printed = new Date(recordCard.source.printedAt).toLocaleString("en-US", {
     month: "short",
@@ -879,7 +918,7 @@ function landInformation(data, recordCard) {
         ].map(([label, value]) => `
           <div>
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-            <p class="mt-1 font-semibold text-slate-900">${escapeHtml(value)}</p>
+            <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
           </div>
         `).join("")}
       </div>
@@ -904,7 +943,7 @@ function landInformation(data, recordCard) {
           </tr>
         `).join("")}
 
-        <tr class="border-t-2 border-slate-300 bg-slate-100 font-semibold">
+        <tr class="table-total-row font-semibold">
           <td class="px-3 py-3">Total land area</td>
           <td class="px-3 py-3 text-right">—</td>
           <td class="px-3 py-3 text-right">—</td>
@@ -921,7 +960,7 @@ function landInformation(data, recordCard) {
           ${landModel.cutoffSchedule.map(row => `
             <div class="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200">
               <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Cutoff ${Number(row.cutoff).toLocaleString()}</p>
-              <p class="mt-1 font-semibold text-slate-950">${row.value.toFixed(3)}</p>
+              <p class="mt-1 font-semibold text-slate-700">${row.value.toFixed(3)}</p>
             </div>
           `).join("")}
         </div>
@@ -993,7 +1032,7 @@ function technicalCostModel(recordCard, data) {
       ].map(([label, value]) => `
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-          <p class="mt-1 font-semibold text-slate-900">${escapeHtml(value)}</p>
+          <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
         </div>
         `).join("")}
     </div>
@@ -1003,17 +1042,17 @@ function technicalCostModel(recordCard, data) {
         ${valueStack.map(([label, value], index) => `
           <div class="grid grid-cols-[1fr_auto] items-center gap-3 border-b border-slate-200 px-3 py-2 text-sm ${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
             <p class="font-medium text-slate-700">${label}</p>
-            <p class="font-semibold text-slate-950">${formatNullableMoney(value)}</p>
+            <p class="font-semibold text-slate-700">${formatNullableMoney(value)}</p>
           </div>
         `).join("")}
-        <div class="grid grid-cols-[1fr_auto] items-center gap-3 bg-slate-900 px-3 py-3 text-sm text-white">
+        <div class="grid grid-cols-[1fr_auto] items-center gap-3 bg-slate-700 px-3 py-3 text-sm text-white">
           <p class="font-semibold">Total assessed value</p>
           <p class="text-base font-bold">${formatNullableMoney(totalValue)}</p>
         </div>
       </div>
     </div>
     <details class="border-t border-slate-200 bg-white">
-      <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-sm font-semibold text-slate-900">
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-sm font-semibold text-slate-700">
         <span>View exploded valuation detail</span>
         <span class="text-xs font-semibold text-slate-500">Marshall & Swift, garages, misc. improvements, and outbuildings</span>
       </summary>
@@ -1040,7 +1079,7 @@ function technicalCostModel(recordCard, data) {
             ].map(([label, value]) => `
               <div>
                 <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-                <p class="mt-1 font-semibold text-slate-900">${escapeHtml(value)}</p>
+                <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
               </div>
             `).join("")}
           </div>
@@ -1054,7 +1093,7 @@ function technicalCostModel(recordCard, data) {
             ].map(([label, value]) => `
               <div class="rounded-lg bg-white p-2 ring-1 ring-slate-200">
                 <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">${label} adj.</p>
-                <p class="mt-1 font-semibold text-slate-900">${Number(value).toFixed(2)}</p>
+                <p class="mt-1 font-semibold text-slate-700">${Number(value).toFixed(2)}</p>
               </div>
             `).join("")}
           </div>
@@ -1195,7 +1234,7 @@ function renderSummary(data) {
   document.getElementById("summaryText").innerHTML = `
     <div class="focus-card mb-4">
       <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-blue-700">Current assessment status</p>
-      <p class="leading-7 text-slate-800">
+      <p class="leading-7 text-slate-700">
         ${currentAssessmentCopy}
       </p>
     </div>
@@ -1279,7 +1318,7 @@ function renderProcessTimeline(calendar) {
           <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${active ? "bg-blue-600 text-white" : past ? "bg-slate-200 text-slate-500 ring-1 ring-slate-300" : "bg-white text-slate-600 ring-1 ring-slate-200"}">${index + 1}</span>
           ${active ? `<span class="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">Now</span>` : past ? `<span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500 ring-1 ring-slate-200">Passed</span>` : ""}
         </div>
-        <p class="font-semibold ${past && !active ? "text-slate-500" : "text-slate-950"}">${step.label}</p>
+        <p class="font-semibold ${past && !active ? "text-slate-500" : "text-slate-700"}">${step.label}</p>
         <p class="mt-1 text-xs font-semibold uppercase tracking-wide ${past && !active ? "text-slate-400" : "text-slate-500"}">${step.timing}</p>
         <p class="mt-2 text-sm leading-6 ${past && !active ? "text-slate-500" : "text-slate-600"}">${step.description}</p>
         ${step.sourceEvents?.length || step.id === "protest" ? `
@@ -1407,7 +1446,7 @@ function renderPropertyMovementSummary(data) {
   container.innerHTML = cards.map(([label, value, note, range]) => `
     <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
       <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-      <p class="mt-1 text-lg font-bold text-slate-950">${value}</p>
+      <p class="mt-1 text-lg font-bold text-slate-700">${value}</p>
       <p class="mt-1 text-sm font-medium text-slate-600">${note}</p>
       <p class="mt-1 text-xs leading-5 text-slate-500">${range}</p>
     </div>
@@ -1570,11 +1609,11 @@ function renderLevyTable(data) {
 
   const totalTaxPer100k = taxableValuePer100k * (total / 100);
   const totalRow = `
-    <tr class="border-t-2 border-slate-300 bg-slate-100 font-semibold">
-      <td class="px-3 py-3 text-slate-950">Total levy</td>
-      <td class="px-3 py-3 text-right text-slate-950">${total.toFixed(8)}</td>
-      <td class="px-3 py-3 text-right text-slate-950">100.00%</td>
-      <td class="px-3 py-3 text-right text-slate-950">${moneyCents.format(totalTaxPer100k)}</td>
+    <tr class="table-total-row font-semibold">
+      <td class="px-3 py-3">Total levy</td>
+      <td class="px-3 py-3 text-right">${total.toFixed(8)}</td>
+      <td class="px-3 py-3 text-right">100.00%</td>
+      <td class="px-3 py-3 text-right">${moneyCents.format(totalTaxPer100k)}</td>
     </tr>
   `;
 
@@ -1591,13 +1630,13 @@ function renderComparables(data) {
       <article class="rounded-2xl ${isSubject ? "bg-blue-50 ring-blue-200" : "bg-slate-50 ring-slate-200"} p-4 ring-1">
         <p class="mb-2 text-xs font-semibold uppercase tracking-wide ${isSubject ? "text-blue-700" : "text-slate-500"}">${item.type}</p>
         <img src="${item.image}" alt="${item.type} photo" class="h-32 w-full rounded-xl object-cover ring-1 ${isSubject ? "ring-blue-200" : "ring-slate-200"}" />
-        <h3 class="mt-3 text-base font-bold text-slate-950">${item.title}</h3>
+        <h3 class="mt-3 text-base font-bold text-slate-700">${item.title}</h3>
         <p class="text-sm text-slate-600">${item.subtitle}</p>
         <dl class="mt-4 space-y-2 text-sm">
           ${item.metrics.map(metric => `
             <div class="flex justify-between gap-3">
               <dt class="text-slate-500">${metric.label}</dt>
-              <dd class="font-semibold ${metric.tone ? toneClass[metric.tone] : "text-slate-900"}">${metric.value ?? "Pending"}</dd>
+              <dd class="font-semibold ${metric.tone ? toneClass[metric.tone] : "text-slate-700"}">${metric.value ?? "Pending"}</dd>
             </div>
           `).join("")}
         </dl>
@@ -1701,7 +1740,7 @@ function renderComparableValueScale(data) {
     <section class="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200" aria-labelledby="comparativeValueTitle">
       <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h3 id="comparativeValueTitle" class="text-lg font-bold text-slate-950">How does this property compare by value?</h3>
+          <h3 id="comparativeValueTitle" class="text-lg font-bold text-slate-700">How does this property compare by value?</h3>
           <p class="mt-1 text-sm leading-6 text-slate-600">
             The subject marker uses ${subjectValue.pending ? "the latest finalized assessed value while the current year is pending" : "the current assessed value"}.
             Nearby markers use listed comparable sale prices.
@@ -1720,7 +1759,7 @@ function renderComparableValueScale(data) {
           return `
             <div class="absolute top-7 -translate-x-1/2" style="left: ${left}%">
               <div class="flex flex-col items-center gap-1">
-                <span class="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold shadow-sm ring-2 ring-white ${isSubject ? "bg-slate-950 text-white" : "bg-blue-700 text-white"}">
+                <span class="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold shadow-sm ring-2 ring-white ${isSubject ? "bg-slate-700 text-white" : "bg-blue-700 text-white"}">
                   ${point.id}
                 </span>
                 <span class="hidden max-w-28 text-center text-xs font-semibold leading-4 text-slate-600 sm:block">
@@ -1740,9 +1779,9 @@ function renderComparableValueScale(data) {
       <div class="mt-2 grid gap-2 text-xs text-slate-600 sm:grid-cols-2 lg:grid-cols-4">
         ${points.map(point => `
           <div class="flex items-center gap-2 rounded-xl bg-white px-3 py-2 ring-1 ring-slate-200">
-            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${point.type === "subject" ? "bg-slate-950 text-white" : "bg-blue-700 text-white"}">${point.id}</span>
+            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${point.type === "subject" ? "bg-slate-700 text-white" : "bg-blue-700 text-white"}">${point.id}</span>
             <span class="min-w-0">
-              <span class="block truncate font-semibold text-slate-900">${point.title}</span>
+              <span class="block truncate font-semibold text-slate-700">${point.title}</span>
               <span class="block">${formatNullableMoney(point.value)}</span>
             </span>
           </div>
@@ -1756,7 +1795,7 @@ function renderSources(data) {
   document.getElementById("sourceCards").innerHTML = data.sources.map(source => `
     <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
       <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${source.label}</p>
-      <p class="mt-1 font-medium text-slate-900">${source.value}</p>
+      <p class="mt-1 font-medium text-slate-700">${source.value}</p>
     </div>
   `).join("");
 }

@@ -91,5 +91,53 @@
     { "section": "Incremental Ranges", "range": "250,000 to 499,999", "count": 133, "median": 95.08, "mean": 97.14, "weightedMean": 96.58, "cod": 11.77, "prd": 100.58, "min": 63.41, "max": 217.61, "confidenceIntervalMedian": "93.12 to 98.15", "averageAdjustedSalePrice": 326751, "averageAssessedValue": 315568 },
     { "section": "Incremental Ranges", "range": "500,000 to 999,999", "count": 21, "median": 91.01, "mean": 92.77, "weightedMean": 92.24, "cod": 13.66, "prd": 100.57, "min": 63.70, "max": 127.58, "confidenceIntervalMedian": "82.89 to 105.97", "averageAdjustedSalePrice": 633710, "averageAssessedValue": 584559 },
     { "section": "Incremental Ranges", "range": "1,000,000+", "count": 0, "median": 0, "mean": 0, "weightedMean": 0, "cod": 0, "prd": 0, "min": 0, "max": 0, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 0, "averageAssessedValue": 0 }
-  ]
+  ],
+  "priceBandStudies": {
+    "commercial": {
+      "key": "commercial",
+      "label": "Commercial sale-price bands",
+      "description": "Incremental commercial sale-price ranges from the 2026 Gage County PAD R&O pages 24-25 show how the 46 qualified commercial sales are distributed.",
+      "chartTitle": "Commercial distribution",
+      "chartNote": "Qualified commercial sales by price band, including empty lower and upper bands.",
+      "countLabel": "Commercial sales",
+      "lineLabel": "Commercial distribution curve",
+      "yAxisTitle": "Qualified commercial sales",
+      "rows": [
+        { "section": "Incremental Ranges", "range": "0 to 4,999", "count": 0, "median": 0, "mean": 0, "weightedMean": 0, "cod": 0, "prd": 0, "min": 0, "max": 0, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 0, "averageAssessedValue": 0 },
+        { "section": "Incremental Ranges", "range": "5,000 to 14,999", "count": 1, "median": 120.70, "mean": 120.70, "weightedMean": 120.70, "cod": 0.00, "prd": 100.00, "min": 120.70, "max": 120.70, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 10000, "averageAssessedValue": 12070 },
+        { "section": "Incremental Ranges", "range": "15,000 to 29,999", "count": 1, "median": 201.00, "mean": 201.00, "weightedMean": 201.00, "cod": 0.00, "prd": 100.00, "min": 201.00, "max": 201.00, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 15000, "averageAssessedValue": 30150 },
+        { "section": "Incremental Ranges", "range": "30,000 to 59,999", "count": 4, "median": 98.73, "mean": 97.61, "weightedMean": 97.03, "cod": 4.69, "prd": 100.60, "min": 88.77, "max": 104.21, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 40000, "averageAssessedValue": 38813 },
+        { "section": "Incremental Ranges", "range": "60,000 to 99,999", "count": 6, "median": 94.34, "mean": 100.15, "weightedMean": 101.54, "cod": 13.78, "prd": 98.63, "min": 81.33, "max": 140.57, "confidenceIntervalMedian": "81.33 to 140.57", "averageAdjustedSalePrice": 76167, "averageAssessedValue": 77337 },
+        { "section": "Incremental Ranges", "range": "100,000 to 149,999", "count": 6, "median": 91.38, "mean": 91.95, "weightedMean": 92.22, "cod": 7.92, "prd": 99.71, "min": 74.37, "max": 107.23, "confidenceIntervalMedian": "74.37 to 107.23", "averageAdjustedSalePrice": 118833, "averageAssessedValue": 109583 },
+        { "section": "Incremental Ranges", "range": "150,000 to 249,999", "count": 5, "median": 103.23, "mean": 107.75, "weightedMean": 107.40, "cod": 13.51, "prd": 100.33, "min": 79.98, "max": 130.72, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 193200, "averageAssessedValue": 207493 },
+        { "section": "Incremental Ranges", "range": "250,000 to 499,999", "count": 13, "median": 95.82, "mean": 99.79, "weightedMean": 98.31, "cod": 14.11, "prd": 101.51, "min": 74.64, "max": 145.09, "confidenceIntervalMedian": "83.48 to 111.15", "averageAdjustedSalePrice": 355577, "averageAssessedValue": 349572 },
+        { "section": "Incremental Ranges", "range": "500,000 to 999,999", "count": 4, "median": 78.91, "mean": 80.85, "weightedMean": 80.12, "cod": 21.13, "prd": 100.91, "min": 63.75, "max": 101.83, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 784000, "averageAssessedValue": 628123 },
+        { "section": "Incremental Ranges", "range": "1,000,000 to 1,999,999", "count": 3, "median": 95.44, "mean": 90.96, "weightedMean": 90.64, "cod": 15.36, "prd": 100.35, "min": 66.73, "max": 110.70, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 1745667, "averageAssessedValue": 1582345 },
+        { "section": "Incremental Ranges", "range": "2,000,000 to 4,999,999", "count": 2, "median": 92.23, "mean": 92.23, "weightedMean": 92.57, "cod": 1.17, "prd": 99.63, "min": 91.15, "max": 93.31, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 3047375, "averageAssessedValue": 2820930 },
+        { "section": "Incremental Ranges", "range": "5,000,000 to 9,999,999", "count": 1, "median": 75.85, "mean": 75.85, "weightedMean": 75.85, "cod": 0.00, "prd": 100.00, "min": 75.85, "max": 75.85, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 7000000, "averageAssessedValue": 5309670 },
+        { "section": "Incremental Ranges", "range": "10,000,000+", "count": 0, "median": 0, "mean": 0, "weightedMean": 0, "cod": 0, "prd": 0, "min": 0, "max": 0, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 0, "averageAssessedValue": 0 }
+      ],
+      "totalRow": { "count": 46, "median": 95.63, "mean": 99.07, "weightedMean": 88.39, "cod": 15.69, "prd": 112.08, "min": 63.75, "max": 201.00, "confidenceIntervalMedian": "90.43 to 101.64", "averageAdjustedSalePrice": 617636, "averageAssessedValue": 545912 }
+    },
+    "agFarm": {
+      "key": "agFarm",
+      "label": "Agricultural market and land-use bands",
+      "description": "The 2026 Gage County PAD R&O pages 26-28 publish agricultural market-area and majority-land-use substrata rather than residential-style sale-price increments.",
+      "chartTitle": "Ag stratification",
+      "chartNote": "Qualified agricultural sales by published R&O market and majority-land-use substrata.",
+      "countLabel": "Ag sales",
+      "lineLabel": "Ag band curve",
+      "yAxisTitle": "Qualified agricultural sales",
+      "rows": [
+        { "section": "Market Area", "range": "Market Area 1", "count": 68, "median": 71.69, "mean": 74.09, "weightedMean": 70.66, "cod": 16.25, "prd": 104.85, "min": 21.04, "max": 202.99, "confidenceIntervalMedian": "67.84 to 73.42", "averageAdjustedSalePrice": 889528, "averageAssessedValue": 628576 },
+        { "section": "Market Area", "range": "Market Area 2", "count": 12, "median": 71.86, "mean": 70.28, "weightedMean": 69.02, "cod": 10.44, "prd": 101.83, "min": 50.09, "max": 90.20, "confidenceIntervalMedian": "63.62 to 76.02", "averageAdjustedSalePrice": 618713, "averageAssessedValue": 427060 },
+        { "section": "95% MLU", "range": "Dry countywide", "count": 23, "median": 67.97, "mean": 70.59, "weightedMean": 70.24, "cod": 10.52, "prd": 100.50, "min": 59.04, "max": 111.43, "confidenceIntervalMedian": "63.75 to 72.08", "averageAdjustedSalePrice": 863795, "averageAssessedValue": 606734 },
+        { "section": "95% MLU", "range": "Grass countywide", "count": 6, "median": 74.24, "mean": 94.93, "weightedMean": 64.86, "cod": 59.66, "prd": 146.36, "min": 43.57, "max": 202.99, "confidenceIntervalMedian": "43.57 to 202.99", "averageAdjustedSalePrice": 451513, "averageAssessedValue": 292863 },
+        { "section": "80% MLU", "range": "Irrigated countywide", "count": 3, "median": 71.63, "mean": 70.44, "weightedMean": 71.25, "cod": 4.50, "prd": 98.86, "min": 65.02, "max": 74.68, "confidenceIntervalMedian": "N/A", "averageAdjustedSalePrice": 1334363, "averageAssessedValue": 950793 },
+        { "section": "80% MLU", "range": "Dry countywide", "count": 49, "median": 70.55, "mean": 71.29, "weightedMean": 70.41, "cod": 11.16, "prd": 101.25, "min": 46.82, "max": 111.43, "confidenceIntervalMedian": "66.18 to 72.34", "averageAdjustedSalePrice": 905399, "averageAssessedValue": 637464 },
+        { "section": "80% MLU", "range": "Grass countywide", "count": 9, "median": 76.02, "mean": 89.21, "weightedMean": 69.43, "cod": 40.07, "prd": 128.49, "min": 43.57, "max": 202.99, "confidenceIntervalMedian": "50.09 to 124.45", "averageAdjustedSalePrice": 443087, "averageAssessedValue": 307638 }
+      ],
+      "totalRow": { "count": 80, "median": 71.69, "mean": 73.52, "weightedMean": 70.48, "cod": 15.37, "prd": 104.31, "min": 21.04, "max": 202.99, "confidenceIntervalMedian": "67.97 to 73.29", "averageAdjustedSalePrice": 848906, "averageAssessedValue": 598349 }
+    }
+  }
 }
