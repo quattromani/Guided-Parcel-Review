@@ -1,0 +1,262 @@
+{
+  "metadata": {
+    "title": "IAAO Assessment Standards",
+    "source": "IAAO Standards referenced in 2026 Gage County R&O",
+    "version": "2026-reference",
+    "notes": [
+      "COV is approximately 1.25 times the COD in a normal distribution.",
+      "PRD above 1.03 tends to indicate regressivity.",
+      "PRD below 0.98 tends to indicate progressivity."
+    ]
+  },
+  "prdStandards": {
+    "acceptableRange": {
+      "min": 0.98,
+      "max": 1.03
+    },
+    "interpretation": {
+      "belowRange": "Assessment progressivity",
+      "withinRange": "Acceptable vertical equity",
+      "aboveRange": "Assessment regressivity"
+    },
+    "definition": "Price-related differential is a statistical measure of vertical property tax equity calculated by dividing the mean ratio by the weighted mean ratio."
+  },
+  "covGuidance": {
+    "formula": "COV ≈ COD × 1.25",
+    "definition": "In a normal distribution, the coefficient of variation is approximately 1.25 times the coefficient of dispersion.",
+    "note": "This is a derived approximation and not a direct IAAO threshold standard."
+  },
+  "codStandards": [
+    {
+      "propertyClass": "Residential improved",
+      "subtypes": [
+        "single family dwellings",
+        "condominiums",
+        "manufactured housing",
+        "2-4 family units"
+      ],
+      "jurisdictionProfile": "Very large jurisdictions / densely populated / newer properties / active markets",
+      "marketType": "Active",
+      "density": "Dense",
+      "developmentPattern": "Newer properties",
+      "codRange": {
+        "min": 5.0,
+        "max": 10.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 12.5
+      },
+      "key": "residential-improved-very-large"
+    },
+    {
+      "propertyClass": "Residential improved",
+      "subtypes": [
+        "single family dwellings",
+        "condominiums",
+        "manufactured housing",
+        "2-4 family units"
+      ],
+      "jurisdictionProfile": "Large to mid-sized jurisdictions / older & newer properties / less active markets",
+      "marketType": "Less active",
+      "density": "Mid-sized",
+      "developmentPattern": "Mixed age properties",
+      "codRange": {
+        "min": 5.0,
+        "max": 15.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 18.75
+      },
+      "key": "residential-improved-mid-sized"
+    },
+    {
+      "propertyClass": "Residential improved",
+      "subtypes": [
+        "single family dwellings",
+        "condominiums",
+        "manufactured housing",
+        "2-4 family units"
+      ],
+      "jurisdictionProfile": "Rural or small jurisdictions / older properties / depressed market areas",
+      "marketType": "Depressed",
+      "density": "Rural or small",
+      "developmentPattern": "Older properties",
+      "codRange": {
+        "min": 5.0,
+        "max": 20.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 25.0
+      },
+      "key": "residential-improved-rural"
+    },
+    {
+      "propertyClass": "Income-producing properties",
+      "subtypes": [
+        "commercial",
+        "industrial",
+        "apartments"
+      ],
+      "jurisdictionProfile": "Very large jurisdictions / densely populated / newer properties / active markets",
+      "marketType": "Active",
+      "density": "Dense",
+      "developmentPattern": "Newer properties",
+      "codRange": {
+        "min": 5.0,
+        "max": 15.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 18.75
+      },
+      "key": "income-producing-very-large"
+    },
+    {
+      "propertyClass": "Income-producing properties",
+      "subtypes": [
+        "commercial",
+        "industrial",
+        "apartments"
+      ],
+      "jurisdictionProfile": "Large to mid-sized jurisdictions / older & newer properties / less active markets",
+      "marketType": "Less active",
+      "density": "Mid-sized",
+      "developmentPattern": "Mixed age properties",
+      "codRange": {
+        "min": 5.0,
+        "max": 20.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 25.0
+      },
+      "key": "income-producing-mid-sized"
+    },
+    {
+      "propertyClass": "Income-producing properties",
+      "subtypes": [
+        "commercial",
+        "industrial",
+        "apartments"
+      ],
+      "jurisdictionProfile": "Rural or small jurisdictions / older properties / depressed market areas",
+      "marketType": "Depressed",
+      "density": "Rural or small",
+      "developmentPattern": "Older properties",
+      "codRange": {
+        "min": 5.0,
+        "max": 25.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 31.25
+      },
+      "key": "income-producing-rural"
+    },
+    {
+      "propertyClass": "Residential vacant land",
+      "subtypes": [],
+      "jurisdictionProfile": "Very large jurisdictions / rapid development / active markets",
+      "marketType": "Active",
+      "density": "Very large",
+      "developmentPattern": "Rapid development",
+      "codRange": {
+        "min": 5.0,
+        "max": 15.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 18.75
+      },
+      "key": "residential-vacant-very-large"
+    },
+    {
+      "propertyClass": "Residential vacant land",
+      "subtypes": [],
+      "jurisdictionProfile": "Large to mid-sized jurisdictions / slower development / less active markets",
+      "marketType": "Less active",
+      "density": "Mid-sized",
+      "developmentPattern": "Slower development",
+      "codRange": {
+        "min": 5.0,
+        "max": 20.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 25.0
+      },
+      "key": "residential-vacant-mid-sized"
+    },
+    {
+      "propertyClass": "Residential vacant land",
+      "subtypes": [],
+      "jurisdictionProfile": "Rural or small jurisdictions / little development / depressed markets",
+      "marketType": "Depressed",
+      "density": "Rural or small",
+      "developmentPattern": "Little development",
+      "codRange": {
+        "min": 5.0,
+        "max": 25.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 31.25
+      },
+      "key": "residential-vacant-rural"
+    },
+    {
+      "propertyClass": "Other (non-agricultural) vacant land",
+      "subtypes": [],
+      "jurisdictionProfile": "Very large jurisdictions / rapid development / active markets",
+      "marketType": "Active",
+      "density": "Very large",
+      "developmentPattern": "Rapid development",
+      "codRange": {
+        "min": 5.0,
+        "max": 20.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 25.0
+      },
+      "key": "other-vacant-very-large"
+    },
+    {
+      "propertyClass": "Other (non-agricultural) vacant land",
+      "subtypes": [],
+      "jurisdictionProfile": "Large to mid-sized jurisdictions / slower development / less active markets",
+      "marketType": "Less active",
+      "density": "Mid-sized",
+      "developmentPattern": "Slower development",
+      "codRange": {
+        "min": 5.0,
+        "max": 25.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 31.25
+      },
+      "key": "other-vacant-mid-sized"
+    },
+    {
+      "propertyClass": "Other (non-agricultural) vacant land",
+      "subtypes": [],
+      "jurisdictionProfile": "Rural or small jurisdictions / little development / depressed markets",
+      "marketType": "Depressed",
+      "density": "Rural or small",
+      "developmentPattern": "Little development",
+      "codRange": {
+        "min": 5.0,
+        "max": 30.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 37.5
+      },
+      "key": "other-vacant-rural"
+    }
+  ]
+}

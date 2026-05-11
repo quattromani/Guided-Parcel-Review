@@ -8,33 +8,43 @@ async function loadJson(path, label) {
   return response.json();
 }
 
+const DATA_PATHS = {
+  propertyData: "data/properties/residential-property-data.json",
+  propertyRecordCard: "data/property-records/mips/residential-010496000-record-card.json",
+  assessmentCalendar: "data/calendars/pad_main_calendar_2025.json",
+  certifiedTaxesLevied: "data/statewide/certified-taxes-levied.json",
+  assessmentRatioAnalysis: "data/counties/gage/assessment-ratio-analysis.json",
+  countyContext: "data/counties/gage/county-context.json",
+  padRatioStatistics: "data/counties/gage/pad-ratio-statistics-2026-gage.json"
+};
+
 export function loadPropertyData() {
-  return loadJson("data/property-data.json", "property data");
+  return loadJson(DATA_PATHS.propertyData, "property data");
 }
 
 export function loadPropertyRecordCard() {
-  return loadJson("data/property-record-card.json", "property record card");
+  return loadJson(DATA_PATHS.propertyRecordCard, "property record card");
 }
 
 export function loadAssessmentCalendar() {
-  return loadJson("data/pad_main_calendar_2025.json", "PAD main assessment calendar")
+  return loadJson(DATA_PATHS.assessmentCalendar, "PAD main assessment calendar")
     .then(normalizePadCalendar);
 }
 
 export function loadCertifiedTaxesLevied() {
-  return loadJson("data/certified-taxes-levied.json", "certified taxes levied");
+  return loadJson(DATA_PATHS.certifiedTaxesLevied, "certified taxes levied");
 }
 
 export function loadAssessmentRatioAnalysis() {
-  return loadJson("data/assessment-ratio-analysis.json", "assessment ratio analysis");
+  return loadJson(DATA_PATHS.assessmentRatioAnalysis, "assessment ratio analysis");
 }
 
 export function loadCountyContext() {
-  return loadJson("data/county-context.json", "county context");
+  return loadJson(DATA_PATHS.countyContext, "county context");
 }
 
 export function loadPadRatioStatistics() {
-  return loadJson("data/pad-ratio-statistics-2026-gage.json", "PAD ratio statistics");
+  return loadJson(DATA_PATHS.padRatioStatistics, "PAD ratio statistics");
 }
 
 export function getSnapshotHistory(data) {

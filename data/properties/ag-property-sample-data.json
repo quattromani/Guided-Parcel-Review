@@ -1,0 +1,609 @@
+{
+  "snapshotYear": 2026,
+  "latestFinalTaxYear": 2025,
+  "assets": {
+    "photo": "assets/images/002038000_1.jpg",
+    "sketch": "assets/images/002038000_sketch_1.jpg"
+  },
+  "parcel": {
+    "parcelId": "002038000",
+    "mapNumber": "2038000",
+    "stateGeoCode": "3975-03-1-00000-000-0000",
+    "owner": "HAXBY, JUSTIN & EMILY",
+    "mailingAddress": "8867 SW 86 RD, CLATONIA, NE 68328",
+    "situsAddress": "08867 SW 86 RD",
+    "countyName": "GAGE",
+    "taxDistrict": "33",
+    "schoolDistrict": "SCH 82 WILBER, 76-0082",
+    "accountType": "Agricultural",
+    "legalDescription": "3 5 5 SEC 3-5-5 E 1/2 NE 78.62 AC",
+    "cadastralNumber": "3-38-5",
+    "lotWidth": null,
+    "lotDepth": null
+  },
+  "classification": {
+    "status": "Improved",
+    "location": "Rural",
+    "propertyClass": "Agricultural",
+    "citySize": "No Population",
+    "zoning": "Agricultural",
+    "lotSize": "40.01-160.00 ac."
+  },
+  "residential": {
+    "style": "80% Two Story 20% One Story",
+    "yearBuilt": 1956,
+    "buildingSize": 2088,
+    "basementSize": 1164,
+    "bedrooms": 0,
+    "bathrooms": 0.0,
+    "plumbingFixtures": 12,
+    "quality": "Average",
+    "condition": "Good",
+    "exterior": "90% Frame, Siding 10% Veneer, Masonry",
+    "heatingCooling": "100% Warmed & Cooled Air",
+    "garage1": "Detached Garage(SF), 528 sq. ft.",
+    "garage2": null,
+    "minFinish": 0,
+    "partFinish": 0
+  },
+  "taxpayerHistory": [
+    {
+      "year": 2019,
+      "assessedValue": null,
+      "taxes": null,
+      "status": "missing"
+    },
+    {
+      "year": 2020,
+      "assessedValue": null,
+      "taxes": null,
+      "status": "missing"
+    },
+    {
+      "year": 2021,
+      "assessedValue": null,
+      "taxes": null,
+      "status": "missing"
+    },
+    {
+      "year": 2022,
+      "assessedValue": null,
+      "taxes": null,
+      "status": "missing"
+    },
+    {
+      "year": 2023,
+      "assessedValue": null,
+      "taxes": null,
+      "status": "missing"
+    },
+    {
+      "year": 2024,
+      "assessedValue": 636915,
+      "taxes": null,
+      "status": "partial"
+    },
+    {
+      "year": 2025,
+      "assessedValue": 695670,
+      "taxes": 5620.12,
+      "status": "final"
+    },
+    {
+      "year": 2026,
+      "assessedValue": null,
+      "taxes": null,
+      "status": "pending"
+    }
+  ],
+  "districtLevyHistory": [
+    {
+      "year": 2019,
+      "levy": null,
+      "status": "missing",
+      "note": "Not present in source PDF."
+    },
+    {
+      "year": 2020,
+      "levy": null,
+      "status": "missing",
+      "note": "Not present in source PDF."
+    },
+    {
+      "year": 2021,
+      "levy": null,
+      "status": "missing",
+      "note": "Not present in source PDF."
+    },
+    {
+      "year": 2022,
+      "levy": null,
+      "status": "missing",
+      "note": "Not present in source PDF."
+    },
+    {
+      "year": 2023,
+      "levy": null,
+      "status": "missing",
+      "note": "Not present in source PDF."
+    },
+    {
+      "year": 2024,
+      "levy": null,
+      "status": "missing",
+      "note": "Not present in source PDF."
+    },
+    {
+      "year": 2025,
+      "levy": 1.140523,
+      "status": "confirmed",
+      "note": "From 2025 yearly tax information in source PDF."
+    },
+    {
+      "year": 2026,
+      "levy": null,
+      "status": "pending",
+      "note": "Not finalized during the valuation notice period. Final levy depends on budgets and certifications later in the year."
+    }
+  ],
+  "assessedValueBreakdown": [
+    {
+      "year": 2026,
+      "dwelling": null,
+      "land": null,
+      "outbuilding": null,
+      "total": null
+    },
+    {
+      "year": 2025,
+      "dwelling": 190175,
+      "land": 261120,
+      "outbuilding": 244375,
+      "total": 695670
+    },
+    {
+      "year": 2024,
+      "dwelling": 187805,
+      "land": 222295,
+      "outbuilding": 226815,
+      "total": 636915
+    },
+    {
+      "year": 2023,
+      "dwelling": null,
+      "land": null,
+      "outbuilding": null,
+      "total": null
+    },
+    {
+      "year": 2022,
+      "dwelling": null,
+      "land": null,
+      "outbuilding": null,
+      "total": null
+    },
+    {
+      "year": 2021,
+      "dwelling": null,
+      "land": null,
+      "outbuilding": null,
+      "total": null
+    },
+    {
+      "year": 2020,
+      "dwelling": null,
+      "land": null,
+      "outbuilding": null,
+      "total": null
+    },
+    {
+      "year": 2019,
+      "dwelling": null,
+      "land": null,
+      "outbuilding": null,
+      "total": null
+    }
+  ],
+  "latestFinalLevyComponents": [
+    {
+      "description": "COUNTY GENERAL",
+      "rate": 0.234958,
+      "group": "County"
+    },
+    {
+      "description": "SCH 82 WILBER",
+      "rate": 0.769411,
+      "group": "School"
+    },
+    {
+      "description": "ESU #6",
+      "rate": 0.015481,
+      "group": "Education service"
+    },
+    {
+      "description": "SCC GENERAL",
+      "rate": 0.02,
+      "group": "Community college"
+    },
+    {
+      "description": "BIG BLUE NRD",
+      "rate": 0.032155,
+      "group": "Natural resources"
+    },
+    {
+      "description": "CLATONIA FIRE GEN",
+      "rate": 0.03,
+      "group": "Fire district"
+    },
+    {
+      "description": "GRANT TOWNSHIP",
+      "rate": 0.035125,
+      "group": "Township"
+    },
+    {
+      "description": "AGRICULTURE",
+      "rate": 0.002759,
+      "group": "Other"
+    },
+    {
+      "description": "HISTORICAL",
+      "rate": 0.000634,
+      "group": "Other"
+    }
+  ],
+  "dwellingData": [
+    {
+      "description": "Slab Porch with Roof",
+      "units": 606,
+      "value": 14300
+    }
+  ],
+  "outbuildingData": [
+    {
+      "description": "CHICKEN HOUSE",
+      "units": 1200,
+      "yearBuilt": 1940,
+      "cost": 5365
+    },
+    {
+      "description": "farm shed",
+      "units": 2820,
+      "yearBuilt": 1970,
+      "cost": 5035
+    },
+    {
+      "description": "BIN",
+      "units": 100,
+      "yearBuilt": null,
+      "cost": 100
+    },
+    {
+      "description": "IMPLEMENT QUONSE",
+      "units": 1800,
+      "yearBuilt": null,
+      "cost": 4770
+    },
+    {
+      "description": "Feed Bin, Steel Hopper Bottom, 6’ Dia.",
+      "units": 182,
+      "yearBuilt": 2018,
+      "cost": 1560
+    },
+    {
+      "description": "Steel Bin, without Drying, 15’ - 29’ Dia",
+      "units": 5007,
+      "yearBuilt": null,
+      "cost": 1410
+    },
+    {
+      "description": "Steel Bin, without Drying, 15’ - 29’ Dia",
+      "units": 14323,
+      "yearBuilt": null,
+      "cost": 3035
+    },
+    {
+      "description": "UTILITY~BUILDING",
+      "units": 7500,
+      "yearBuilt": 2018,
+      "cost": 197340
+    },
+    {
+      "description": "Barn, General Purpose",
+      "units": 3328,
+      "yearBuilt": null,
+      "cost": 5850
+    },
+    {
+      "description": "Lean-to, Farm Utility",
+      "units": 2400,
+      "yearBuilt": 2018,
+      "cost": 17645
+    },
+    {
+      "description": "Farm Sun Shade Shelter-roof only",
+      "units": 576,
+      "yearBuilt": 2024,
+      "cost": 2265
+    }
+  ],
+  "propertyNotes": [],
+  "landInformation": [],
+  "comparables": [
+    {
+      "type": "This property",
+      "title": "08867 SW 86 RD",
+      "subtitle": "Clatonia, NE · Agricultural",
+      "image": "assets/images/002038000_1.jpg",
+      "accent": "subject",
+      "metrics": [
+        {
+          "label": "2026 Assessment",
+          "value": null
+        },
+        {
+          "label": "2025 Assessment",
+          "value": "$695,670"
+        },
+        {
+          "label": "Building size",
+          "value": "2,088 sq. ft."
+        },
+        {
+          "label": "Value / sq. ft.",
+          "value": null
+        },
+        {
+          "label": "Bedrooms / baths",
+          "value": "0 / 0.0"
+        },
+        {
+          "label": "Year built",
+          "value": "1956"
+        }
+      ]
+    },
+    {
+      "type": "Nearby Property 1",
+      "title": null,
+      "subtitle": null,
+      "image": null,
+      "accent": "comp",
+      "metrics": [
+        {
+          "label": "Sale price",
+          "value": null
+        },
+        {
+          "label": "Building size",
+          "value": null
+        },
+        {
+          "label": "Price / sq. ft.",
+          "value": null
+        },
+        {
+          "label": "Bedrooms / baths",
+          "value": null
+        },
+        {
+          "label": "Year built",
+          "value": null
+        }
+      ]
+    },
+    {
+      "type": "Nearby Property 2",
+      "title": null,
+      "subtitle": null,
+      "image": null,
+      "accent": "comp",
+      "metrics": [
+        {
+          "label": "Sale price",
+          "value": null
+        },
+        {
+          "label": "Building size",
+          "value": null
+        },
+        {
+          "label": "Price / sq. ft.",
+          "value": null
+        },
+        {
+          "label": "Bedrooms / baths",
+          "value": null
+        },
+        {
+          "label": "Year built",
+          "value": null
+        }
+      ]
+    },
+    {
+      "type": "Nearby Property 3",
+      "title": null,
+      "subtitle": null,
+      "image": null,
+      "accent": "comp",
+      "metrics": [
+        {
+          "label": "Sale price",
+          "value": null
+        },
+        {
+          "label": "Building size",
+          "value": null
+        },
+        {
+          "label": "Price / sq. ft.",
+          "value": null
+        },
+        {
+          "label": "Bedrooms / baths",
+          "value": null
+        },
+        {
+          "label": "Year built",
+          "value": null
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "label": "Assessment data",
+      "value": "Gage County Assessor property report dated 5/10/2026"
+    },
+    {
+      "label": "Tax bill history",
+      "value": "2025 yearly tax information in source PDF"
+    },
+    {
+      "label": "Levy information",
+      "value": "2025 tax levy table in source PDF"
+    },
+    {
+      "label": "Agricultural land detail",
+      "value": "Agricultural Land Information table in source PDF"
+    },
+    {
+      "label": "Dwelling and outbuilding detail",
+      "value": "Dwelling Data and Outbuilding Data tables in source PDF"
+    }
+  ],
+  "agriculturalLandInformation": [
+    {
+      "soilSymbol": "7344",
+      "landuse": "DRY",
+      "lvg": "4D1",
+      "unitValue": 4195.0,
+      "acres": 9.22,
+      "totalValue": 38680.0
+    },
+    {
+      "soilSymbol": "7464",
+      "landuse": "DRY",
+      "lvg": "4D1",
+      "unitValue": 4195.0,
+      "acres": 10.2,
+      "totalValue": 42790.0
+    },
+    {
+      "soilSymbol": "7693",
+      "landuse": "DRY",
+      "lvg": "2D",
+      "unitValue": 5890.0,
+      "acres": 4.78,
+      "totalValue": 28155.0
+    },
+    {
+      "soilSymbol": "7750",
+      "landuse": "DRY",
+      "lvg": "2D1",
+      "unitValue": 5890.0,
+      "acres": 0.29,
+      "totalValue": 1710.0
+    },
+    {
+      "soilSymbol": "7344",
+      "landuse": "GRAS",
+      "lvg": "1G",
+      "unitValue": 2335.0,
+      "acres": 19.73,
+      "totalValue": 46070.0
+    },
+    {
+      "soilSymbol": "7464",
+      "landuse": "GRAS",
+      "lvg": "1G1",
+      "unitValue": 2335.0,
+      "acres": 9.63,
+      "totalValue": 22485.0
+    },
+    {
+      "soilSymbol": "7693",
+      "landuse": "GRAS",
+      "lvg": "1G1",
+      "unitValue": 2335.0,
+      "acres": 3.39,
+      "totalValue": 7915.0
+    },
+    {
+      "soilSymbol": "7750",
+      "landuse": "GRAS",
+      "lvg": "1G",
+      "unitValue": 2335.0,
+      "acres": 13.5,
+      "totalValue": 31525.0
+    },
+    {
+      "soilSymbol": "HMSI10",
+      "landuse": "HOME",
+      "lvg": "HMSI10",
+      "unitValue": 30000.0,
+      "acres": 1.0,
+      "totalValue": 30000.0
+    },
+    {
+      "soilSymbol": "ROAD",
+      "landuse": "ROAD",
+      "lvg": "RD",
+      "unitValue": 0.0,
+      "acres": 2.51,
+      "totalValue": 0.0
+    },
+    {
+      "soilSymbol": "ROAD",
+      "landuse": "ROAD",
+      "lvg": "RD",
+      "unitValue": 0.0,
+      "acres": 0.44,
+      "totalValue": 0.0
+    },
+    {
+      "soilSymbol": "BLDG15",
+      "landuse": "SITE",
+      "lvg": "BLDG15",
+      "unitValue": 3000.0,
+      "acres": 3.93,
+      "totalValue": 11790.0
+    }
+  ],
+  "agriculturalLandTotals": {
+    "acres": 78.62,
+    "totalValue": 261120.0
+  },
+  "fiveYearSalesHistory": [],
+  "propertyNotesTable": [],
+  "landInformationTable": [],
+  "imagesListed": [
+    "Photo #1",
+    "Photo #2",
+    "Photo #3",
+    "Photo #4",
+    "Photo #5",
+    "Photo #6",
+    "Photo #7",
+    "Photo #8",
+    "Photo #9",
+    "Photo #10",
+    "Photo #11",
+    "Photo #12",
+    "Sketch #1"
+  ],
+  "photoSketch": {
+    "sketchCount": 1,
+    "photoCountShown": 2,
+    "photoDatesShown": [
+      "NOV/13/2023",
+      "01/27/2025"
+    ]
+  },
+  "sourceMeta": {
+    "sourceFile": "haxby report.pdf",
+    "reportDate": "2026-05-10",
+    "reportTitle": "Gage County Assessor Property Report",
+    "sourceParcelId": "002038000"
+  }
+}

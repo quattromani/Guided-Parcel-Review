@@ -5,10 +5,15 @@ This is the cleaned SPA version of `Property_Snapshot.html`.
 ## Structure
 
 - `index.html` contains the page shell and section mount points.
-- `data/property-data.json` contains the property, residential, tax, levy, comparable, source, and asset data.
-- `data/assessment-calendar.json` controls the Nebraska assessment calendar used by both timeline components, including overlapping active stages.
+- `data/properties/` contains property-level snapshot data for residential, agricultural, and commercial sample properties.
+- `data/property-records/mips/` contains MIPS property record card data and valuation-detail source records.
+- `data/counties/` contains county-level Department of Revenue, demographics, ratio, and valuation-group context.
+- `data/statewide/` contains statewide and county comparison datasets.
+- `data/calendars/` contains PAD calendar source data used by the property tax timeline.
+- `data/standards/` contains IAAO glossary and standards references for labels, learning content, and future validation.
+- `data/app/` contains application configuration such as navigation and view copy.
 - `src/app.js` boots the page.
-- `src/data-service.js` loads the JSON and exposes small data selectors.
+- `src/data-service.js` centralizes JSON paths, loads the data, and exposes small data selectors.
 - `src/format.js` keeps formatting and calculation helpers together.
 - `src/render.js` renders the page sections.
 - `src/charts.js` owns the Chart.js chart configuration.
@@ -18,7 +23,7 @@ This is the cleaned SPA version of `Property_Snapshot.html`.
 
 ## Run Locally
 
-Because the app loads `data/property-data.json`, open it through a local static server rather than directly from `file://`.
+Because the app loads JSON data files, open it through a local static server rather than directly from `file://`.
 
 ```bash
 node server.js

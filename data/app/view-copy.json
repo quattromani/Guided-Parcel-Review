@@ -1,0 +1,119 @@
+{
+  "version": "0.1",
+  "views": {
+    "property": {
+      "eyebrow": "Gage County, Nebraska",
+      "title": "Property Value & Tax Snapshot",
+      "description": "Assessment-year property information, taxes, levies, and market context in one unified view.",
+      "sections": {
+        "details": {
+          "title": "Property details",
+          "description": "Basic public-record information used to understand the property before reviewing value and taxes."
+        },
+        "summary": {
+          "title": "Property summary"
+        },
+        "taxCycle": {
+          "title": "Where are we in this property's tax process?",
+          "description": "PAD calendar milestones frame where the property sits before values, protests, budgets, levies, and tax bills are final."
+        },
+        "valueHistory": {
+          "title": "Value and tax history",
+          "description": "Assessment-year view: current value first, with prior finalized tax bills for context."
+        },
+        "indexedTrends": {
+          "title": "How are this property's value and taxes moving together?",
+          "description": "This chart resets both values and taxes to the same starting point so their changes can be compared side by side."
+        }
+      }
+    },
+    "market": {
+      "eyebrow": "Beatrice Market Area",
+      "title": "Market Area Value & Tax View",
+      "description": "Neighborhood and tax-district context for comparing property value movement, tax movement, and effective tax rate trends.",
+      "sections": {
+        "overview": {
+          "title": "How is this property's market area performing?",
+          "description": "PAD R&O residential statistics show how the property's valuation group compares with the countywide residential study."
+        },
+        "ratioComparison": {
+          "title": "How does this market area compare with the county?",
+          "description": "Selected valuation group compared with all Gage County residential qualified sales."
+        },
+        "priceContext": {
+          "title": "What prices are represented?",
+          "description": "Average adjusted sale price and average assessed value for the selected group."
+        }
+      }
+    },
+    "county": {
+      "eyebrow": "Gage County, Nebraska",
+      "title": "County Value & Tax View",
+      "description": "Countywide value, levy, and effective tax rate context for comparing local movement against broader assessment patterns.",
+      "sections": {
+        "overview": {
+          "title": "How is Gage County moving as a whole?",
+          "description": "Countywide value growth, tax-burden movement, and district context."
+        },
+        "assessmentAccuracy": {
+          "title": "How close are county appraisals to market value?",
+          "description": "COD, PRD, level of value, and COV show whether assessments are moving toward tighter, more equitable results."
+        },
+        "countyIndexed": {
+          "title": "How are county values and taxes moving?",
+          "description": "Illustrative indexed view for countywide taxable value and tax movement."
+        },
+        "countyEtr": {
+          "title": "What share of county value becomes taxes?",
+          "description": "Countywide ETR context gives reviewers a broader baseline."
+        }
+      }
+    },
+    "statewide": {
+      "eyebrow": "Nebraska Statewide Context",
+      "title": "Statewide Value & Tax View",
+      "description": "A statewide comparison frame for understanding whether local value and tax movement appears typical or unusual.",
+      "sections": {
+        "overview": {
+          "title": "How does this pattern compare statewide?",
+          "description": "Statewide context for local value growth, tax movement, and ETR changes."
+        },
+        "countyComparison": {
+          "title": "How does the property's county compare?",
+          "description": "Compare the current county against the statewide baseline or one other Nebraska county."
+        },
+        "stateIndexed": {
+          "title": "How are statewide values and taxes moving?",
+          "description": "Illustrative indexed view for statewide comparison."
+        },
+        "stateEtr": {
+          "title": "How is statewide ETR trending?",
+          "description": "A statewide ETR benchmark helps place local tax burden in context."
+        }
+      }
+    },
+    "demographics": {
+      "eyebrow": "Gage County, Nebraska",
+      "title": "Demographics & County Profile",
+      "description": "Population, housing, economy, and valuation-base context for understanding the county behind the assessment data.",
+      "sections": {
+        "overview": {
+          "title": "Who and what make up Gage County?",
+          "description": "County profile and demographics context for population, housing, economy, and valuation-base composition."
+        },
+        "valueMix": {
+          "title": "What makes up the county value base?",
+          "description": "Major valuation categories from the county profile extraction."
+        },
+        "ageMix": {
+          "title": "How is the population distributed by age?",
+          "description": "County age cohorts from the demographics worksheet."
+        },
+        "population": {
+          "title": "Where is the population concentrated?",
+          "description": "Municipal population context pulled from the county profile worksheet."
+        }
+      }
+    }
+  }
+}
