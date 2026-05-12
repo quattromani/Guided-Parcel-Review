@@ -9,7 +9,6 @@ import {
   sumRates
 } from "./format.js";
 import {
-  getLatestFinalTaxHistory,
   getPreviousFinalValueHistory,
   getSnapshotHistory
 } from "./data-service.js";
@@ -59,9 +58,10 @@ const viewHeaderContent = {
   }
 };
 
-export function renderPage(data, imageModal, calendar, recordCard) {
+export function renderPage(data, imageModal, calendar, recordCard, valuationGroups) {
   renderViewHeader("property");
-  renderHeader(data, imageModal);
+  renderPropertyViewContext(data, recordCard, valuationGroups);
+  renderHeader(data, imageModal, recordCard);
   renderHeaderTimeline(calendar);
   renderPropertyDetails(data, recordCard);
   renderDiscrepancyForm(data, recordCard);
@@ -76,6 +76,43 @@ export function renderPage(data, imageModal, calendar, recordCard) {
   renderLevyTable(data);
   renderComparables(data);
   renderSources(data);
+}
+
+export function renderPropertyViewContext(data, recordCard, valuationGroups) {
+  const context = document.getElementById("propertyViewContext");
+  if (!context) return;
+  const marketArea = propertyMarketAreaLabel(data, recordCard, valuationGroups);
+
+  context.innerHTML = `
+    <div class="property-context-bar mb-4">
+      <div class="min-w-0">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${data.snapshotYear} Property Snapshot</p>
+        <p class="mt-0.5 truncate text-xl font-bold tracking-tight text-slate-700">${data.parcel.situsAddress}</p>
+      </div>
+      <p class="min-w-0 text-sm font-medium text-slate-600">
+        <span class="text-slate-700">${data.parcel.accountType} Property</span>
+        <span class="text-slate-400">•</span>
+        ${marketArea}
+        <span class="text-slate-400">•</span>
+        ${data.classification.location}
+      </p>
+    </div>
+  `;
+}
+
+function propertyMarketAreaLabel(data, recordCard, valuationGroups) {
+  const valuationGroupId = `${recordCard?.locationModel?.valuationGroup ?? ""}`.match(/\d+/)?.[0];
+  const propertyClass = data.classification.propertyClass;
+  const match = (valuationGroups?.valuationGroups || []).find(group =>
+    String(group.valuationGroup) === String(valuationGroupId)
+    && group.class === propertyClass
+  );
+
+  if (match?.description) {
+    return `${match.description} · VG ${match.valuationGroup}`;
+  }
+
+  return recordCard?.locationModel?.valuationGroup || "Market area not listed";
 }
 
 function getTodayToken() {
@@ -138,13 +175,11 @@ export function renderViewHeader(view = "property") {
   `;
 }
 
-function renderHeader(data, imageModal) {
-  const snapshot = getSnapshotHistory(data);
-  const latestFinal = getLatestFinalTaxHistory(data);
+function renderHeader(data, imageModal, recordCard) {
   const header = document.getElementById("pageHeader");
 
   header.innerHTML = `
-    <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    <div class="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
       <div class="min-w-0 flex-1">
         <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">${data.snapshotYear} Property Snapshot</p>
         <h2 class="mt-1 text-3xl font-bold tracking-tight text-slate-700">${data.parcel.situsAddress}</h2>
@@ -159,12 +194,7 @@ function renderHeader(data, imageModal) {
         </p>      
       </div>
 
-      <div class="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4 lg:grid-cols-2">
-        ${metric("Parcel ID", data.parcel.parcelId)}
-        ${metric("Tax District", data.parcel.taxDistrict)}
-        ${metric(`${data.snapshotYear} Assessed Value`, snapshot.assessedValue === null || snapshot.assessedValue === undefined ? "Pending" : formatNullableMoney(snapshot.assessedValue), "blue")}
-        ${metric(`${latestFinal.year} Tax Bill`, formatNullableMoney(latestFinal.taxes, true), "emerald")}
-      </div>
+      ${valuationNoticeSummary(data, recordCard)}
 
       <div class="flex items-center justify-center gap-4">
         ${imageButton(data.assets.photo, "Property Photos", "Photos")}
@@ -178,6 +208,82 @@ function renderHeader(data, imageModal) {
       imageModal.open(button.dataset.imageSrc, button.dataset.imageCaption);
     });
   });
+}
+
+function valuationNoticeSummary(data, recordCard) {
+  const values = valuationNoticeValues(data, recordCard);
+
+  return `
+    <div class="valuation-notice-card">
+      <div class="overflow-hidden rounded-lg ring-1 ring-slate-200">
+        <div class="valuation-notice-row valuation-notice-header">
+          <p>Notice value breakdown</p>
+          <p>${values.prior.year}</p>
+          <p>${values.current.year}</p>
+        </div>
+        ${valuationNoticeRow("Land value", values.prior.land, values.current.land)}
+        ${valuationNoticeRow("Building value", values.prior.building, values.current.building)}
+        ${valuationNoticeRow("Other improvements", values.prior.improvement, values.current.improvement)}
+        ${valuationNoticeRow("Total value", values.prior.total, values.current.total, true)}
+      </div>
+    </div>
+  `;
+}
+
+function valuationNoticeValues(data, recordCard) {
+  if (recordCard?.currentCardValue?.previous && recordCard?.currentCardValue?.current) {
+    const noticeYear = data.latestFinalTaxYear ?? data.snapshotYear;
+
+    return {
+      prior: {
+        year: noticeYear - 1,
+        building: recordCard.currentCardValue.previous.buildings,
+        improvement: recordCard.currentCardValue.previous.improvement,
+        land: recordCard.currentCardValue.previous.landLots,
+        total: recordCard.currentCardValue.previous.total
+      },
+      current: {
+        year: noticeYear,
+        building: recordCard.currentCardValue.current.buildings,
+        improvement: recordCard.currentCardValue.current.improvement,
+        land: recordCard.currentCardValue.current.landLots,
+        total: recordCard.currentCardValue.current.total
+      }
+    };
+  }
+
+  const rows = data.assessedValueBreakdown || [];
+  const current = rows.find(row => row.year === data.snapshotYear) ?? rows[0] ?? {};
+  const prior = rows.find(row => row.year < current.year && row.total !== null && row.total !== undefined)
+    ?? rows.find(row => row.total !== null && row.total !== undefined)
+    ?? {};
+
+  return {
+    prior: {
+      year: prior.year,
+      building: prior.dwelling,
+      improvement: 0,
+      land: prior.land,
+      total: prior.total
+    },
+    current: {
+      year: current.year,
+      building: current.dwelling,
+      improvement: 0,
+      land: current.land,
+      total: current.total
+    }
+  };
+}
+
+function valuationNoticeRow(label, priorValue, currentValue, emphasized = false) {
+  return `
+    <div class="valuation-notice-row ${emphasized ? "valuation-notice-row-total" : ""}">
+      <p>${label}</p>
+      <p class="text-right">${formatNullableMoney(priorValue)}</p>
+      <p class="text-right">${formatNullableMoney(currentValue)}</p>
+    </div>
+  `;
 }
 
 function renderHeaderTimeline(calendar) {
@@ -207,23 +313,6 @@ function renderHeaderTimeline(calendar) {
 }
 
 
-function metric(label, value, tone = "slate") {
-  const color = {
-    slate: "bg-slate-50 ring-slate-200 text-slate-500",
-    blue: "bg-blue-50 ring-blue-200 text-blue-700",
-    emerald: "bg-emerald-50 ring-emerald-200 text-emerald-700"
-  }[tone];
-
-  return `
-    <div class="rounded-xl p-3 ring-1 ${color}">
-      <p>${label}</p>
-      <p class="font-semibold text-slate-700">${value}</p>
-      ${tone === "blue" ? `<p class="mt-1 text-[11px] font-medium uppercase tracking-wide">Current assessment year</p>` : ""}
-      ${tone === "emerald" ? `<p class="mt-1 text-[11px] font-medium uppercase tracking-wide">Most recent finalized taxes</p>` : ""}
-    </div>
-  `;
-}
-
 function imageButton(src, caption, label) {
   return `
     <button type="button" data-image-src="${src}" data-image-caption="${caption}" class="group relative overflow-hidden rounded-2xl bg-slate-100 ring-1 ring-slate-200 transition hover:ring-slate-300">
@@ -237,8 +326,10 @@ function imageButton(src, caption, label) {
 
 function renderPropertyDetails(data, recordCard) {
   const identityDetails = [
+    ["Parcel ID", data.parcel.parcelId],
     ["Owner", data.parcel.owner],
     ["Situs address", data.parcel.situsAddress],
+    ["Tax district", data.parcel.taxDistrict],
     ["Legal description", data.parcel.legalDescription],
     ["Status", data.classification.status],
     ["Zoning", data.classification.zoning],
@@ -263,7 +354,6 @@ function renderPropertyDetails(data, recordCard) {
     propertyValueTaxHistory(data, recordCard),
     ownershipHistory(recordCard),
     recordCardSource(recordCard),
-    recordReviewHistory(recordCard),
     reportErrorLink(data)
   ].join("");
 }
@@ -684,7 +774,10 @@ function disclosure(title, meta, content) {
           <span>${title}</span>
           <span class="flex shrink-0 items-center gap-2 text-sm">
             <span class="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-600 ring-1 ring-slate-200">${meta}</span>
-            <span class="text-slate-500">Click to expand</span>
+            <span class="disclosure-action text-slate-500">
+              <span data-disclosure-closed>Click to expand</span>
+              <span data-disclosure-open>Click to close</span>
+            </span>
           </span>
         </div>
       </summary>
@@ -713,6 +806,35 @@ function recordCardSource(recordCard) {
     minute: "2-digit"
   });
 
+  const reviewRows = recordCard.reviewHistory?.length
+    ? `
+      <section class="border-t border-slate-200">
+        <div class="flex items-center justify-between gap-3 bg-slate-50 px-3 py-2">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Record review history</p>
+          <p class="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-600 ring-1 ring-slate-200">${recordCard.reviewHistory.length} events</p>
+        </div>
+        <table class="min-w-full divide-y divide-slate-200 text-sm">
+          <thead class="bg-white">
+            <tr>
+              <th class="px-3 py-2 text-left font-semibold">Date</th>
+              <th class="px-3 py-2 text-left font-semibold">Action</th>
+              <th class="px-3 py-2 text-left font-semibold">Initials</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
+            ${recordCard.reviewHistory.map(row => `
+              <tr>
+                <td class="px-3 py-2 font-medium">${row.date}</td>
+                <td class="px-3 py-2">${escapeHtml(row.action)}</td>
+                <td class="px-3 py-2">${escapeHtml(row.initials)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </section>
+    `
+    : "";
+
   return disclosure("What source record is this based on?", recordCard.source.system, `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
       <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
@@ -735,6 +857,7 @@ function recordCardSource(recordCard) {
       </tbody>
     </table>
     <p class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">${escapeHtml(recordCard.source.notes)}</p>
+    ${reviewRows}
   `);
 }
 
@@ -971,31 +1094,6 @@ function landInformation(data, recordCard) {
         </div>
       </div>
     ` : ""}
-  `);
-}
-
-function recordReviewHistory(recordCard) {
-  if (!recordCard?.reviewHistory?.length) return "";
-
-  return disclosure("When was this record last reviewed?", `${recordCard.reviewHistory.length} events`, `
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50">
-        <tr>
-          <th class="px-3 py-2 text-left font-semibold">Date</th>
-          <th class="px-3 py-2 text-left font-semibold">Action</th>
-          <th class="px-3 py-2 text-left font-semibold">Initials</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
-        ${recordCard.reviewHistory.map(row => `
-          <tr>
-            <td class="px-3 py-2 font-medium">${row.date}</td>
-            <td class="px-3 py-2">${row.action}</td>
-            <td class="px-3 py-2">${row.initials}</td>
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
   `);
 }
 
@@ -1240,11 +1338,8 @@ function outbuildingData(data) {
 
 function renderSummary(data) {
   const snapshot = getSnapshotHistory(data);
-  const latestFinal = getLatestFinalTaxHistory(data);
   const previousValue = getPreviousFinalValueHistory(data);
   const first = data.taxpayerHistory[0];
-  const finalTaxRows = data.taxpayerHistory.filter(row => row.taxes !== null && row.taxes !== undefined);
-  const peakTaxYear = finalTaxRows.reduce((max, row) => row.taxes > max.taxes ? row : max, finalTaxRows[0]);
   const valueChangeFromPrior = previousValue?.assessedValue && snapshot.assessedValue
     ? (snapshot.assessedValue - previousValue.assessedValue) / previousValue.assessedValue
     : null;
@@ -1281,7 +1376,6 @@ function renderSummary(data) {
 
     <p>This snapshot separates <strong>current assessed value</strong> from <strong>finalized tax information</strong> so you can see what is known now and what is still pending.</p>
     <p class="mb-4 mt-4 leading-7">From ${first.year} through ${previousValue.year}, assessed value increased by <strong>${formatNullablePercent((previousValue.assessedValue - first.assessedValue) / first.assessedValue)}</strong>. During the same period, the property's <strong>effective tax rate</strong> declined from <strong>1.96%</strong> to <strong>1.22%</strong>, a reduction of roughly <strong>38%</strong>.</p>
-    <p class="mb-4 leading-7">The most recent finalized tax bill was <strong>${formatNullableMoney(latestFinal.taxes, true)}</strong> in ${latestFinal.year}. Taxes peaked at <strong>${formatNullableMoney(peakTaxYear.taxes, true)}</strong> in ${peakTaxYear.year}, then moved lower even while assessed value continued rising.</p>
 
     <div class="mb-4 rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
       <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Latest finalized levy distribution</p>

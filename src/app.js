@@ -47,7 +47,7 @@ async function main() {
   const imageModal = initImageModal(data.assets);
 
   initAdminStateTestControl(manifest);
-  renderPage(data, imageModal, calendar, recordCard);
+  renderPage(data, imageModal, calendar, recordCard, valuationGroups);
   buildIndexedChart(data);
   buildEqualizationPressureIndex(data, ctlData);
   buildEtrChart(data);
@@ -110,6 +110,7 @@ function initAdminStateTestControl(manifest) {
 function initViewNavigation() {
   const tabs = document.querySelectorAll("[data-view-tab]");
   const panels = document.querySelectorAll("[data-view-panel]");
+  const propertyContext = document.getElementById("propertyViewContext");
 
   function selectView(selected, options = {}) {
     const { scrollTop = true } = options;
@@ -125,6 +126,7 @@ function initViewNavigation() {
       panel.classList.toggle("hidden", panel.dataset.viewPanel !== selected);
     });
 
+    propertyContext?.classList.toggle("hidden", selected === "property");
     renderViewHeader(selected);
     window.dispatchEvent(new Event("resize"));
 
