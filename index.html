@@ -17,7 +17,7 @@
     <section id="adminStateTestControl" class="mb-4"></section>
 
     <nav aria-label="Snapshot views" class="mb-4 overflow-x-auto rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-200">
-      <div id="viewTabs" class="flex min-w-max gap-2">
+      <div id="viewTabs" class="flex min-w-max w-full gap-2">
         <button type="button" data-view-tab="property" class="view-tab-active rounded-xl px-4 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
           Property View
         </button>
@@ -30,7 +30,7 @@
         <button type="button" data-view-tab="statewide" class="rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
           Statewide View
         </button>
-        <button type="button" data-view-tab="demographics" class="rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+        <button type="button" data-view-tab="demographics" class="ml-auto rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
           Demographics
         </button>
       </div>
@@ -69,47 +69,80 @@
           Current stage: Assessment
         </span>
       </div>
-      <p data-calendar-source class="mt-3 text-xs leading-5 text-slate-500"></p>
       <div id="processTimeline" class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-6"></div>
+      <p data-calendar-source class="chart-source"></p>
     </section>
 
-    <section class="mb-6 grid gap-6 lg:grid-cols-5">
-      <article id="value-history" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
-        <div class="flex items-start justify-between gap-3">
-          <div>
-            <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
-            <p class="mt-1 text-sm text-slate-600">Assessment-year view: current value first, with prior finalized tax bills for context.</p>
+    <section class="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <div class="grid gap-6 lg:grid-cols-5">
+        <article id="value-history" class="lg:col-span-2">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
+              <p class="mt-1 text-sm text-slate-600">Assessment-year view: current value first, with prior finalized tax bills for context.</p>
+            </div>
           </div>
-        </div>
-        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-          <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="bg-slate-50">
-              <tr>
-                <th class="px-3 py-2 text-left font-semibold">Year</th>
-                <th class="px-3 py-2 text-right font-semibold">Assessed Value</th>
-                <th class="px-3 py-2 text-right font-semibold">Taxes Paid</th>
-                <th class="px-3 py-2 text-right font-semibold">ETR</th>
-              </tr>
-            </thead>
-            <tbody id="historyRows" class="divide-y divide-slate-200 bg-white"></tbody>
-          </table>
-        </div>
-      </article>
+          <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+              <thead class="bg-slate-50">
+                <tr>
+                  <th class="px-3 py-2 text-left font-semibold">Year</th>
+                  <th class="px-3 py-2 text-right font-semibold">Assessed Value</th>
+                  <th class="px-3 py-2 text-right font-semibold">Taxes Paid</th>
+                  <th class="px-3 py-2 text-right font-semibold">ETR</th>
+                </tr>
+              </thead>
+              <tbody id="historyRows" class="divide-y divide-slate-200 bg-white"></tbody>
+            </table>
+          </div>
+        </article>
 
-      <article id="indexed-trends" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
-        <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 class="text-xl font-bold text-slate-700">How are this property’s value and taxes moving together?</h2>
-            <p class="text-sm text-slate-600">This chart resets both values and taxes to the same starting point so their changes can be compared side by side. Tax bills are shown only after they are finalized.</p>
+        <article id="indexed-trends" class="lg:col-span-3">
+          <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-slate-700">How are this property’s value and taxes moving together?</h2>
+              <p class="text-sm text-slate-600">This chart resets both values and taxes to the same starting point so their changes can be compared side by side. Tax bills are shown only after they are finalized.</p>
+            </div>
+            <p id="baseYearNote" class="text-xs font-medium text-slate-500"></p>
           </div>
-          <p id="baseYearNote" class="text-xs font-medium text-slate-500"></p>
-        </div>
-        <div class="mt-4 h-64 sm:h-72">
-          <canvas id="indexedChart"></canvas>
-        </div>
-        
-      </article>
+          <div id="indexedChartLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+          <div class="mt-4 h-64 sm:h-72">
+            <canvas id="indexedChart"></canvas>
+          </div>
+        </article>
+      </div>
+      <p data-property-record-source class="chart-source"></p>
     </section>
+
+    <article id="equalization-pressure" class="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Equalization Pressure Index</p>
+          <h2 class="mt-1 text-xl font-bold text-slate-700">How does this property’s tax pressure compare?</h2>
+          <p id="equalizationPressureHeadline" class="mt-1 max-w-3xl text-sm leading-6 text-slate-600"></p>
+        </div>
+        <div class="rounded-xl bg-slate-50 px-4 py-3 ring-1 ring-slate-200 sm:min-w-52">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Pressure index</p>
+          <p id="equalizationPressureIndex" class="mt-1 text-3xl font-bold text-slate-700">—</p>
+          <p id="equalizationPressureBand" class="mt-1 text-xs leading-5 text-slate-500"></p>
+        </div>
+      </div>
+      <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(260px,0.85fr)_minmax(0,1.15fr)] lg:items-center">
+        <div>
+          <p class="rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-600 ring-1 ring-slate-200">
+            This compares 2025 effective tax rates. Nebraska = 100. Values above 100 indicate higher relative tax pressure; values below 100 indicate lower relative tax pressure.
+          </p>
+          <div id="equalizationPressureRows" class="mt-3 grid gap-2 text-sm"></div>
+          <p class="mt-3 text-xs leading-5 text-slate-500">
+            This comparison does not prove an assessment error by itself. It helps show where a property sits in the broader equalization pattern and may point to areas worth reviewing.
+          </p>
+        </div>
+        <div class="h-72 rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+          <canvas id="equalizationPressureChart"></canvas>
+        </div>
+      </div>
+      <p id="equalizationPressureSource" class="chart-source"></p>
+    </article>
 
     <section id="property-movement-summary" class="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
       <h2 class="text-xl font-bold text-slate-700">How much has this property changed?</h2>
@@ -226,7 +259,7 @@
           </div>
           <label class="min-w-72 text-sm font-semibold text-slate-700">
             Viewing market area
-            <select id="marketAreaSelect" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"></select>
+            <select id="marketAreaSelect" class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
           </label>
         </div>
         <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
@@ -257,7 +290,7 @@
           <table class="min-w-full divide-y divide-slate-200 text-sm">
             <thead class="bg-slate-50">
               <tr>
-                <th class="px-3 py-2 text-left font-semibold">Valuation / listing group</th>
+                <th class="px-3 py-2 text-left font-semibold">Area / Valuation Group</th>
                 <th class="px-3 py-2 text-right font-semibold">Sales</th>
                 <th class="px-3 py-2 text-right font-semibold">Median</th>
                 <th class="px-3 py-2 text-right font-semibold">Wgt. mean</th>
@@ -295,18 +328,10 @@
         </div>
         <div id="assessmentAccuracySummary" class="mt-5 grid gap-3 md:grid-cols-4"></div>
         <section class="mt-5 grid gap-6 lg:grid-cols-5">
-          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
-            <h3 class="text-lg font-bold text-slate-700">How are equalization measures moving?</h3>
-            <p class="mt-1 text-sm text-slate-600">Common-scale view where the shaded band marks the standard range for the selected class.</p>
-            <div class="mt-4 h-80">
-              <canvas id="assessmentAccuracyChart"></canvas>
-            </div>
-            <div id="assessmentAccuracyNotes" class="mt-4 grid gap-2 text-xs leading-5 text-slate-600 sm:grid-cols-3"></div>
-          </article>
           <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
             <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
             <p class="mt-1 text-sm text-slate-600">Latest years first, preserving the workbook measures for reviewer context.</p>
-            <div class="mt-4 max-h-80 overflow-auto rounded-xl bg-white ring-1 ring-slate-200">
+            <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
               <table class="min-w-full divide-y divide-slate-200 text-sm">
                 <thead class="sticky top-0 bg-slate-50">
                   <tr>
@@ -321,8 +346,23 @@
                 <tbody id="assessmentMeasureRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
               </table>
             </div>
+            <div class="mt-4 rounded-xl bg-white p-3 text-xs leading-5 text-slate-600 ring-1 ring-slate-200">
+              <p class="font-semibold text-slate-700">How to read the chart</p>
+              <p class="mt-1">
+                COD, PRD, and COV use different scales, so the chart converts each measure to its own standard band. The shaded area is the preferred range. Each line shows whether that measure is moving into the band, out of it, or moving differently from the others.
+              </p>
+            </div>
+          </article>
+          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
+            <h3 class="text-lg font-bold text-slate-700">How are equalization measures moving?</h3>
+            <p class="mt-1 text-sm text-slate-600">Common-scale view where the shaded band marks the standard range for the selected class.</p>
+            <div class="mt-4 h-80">
+              <canvas id="assessmentAccuracyChart"></canvas>
+            </div>
+            <div id="assessmentAccuracyNotes" class="mt-4 grid gap-2 text-xs leading-5 text-slate-600 sm:grid-cols-3"></div>
           </article>
         </section>
+        <p class="chart-source">Source: 2019-2026 Gage County PAD Reports and Opinions.</p>
       </article>
 
       <article id="county-sale-price-bands" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -349,18 +389,20 @@
               <p id="marketSalePriceChartTitle" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sales distribution</p>
               <p id="marketSalePriceChartNote" class="mt-1 text-sm leading-5 text-slate-600">Qualified sales by price band, including empty upper bands.</p>
             </div>
+            <div id="marketSalePriceChartLegend" class="chart-disc-legend mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
             <div class="mt-3 h-64">
               <canvas id="marketSalePriceChart"></canvas>
             </div>
           </div>
         </div>
+        <p id="marketSalePriceSource" class="chart-source"></p>
       </article>
 
       <section class="grid gap-6 lg:grid-cols-5">
         <article id="county-indexed" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
           <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
           <p class="mt-1 text-sm text-slate-600">Illustrative indexed view for countywide taxable value and tax movement.</p>
-          <div id="countyIndexedChartLegend" class="mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
+          <div id="countyIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
           <div class="mt-4 h-72">
             <canvas id="countyIndexedChart"></canvas>
           </div>
@@ -368,6 +410,7 @@
         <article id="county-etr" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
           <h2 class="text-xl font-bold text-slate-700">What share of county value becomes taxes?</h2>
           <p class="mt-1 text-sm text-slate-600">Countywide ETR context gives reviewers a broader baseline.</p>
+          <div id="countyEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
           <div class="mt-4 h-72">
             <canvas id="countyEtrChart"></canvas>
           </div>
@@ -389,6 +432,37 @@
         </p>
       </article>
 
+      <article id="statewide-ctl-context" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Statewide CTL Context</p>
+        <h2 class="mt-1 text-2xl font-bold text-slate-700">What does the statewide baseline show?</h2>
+        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+          Certified CTL movement from 2019 through 2025 gives a statewide baseline for comparing county and property tax-pressure patterns.
+        </p>
+        <section class="mt-5 grid gap-6 lg:grid-cols-5">
+          <article id="state-indexed" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
+            <h3 class="text-lg font-bold text-slate-700">How are statewide values and taxes moving?</h3>
+            <p class="mt-1 text-sm text-slate-600">Illustrative indexed view for statewide comparison.</p>
+            <div id="stateIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
+            <div class="mt-4 h-72">
+              <canvas id="stateIndexedChart"></canvas>
+            </div>
+          </article>
+          <article id="state-etr" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
+            <h3 class="text-lg font-bold text-slate-700">How is statewide ETR trending?</h3>
+            <p class="mt-1 text-sm text-slate-600">A statewide ETR benchmark helps place local tax burden in context.</p>
+            <div id="stateEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+            <div class="mt-4 h-72">
+              <canvas id="stateEtrChart"></canvas>
+            </div>
+          </article>
+          <section id="state-summary" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-5">
+            <h3 class="text-lg font-bold text-slate-700">Statewide summary</h3>
+            <div id="stateCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
+          </section>
+        </section>
+        <p class="chart-source">Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL).</p>
+      </article>
+
       <article id="county-comparison" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -400,7 +474,7 @@
           </div>
           <div class="grid gap-2 text-sm sm:min-w-80">
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="countyComparisonTarget">Compare with</label>
-            <select id="countyComparisonTarget" class="rounded-xl bg-white px-3 py-2 font-semibold text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400"></select>
+            <select id="countyComparisonTarget" class="market-area-select rounded-xl px-3 py-2 font-semibold shadow-sm focus:outline-none"></select>
           </div>
         </div>
         <div id="countyComparisonSummary" class="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
@@ -408,6 +482,7 @@
           <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
             <h3 class="text-lg font-bold text-slate-700">How do value and tax growth compare?</h3>
             <p id="countyComparisonIndexedNote" class="mt-1 text-sm text-slate-600"></p>
+            <div id="countyComparisonIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
             <div class="mt-4 h-80">
               <canvas id="countyComparisonIndexedChart"></canvas>
             </div>
@@ -415,35 +490,13 @@
           <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
             <h3 class="text-lg font-bold text-slate-700">How do average tax rates compare?</h3>
             <p id="countyComparisonRateNote" class="mt-1 text-sm text-slate-600"></p>
+            <div id="countyComparisonRateChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
             <div class="mt-4 h-80">
               <canvas id="countyComparisonRateChart"></canvas>
             </div>
           </article>
         </section>
-      </article>
-
-      <section class="grid gap-6 lg:grid-cols-5">
-        <article id="state-indexed" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
-          <h2 class="text-xl font-bold text-slate-700">How are statewide values and taxes moving?</h2>
-          <p class="mt-1 text-sm text-slate-600">Illustrative indexed view for statewide comparison.</p>
-          <div class="mt-4 h-72">
-            <canvas id="stateIndexedChart"></canvas>
-          </div>
-        </article>
-        <article id="state-etr" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
-          <h2 class="text-xl font-bold text-slate-700">How is statewide ETR trending?</h2>
-          <p class="mt-1 text-sm text-slate-600">A statewide ETR benchmark helps place local tax burden in context.</p>
-          <div class="mt-4 h-72">
-            <canvas id="stateEtrChart"></canvas>
-          </div>
-        </article>
-      </section>
-      <article id="state-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <h2 class="text-xl font-bold text-slate-700">Statewide summary</h2>
-        <p class="mt-1 text-sm leading-6 text-slate-600">
-          Certified CTL movement from 2019 through 2025 gives a statewide baseline for comparing county and market-area patterns.
-        </p>
-        <div id="stateCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
+        <p class="chart-source">Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL).</p>
       </article>
     </section>
 

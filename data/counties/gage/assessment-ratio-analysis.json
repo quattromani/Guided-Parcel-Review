@@ -1,6 +1,8 @@
 {
   "source": {
     "name": "Gage County Assessment Ratio Analysis",
+    "sourceType": "R&O",
+    "displayCitation": "2019-2026 Gage County PAD Reports and Opinions",
     "workbook": "Gage County Assessment Ratio Analysis (2017\u20132026).xlsx",
     "sheets": [
       "Res \u2013 Data",
@@ -11,7 +13,7 @@
       "start": 2017,
       "end": 2026
     },
-    "notes": "Extracted from class-specific data sheets. Median is carried as levelOfValue (LOV). Normalized fields measure distance from target, where 1.0 is the target reference line."
+    "notes": "Compiled from annual Gage County PAD Reports and Opinions and normalized through the assessment-ratio workbook. Extracted from class-specific data sheets. Median is carried as levelOfValue (LOV). Normalized fields measure distance from target, where 1.0 is the target reference line."
   },
   "fields": {
     "levelOfValue": "Median assessment-to-sale ratio, shown as LOV.",

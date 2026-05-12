@@ -1,6 +1,8 @@
 {
   "source": {
-    "name": "Gage County Assessment Ratio Analysis",
+    "name": "Gage County R&O and assessment context extraction",
+    "sourceType": "R&O",
+    "displayCitation": "2026 Gage County PAD Reports and Opinions; 2019-2026 Gage County PAD Reports and Opinions where historical ratio context is shown",
     "workbook": "Gage County Assessment Ratio Analysis (2017\u20132026).xlsx",
     "ignoredSheets": [
       "Ag \u2013 Charts",
@@ -8,7 +10,7 @@
       "Res \u2013 Charts",
       "Valuation Shares \u2013 2025"
     ],
-    "notes": "Broad extraction for future county, market, assessment, and demographics views. Empty chart-only/error sheets are excluded."
+    "notes": "Broad extraction for county, market, assessment, and demographics views. County profile, demographics, valuation group, and current-year county context are from the 2026 Gage County R&O. Historical ratio context is compiled from 2019-2026 Gage County R&Os through the assessment-ratio workbook. Empty chart-only/error sheets are excluded."
   },
   "sheets": {
     "resData": {

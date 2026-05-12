@@ -35,6 +35,53 @@ summary::-webkit-details-marker {
   border-radius: 0 0 0.75rem 0.75rem;
 }
 
+.valuation-detail-toggle {
+  border: 1px solid rgb(37 99 235);
+  background: rgb(239 246 255);
+  color: rgb(29 78 216);
+  transition: background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.valuation-detail-toggle:hover {
+  border-color: rgb(29 78 216);
+  background: rgb(219 234 254);
+}
+
+.valuation-detail-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(147 197 253 / 0.75);
+}
+
+.market-area-select {
+  border: 1px solid rgb(37 99 235);
+  background-color: rgb(239 246 255);
+  color: rgb(29 78 216);
+  transition: background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.market-area-select:hover {
+  background-color: rgb(219 234 254);
+  border-color: rgb(29 78 216);
+}
+
+.market-area-select:focus {
+  border-color: rgb(29 78 216);
+  box-shadow: 0 0 0 3px rgb(147 197 253 / 0.75);
+}
+
+.valuation-detail-chevron {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-bottom: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.16s ease;
+}
+
+details[open] > .valuation-detail-toggle .valuation-detail-chevron {
+  transform: rotate(45deg);
+}
+
 .focus-card {
   border-radius: 1rem;
   background: rgb(239 246 255);
@@ -62,6 +109,27 @@ summary::-webkit-details-marker {
 
 .table-total-row :is(td, th) {
   color: inherit;
+}
+
+.chart-source {
+  margin-top: 0.75rem;
+  color: rgb(100 116 139);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1rem;
+  text-transform: none;
+}
+
+.chart-disc-legend {
+  align-items: center;
+}
+
+.chart-legend-dot {
+  height: 0.875rem;
+  width: 0.875rem;
+  flex: 0 0 auto;
+  border-radius: 9999px;
 }
 
 [id] {

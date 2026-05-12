@@ -264,13 +264,18 @@ function renderPropertyDetails(data, recordCard) {
     ownershipHistory(recordCard),
     recordCardSource(recordCard),
     recordReviewHistory(recordCard),
-    reportErrorLink()
+    reportErrorLink(data)
   ].join("");
 }
 
-function reportErrorLink() {
+function propertyRecordSourceText(data) {
+  return `Source: MIPS Property Record Card, Parcel ID ${data.parcel.parcelId}.`;
+}
+
+function reportErrorLink(data) {
   return `
-    <div class="sm:col-span-2 px-1 pt-1 text-right text-xs text-slate-500">
+    <div class="sm:col-span-2 flex flex-col gap-2 px-1 pt-1 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+      <p>${escapeHtml(propertyRecordSourceText(data))}</p>
       <button type="button" data-report-error class="underline decoration-slate-300 underline-offset-4 transition hover:text-slate-700">
         Report an error
       </button>
@@ -1003,19 +1008,25 @@ function technicalCostModel(recordCard, data) {
     .slice()
     .sort((a, b) => b.year - a.year);
   const currentValue = assessedRows[0];
-  const garageTotal = recordCard.garageCostLines.reduce((sum, row) => sum + row.rcnld, 0);
-  const miscTotal = recordCard.miscImprovements.reduce((sum, row) => sum + row.value, 0);
+  const garageLines = recordCard.garageCostLines || [];
+  const miscLines = recordCard.miscImprovements || [];
+  const garageTotal = garageLines.reduce((sum, row) => sum + row.rcnld, 0);
+  const miscTotal = miscLines.reduce((sum, row) => sum + row.value, 0);
   const landValue = currentValue?.land ?? 0;
   const outbuildingValue = currentValue?.outbuilding ?? 0;
   const totalValue = currentValue?.total ?? cost.rcnld + landValue;
-  const baseImprovementValue = Math.max(totalValue - landValue - garageTotal - miscTotal - outbuildingValue, 0);
+  const modeledDetailSubtotal = landValue + cost.rcnld + garageTotal + miscTotal + outbuildingValue;
+  const reconciliation = recordCard.valuationReconciliation || {};
+  const postProtestAdjustment = reconciliation.postProtestAdjustment ?? totalValue - modeledDetailSubtotal;
+  const hasPostProtestAdjustment = Math.abs(postProtestAdjustment) > 0;
   const residentialInfo = recordCard.residentialInformation || {};
   const valueStack = [
     ["Land", landValue],
-    ["Primary dwelling / base improvements", baseImprovementValue],
+    ["Marshall & Swift dwelling model", cost.rcnld],
     ["Garages", garageTotal],
     ["Miscellaneous improvements", miscTotal],
-    ["Outbuildings", outbuildingValue]
+    ["Outbuildings", outbuildingValue],
+    ...(hasPostProtestAdjustment ? [["Post-protest adj.", postProtestAdjustment]] : [])
   ];
 
   return disclosure("How was this property’s improvement value modeled?", `Latest known total ${formatNullableMoney(totalValue)}`, `
@@ -1027,8 +1038,10 @@ function technicalCostModel(recordCard, data) {
         ["RCNLD", formatNullableMoney(cost.rcnld)],
         ["Cost per sq. ft.", moneyCents.format(cost.costPerSquareFoot)],
         ["Depreciation", `${cost.depreciation.physicalPercent}% physical`],
-        ["Garage value", formatNullableMoney(cost.depreciatedGarages)],
-        ["Misc. improvements", formatNullableMoney(miscTotal)]
+        ["Garage value", formatNullableMoney(garageTotal)],
+        ["Misc. improvements", formatNullableMoney(miscTotal)],
+        ["Detail subtotal", formatNullableMoney(modeledDetailSubtotal)],
+        ["Post-protest adj.", hasPostProtestAdjustment ? formatNullableMoney(postProtestAdjustment) : "$0"]
       ].map(([label, value]) => `
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
@@ -1050,11 +1063,17 @@ function technicalCostModel(recordCard, data) {
           <p class="text-base font-bold">${formatNullableMoney(totalValue)}</p>
         </div>
       </div>
+      ${reconciliation.note ? `
+        <p class="mt-3 text-xs leading-5 text-slate-500">${escapeHtml(reconciliation.note)}</p>
+      ` : ""}
     </div>
     <details class="border-t border-slate-200 bg-white">
-      <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-sm font-semibold text-slate-700">
-        <span>View exploded valuation detail</span>
-        <span class="text-xs font-semibold text-slate-500">Marshall & Swift, garages, misc. improvements, and outbuildings</span>
+      <summary class="valuation-detail-toggle flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-sm font-semibold">
+        <span class="flex min-w-0 items-center gap-2">
+          <span class="valuation-detail-chevron" aria-hidden="true"></span>
+          <span class="truncate">View exploded valuation detail</span>
+        </span>
+        <span class="hidden text-xs font-semibold sm:inline">Component drill-down</span>
       </summary>
       <div class="grid gap-4 border-t border-slate-200 p-3">
         <section class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
@@ -1106,7 +1125,7 @@ function technicalCostModel(recordCard, data) {
           <table class="min-w-full divide-y divide-slate-200 rounded-xl text-sm ring-1 ring-slate-200">
             <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Value</th></tr></thead>
             <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
-              ${recordCard.garageCostLines.map(row => `
+              ${garageLines.map(row => `
                 <tr>
                   <td class="px-3 py-2">${row.description}</td>
                   <td class="px-3 py-2 text-right">${row.units}</td>
@@ -1124,7 +1143,7 @@ function technicalCostModel(recordCard, data) {
           <table class="min-w-full divide-y divide-slate-200 rounded-xl text-sm ring-1 ring-slate-200">
             <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Item</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Value</th></tr></thead>
             <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
-              ${recordCard.miscImprovements.map(row => `
+              ${miscLines.map(row => `
                 <tr>
                   <td class="px-3 py-2">${row.description}</td>
                   <td class="px-3 py-2 text-right">${Number(row.units).toLocaleString()}</td>
@@ -1134,6 +1153,27 @@ function technicalCostModel(recordCard, data) {
             </tbody>
           </table>
         </section>
+        ${hasPostProtestAdjustment ? `
+          <section class="rounded-xl bg-amber-50 p-3 ring-1 ring-amber-200">
+            <div class="mb-2 flex items-center justify-between gap-3">
+              <p class="text-xs font-semibold uppercase tracking-wide text-amber-800">Reconciliation</p>
+              <p class="rounded-full bg-white px-2 py-1 text-xs font-semibold text-amber-800">Post-protest adj. ${formatNullableMoney(postProtestAdjustment)}</p>
+            </div>
+            <div class="grid gap-3 text-sm md:grid-cols-3">
+              ${[
+                ["MIPS pre-protest total", reconciliation.initialMipsTotal ? formatNullableMoney(reconciliation.initialMipsTotal) : null],
+                ["Modeled detail subtotal", formatNullableMoney(modeledDetailSubtotal)],
+                ["Final assessed total", formatNullableMoney(totalValue)]
+              ].map(([label, value]) => `
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-amber-800">${label}</p>
+                  <p class="mt-1 font-semibold text-slate-800">${escapeHtml(value)}</p>
+                </div>
+              `).join("")}
+            </div>
+            ${reconciliation.source ? `<p class="mt-3 text-xs leading-5 text-amber-900">${escapeHtml(reconciliation.source)}</p>` : ""}
+          </section>
+        ` : ""}
         <section>
           <div class="mb-2 flex items-center justify-between gap-3">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Outbuildings</p>
@@ -1305,7 +1345,7 @@ function renderProcessTimeline(calendar) {
   }
 
   if (sourceNote) {
-    sourceNote.textContent = `${calendar.sourceDocument || calendar.sourceTitle || "PAD calendar"}${calendar.sourceRevision ? ` · ${calendar.sourceRevision}` : ""}. Filing dates follow the PAD legal-date rule for weekends and legal holidays.`;
+    sourceNote.textContent = `Source: 2025 Nebraska PAD Main Property Assessment and Taxation Calendar${calendar.sourceRevision ? `, ${calendar.sourceRevision.toLowerCase()}` : ""}. Filing dates follow the PAD legal-date rule for weekends and legal holidays.`;
   }
 
   document.getElementById("processTimeline").innerHTML = calendar.stages.map((step, index) => {
@@ -1374,6 +1414,10 @@ function renderHistoryTable(data) {
       </tr>
     `;
   }).join("");
+
+  document.querySelectorAll("[data-property-record-source]").forEach(element => {
+    element.textContent = propertyRecordSourceText(data);
+  });
 }
 
 function annualizedChange(startValue, endValue, years) {

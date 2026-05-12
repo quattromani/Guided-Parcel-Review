@@ -407,15 +407,18 @@
   "sources": [
     {
       "label": "Assessment data",
-      "value": "County property record / valuation notice"
+      "value": "GWorks MIPS Digital Property Record Card",
+      "sourceType": "property_record"
     },
     {
       "label": "Tax bill history",
-      "value": "Public tax roll / prior finalized bills"
+      "value": "Public tax roll / finalized property tax history",
+      "sourceType": "tax_history"
     },
     {
       "label": "Levy information",
-      "value": "Certified levy records / district levy tables"
+      "value": "Certified levy records / district levy tables",
+      "sourceType": "levy"
     }
   ]
 }

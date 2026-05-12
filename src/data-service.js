@@ -94,6 +94,11 @@ export function loadPadRatioStatistics() {
     .then(({ county }) => loadJson(county.padRatioStatisticsPath, "PAD ratio statistics"));
 }
 
+export function loadTaxDistrictAuthorities() {
+  return getActiveCountyEntry()
+    .then(({ county }) => loadJson(county.taxDistrictAuthoritiesPath, "tax district authorities"));
+}
+
 export function loadValuationGroups() {
   return getActiveCountyEntry()
     .then(({ county }) => loadJson(county.valuationGroupsPath, "valuation groups"));

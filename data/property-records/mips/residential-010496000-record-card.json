@@ -1,6 +1,8 @@
 {
   "source": {
-    "system": "MIPS Inc.",
+    "sourceType": "property_record",
+    "system": "GWorks MIPS",
+    "displayCitation": "GWorks MIPS Digital Property Record Card",
     "county": "Gage County",
     "reportName": "Real Estate Breakdown Report / Appraisal Property Record Card",
     "recordType": "RECORDCARD",
@@ -9,7 +11,7 @@
       "IMG_1524.jpg",
       "IMG_1525.jpg"
     ],
-    "notes": "Captured from photographed MIPS property record cards. Values should be verified against original system export before production use."
+    "notes": "Captured from photographed MIPS property record cards printed before the 2025 protest adjustment. Component facts and the final 2025 valuation are reconciled against the Gage County Assessor working-file property record generated 2026-05-11."
   },
   "parcelIdentifiers": {
     "parcelId": "010496000",
@@ -57,11 +59,19 @@
       "landLots": 23025,
       "total": 275290
     },
-    "current": {
+    "initialMipsCurrent": {
       "buildings": 277490,
       "improvement": 0,
       "landLots": 23025,
-      "total": 300515
+      "total": 300515,
+      "note": "Pre-protest 2025 MIPS card value shown on the photographed record card."
+    },
+    "current": {
+      "buildings": 255905,
+      "improvement": 0,
+      "landLots": 23025,
+      "total": 278930,
+      "note": "Final 2025 post-protest value from the assessor working-file property record."
     }
   },
   "ownershipHistory": [
@@ -195,10 +205,20 @@
     }
   ],
   "propertyValuation": {
-    "buildings": 177925,
+    "buildings": 255905,
     "improvement": 0,
     "landLot": 23025,
-    "total": 200950
+    "total": 278930
+  },
+  "valuationReconciliation": {
+    "source": "MIPS structure with Gage County Assessor working-file overrides",
+    "initialMipsTotal": 300515,
+    "finalAssessedTotal": 278930,
+    "finalDwellingValue": 255905,
+    "landLot": 23025,
+    "modeledDetailSubtotal": 265615,
+    "postProtestAdjustment": 13315,
+    "note": "The detailed MIPS cost model was not regenerated after protest. Known working-file component changes are applied first; the remaining difference to the final assessed value is carried as a post-protest adjustment."
   },
   "reviewHistory": [
     {
@@ -215,18 +235,18 @@
   "residentialInformation": {
     "type": "Single-family Residence",
     "quality": "4.00 - Good",
-    "condition": "3.00 - Average",
+    "condition": "Good",
     "architecture": "1 - 1 STORY",
-    "baseTotalArea": "1,707 / 1,707",
+    "baseTotalArea": "1,810 / 1,810",
     "style": "100% - One Story",
-    "exteriorWall": "95% - Frame, Stucco; 5% - Frame, Siding, Wood",
+    "exteriorWall": "95% - Masonry, Face Brick or Stone; 5% - Frame, Siding, Wood",
     "heatingCooling": "100% - Warmed & Cooled Air",
     "roofCover": "Composition Shingle",
     "areaOfSlab": 0,
     "areaOfCrawl": 0,
-    "fixtureRoughin": "8 / 0",
-    "bedBathroom": "3 / 1.5",
-    "basementArea": "1,707 512 Min"
+    "fixtureRoughin": "12 / 0",
+    "bedBathroom": "3 / 2.5",
+    "basementArea": "1,684 512 Min"
   },
   "costApproach": {
     "yearEffectiveAge": "1948 / 28",
@@ -240,8 +260,8 @@
     },
     "adjustedCost": 131.49,
     "rcn": 224455,
-    "totalMiscImprovements": 34540,
-    "garageCost": 16310,
+    "totalMiscImprovements": 31375,
+    "garageCost": 17795,
     "totalRcn": 275305,
     "depreciation": {
       "physicalPercent": 41,
@@ -258,10 +278,10 @@
     {
       "code": "701",
       "description": "Attached Garage (SF)",
-      "units": "440 sqft",
+      "units": "480 sqft",
       "unitCost": 37.07,
       "depreciation": "0.000%, 0.000%",
-      "rcnld": 16310
+      "rcnld": 17795
     },
     {
       "code": "701",
@@ -276,64 +296,54 @@
   "miscImprovements": [
     {
       "code": "SWP",
-      "description": "Solid Wall Porch",
-      "costSource": "MS Residential",
-      "size": 126,
-      "units": 126,
-      "unitCost": 76.76,
-      "depreciation": "0.000%",
-      "value": 9670
-    },
-    {
-      "code": "SWP",
-      "description": "Enclosed Wood Solid Wall",
-      "costSource": "MS Residential",
-      "size": 140,
-      "units": 140,
-      "unitCost": 74.35,
-      "depreciation": "0.000%",
-      "value": 10410
-    },
-    {
-      "code": "S1FP",
-      "description": "Fireplace",
-      "costSource": "MS Residential",
-      "size": 1,
-      "units": 1,
-      "unitCost": 3618.78,
-      "depreciation": "0.000%",
-      "value": 3620
-    },
-    {
-      "code": "WOD",
       "description": "Wood Deck",
       "costSource": "MS Residential",
       "size": 125,
       "yearIn": 2003,
       "units": 125,
-      "unitCost": 25.94,
+      "unitCost": 33.16,
       "depreciation": "0.000%",
-      "value": 3245
+      "value": 4145
+    },
+    {
+      "code": "SWP",
+      "description": "Enclosed Porch, Screened Walls",
+      "costSource": "MS Residential",
+      "size": 131,
+      "units": 131,
+      "unitCost": 57.33,
+      "depreciation": "0.000%",
+      "value": 7510
+    },
+    {
+      "code": "SWP",
+      "description": "Enclosed Porch, Solid Walls",
+      "costSource": "MS Residential",
+      "size": 126,
+      "units": 126,
+      "unitCost": 78.41,
+      "depreciation": "0.000%",
+      "value": 9880
     },
     {
       "code": "WOD",
       "description": "Wood Deck",
       "costSource": "MS Residential",
-      "size": 272,
-      "units": 272,
-      "unitCost": 17.71,
+      "size": 290,
+      "units": 290,
+      "unitCost": 21.84,
       "depreciation": "0.000%",
-      "value": 4815
+      "value": 6335
     },
     {
       "code": "OSP",
       "description": "Open Slab Porch",
       "costSource": "MS Residential",
-      "size": 338,
-      "units": 338,
-      "unitCost": 8.22,
+      "size": 354,
+      "units": 354,
+      "unitCost": 9.9,
       "depreciation": "0.000%",
-      "value": 2780
+      "value": 3505
     }
   ]
 }

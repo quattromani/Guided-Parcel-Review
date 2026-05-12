@@ -26,6 +26,7 @@ const chartColors = {
 let assessmentAccuracyChart;
 let countyComparisonIndexedChart;
 let countyComparisonRateChart;
+let equalizationPressureChart;
 let marketRatioChart;
 let marketValueChart;
 let marketSalePriceChart;
@@ -59,37 +60,40 @@ export function buildIndexedChart(data) {
 
   const valueIndex = data.taxpayerHistory.map(row => row.assessedValue && baseValue ? (row.assessedValue / baseValue) * 100 : null);
   const taxIndex = data.taxpayerHistory.map(row => row.taxes && baseTaxes ? (row.taxes / baseTaxes) * 100 : null);
+  const datasets = [
+    {
+      label: "Assessed value index",
+      data: valueIndex,
+      tension: 0.25,
+      borderWidth: 3,
+      borderColor: chartColors.contextValue,
+      backgroundColor: "rgba(37, 99, 235, 0.18)",
+      spanGaps: true
+    },
+    {
+      label: "Tax bill index",
+      data: taxIndex,
+      tension: 0.25,
+      borderWidth: 3,
+      borderColor: chartColors.contextTax,
+      backgroundColor: "rgba(244, 63, 94, 0.18)",
+      spanGaps: true
+    }
+  ];
+  const hasCustomLegend = renderCustomLegend("indexedChartLegend", datasets);
 
   new Chart(document.getElementById("indexedChart"), {
     type: "line",
     data: {
       labels: years,
-      datasets: [
-        {
-          label: "Assessed value index",
-          data: valueIndex,
-          tension: 0.25,
-          borderWidth: 3,
-          borderColor: chartColors.contextValue,
-          backgroundColor: "rgba(37, 99, 235, 0.18)",
-          spanGaps: true
-        },
-        {
-          label: "Tax bill index",
-          data: taxIndex,
-          tension: 0.25,
-          borderWidth: 3,
-          borderColor: chartColors.contextTax,
-          backgroundColor: "rgba(244, 63, 94, 0.18)",
-          spanGaps: true
-        }
-      ]
+      datasets
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
+        legend: { display: !hasCustomLegend },
         tooltip: {
           callbacks: {
             label: context => `${context.dataset.label}: ${context.parsed.y?.toFixed(1) ?? "Pending"}`
@@ -101,6 +105,199 @@ export function buildIndexedChart(data) {
           title: { display: true, text: "Index" },
           suggestedMin: 80,
           suggestedMax: 215
+        }
+      }
+    }
+  });
+}
+
+function latestFinalTaxRow(data) {
+  return data.taxpayerHistory
+    .filter(row => row.assessedValue !== null && row.assessedValue !== undefined && row.taxes !== null && row.taxes !== undefined)
+    .at(-1);
+}
+
+function latestCtlRate(rows) {
+  return rows
+    ?.filter(row => row.averageTaxRate !== null && row.averageTaxRate !== undefined)
+    .slice()
+    .sort((a, b) => a.year - b.year)
+    .at(-1);
+}
+
+function formatPressureSource(propertyRow, countyRateRow, stateRateRow) {
+  const years = [propertyRow?.year, countyRateRow?.year, stateRateRow?.year].filter(Boolean);
+  const throughYear = years.length ? Math.min(...years) : null;
+  const suffix = throughYear ? ` through ${throughYear}` : "";
+
+  return `Source: property tax history and Nebraska CTL average tax-rate data${suffix}.`;
+}
+
+function pressureBand(index) {
+  if (index === null || index === undefined) return { label: "Pending", tone: "slate" };
+  if (index < 85) return { label: "Lower pressure", tone: "emerald" };
+  if (index >= 85 && index <= 94) return { label: "Slightly lower pressure", tone: "green" };
+  if (index >= 95 && index <= 105) return { label: "Expected alignment", tone: "slate" };
+  if (index >= 106 && index <= 115) return { label: "Moderate higher pressure", tone: "amber" };
+
+  return { label: "Higher pressure", tone: "rose" };
+}
+
+function pressureInterpretation(points) {
+  const subject = points.find(point => point.key === "subject")?.index;
+  const county = points.find(point => point.key === "county")?.index;
+  const state = 100;
+
+  if (subject === null || subject === undefined) {
+    return "Finalized property tax data is needed before this pressure comparison can be calculated.";
+  }
+
+  const comparisons = [county, state].filter(value => value !== null && value !== undefined);
+  const maxOther = Math.max(...comparisons);
+  const minOther = Math.min(...comparisons);
+
+  if (subject >= 95 && subject <= 105 && comparisons.every(value => value >= 95 && value <= 105)) {
+    return "Your property appears closely aligned with the county and state tax-pressure benchmarks.";
+  }
+  if (subject > maxOther + 5 || subject > 115) {
+    return "Your property may be carrying higher relative tax pressure than the county and state benchmarks.";
+  }
+  if (comparisons.every(value => subject < value - 5)) {
+    return "Your property appears below the county and state tax-pressure benchmarks.";
+  }
+  if (county !== null && county !== undefined && subject < county - 5) {
+    return "Your property appears below the county tax-pressure benchmark.";
+  }
+  if (subject < state - 5 || subject < 85) {
+    return "Your property appears below the state tax-pressure benchmark.";
+  }
+
+  return "Your property appears near the broader county and state tax-pressure pattern, with some differences worth reviewing.";
+}
+
+const pressureAlignmentBandPlugin = {
+  id: "pressureAlignmentBand",
+  beforeDatasetsDraw(chart, args, options) {
+    const { ctx, chartArea, scales } = chart;
+    if (!chartArea || !scales.y) return;
+
+    const top = scales.y.getPixelForValue(options.max ?? 105);
+    const bottom = scales.y.getPixelForValue(options.min ?? 95);
+
+    ctx.save();
+    ctx.fillStyle = options.backgroundColor ?? "rgba(220, 38, 38, 0.07)";
+    ctx.fillRect(chartArea.left, Math.min(top, bottom), chartArea.right - chartArea.left, Math.abs(bottom - top));
+    ctx.strokeStyle = options.borderColor ?? "rgba(220, 38, 38, 0.24)";
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(chartArea.left, top);
+    ctx.lineTo(chartArea.right, top);
+    ctx.moveTo(chartArea.left, bottom);
+    ctx.lineTo(chartArea.right, bottom);
+    ctx.stroke();
+    ctx.restore();
+  }
+};
+
+export function buildEqualizationPressureIndex(data, ctlData) {
+  const canvas = document.getElementById("equalizationPressureChart");
+  if (!canvas) return;
+
+  const countyName = getPropertyCountyName(data, ctlData);
+  const propertyRow = latestFinalTaxRow(data);
+  const countyRateRow = latestCtlRate(ctlData.counties.filter(row => row.countyName === countyName));
+  const stateRateRow = latestCtlRate(ctlData.statewide);
+  const countyRate = countyRateRow?.averageTaxRate;
+  const stateRate = stateRateRow?.averageTaxRate;
+  const subjectRate = calculateEtr(propertyRow);
+  const toIndex = value => value === null || value === undefined || !stateRate ? null : (value / stateRate) * 100;
+  const points = [
+    { key: "subject", label: "Your Property", rate: subjectRate, index: toIndex(subjectRate), color: "#16a34a" },
+    { key: "county", label: "Gage County", rate: countyRate, index: toIndex(countyRate), color: "#73a35b" },
+    { key: "state", label: "Nebraska", rate: stateRate, index: 100, color: "#dc2626" }
+  ];
+  const subjectIndex = points[0].index;
+  const subjectBand = pressureBand(subjectIndex);
+  const values = points.map(point => point.index).filter(value => value !== null && value !== undefined);
+  const minY = Math.max(60, Math.floor(Math.min(85, ...values) / 5) * 5);
+  const maxY = Math.min(140, Math.ceil(Math.max(115, ...values) / 5) * 5);
+  const toneClasses = {
+    emerald: "text-emerald-700",
+    green: "text-green-700",
+    amber: "text-amber-700",
+    rose: "text-rose-700",
+    slate: "text-slate-700"
+  };
+
+  document.getElementById("equalizationPressureHeadline").textContent = pressureInterpretation(points);
+  document.getElementById("equalizationPressureSource").textContent = formatPressureSource(propertyRow, countyRateRow, stateRateRow);
+  document.getElementById("equalizationPressureIndex").textContent = subjectIndex === null || subjectIndex === undefined
+    ? "—"
+    : integer.format(subjectIndex);
+  document.getElementById("equalizationPressureBand").innerHTML = `<span class="${toneClasses[subjectBand.tone]}">${subjectBand.label}</span>`;
+
+  document.getElementById("equalizationPressureRows").innerHTML = points.map(point => {
+    const band = pressureBand(point.index);
+    return `
+      <div class="flex items-center justify-between gap-3 rounded-lg bg-slate-50 px-3 py-2 ring-1 ring-slate-200">
+        <div class="flex min-w-0 items-center gap-2">
+          <span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background-color: ${point.color};"></span>
+          <span class="truncate font-semibold text-slate-700">${point.label}</span>
+        </div>
+        <div class="text-right">
+          <p class="font-semibold ${toneClasses[band.tone]}">${point.index === null || point.index === undefined ? "Pending" : integer.format(point.index)}</p>
+          <p class="text-xs text-slate-500">${point.rate === null || point.rate === undefined ? "ETR pending" : percent.format(point.rate)}</p>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  equalizationPressureChart?.destroy();
+  equalizationPressureChart = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: points.map(point => point.label),
+      datasets: [{
+        label: "Relative tax pressure",
+        data: points.map(point => point.index),
+        tension: 0.25,
+        borderColor: "#475569",
+        backgroundColor: "rgba(71, 85, 105, 0.10)",
+        borderWidth: 3,
+        pointRadius: 5,
+        pointHoverRadius: 6,
+        pointBackgroundColor: points.map(point => point.color),
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 2,
+        spanGaps: true
+      }]
+    },
+    plugins: [pressureAlignmentBandPlugin],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "nearest", intersect: false },
+      plugins: {
+        legend: { display: false },
+        pressureAlignmentBand: {
+          min: 95,
+          max: 105
+        },
+        tooltip: {
+          callbacks: {
+            label: context => `${context.label}: ${context.parsed.y?.toFixed(0) ?? "Pending"} index`
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: minY,
+          max: maxY,
+          title: { display: true, text: "State average = 100" },
+          ticks: { precision: 0 }
+        },
+        x: {
+          grid: { display: false }
         }
       }
     }
@@ -136,7 +333,7 @@ const assessmentStandardKeys = {
 const assessmentMeasureDefinitions = [
   {
     key: "cod",
-    label: "Uniformity",
+    label: "Uniformity (COD)",
     color: chartColors.cod,
     fill: "rgba(29, 78, 216, 0.12)",
     cardBackground: "rgba(29, 78, 216, 0.08)",
@@ -146,7 +343,7 @@ const assessmentMeasureDefinitions = [
   },
   {
     key: "prd",
-    label: "Price-Level Fairness",
+    label: "Price-Level Fairness (PRD)",
     color: chartColors.prd,
     fill: "rgba(239, 68, 68, 0.12)",
     cardBackground: "rgba(239, 68, 68, 0.08)",
@@ -156,7 +353,7 @@ const assessmentMeasureDefinitions = [
   },
   {
     key: "cov",
-    label: "Reliability",
+    label: "Reliability (COV)",
     color: chartColors.cov,
     fill: "rgba(115, 163, 91, 0.12)",
     cardBackground: "rgba(115, 163, 91, 0.10)",
@@ -499,10 +696,10 @@ function renderCustomLegend(elementId, datasets) {
   legend.innerHTML = datasets.map(dataset => `
     <div class="flex items-center gap-2">
       <span
-        class="inline-block h-2.5 w-9 rounded-sm border-2"
+        class="chart-legend-dot inline-block border-2"
         style="
           border-color: ${dataset.borderColor};
-          background-color: ${dataset.backgroundColor};
+          background-color: ${dataset.borderDash ? "#ffffff" : dataset.borderColor};
           ${dataset.borderDash ? "border-style: dashed;" : ""}
         "
       ></span>
@@ -555,14 +752,18 @@ function enrichedMarketGroups(groups, valuationGroups, propertyClass = "Resident
     const descriptiveLabel = description
       ? `Valuation Group ${group.group} - ${description}`
       : group.label;
+    const areaFirstLabel = description
+      ? `${description} · VG ${group.group}`
+      : group.label;
     const marketGroupLabel = marketGroup ? `${marketGroup} market` : "";
 
     return {
       ...group,
       description,
       marketGroup,
-      label: descriptiveLabel,
-      optionLabel: marketGroupLabel ? `${descriptiveLabel} (${marketGroupLabel})` : descriptiveLabel,
+      label: areaFirstLabel,
+      descriptiveLabel,
+      optionLabel: marketGroupLabel ? `${areaFirstLabel} (${marketGroupLabel})` : areaFirstLabel,
       shortLabel: description ? `VG ${group.group} - ${description}` : group.label
     };
   });
@@ -603,9 +804,11 @@ function renderMarketRows(groups, selectedGroup) {
     return `
       <tr class="${active ? "bg-blue-50" : ""}">
         <td class="px-3 py-2 font-medium text-slate-700">
-          <span class="block">${row.label}</span>
+          <span class="flex items-start justify-between gap-3">
+            <span class="min-w-0">${row.label}</span>
+            ${active ? `<span class="shrink-0 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">Selected</span>` : ""}
+          </span>
           ${row.marketGroup ? `<span class="mt-0.5 block text-xs font-medium text-slate-500">${row.marketGroup}</span>` : ""}
-          ${active ? `<span class="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">Selected</span>` : ""}
         </td>
         <td class="px-3 py-2 text-right">${integer.format(row.count)}</td>
         <td class="px-3 py-2 text-right">${formatRatio(row.median)}</td>
@@ -640,6 +843,32 @@ function priceBandStudyForClass(padRatioData, classKey = "residential") {
   return padRatioData.priceBandStudies[classKey];
 }
 
+function getPadRoSourceAnchor(padRatioData) {
+  const source = padRatioData.source || {};
+  const year = source.reportYear ?? source.title?.match(/\b20\d{2}\b/)?.[0] ?? "Current";
+  const countyName = source.countyName ? `${source.countyName} County` : "county";
+  const pageRange = source.sourcePageRange
+    ?? (source.sourcePages?.length ? `${source.sourcePages[0]}-${source.sourcePages.at(-1)}` : "");
+  const pageText = pageRange ? `, pages ${pageRange}` : "";
+
+  return `Source: ${year} ${countyName} PAD R&O${pageText}.`;
+}
+
+function getPadRoRefreshWatch(padRatioData) {
+  const source = padRatioData.source || {};
+  if (!source.reportYear || !source.nextReviewAfter) return "";
+
+  const reviewDate = new Date(`${source.nextReviewAfter}T00:00:00`);
+  if (Number.isNaN(reviewDate.getTime()) || new Date() < reviewDate) return "";
+
+  const nextYear = source.reportYear + 1;
+
+  // R&Os are due around April 7, but the app cannot assume the new PDF has been
+  // digested into JSON that day. Keep this as a quiet refresh watch until the
+  // next report file is extracted and the manifest points at the new JSON.
+  return ` R&O refresh watch: ${nextYear} data may be available; this section still uses ${source.reportYear} data.`;
+}
+
 function renderMarketSalePriceRows(padRatioData, classKey = "residential") {
   const table = document.getElementById("marketSalePriceRows");
   if (!table) return;
@@ -651,11 +880,13 @@ function renderMarketSalePriceRows(padRatioData, classKey = "residential") {
   const description = document.getElementById("marketSalePriceDescription");
   const chartTitle = document.getElementById("marketSalePriceChartTitle");
   const chartNote = document.getElementById("marketSalePriceChartNote");
+  const source = document.getElementById("marketSalePriceSource");
 
   if (title) title.textContent = study.label || "Sale-price bands";
   if (description) description.textContent = study.description || "";
   if (chartTitle) chartTitle.textContent = study.chartTitle || "Sales distribution";
   if (chartNote) chartNote.textContent = study.chartNote || "Qualified sales by band.";
+  if (source) source.textContent = `${getPadRoSourceAnchor(padRatioData)}${getPadRoRefreshWatch(padRatioData)}`;
 
   const dataRows = rows.map(row => `
     <tr>
@@ -699,36 +930,38 @@ function shortPriceBandLabel(range) {
 function renderMarketSalePriceChart(rows, study = {}) {
   const canvas = document.getElementById("marketSalePriceChart");
   if (!canvas) return;
+  const datasets = [
+    {
+      type: "bar",
+      label: study.countLabel || "Sales",
+      data: rows.map(row => row.count),
+      backgroundColor: "rgba(37, 99, 235, 0.18)",
+      borderColor: chartColors.contextValue,
+      borderWidth: 2,
+      borderRadius: 6,
+      order: 2
+    },
+    {
+      type: "line",
+      label: study.lineLabel || "Distribution curve",
+      data: rows.map(row => row.count),
+      tension: 0.38,
+      borderWidth: 3,
+      borderColor: chartColors.contextTax,
+      backgroundColor: "rgba(244, 63, 94, 0.12)",
+      pointBackgroundColor: chartColors.contextTax,
+      pointRadius: 3,
+      fill: true,
+      order: 1
+    }
+  ];
+  const hasCustomLegend = renderCustomLegend("marketSalePriceChartLegend", datasets);
 
   marketSalePriceChart?.destroy();
   marketSalePriceChart = new Chart(canvas, {
     data: {
       labels: rows.map(row => shortPriceBandLabel(row.range)),
-      datasets: [
-        {
-          type: "bar",
-          label: study.countLabel || "Sales",
-          data: rows.map(row => row.count),
-          backgroundColor: "rgba(37, 99, 235, 0.18)",
-          borderColor: chartColors.contextValue,
-          borderWidth: 2,
-          borderRadius: 6,
-          order: 2
-        },
-        {
-          type: "line",
-          label: study.lineLabel || "Distribution curve",
-          data: rows.map(row => row.count),
-          tension: 0.38,
-          borderWidth: 3,
-          borderColor: chartColors.contextTax,
-          backgroundColor: "rgba(244, 63, 94, 0.12)",
-          pointBackgroundColor: chartColors.contextTax,
-          pointRadius: 3,
-          fill: true,
-          order: 1
-        }
-      ]
+      datasets
     },
     options: {
       responsive: true,
@@ -736,6 +969,7 @@ function renderMarketSalePriceChart(rows, study = {}) {
       interaction: { mode: "index", intersect: false },
       plugins: {
         legend: {
+          display: !hasCustomLegend,
           labels: {
             boxWidth: 28,
             boxHeight: 9
@@ -1093,27 +1327,32 @@ function buildCertifiedRateChart(canvasId, rows, label, propertyRows) {
   const canvas = document.getElementById(canvasId);
   if (!canvas || !rows?.length) return;
   const years = rows.map(row => row.year);
+  const datasets = [
+    {
+      label,
+      data: rows.map(row => row.averageTaxRate * 100),
+      tension: 0.25,
+      borderWidth: 3,
+      borderColor: chartColors.contextValue,
+      backgroundColor: "rgba(37, 99, 235, 0.18)"
+    },
+    propertyRateDataset(propertyRows, years)
+  ];
+  const hasCustomLegend = renderCustomLegend(`${canvasId}Legend`, datasets);
 
   new Chart(canvas, {
     type: "line",
     data: {
       labels: years,
-      datasets: [
-        {
-          label,
-          data: rows.map(row => row.averageTaxRate * 100),
-          tension: 0.25,
-          borderWidth: 3,
-          borderColor: chartColors.contextValue,
-          backgroundColor: "rgba(37, 99, 235, 0.18)"
-        },
-        propertyRateDataset(propertyRows, years)
-      ]
+      datasets
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: !hasCustomLegend }
+      },
       scales: {
         y: {
           title: { display: true, text: "Average tax rate" },
@@ -1214,6 +1453,63 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
   const years = primaryRows.map(row => row.year);
   const primaryIndex = ctlIndexedRows(primaryRows, "totalValue", "taxesLevied");
   const comparisonIndex = ctlIndexedRows(comparisonRows, "totalValue", "taxesLevied");
+  const indexedDatasets = [
+    {
+      label: `${primaryLabel} value index`,
+      data: primaryIndex.value,
+      tension: 0.25,
+      borderWidth: 3,
+      borderColor: chartColors.contextValue,
+      backgroundColor: "rgba(37, 99, 235, 0.16)"
+    },
+    {
+      label: `${primaryLabel} tax index`,
+      data: primaryIndex.taxes,
+      tension: 0.25,
+      borderWidth: 3,
+      borderColor: chartColors.contextTax,
+      backgroundColor: "rgba(244, 63, 94, 0.16)"
+    },
+    {
+      label: `${comparisonLabel} value index`,
+      data: comparisonIndex.value,
+      tension: 0.25,
+      borderWidth: 2,
+      borderColor: chartColors.propertyValue,
+      backgroundColor: "rgba(100, 116, 139, 0.12)",
+      borderDash: [6, 5]
+    },
+    {
+      label: `${comparisonLabel} tax index`,
+      data: comparisonIndex.taxes,
+      tension: 0.25,
+      borderWidth: 2,
+      borderColor: chartColors.propertyTax,
+      backgroundColor: "rgba(253, 164, 175, 0.14)",
+      borderDash: [6, 5]
+    }
+  ];
+  const rateDatasets = [
+    {
+      label: `${primaryLabel} average tax rate`,
+      data: primaryRows.map(row => row.averageTaxRate * 100),
+      tension: 0.25,
+      borderWidth: 3,
+      borderColor: chartColors.contextValue,
+      backgroundColor: "rgba(37, 99, 235, 0.16)"
+    },
+    {
+      label: `${comparisonLabel} average tax rate`,
+      data: comparisonRows.map(row => row.averageTaxRate * 100),
+      tension: 0.25,
+      borderWidth: 2,
+      borderColor: chartColors.propertyValue,
+      backgroundColor: "rgba(100, 116, 139, 0.12)",
+      borderDash: [6, 5]
+    }
+  ];
+  const hasIndexedLegend = renderCustomLegend("countyComparisonIndexedChartLegend", indexedDatasets);
+  const hasRateLegend = renderCustomLegend("countyComparisonRateChartLegend", rateDatasets);
 
   document.getElementById("countyComparisonIndexedNote").textContent = `${primaryLabel} is compared with ${comparisonLabel}, indexed to ${years[0]}.`;
   document.getElementById("countyComparisonRateNote").textContent = `${primaryLabel} and ${comparisonLabel} average CTL tax rates.`;
@@ -1224,47 +1520,15 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
     type: "line",
     data: {
       labels: years,
-      datasets: [
-        {
-          label: `${primaryLabel} value index`,
-          data: primaryIndex.value,
-          tension: 0.25,
-          borderWidth: 3,
-          borderColor: chartColors.contextValue,
-          backgroundColor: "rgba(37, 99, 235, 0.16)"
-        },
-        {
-          label: `${primaryLabel} tax index`,
-          data: primaryIndex.taxes,
-          tension: 0.25,
-          borderWidth: 3,
-          borderColor: chartColors.contextTax,
-          backgroundColor: "rgba(244, 63, 94, 0.16)"
-        },
-        {
-          label: `${comparisonLabel} value index`,
-          data: comparisonIndex.value,
-          tension: 0.25,
-          borderWidth: 2,
-          borderColor: chartColors.propertyValue,
-          backgroundColor: "rgba(100, 116, 139, 0.12)",
-          borderDash: [6, 5]
-        },
-        {
-          label: `${comparisonLabel} tax index`,
-          data: comparisonIndex.taxes,
-          tension: 0.25,
-          borderWidth: 2,
-          borderColor: chartColors.propertyTax,
-          backgroundColor: "rgba(253, 164, 175, 0.14)",
-          borderDash: [6, 5]
-        }
-      ]
+      datasets: indexedDatasets
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: !hasIndexedLegend }
+      },
       scales: {
         y: {
           title: { display: true, text: "Index" },
@@ -1280,30 +1544,15 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
     type: "line",
     data: {
       labels: years,
-      datasets: [
-        {
-          label: `${primaryLabel} average tax rate`,
-          data: primaryRows.map(row => row.averageTaxRate * 100),
-          tension: 0.25,
-          borderWidth: 3,
-          borderColor: chartColors.contextValue,
-          backgroundColor: "rgba(37, 99, 235, 0.16)"
-        },
-        {
-          label: `${comparisonLabel} average tax rate`,
-          data: comparisonRows.map(row => row.averageTaxRate * 100),
-          tension: 0.25,
-          borderWidth: 2,
-          borderColor: chartColors.propertyValue,
-          backgroundColor: "rgba(100, 116, 139, 0.12)",
-          borderDash: [6, 5]
-        }
-      ]
+      datasets: rateDatasets
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: !hasRateLegend }
+      },
       scales: {
         y: {
           title: { display: true, text: "Average tax rate" },
@@ -1360,14 +1609,41 @@ export function buildCtlSummary(data, ctlData) {
 
   const stateSummary = document.getElementById("stateCtlSummary");
   if (stateSummary) {
-    stateSummary.innerHTML = [
-      ["Value growth", formatChange(indexChange(stateRows, "totalValue"))],
-      ["Tax growth", formatChange(indexChange(stateRows, "taxesLevied"))],
-      ["Rate movement", `${(stateRows[0].averageTaxRate * 100).toFixed(2)}% to ${(stateRows.at(-1).averageTaxRate * 100).toFixed(2)}%`]
-    ].map(([label, value]) => `
-      <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-        <p class="mt-1 text-lg font-bold text-slate-700">${value}</p>
+    const stateCards = [
+      {
+        label: "Statewide value index",
+        value: formatChange(indexChange(stateRows, "totalValue")),
+        note: "Total certified value growth since 2019.",
+        color: chartColors.contextValue,
+        bg: "rgb(239 246 255)",
+        ring: "rgb(191 219 254)"
+      },
+      {
+        label: "Statewide tax index",
+        value: formatChange(indexChange(stateRows, "taxesLevied")),
+        note: "Total taxes levied growth since 2019.",
+        color: chartColors.contextTax,
+        bg: "rgb(255 241 242)",
+        ring: "rgb(254 205 211)"
+      },
+      {
+        label: "Statewide average tax rate",
+        value: `${(stateRows[0].averageTaxRate * 100).toFixed(2)}% to ${(stateRows.at(-1).averageTaxRate * 100).toFixed(2)}%`,
+        note: "Average CTL tax-rate movement over the same period.",
+        color: chartColors.contextValue,
+        bg: "rgb(239 246 255)",
+        ring: "rgb(191 219 254)"
+      }
+    ];
+
+    stateSummary.innerHTML = stateCards.map(card => `
+      <div class="rounded-xl p-4" style="background-color: ${card.bg}; box-shadow: inset 0 0 0 1px ${card.ring};">
+        <div class="flex items-center gap-2">
+          <span class="chart-legend-dot inline-block" style="background-color: ${card.color};"></span>
+          <p class="text-xs font-semibold uppercase tracking-wide" style="color: ${card.color};">${card.label}</p>
+        </div>
+        <p class="mt-2 text-lg font-bold" style="color: ${card.color};">${card.value}</p>
+        <p class="mt-1 text-sm leading-5" style="color: ${card.color};">${card.note}</p>
       </div>
     `).join("");
   }
