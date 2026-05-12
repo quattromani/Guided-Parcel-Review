@@ -1515,17 +1515,6 @@ function renderSummary(data) {
   `;
 }
 
-function stageLink(stage, active) {
-  if (!active || !stage.link?.url) return "";
-
-  return [
-    `<a href="${escapeHtml(stage.link.url)}" target="_blank" rel="noreferrer" class="mt-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-200 hover:bg-blue-50">`,
-    escapeHtml(stage.link.label || "Open stage link"),
-    `</a>`
-  ].join("");
-}
-
-
 function initJumpLinks() {
   document.querySelectorAll("[data-jump-target]").forEach(link => {
     link.addEventListener("click", event => {
@@ -1584,8 +1573,13 @@ function renderProcessTimeline(calendar) {
   initCalendarStageModal(calendar);
 }
 
-function calendarStageDetailHtml(stage, active) {
-  const sourceEvents = stage.sourceEvents || [];
+function calendarStageDetailHtml(stage) {
+  const sourceEvents = stage.id === "protest"
+    ? (stage.sourceEvents || []).slice().sort((a, b) => {
+      const priority = event => /deadline.*file|file.*valuation protest/i.test(event.duty) ? 1 : /hearing|review|deciding/i.test(event.duty) ? 2 : 0;
+      return priority(a) - priority(b);
+    })
+    : stage.sourceEvents || [];
 
   return `
     <div class="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
@@ -1607,8 +1601,10 @@ function calendarStageDetailHtml(stage, active) {
     ` : ""}
     ${stage.id === "protest" ? `
       <div class="mt-4 rounded-2xl bg-blue-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-blue-200">
-        <p>The Nebraska Form 422 link appears during the protest window, June 1 through June 30.</p>
-        ${stageLink(stage, active)}
+        <p>After reviewing the record and supporting context, you can prepare the official Form 422 with available property information filled in. Requested valuation, reasons, signature, and filing responsibility remain with the filer.</p>
+        <button type="button" data-calendar-prepare-form422 class="mt-3 inline-flex rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+          Prepare Form 422
+        </button>
       </div>
     ` : ""}
   `;
@@ -1630,10 +1626,13 @@ function initCalendarStageModal(calendar) {
   }
 
   function open(stage) {
-    const active = isStageActive(stage);
     title.textContent = stage.label;
     timing.textContent = stage.timing;
-    content.innerHTML = calendarStageDetailHtml(stage, active);
+    content.innerHTML = calendarStageDetailHtml(stage);
+    content.querySelector("[data-calendar-prepare-form422]")?.addEventListener("click", () => {
+      close();
+      document.querySelector("#review-checklist-card [data-prepare-form422]")?.click();
+    });
     modal.classList.remove("hidden");
     modal.classList.add("flex");
     document.body.classList.add("overflow-hidden");
