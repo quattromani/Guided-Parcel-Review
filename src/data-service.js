@@ -78,6 +78,13 @@ export function loadCountyContext() {
     .then(({ county }) => loadJson(county.countyContextPath, "county context"));
 }
 
+export function loadGoverningOffice() {
+  return getActiveCountyEntry()
+    .then(({ county }) => county.governingOfficePath
+      ? loadJson(county.governingOfficePath, "governing office")
+      : null);
+}
+
 export function loadPadRatioStatistics() {
   return getActiveCountyEntry()
     .then(({ county }) => loadJson(county.padRatioStatisticsPath, "PAD ratio statistics"));

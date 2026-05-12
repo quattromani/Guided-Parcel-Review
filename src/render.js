@@ -17,12 +17,20 @@ import {
   generateForm422Pdf,
   printPdf
 } from "./form422Prefill.js";
+import {
+  buildRecordCorrectionEmailPayload,
+  buildRecordCorrectionSubmission,
+  generateRecordCorrectionPdf
+} from "./recordCorrectionRequest.js";
 
 const discrepancyChoices = [
-  ["confirmed", "Confirmed"],
   ["incorrect", "Incorrect"],
-  ["unsure", "?"]
+  ["missing", "Missing"],
+  ["misclassified", "Misclassified"],
+  ["needs-review", "Needs review"],
+  ["other", "Other"]
 ];
+const discrepancyChoiceLabels = Object.fromEntries(discrepancyChoices);
 
 const viewHeaderContent = {
   "your-property": {
@@ -75,7 +83,7 @@ const viewHeaderContent = {
   }
 };
 
-export function renderPage(data, imageModal, calendar, recordCard, valuationGroups) {
+export function renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice) {
   renderViewHeader("your-property", data.snapshotModel);
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard);
@@ -83,7 +91,7 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderHeaderTimeline(calendar);
   renderPropertyDetails(data, recordCard);
   renderDiscrepancyForm(data, recordCard);
-  initReportErrorModal(data);
+  initReportErrorModal(data, recordCard, governingOffice);
   initForm422Modal(data, recordCard);
   renderSummary(data);
   renderProcessTimeline(calendar);
@@ -597,7 +605,7 @@ function renderDiscrepancyForm(data, recordCard) {
           <div>
             <h3 class="text-lg font-bold text-slate-700">Review property record details</h3>
             <p class="mt-1 text-sm leading-6 text-slate-600">
-              Mark every item you can verify. Use ? when you are not sure whether the record is correct.
+              Mark only the items that appear inaccurate, incomplete, misclassified, or in need of factual review.
             </p>
           </div>
           <p id="discrepancyDraftStatus" class="text-xs font-medium text-slate-500" aria-live="polite"></p>
@@ -610,9 +618,9 @@ function renderDiscrepancyForm(data, recordCard) {
                 <th class="w-44 px-3 py-2 text-left font-semibold">Section</th>
                 <th class="px-3 py-2 text-left font-semibold">Record item</th>
                 <th class="px-3 py-2 text-left font-semibold">Current record</th>
-                <th class="w-24 px-2 py-2 text-center font-semibold">Confirmed</th>
-                <th class="w-24 px-2 py-2 text-center font-semibold">Incorrect</th>
-                <th class="w-16 px-2 py-2 text-center font-semibold">?</th>
+                ${discrepancyChoices.map(([, label]) => `
+                  <th class="w-24 px-2 py-2 text-center font-semibold">${escapeHtml(label)}</th>
+                `).join("")}
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-200 bg-white">
@@ -629,6 +637,8 @@ function renderDiscrepancyForm(data, recordCard) {
         </div>
       </section>
 
+      <div id="discrepancyValidationErrors" class="hidden rounded-xl bg-red-50 p-3 text-sm leading-6 text-red-700 ring-1 ring-red-200" role="alert" aria-live="assertive"></div>
+
       <section class="grid items-start gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2">
           <label for="discrepancyComments" class="text-sm font-semibold text-slate-700">Comments or correction narrative</label>
@@ -636,6 +646,11 @@ function renderDiscrepancyForm(data, recordCard) {
         </div>
 
         <div class="space-y-3 lg:pt-7">
+          <div>
+            <label for="discrepancySenderName" class="text-sm font-semibold text-slate-700">Your name</label>
+            <input id="discrepancySenderName" name="senderName" type="text" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Your name" />
+          </div>
+
           <fieldset class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
             <legend class="text-sm font-semibold text-slate-700">Preferred contact method</legend>
             <div class="mt-2 space-y-2 text-sm text-slate-700">
@@ -664,8 +679,8 @@ function renderDiscrepancyForm(data, recordCard) {
         </div>
       </section>
 
-      <section class="rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600 ring-1 ring-slate-200">
-        This prototype does not submit information yet. The submit button currently validates the workflow, captures a draft payload in the browser console, and shows a confirmation message for placement.
+      <section id="discrepancyDeliveryNotice" class="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900 ring-1 ring-amber-200">
+        Development mode: email delivery is not connected yet. Submitting will generate the correction-request PDF and email payload without sending a message.
       </section>
 
       <div class="flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
@@ -686,14 +701,16 @@ function renderDiscrepancyForm(data, recordCard) {
   `;
 }
 
-function initDiscrepancyDraft(data) {
+function initDiscrepancySubmission(data, recordCard, governingOffice) {
   const form = document.getElementById("propertyDiscrepancyForm");
   const status = document.getElementById("discrepancyDraftStatus");
   const submitStatus = document.getElementById("discrepancySubmitStatus");
+  const validationErrors = document.getElementById("discrepancyValidationErrors");
   const clearButton = document.querySelector("[data-clear-discrepancy-draft]");
   if (!form) return;
 
   const draftKey = `property-discrepancy-draft:${data.parcel.parcelId}`;
+  const rows = discrepancyRows(data, recordCard);
 
   function collectDraft() {
     const draft = {};
@@ -702,6 +719,81 @@ function initDiscrepancyDraft(data) {
       draft[key] = value;
     });
     return draft;
+  }
+
+  function collectFormValues() {
+    const formData = new FormData(form);
+
+    return {
+      comments: String(formData.get("comments") || "").trim(),
+      senderName: String(formData.get("senderName") || "").trim(),
+      email: String(formData.get("email") || "").trim(),
+      phone: String(formData.get("phone") || "").trim(),
+      contactMethod: String(formData.get("contactMethod") || "").trim()
+    };
+  }
+
+  function selectedItems() {
+    const formData = new FormData(form);
+
+    return rows
+      .map(row => {
+        const issueType = formData.get(row.id);
+        if (!issueType) return null;
+
+        return {
+          section: row.section,
+          label: row.label,
+          value: row.value,
+          issueType,
+          issueLabel: discrepancyChoiceLabels[issueType] || String(issueType)
+        };
+      })
+      .filter(Boolean);
+  }
+
+  function setValidationMessages(messages) {
+    if (!validationErrors) return;
+    if (!messages.length) {
+      validationErrors.classList.add("hidden");
+      validationErrors.innerHTML = "";
+      form.removeAttribute("aria-invalid");
+      return;
+    }
+
+    validationErrors.classList.remove("hidden");
+    validationErrors.innerHTML = `
+      <p class="font-semibold">Please review the correction request before submitting.</p>
+      <ul class="mt-1 list-disc space-y-1 pl-5">
+        ${messages.map(message => `<li>${escapeHtml(message)}</li>`).join("")}
+      </ul>
+    `;
+    form.setAttribute("aria-invalid", "true");
+    validationErrors.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function validate(values, items) {
+    const messages = [];
+
+    if (!items.length && !values.comments) {
+      messages.push("Select at least one record item for review or describe the correction in the narrative.");
+    }
+
+    if (!values.contactMethod) {
+      messages.push("Choose a preferred contact method.");
+    }
+
+    if (!values.email) {
+      messages.push("Enter an email address so a copy of the request can be sent to you.");
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      messages.push("Enter a valid email address.");
+    }
+
+    if (values.contactMethod === "phone" && !values.phone) {
+      messages.push("Enter a phone number for phone-call follow-up.");
+    }
+
+    return messages;
   }
 
   function saveDraft() {
@@ -743,33 +835,101 @@ function initDiscrepancyDraft(data) {
       submitStatus.textContent = "";
       submitStatus.className = "text-sm font-medium text-slate-600";
     }
+    setValidationMessages([]);
   });
-  form.addEventListener("submit", event => {
+  form.addEventListener("submit", async event => {
     event.preventDefault();
     saveDraft();
-    const payload = {
-      parcelId: data.parcel.parcelId,
-      situsAddress: data.parcel.situsAddress,
-      owner: data.parcel.owner,
-      submittedAt: new Date().toISOString(),
-      draft: collectDraft()
-    };
-    console.info("Property discrepancy request payload", payload);
+    setValidationMessages([]);
+
+    const values = collectFormValues();
+    const items = selectedItems();
+    const messages = validate(values, items);
+
+    if (messages.length) {
+      setValidationMessages(messages);
+      if (submitStatus) {
+        submitStatus.textContent = "Correction request needs a little more information before it can be prepared.";
+        submitStatus.className = "text-sm font-semibold text-red-700";
+      }
+      return;
+    }
+
     if (submitStatus) {
-      submitStatus.textContent = "Correction request captured for prototype review. No information has been submitted.";
-      submitStatus.className = "text-sm font-semibold text-emerald-700";
+      submitStatus.textContent = "Preparing correction request PDF and email payload...";
+      submitStatus.className = "text-sm font-semibold text-slate-600";
+    }
+
+    try {
+      const submission = buildRecordCorrectionSubmission({
+        data,
+        rows,
+        formValues: values,
+        selectedItems: items,
+        governingOffice
+      });
+      const pdfBytes = await generateRecordCorrectionPdf(submission);
+      const emailPayload = buildRecordCorrectionEmailPayload(submission, pdfBytes);
+      const delivery = await deliverRecordCorrectionEmail(emailPayload, pdfBytes);
+
+      console.info("Property record correction request ready for delivery", {
+        emailDeliveryConfigured: delivery.delivered,
+        developmentMode: delivery.developmentMode,
+        submission,
+        emailPayload,
+        pdf: {
+          generated: true,
+          byteLength: pdfBytes.length,
+          fileName: emailPayload.attachment.fileName
+        }
+      });
+
+      if (submitStatus) {
+        if (delivery.delivered) {
+          submitStatus.textContent = "Your property record correction request has been sent to the Assessor's Office. A copy has also been sent to your email for your records.";
+          submitStatus.className = "text-sm font-semibold text-emerald-700";
+          localStorage.removeItem(draftKey);
+        } else {
+          submitStatus.textContent = `Development mode: correction-request PDF generated and email payload prepared for ${emailPayload.to}. Email delivery is not connected yet, so no message was sent and your draft remains available.`;
+          submitStatus.className = "text-sm font-semibold text-amber-800";
+        }
+      }
+    } catch (error) {
+      console.error("Property record correction request submission failed", error);
+      if (submitStatus) {
+        submitStatus.textContent = `Correction request could not be prepared: ${error.message}`;
+        submitStatus.className = "text-sm font-semibold text-red-700";
+      }
     }
   });
 }
 
-function initReportErrorModal(data) {
+async function deliverRecordCorrectionEmail(emailPayload, pdfBytes) {
+  const service = window.propertyCorrectionEmailService;
+
+  if (!service?.send) {
+    return { delivered: false, developmentMode: true };
+  }
+
+  await service.send({
+    ...emailPayload,
+    attachment: {
+      ...emailPayload.attachment,
+      bytes: pdfBytes
+    }
+  });
+
+  return { delivered: true, developmentMode: false };
+}
+
+function initReportErrorModal(data, recordCard, governingOffice) {
   const modal = document.getElementById("reportErrorModal");
   const triggers = document.querySelectorAll("[data-report-error]");
   const closeButtons = document.querySelectorAll("[data-close-report-error]");
 
   if (!modal || !triggers.length) return;
 
-  initDiscrepancyDraft(data);
+  initDiscrepancySubmission(data, recordCard, governingOffice);
 
   function close() {
     modal.classList.add("hidden");

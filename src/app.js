@@ -14,6 +14,7 @@ import {
   loadAssessmentRatioAnalysis,
   loadCertifiedTaxesLevied,
   loadCountyContext,
+  loadGoverningOffice,
   loadPropertyData,
   loadPropertyRecordCard,
   loadPadRatioStatistics,
@@ -33,13 +34,14 @@ import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.
 
 async function main() {
   applyVisualizationPalette();
-  const [propertyData, recordCard, calendar, ctlData, ratioData, countyContext, padRatioData, schoolDistrictColors, taxDistrictAuthorities, valuationGroups, iaaoStandards] = await Promise.all([
+  const [propertyData, recordCard, calendar, ctlData, ratioData, countyContext, governingOffice, padRatioData, schoolDistrictColors, taxDistrictAuthorities, valuationGroups, iaaoStandards] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
     loadAssessmentCalendar(),
     loadCertifiedTaxesLevied(),
     loadAssessmentRatioAnalysis(),
     loadCountyContext(),
+    loadGoverningOffice(),
     loadPadRatioStatistics(),
     loadSchoolDistrictColors(),
     loadTaxDistrictAuthorities(),
@@ -61,7 +63,7 @@ async function main() {
   const data = withSnapshotModel(propertyData, snapshotModel);
   const imageModal = initImageModal(data.assets);
 
-  renderPage(data, imageModal, calendar, recordCard, valuationGroups);
+  renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice);
   renderTaxDistrictAuthorities(data, taxDistrictAuthorities);
   buildIndexedChart(data);
   buildEqualizationPressureIndex(data, ctlData);
