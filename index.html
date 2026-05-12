@@ -688,14 +688,13 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property Value & Tax Snapshot</p>
           <h2 class="mt-1 text-xl font-bold text-slate-700">Resources and policies</h2>
           <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600">
-            Optional reference links, forms, glossary items, and prototype policy pages.
+            Need help with what you just reviewed? Find focused answers, forms, and plain-English terms.
           </p>
         </div>
         <nav aria-label="Resource menu" class="footer-resource-pills">
           <button type="button" data-footer-target="faq" class="footer-pill-button text-slate-600">FAQs</button>
           <button type="button" data-footer-target="forms" class="footer-pill-button text-slate-600">Forms</button>
           <button type="button" data-footer-target="learn" class="footer-pill-button text-slate-600">Learn</button>
-          <button type="button" data-footer-target="resources" class="footer-pill-button text-slate-600">Resources</button>
         </nav>
       </div>
 
@@ -736,105 +735,20 @@
 
         <section data-footer-panel="faq" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">FAQs</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Questions this snapshot can answer</h3>
-          <div class="mt-4 grid gap-3 lg:grid-cols-2">
-            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <summary class="cursor-pointer list-none font-semibold text-slate-700">Where am I in the assessment and tax calendar?</summary>
-              <p class="mt-2 text-sm leading-6 text-slate-600">The tax process timeline explains the current stage, overlapping protest and review windows, and what happens before final bills are issued.</p>
-              <button type="button" data-view-link="property" data-jump-target="tax-cycle" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show the tax process timeline</button>
-            </details>
-            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <summary class="cursor-pointer list-none font-semibold text-slate-700">Why is the current assessed value different from last year?</summary>
-              <p class="mt-2 text-sm leading-6 text-slate-600">The value and tax history table separates the current assessment year from prior finalized tax years.</p>
-              <button type="button" data-view-link="property" data-jump-target="value-history" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show value and tax history</button>
-            </details>
-            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <summary class="cursor-pointer list-none font-semibold text-slate-700">Are values and taxes moving together?</summary>
-              <p class="mt-2 text-sm leading-6 text-slate-600">The indexed chart resets value and taxes to a common starting point so their movement can be compared directly.</p>
-              <button type="button" data-view-link="property" data-jump-target="indexed-trends" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show indexed trends</button>
-            </details>
-            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <summary class="cursor-pointer list-none font-semibold text-slate-700">Where does the tax bill go?</summary>
-              <p class="mt-2 text-sm leading-6 text-slate-600">The levy distribution view shows the latest finalized taxing-body components and their share of the total levy.</p>
-              <button type="button" data-view-link="property" data-jump-target="tax-distribution" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show tax distribution</button>
-            </details>
-            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <summary class="cursor-pointer list-none font-semibold text-slate-700">How does this property compare to nearby market activity?</summary>
-              <p class="mt-2 text-sm leading-6 text-slate-600">The market area view is designed to compare local value movement, ETR movement, and tax-district context.</p>
-              <button type="button" data-view-link="market" data-jump-target="market-indexed" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show market-area movement</button>
-            </details>
-            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <summary class="cursor-pointer list-none font-semibold text-slate-700">Are county appraisals moving closer to market value?</summary>
-              <p class="mt-2 text-sm leading-6 text-slate-600">The county assessment-ratio view tracks COD, PRD, COV, and level of value on a common scale.</p>
-              <button type="button" data-view-link="county" data-jump-target="assessment-accuracy" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show county equalization measures</button>
-            </details>
-            <details class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <summary class="cursor-pointer list-none font-semibold text-slate-700">How does this county compare with another county or the state?</summary>
-              <p class="mt-2 text-sm leading-6 text-slate-600">The statewide comparison lets the current county be compared against statewide totals or one other Nebraska county at a time.</p>
-              <button type="button" data-view-link="statewide" data-jump-target="county-comparison" class="mt-3 text-sm font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">Show county comparison</button>
-            </details>
-          </div>
+          <h3 id="footerFaqTitle" class="mt-1 text-lg font-bold text-slate-700">Property record FAQs</h3>
+          <div id="footerFaqContent" class="mt-4 grid gap-3 lg:grid-cols-2"></div>
         </section>
 
         <section data-footer-panel="forms" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Forms</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Common forms</h3>
-          <div class="mt-3 grid gap-3 md:grid-cols-3">
-            <button type="button" data-report-error class="form-action-button">
-              <span class="font-semibold text-slate-700">Report a property-record concern</span>
-              <span class="form-action-cta">Open record review</span>
-            </button>
-            <button type="button" data-prepare-homestead class="form-action-button">
-              <span class="font-semibold text-slate-700">Homestead exemption</span>
-              <span class="form-action-cta">Prepare Form 458</span>
-            </button>
-            <button type="button" data-prepare-form422 class="form-action-button">
-              <span class="font-semibold text-slate-700">Property valuation protest</span>
-              <span class="form-action-cta">Prepare Form 422</span>
-            </button>
-          </div>
+          <h3 id="footerFormsTitle" class="mt-1 text-lg font-bold text-slate-700">Property record forms</h3>
+          <div id="footerFormsContent" class="mt-3 grid gap-3 md:grid-cols-3"></div>
         </section>
 
         <section data-footer-panel="learn" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Learn</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Glossary and math notes</h3>
-          <div class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-            <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <p class="font-semibold text-slate-700">Assessed value</p>
-              <p class="mt-1 text-sm leading-6 text-slate-600">The value used for taxation after the assessment process determines the property’s taxable basis.</p>
-            </div>
-            <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <p class="font-semibold text-slate-700">Effective tax rate</p>
-              <p class="mt-1 text-sm leading-6 text-slate-600">Final taxes divided by assessed value. It helps compare tax burden across years even when value changes.</p>
-            </div>
-            <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <p class="font-semibold text-slate-700">Indexed trend</p>
-              <p class="mt-1 text-sm leading-6 text-slate-600">A chart where each series starts at 100, making relative movement easier to compare.</p>
-            </div>
-            <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <p class="font-semibold text-slate-700">COD, PRD, COV, LOV</p>
-              <p class="mt-1 text-sm leading-6 text-slate-600">Assessment-ratio measures used to evaluate uniformity, price-related fairness, reliability, and level of value.</p>
-            </div>
-          </div>
-        </section>
-
-        <section data-footer-panel="resources" class="footer-panel hidden">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Resources</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Reference resources</h3>
-          <div class="mt-3 grid gap-3 md:grid-cols-3">
-            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
-              <span class="font-semibold text-slate-700">Nebraska Department of Revenue PAD</span>
-              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
-            </a>
-            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
-              <span class="font-semibold text-slate-700">County assessor resources</span>
-              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
-            </a>
-            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
-              <span class="font-semibold text-slate-700">Public assessment reports</span>
-              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
-            </a>
-          </div>
+          <h3 id="footerLearnTitle" class="mt-1 text-lg font-bold text-slate-700">Property record terms</h3>
+          <div id="footerLearnContent" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
         </section>
 
         <section data-footer-panel="contact" class="footer-panel hidden">

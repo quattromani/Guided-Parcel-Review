@@ -930,10 +930,9 @@ async function deliverRecordCorrectionEmail(emailPayload, pdfBytes) {
 
 function initReportErrorModal(data, recordCard, governingOffice) {
   const modal = document.getElementById("reportErrorModal");
-  const triggers = document.querySelectorAll("[data-report-error]");
   const closeButtons = document.querySelectorAll("[data-close-report-error]");
 
-  if (!modal || !triggers.length) return;
+  if (!modal) return;
 
   initDiscrepancySubmission(data, recordCard, governingOffice);
 
@@ -949,7 +948,13 @@ function initReportErrorModal(data, recordCard, governingOffice) {
     document.body.classList.add("overflow-hidden");
   }
 
-  triggers.forEach(trigger => trigger.addEventListener("click", open));
+  document.addEventListener("click", event => {
+    const trigger = event.target.closest?.("[data-report-error]");
+    if (!trigger) return;
+
+    event.preventDefault();
+    open();
+  });
   modal.addEventListener("click", close);
   modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
   closeButtons.forEach(button => button.addEventListener("click", close));
@@ -961,13 +966,12 @@ function initReportErrorModal(data, recordCard, governingOffice) {
 
 function initForm422Modal(data, recordCard) {
   const modal = document.getElementById("form422Modal");
-  const triggers = document.querySelectorAll("[data-prepare-form422]");
   const closeButtons = document.querySelectorAll("[data-close-form422]");
   const generateButton = document.querySelector("[data-generate-form422]");
   const fieldContainer = document.getElementById("form422ConfirmationFields");
   const status = document.getElementById("form422Status");
 
-  if (!modal || !triggers.length || !fieldContainer || !generateButton) return;
+  if (!modal || !fieldContainer || !generateButton) return;
 
   const model = buildForm422PrefillModel(data, recordCard);
 
@@ -1021,7 +1025,13 @@ function initForm422Modal(data, recordCard) {
     }
   }
 
-  triggers.forEach(trigger => trigger.addEventListener("click", open));
+  document.addEventListener("click", event => {
+    const trigger = event.target.closest?.("[data-prepare-form422]");
+    if (!trigger) return;
+
+    event.preventDefault();
+    open();
+  });
   modal.addEventListener("click", close);
   modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
   closeButtons.forEach(button => button.addEventListener("click", close));
@@ -1034,13 +1044,12 @@ function initForm422Modal(data, recordCard) {
 
 function initForm458Modal(data, recordCard) {
   const modal = document.getElementById("form458Modal");
-  const triggers = document.querySelectorAll("[data-prepare-homestead]");
   const closeButtons = document.querySelectorAll("[data-close-form458]");
   const generateButton = document.querySelector("[data-generate-form458]");
   const fieldContainer = document.getElementById("form458ConfirmationFields");
   const status = document.getElementById("form458Status");
 
-  if (!modal || !triggers.length || !fieldContainer || !generateButton) return;
+  if (!modal || !fieldContainer || !generateButton) return;
 
   const model = buildForm458PrefillModel(data, recordCard);
 
@@ -1094,7 +1103,13 @@ function initForm458Modal(data, recordCard) {
     }
   }
 
-  triggers.forEach(trigger => trigger.addEventListener("click", open));
+  document.addEventListener("click", event => {
+    const trigger = event.target.closest?.("[data-prepare-homestead]");
+    if (!trigger) return;
+
+    event.preventDefault();
+    open();
+  });
   modal.addEventListener("click", close);
   modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
   closeButtons.forEach(button => button.addEventListener("click", close));
