@@ -31,8 +31,8 @@
     <section data-guided-panel="your-property" class="space-y-6">
       <article class="guided-intro">
         <p class="guided-kicker">Your Property</p>
-        <h2>What changed about this property?</h2>
-        <p>Start with ownership, location, class, land, dwelling facts, and record-card detail. A taxpayer should know what the county thinks the property is before reading charts.</p>
+        <h2>Start with what the county has on record.</h2>
+        <p>Confirm the parcel facts, classification, land, dwelling details, and notice value breakdown before reviewing taxes or market comparisons.</p>
       </article>
 
       <header id="pageHeader" class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"></header>
@@ -63,8 +63,8 @@
     <section data-guided-panel="your-assessment" class="hidden space-y-6">
       <article class="guided-intro">
         <p class="guided-kicker">Your Assessment</p>
-        <h2>What changed about the assessed value?</h2>
-        <p>This step focuses on value first: the notice breakdown, the year-by-year history, and whether value and taxes have moved together over time.</p>
+        <h2>Read value movement before tax movement.</h2>
+        <p>This step separates the assessment notice, year-by-year value history, and indexed value/tax movement so the current value is understood before tax impact.</p>
       </article>
 
       <section id="assessment-notice" class="grid gap-6 lg:grid-cols-5">
@@ -130,8 +130,8 @@
     <section data-guided-panel="your-taxes" class="hidden space-y-6">
       <article class="guided-intro">
         <p class="guided-kicker">Your Taxes</p>
-        <h2>What does this mean for taxes?</h2>
-        <p>Taxes are framed separately from assessment because a higher value does not automatically explain the full bill. This step shows burden, levy movement, and tax pressure.</p>
+        <h2>Value changes do not automatically explain the bill.</h2>
+        <p>This step separates assessed value from finalized taxes, levy movement, and effective tax rate so tax burden can be reviewed on its own terms.</p>
       </article>
 
       <article id="equalization-pressure" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -200,61 +200,42 @@
     </section>
 
     <section data-guided-panel="tax-districts" class="hidden space-y-6">
-      <article class="guided-intro">
-        <p class="guided-kicker">Your Tax Districts</p>
-        <h2>Who is taxing this property?</h2>
-        <p>This step answers two related questions separately: where the levy goes, and which authorities are part of the property’s tax district.</p>
-      </article>
-
-      <section id="tax-distribution" class="grid gap-6 lg:grid-cols-5">
-        <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
-          <h2 class="text-xl font-bold text-slate-700">What organizations make up the tax levy?</h2>
-          <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill depends on finalized budgets, levies, credits, and exemptions.</p>
-          <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-              <thead class="bg-slate-50">
-                <tr>
-                  <th class="px-3 py-2 text-left font-semibold">Taxing body</th>
-                  <th class="px-3 py-2 text-right font-semibold">Rate</th>
-                  <th class="px-3 py-2 text-right font-semibold">Share</th>
-                  <th class="px-3 py-2 text-right font-semibold">Per $100k</th>
-                </tr>
-              </thead>
-              <tbody id="levyRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-            </table>
-          </div>
-        </article>
-
-        <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
-          <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
-          <p class="mt-1 text-sm text-slate-600">Based on the latest finalized levy components. Current-year distribution appears after levies are finalized.</p>
-          <div class="mt-4 grid gap-4 md:grid-cols-[minmax(150px,220px)_minmax(0,1fr)] md:items-center">
-            <div id="distributionNotes" class="space-y-2 text-sm text-slate-700"></div>
-            <div class="h-72 sm:h-80">
-              <canvas id="distributionChart"></canvas>
-            </div>
-          </div>
-        </article>
-      </section>
-
       <article id="tax-district-authorities" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <h2 class="text-xl font-bold text-slate-700">Which authorities are in this tax district?</h2>
-        <p class="mt-1 text-sm text-slate-600">District authority data lists the taxing bodies that make up the property’s district and their levy rates.</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-blue-700">Your Tax Districts</p>
+        <h2 class="mt-1 text-2xl font-bold text-slate-700">Who is taxing this property?</h2>
+        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Start with the parcel’s tax district, source year, total levy, and the number of authorities included. The breakdown below then shows how that levy is distributed.</p>
         <div id="taxDistrictAuthoritySummary" class="mt-4 grid gap-3 md:grid-cols-4"></div>
-        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-          <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="bg-slate-50">
-              <tr>
-                <th class="px-3 py-2 text-left font-semibold">Authority</th>
-                <th class="px-3 py-2 text-left font-semibold">Category</th>
-                <th class="px-3 py-2 text-right font-semibold">Levy</th>
-                <th class="px-3 py-2 text-right font-semibold">Share</th>
-                <th class="px-3 py-2 text-right font-semibold">Per $100k</th>
-              </tr>
-            </thead>
-            <tbody id="taxDistrictAuthorityRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-          </table>
-        </div>
+
+        <section id="tax-distribution" class="mt-5 grid gap-6 border-t border-slate-200 pt-5 lg:grid-cols-5">
+          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
+            <h2 class="text-xl font-bold text-slate-700">What organizations make up the tax levy?</h2>
+            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill depends on finalized budgets, levies, credits, and exemptions.</p>
+            <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
+              <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <thead class="bg-slate-50">
+                  <tr>
+                    <th class="px-3 py-2 text-left font-semibold">Taxing body</th>
+                    <th class="px-3 py-2 text-right font-semibold">Rate</th>
+                    <th class="px-3 py-2 text-right font-semibold">Share</th>
+                    <th class="px-3 py-2 text-right font-semibold">Per $100k</th>
+                  </tr>
+                </thead>
+                <tbody id="levyRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
+            <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
+            <p class="mt-1 text-sm text-slate-600">Based on the latest finalized levy components. Current-year distribution appears after levies are finalized.</p>
+            <div class="mt-4 grid gap-4 md:grid-cols-[minmax(150px,220px)_minmax(0,1fr)] md:items-center">
+              <div id="distributionNotes" class="space-y-2 text-sm text-slate-700"></div>
+              <div class="h-72 sm:h-80">
+                <canvas id="distributionChart"></canvas>
+              </div>
+            </div>
+          </article>
+        </section>
         <p id="taxDistrictAuthoritySource" class="chart-source"></p>
       </article>
 
@@ -271,8 +252,8 @@
     <section data-guided-panel="market-area" class="hidden space-y-6">
       <article class="guided-intro">
         <p class="guided-kicker">Your Market Area</p>
-        <h2>How does this compare nearby?</h2>
-        <p>This step uses valuation-group and PAD Reports and Opinions data instead of placeholder comparable-property cards.</p>
+        <h2>Use the valuation group as the local comparison lens.</h2>
+        <p>This step focuses on the property’s selected valuation group, then shows countywide residential sales context and sale-price distribution.</p>
       </article>
 
       <article id="market-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -354,8 +335,8 @@
     <section data-guided-panel="county-equalization" class="hidden space-y-6">
       <article class="guided-intro">
         <p class="guided-kicker">County Equalization</p>
-        <h2>How is the county performing overall?</h2>
-        <p>Countywide measures do not decide an individual protest, but they help taxpayers understand whether the broader system is tight, uneven, or changing.</p>
+        <h2>Countywide measures describe the system around the property.</h2>
+        <p>These measures do not decide an individual protest, but they help show whether assessments are generally close to market, uniform, and changing over time.</p>
       </article>
 
       <article id="assessment-accuracy" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -445,8 +426,8 @@
     <section data-guided-panel="state-context" class="hidden space-y-6">
       <article class="guided-intro">
         <p class="guided-kicker">State Context</p>
-        <h2>How does the county compare statewide?</h2>
-        <p>Statewide values and taxes levied provide a neutral baseline for understanding whether local tax-pressure movement stands out.</p>
+        <h2>Use the state baseline to judge whether the county stands out.</h2>
+        <p>This step compares the county with statewide CTL trends before showing the broader statewide pattern behind value growth, taxes levied, and average tax rates.</p>
       </article>
 
       <article id="county-comparison" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -529,8 +510,8 @@
     <section data-guided-panel="review-checklist" class="hidden space-y-6">
       <article class="guided-intro">
         <p class="guided-kicker">Review Checklist</p>
-        <h2>What should I check before I protest?</h2>
-        <p>Use the path you just walked through to confirm facts, identify missing information, and understand where the property sits in the assessment calendar.</p>
+        <h2>Turn the data story into a review list.</h2>
+        <p>Use the path you just walked through to confirm facts, find unresolved questions, and jump back to the sections that support each checklist item.</p>
       </article>
 
       <section id="headerTimeline" class="overflow-x-auto rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-slate-200"></section>
@@ -578,6 +559,26 @@
         <button type="button" data-report-error class="mt-5 rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
           Review property record details
         </button>
+
+        <div class="mt-5 border-t border-slate-200 pt-5">
+          <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Review before you protest</p>
+              <h3 class="mt-1 text-lg font-bold text-slate-700">Prepare a form only after checking the record.</h3>
+              <div class="mt-2 max-w-4xl space-y-2 text-sm leading-6 text-slate-600">
+                <p>A valuation protest is most effective when the property record is accurate first. Review parcel facts, condition, measurements, improvements, district assignments, and value history before deciding whether a protest is necessary.</p>
+                <p>Not every increase means an error occurred. Property taxes are also affected by levies, budgets, exemptions, credits, and statewide equalization requirements.</p>
+                <p>If, after review, you still believe the assessed value does not reasonably reflect the property record or market evidence, you may wish to prepare a formal valuation protest.</p>
+              </div>
+              <p class="mt-3 max-w-4xl rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600 ring-1 ring-slate-200">
+                Form 422 must be filed with the county clerk. Ordinary real property valuation protests are generally due on or before June 30, subject to the official instructions and applicable filing rules.
+              </p>
+            </div>
+            <button type="button" data-prepare-form422 class="inline-flex justify-center rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+              Prepare Form 422
+            </button>
+          </div>
+        </div>
       </section>
 
       <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -782,6 +783,60 @@
     </section>
   </div>
 
+  <div id="calendarStageModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-700/70 p-4 backdrop-blur-sm sm:p-6">
+    <section role="dialog" aria-modal="true" aria-labelledby="calendarStageTitle" class="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white text-slate-700 shadow-2xl ring-1 ring-slate-200">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-200 p-5">
+        <div>
+          <p id="calendarStageKicker" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property tax calendar</p>
+          <h2 id="calendarStageTitle" class="mt-1 text-2xl font-bold text-slate-700"></h2>
+          <p id="calendarStageTiming" class="mt-1 text-sm font-semibold uppercase tracking-wide text-slate-500"></p>
+        </div>
+        <button type="button" data-close-calendar-stage class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700" aria-label="Close calendar stage details">
+          ×
+        </button>
+      </div>
+
+      <div id="calendarStageModalContent" class="overflow-y-auto p-5"></div>
+    </section>
+  </div>
+
+  <div id="form422Modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-700/70 p-4 backdrop-blur-sm sm:p-6">
+    <section role="dialog" aria-modal="true" aria-labelledby="form422Title" class="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white text-slate-700 shadow-2xl ring-1 ring-slate-200">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-200 p-5">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Form 422 preparation</p>
+          <h2 id="form422Title" class="mt-1 text-2xl font-bold text-slate-700">Confirm Information for Form 422</h2>
+          <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">
+            Review this information before generating the form. You are responsible for confirming that the information is accurate before filing with the county clerk.
+          </p>
+        </div>
+        <button type="button" data-close-form422 class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700" aria-label="Close Form 422 preparation">
+          ×
+        </button>
+      </div>
+
+      <div class="overflow-y-auto p-5">
+        <div id="form422ConfirmationFields" class="grid gap-3 md:grid-cols-2"></div>
+        <div class="mt-5 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600 ring-1 ring-slate-200">
+          <p class="font-semibold text-slate-700">The filer must complete the protest substance.</p>
+          <p class="mt-1">Requested valuation and reasons for the requested change must be completed by the filer. This prototype only fills administrative and identifying information from available property record data.</p>
+        </div>
+        <div class="mt-4 rounded-2xl bg-blue-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-blue-200">
+          <p>Prepared from available property record data. Requested valuation, protest reasons, signature, and filing responsibility remain with the filer.</p>
+        </div>
+        <p id="form422Status" class="mt-4 text-sm font-medium text-slate-600" aria-live="polite"></p>
+      </div>
+
+      <div class="flex flex-col gap-3 border-t border-slate-200 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-xs leading-5 text-slate-500">The official Nebraska Form 422 PDF is used as the source form.</p>
+        <div class="flex flex-col gap-2 sm:flex-row">
+          <button type="button" data-close-form422 class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Cancel</button>
+          <button type="button" data-generate-form422 class="rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Generate PDF</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
   <div id="imageModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 p-6 backdrop-blur-sm">
     <div class="relative flex max-h-[95vh] max-w-[95vw] flex-col items-center">
       <button id="closeImageModal" type="button" class="absolute -right-3 -top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl font-bold text-slate-700 shadow-lg transition hover:bg-slate-100" aria-label="Close expanded image">
@@ -804,6 +859,7 @@
     </div>
   </div>
 
+  <script src="assets/vendor/pdf-lib.min.js"></script>
   <script type="module" src="src/app.js"></script>
 </body>
 </html>

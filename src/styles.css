@@ -11,6 +11,7 @@
   --color-red: 220 53 69;
   --color-red-soft: 253 236 238;
   --color-green: 25 135 84;
+  --color-green-dark: 20 108 67;
   --color-green-soft: 232 246 239;
   --color-yellow: 255 193 7;
   --color-yellow-soft: 255 248 225;
@@ -398,10 +399,10 @@ details[open] [data-disclosure-open] {
 
 .guided-intro h2 {
   color: rgb(var(--color-slate-700));
-  font-size: 1.875rem;
-  font-weight: 800;
+  font-size: 1.35rem;
+  font-weight: 750;
   letter-spacing: 0;
-  line-height: 1.15;
+  line-height: 1.25;
   margin-top: 0.25rem;
 }
 
@@ -409,7 +410,7 @@ details[open] [data-disclosure-open] {
   color: rgb(var(--color-slate-600));
   line-height: 1.65;
   margin-top: 0.5rem;
-  max-width: 58rem;
+  max-width: 62rem;
 }
 
 .guided-kicker {
@@ -428,7 +429,7 @@ details[open] [data-disclosure-open] {
 }
 
 .next-step-button {
-  background: rgb(var(--brand-ink));
+  background: rgb(var(--semantic-value));
   border-radius: 9999px;
   color: white;
   flex: 0 0 auto;
@@ -439,12 +440,12 @@ details[open] [data-disclosure-open] {
 }
 
 .next-step-button:hover {
-  background: rgb(var(--color-slate-600));
+  background: rgb(var(--color-green-dark));
 }
 
 .next-step-button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgb(var(--accent-primary) / 0.26);
+  box-shadow: 0 0 0 3px rgb(var(--semantic-value) / 0.28);
 }
 
 .checklist-item {

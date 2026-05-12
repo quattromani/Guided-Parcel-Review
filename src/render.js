@@ -12,6 +12,11 @@ import {
   getPreviousFinalValueHistory,
   getSnapshotHistory
 } from "./data-service.js";
+import {
+  buildForm422PrefillModel,
+  downloadPdf,
+  generateForm422Pdf
+} from "./form422Prefill.js";
 
 const discrepancyChoices = [
   ["confirmed", "Confirmed"],
@@ -79,6 +84,7 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderPropertyDetails(data, recordCard);
   renderDiscrepancyForm(data, recordCard);
   initReportErrorModal(data);
+  initForm422Modal(data, recordCard);
   renderSummary(data);
   renderProcessTimeline(calendar);
   renderHistoryTable(data);
@@ -519,10 +525,14 @@ function discrepancyRows(data, recordCard) {
     ["Garage 2", residential.garage2, "Dwelling information"],
     ["Minimum finish", formatSquareFeet(residential.minFinish), "Dwelling information"],
     ["Part finish", formatSquareFeet(residential.partFinish), "Dwelling information"],
-    ...dwellingRows.flatMap((row, index) => [
-      [`Additional feature ${index + 1}`, row.description, "Additional dwelling features"],
-      [`Additional feature ${index + 1} units`, row.units, "Additional dwelling features"],
-      [`Additional feature ${index + 1} value`, money.format(row.value), "Additional dwelling features"]
+    ...dwellingRows.map((row, index) => [
+      `Additional feature ${index + 1}`,
+      [
+        row.description,
+        row.units !== null && row.units !== undefined ? `Units: ${row.units}` : null,
+        row.value !== null && row.value !== undefined ? `Value: ${money.format(row.value)}` : null
+      ].filter(Boolean).join(" • "),
+      "Additional dwelling features"
     ]),
     ...(outbuildingRows.length
       ? outbuildingRows.flatMap((row, index) => [
@@ -788,6 +798,79 @@ function initReportErrorModal(data) {
   modal.addEventListener("click", close);
   modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
   closeButtons.forEach(button => button.addEventListener("click", close));
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") close();
+  });
+}
+
+function initForm422Modal(data, recordCard) {
+  const modal = document.getElementById("form422Modal");
+  const triggers = document.querySelectorAll("[data-prepare-form422]");
+  const closeButtons = document.querySelectorAll("[data-close-form422]");
+  const generateButton = document.querySelector("[data-generate-form422]");
+  const fieldContainer = document.getElementById("form422ConfirmationFields");
+  const status = document.getElementById("form422Status");
+
+  if (!modal || !triggers.length || !fieldContainer || !generateButton) return;
+
+  const model = buildForm422PrefillModel(data, recordCard);
+
+  fieldContainer.innerHTML = model.confirmationFields.map(([label, value]) => `
+    <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(label)}</p>
+      <p class="mt-1 text-sm font-semibold leading-5 text-slate-700">${escapeHtml(value || "Not available")}</p>
+    </div>
+  `).join("");
+
+  function close() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    document.body.classList.remove("overflow-hidden");
+    if (status) {
+      status.textContent = "";
+      status.className = "mt-4 text-sm font-medium text-slate-600";
+    }
+  }
+
+  function open() {
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.classList.add("overflow-hidden");
+  }
+
+  async function generate() {
+    if (status) {
+      status.textContent = "Generating Form 422...";
+      status.className = "mt-4 text-sm font-semibold text-slate-600";
+    }
+    generateButton.disabled = true;
+    generateButton.classList.add("opacity-60");
+
+    try {
+      const bytes = await generateForm422Pdf(model);
+      downloadPdf(bytes, model.fileName);
+      if (status) {
+        status.textContent = "Form 422 PDF generated. Review the downloaded form before filing.";
+        status.className = "mt-4 text-sm font-semibold text-emerald-700";
+      }
+    } catch (error) {
+      console.error(error);
+      if (status) {
+        status.textContent = error.message || "Form 422 could not be generated.";
+        status.className = "mt-4 text-sm font-semibold text-red-700";
+      }
+    } finally {
+      generateButton.disabled = false;
+      generateButton.classList.remove("opacity-60");
+    }
+  }
+
+  triggers.forEach(trigger => trigger.addEventListener("click", open));
+  modal.addEventListener("click", close);
+  modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
+  closeButtons.forEach(button => button.addEventListener("click", close));
+  generateButton.addEventListener("click", generate);
 
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") close();
@@ -1436,8 +1519,8 @@ function stageLink(stage, active) {
   if (!active || !stage.link?.url) return "";
 
   return [
-    `<a href="${stage.link.url}" target="_blank" rel="noreferrer" class="mt-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-200 hover:bg-blue-50">`,
-    stage.link.label || "Open stage link",
+    `<a href="${escapeHtml(stage.link.url)}" target="_blank" rel="noreferrer" class="mt-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-200 hover:bg-blue-50">`,
+    escapeHtml(stage.link.label || "Open stage link"),
     `</a>`
   ].join("");
 }
@@ -1461,6 +1544,7 @@ function initJumpLinks() {
 function renderProcessTimeline(calendar) {
   const currentStage = document.querySelector("[data-current-stage]");
   const sourceNote = document.querySelector("[data-calendar-source]");
+  const timeline = document.getElementById("processTimeline");
 
   if (currentStage) {
     currentStage.textContent = `Current stage: ${getCurrentStageText(calendar)}`;
@@ -1470,49 +1554,105 @@ function renderProcessTimeline(calendar) {
     sourceNote.textContent = `Source: 2025 Nebraska PAD Main Property Assessment and Taxation Calendar${calendar.sourceRevision ? `, ${calendar.sourceRevision.toLowerCase()}` : ""}. Filing dates follow the PAD legal-date rule for weekends and legal holidays.`;
   }
 
-  document.getElementById("processTimeline").innerHTML = calendar.stages.map((step, index) => {
+  if (!timeline) return;
+
+  timeline.innerHTML = calendar.stages.map((step, index) => {
     const active = isStageActive(step);
     const past = isStagePast(step);
+    const hasDetail = step.sourceEvents?.length || step.id === "protest";
 
     return `
-      <div class="group relative rounded-2xl p-4 ring-1 transition duration-200 ${active ? "z-10 scale-[1.03] bg-blue-50 shadow-md ring-blue-300" : past ? "bg-slate-50/60 opacity-70 ring-slate-200" : "bg-slate-50 ring-slate-200"}" tabindex="0">
+      <div class="group relative flex h-full flex-col rounded-2xl p-4 ring-1 transition duration-200 ${active ? "z-10 scale-[1.03] bg-blue-50 shadow-md ring-blue-300" : past ? "bg-slate-50/60 opacity-70 ring-slate-200" : "bg-slate-50 ring-slate-200"}" tabindex="0">
         <div class="mb-3 flex items-center gap-2">
           <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${active ? "bg-blue-600 text-white" : past ? "bg-slate-200 text-slate-500 ring-1 ring-slate-300" : "bg-white text-slate-600 ring-1 ring-slate-200"}">${index + 1}</span>
           ${active ? `<span class="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">Now</span>` : past ? `<span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500 ring-1 ring-slate-200">Passed</span>` : ""}
         </div>
-        <p class="font-semibold ${past && !active ? "text-slate-500" : "text-slate-700"}">${step.label}</p>
-        <p class="mt-1 text-xs font-semibold uppercase tracking-wide ${past && !active ? "text-slate-400" : "text-slate-500"}">${step.timing}</p>
-        <p class="mt-2 text-sm leading-6 ${past && !active ? "text-slate-500" : "text-slate-600"}">${step.description}</p>
-        ${step.sourceEvents?.length || step.id === "protest" ? `
-          <details class="mt-3 border-t border-slate-200 pt-3">
-            <summary class="cursor-pointer list-none text-xs font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4">
-              More information
-            </summary>
-            ${step.sourceEvents?.length ? `
-              <div class="mt-3">
-                <p class="text-[11px] font-semibold uppercase tracking-wide ${past && !active ? "text-slate-400" : "text-slate-500"}">PAD milestones</p>
-                <ul class="mt-2 space-y-2 text-xs leading-5 ${past && !active ? "text-slate-500" : "text-slate-600"}">
-                  ${step.sourceEvents.map(event => `
-                    <li>
-                      <span class="font-semibold text-slate-700">${event.timing}:</span>
-                      ${event.duty}
-                      ${event.authority?.length ? `<span class="block text-[11px] text-slate-500">${event.authority.join(", ")}</span>` : ""}
-                    </li>
-                  `).join("")}
-                </ul>
-              </div>
-            ` : ""}
-            ${step.id === "protest" ? `
-              <p class="mt-3 rounded-xl bg-slate-100 px-3 py-2 text-xs leading-5 text-slate-600 ring-1 ring-slate-200">
-                The Nebraska Form 422 link appears during the protest window, June 1 through June 30.
-              </p>
-              ${stageLink(step, active)}
-            ` : ""}
-          </details>
+        <p class="font-semibold ${past && !active ? "text-slate-500" : "text-slate-700"}">${escapeHtml(step.label)}</p>
+        <p class="mt-1 text-xs font-semibold uppercase tracking-wide ${past && !active ? "text-slate-400" : "text-slate-500"}">${escapeHtml(step.timing)}</p>
+        <p class="mt-2 flex-1 text-sm leading-6 ${past && !active ? "text-slate-500" : "text-slate-600"}">${escapeHtml(step.description)}</p>
+        ${hasDetail ? `
+          <div class="mt-auto border-t border-slate-200 pt-3 text-center">
+            <button type="button" data-calendar-stage="${escapeHtml(step.id)}" class="inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-200 transition hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400">
+              Learn More
+            </button>
+          </div>
         ` : ""}
       </div>
     `;
   }).join("");
+
+  initCalendarStageModal(calendar);
+}
+
+function calendarStageDetailHtml(stage, active) {
+  const sourceEvents = stage.sourceEvents || [];
+
+  return `
+    <div class="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
+      <p class="text-sm leading-6 text-slate-600">${escapeHtml(stage.description)}</p>
+    </div>
+    ${sourceEvents.length ? `
+      <div class="mt-4 rounded-2xl bg-white p-4 ring-1 ring-slate-200">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">PAD milestones</p>
+        <ul class="mt-3 space-y-3 text-sm leading-6 text-slate-600">
+          ${sourceEvents.map(event => `
+            <li class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+              <span class="block font-semibold text-slate-700">${escapeHtml(event.timing)}</span>
+              <span>${escapeHtml(event.duty)}</span>
+              ${event.authority?.length ? `<span class="mt-1 block text-xs text-slate-500">${escapeHtml(event.authority.join(", "))}</span>` : ""}
+            </li>
+          `).join("")}
+        </ul>
+      </div>
+    ` : ""}
+    ${stage.id === "protest" ? `
+      <div class="mt-4 rounded-2xl bg-blue-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-blue-200">
+        <p>The Nebraska Form 422 link appears during the protest window, June 1 through June 30.</p>
+        ${stageLink(stage, active)}
+      </div>
+    ` : ""}
+  `;
+}
+
+function initCalendarStageModal(calendar) {
+  const modal = document.getElementById("calendarStageModal");
+  const title = document.getElementById("calendarStageTitle");
+  const timing = document.getElementById("calendarStageTiming");
+  const content = document.getElementById("calendarStageModalContent");
+  const closeButtons = document.querySelectorAll("[data-close-calendar-stage]");
+
+  if (!modal || !title || !timing || !content) return;
+
+  function close() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    document.body.classList.remove("overflow-hidden");
+  }
+
+  function open(stage) {
+    const active = isStageActive(stage);
+    title.textContent = stage.label;
+    timing.textContent = stage.timing;
+    content.innerHTML = calendarStageDetailHtml(stage, active);
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.classList.add("overflow-hidden");
+  }
+
+  document.querySelectorAll("[data-calendar-stage]").forEach(button => {
+    button.addEventListener("click", () => {
+      const stage = calendar.stages.find(item => item.id === button.dataset.calendarStage);
+      if (stage) open(stage);
+    });
+  });
+
+  modal.addEventListener("click", close);
+  modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
+  closeButtons.forEach(button => button.addEventListener("click", close));
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") close();
+  });
 }
 
 function renderHistoryTable(data) {
@@ -1788,8 +1928,7 @@ function renderLevyTable(data) {
 
 export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
   const summary = document.getElementById("taxDistrictAuthoritySummary");
-  const table = document.getElementById("taxDistrictAuthorityRows");
-  if (!summary || !table) return;
+  if (!summary) return;
 
   const district = taxDistrictAuthorities?.districts?.find(item =>
     String(item.taxDistrict) === String(data.parcel.taxDistrict)
@@ -1800,7 +1939,6 @@ export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
     levy: row.rate
   }));
   const total = authorities.reduce((sum, row) => sum + row.levy, 0);
-  const sortedRows = authorities.slice().sort((a, b) => b.levy - a.levy);
   const districtDescription = district?.districtDescription ?? null;
   const districtDescriptionNote = districtDescription
     ? `Report label: ${districtDescription}`
@@ -1834,21 +1972,6 @@ export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
       <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(card.note)}</p>
     </div>
   `).join("");
-
-  table.innerHTML = sortedRows.map(row => {
-    const share = total ? row.levy / total : null;
-    const taxPer100k = row.levy * 1000;
-
-    return `
-      <tr>
-        <td class="px-3 py-2 font-medium text-slate-700">${escapeHtml(row.description)}</td>
-        <td class="px-3 py-2 text-slate-600">${escapeHtml(row.category)}</td>
-        <td class="px-3 py-2 text-right">${formatNullableLevy(row.levy)}</td>
-        <td class="px-3 py-2 text-right">${formatNullablePercent(share)}</td>
-        <td class="px-3 py-2 text-right">${moneyCents.format(taxPer100k)}</td>
-      </tr>
-    `;
-  }).join("");
 
   const source = document.getElementById("taxDistrictAuthoritySource");
   if (source) {
