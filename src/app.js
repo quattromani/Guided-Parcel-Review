@@ -19,6 +19,7 @@ import {
   loadPropertyData,
   loadPropertyRecordCard,
   loadPadRatioStatistics,
+  loadSchoolDistrictColors,
   loadTaxDistrictAuthorities,
   loadValuationGroups,
   loadIaaoStandards,
@@ -30,7 +31,7 @@ import { renderPage, renderViewHeader } from "./render.js";
 
 async function main() {
   const manifest = await loadPropertyManifest();
-  const [data, recordCard, calendar, ctlData, ratioData, countyContext, padRatioData, taxDistrictAuthorities, valuationGroups, iaaoStandards] = await Promise.all([
+  const [data, recordCard, calendar, ctlData, ratioData, countyContext, padRatioData, schoolDistrictColors, taxDistrictAuthorities, valuationGroups, iaaoStandards] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
     loadAssessmentCalendar(),
@@ -38,6 +39,7 @@ async function main() {
     loadAssessmentRatioAnalysis(),
     loadCountyContext(),
     loadPadRatioStatistics(),
+    loadSchoolDistrictColors(),
     loadTaxDistrictAuthorities(),
     loadValuationGroups(),
     loadIaaoStandards()
@@ -49,7 +51,7 @@ async function main() {
   buildIndexedChart(data);
   buildEqualizationPressureIndex(data, ctlData);
   buildEtrChart(data);
-  buildDistributionChart(data);
+  buildDistributionChart(data, schoolDistrictColors);
   buildOverviewCharts(data, ctlData);
   initMarketAreaView(data, recordCard, padRatioData, valuationGroups);
   buildCtlSummary(data, ctlData);

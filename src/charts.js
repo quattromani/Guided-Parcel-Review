@@ -1,26 +1,57 @@
 import { calculateEtr, groupLevy, percent } from "./format.js";
 
 const levyGroupColors = {
-  School: "#fb923c",
+  School: "#FFC107",
   City: "#1b1b1b",
-  County: "#4ade80",
-  "Natural resources": "#3b82f6",
-  "Education service": "#a78bfa",
-  "Community college": "#14b8a6",
+  County: "#198754",
+  "Natural resources": "#0D6EFD",
+  "Education service": "#334155",
+  "Community college": "#00CCCD",
   Other: "#94a3b8"
 };
 
+const palette = {
+  slate700: "#334155",
+  slate600: "#475569",
+  slate500: "#64748b",
+  blue: "#0D6EFD",
+  blueSoft: "rgba(13, 110, 253, 0.16)",
+  red: "#DC3545",
+  redSoft: "rgba(220, 53, 69, 0.16)",
+  green: "#198754",
+  greenSoft: "rgba(25, 135, 84, 0.16)",
+  yellow: "#FFC107",
+  yellowSoft: "rgba(255, 193, 7, 0.20)",
+  teal: "#00CCCD",
+  tealSoft: "rgba(0, 204, 205, 0.18)"
+};
+
 const chartColors = {
-  contextValue: "#2563eb",
-  contextTax: "#f43f5e",
-  propertyValue: "#64748b",
-  propertyTax: "#fda4af",
-  propertyRate: "#64748b",
-  cod: "#1d4ed8",
-  prd: "#ef4444",
-  cov: "#73a35b",
+  contextValue: palette.green,
+  contextTax: palette.red,
+  propertyValue: palette.slate500,
+  propertyTax: "rgba(220, 53, 69, 0.52)",
+  propertyRate: palette.slate500,
+  cod: palette.blue,
+  prd: palette.red,
+  cov: palette.green,
   standardBand: "rgba(51, 65, 85, 0.10)",
   standardBandBorder: "rgba(51, 65, 85, 0.35)"
+};
+
+const semanticChartColors = {
+  value: palette.green,
+  valueBg: palette.greenSoft,
+  valueSoft: "rgb(232 246 239)",
+  valueRing: "rgb(194 228 213)",
+  tax: palette.red,
+  taxBg: palette.redSoft,
+  taxSoft: "rgb(253 236 238)",
+  taxRing: "rgb(245 194 199)",
+  etr: palette.blue,
+  etrBg: palette.blueSoft,
+  etrSoft: "rgb(231 241 255)",
+  etrRing: "rgb(184 213 254)"
 };
 
 let assessmentAccuracyChart;
@@ -636,10 +667,14 @@ function rowsByYear(rows) {
   return new Map(rows.map(row => [row.year, row]));
 }
 
-function propertyIndexedDatasets(propertyRows, years) {
+function propertyIndexedDatasets(propertyRows, years, palette = {}) {
   const propertyByYear = rowsByYear(propertyRows);
   const alignedRows = years.map(year => propertyByYear.get(year) ?? { year, assessedValue: null, taxes: null });
   const series = indexedSeries(alignedRows);
+  const valueColor = palette.propertyValueColor ?? chartColors.propertyValue;
+  const valueBg = palette.propertyValueBg ?? "rgba(100, 116, 139, 0.12)";
+  const taxColor = palette.propertyTaxColor ?? chartColors.propertyTax;
+  const taxBg = palette.propertyTaxBg ?? "rgba(253, 164, 175, 0.14)";
 
   return [
     {
@@ -647,8 +682,8 @@ function propertyIndexedDatasets(propertyRows, years) {
       data: series.valueIndex,
       tension: 0.25,
       borderWidth: 2,
-      borderColor: chartColors.propertyValue,
-      backgroundColor: "rgba(100, 116, 139, 0.12)",
+      borderColor: valueColor,
+      backgroundColor: valueBg,
       borderDash: [6, 5],
       pointRadius: 3,
       pointStyle: "circle",
@@ -659,8 +694,8 @@ function propertyIndexedDatasets(propertyRows, years) {
       data: series.taxIndex,
       tension: 0.25,
       borderWidth: 2,
-      borderColor: chartColors.propertyTax,
-      backgroundColor: "rgba(253, 164, 175, 0.14)",
+      borderColor: taxColor,
+      backgroundColor: taxBg,
       borderDash: [6, 5],
       pointRadius: 3,
       pointStyle: "circle",
@@ -669,8 +704,10 @@ function propertyIndexedDatasets(propertyRows, years) {
   ];
 }
 
-function propertyRateDataset(propertyRows, years) {
+function propertyRateDataset(propertyRows, years, palette = {}) {
   const propertyByYear = rowsByYear(propertyRows);
+  const rateColor = palette.propertyRateColor ?? chartColors.propertyRate;
+  const rateBg = palette.propertyRateBg ?? "rgba(100, 116, 139, 0.12)";
 
   return {
     label: "This property ETR",
@@ -681,8 +718,8 @@ function propertyRateDataset(propertyRows, years) {
     }),
     tension: 0.25,
     borderWidth: 2,
-    borderColor: chartColors.propertyRate,
-    backgroundColor: "rgba(100, 116, 139, 0.12)",
+    borderColor: rateColor,
+    backgroundColor: rateBg,
     borderDash: [6, 5],
     pointRadius: 3,
     spanGaps: true
@@ -1175,31 +1212,35 @@ function buildIndexedOverviewChart(canvasId, data, labels, valueFactor, taxFacto
   });
 }
 
-function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows) {
+function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palette = {}) {
   const canvas = document.getElementById(canvasId);
   if (!canvas || !rows?.length) return;
 
   const baseValue = rows[0].totalValue;
   const baseTaxes = rows[0].taxesLevied;
   const years = rows.map(row => row.year);
+  const valueColor = palette.valueColor ?? chartColors.contextValue;
+  const valueBg = palette.valueBg ?? "rgba(37, 99, 235, 0.18)";
+  const taxColor = palette.taxColor ?? chartColors.contextTax;
+  const taxBg = palette.taxBg ?? "rgba(244, 63, 94, 0.18)";
   const datasets = [
     {
       label: labels.value,
       data: rows.map(row => (row.totalValue / baseValue) * 100),
       tension: 0.25,
       borderWidth: 3,
-      borderColor: chartColors.contextValue,
-      backgroundColor: "rgba(37, 99, 235, 0.18)"
+      borderColor: valueColor,
+      backgroundColor: valueBg
     },
     {
       label: labels.tax,
       data: rows.map(row => (row.taxesLevied / baseTaxes) * 100),
       tension: 0.25,
       borderWidth: 3,
-      borderColor: chartColors.contextTax,
-      backgroundColor: "rgba(244, 63, 94, 0.18)"
+      borderColor: taxColor,
+      backgroundColor: taxBg
     },
-    ...propertyIndexedDatasets(propertyRows, years)
+    ...propertyIndexedDatasets(propertyRows, years, palette)
   ];
   const hasCustomLegend = renderCustomLegend(`${canvasId}Legend`, datasets);
 
@@ -1323,20 +1364,22 @@ function buildEtrOverviewChart(canvasId, data, label, factor) {
   });
 }
 
-function buildCertifiedRateChart(canvasId, rows, label, propertyRows) {
+function buildCertifiedRateChart(canvasId, rows, label, propertyRows, palette = {}) {
   const canvas = document.getElementById(canvasId);
   if (!canvas || !rows?.length) return;
   const years = rows.map(row => row.year);
+  const rateColor = palette.rateColor ?? chartColors.contextValue;
+  const rateBg = palette.rateBg ?? "rgba(37, 99, 235, 0.18)";
   const datasets = [
     {
       label,
       data: rows.map(row => row.averageTaxRate * 100),
       tension: 0.25,
       borderWidth: 3,
-      borderColor: chartColors.contextValue,
-      backgroundColor: "rgba(37, 99, 235, 0.18)"
+      borderColor: rateColor,
+      backgroundColor: rateBg
     },
-    propertyRateDataset(propertyRows, years)
+    propertyRateDataset(propertyRows, years, palette)
   ];
   const hasCustomLegend = renderCustomLegend(`${canvasId}Legend`, datasets);
 
@@ -1379,8 +1422,22 @@ export function buildOverviewCharts(data, ctlData) {
   buildCertifiedIndexedChart("countyIndexedChart", countyRows, { value: `${countyLabel} value index`, tax: `${countyLabel} tax index` }, data.taxpayerHistory);
   buildCertifiedRateChart("countyEtrChart", countyRows, `${countyLabel} average tax rate`, data.taxpayerHistory);
 
-  buildCertifiedIndexedChart("stateIndexedChart", stateRows, { value: "Statewide value index", tax: "Statewide tax index" }, data.taxpayerHistory);
-  buildCertifiedRateChart("stateEtrChart", stateRows, "Statewide average tax rate", data.taxpayerHistory);
+  buildCertifiedIndexedChart("stateIndexedChart", stateRows, { value: "Statewide value index", tax: "Statewide tax index" }, data.taxpayerHistory, {
+    valueColor: semanticChartColors.value,
+    valueBg: semanticChartColors.valueBg,
+    taxColor: semanticChartColors.tax,
+    taxBg: semanticChartColors.taxBg,
+    propertyValueColor: semanticChartColors.value,
+    propertyValueBg: semanticChartColors.valueBg,
+    propertyTaxColor: semanticChartColors.tax,
+    propertyTaxBg: semanticChartColors.taxBg
+  });
+  buildCertifiedRateChart("stateEtrChart", stateRows, "Statewide average tax rate", data.taxpayerHistory, {
+    rateColor: semanticChartColors.tax,
+    rateBg: semanticChartColors.taxBg,
+    propertyRateColor: semanticChartColors.etr,
+    propertyRateBg: semanticChartColors.etrBg
+  });
 }
 
 function indexChange(rows, key) {
@@ -1614,25 +1671,25 @@ export function buildCtlSummary(data, ctlData) {
         label: "Statewide value index",
         value: formatChange(indexChange(stateRows, "totalValue")),
         note: "Total certified value growth since 2019.",
-        color: chartColors.contextValue,
-        bg: "rgb(239 246 255)",
-        ring: "rgb(191 219 254)"
+        color: semanticChartColors.value,
+        bg: semanticChartColors.valueSoft,
+        ring: semanticChartColors.valueRing
       },
       {
         label: "Statewide tax index",
         value: formatChange(indexChange(stateRows, "taxesLevied")),
         note: "Total taxes levied growth since 2019.",
-        color: chartColors.contextTax,
-        bg: "rgb(255 241 242)",
-        ring: "rgb(254 205 211)"
+        color: semanticChartColors.tax,
+        bg: semanticChartColors.taxSoft,
+        ring: semanticChartColors.taxRing
       },
       {
         label: "Statewide average tax rate",
         value: `${(stateRows[0].averageTaxRate * 100).toFixed(2)}% to ${(stateRows.at(-1).averageTaxRate * 100).toFixed(2)}%`,
         note: "Average CTL tax-rate movement over the same period.",
-        color: chartColors.contextValue,
-        bg: "rgb(239 246 255)",
-        ring: "rgb(191 219 254)"
+        color: semanticChartColors.tax,
+        bg: semanticChartColors.taxSoft,
+        ring: semanticChartColors.taxRing
       }
     ];
 
@@ -1891,15 +1948,60 @@ export function initDemographicsView(contextData) {
   renderDemographicFacts(contextData);
 }
 
-export function buildDistributionChart(data) {
+function normalizeSchoolToken(value = "") {
+  return `${value}`
+    .toUpperCase()
+    .replace(/PUBLIC SCHOOLS?|SCHOOL DISTRICT|DISTRICT|SCHOOLS?/g, "")
+    .replace(/[^A-Z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function schoolDistrictTokens(district = {}) {
+  return [
+    district.name,
+    ...(district.aliases || []),
+    ...(district.district_codes || [])
+  ].map(normalizeSchoolToken).filter(Boolean);
+}
+
+function getSchoolLevyDescription(data) {
+  return data.latestFinalLevyComponents?.find(row => row.group === "School")?.description ?? "";
+}
+
+function findSchoolDistrictColor(data, schoolDistrictColors) {
+  const districts = schoolDistrictColors?.districts || [];
+  if (!districts.length) return null;
+
+  const propertyTokens = [
+    data.parcel?.schoolDistrict,
+    getSchoolLevyDescription(data)
+  ].map(normalizeSchoolToken).filter(Boolean);
+
+  return districts.find(district => {
+    const tokens = schoolDistrictTokens(district);
+    return propertyTokens.some(propertyToken => tokens.some(token => (
+      token === propertyToken || propertyToken.includes(token) || token.includes(propertyToken)
+    )));
+  }) ?? null;
+}
+
+function levyColorForGroup(label, schoolColor) {
+  return label === "School" && schoolColor
+    ? schoolColor
+    : levyGroupColors[label] ?? "#94a3b8";
+}
+
+export function buildDistributionChart(data, schoolDistrictColors) {
   const grouped = groupLevy(data.latestFinalLevyComponents);
   const total = Object.values(grouped).reduce((sum, value) => sum + value, 0);
+  const schoolDistrictColor = findSchoolDistrictColor(data, schoolDistrictColors)?.map_color;
   const sorted = Object.entries(grouped)
     .map(([label, rate]) => ({ label, rate, share: rate / total }))
     .sort((a, b) => b.rate - a.rate);
   const labels = sorted.map(row => row.label);
   const values = sorted.map(row => row.rate);
-  const colors = sorted.map(row => levyGroupColors[row.label] ?? "#94a3b8");
+  const colors = sorted.map(row => levyColorForGroup(row.label, schoolDistrictColor));
 
   new Chart(document.getElementById("distributionChart"), {
     type: "pie",
@@ -1929,7 +2031,7 @@ export function buildDistributionChart(data) {
   document.getElementById("distributionNotes").innerHTML = sorted.map(row => `
     <div class="rounded-lg bg-slate-50 px-3 py-2 ring-1 ring-slate-200">
       <div class="flex items-center gap-2">
-        <span class="h-2.5 w-2.5 rounded-full" style="background-color: ${levyGroupColors[row.label] ?? "#94a3b8"}"></span>
+        <span class="h-2.5 w-2.5 rounded-full" style="background-color: ${levyColorForGroup(row.label, schoolDistrictColor)}"></span>
         <p class="font-semibold leading-5 text-slate-700">${row.label}</p>
       </div>
       <p class="mt-0.5 text-xs leading-4 text-slate-600">${percent.format(row.share)} of levy</p>

@@ -99,6 +99,13 @@ export function loadTaxDistrictAuthorities() {
     .then(({ county }) => loadJson(county.taxDistrictAuthoritiesPath, "tax district authorities"));
 }
 
+export function loadSchoolDistrictColors() {
+  return getActiveCountyEntry()
+    .then(({ county }) => county.schoolDistrictColorsPath
+      ? loadJson(county.schoolDistrictColorsPath, "school district colors")
+      : { districts: [] });
+}
+
 export function loadValuationGroups() {
   return getActiveCountyEntry()
     .then(({ county }) => loadJson(county.valuationGroupsPath, "valuation groups"));
