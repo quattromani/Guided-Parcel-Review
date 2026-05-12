@@ -1,57 +1,26 @@
 import { calculateEtr, groupLevy, percent } from "./format.js";
+import {
+  chartColors,
+  semanticChartColors,
+  visualizationTheme
+} from "./config/visualization-palettes.js";
 
-const levyGroupColors = {
-  School: "#FFC107",
-  City: "#1b1b1b",
-  County: "#198754",
-  "Natural resources": "#0D6EFD",
-  "Education service": "#334155",
-  "Community college": "#00CCCD",
-  Other: "#94a3b8"
-};
-
+const levyGroupColors = visualizationTheme.districtGroups;
 const palette = {
-  slate700: "#334155",
-  slate600: "#475569",
-  slate500: "#64748b",
-  blue: "#0D6EFD",
-  blueSoft: "rgba(13, 110, 253, 0.16)",
-  red: "#DC3545",
-  redSoft: "rgba(220, 53, 69, 0.16)",
-  green: "#198754",
-  greenSoft: "rgba(25, 135, 84, 0.16)",
-  yellow: "#FFC107",
-  yellowSoft: "rgba(255, 193, 7, 0.20)",
-  teal: "#00CCCD",
-  tealSoft: "rgba(0, 204, 205, 0.18)"
-};
-
-const chartColors = {
-  contextValue: palette.green,
-  contextTax: palette.red,
-  propertyValue: palette.slate500,
-  propertyTax: "rgba(220, 53, 69, 0.52)",
-  propertyRate: palette.slate500,
-  cod: palette.blue,
-  prd: palette.red,
-  cov: palette.green,
-  standardBand: "rgba(51, 65, 85, 0.10)",
-  standardBandBorder: "rgba(51, 65, 85, 0.35)"
-};
-
-const semanticChartColors = {
-  value: palette.green,
-  valueBg: palette.greenSoft,
-  valueSoft: "rgb(232 246 239)",
-  valueRing: "rgb(194 228 213)",
-  tax: palette.red,
-  taxBg: palette.redSoft,
-  taxSoft: "rgb(253 236 238)",
-  taxRing: "rgb(245 194 199)",
-  etr: palette.blue,
-  etrBg: palette.blueSoft,
-  etrSoft: "rgb(231 241 255)",
-  etrRing: "rgb(184 213 254)"
+  slate700: visualizationTheme.neutrals.ink,
+  slate600: visualizationTheme.neutrals.text,
+  slate500: visualizationTheme.neutrals.mutedText,
+  white: visualizationTheme.neutrals.surface,
+  blue: visualizationTheme.colors.primary,
+  blueSoft: visualizationTheme.roles.rateSoft,
+  red: visualizationTheme.colors.danger,
+  redSoft: visualizationTheme.roles.taxSoft,
+  green: visualizationTheme.colors.success,
+  greenSoft: visualizationTheme.roles.valueSoft,
+  yellow: visualizationTheme.colors.warning,
+  yellowSoft: visualizationTheme.roles.attentionSoft,
+  teal: visualizationTheme.colors.accent,
+  tealSoft: visualizationTheme.roles.marketSoft
 };
 
 let assessmentAccuracyChart;
@@ -98,7 +67,7 @@ export function buildIndexedChart(data) {
       tension: 0.25,
       borderWidth: 3,
       borderColor: chartColors.contextValue,
-      backgroundColor: "rgba(37, 99, 235, 0.18)",
+      backgroundColor: semanticChartColors.valueBg,
       spanGaps: true
     },
     {
@@ -107,7 +76,7 @@ export function buildIndexedChart(data) {
       tension: 0.25,
       borderWidth: 3,
       borderColor: chartColors.contextTax,
-      backgroundColor: "rgba(244, 63, 94, 0.18)",
+      backgroundColor: semanticChartColors.taxBg,
       spanGaps: true
     }
   ];
@@ -216,9 +185,9 @@ const pressureAlignmentBandPlugin = {
     const bottom = scales.y.getPixelForValue(options.min ?? 95);
 
     ctx.save();
-    ctx.fillStyle = options.backgroundColor ?? "rgba(220, 38, 38, 0.07)";
+    ctx.fillStyle = options.backgroundColor ?? visualizationTheme.roles.outlierSoft;
     ctx.fillRect(chartArea.left, Math.min(top, bottom), chartArea.right - chartArea.left, Math.abs(bottom - top));
-    ctx.strokeStyle = options.borderColor ?? "rgba(220, 38, 38, 0.24)";
+    ctx.strokeStyle = options.borderColor ?? semanticChartColors.taxRing;
     ctx.setLineDash([6, 5]);
     ctx.beginPath();
     ctx.moveTo(chartArea.left, top);
@@ -243,9 +212,9 @@ export function buildEqualizationPressureIndex(data, ctlData) {
   const subjectRate = calculateEtr(propertyRow);
   const toIndex = value => value === null || value === undefined || !stateRate ? null : (value / stateRate) * 100;
   const points = [
-    { key: "subject", label: "Your Property", rate: subjectRate, index: toIndex(subjectRate), color: "#16a34a" },
-    { key: "county", label: "Gage County", rate: countyRate, index: toIndex(countyRate), color: "#73a35b" },
-    { key: "state", label: "Nebraska", rate: stateRate, index: 100, color: "#dc2626" }
+    { key: "subject", label: "Your Property", rate: subjectRate, index: toIndex(subjectRate), color: visualizationTheme.sequences.countyHierarchy.subject },
+    { key: "county", label: "Gage County", rate: countyRate, index: toIndex(countyRate), color: visualizationTheme.sequences.countyHierarchy.county },
+    { key: "state", label: "Nebraska", rate: stateRate, index: 100, color: visualizationTheme.sequences.countyHierarchy.state }
   ];
   const subjectIndex = points[0].index;
   const subjectBand = pressureBand(subjectIndex);
@@ -292,13 +261,13 @@ export function buildEqualizationPressureIndex(data, ctlData) {
         label: "Relative tax pressure",
         data: points.map(point => point.index),
         tension: 0.25,
-        borderColor: "#475569",
-        backgroundColor: "rgba(71, 85, 105, 0.10)",
+        borderColor: palette.slate600,
+        backgroundColor: visualizationTheme.roles.comparisonSoft,
         borderWidth: 3,
         pointRadius: 5,
         pointHoverRadius: 6,
         pointBackgroundColor: points.map(point => point.color),
-        pointBorderColor: "#ffffff",
+        pointBorderColor: palette.white,
         pointBorderWidth: 2,
         spanGaps: true
       }]
@@ -366,9 +335,9 @@ const assessmentMeasureDefinitions = [
     key: "cod",
     label: "Uniformity (COD)",
     color: chartColors.cod,
-    fill: "rgba(29, 78, 216, 0.12)",
-    cardBackground: "rgba(29, 78, 216, 0.08)",
-    cardBorder: "rgba(29, 78, 216, 0.24)",
+    fill: semanticChartColors.etrBg,
+    cardBackground: semanticChartColors.etrSoft,
+    cardBorder: semanticChartColors.etrRing,
     digits: 2,
     definition: "How tightly individual assessments cluster around typical market value."
   },
@@ -376,9 +345,9 @@ const assessmentMeasureDefinitions = [
     key: "prd",
     label: "Price-Level Fairness (PRD)",
     color: chartColors.prd,
-    fill: "rgba(239, 68, 68, 0.12)",
-    cardBackground: "rgba(239, 68, 68, 0.08)",
-    cardBorder: "rgba(239, 68, 68, 0.24)",
+    fill: semanticChartColors.taxBg,
+    cardBackground: semanticChartColors.taxSoft,
+    cardBorder: semanticChartColors.taxRing,
     digits: 3,
     definition: "Whether lower- and higher-priced properties are being treated evenly."
   },
@@ -386,9 +355,9 @@ const assessmentMeasureDefinitions = [
     key: "cov",
     label: "Reliability (COV)",
     color: chartColors.cov,
-    fill: "rgba(115, 163, 91, 0.12)",
-    cardBackground: "rgba(115, 163, 91, 0.10)",
-    cardBorder: "rgba(115, 163, 91, 0.28)",
+    fill: semanticChartColors.valueBg,
+    cardBackground: semanticChartColors.valueSoft,
+    cardBorder: semanticChartColors.valueRing,
     digits: 2,
     definition: "Whether the study results are stable enough to trust across the sales sample."
   }
@@ -672,9 +641,9 @@ function propertyIndexedDatasets(propertyRows, years, palette = {}) {
   const alignedRows = years.map(year => propertyByYear.get(year) ?? { year, assessedValue: null, taxes: null });
   const series = indexedSeries(alignedRows);
   const valueColor = palette.propertyValueColor ?? chartColors.propertyValue;
-  const valueBg = palette.propertyValueBg ?? "rgba(100, 116, 139, 0.12)";
+  const valueBg = palette.propertyValueBg ?? visualizationTheme.roles.comparisonSoft;
   const taxColor = palette.propertyTaxColor ?? chartColors.propertyTax;
-  const taxBg = palette.propertyTaxBg ?? "rgba(253, 164, 175, 0.14)";
+  const taxBg = palette.propertyTaxBg ?? semanticChartColors.taxBg;
 
   return [
     {
@@ -707,7 +676,7 @@ function propertyIndexedDatasets(propertyRows, years, palette = {}) {
 function propertyRateDataset(propertyRows, years, palette = {}) {
   const propertyByYear = rowsByYear(propertyRows);
   const rateColor = palette.propertyRateColor ?? chartColors.propertyRate;
-  const rateBg = palette.propertyRateBg ?? "rgba(100, 116, 139, 0.12)";
+  const rateBg = palette.propertyRateBg ?? visualizationTheme.roles.comparisonSoft;
 
   return {
     label: "This property ETR",
@@ -736,7 +705,7 @@ function renderCustomLegend(elementId, datasets) {
         class="chart-legend-dot inline-block border-2"
         style="
           border-color: ${dataset.borderColor};
-          background-color: ${dataset.borderDash ? "#ffffff" : dataset.borderColor};
+          background-color: ${dataset.borderDash ? palette.white : dataset.borderColor};
           ${dataset.borderDash ? "border-style: dashed;" : ""}
         "
       ></span>
@@ -832,32 +801,6 @@ function renderMarketNarrative(selected, summary) {
   narrative.textContent = marketAreaSignal(selected, summary);
 }
 
-function renderMarketRows(groups, selectedGroup) {
-  const table = document.getElementById("marketValuationGroupRows");
-  if (!table) return;
-
-  table.innerHTML = groups.map(row => {
-    const active = String(row.group) === String(selectedGroup);
-    return `
-      <tr class="${active ? "bg-blue-50" : ""}">
-        <td class="px-3 py-2 font-medium text-slate-700">
-          <span class="flex items-start justify-between gap-3">
-            <span class="min-w-0">${row.label}</span>
-            ${active ? `<span class="shrink-0 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">Selected</span>` : ""}
-          </span>
-          ${row.marketGroup ? `<span class="mt-0.5 block text-xs font-medium text-slate-500">${row.marketGroup}</span>` : ""}
-        </td>
-        <td class="px-3 py-2 text-right">${integer.format(row.count)}</td>
-        <td class="px-3 py-2 text-right">${formatRatio(row.median)}</td>
-        <td class="px-3 py-2 text-right">${formatRatio(row.weightedMean)}</td>
-        <td class="px-3 py-2 text-right">${formatRatio(row.cod)}</td>
-        <td class="px-3 py-2 text-right">${formatRatio(row.prd)}</td>
-        <td class="px-3 py-2 text-right text-slate-600">${row.confidenceIntervalMedian}</td>
-      </tr>
-    `;
-  }).join("");
-}
-
 function priceBandStudyForClass(padRatioData, classKey = "residential") {
   if (classKey === "residential" || !padRatioData.priceBandStudies?.[classKey]) {
     return {
@@ -878,6 +821,13 @@ function priceBandStudyForClass(padRatioData, classKey = "residential") {
   }
 
   return padRatioData.priceBandStudies[classKey];
+}
+
+function propertyClassLabelForStudy(classKey = "residential", study = {}) {
+  if (study.propertyClassLabel) return study.propertyClassLabel;
+  if (classKey === "agFarm") return "agricultural";
+  if (classKey === "commercial") return "commercial";
+  return "residential";
 }
 
 function getPadRoSourceAnchor(padRatioData) {
@@ -918,8 +868,9 @@ function renderMarketSalePriceRows(padRatioData, classKey = "residential") {
   const chartTitle = document.getElementById("marketSalePriceChartTitle");
   const chartNote = document.getElementById("marketSalePriceChartNote");
   const source = document.getElementById("marketSalePriceSource");
+  const propertyClassLabel = propertyClassLabelForStudy(study.key ?? classKey, study);
 
-  if (title) title.textContent = study.label || "Sale-price bands";
+  if (title) title.textContent = `What makes up the ${propertyClassLabel} sales data?`;
   if (description) description.textContent = study.description || "";
   if (chartTitle) chartTitle.textContent = study.chartTitle || "Sales distribution";
   if (chartNote) chartNote.textContent = study.chartNote || "Qualified sales by band.";
@@ -972,7 +923,7 @@ function renderMarketSalePriceChart(rows, study = {}) {
       type: "bar",
       label: study.countLabel || "Sales",
       data: rows.map(row => row.count),
-      backgroundColor: "rgba(37, 99, 235, 0.18)",
+      backgroundColor: semanticChartColors.valueBg,
       borderColor: chartColors.contextValue,
       borderWidth: 2,
       borderRadius: 6,
@@ -985,7 +936,7 @@ function renderMarketSalePriceChart(rows, study = {}) {
       tension: 0.38,
       borderWidth: 3,
       borderColor: chartColors.contextTax,
-      backgroundColor: "rgba(244, 63, 94, 0.12)",
+      backgroundColor: semanticChartColors.taxBg,
       pointBackgroundColor: chartColors.contextTax,
       pointRadius: 3,
       fill: true,
@@ -1050,14 +1001,14 @@ function renderMarketRatioChart(selected, summary) {
         {
           label: selectedLabel,
           data: [selected.median, selected.weightedMean, selected.mean, selected.prd],
-          backgroundColor: "rgba(37, 99, 235, 0.24)",
+          backgroundColor: semanticChartColors.valueBg,
           borderColor: chartColors.contextValue,
           borderWidth: 2
         },
         {
           label: "All Gage residential",
           data: [summary.median, summary.weightedMean, summary.mean, summary.prd],
-          backgroundColor: "rgba(100, 116, 139, 0.16)",
+          backgroundColor: visualizationTheme.roles.comparisonSoft,
           borderColor: chartColors.propertyValue,
           borderWidth: 2
         }
@@ -1090,15 +1041,15 @@ function renderMarketValueChart(selected, summary) {
         {
           label: selectedLabel,
           data: [selected.averageAdjustedSalePrice, selected.averageAssessedValue],
-          backgroundColor: "rgba(20, 184, 166, 0.28)",
-          borderColor: "#14b8a6",
+          backgroundColor: visualizationTheme.roles.marketSoft,
+          borderColor: visualizationTheme.roles.market,
           borderWidth: 2
         },
         {
           label: "All Gage residential",
           data: [summary.averageAdjustedSalePrice, summary.averageAssessedValue],
-          backgroundColor: "rgba(251, 146, 60, 0.24)",
-          borderColor: "#fb923c",
+          backgroundColor: visualizationTheme.roles.attentionSoft,
+          borderColor: visualizationTheme.roles.attention,
           borderWidth: 2
         }
       ]
@@ -1143,7 +1094,6 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
     select.value = selected.group;
     renderMarketSignalCards(selected, padRatioData.summary);
     renderMarketNarrative(selected, padRatioData.summary);
-    renderMarketRows(groups, selected.group);
     renderMarketRatioChart(selected, padRatioData.summary);
     renderMarketValueChart(selected, padRatioData.summary);
   };
@@ -1152,7 +1102,7 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
   window.addEventListener("assessment-class-change", event => {
     renderMarketSalePriceRows(padRatioData, event.detail?.key);
   });
-  renderMarketSalePriceRows(padRatioData);
+  renderMarketSalePriceRows(padRatioData, getDefaultAssessmentClass(data, padRatioData));
   update(defaultGroup);
 }
 
@@ -1173,7 +1123,7 @@ function buildIndexedOverviewChart(canvasId, data, labels, valueFactor, taxFacto
           tension: 0.25,
           borderWidth: 3,
           borderColor: chartColors.contextValue,
-          backgroundColor: "rgba(37, 99, 235, 0.18)",
+          backgroundColor: semanticChartColors.valueBg,
           spanGaps: true
         },
         {
@@ -1182,7 +1132,7 @@ function buildIndexedOverviewChart(canvasId, data, labels, valueFactor, taxFacto
           tension: 0.25,
           borderWidth: 3,
           borderColor: chartColors.contextTax,
-          backgroundColor: "rgba(244, 63, 94, 0.18)",
+          backgroundColor: semanticChartColors.taxBg,
           spanGaps: true
         },
         ...propertyIndexedDatasets(data.taxpayerHistory, series.years)
@@ -1220,9 +1170,9 @@ function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palett
   const baseTaxes = rows[0].taxesLevied;
   const years = rows.map(row => row.year);
   const valueColor = palette.valueColor ?? chartColors.contextValue;
-  const valueBg = palette.valueBg ?? "rgba(37, 99, 235, 0.18)";
+  const valueBg = palette.valueBg ?? semanticChartColors.valueBg;
   const taxColor = palette.taxColor ?? chartColors.contextTax;
-  const taxBg = palette.taxBg ?? "rgba(244, 63, 94, 0.18)";
+  const taxBg = palette.taxBg ?? semanticChartColors.taxBg;
   const datasets = [
     {
       label: labels.value,
@@ -1293,7 +1243,7 @@ export function buildEtrChart(data) {
           tension: 0.25,
           borderWidth: 3,
           borderColor: chartColors.contextValue,
-          backgroundColor: "rgba(37, 99, 235, 0.18)",
+          backgroundColor: semanticChartColors.etrBg,
           spanGaps: true
         }
       ]
@@ -1342,7 +1292,7 @@ function buildEtrOverviewChart(canvasId, data, label, factor) {
           tension: 0.25,
           borderWidth: 3,
           borderColor: chartColors.contextValue,
-          backgroundColor: "rgba(37, 99, 235, 0.18)",
+          backgroundColor: semanticChartColors.etrBg,
           spanGaps: true
         },
         propertyRateDataset(data.taxpayerHistory, years)
@@ -1369,7 +1319,7 @@ function buildCertifiedRateChart(canvasId, rows, label, propertyRows, palette = 
   if (!canvas || !rows?.length) return;
   const years = rows.map(row => row.year);
   const rateColor = palette.rateColor ?? chartColors.contextValue;
-  const rateBg = palette.rateBg ?? "rgba(37, 99, 235, 0.18)";
+  const rateBg = palette.rateBg ?? semanticChartColors.valueBg;
   const datasets = [
     {
       label,
@@ -1455,6 +1405,12 @@ function countyDisplayName(name) {
   return `${name.toLowerCase().replace(/\b\w/g, character => character.toUpperCase())} County`;
 }
 
+function propertyRecordCountyLabel(recordCard, data, ctlData) {
+  const recordCounty = `${recordCard?.source?.county ?? ""}`.trim();
+  if (recordCounty) return recordCounty;
+  return countyDisplayName(getPropertyCountyName(data, ctlData));
+}
+
 function getPropertyCountyName(data, ctlData) {
   const requested = `${data.parcel?.countyName ?? data.parcel?.county ?? data.countyName ?? ""}`.trim().toUpperCase();
   const names = new Set(ctlData.counties.map(row => row.countyName));
@@ -1517,7 +1473,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       tension: 0.25,
       borderWidth: 3,
       borderColor: chartColors.contextValue,
-      backgroundColor: "rgba(37, 99, 235, 0.16)"
+      backgroundColor: semanticChartColors.valueBg
     },
     {
       label: `${primaryLabel} tax index`,
@@ -1525,7 +1481,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       tension: 0.25,
       borderWidth: 3,
       borderColor: chartColors.contextTax,
-      backgroundColor: "rgba(244, 63, 94, 0.16)"
+      backgroundColor: semanticChartColors.taxBg
     },
     {
       label: `${comparisonLabel} value index`,
@@ -1533,7 +1489,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       tension: 0.25,
       borderWidth: 2,
       borderColor: chartColors.propertyValue,
-      backgroundColor: "rgba(100, 116, 139, 0.12)",
+      backgroundColor: visualizationTheme.roles.comparisonSoft,
       borderDash: [6, 5]
     },
     {
@@ -1542,7 +1498,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       tension: 0.25,
       borderWidth: 2,
       borderColor: chartColors.propertyTax,
-      backgroundColor: "rgba(253, 164, 175, 0.14)",
+      backgroundColor: semanticChartColors.taxBg,
       borderDash: [6, 5]
     }
   ];
@@ -1553,7 +1509,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       tension: 0.25,
       borderWidth: 3,
       borderColor: chartColors.contextValue,
-      backgroundColor: "rgba(37, 99, 235, 0.16)"
+      backgroundColor: semanticChartColors.valueBg
     },
     {
       label: `${comparisonLabel} average tax rate`,
@@ -1561,7 +1517,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       tension: 0.25,
       borderWidth: 2,
       borderColor: chartColors.propertyValue,
-      backgroundColor: "rgba(100, 116, 139, 0.12)",
+      backgroundColor: visualizationTheme.roles.comparisonSoft,
       borderDash: [6, 5]
     }
   ];
@@ -1622,11 +1578,15 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
   });
 }
 
-export function initCountyComparison(data, ctlData) {
+export function initCountyComparison(data, ctlData, recordCard) {
   const select = document.getElementById("countyComparisonTarget");
   if (!select) return;
 
   const primaryCounty = getPropertyCountyName(data, ctlData);
+  const heading = document.getElementById("countyComparisonTitle");
+  if (heading) {
+    heading.textContent = `How does ${propertyRecordCountyLabel(recordCard, data, ctlData)} compare?`;
+  }
   const countyNames = [...new Set(ctlData.counties.map(row => row.countyName))].sort();
   select.innerHTML = [
     `<option value="__STATE__" selected>Statewide</option>`,
@@ -1775,7 +1735,7 @@ function buildCountyValueMixChart(contextData) {
     ["Personal / state assessed", (county.personalProp ?? 0) + (county.stateasdPp ?? county.stateAssessedPp ?? 0) + (county.stateasdreal ?? county.stateAssessedReal ?? 0)],
     ["Other", (county.recreation ?? 0) + (county.minerals ?? 0)]
   ].filter(([, value]) => value > 0);
-  const colors = ["#4ade80", "#2563eb", "#14b8a6", "#fb923c", "#94a3b8"];
+  const colors = visualizationTheme.sequences.categorical;
   const total = categories.reduce((sum, [, value]) => sum + value, 0);
 
   new Chart(canvas, {
@@ -1785,7 +1745,7 @@ function buildCountyValueMixChart(contextData) {
       datasets: [{
         data: categories.map(row => row[1]),
         backgroundColor: colors,
-        borderColor: "#ffffff",
+        borderColor: palette.white,
         borderWidth: 2
       }]
     },
@@ -1828,8 +1788,8 @@ function buildCountyAgeMixChart(contextData) {
       datasets: [{
         label: "Share of population",
         data: rows.map(row => row.value * 100),
-        backgroundColor: ["#bfdbfe", "#60a5fa", "#1d4ed8"],
-        borderColor: "#2563eb",
+        backgroundColor: visualizationTheme.sequences.blueScale,
+        borderColor: visualizationTheme.colors.primary,
         borderWidth: 1
       }]
     },
@@ -1862,8 +1822,8 @@ function buildCommunityPopulationChart(contextData) {
       datasets: [{
         label: "2025 population",
         data: rows.map(row => row.value),
-        backgroundColor: "#cbd5e1",
-        borderColor: "#64748b",
+        backgroundColor: visualizationTheme.roles.comparisonSoft,
+        borderColor: visualizationTheme.roles.comparison,
         borderWidth: 1
       }]
     },
@@ -1898,8 +1858,8 @@ function buildHouseholdSignalsChart(contextData) {
       datasets: [{
         label: "Households",
         data: rows.map(row => row.value),
-        backgroundColor: ["#93c5fd", "#60a5fa", "#1d4ed8"],
-        borderColor: "#2563eb",
+        backgroundColor: visualizationTheme.sequences.blueScale,
+        borderColor: visualizationTheme.colors.primary,
         borderWidth: 1
       }]
     },
@@ -1989,7 +1949,7 @@ function findSchoolDistrictColor(data, schoolDistrictColors) {
 function levyColorForGroup(label, schoolColor) {
   return label === "School" && schoolColor
     ? schoolColor
-    : levyGroupColors[label] ?? "#94a3b8";
+    : levyGroupColors[label] ?? levyGroupColors.Other;
 }
 
 export function buildDistributionChart(data, schoolDistrictColors) {
@@ -2010,7 +1970,7 @@ export function buildDistributionChart(data, schoolDistrictColors) {
       datasets: [{
         data: values,
         backgroundColor: colors,
-        borderColor: "#ffffff",
+        borderColor: palette.white,
         borderWidth: 2
       }]
     },

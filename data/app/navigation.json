@@ -1,37 +1,52 @@
 {
-  "version": "0.1",
+  "version": "0.2",
   "metadata": {
     "source": {
       "sourceType": "internal",
       "displayCitation": "Internal application configuration",
-      "notes": "Navigation labels and footer targets are authored for the Property Snapshot prototype."
+      "notes": "Guided-path labels and footer targets are authored for the Property Snapshot prototype."
     }
   },
-  "defaultView": "property",
+  "defaultView": "your-property",
   "views": [
     {
-      "id": "property",
-      "label": "Property View",
+      "id": "your-property",
+      "label": "Your Property",
       "enabled": true
     },
     {
-      "id": "market",
-      "label": "Market Area View",
+      "id": "your-assessment",
+      "label": "Your Assessment",
       "enabled": true
     },
     {
-      "id": "county",
-      "label": "County View",
+      "id": "your-taxes",
+      "label": "Your Taxes",
       "enabled": true
     },
     {
-      "id": "statewide",
-      "label": "Statewide View",
+      "id": "tax-districts",
+      "label": "Your Tax Districts",
       "enabled": true
     },
     {
-      "id": "demographics",
-      "label": "Demographics",
+      "id": "market-area",
+      "label": "Your Market",
+      "enabled": true
+    },
+    {
+      "id": "county-equalization",
+      "label": "The County",
+      "enabled": true
+    },
+    {
+      "id": "state-context",
+      "label": "The State",
+      "enabled": true
+    },
+    {
+      "id": "review-checklist",
+      "label": "Review",
       "enabled": true
     }
   ],

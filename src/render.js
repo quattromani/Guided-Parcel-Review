@@ -13,12 +13,6 @@ import {
   getSnapshotHistory
 } from "./data-service.js";
 
-const toneClass = {
-  blue: "text-blue-700",
-  emerald: "text-emerald-700",
-  orange: "text-orange-400"
-};
-
 const discrepancyChoices = [
   ["confirmed", "Confirmed"],
   ["incorrect", "Incorrect"],
@@ -26,55 +20,72 @@ const discrepancyChoices = [
 ];
 
 const viewHeaderContent = {
-  property: {
-    eyebrow: "Gage County, Nebraska",
-    title: "Property Value & Tax Snapshot",
-    description: "Assessment-year property information, taxes, levies, and market context in one unified view.",
+  "your-property": {
+    eyebrow: "Guided Property Snapshot",
+    title: "Your property story, step by step",
+    description: "Start with the record, then move through assessment, taxes, districts, market context, county equalization, and review action.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
-  market: {
-    eyebrow: "Beatrice Market Area",
-    title: "Market Area Value & Tax View",
-    description: "Neighborhood and tax-district context for comparing property value movement, tax movement, and effective tax rate trends.",
+  "your-assessment": {
+    eyebrow: "Step 2 · Assessment",
+    title: "What changed about the assessed value?",
+    description: "Review the assessed value before interpreting the tax bill. Current-year values and finalized tax years are intentionally separated.",
     imageAlt: "Map of Nebraska highlighting the local market area"
   },
-  county: {
-    eyebrow: "Gage County, Nebraska",
-    title: "County Value & Tax View",
-    description: "Countywide value, levy, and effective tax rate context for comparing local movement against broader assessment patterns.",
+  "your-taxes": {
+    eyebrow: "Step 3 · Taxes",
+    title: "What does this mean for taxes?",
+    description: "Connect the finalized tax history, effective tax rate, and tax-pressure context before looking at individual taxing bodies.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
-  statewide: {
-    eyebrow: "Nebraska Statewide Context",
-    title: "Statewide Value & Tax View",
-    description: "A statewide comparison frame for understanding whether local value and tax movement appears typical or unusual.",
+  "tax-districts": {
+    eyebrow: "Step 4 · Tax districts",
+    title: "Who is taxing this property?",
+    description: "Separate the tax bill distribution from the list of organizations inside this property’s tax district.",
     imageAlt: "Map of Nebraska"
   },
-  demographics: {
-    eyebrow: "Gage County, Nebraska",
-    title: "Demographics & County Profile",
-    description: "Population, housing, economy, and valuation-base context for understanding the county behind the assessment data.",
+  "market-area": {
+    eyebrow: "Step 5 · Market area",
+    title: "How does this compare nearby?",
+    description: "Use the property’s valuation group and PAD Reports and Opinions data for local market context.",
+    imageAlt: "Map of Nebraska highlighting the local market area"
+  },
+  "county-equalization": {
+    eyebrow: "Step 6 · County equalization",
+    title: "How is the county performing overall?",
+    description: "Countywide ratio measures and certified-tax trends help explain the assessment system around the property.",
+    imageAlt: "Map of Nebraska highlighting Gage County"
+  },
+  "state-context": {
+    eyebrow: "Step 7 · State context",
+    title: "How does the county compare statewide?",
+    description: "Statewide CTL baselines provide a broader frame for local value growth, taxes levied, and average tax rates.",
+    imageAlt: "Map of Nebraska"
+  },
+  "review-checklist": {
+    eyebrow: "Step 8 · Review checklist",
+    title: "What should I check before I protest?",
+    description: "Bring the property record, assessment, tax history, market context, and calendar into a practical review list.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   }
 };
 
 export function renderPage(data, imageModal, calendar, recordCard, valuationGroups) {
-  renderViewHeader("property");
+  renderViewHeader("your-property", data.snapshotModel);
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard);
+  renderAssessmentNoticeSummary(data, recordCard);
   renderHeaderTimeline(calendar);
   renderPropertyDetails(data, recordCard);
   renderDiscrepancyForm(data, recordCard);
   initReportErrorModal(data);
   renderSummary(data);
-  initJumpLinks();
   renderProcessTimeline(calendar);
   renderHistoryTable(data);
   renderPropertyMovementSummary(data);
   renderEtrSummary(data);
   renderLevyHistoryTable(data);
   renderLevyTable(data);
-  renderComparables(data);
   renderSources(data);
 }
 
@@ -146,8 +157,16 @@ function getCurrentStageText(calendar) {
   return activeStages.map(stage => stage.label).join(" + ");
 }
 
-export function renderViewHeader(view = "property") {
-  const content = viewHeaderContent[view] || viewHeaderContent.property;
+export function renderViewHeader(view = "your-property", snapshotModel) {
+  const section = snapshotModel?.sections?.find(item => item.id === view);
+  const content = section
+    ? {
+      eyebrow: section.eyebrow,
+      title: section.question,
+      description: section.description,
+      imageAlt: viewHeaderContent[view]?.imageAlt ?? "Map of Nebraska"
+    }
+    : viewHeaderContent[view] || viewHeaderContent["your-property"];
   const title = document.getElementById("pageTitle");
 
   title.innerHTML = `
@@ -179,8 +198,8 @@ function renderHeader(data, imageModal, recordCard) {
   const header = document.getElementById("pageHeader");
 
   header.innerHTML = `
-    <div class="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
-      <div class="min-w-0 flex-1">
+    <div class="property-hero-header">
+      <div class="property-hero-identity">
         <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">${data.snapshotYear} Property Snapshot</p>
         <h2 class="mt-1 text-3xl font-bold tracking-tight text-slate-700">${data.parcel.situsAddress}</h2>
         <p class="mt-2 text-base text-slate-600">
@@ -194,9 +213,11 @@ function renderHeader(data, imageModal, recordCard) {
         </p>      
       </div>
 
-      ${valuationNoticeSummary(data, recordCard)}
+      <div class="property-hero-notice">
+        ${valuationNoticeSummary(data, recordCard)}
+      </div>
 
-      <div class="flex items-center justify-center gap-4">
+      <div class="property-hero-media">
         ${imageButton(data.assets.photo, "Property Photos", "Photos")}
         ${imageButton(data.assets.sketch, "Property Sketch", "Sketch")}
       </div>
@@ -208,6 +229,13 @@ function renderHeader(data, imageModal, recordCard) {
       imageModal.open(button.dataset.imageSrc, button.dataset.imageCaption);
     });
   });
+}
+
+function renderAssessmentNoticeSummary(data, recordCard) {
+  const container = document.getElementById("assessmentNoticeSummary");
+  if (!container) return;
+
+  container.innerHTML = valuationNoticeSummary(data, recordCard);
 }
 
 function valuationNoticeSummary(data, recordCard) {
@@ -737,10 +765,10 @@ function initDiscrepancyDraft(data) {
 
 function initReportErrorModal(data) {
   const modal = document.getElementById("reportErrorModal");
-  const trigger = document.querySelector("[data-report-error]");
+  const triggers = document.querySelectorAll("[data-report-error]");
   const closeButtons = document.querySelectorAll("[data-close-report-error]");
 
-  if (!modal || !trigger) return;
+  if (!modal || !triggers.length) return;
 
   initDiscrepancyDraft(data);
 
@@ -756,7 +784,7 @@ function initReportErrorModal(data) {
     document.body.classList.add("overflow-hidden");
   }
 
-  trigger.addEventListener("click", open);
+  triggers.forEach(trigger => trigger.addEventListener("click", open));
   modal.addEventListener("click", close);
   modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
   closeButtons.forEach(button => button.addEventListener("click", close));
@@ -973,7 +1001,7 @@ function propertyValueTaxHistory(data, recordCard) {
         </tbody>
       </table>
       <p class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">
-        Value components come from the assessment model. Taxable value and taxes use the record-card history where available, with finalized tax history filling current dashboard years.
+        Value components come from the assessment model. Taxable value and taxes use the record-card history where available, with finalized tax history filling the current guided view.
       </p>
     `
   );
@@ -1391,13 +1419,13 @@ function renderSummary(data) {
       <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Jump to details</p>
       <div class="flex flex-wrap gap-2">
         ${[
-          ["#tax-cycle", "Tax cycle"],
-          ["#value-history", "Value & tax history"],
-          ["#indexed-trends", "Indexed trends"],
-          ["#levy-history", "Levy history"],
+          ["#assessment-notice", "Assessment notice"],
+          ["#indexed-trends", "Value and tax movement"],
+          ["#etr-trend", "Tax rate trend"],
           ["#tax-distribution", "Tax distribution"],
-          ["#etr-trend", "ETR trend"],
-          ["#comparables", "Nearby sales"]
+          ["#market-overview", "Market area"],
+          ["#assessment-accuracy", "County equalization"],
+          ["#review-checklist-card", "Review checklist"]
         ].map(([href, label]) => `<a href="${href}" data-jump-target="${href.slice(1)}" class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-200 transition hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-400">${label}</a>`).join("")}
       </div>
     </div>
@@ -1758,175 +1786,76 @@ function renderLevyTable(data) {
   document.getElementById("levyRows").innerHTML = dataRows + totalRow;
 }
 
-function renderComparables(data) {
-  renderComparableValueScale(data);
+export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
+  const summary = document.getElementById("taxDistrictAuthoritySummary");
+  const table = document.getElementById("taxDistrictAuthorityRows");
+  if (!summary || !table) return;
 
-  document.getElementById("comparableCards").innerHTML = data.comparables.map(item => {
-    const isSubject = item.accent === "subject";
+  const district = taxDistrictAuthorities?.districts?.find(item =>
+    String(item.taxDistrict) === String(data.parcel.taxDistrict)
+  );
+  const authorities = district?.authorities ?? data.latestFinalLevyComponents.map(row => ({
+    description: row.description,
+    category: row.group,
+    levy: row.rate
+  }));
+  const total = authorities.reduce((sum, row) => sum + row.levy, 0);
+  const sortedRows = authorities.slice().sort((a, b) => b.levy - a.levy);
+  const districtDescription = district?.districtDescription ?? null;
+  const districtDescriptionNote = districtDescription
+    ? `Report label: ${districtDescription}`
+    : "No district description found in the authority report.";
+
+  summary.innerHTML = [
+    {
+      label: "Tax district",
+      value: data.parcel.taxDistrict,
+      note: districtDescriptionNote
+    },
+    {
+      label: "Authorities",
+      value: authorities.length,
+      note: district ? "Matched by parcel tax district." : "Using latest levy components."
+    },
+    {
+      label: "Total levy",
+      value: formatNullableLevy(district?.districtLevy ?? total),
+      note: "Sum of district authorities."
+    },
+    {
+      label: "Source year",
+      value: taxDistrictAuthorities?.source?.taxYear ?? data.latestFinalTaxYear,
+      note: "District Authority Report."
+    }
+  ].map(card => `
+    <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(card.label)}</p>
+      <p class="mt-1 text-lg font-bold text-slate-700">${escapeHtml(card.value)}</p>
+      <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(card.note)}</p>
+    </div>
+  `).join("");
+
+  table.innerHTML = sortedRows.map(row => {
+    const share = total ? row.levy / total : null;
+    const taxPer100k = row.levy * 1000;
 
     return `
-      <article class="rounded-2xl ${isSubject ? "bg-blue-50 ring-blue-200" : "bg-slate-50 ring-slate-200"} p-4 ring-1">
-        <p class="mb-2 text-xs font-semibold uppercase tracking-wide ${isSubject ? "text-blue-700" : "text-slate-500"}">${item.type}</p>
-        <img src="${item.image}" alt="${item.type} photo" class="h-32 w-full rounded-xl object-cover ring-1 ${isSubject ? "ring-blue-200" : "ring-slate-200"}" />
-        <h3 class="mt-3 text-base font-bold text-slate-700">${item.title}</h3>
-        <p class="text-sm text-slate-600">${item.subtitle}</p>
-        <dl class="mt-4 space-y-2 text-sm">
-          ${item.metrics.map(metric => `
-            <div class="flex justify-between gap-3">
-              <dt class="text-slate-500">${metric.label}</dt>
-              <dd class="font-semibold ${metric.tone ? toneClass[metric.tone] : "text-slate-700"}">${metric.value ?? "Pending"}</dd>
-            </div>
-          `).join("")}
-        </dl>
-      </article>
+      <tr>
+        <td class="px-3 py-2 font-medium text-slate-700">${escapeHtml(row.description)}</td>
+        <td class="px-3 py-2 text-slate-600">${escapeHtml(row.category)}</td>
+        <td class="px-3 py-2 text-right">${formatNullableLevy(row.levy)}</td>
+        <td class="px-3 py-2 text-right">${formatNullablePercent(share)}</td>
+        <td class="px-3 py-2 text-right">${moneyCents.format(taxPer100k)}</td>
+      </tr>
     `;
   }).join("");
-}
 
-function parseMoneyValue(value) {
-  if (typeof value === "number") return value;
-  if (typeof value !== "string") return null;
-
-  const parsed = Number(value.replace(/[^0-9.-]/g, ""));
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
-function roundScale(value, direction) {
-  const step = 25000;
-  const method = direction === "down"
-    ? Math.floor
-    : direction === "nearest"
-      ? Math.round
-      : Math.ceil;
-
-  return method(value / step) * step;
-}
-
-function getMetricValue(comparable, labels) {
-  const metric = comparable.metrics.find(item => labels.includes(item.label));
-
-  return parseMoneyValue(metric?.value);
-}
-
-function getSubjectComparableValue(data) {
-  const snapshot = getSnapshotHistory(data);
-  const currentValue = snapshot?.assessedValue ?? null;
-
-  if (currentValue !== null && currentValue !== undefined) {
-    return {
-      value: currentValue,
-      label: `${snapshot.year} assessed value`,
-      pending: false
-    };
+  const source = document.getElementById("taxDistrictAuthoritySource");
+  if (source) {
+    source.textContent = taxDistrictAuthorities?.source
+      ? `Source: ${taxDistrictAuthorities.source.title}, printed ${new Date(taxDistrictAuthorities.source.printedAt).toLocaleDateString("en-US")}.`
+      : propertyRecordSourceText(data);
   }
-
-  const latestFinal = data.taxpayerHistory
-    .filter(row => row.assessedValue !== null && row.assessedValue !== undefined)
-    .sort((a, b) => a.year - b.year)
-    .at(-1);
-
-  return {
-    value: latestFinal?.assessedValue ?? null,
-    label: latestFinal ? `${latestFinal.year} assessed value` : "Assessed value",
-    pending: true
-  };
-}
-
-function markerPosition(value, min, max) {
-  if (value === null || value === undefined || max <= min) return 0;
-
-  return Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
-}
-
-function renderComparableValueScale(data) {
-  const container = document.getElementById("comparableValueScale");
-  if (!container) return;
-
-  const subject = data.comparables.find(item => item.accent === "subject");
-  const comps = data.comparables
-    .filter(item => item.accent !== "subject")
-    .map((item, index) => ({
-      id: index + 1,
-      title: item.title,
-      value: getMetricValue(item, ["Sale price", "Assessed value"])
-    }))
-    .filter(item => item.value !== null && item.value !== undefined);
-  const subjectValue = getSubjectComparableValue(data);
-  const points = [
-    ...(subjectValue.value !== null && subjectValue.value !== undefined ? [{
-      id: "S",
-      title: subject?.title || "This property",
-      value: subjectValue.value,
-      type: "subject"
-    }] : []),
-    ...comps.map(item => ({ ...item, type: "comp" }))
-  ];
-
-  if (points.length < 2) {
-    container.innerHTML = "";
-    return;
-  }
-
-  const rawMin = Math.min(...points.map(item => item.value));
-  const rawMax = Math.max(...points.map(item => item.value));
-  const range = rawMax - rawMin || rawMax * 0.1;
-  const min = Math.max(0, roundScale(rawMin - range * 0.12, "down"));
-  const max = roundScale(rawMax + range * 0.12, "up");
-  const mid = roundScale((min + max) / 2, "nearest");
-
-  container.innerHTML = `
-    <section class="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200" aria-labelledby="comparativeValueTitle">
-      <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h3 id="comparativeValueTitle" class="text-lg font-bold text-slate-700">How does this property compare by value?</h3>
-          <p class="mt-1 text-sm leading-6 text-slate-600">
-            The subject marker uses ${subjectValue.pending ? "the latest finalized assessed value while the current year is pending" : "the current assessed value"}.
-            Nearby markers use listed comparable sale prices.
-          </p>
-        </div>
-        <span class="self-start rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-200">
-          ${subjectValue.label}
-        </span>
-      </div>
-
-      <div class="relative mt-8 px-3 pb-14 pt-8">
-        <div class="absolute left-3 right-3 top-12 h-1 rounded-full bg-slate-300"></div>
-        ${points.map(point => {
-          const left = markerPosition(point.value, min, max);
-          const isSubject = point.type === "subject";
-          return `
-            <div class="absolute top-7 -translate-x-1/2" style="left: ${left}%">
-              <div class="flex flex-col items-center gap-1">
-                <span class="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold shadow-sm ring-2 ring-white ${isSubject ? "bg-slate-700 text-white" : "bg-blue-700 text-white"}">
-                  ${point.id}
-                </span>
-                <span class="hidden max-w-28 text-center text-xs font-semibold leading-4 text-slate-600 sm:block">
-                  ${formatNullableMoney(point.value)}
-                </span>
-              </div>
-            </div>
-          `;
-        }).join("")}
-        <div class="absolute inset-x-3 bottom-0 flex justify-between text-lg font-bold text-slate-500 sm:text-2xl">
-          <span>${formatNullableMoney(min)}</span>
-          <span>${formatNullableMoney(mid)}</span>
-          <span>${formatNullableMoney(max)}</span>
-        </div>
-      </div>
-
-      <div class="mt-2 grid gap-2 text-xs text-slate-600 sm:grid-cols-2 lg:grid-cols-4">
-        ${points.map(point => `
-          <div class="flex items-center gap-2 rounded-xl bg-white px-3 py-2 ring-1 ring-slate-200">
-            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${point.type === "subject" ? "bg-slate-700 text-white" : "bg-blue-700 text-white"}">${point.id}</span>
-            <span class="min-w-0">
-              <span class="block truncate font-semibold text-slate-700">${point.title}</span>
-              <span class="block">${formatNullableMoney(point.value)}</span>
-            </span>
-          </div>
-        `).join("")}
-      </div>
-    </section>
-  `;
 }
 
 function renderSources(data) {

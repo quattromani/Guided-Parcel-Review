@@ -12,8 +12,6 @@ const DATA_PATHS = {
   manifest: "data/app/property-manifest.json"
 };
 
-export const PROPERTY_SAMPLE_STORAGE_KEY = "property-snapshot:active-property-id";
-
 let manifestPromise;
 
 export function loadPropertyManifest() {
@@ -23,16 +21,7 @@ export function loadPropertyManifest() {
 }
 
 export function getActivePropertyId(manifest) {
-  const storedPropertyId = typeof localStorage === "undefined"
-    ? null
-    : localStorage.getItem(PROPERTY_SAMPLE_STORAGE_KEY);
-  const storedProperty = manifest.properties.find(item => item.id === storedPropertyId);
-
-  return storedProperty?.id ?? manifest.activePropertyId;
-}
-
-export function setActivePropertyId(propertyId) {
-  localStorage.setItem(PROPERTY_SAMPLE_STORAGE_KEY, propertyId);
+  return manifest.activePropertyId;
 }
 
 async function getActivePropertyEntry() {

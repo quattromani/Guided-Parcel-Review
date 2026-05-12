@@ -4,18 +4,14 @@
     "source": {
       "sourceType": "internal",
       "displayCitation": "Internal application configuration",
-      "notes": "Manifest paths, sample-property selection, and shared-data wiring are authored for the Property Snapshot prototype."
+      "notes": "Manifest paths and shared-data wiring are authored for the guided Property Snapshot prototype."
     }
   },
   "activePropertyId": "residential-010496000",
-  "testingSwitcher": {
-    "enabled": true,
-    "description": "Future staging control for cycling the dashboard among residential, agricultural, and commercial sample properties."
-  },
   "properties": [
     {
       "id": "residential-010496000",
-      "label": "Residential sample",
+      "label": "Residential MIPS record",
       "propertyClass": "Residential",
       "parcelId": "010496000",
       "situsAddress": "1301 S 5TH",
@@ -24,30 +20,6 @@
       "propertyDataPath": "data/properties/residential-property-data.json",
       "recordCardPath": "data/property-records/mips/residential-010496000-record-card.json",
       "recordCardStatus": "available"
-    },
-    {
-      "id": "agricultural-sample",
-      "label": "Agricultural sample",
-      "propertyClass": "Agricultural",
-      "parcelId": "AG-SAMPLE-001",
-      "situsAddress": "Sample rural property",
-      "county": "gage",
-      "taxDistrict": "33",
-      "propertyDataPath": "data/properties/ag-property-sample-data.json",
-      "recordCardPath": "data/property-records/mips/agricultural-sample-record-card.json",
-      "recordCardStatus": "pending"
-    },
-    {
-      "id": "commercial-sample",
-      "label": "Commercial sample",
-      "propertyClass": "Commercial",
-      "parcelId": "COMM-SAMPLE-001",
-      "situsAddress": "Sample commercial property",
-      "county": "gage",
-      "taxDistrict": "157",
-      "propertyDataPath": "data/properties/commercial-property-sample-data.json",
-      "recordCardPath": "data/property-records/mips/commercial-sample-record-card.json",
-      "recordCardStatus": "pending"
     }
   ],
   "sharedData": {

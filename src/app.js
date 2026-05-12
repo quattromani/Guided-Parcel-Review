@@ -7,31 +7,33 @@ import {
   initMarketAreaView,
   buildOverviewCharts,
   initCountyComparison,
-  initAssessmentRatioAnalysis,
-  initDemographicsView
+  initAssessmentRatioAnalysis
 } from "./charts.js";
 import {
   loadAssessmentCalendar,
   loadAssessmentRatioAnalysis,
   loadCertifiedTaxesLevied,
   loadCountyContext,
-  loadPropertyManifest,
   loadPropertyData,
   loadPropertyRecordCard,
   loadPadRatioStatistics,
   loadSchoolDistrictColors,
   loadTaxDistrictAuthorities,
   loadValuationGroups,
-  loadIaaoStandards,
-  getActivePropertyId,
-  setActivePropertyId
+  loadIaaoStandards
 } from "./data-service.js";
+import { applyVisualizationPalette } from "./config/visualization-palettes.js";
 import { initImageModal } from "./modal.js";
-import { renderPage, renderViewHeader } from "./render.js";
+import {
+  renderPage,
+  renderTaxDistrictAuthorities,
+  renderViewHeader
+} from "./render.js";
+import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.js";
 
 async function main() {
-  const manifest = await loadPropertyManifest();
-  const [data, recordCard, calendar, ctlData, ratioData, countyContext, padRatioData, schoolDistrictColors, taxDistrictAuthorities, valuationGroups, iaaoStandards] = await Promise.all([
+  applyVisualizationPalette();
+  const [propertyData, recordCard, calendar, ctlData, ratioData, countyContext, padRatioData, schoolDistrictColors, taxDistrictAuthorities, valuationGroups, iaaoStandards] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
     loadAssessmentCalendar(),
@@ -44,10 +46,23 @@ async function main() {
     loadValuationGroups(),
     loadIaaoStandards()
   ]);
+  const snapshotModel = buildPropertySnapshotModel({
+    propertyData,
+    recordCard,
+    calendar,
+    ctlData,
+    ratioData,
+    countyContext,
+    padRatioData,
+    taxDistrictAuthorities,
+    valuationGroups,
+    iaaoStandards
+  });
+  const data = withSnapshotModel(propertyData, snapshotModel);
   const imageModal = initImageModal(data.assets);
 
-  initAdminStateTestControl(manifest);
   renderPage(data, imageModal, calendar, recordCard, valuationGroups);
+  renderTaxDistrictAuthorities(data, taxDistrictAuthorities);
   buildIndexedChart(data);
   buildEqualizationPressureIndex(data, ctlData);
   buildEtrChart(data);
@@ -55,10 +70,9 @@ async function main() {
   buildOverviewCharts(data, ctlData);
   initMarketAreaView(data, recordCard, padRatioData, valuationGroups);
   buildCtlSummary(data, ctlData);
-  initCountyComparison(data, ctlData);
+  initCountyComparison(data, ctlData, recordCard);
   initAssessmentRatioAnalysis(data, ratioData, iaaoStandards);
-  initDemographicsView(countyContext);
-  initViewNavigation();
+  initGuidedNavigation(data.snapshotModel);
   initFooterNavigation();
 }
 
@@ -74,60 +88,41 @@ main().catch(error => {
   `;
 });
 
-function initAdminStateTestControl(manifest) {
-  const container = document.getElementById("adminStateTestControl");
-  if (!container || !manifest?.testingSwitcher?.enabled) return;
-
-  const activePropertyId = getActivePropertyId(manifest);
-
-  container.innerHTML = `
-    <div class="rounded-xl border border-dashed border-slate-500 bg-slate-700 px-4 py-3 text-white shadow-sm">
-      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div class="min-w-0">
-          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-300">Admin state test control · Proof of concept only</p>
-          <p class="mt-1 text-sm text-slate-300">Local sample-property switcher. Not production UI, not taxpayer-facing, and not a certified state.</p>
-        </div>
-        <label class="flex shrink-0 flex-col gap-1 text-xs font-semibold uppercase tracking-wide text-slate-300 sm:min-w-72">
-          Active fixture
-          <select id="adminPropertyFixtureSelect" class="rounded-lg border-0 bg-white px-3 py-2 text-sm font-semibold normal-case tracking-normal text-slate-700 ring-1 ring-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
-            ${manifest.properties.map(property => `
-              <option value="${property.id}" ${property.id === activePropertyId ? "selected" : ""}>
-                ${property.label} · ${property.propertyClass}
-              </option>
-            `).join("")}
-          </select>
-        </label>
-      </div>
-    </div>
-  `;
-
-  container.querySelector("#adminPropertyFixtureSelect")?.addEventListener("change", event => {
-    setActivePropertyId(event.target.value);
-    window.location.reload();
-  });
-}
-
-function initViewNavigation() {
-  const tabs = document.querySelectorAll("[data-view-tab]");
-  const panels = document.querySelectorAll("[data-view-panel]");
+function initGuidedNavigation(snapshotModel) {
+  const tabs = document.querySelectorAll("[data-guided-tab]");
+  const panels = document.querySelectorAll("[data-guided-panel]");
   const propertyContext = document.getElementById("propertyViewContext");
+  const sectionIds = [...tabs].map(tab => tab.dataset.guidedTab);
+  const legacyViewMap = {
+    property: "your-property",
+    market: "market-area",
+    county: "county-equalization",
+    statewide: "state-context"
+  };
 
-  function selectView(selected, options = {}) {
+  function stepForTarget(target) {
+    return document.getElementById(target)?.closest("[data-guided-panel]")?.dataset.guidedPanel;
+  }
+
+  function selectStep(selected, options = {}) {
     const { scrollTop = true } = options;
+    const selectedIndex = sectionIds.indexOf(selected);
 
     tabs.forEach(item => {
-      const active = item.dataset.viewTab === selected;
-      item.classList.toggle("view-tab-active", active);
-      item.classList.toggle("text-slate-600", !active);
+      const itemIndex = sectionIds.indexOf(item.dataset.guidedTab);
+      const active = item.dataset.guidedTab === selected;
+      const complete = itemIndex >= 0 && selectedIndex > itemIndex;
+      item.classList.toggle("guided-step-active", active);
+      item.classList.toggle("guided-step-complete", complete);
       item.setAttribute("aria-selected", String(active));
     });
 
     panels.forEach(panel => {
-      panel.classList.toggle("hidden", panel.dataset.viewPanel !== selected);
+      panel.classList.toggle("hidden", panel.dataset.guidedPanel !== selected);
     });
 
-    propertyContext?.classList.toggle("hidden", selected === "property");
-    renderViewHeader(selected);
+    propertyContext?.classList.toggle("hidden", selected === "your-property");
+    renderViewHeader(selected, snapshotModel);
     window.dispatchEvent(new Event("resize"));
 
     if (scrollTop) {
@@ -137,15 +132,22 @@ function initViewNavigation() {
 
   tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-      selectView(tab.dataset.viewTab);
+      selectStep(tab.dataset.guidedTab);
+    });
+  });
+
+  document.querySelectorAll("[data-guided-next]").forEach(button => {
+    button.addEventListener("click", () => {
+      selectStep(button.dataset.guidedNext);
     });
   });
 
   document.querySelectorAll("[data-view-link]").forEach(link => {
     link.addEventListener("click", () => {
       const target = document.getElementById(link.dataset.jumpTarget);
+      const selected = legacyViewMap[link.dataset.viewLink] ?? stepForTarget(link.dataset.jumpTarget) ?? "your-property";
 
-      selectView(link.dataset.viewLink, { scrollTop: false });
+      selectStep(selected, { scrollTop: false });
       if (!target) return;
 
       history.pushState(null, "", `#${target.id}`);
@@ -154,6 +156,27 @@ function initViewNavigation() {
       window.setTimeout(() => target.classList.remove("jump-target-active"), 1400);
     });
   });
+
+  document.querySelectorAll("[data-jump-target]").forEach(link => {
+    link.addEventListener("click", event => {
+      const target = document.getElementById(link.dataset.jumpTarget);
+      if (!target) return;
+
+      event.preventDefault();
+      const targetStep = stepForTarget(link.dataset.jumpTarget);
+      if (targetStep) {
+        selectStep(targetStep, { scrollTop: false });
+      }
+      history.pushState(null, "", `#${target.id}`);
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      target.classList.add("jump-target-active");
+      window.setTimeout(() => target.classList.remove("jump-target-active"), 1400);
+    });
+  });
+
+  const hashTarget = window.location.hash?.slice(1);
+  const initialStep = hashTarget ? stepForTarget(hashTarget) : sectionIds[0];
+  selectStep(initialStep || sectionIds[0], { scrollTop: false });
 }
 
 function initFooterNavigation() {
