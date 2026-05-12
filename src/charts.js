@@ -324,6 +324,22 @@ function formatSignedChange(value, digits = 2) {
   return `${prefix}${value.toFixed(digits)}`;
 }
 
+function hexToRgbChannel(hex) {
+  const normalized = `${hex}`.replace("#", "");
+  if (!/^[0-9a-f]{6}$/i.test(normalized)) return null;
+
+  return [
+    Number.parseInt(normalized.slice(0, 2), 16),
+    Number.parseInt(normalized.slice(2, 4), 16),
+    Number.parseInt(normalized.slice(4, 6), 16)
+  ].join(" ");
+}
+
+function colorAlpha(hex, alpha) {
+  const channel = hexToRgbChannel(hex);
+  return channel ? `rgb(${channel} / ${alpha})` : hex;
+}
+
 const assessmentStandardKeys = {
   residential: "residential-improved-rural",
   agFarm: "other-vacant-rural",
@@ -333,33 +349,33 @@ const assessmentStandardKeys = {
 const assessmentMeasureDefinitions = [
   {
     key: "cod",
-    label: "Uniformity (COD)",
+    label: "Uniformity",
     color: chartColors.cod,
     fill: semanticChartColors.etrBg,
     cardBackground: semanticChartColors.etrSoft,
     cardBorder: semanticChartColors.etrRing,
     digits: 2,
-    definition: "How tightly individual assessments cluster around typical market value."
+    definition: "Uniformity is measured by COD. It shows how tightly individual assessments cluster around typical market value."
   },
   {
     key: "prd",
-    label: "Price-Level Fairness (PRD)",
+    label: "Price level fairness",
     color: chartColors.prd,
     fill: semanticChartColors.taxBg,
     cardBackground: semanticChartColors.taxSoft,
     cardBorder: semanticChartColors.taxRing,
     digits: 3,
-    definition: "Whether lower- and higher-priced properties are being treated evenly."
+    definition: "Price level fairness is measured by PRD. It shows whether lower- and higher-priced properties are being treated evenly."
   },
   {
     key: "cov",
-    label: "Reliability (COV)",
+    label: "Reliability",
     color: chartColors.cov,
     fill: semanticChartColors.valueBg,
     cardBackground: semanticChartColors.valueSoft,
     cardBorder: semanticChartColors.valueRing,
     digits: 2,
-    definition: "Whether the study results are stable enough to trust across the sales sample."
+    definition: "Reliability is measured by COV. It shows whether the study results are stable enough to trust across the sales sample."
   }
 ];
 
@@ -447,17 +463,47 @@ function renderAssessmentSummary(selectedClass) {
   const target = getLovTarget(selectedClass.key);
 
   const cards = [
-    ["Level of value", `${latest.levelOfValue.toFixed(2)}%`, `Target: ${target}%`],
-    ["COD", latest.cod.toFixed(2), `${formatSignedChange(selectedClass.summary.codChangeSince2025)} from 2025`],
-    ["PRD", latest.prd.toFixed(3), `${formatSignedChange(selectedClass.summary.prdDistanceChangeSince2025, 3)} distance from 2025`],
-    ["COV", latest.cov.toFixed(2), `${formatSignedChange(selectedClass.summary.covChangeSince2025)} from 2025`]
+    {
+      label: "COD",
+      value: latest.cod.toFixed(2),
+      note: `${formatSignedChange(selectedClass.summary.codChangeSince2025)} from 2025`,
+      color: chartColors.cod,
+      help: "Coefficient of Dispersion shows how tightly assessment ratios cluster around the median. Lower values generally indicate more uniform assessments."
+    },
+    {
+      label: "PRD",
+      value: latest.prd.toFixed(3),
+      note: `${formatSignedChange(selectedClass.summary.prdDistanceChangeSince2025, 3)} distance from 2025`,
+      color: chartColors.prd,
+      help: "Price-Related Differential checks whether lower- and higher-priced properties are assessed evenly. Values close to 1.00 are preferred."
+    },
+    {
+      label: "COV",
+      value: latest.cov.toFixed(2),
+      note: `${formatSignedChange(selectedClass.summary.covChangeSince2025)} from 2025`,
+      color: chartColors.cov,
+      help: "Coefficient of Variation shows how spread out assessment ratios are around their average. Lower values generally indicate more consistent results."
+    },
+    {
+      label: "Level of value",
+      value: `${latest.levelOfValue.toFixed(2)}%`,
+      note: `Target: ${target}%`,
+      color: palette.teal,
+      help: `Level of value compares assessed value with market value. The target for this class is ${target}%.`
+    }
   ];
 
-  summary.innerHTML = cards.map(([label, value, note]) => `
-    <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-      <p class="mt-1 text-lg font-bold text-slate-700">${value}</p>
-      <p class="mt-1 text-xs leading-5 text-slate-500">${note}</p>
+  summary.innerHTML = cards.map(card => `
+    <div class="assessment-metric-card rounded-xl p-4" style="--metric-color: ${card.color}; --metric-bg: ${colorAlpha(card.color, 0.14)}; --metric-border: ${colorAlpha(card.color, 0.28)};">
+      <div class="assessment-metric-heading">
+        <p class="assessment-metric-label text-xs font-semibold uppercase tracking-wide">${card.label}</p>
+        <span class="assessment-metric-help">
+          <button type="button" class="assessment-help-button" aria-label="${card.label} explanation">?</button>
+          <span class="assessment-help-tooltip" role="tooltip">${card.help}</span>
+        </span>
+      </div>
+      <p class="assessment-metric-value mt-1 text-lg font-bold">${card.value}</p>
+      <p class="assessment-metric-note mt-1 text-xs leading-5">${card.note}</p>
     </div>
   `).join("");
 }
@@ -470,10 +516,10 @@ function renderAssessmentRows(selectedClass) {
     <tr>
       <td class="px-3 py-2 font-medium text-slate-700">${row.year}</td>
       <td class="px-3 py-2 text-right">${row.sales}</td>
-      <td class="px-3 py-2 text-right">${row.levelOfValue.toFixed(2)}%</td>
       <td class="px-3 py-2 text-right">${row.cod.toFixed(2)}</td>
       <td class="px-3 py-2 text-right">${row.prd.toFixed(3)}</td>
       <td class="px-3 py-2 text-right">${row.cov.toFixed(2)}</td>
+      <td class="px-3 py-2 text-right">${row.levelOfValue.toFixed(2)}%</td>
     </tr>
   `).join("");
 }
@@ -485,10 +531,10 @@ function renderAssessmentAccuracyNotes(selectedClass, iaaoStandards) {
   const bandConfig = getAssessmentBandConfig(selectedClass, iaaoStandards);
 
   notes.innerHTML = assessmentMeasureDefinitions.map(definition => `
-    <div class="flex min-h-32 flex-col rounded-lg p-3 ring-1" style="background-color: ${definition.cardBackground}; --tw-ring-color: ${definition.cardBorder};">
-      <p class="font-semibold" style="color: ${definition.color};">${definition.label}</p>
-      <p class="mt-1" style="color: ${definition.color};">${definition.definition}</p>
-      <p class="mt-auto pt-3 text-[11px] font-semibold uppercase tracking-wide" style="color: ${definition.color};">
+    <div class="assessment-note-card flex min-h-32 flex-col rounded-lg p-3" style="--measure-color: ${definition.color};">
+      <p class="assessment-note-title">${definition.label}</p>
+      <p class="assessment-note-body mt-2">${definition.definition}</p>
+      <p class="assessment-note-band mt-auto pt-3 text-[11px] font-semibold uppercase tracking-wide">
         Standard band: ${standardRangeLabel(bandConfig[definition.key], definition.key === "prd" ? 2 : 1)}
       </p>
     </div>
@@ -1466,6 +1512,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
   const years = primaryRows.map(row => row.year);
   const primaryIndex = ctlIndexedRows(primaryRows, "totalValue", "taxesLevied");
   const comparisonIndex = ctlIndexedRows(comparisonRows, "totalValue", "taxesLevied");
+  const comparisonTaxColor = colorAlpha(semanticChartColors.tax, 0.52);
   const indexedDatasets = [
     {
       label: `${primaryLabel} value index`,
@@ -1497,7 +1544,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       data: comparisonIndex.taxes,
       tension: 0.25,
       borderWidth: 2,
-      borderColor: chartColors.propertyTax,
+      borderColor: comparisonTaxColor,
       backgroundColor: semanticChartColors.taxBg,
       borderDash: [6, 5]
     }
@@ -1657,10 +1704,10 @@ export function buildCtlSummary(data, ctlData) {
       <div class="rounded-xl p-4" style="background-color: ${card.bg}; box-shadow: inset 0 0 0 1px ${card.ring};">
         <div class="flex items-center gap-2">
           <span class="chart-legend-dot inline-block" style="background-color: ${card.color};"></span>
-          <p class="text-xs font-semibold uppercase tracking-wide" style="color: ${card.color};">${card.label}</p>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-700">${card.label}</p>
         </div>
-        <p class="mt-2 text-lg font-bold" style="color: ${card.color};">${card.value}</p>
-        <p class="mt-1 text-sm leading-5" style="color: ${card.color};">${card.note}</p>
+        <p class="mt-2 text-lg font-bold text-slate-700">${card.value}</p>
+        <p class="mt-1 text-sm leading-5 text-slate-600">${card.note}</p>
       </div>
     `).join("");
   }

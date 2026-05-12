@@ -209,26 +209,31 @@ function initGuidedPathStickiness(guidedPath) {
 function initFooterNavigation() {
   const links = document.querySelectorAll("[data-footer-target]");
   const panels = document.querySelectorAll("[data-footer-panel]");
+  const footerContent = document.getElementById("footerContent");
 
   document.querySelectorAll("[data-fpo-link]").forEach(link => {
     link.addEventListener("click", event => event.preventDefault());
   });
 
+  links.forEach(link => link.setAttribute("aria-expanded", "false"));
+
   links.forEach(link => {
     link.addEventListener("click", () => {
       const selected = link.dataset.footerTarget;
+      footerContent?.classList.remove("hidden");
 
       links.forEach(item => {
         const active = item.dataset.footerTarget === selected;
         item.classList.toggle("footer-link-active", active);
         item.classList.toggle("text-slate-600", !active);
+        item.setAttribute("aria-expanded", String(active));
       });
 
       panels.forEach(panel => {
         panel.classList.toggle("hidden", panel.dataset.footerPanel !== selected);
       });
 
-      document.getElementById("footerContent")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      footerContent?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 }
