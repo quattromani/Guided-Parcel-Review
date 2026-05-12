@@ -92,6 +92,7 @@ function initGuidedNavigation(snapshotModel) {
   const tabs = document.querySelectorAll("[data-guided-tab]");
   const panels = document.querySelectorAll("[data-guided-panel]");
   const propertyContext = document.getElementById("propertyViewContext");
+  const guidedPath = document.querySelector(".guided-path-nav");
   const sectionIds = [...tabs].map(tab => tab.dataset.guidedTab);
   const legacyViewMap = {
     property: "your-property",
@@ -177,6 +178,27 @@ function initGuidedNavigation(snapshotModel) {
   const hashTarget = window.location.hash?.slice(1);
   const initialStep = hashTarget ? stepForTarget(hashTarget) : sectionIds[0];
   selectStep(initialStep || sectionIds[0], { scrollTop: false });
+  initGuidedPathStickiness(guidedPath);
+}
+
+function initGuidedPathStickiness(guidedPath) {
+  if (!guidedPath) return;
+
+  let stickPoint = 0;
+
+  function measure() {
+    guidedPath.classList.remove("guided-path-nav-stuck");
+    stickPoint = guidedPath.getBoundingClientRect().top + window.scrollY - 1;
+    update();
+  }
+
+  function update() {
+    guidedPath.classList.toggle("guided-path-nav-stuck", window.scrollY > stickPoint);
+  }
+
+  measure();
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", measure);
 }
 
 function initFooterNavigation() {

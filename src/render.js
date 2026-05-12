@@ -1602,9 +1602,14 @@ function calendarStageDetailHtml(stage) {
     ${stage.id === "protest" ? `
       <div class="mt-4 rounded-2xl bg-blue-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-blue-200">
         <p>After reviewing the record and supporting context, you can prepare the official Form 422 with available property information filled in. Requested valuation, reasons, signature, and filing responsibility remain with the filer.</p>
-        <button type="button" data-calendar-prepare-form422 class="mt-3 inline-flex rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
-          Prepare Form 422
-        </button>
+        <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <button type="button" data-calendar-review-record class="inline-flex justify-center rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+            Review Your Record
+          </button>
+          <button type="button" data-calendar-prepare-form422 class="inline-flex justify-center rounded-full bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-300 transition hover:bg-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+            Prepare Form 422
+          </button>
+        </div>
       </div>
     ` : ""}
   `;
@@ -1629,6 +1634,10 @@ function initCalendarStageModal(calendar) {
     title.textContent = stage.label;
     timing.textContent = stage.timing;
     content.innerHTML = calendarStageDetailHtml(stage);
+    content.querySelector("[data-calendar-review-record]")?.addEventListener("click", () => {
+      close();
+      document.querySelector("#review-checklist-card [data-report-error]")?.click();
+    });
     content.querySelector("[data-calendar-prepare-form422]")?.addEventListener("click", () => {
       close();
       document.querySelector("#review-checklist-card [data-prepare-form422]")?.click();
@@ -1698,6 +1707,22 @@ function signedPoints(value) {
   return `${prefix}${(value * 100).toFixed(2)} pts`;
 }
 
+function percentChangeBetween(previous, current) {
+  if (!previous || !current) return null;
+  return (current - previous) / previous;
+}
+
+function movementCard([label, value, note, range]) {
+  return `
+    <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
+      <p class="mt-1 text-lg font-bold text-slate-700">${value}</p>
+      <p class="mt-1 text-sm font-medium text-slate-600">${note}</p>
+      <p class="mt-1 text-xs leading-5 text-slate-500">${range}</p>
+    </div>
+  `;
+}
+
 function renderPropertyMovementSummary(data) {
   const container = document.getElementById("propertyMovementSummary");
   if (!container) return;
@@ -1718,6 +1743,9 @@ function renderPropertyMovementSummary(data) {
   const lastTax = taxRows.at(-1);
   const firstEtr = etrRows[0];
   const lastEtr = etrRows.at(-1);
+  const previousValue = valueRows.at(-2);
+  const previousTax = taxRows.at(-2);
+  const previousEtr = etrRows.at(-2);
 
   const valueYears = lastValue.year - firstValue.year;
   const taxYears = lastTax.year - firstTax.year;
@@ -1727,7 +1755,28 @@ function renderPropertyMovementSummary(data) {
   const taxChange = (lastTax.taxes / firstTax.taxes) - 1;
   const etrChange = lastEtr.etr - firstEtr.etr;
 
-  const cards = [
+  const recentCards = [
+    [
+      "Assessed value",
+      signedPercent(percentChangeBetween(previousValue?.assessedValue, lastValue?.assessedValue)),
+      `${formatNullableMoney(previousValue?.assessedValue)} to ${formatNullableMoney(lastValue?.assessedValue)}`,
+      previousValue && lastValue ? `${previousValue.year}-${lastValue.year}` : "Recent available years"
+    ],
+    [
+      "Taxes paid",
+      signedPercent(percentChangeBetween(previousTax?.taxes, lastTax?.taxes)),
+      `${formatNullableMoney(previousTax?.taxes, true)} to ${formatNullableMoney(lastTax?.taxes, true)}`,
+      previousTax && lastTax ? `${previousTax.year}-${lastTax.year} finalized` : "Recent finalized years"
+    ],
+    [
+      "Effective tax rate",
+      `${formatNullablePercent(previousEtr?.etr)} to ${formatNullablePercent(lastEtr?.etr)}`,
+      `${signedPoints(previousEtr && lastEtr ? lastEtr.etr - previousEtr.etr : null)} from prior year`,
+      previousEtr && lastEtr ? `${previousEtr.year}-${lastEtr.year} finalized` : "Recent finalized years"
+    ]
+  ];
+
+  const historicalCards = [
     [
       "Value increase",
       signedPercent(valueChange),
@@ -1748,14 +1797,21 @@ function renderPropertyMovementSummary(data) {
     ]
   ];
 
-  container.innerHTML = cards.map(([label, value, note, range]) => `
-    <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-      <p class="mt-1 text-lg font-bold text-slate-700">${value}</p>
-      <p class="mt-1 text-sm font-medium text-slate-600">${note}</p>
-      <p class="mt-1 text-xs leading-5 text-slate-500">${range}</p>
-    </div>
-  `).join("");
+  container.innerHTML = `
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Recent movement</p>
+      <div class="mt-2 grid gap-3 md:grid-cols-3">
+        ${recentCards.map(movementCard).join("")}
+      </div>
+    </section>
+    <section class="border-t border-slate-200 pt-4">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Your property historically</p>
+      <p class="mt-1 text-xs leading-5 text-slate-500">Longer-range movement from ${firstValue.year}-${lastValue.year}. Tax and ETR movement use finalized tax years only.</p>
+      <div class="mt-2 grid gap-3 md:grid-cols-3">
+        ${historicalCards.map(movementCard).join("")}
+      </div>
+    </section>
+  `;
 }
 
 function assessedValuesData(data) {
@@ -1815,10 +1871,6 @@ function renderEtrSummary(data) {
       Effective tax rate helps show the relationship between assessed value and the final tax bill.
       When assessed values rise faster than the budgets they support, the levy generally has to move
       down because the same budget need is being spread across more taxable value.
-      <br><br>
-      That does not mean every tax bill goes down. If value increases are modest, values and taxes may
-      still move in the same direction. Larger value increases make the levy adjustment more visible,
-      especially when budget growth is smaller than the growth in assessed value.
     </p>
   `;
 }
