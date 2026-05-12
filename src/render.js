@@ -2075,29 +2075,46 @@ function renderTaxBurdenExplanation(data) {
   const statements = (data.taxStatements || [])
     .slice()
     .sort((a, b) => b.taxYear - a.taxYear)
-    .slice(0, 2);
+    .filter(statement => statement.netAmountDue !== null && statement.netAmountDue !== undefined);
   const formulas = [
-    ["Assessed value", "x Levy = Gross tax"],
-    ["Gross tax", "- Credits = Net taxes paid"],
-    ["Net taxes paid", "/ Assessed value = ETR"]
+    {
+      firstLine: "Assessed value",
+      operator: "&times;",
+      secondLine: "Levy",
+      result: "Gross tax"
+    },
+    {
+      firstLine: "Gross tax",
+      operator: "&minus;",
+      secondLine: "Credits",
+      result: "Net taxes paid"
+    },
+    {
+      firstLine: "Net taxes paid",
+      operator: "&divide;",
+      secondLine: "Assessed value",
+      result: "ETR"
+    }
   ];
 
   const rows = statements.map(statement => {
     const nonAgCredit = Math.abs(statement.credits?.nonAgTax?.amount || 0);
     const schoolCredit = Math.abs(statement.credits?.schoolTax?.amount || 0);
     const totalCredits = statementTotalCredits(statement);
+    const creditDetail = statementCreditDetail(nonAgCredit, schoolCredit);
     const netTaxes = statement.netAmountDue ?? statement.totalTaxesDue;
     const effectiveTaxRate = netTaxes && statement.assessedValue
       ? netTaxes / statement.assessedValue
       : statement.derived?.netEffectiveTaxRate;
+    const heatColor = statementBurdenHeatColor(netTaxes, statements);
 
     return `
-      <tr>
+      <tr style="background-color: ${heatColor};">
         <td class="px-3 py-2 font-semibold text-slate-700">${statement.taxYear}</td>
         <td class="px-3 py-2 text-right">${formatNullableMoney(statement.grossTaxAmount, true)}</td>
         <td class="px-3 py-2 text-right">
           <span class="font-medium">${formatNullableMoney(totalCredits, true)}</span>
-          <span class="block text-xs text-slate-500">Non-Ag ${formatNullableMoney(nonAgCredit, true)} + School ${formatNullableMoney(schoolCredit, true)}</span>
+          <span class="block text-xs text-slate-500">${creditDetail}</span>
         </td>
         <td class="px-3 py-2 text-right font-semibold text-slate-700">${formatNullableMoney(netTaxes, true)}</td>
         <td class="px-3 py-2 text-right font-semibold text-slate-700">${formatNullablePercent(effectiveTaxRate)}</td>
@@ -2111,13 +2128,20 @@ function renderTaxBurdenExplanation(data) {
         <p class="max-w-3xl text-sm leading-6 text-slate-600">
           Your levy shows the tax rate before credits. Your actual tax burden is what remains after credits are applied,
           including the Non-Ag Tax Credit and School Tax Credit. That is why effective tax rate uses net taxes paid divided
-          by assessed value: it shows what you paid after levy changes and credits.
+          by assessed value: it shows what you paid after levy changes and credits across the available statement record.
         </p>
         <div class="mt-4 grid gap-3 sm:grid-cols-3">
-          ${formulas.map(([label, equation]) => `
-            <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-              <p class="mt-1 text-sm font-bold text-slate-700">${equation}</p>
+          ${formulas.map(formula => `
+            <div class="rounded-xl bg-slate-50 p-4 text-sm font-bold text-slate-700 ring-1 ring-slate-200">
+              <div class="grid grid-cols-[1.25rem_minmax(0,1fr)] gap-x-2 gap-y-1">
+                <div></div>
+                <div>${formula.firstLine}</div>
+                <div class="text-center text-slate-500">${formula.operator}</div>
+                <div>${formula.secondLine}</div>
+                <div class="col-span-2 border-t border-slate-300"></div>
+                <div class="text-center text-slate-500">=</div>
+                <div>${formula.result}</div>
+              </div>
             </div>
           `).join("")}
         </div>
@@ -2133,7 +2157,7 @@ function renderTaxBurdenExplanation(data) {
               <th class="px-3 py-2 text-right font-semibold">ETR</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
+          <tbody class="divide-y divide-slate-200">
             ${rows}
           </tbody>
         </table>
@@ -2148,6 +2172,31 @@ function statementTotalCredits(statement) {
   }
 
   return Math.abs(Object.values(statement.credits || {}).reduce((sum, credit) => sum + (credit?.amount || 0), 0));
+}
+
+function statementCreditDetail(nonAgCredit, schoolCredit) {
+  const details = [];
+  if (nonAgCredit > 0) details.push(`Non-Ag ${formatNullableMoney(nonAgCredit, true)}`);
+  if (schoolCredit > 0) details.push(`School ${formatNullableMoney(schoolCredit, true)}`);
+  return details.length ? details.join(" + ") : "No statement credits";
+}
+
+function statementBurdenHeatColor(netTaxes, statements) {
+  const values = statements
+    .map(statement => statement.netAmountDue ?? statement.totalTaxesDue)
+    .filter(value => value !== null && value !== undefined);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min;
+
+  if (!range || netTaxes === null || netTaxes === undefined) {
+    return "transparent";
+  }
+
+  const intensity = (netTaxes - min) / range;
+  const hue = 145 - (intensity * 140);
+  const alpha = 0.04 + (intensity * 0.09);
+  return `hsla(${hue.toFixed(0)}, 62%, 42%, ${alpha.toFixed(3)})`;
 }
 
 function renderLevyHistoryTable(data) {

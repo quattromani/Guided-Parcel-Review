@@ -26,10 +26,10 @@ const palette = {
 let assessmentAccuracyChart;
 let countyComparisonIndexedChart;
 let countyComparisonRateChart;
-let equalizationPressureChart;
 let marketRatioChart;
 let marketValueChart;
 let marketSalePriceChart;
+let taxBurdenPatternChart;
 
 const assessmentDisplayYears = {
   start: 2019,
@@ -47,6 +47,10 @@ const wholeMoney = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   maximumFractionDigits: 0
+});
+const moneyCents = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD"
 });
 
 export function buildIndexedChart(data) {
@@ -111,190 +115,105 @@ export function buildIndexedChart(data) {
   });
 }
 
-function latestFinalTaxRow(data) {
-  return data.taxpayerHistory
-    .filter(row => row.assessedValue !== null && row.assessedValue !== undefined && row.taxes !== null && row.taxes !== undefined)
-    .at(-1);
-}
+export function buildTaxBurdenPattern(data) {
+  const canvas = document.getElementById("taxBurdenPatternChart");
+  const cards = document.getElementById("taxBurdenPatternCards");
+  if (!canvas || !cards) return;
 
-function latestCtlRate(rows) {
-  return rows
-    ?.filter(row => row.averageTaxRate !== null && row.averageTaxRate !== undefined)
+  const rows = (data.taxStatements || [])
+    .filter(row => row.netAmountDue !== null && row.netAmountDue !== undefined)
     .slice()
-    .sort((a, b) => a.year - b.year)
-    .at(-1);
-}
+    .sort((a, b) => a.taxYear - b.taxYear);
+  if (!rows.length) return;
 
-function formatPressureSource(propertyRow, countyRateRow, stateRateRow) {
-  const years = [propertyRow?.year, countyRateRow?.year, stateRateRow?.year].filter(Boolean);
-  const throughYear = years.length ? Math.min(...years) : null;
-  const suffix = throughYear ? ` through ${throughYear}` : "";
-
-  return `Source: property tax history and Nebraska CTL average tax-rate data${suffix}.`;
-}
-
-function pressureBand(index) {
-  if (index === null || index === undefined) return { label: "Pending", tone: "slate" };
-  if (index < 85) return { label: "Lower pressure", tone: "emerald" };
-  if (index >= 85 && index <= 94) return { label: "Slightly lower pressure", tone: "green" };
-  if (index >= 95 && index <= 105) return { label: "Expected alignment", tone: "slate" };
-  if (index >= 106 && index <= 115) return { label: "Moderate higher pressure", tone: "amber" };
-
-  return { label: "Higher pressure", tone: "rose" };
-}
-
-function pressureInterpretation(points) {
-  const subject = points.find(point => point.key === "subject")?.index;
-  const county = points.find(point => point.key === "county")?.index;
-  const state = 100;
-
-  if (subject === null || subject === undefined) {
-    return "Finalized property tax data is needed before this pressure comparison can be calculated.";
-  }
-
-  const comparisons = [county, state].filter(value => value !== null && value !== undefined);
-  const maxOther = Math.max(...comparisons);
-  const minOther = Math.min(...comparisons);
-
-  if (subject >= 95 && subject <= 105 && comparisons.every(value => value >= 95 && value <= 105)) {
-    return "Your property appears closely aligned with the county and state tax-pressure benchmarks.";
-  }
-  if (subject > maxOther + 5 || subject > 115) {
-    return "Your property may be carrying higher relative tax pressure than the county and state benchmarks.";
-  }
-  if (comparisons.every(value => subject < value - 5)) {
-    return "Your property appears below the county and state tax-pressure benchmarks.";
-  }
-  if (county !== null && county !== undefined && subject < county - 5) {
-    return "Your property appears below the county tax-pressure benchmark.";
-  }
-  if (subject < state - 5 || subject < 85) {
-    return "Your property appears below the state tax-pressure benchmark.";
-  }
-
-  return "Your property appears near the broader county and state tax-pressure pattern, with some differences worth reviewing.";
-}
-
-const pressureAlignmentBandPlugin = {
-  id: "pressureAlignmentBand",
-  beforeDatasetsDraw(chart, args, options) {
-    const { ctx, chartArea, scales } = chart;
-    if (!chartArea || !scales.y) return;
-
-    const top = scales.y.getPixelForValue(options.max ?? 105);
-    const bottom = scales.y.getPixelForValue(options.min ?? 95);
-
-    ctx.save();
-    ctx.fillStyle = options.backgroundColor ?? visualizationTheme.roles.outlierSoft;
-    ctx.fillRect(chartArea.left, Math.min(top, bottom), chartArea.right - chartArea.left, Math.abs(bottom - top));
-    ctx.strokeStyle = options.borderColor ?? semanticChartColors.taxRing;
-    ctx.setLineDash([6, 5]);
-    ctx.beginPath();
-    ctx.moveTo(chartArea.left, top);
-    ctx.lineTo(chartArea.right, top);
-    ctx.moveTo(chartArea.left, bottom);
-    ctx.lineTo(chartArea.right, bottom);
-    ctx.stroke();
-    ctx.restore();
-  }
-};
-
-export function buildEqualizationPressureIndex(data, ctlData) {
-  const canvas = document.getElementById("equalizationPressureChart");
-  if (!canvas) return;
-
-  const countyName = getPropertyCountyName(data, ctlData);
-  const propertyRow = latestFinalTaxRow(data);
-  const countyRateRow = latestCtlRate(ctlData.counties.filter(row => row.countyName === countyName));
-  const stateRateRow = latestCtlRate(ctlData.statewide);
-  const countyRate = countyRateRow?.averageTaxRate;
-  const stateRate = stateRateRow?.averageTaxRate;
-  const subjectRate = calculateEtr(propertyRow);
-  const toIndex = value => value === null || value === undefined || !stateRate ? null : (value / stateRate) * 100;
-  const points = [
-    { key: "subject", label: "Your Property", rate: subjectRate, index: toIndex(subjectRate), color: visualizationTheme.sequences.countyHierarchy.subject },
-    { key: "county", label: "Gage County", rate: countyRate, index: toIndex(countyRate), color: visualizationTheme.sequences.countyHierarchy.county },
-    { key: "state", label: "Nebraska", rate: stateRate, index: 100, color: visualizationTheme.sequences.countyHierarchy.state }
+  const labels = rows.map(row => row.taxYear);
+  const netTaxes = rows.map(row => row.netAmountDue);
+  const average = netTaxes.reduce((sum, value) => sum + value, 0) / netTaxes.length;
+  const averageLine = rows.map(() => average);
+  const peak = rows.reduce((highest, row) => row.netAmountDue > highest.netAmountDue ? row : highest, rows[0]);
+  const latest = rows.at(-1);
+  const latestVsAverage = latest.netAmountDue - average;
+  const cardItems = [
+    {
+      label: "Highest net bill",
+      value: moneyCents.format(peak.netAmountDue),
+      note: `${peak.taxYear} statement year`
+    },
+    {
+      label: "Period average",
+      value: moneyCents.format(average),
+      note: `${rows[0].taxYear}-${rows.at(-1).taxYear} statement years`
+    },
+    {
+      label: "Latest net bill",
+      value: moneyCents.format(latest.netAmountDue),
+      note: `${latestVsAverage < 0 ? moneyCents.format(Math.abs(latestVsAverage)) + " below" : moneyCents.format(latestVsAverage) + " above"} average`
+    }
   ];
-  const subjectIndex = points[0].index;
-  const subjectBand = pressureBand(subjectIndex);
-  const values = points.map(point => point.index).filter(value => value !== null && value !== undefined);
-  const minY = Math.max(60, Math.floor(Math.min(85, ...values) / 5) * 5);
-  const maxY = Math.min(140, Math.ceil(Math.max(115, ...values) / 5) * 5);
-  const toneClasses = {
-    emerald: "text-emerald-700",
-    green: "text-green-700",
-    amber: "text-amber-700",
-    rose: "text-rose-700",
-    slate: "text-slate-700"
-  };
 
-  document.getElementById("equalizationPressureHeadline").textContent = pressureInterpretation(points);
-  document.getElementById("equalizationPressureSource").textContent = formatPressureSource(propertyRow, countyRateRow, stateRateRow);
-  document.getElementById("equalizationPressureIndex").textContent = subjectIndex === null || subjectIndex === undefined
-    ? "—"
-    : integer.format(subjectIndex);
-  document.getElementById("equalizationPressureBand").innerHTML = `<span class="${toneClasses[subjectBand.tone]}">${subjectBand.label}</span>`;
+  cards.innerHTML = cardItems.map(item => `
+    <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${item.label}</p>
+      <p class="mt-1 text-2xl font-bold text-slate-700">${item.value}</p>
+      <p class="mt-1 text-xs leading-5 text-slate-500">${item.note}</p>
+    </div>
+  `).join("");
 
-  document.getElementById("equalizationPressureRows").innerHTML = points.map(point => {
-    const band = pressureBand(point.index);
-    return `
-      <div class="flex items-center justify-between gap-3 rounded-lg bg-slate-50 px-3 py-2 ring-1 ring-slate-200">
-        <div class="flex min-w-0 items-center gap-2">
-          <span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background-color: ${point.color};"></span>
-          <span class="truncate font-semibold text-slate-700">${point.label}</span>
-        </div>
-        <div class="text-right">
-          <p class="font-semibold ${toneClasses[band.tone]}">${point.index === null || point.index === undefined ? "Pending" : integer.format(point.index)}</p>
-          <p class="text-xs text-slate-500">${point.rate === null || point.rate === undefined ? "ETR pending" : percent.format(point.rate)}</p>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  equalizationPressureChart?.destroy();
-  equalizationPressureChart = new Chart(canvas, {
+  taxBurdenPatternChart?.destroy();
+  taxBurdenPatternChart = new Chart(canvas, {
     type: "line",
     data: {
-      labels: points.map(point => point.label),
-      datasets: [{
-        label: "Relative tax pressure",
-        data: points.map(point => point.index),
-        tension: 0.25,
-        borderColor: palette.slate600,
-        backgroundColor: visualizationTheme.roles.comparisonSoft,
-        borderWidth: 3,
-        pointRadius: 5,
-        pointHoverRadius: 6,
-        pointBackgroundColor: points.map(point => point.color),
-        pointBorderColor: palette.white,
-        pointBorderWidth: 2,
-        spanGaps: true
-      }]
+      labels,
+      datasets: [
+        {
+          label: "Net taxes paid",
+          data: netTaxes,
+          tension: 0.35,
+          borderWidth: 3,
+          borderColor: chartColors.contextTax,
+          backgroundColor: semanticChartColors.taxBg,
+          pointRadius: 5,
+          pointHoverRadius: 6,
+          pointBackgroundColor: rows.map(row => row.taxYear === peak.taxYear ? chartColors.contextTax : palette.white),
+          pointBorderColor: chartColors.contextTax,
+          pointBorderWidth: 2,
+          fill: true
+        },
+        {
+          label: "Average net bill",
+          data: averageLine,
+          tension: 0,
+          borderWidth: 2,
+          borderColor: palette.slate500,
+          borderDash: [6, 5],
+          pointRadius: 0,
+          pointHoverRadius: 0
+        }
+      ]
     },
-    plugins: [pressureAlignmentBandPlugin],
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      interaction: { mode: "nearest", intersect: false },
+      interaction: { mode: "index", intersect: false },
       plugins: {
-        legend: { display: false },
-        pressureAlignmentBand: {
-          min: 95,
-          max: 105
+        legend: {
+          labels: {
+            boxWidth: 18,
+            usePointStyle: false
+          }
         },
         tooltip: {
           callbacks: {
-            label: context => `${context.label}: ${context.parsed.y?.toFixed(0) ?? "Pending"} index`
+            label: context => `${context.dataset.label}: ${moneyCents.format(context.parsed.y)}`
           }
         }
       },
       scales: {
         y: {
-          min: minY,
-          max: maxY,
-          title: { display: true, text: "State average = 100" },
-          ticks: { precision: 0 }
+          title: { display: true, text: "Net taxes paid" },
+          ticks: { callback: value => wholeMoney.format(value) },
+          suggestedMin: Math.floor((Math.min(...netTaxes) - 150) / 250) * 250,
+          suggestedMax: Math.ceil((Math.max(...netTaxes) + 150) / 250) * 250
         },
         x: {
           grid: { display: false }

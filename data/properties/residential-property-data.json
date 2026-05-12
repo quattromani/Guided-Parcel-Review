@@ -58,7 +58,7 @@
     },
     {
       "year": 2021,
-      "assessedValue": 198305,
+      "assessedValue": 198035,
       "taxes": 3752.08,
       "status": "final"
     },
@@ -95,6 +95,163 @@
   ],
   "taxStatements": [
     {
+      "taxYear": 2019,
+      "totalTaxesDue": 3384.66,
+      "dueDate": "2019-12-31",
+      "sourceNote": "Inferred from the 2020 statement prior-year column.",
+      "assessedValue": 172940,
+      "grossTaxAmount": 3564.78,
+      "credits": {
+        "homestead": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "nonAgTax": {
+          "value": 172940,
+          "amount": -180.12
+        },
+        "agLandTax": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "schoolTax": {
+          "value": null,
+          "amount": 0.0
+        }
+      },
+      "netAmountDue": 3384.66,
+      "derived": {
+        "grossLevyRate": 0.0206128,
+        "netEffectiveTaxRate": 0.0195713,
+        "totalCreditAmount": -180.12
+      }
+    },
+    {
+      "taxYear": 2020,
+      "totalTaxesDue": 3797.28,
+      "dueDate": "2020-12-31",
+      "assessedValue": 198035,
+      "grossTaxAmount": 3999.7,
+      "credits": {
+        "homestead": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "nonAgTax": {
+          "value": 198035,
+          "amount": -202.42
+        },
+        "agLandTax": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "schoolTax": {
+          "value": null,
+          "amount": 0.0
+        }
+      },
+      "netAmountDue": 3797.28,
+      "derived": {
+        "grossLevyRate": 0.0201969,
+        "netEffectiveTaxRate": 0.0191748,
+        "totalCreditAmount": -202.42
+      }
+    },
+    {
+      "taxYear": 2021,
+      "totalTaxesDue": 3752.08,
+      "dueDate": "2021-12-31",
+      "assessedValue": 198035,
+      "grossTaxAmount": 3965.06,
+      "credits": {
+        "homestead": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "nonAgTax": {
+          "value": 198035,
+          "amount": -212.98
+        },
+        "agLandTax": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "schoolTax": {
+          "value": null,
+          "amount": 0.0
+        }
+      },
+      "netAmountDue": 3752.08,
+      "derived": {
+        "grossLevyRate": 0.020022,
+        "netEffectiveTaxRate": 0.0189465,
+        "totalCreditAmount": -212.98
+      }
+    },
+    {
+      "taxYear": 2022,
+      "totalTaxesDue": 4007.52,
+      "dueDate": "2022-12-31",
+      "assessedValue": 219035,
+      "grossTaxAmount": 4240.98,
+      "credits": {
+        "homestead": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "nonAgTax": {
+          "value": 219035,
+          "amount": -233.46
+        },
+        "agLandTax": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "schoolTax": {
+          "value": null,
+          "amount": 0.0
+        }
+      },
+      "netAmountDue": 4007.52,
+      "derived": {
+        "grossLevyRate": 0.0193621,
+        "netEffectiveTaxRate": 0.0182963,
+        "totalCreditAmount": -233.46
+      }
+    },
+    {
+      "taxYear": 2023,
+      "totalTaxesDue": 4374.72,
+      "dueDate": "2023-12-31",
+      "sourceNote": "Inferred from the 2024 statement prior-year column.",
+      "assessedValue": 252355,
+      "grossTaxAmount": 4655.6,
+      "credits": {
+        "homestead": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "nonAgTax": {
+          "value": 252355,
+          "amount": -280.88
+        },
+        "agLandTax": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "schoolTax": {
+          "value": null,
+          "amount": 0.0
+        }
+      },
+      "netAmountDue": 4374.72,
+      "derived": {
+        "grossLevyRate": 0.0184486,
+        "netEffectiveTaxRate": 0.0173356,
+        "totalCreditAmount": -280.88
+      }
+    },
+    {
       "taxYear": 2024,
       "totalTaxesDue": 3579.58,
       "dueDate": "2024-12-31",
@@ -120,7 +277,7 @@
       },
       "netAmountDue": 3579.58,
       "derived": {
-        "grossLevyRate": 0.0168663,
+        "grossLevyRate": 0.0168664,
         "netEffectiveTaxRate": 0.0130029,
         "totalCreditAmount": -1063.56
       }
@@ -248,7 +405,7 @@
       "dwelling": 175010,
       "land": 23025,
       "outbuilding": 0,
-      "total": 198305
+      "total": 198035
     },
     {
       "year": 2020,

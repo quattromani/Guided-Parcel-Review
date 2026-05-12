@@ -1,11 +1,11 @@
 import {
   buildCtlSummary,
   buildDistributionChart,
-  buildEqualizationPressureIndex,
   buildEtrChart,
   buildIndexedChart,
   initMarketAreaView,
   buildOverviewCharts,
+  buildTaxBurdenPattern,
   initCountyComparison,
   initAssessmentRatioAnalysis
 } from "./charts.js";
@@ -66,7 +66,7 @@ async function main() {
   renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice);
   renderTaxDistrictAuthorities(data, taxDistrictAuthorities);
   buildIndexedChart(data);
-  buildEqualizationPressureIndex(data, ctlData);
+  buildTaxBurdenPattern(data);
   buildEtrChart(data);
   buildDistributionChart(data, schoolDistrictColors);
   buildOverviewCharts(data, ctlData);
