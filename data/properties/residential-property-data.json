@@ -93,6 +93,70 @@
       "status": "pending"
     }
   ],
+  "taxStatements": [
+    {
+      "taxYear": 2024,
+      "totalTaxesDue": 3579.58,
+      "dueDate": "2024-12-31",
+      "assessedValue": 275290,
+      "grossTaxAmount": 4643.14,
+      "credits": {
+        "homestead": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "nonAgTax": {
+          "value": 275290,
+          "amount": -329.88
+        },
+        "agLandTax": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "schoolTax": {
+          "value": null,
+          "amount": -733.68
+        }
+      },
+      "netAmountDue": 3579.58,
+      "derived": {
+        "grossLevyRate": 0.0168663,
+        "netEffectiveTaxRate": 0.0130029,
+        "totalCreditAmount": -1063.56
+      }
+    },
+    {
+      "taxYear": 2025,
+      "totalTaxesDue": 3412.58,
+      "dueDate": "2025-12-31",
+      "assessedValue": 278930,
+      "grossTaxAmount": 4426.52,
+      "credits": {
+        "homestead": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "nonAgTax": {
+          "value": 278930,
+          "amount": -331.94
+        },
+        "agLandTax": {
+          "value": 0,
+          "amount": 0.0
+        },
+        "schoolTax": {
+          "value": null,
+          "amount": -682.0
+        }
+      },
+      "netAmountDue": 3412.58,
+      "derived": {
+        "grossLevyRate": 0.0158696,
+        "netEffectiveTaxRate": 0.0122345,
+        "totalCreditAmount": -1013.94
+      }
+    }
+  ],
   "districtLevyHistory": [
     {
       "year": 2019,

@@ -98,6 +98,7 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderHistoryTable(data);
   renderPropertyMovementSummary(data);
   renderEtrSummary(data);
+  renderTaxBurdenExplanation(data);
   renderLevyHistoryTable(data);
   renderLevyTable(data);
   renderSources(data);
@@ -2065,6 +2066,88 @@ function renderEtrSummary(data) {
       down because the same budget need is being spread across more taxable value.
     </p>
   `;
+}
+
+function renderTaxBurdenExplanation(data) {
+  const container = document.getElementById("taxBurdenExplanation");
+  if (!container) return;
+
+  const statements = (data.taxStatements || [])
+    .slice()
+    .sort((a, b) => b.taxYear - a.taxYear)
+    .slice(0, 2);
+  const formulas = [
+    ["Assessed value", "x Levy = Gross tax"],
+    ["Gross tax", "- Credits = Net taxes paid"],
+    ["Net taxes paid", "/ Assessed value = ETR"]
+  ];
+
+  const rows = statements.map(statement => {
+    const nonAgCredit = Math.abs(statement.credits?.nonAgTax?.amount || 0);
+    const schoolCredit = Math.abs(statement.credits?.schoolTax?.amount || 0);
+    const totalCredits = statementTotalCredits(statement);
+    const netTaxes = statement.netAmountDue ?? statement.totalTaxesDue;
+    const effectiveTaxRate = netTaxes && statement.assessedValue
+      ? netTaxes / statement.assessedValue
+      : statement.derived?.netEffectiveTaxRate;
+
+    return `
+      <tr>
+        <td class="px-3 py-2 font-semibold text-slate-700">${statement.taxYear}</td>
+        <td class="px-3 py-2 text-right">${formatNullableMoney(statement.grossTaxAmount, true)}</td>
+        <td class="px-3 py-2 text-right">
+          <span class="font-medium">${formatNullableMoney(totalCredits, true)}</span>
+          <span class="block text-xs text-slate-500">Non-Ag ${formatNullableMoney(nonAgCredit, true)} + School ${formatNullableMoney(schoolCredit, true)}</span>
+        </td>
+        <td class="px-3 py-2 text-right font-semibold text-slate-700">${formatNullableMoney(netTaxes, true)}</td>
+        <td class="px-3 py-2 text-right font-semibold text-slate-700">${formatNullablePercent(effectiveTaxRate)}</td>
+      </tr>
+    `;
+  }).join("");
+
+  container.innerHTML = `
+    <div class="grid gap-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
+      <div>
+        <p class="max-w-3xl text-sm leading-6 text-slate-600">
+          Your levy shows the tax rate before credits. Your actual tax burden is what remains after credits are applied,
+          including the Non-Ag Tax Credit and School Tax Credit. That is why effective tax rate uses net taxes paid divided
+          by assessed value: it shows what you paid after levy changes and credits.
+        </p>
+        <div class="mt-4 grid gap-3 sm:grid-cols-3">
+          ${formulas.map(([label, equation]) => `
+            <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
+              <p class="mt-1 text-sm font-bold text-slate-700">${equation}</p>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+      <div class="overflow-x-auto rounded-xl ring-1 ring-slate-200">
+        <table class="min-w-full divide-y divide-slate-200 text-sm">
+          <thead class="bg-slate-50 text-slate-600">
+            <tr>
+              <th class="px-3 py-2 text-left font-semibold">Year</th>
+              <th class="px-3 py-2 text-right font-semibold">Gross tax</th>
+              <th class="px-3 py-2 text-right font-semibold">Credits</th>
+              <th class="px-3 py-2 text-right font-semibold">Net paid</th>
+              <th class="px-3 py-2 text-right font-semibold">ETR</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
+            ${rows}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function statementTotalCredits(statement) {
+  if (statement.derived?.totalCreditAmount !== null && statement.derived?.totalCreditAmount !== undefined) {
+    return Math.abs(statement.derived.totalCreditAmount);
+  }
+
+  return Math.abs(Object.values(statement.credits || {}).reduce((sum, credit) => sum + (credit?.amount || 0), 0));
 }
 
 function renderLevyHistoryTable(data) {
