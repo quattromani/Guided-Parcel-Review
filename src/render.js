@@ -18,6 +18,10 @@ import {
   printPdf
 } from "./form422Prefill.js";
 import {
+  buildForm458PrefillModel,
+  generateForm458Pdf
+} from "./homesteadPrefill.js";
+import {
   buildRecordCorrectionEmailPayload,
   buildRecordCorrectionSubmission,
   generateRecordCorrectionPdf
@@ -93,6 +97,7 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderDiscrepancyForm(data, recordCard);
   initReportErrorModal(data, recordCard, governingOffice);
   initForm422Modal(data, recordCard);
+  initForm458Modal(data, recordCard);
   renderSummary(data);
   renderProcessTimeline(calendar);
   renderHistoryTable(data);
@@ -1027,6 +1032,79 @@ function initForm422Modal(data, recordCard) {
   });
 }
 
+function initForm458Modal(data, recordCard) {
+  const modal = document.getElementById("form458Modal");
+  const triggers = document.querySelectorAll("[data-prepare-homestead]");
+  const closeButtons = document.querySelectorAll("[data-close-form458]");
+  const generateButton = document.querySelector("[data-generate-form458]");
+  const fieldContainer = document.getElementById("form458ConfirmationFields");
+  const status = document.getElementById("form458Status");
+
+  if (!modal || !triggers.length || !fieldContainer || !generateButton) return;
+
+  const model = buildForm458PrefillModel(data, recordCard);
+
+  fieldContainer.innerHTML = model.confirmationFields.map(([label, value]) => `
+    <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(label)}</p>
+      <p class="mt-1 text-sm font-semibold leading-5 text-slate-700">${escapeHtml(value || "Not available")}</p>
+    </div>
+  `).join("");
+
+  function close() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    document.body.classList.remove("overflow-hidden");
+    if (status) {
+      status.textContent = "";
+      status.className = "mt-4 text-sm font-medium text-slate-600";
+    }
+  }
+
+  function open() {
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.classList.add("overflow-hidden");
+  }
+
+  async function generate() {
+    if (status) {
+      status.textContent = "Preparing Form 458 for printing...";
+      status.className = "mt-4 text-sm font-semibold text-slate-600";
+    }
+    generateButton.disabled = true;
+    generateButton.classList.add("opacity-60");
+
+    try {
+      const bytes = await generateForm458Pdf(model);
+      await printPdf(bytes, model.fileName);
+      if (status) {
+        status.textContent = "Print dialog opened. Review the form carefully before filing.";
+        status.className = "mt-4 text-sm font-semibold text-emerald-700";
+      }
+    } catch (error) {
+      console.error(error);
+      if (status) {
+        status.textContent = error.message || "Form 458 could not be generated.";
+        status.className = "mt-4 text-sm font-semibold text-red-700";
+      }
+    } finally {
+      generateButton.disabled = false;
+      generateButton.classList.remove("opacity-60");
+    }
+  }
+
+  triggers.forEach(trigger => trigger.addEventListener("click", open));
+  modal.addEventListener("click", close);
+  modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
+  closeButtons.forEach(button => button.addEventListener("click", close));
+  generateButton.addEventListener("click", generate);
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") close();
+  });
+}
+
 function disclosure(title, meta, content) {
   return `
     <details class="sm:col-span-2 rounded-xl bg-white ring-1 ring-slate-200">
@@ -1733,7 +1811,7 @@ function renderProcessTimeline(calendar) {
   }
 
   if (sourceNote) {
-    sourceNote.textContent = `Source: 2025 Nebraska PAD Main Property Assessment and Taxation Calendar${calendar.sourceRevision ? `, ${calendar.sourceRevision.toLowerCase()}` : ""}. Filing dates follow the PAD legal-date rule for weekends and legal holidays.`;
+    sourceNote.textContent = `Source: 2025 Nebraska PAD Main Property Assessment and Taxation Calendar${calendar.sourceRevision ? `, ${calendar.sourceRevision}` : ""}. Filing dates follow the PAD legal-date rule for weekends and legal holidays.`;
   }
 
   if (!timeline) return;
@@ -2357,7 +2435,10 @@ export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
 }
 
 function renderSources(data) {
-  document.getElementById("sourceCards").innerHTML = data.sources.map(source => `
+  const container = document.getElementById("sourceCards");
+  if (!container) return;
+
+  container.innerHTML = data.sources.map(source => `
     <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
       <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${source.label}</p>
       <p class="mt-1 font-medium text-slate-700">${source.value}</p>

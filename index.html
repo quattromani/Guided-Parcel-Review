@@ -55,6 +55,12 @@
         </article>
       </section>
 
+      <article class="ooda-decision-card">
+        <p class="guided-kicker">Decision check</p>
+        <h2>Does the record look right?</h2>
+        <p>Review these facts against what you know about the property. Follow up if the owner, address, land size, class, condition, rooms, garage, improvements, or sketch appears inaccurate or incomplete. If the record looks right, continue to assessment.</p>
+      </article>
+
       <article class="guided-wrapup">
         <p class="guided-kicker">More information</p>
         <h2>What this section shows</h2>
@@ -90,6 +96,12 @@
           <div id="propertyMovementSummary" class="mt-4 space-y-4"></div>
         </article>
       </section>
+
+      <article class="ooda-decision-card">
+        <p class="guided-kicker">Decision check</p>
+        <h2>Is the value movement worth a closer look?</h2>
+        <p>This value change is worth reviewing if the factual record is wrong, if the change is much larger than the property story explains, or if the land and building split appears unusual. If the record looks right, use the tax and market sections for context before deciding what to do.</p>
+      </article>
 
       <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <div class="grid gap-6 lg:grid-cols-5">
@@ -205,6 +217,12 @@
         </div>
       </article>
 
+      <article class="ooda-decision-card">
+        <p class="guided-kicker">Decision check</p>
+        <h2>What kind of tax question is this?</h2>
+        <p>A tax bill can change because of value, levy, budgets, exemptions, or credits. Review valuation if the assessed value seems unsupported. Review tax districts or official tax statements if the question is about where the bill goes, credits, or payment.</p>
+      </article>
+
       <article class="guided-wrapup">
         <p class="guided-kicker">More information</p>
         <h2>What this section shows</h2>
@@ -227,6 +245,12 @@
         <h2 class="mt-1 text-2xl font-bold text-slate-700">Who is taxing this property?</h2>
         <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Start with the parcel’s tax district, source year, total levy, and the number of authorities included. The breakdown below then shows how that levy is distributed.</p>
         <div id="taxDistrictAuthoritySummary" class="mt-4 grid gap-3 md:grid-cols-4"></div>
+
+        <div class="ooda-inline-note">
+          <p class="guided-kicker">Decision check</p>
+          <h3>Does the jurisdiction list match the property?</h3>
+          <p>This section is mainly a jurisdiction check. Follow up if the school district, city, county, NRD, ESU, college, or other listed authority does not match where the property is located. The levy share explains where the bill goes, but it does not decide the property’s assessed value.</p>
+        </div>
 
         <section id="tax-distribution" class="mt-5 grid gap-6 border-t border-slate-200 pt-5 lg:grid-cols-5">
           <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
@@ -300,6 +324,11 @@
         </div>
         <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
         <div id="marketNarrative" class="mt-4 rounded-xl bg-blue-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-blue-200"></div>
+        <div class="ooda-inline-note">
+          <p class="guided-kicker">Decision check</p>
+          <h3>How should I use this comparison?</h3>
+          <p>Use this as context, not as a final value decision. A closer review may be useful if this property differs meaningfully from the valuation group, if the group’s sales sample is thin, or if market ratios suggest the group is behaving differently from the countywide pattern.</p>
+        </div>
       </article>
 
       <section class="grid gap-6 lg:grid-cols-5">
@@ -423,6 +452,12 @@
         <p class="chart-source">Source: 2019-2026 Gage County PAD Reports and Opinions.</p>
       </article>
 
+      <article class="ooda-decision-card">
+        <p class="guided-kicker">Decision check</p>
+        <h2>What can county measures decide?</h2>
+        <p>Countywide measures can explain the assessment environment, but parcel-specific facts and market evidence still matter most. Use this section to understand system context, then return to the property or market page for individual review.</p>
+      </article>
+
       <section class="grid gap-6 lg:grid-cols-5">
         <article id="county-indexed" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
           <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
@@ -485,6 +520,11 @@
           </div>
         </div>
         <div id="countyComparisonSummary" class="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
+        <div class="ooda-inline-note">
+          <p class="guided-kicker">Decision check</p>
+          <h3>Does the county stand out?</h3>
+          <p>Compared with the statewide baseline, this county’s value growth, tax growth, and average rate movement show whether the local pattern is unusual or broadly typical. This does not decide the parcel question, but it helps set expectations before final review.</p>
+        </div>
         <section class="mt-5 grid gap-6 lg:grid-cols-5">
           <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
             <h3 class="text-lg font-bold text-slate-700">How do value and tax growth compare?</h3>
@@ -560,6 +600,12 @@
         <p>Use the path you just walked through to confirm facts, find unresolved questions, and jump back to the sections that support each checklist item.</p>
       </article>
 
+      <article class="ooda-decision-card">
+        <p class="guided-kicker">Review status</p>
+        <h2>Decide what kind of action fits the question.</h2>
+        <p>You do not need to take action just because value or taxes changed. First confirm the record. If a factual record item appears wrong, <button type="button" data-report-error class="inline-action-link">request a record review</button>. If the record looks right but the assessed value still seems unsupported, gather market evidence before preparing a formal protest.</p>
+      </article>
+
       <section id="headerTimeline" class="overflow-x-auto rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-slate-200"></section>
 
       <section id="tax-cycle" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -573,12 +619,6 @@
         <div id="processTimeline" class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-6"></div>
         <p data-calendar-source class="chart-source"></p>
       </section>
-
-      <article class="guided-wrapup">
-        <p class="guided-kicker">More information</p>
-        <h2>What this review brings together</h2>
-        <p>This page combines the property record, assessment information, tax history, district details, and broader comparison context into a single review surface. Use it to decide whether a factual property-record correction request is needed, or to review protest materials if you still disagree with the assessed value. Return to any section if a checklist item needs closer review.</p>
-      </article>
 
       <section id="review-checklist-card" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <h2 class="text-xl font-bold text-slate-700">Before filing, check these items</h2>
@@ -633,11 +673,11 @@
         </div>
       </section>
 
-      <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <h2 class="text-lg font-bold text-slate-700">Data sources and status</h2>
-        <p class="mt-1 text-sm text-slate-600">This snapshot separates current assessment information from finalized tax information so taxpayers can see what is known now and what is still pending.</p>
-        <div id="sourceCards" class="mt-4 grid gap-3 text-sm md:grid-cols-3"></div>
-      </section>
+      <article class="guided-wrapup">
+        <p class="guided-kicker">More information</p>
+        <h2>What this review brings together</h2>
+        <p>This page combines the property record, assessment information, tax history, district details, and broader comparison context into a single review surface. Use it to decide whether a factual property-record correction request is needed, or to review protest materials if you still disagree with the assessed value. Return to any section if a checklist item needs closer review.</p>
+      </article>
     </section>
   </main>
 
@@ -740,18 +780,18 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Forms</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Common forms</h3>
           <div class="mt-3 grid gap-3 md:grid-cols-3">
-            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
-              <span class="font-semibold text-slate-700">Property valuation protest</span>
-              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
-            </a>
-            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
-              <span class="font-semibold text-slate-700">Homestead exemption</span>
-              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
-            </a>
-            <a href="#" data-fpo-link class="rounded-xl bg-slate-50 p-4 text-sm ring-1 ring-slate-200">
+            <button type="button" data-report-error class="form-action-button">
               <span class="font-semibold text-slate-700">Report a property-record concern</span>
-              <span class="mt-1 block text-xs font-semibold uppercase tracking-wide text-amber-700">FPO link</span>
-            </a>
+              <span class="form-action-cta">Open record review</span>
+            </button>
+            <button type="button" data-prepare-homestead class="form-action-button">
+              <span class="font-semibold text-slate-700">Homestead exemption</span>
+              <span class="form-action-cta">Prepare Form 458</span>
+            </button>
+            <button type="button" data-prepare-form422 class="form-action-button">
+              <span class="font-semibold text-slate-700">Property valuation protest</span>
+              <span class="form-action-cta">Prepare Form 422</span>
+            </button>
           </div>
         </section>
 
@@ -884,6 +924,43 @@
         <div class="flex flex-col gap-2 sm:flex-row">
           <button type="button" data-close-form422 class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Cancel</button>
           <button type="button" data-generate-form422 class="rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Print Form 422</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="form458Modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-700/70 p-4 backdrop-blur-sm sm:p-6">
+    <section role="dialog" aria-modal="true" aria-labelledby="form458Title" class="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white text-slate-700 shadow-2xl ring-1 ring-slate-200">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-200 p-5">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Homestead exemption preparation</p>
+          <h2 id="form458Title" class="mt-1 text-2xl font-bold text-slate-700">Confirm Information for Form 458</h2>
+          <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">
+            Review the property-record information before generating the form. Eligibility, personal identifiers, signature, and filing responsibility remain with the applicant.
+          </p>
+        </div>
+        <button type="button" data-close-form458 class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700" aria-label="Close Form 458 preparation">
+          ×
+        </button>
+      </div>
+
+      <div class="overflow-y-auto p-5">
+        <div id="form458ConfirmationFields" class="grid gap-3 md:grid-cols-2"></div>
+        <div class="mt-5 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600 ring-1 ring-slate-200">
+          <p class="font-semibold text-slate-700">The applicant must complete eligibility information.</p>
+          <p class="mt-1">This prototype fills only available property-record information. Social Security number, date of birth, citizenship status, filing status, eligibility category, owner-occupant questions, signature, and date are left blank for the applicant.</p>
+        </div>
+        <div class="mt-4 rounded-2xl bg-blue-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-blue-200">
+          <p>Prepared from available property record data using the official Nebraska Form 458 PDF.</p>
+        </div>
+        <p id="form458Status" class="mt-4 text-sm font-medium text-slate-600" aria-live="polite"></p>
+      </div>
+
+      <div class="flex flex-col gap-3 border-t border-slate-200 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-xs leading-5 text-slate-500">The official Nebraska Form 458 PDF is used as the source form.</p>
+        <div class="flex flex-col gap-2 sm:flex-row">
+          <button type="button" data-close-form458 class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Cancel</button>
+          <button type="button" data-generate-form458 class="rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">Print Form 458</button>
         </div>
       </div>
     </section>

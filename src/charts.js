@@ -329,6 +329,28 @@ function bandStatus(value) {
   return "inside standard band";
 }
 
+function rawBandStatus(value, range) {
+  if (value === null || value === undefined || !range) {
+    return { label: "No standard status", tone: "unknown" };
+  }
+
+  if (value < range.min) return { label: "Below standard band", tone: "outside" };
+  if (value > range.max) return { label: "Above standard band", tone: "outside" };
+
+  return { label: "Inside standard band", tone: "inside" };
+}
+
+function levelOfValueStatus(value, target) {
+  if (value === null || value === undefined || target === null || target === undefined) {
+    return { label: "No target status", tone: "unknown" };
+  }
+
+  const distance = value - target;
+  if (Math.abs(distance) <= 5) return { label: "Within 5 pts of target", tone: "inside" };
+  if (distance > 0) return { label: "Above target", tone: "outside" };
+  return { label: "Below target", tone: "outside" };
+}
+
 function formatMeasureValue(measureKey, value, digits) {
   if (value === null || value === undefined) return "—";
   if (measureKey === "prd") return value.toFixed(digits);
@@ -374,12 +396,13 @@ function getAssessmentDisplayRecords(selectedClass) {
   ));
 }
 
-function renderAssessmentSummary(selectedClass) {
+function renderAssessmentSummary(selectedClass, iaaoStandards) {
   const summary = document.getElementById("assessmentAccuracySummary");
   if (!summary) return;
 
   const latest = selectedClass.records.at(-1);
   const target = getLovTarget(selectedClass.key);
+  const bandConfig = getAssessmentBandConfig(selectedClass, iaaoStandards);
 
   const cards = [
     {
@@ -387,6 +410,7 @@ function renderAssessmentSummary(selectedClass) {
       value: latest.cod.toFixed(2),
       note: `${formatSignedChange(selectedClass.summary.codChangeSince2025)} from 2025`,
       color: chartColors.cod,
+      status: rawBandStatus(latest.cod, bandConfig.cod),
       help: "Coefficient of Dispersion shows how tightly assessment ratios cluster around the median. Lower values generally indicate more uniform assessments."
     },
     {
@@ -394,6 +418,7 @@ function renderAssessmentSummary(selectedClass) {
       value: latest.prd.toFixed(3),
       note: `${formatSignedChange(selectedClass.summary.prdDistanceChangeSince2025, 3)} distance from 2025`,
       color: chartColors.prd,
+      status: rawBandStatus(latest.prd, bandConfig.prd),
       help: "Price-Related Differential checks whether lower- and higher-priced properties are assessed evenly. Values close to 1.00 are preferred."
     },
     {
@@ -401,6 +426,7 @@ function renderAssessmentSummary(selectedClass) {
       value: latest.cov.toFixed(2),
       note: `${formatSignedChange(selectedClass.summary.covChangeSince2025)} from 2025`,
       color: chartColors.cov,
+      status: rawBandStatus(latest.cov, bandConfig.cov),
       help: "Coefficient of Variation shows how spread out assessment ratios are around their average. Lower values generally indicate more consistent results."
     },
     {
@@ -408,6 +434,7 @@ function renderAssessmentSummary(selectedClass) {
       value: `${latest.levelOfValue.toFixed(2)}%`,
       note: `Target: ${target}%`,
       color: palette.teal,
+      status: levelOfValueStatus(latest.levelOfValue, target),
       help: `Level of value compares assessed value with market value. The target for this class is ${target}%.`
     }
   ];
@@ -422,6 +449,7 @@ function renderAssessmentSummary(selectedClass) {
         </span>
       </div>
       <p class="assessment-metric-value mt-1 text-lg font-bold">${card.value}</p>
+      <p class="assessment-metric-status assessment-metric-status-${card.status.tone}">${card.status.label}</p>
       <p class="assessment-metric-note mt-1 text-xs leading-5">${card.note}</p>
     </div>
   `).join("");
@@ -537,7 +565,7 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
 }
 
 function renderAssessmentClass(selectedClass, iaaoStandards) {
-  renderAssessmentSummary(selectedClass);
+  renderAssessmentSummary(selectedClass, iaaoStandards);
   renderAssessmentRows(selectedClass);
   renderAssessmentAccuracyChart(selectedClass, iaaoStandards);
   renderAssessmentAccuracyNotes(selectedClass, iaaoStandards);
