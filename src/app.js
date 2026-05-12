@@ -94,6 +94,7 @@ function initGuidedNavigation(snapshotModel) {
   const propertyContext = document.getElementById("propertyViewContext");
   const guidedPath = document.querySelector(".guided-path-nav");
   const sectionIds = [...tabs].map(tab => tab.dataset.guidedTab);
+  const visitedSteps = new Set();
   const legacyViewMap = {
     property: "your-property",
     market: "market-area",
@@ -106,13 +107,15 @@ function initGuidedNavigation(snapshotModel) {
   }
 
   function selectStep(selected, options = {}) {
-    const { scrollTop = true } = options;
-    const selectedIndex = sectionIds.indexOf(selected);
+    const { scrollTop = true, markVisited = true } = options;
+
+    if (markVisited && sectionIds.includes(selected)) {
+      visitedSteps.add(selected);
+    }
 
     tabs.forEach(item => {
-      const itemIndex = sectionIds.indexOf(item.dataset.guidedTab);
       const active = item.dataset.guidedTab === selected;
-      const complete = itemIndex >= 0 && selectedIndex > itemIndex;
+      const complete = visitedSteps.has(item.dataset.guidedTab) && !active;
       item.classList.toggle("guided-step-active", active);
       item.classList.toggle("guided-step-complete", complete);
       item.setAttribute("aria-selected", String(active));

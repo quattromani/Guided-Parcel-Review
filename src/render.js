@@ -14,8 +14,8 @@ import {
 } from "./data-service.js";
 import {
   buildForm422PrefillModel,
-  downloadPdf,
-  generateForm422Pdf
+  generateForm422Pdf,
+  printPdf
 } from "./form422Prefill.js";
 
 const discrepancyChoices = [
@@ -463,85 +463,74 @@ function discrepancyRows(data, recordCard) {
   const detailedRecordCard = hasDetailedRecordCard(recordCard);
   const residential = data.residential || {};
   const landRows = data.landInformation || [];
-  const dwellingRows = data.dwellingData || [];
+  const additionalFeatureRows = data.dwellingData || [];
   const outbuildingRows = data.outbuildingData || [];
   const noteRows = data.propertyNotes || [];
+  const garageLines = recordCard?.garageCostLines || [];
+  const landDimensions = row => [
+    row.widthFeet !== null && row.widthFeet !== undefined ? `Width: ${row.widthFeet} ft.` : null,
+    row.depthFeet !== null && row.depthFeet !== undefined ? `Depth: ${row.depthFeet} ft.` : null,
+    row.squareFeet !== null && row.squareFeet !== undefined ? `Area: ${Number(row.squareFeet).toLocaleString()} sq. ft.` : null
+  ].filter(Boolean).join(" • ");
   const rows = [
-    ["Parcel ID", data.parcel.parcelId, "Submission information"],
-    ["Map number", data.parcel.mapNumber, "Submission information"],
-    ["State geocode", data.parcel.stateGeoCode, "Submission information"],
-    ["Owner", data.parcel.owner, "Submission information"],
-    ["Mailing address", data.parcel.mailingAddress, "Submission information"],
-    ["Situs address", data.parcel.situsAddress, "Submission information"],
-    ["County", `${data.parcel.countyName} County`, "Submission information"],
-    ["Tax district", data.parcel.taxDistrict, "Submission information"],
-    ["School district", data.parcel.schoolDistrict, "Submission information"],
-    ["Account type", data.parcel.accountType, "Submission information"],
-    ["Legal description", data.parcel.legalDescription, "Submission information"],
-    ...(detailedRecordCard ? [
-      ["Card / perm", recordCard.parcelIdentifiers.cardFilePerm, "Record card identifiers"],
-      ["Cadastral ID", recordCard.parcelIdentifiers.cadastralId, "Record card identifiers"],
-      ["PAD class code", recordCard.parcelIdentifiers.padClassCode, "Record card identifiers"],
-      ["Appraiser ID", recordCard.parcelIdentifiers.appraiserId, "Record card identifiers"],
-      ["County area", recordCard.locationModel.countyArea, "Location model"],
-      ["Neighborhood", recordCard.locationModel.neighborhood, "Location model"],
-      ["Location group", recordCard.locationModel.locationGroup, "Location model"],
-      ["Valuation group", recordCard.locationModel.valuationGroup, "Location model"],
-      ["Land model / method", `${recordCard.locationModel.model} / ${recordCard.locationModel.method}`, "Location model"]
-    ] : []),
-    ["Status", data.classification.status, "Classification"],
-    ["Location", data.classification.location, "Classification"],
-    ["Property class", data.classification.propertyClass, "Classification"],
-    ["City size", data.classification.citySize, "Classification"],
-    ["Zoning", data.classification.zoning, "Classification"],
-    ["Lot size", data.classification.lotSize, "Classification"],
-    ...(detailedRecordCard && recordCard.residentialInformation ? [
-      ["Record-card condition", recordCard.residentialInformation.condition, "Record-card dwelling information"],
-      ["Record-card quality", recordCard.residentialInformation.quality, "Record-card dwelling information"],
-      ["Record-card exterior wall", recordCard.residentialInformation.exteriorWall, "Record-card dwelling information"],
-      ["Record-card bed / bath", recordCard.residentialInformation.bedBathroom, "Record-card dwelling information"],
-      ["Record-card roof cover", recordCard.residentialInformation.roofCover, "Record-card dwelling information"],
-      ["Record-card basement area", recordCard.residentialInformation.basementArea, "Record-card dwelling information"],
-      ["Last record action", `${recordCard.reviewHistory[0].date} ${recordCard.reviewHistory[0].action} ${recordCard.reviewHistory[0].initials}`, "Record review history"]
-    ] : []),
-    ...landRows.flatMap((row, index) => [
-      [`Land ${index + 1} description`, row.description, "Land information"],
-      [`Land ${index + 1} width`, `${row.widthFeet} ft.`, "Land information"],
-      [`Land ${index + 1} depth`, `${row.depthFeet} ft.`, "Land information"],
-      [`Land ${index + 1} area`, `${Number(row.squareFeet).toLocaleString()} sq. ft.`, "Land information"]
+    ["Parcel ID", data.parcel.parcelId, "Property facts"],
+    ["Owner", data.parcel.owner, "Property facts"],
+    ["Situs address", data.parcel.situsAddress, "Property facts"],
+    ["Tax district", data.parcel.taxDistrict, "Property facts"],
+    ["Legal description", data.parcel.legalDescription, "Property facts"],
+    ["Status", data.classification.status, "Property facts"],
+    ["Zoning", data.classification.zoning, "Property facts"],
+    ["Lot size", data.classification.lotSize, "Property facts"],
+    ["Year built", residential.yearBuilt, "Dwelling facts"],
+    ["Style", residential.style, "Dwelling facts"],
+    ["Building size", formatSquareFeet(residential.buildingSize), "Dwelling facts"],
+    ["Basement size", formatSquareFeet(residential.basementSize), "Dwelling facts"],
+    ["Bedrooms / bathrooms", [residential.bedrooms, residential.bathrooms].every(value => value !== null && value !== undefined) ? `${residential.bedrooms} / ${residential.bathrooms}` : null, "Dwelling facts"],
+    ["Quality / condition", [residential.quality, residential.condition].filter(Boolean).join(" / "), "Dwelling facts"],
+    ["Garage", [residential.garage1, residential.garage2].filter(Boolean).join("; "), "Dwelling facts"],
+    ["Exterior", residential.exterior, "Dwelling facts"],
+    ["Heating / cooling", residential.heatingCooling, "Dwelling facts"],
+    ["Plumbing fixtures", residential.plumbingFixtures, "Dwelling facts"],
+    ["Minimum finish", formatSquareFeet(residential.minFinish), "Dwelling facts"],
+    ["Part finish", formatSquareFeet(residential.partFinish), "Dwelling facts"],
+    ...garageLines.map((row, index) => [
+      `Garage ${index + 1}`,
+      [
+        row.description,
+        row.units
+      ].filter(Boolean).join(" • "),
+      "Detailed valuation components"
     ]),
-    ["Year built", residential.yearBuilt, "Dwelling information"],
-    ["Style", residential.style, "Dwelling information"],
-    ["Building size", formatSquareFeet(residential.buildingSize), "Dwelling information"],
-    ["Basement size", formatSquareFeet(residential.basementSize), "Dwelling information"],
-    ["Bedrooms", residential.bedrooms, "Dwelling information"],
-    ["Bathrooms", residential.bathrooms, "Dwelling information"],
-    ["Plumbing fixtures", residential.plumbingFixtures, "Dwelling information"],
-    ["Quality", residential.quality, "Dwelling information"],
-    ["Condition", residential.condition, "Dwelling information"],
-    ["Exterior", residential.exterior, "Dwelling information"],
-    ["Heating / cooling", residential.heatingCooling, "Dwelling information"],
-    ["Garage 1", residential.garage1, "Dwelling information"],
-    ["Garage 2", residential.garage2, "Dwelling information"],
-    ["Minimum finish", formatSquareFeet(residential.minFinish), "Dwelling information"],
-    ["Part finish", formatSquareFeet(residential.partFinish), "Dwelling information"],
-    ...dwellingRows.map((row, index) => [
+    ...additionalFeatureRows.map((row, index) => [
       `Additional feature ${index + 1}`,
       [
         row.description,
-        row.units !== null && row.units !== undefined ? `Units: ${row.units}` : null,
-        row.value !== null && row.value !== undefined ? `Value: ${money.format(row.value)}` : null
+        row.units !== null && row.units !== undefined ? `Units: ${row.units}` : null
       ].filter(Boolean).join(" • "),
-      "Additional dwelling features"
+      "Detailed valuation components"
     ]),
     ...(outbuildingRows.length
-      ? outbuildingRows.flatMap((row, index) => [
-        [`Outbuilding ${index + 1}`, row.description, "Outbuilding information"],
-        [`Outbuilding ${index + 1} units`, row.units, "Outbuilding information"],
-        [`Outbuilding ${index + 1} year built`, row.yearBuilt, "Outbuilding information"],
-        [`Outbuilding ${index + 1} cost`, row.cost, "Outbuilding information"]
+      ? outbuildingRows.map((row, index) => [
+        `Outbuilding ${index + 1}`,
+        [
+          row.description,
+          row.units,
+          row.yearBuilt ? `Built: ${row.yearBuilt}` : null
+        ].filter(Boolean).join(" • "),
+        "Detailed valuation components"
       ])
-      : [["Outbuilding records", "No outbuilding records listed for this property.", "Outbuilding information"]]),
+      : [["Outbuilding records", "No outbuilding records listed for this property.", "Detailed valuation components"]]),
+    ["Location", data.classification.location, "Classification"],
+    ["Property class", data.classification.propertyClass, "Classification"],
+    ...(detailedRecordCard ? [
+      ["Neighborhood", recordCard.locationModel.neighborhood, "Classification"],
+      ["Location group", recordCard.locationModel.locationGroup, "Classification"],
+      ["Valuation group", recordCard.locationModel.valuationGroup, "Classification"]
+    ] : []),
+    ...landRows.flatMap((row, index) => [
+      [`Land ${index + 1} description`, row.description, "Land information"],
+      [`Land ${index + 1} dimensions`, landDimensions(row), "Land information"]
+    ]),
     ...(noteRows.length
       ? noteRows.flatMap((row, index) => [
         [`Property note ${index + 1} date`, row.date, "Property notes"],
@@ -640,13 +629,13 @@ function renderDiscrepancyForm(data, recordCard) {
         </div>
       </section>
 
-      <section class="grid gap-4 lg:grid-cols-3">
+      <section class="grid items-start gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2">
           <label for="discrepancyComments" class="text-sm font-semibold text-slate-700">Comments or correction narrative</label>
           <textarea id="discrepancyComments" name="comments" rows="5" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Describe what appears incorrect and what the record should show."></textarea>
         </div>
 
-        <div class="space-y-3">
+        <div class="space-y-3 lg:pt-7">
           <fieldset class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
             <legend class="text-sm font-semibold text-slate-700">Preferred contact method</legend>
             <div class="mt-2 space-y-2 text-sm text-slate-700">
@@ -841,7 +830,7 @@ function initForm422Modal(data, recordCard) {
 
   async function generate() {
     if (status) {
-      status.textContent = "Generating Form 422...";
+      status.textContent = "Preparing Form 422 for printing...";
       status.className = "mt-4 text-sm font-semibold text-slate-600";
     }
     generateButton.disabled = true;
@@ -849,9 +838,9 @@ function initForm422Modal(data, recordCard) {
 
     try {
       const bytes = await generateForm422Pdf(model);
-      downloadPdf(bytes, model.fileName);
+      await printPdf(bytes, model.fileName);
       if (status) {
-        status.textContent = "Form 422 PDF generated. Review the downloaded form before filing.";
+        status.textContent = "Print dialog opened. Review the form carefully before filing.";
         status.className = "mt-4 text-sm font-semibold text-emerald-700";
       }
     } catch (error) {
@@ -1212,6 +1201,7 @@ function technicalCostModel(recordCard, data) {
   if (!recordCard?.costApproach) return "";
 
   const cost = recordCard.costApproach;
+  const noticeValues = valuationNoticeValues(data, recordCard).current;
   const assessedRows = (data.assessedValueBreakdown || [])
     .filter(row => row.total !== null && row.total !== undefined)
     .slice()
@@ -1221,66 +1211,106 @@ function technicalCostModel(recordCard, data) {
   const miscLines = recordCard.miscImprovements || [];
   const garageTotal = garageLines.reduce((sum, row) => sum + row.rcnld, 0);
   const miscTotal = miscLines.reduce((sum, row) => sum + row.value, 0);
-  const landValue = currentValue?.land ?? 0;
+  const landValue = noticeValues.land ?? currentValue?.land ?? 0;
+  const buildingValue = noticeValues.building ?? currentValue?.dwelling ?? recordCard.propertyValuation?.buildings ?? 0;
+  const otherImprovementValue = noticeValues.improvement ?? recordCard.propertyValuation?.improvement ?? 0;
   const outbuildingValue = currentValue?.outbuilding ?? 0;
-  const totalValue = currentValue?.total ?? cost.rcnld + landValue;
-  const modeledDetailSubtotal = landValue + cost.rcnld + garageTotal + miscTotal + outbuildingValue;
-  const reconciliation = recordCard.valuationReconciliation || {};
-  const postProtestAdjustment = reconciliation.postProtestAdjustment ?? totalValue - modeledDetailSubtotal;
-  const hasPostProtestAdjustment = Math.abs(postProtestAdjustment) > 0;
+  const totalValue = noticeValues.total ?? currentValue?.total ?? landValue + buildingValue + otherImprovementValue;
   const residentialInfo = recordCard.residentialInformation || {};
   const valueStack = [
-    ["Land", landValue],
-    ["Marshall & Swift dwelling model", cost.rcnld],
-    ["Garages", garageTotal],
-    ["Miscellaneous improvements", miscTotal],
-    ["Outbuildings", outbuildingValue],
-    ...(hasPostProtestAdjustment ? [["Post-protest adj.", postProtestAdjustment]] : [])
+    ["Land value", landValue],
+    ["Building and site improvements", buildingValue],
+    ...(otherImprovementValue ? [["Other improvements", otherImprovementValue]] : [])
   ];
 
-  return disclosure("How was this property’s improvement value modeled?", `Latest known total ${formatNullableMoney(totalValue)}`, `
-    <div class="grid gap-3 bg-slate-50 p-3 text-sm md:grid-cols-4">
-      ${[
-        ["Year / effective age", cost.yearEffectiveAge],
-        ["Adjusted cost", cost.adjustedCost.toFixed(3)],
-        ["RCN", formatNullableMoney(cost.rcn)],
-        ["RCNLD", formatNullableMoney(cost.rcnld)],
-        ["Cost per sq. ft.", moneyCents.format(cost.costPerSquareFoot)],
-        ["Depreciation", `${cost.depreciation.physicalPercent}% physical`],
-        ["Garage value", formatNullableMoney(garageTotal)],
-        ["Misc. improvements", formatNullableMoney(miscTotal)],
-        ["Detail subtotal", formatNullableMoney(modeledDetailSubtotal)],
-        ["Post-protest adj.", hasPostProtestAdjustment ? formatNullableMoney(postProtestAdjustment) : "$0"]
-      ].map(([label, value]) => `
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-          <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
-        </div>
-        `).join("")}
+  return disclosure("What makes up this property's assessed value?", `Latest known total ${formatNullableMoney(totalValue)}`, `
+    <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+      Land and improvements are valued separately. Land is analyzed as if vacant; structures and site improvements are modeled independently.
     </div>
     <div class="border-t border-slate-200 p-3">
-      <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">How the assessed value adds up</p>
+      <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Assessed value composition</p>
+      <p class="mb-3 text-sm leading-6 text-slate-600">This shows the land and improvement values that add up to the assessed value.</p>
       <div class="overflow-hidden rounded-xl ring-1 ring-slate-200">
+        <div class="bg-slate-100 px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Land</div>
+        <div class="grid grid-cols-[1fr_auto] items-center gap-3 border-b border-slate-200 bg-white px-3 py-2 text-sm">
+          <p class="font-medium text-slate-700">${valueStack[0][0]}</p>
+          <p class="font-semibold text-slate-700">${formatNullableMoney(valueStack[0][1])}</p>
+        </div>
+        <div class="bg-slate-100 px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Improvements</div>
         ${valueStack.map(([label, value], index) => `
+          ${index === 0 ? "" : `
           <div class="grid grid-cols-[1fr_auto] items-center gap-3 border-b border-slate-200 px-3 py-2 text-sm ${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
             <p class="font-medium text-slate-700">${label}</p>
             <p class="font-semibold text-slate-700">${formatNullableMoney(value)}</p>
           </div>
+          `}
         `).join("")}
         <div class="grid grid-cols-[1fr_auto] items-center gap-3 bg-slate-700 px-3 py-3 text-sm text-white">
           <p class="font-semibold">Total assessed value</p>
           <p class="text-base font-bold">${formatNullableMoney(totalValue)}</p>
         </div>
       </div>
-      ${reconciliation.note ? `
-        <p class="mt-3 text-xs leading-5 text-slate-500">${escapeHtml(reconciliation.note)}</p>
-      ` : ""}
     </div>
+    <section class="border-t border-slate-200 bg-white p-3">
+      <p class="text-base font-semibold text-slate-700">How was the improvement value estimated?</p>
+      <p class="mt-1 text-sm leading-6 text-slate-600">Marshall & Swift cost data helps model the dwelling and related site improvements before detailed component records are reviewed.</p>
+      <div class="mt-3 grid gap-3 text-sm lg:grid-cols-3">
+        <section class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Structure model</p>
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            ${[
+              ["Residential type", residentialInfo.type],
+              ["Quality", residentialInfo.quality],
+              ["Condition", residentialInfo.condition],
+              ["Year / effective age", cost.yearEffectiveAge]
+            ].map(([label, value]) => `
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
+                <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+        <section class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Costing</p>
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            ${[
+              ["Adjusted cost", cost.adjustedCost.toFixed(3)],
+              ["RCN", formatNullableMoney(cost.rcn)],
+              ["RCNLD", formatNullableMoney(cost.rcnld)],
+              ["Cost per sq. ft.", moneyCents.format(cost.costPerSquareFoot)],
+              ["Depreciation", `${cost.depreciation.physicalPercent}% physical`]
+            ].map(([label, value]) => `
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
+                <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+        <section class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Component values</p>
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            ${[
+              ["Dwelling model", formatNullableMoney(cost.rcnld)],
+              ["Garage value", formatNullableMoney(garageTotal)],
+              ["Misc. improvements", formatNullableMoney(miscTotal)],
+              ["Outbuildings", formatNullableMoney(outbuildingValue)]
+            ].map(([label, value]) => `
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
+                <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+      </div>
+    </section>
     <details class="border-t border-slate-200 bg-white">
       <summary class="valuation-detail-toggle flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-sm font-semibold">
         <span class="flex min-w-0 items-center gap-2">
           <span class="valuation-detail-chevron" aria-hidden="true"></span>
-          <span class="truncate">View exploded valuation detail</span>
+          <span class="truncate">View detailed valuation components</span>
         </span>
         <span class="hidden text-xs font-semibold sm:inline">Component drill-down</span>
       </summary>
@@ -1290,40 +1320,63 @@ function technicalCostModel(recordCard, data) {
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Marshall & Swift dwelling model</p>
             <p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">Subtotal ${formatNullableMoney(cost.rcnld)}</p>
           </div>
-          <div class="grid gap-3 text-sm md:grid-cols-3">
-            ${[
-              ["Residential type", residentialInfo.type],
-              ["Quality", residentialInfo.quality],
-              ["Condition", residentialInfo.condition],
-              ["Base / total area", residentialInfo.baseTotalArea],
-              ["Year / effective age", cost.yearEffectiveAge],
-              ["Base cost", moneyCents.format(cost.baseCost)],
-              ["Adjusted cost", cost.adjustedCost.toFixed(3)],
-              ["RCN", formatNullableMoney(cost.rcn)],
-              ["Depreciation", `${cost.depreciation.physicalPercent}% physical`],
-              ["RCNLD", formatNullableMoney(cost.rcnld)],
-              ["Cost per sq. ft.", moneyCents.format(cost.costPerSquareFoot)],
-              ["Heating / cooling", residentialInfo.heatingCooling]
-            ].map(([label, value]) => `
-              <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-                <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
+          <div class="grid gap-3 text-sm lg:grid-cols-3">
+            <section>
+              <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Structure model</p>
+              <div class="grid gap-3">
+                ${[
+                  ["Residential type", residentialInfo.type],
+                  ["Quality", residentialInfo.quality],
+                  ["Condition", residentialInfo.condition],
+                  ["Base / total area", residentialInfo.baseTotalArea],
+                  ["Year / effective age", cost.yearEffectiveAge]
+                ].map(([label, value]) => `
+                  <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
+                    <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
+                  </div>
+                `).join("")}
               </div>
-            `).join("")}
-          </div>
-          <div class="mt-3 grid gap-2 text-sm sm:grid-cols-5">
-            ${[
-              ["Roofing", cost.adjustments.roofing],
-              ["Subfloor", cost.adjustments.subfloor],
-              ["Heat / cool", cost.adjustments.heatCool],
-              ["Plumbing", cost.adjustments.plumbing],
-              ["Basement", cost.adjustments.basement]
-            ].map(([label, value]) => `
-              <div class="rounded-lg bg-white p-2 ring-1 ring-slate-200">
-                <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">${label} adj.</p>
-                <p class="mt-1 font-semibold text-slate-700">${Number(value).toFixed(2)}</p>
+            </section>
+            <section>
+              <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Costing</p>
+              <div class="grid gap-3">
+                ${[
+                  ["Base cost", moneyCents.format(cost.baseCost)],
+                  ["Adjusted cost", cost.adjustedCost.toFixed(3)],
+                  ["RCN", formatNullableMoney(cost.rcn)],
+                  ["Depreciation", `${cost.depreciation.physicalPercent}% physical`],
+                  ["RCNLD", formatNullableMoney(cost.rcnld)],
+                  ["Cost per sq. ft.", moneyCents.format(cost.costPerSquareFoot)]
+                ].map(([label, value]) => `
+                  <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
+                    <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
+                  </div>
+                `).join("")}
               </div>
-            `).join("")}
+            </section>
+            <section>
+              <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Systems / adjustments</p>
+              <div class="grid gap-2">
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Heating / cooling</p>
+                  <p class="mt-1 font-semibold text-slate-700">${escapeHtml(residentialInfo.heatingCooling)}</p>
+                </div>
+                ${[
+                  ["Roofing", cost.adjustments.roofing],
+                  ["Subfloor", cost.adjustments.subfloor],
+                  ["Heat / cool", cost.adjustments.heatCool],
+                  ["Plumbing", cost.adjustments.plumbing],
+                  ["Basement", cost.adjustments.basement]
+                ].map(([label, value]) => `
+                  <div class="rounded-lg bg-white p-2 ring-1 ring-slate-200">
+                    <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">${label} adj.</p>
+                    <p class="mt-1 font-semibold text-slate-700">${Number(value).toFixed(2)}</p>
+                  </div>
+                `).join("")}
+              </div>
+            </section>
           </div>
         </section>
         <section>
@@ -1362,27 +1415,6 @@ function technicalCostModel(recordCard, data) {
             </tbody>
           </table>
         </section>
-        ${hasPostProtestAdjustment ? `
-          <section class="rounded-xl bg-amber-50 p-3 ring-1 ring-amber-200">
-            <div class="mb-2 flex items-center justify-between gap-3">
-              <p class="text-xs font-semibold uppercase tracking-wide text-amber-800">Reconciliation</p>
-              <p class="rounded-full bg-white px-2 py-1 text-xs font-semibold text-amber-800">Post-protest adj. ${formatNullableMoney(postProtestAdjustment)}</p>
-            </div>
-            <div class="grid gap-3 text-sm md:grid-cols-3">
-              ${[
-                ["MIPS pre-protest total", reconciliation.initialMipsTotal ? formatNullableMoney(reconciliation.initialMipsTotal) : null],
-                ["Modeled detail subtotal", formatNullableMoney(modeledDetailSubtotal)],
-                ["Final assessed total", formatNullableMoney(totalValue)]
-              ].map(([label, value]) => `
-                <div>
-                  <p class="text-xs font-semibold uppercase tracking-wide text-amber-800">${label}</p>
-                  <p class="mt-1 font-semibold text-slate-800">${escapeHtml(value)}</p>
-                </div>
-              `).join("")}
-            </div>
-            ${reconciliation.source ? `<p class="mt-3 text-xs leading-5 text-amber-900">${escapeHtml(reconciliation.source)}</p>` : ""}
-          </section>
-        ` : ""}
         <section>
           <div class="mb-2 flex items-center justify-between gap-3">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Outbuildings</p>

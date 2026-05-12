@@ -151,14 +151,59 @@ export async function generateForm422Pdf(model) {
   return pdfDoc.save();
 }
 
-export function downloadPdf(bytes, fileName) {
+export function printPdf(bytes, fileName) {
   const blob = new Blob([bytes], { type: "application/pdf" });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = fileName;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
+
+  return new Promise((resolve, reject) => {
+    const frame = document.createElement("iframe");
+    let settled = false;
+
+    function cleanup() {
+      window.setTimeout(() => {
+        frame.remove();
+        URL.revokeObjectURL(url);
+      }, 60000);
+    }
+
+    const timer = window.setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      frame.remove();
+      URL.revokeObjectURL(url);
+      reject(new Error("The printable Form 422 could not be opened."));
+    }, 10000);
+
+    frame.title = fileName;
+    frame.style.position = "fixed";
+    frame.style.right = "0";
+    frame.style.bottom = "0";
+    frame.style.width = "0";
+    frame.style.height = "0";
+    frame.style.border = "0";
+    frame.style.opacity = "0";
+
+    frame.addEventListener("load", () => {
+      try {
+        const printWindow = frame.contentWindow;
+        if (!printWindow) throw new Error("The printable Form 422 could not be opened.");
+
+        printWindow.focus();
+        printWindow.print();
+        settled = true;
+        window.clearTimeout(timer);
+        cleanup();
+        resolve();
+      } catch (error) {
+        settled = true;
+        window.clearTimeout(timer);
+        frame.remove();
+        URL.revokeObjectURL(url);
+        reject(error);
+      }
+    });
+
+    frame.src = url;
+    document.body.append(frame);
+  });
 }
