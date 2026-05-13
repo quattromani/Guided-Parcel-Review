@@ -45,8 +45,8 @@ const footerFormActions = {
     actionAttribute: "data-prepare-homestead"
   },
   valuationProtest: {
-    title: "Property valuation protest",
-    cta: "Prepare Form 422",
+    title: "Review and protest materials",
+    cta: "Open review",
     actionAttribute: "data-prepare-form422"
   }
 };
@@ -180,20 +180,20 @@ const resourcesByView = {
   },
   "review-checklist": {
     faqTitle: "Review FAQs",
-    formTitle: "Review and next-step forms",
+    formTitle: "Review resources",
     learnTitle: "Review terms",
     faqs: [
-      ["What should I check before submitting a concern?", "Confirm the parcel facts, condition, improvements, district assignment, value history, and market context."],
-      ["What does the summary mean?", "It brings the record, assessment, taxes, districts, market, county, and state context into one review surface."],
-      ["What happens after a record concern?", "The concern identifies facts for review. It does not replace any formal protest or filing deadline."],
-      ["How can I keep a copy?", "Use the available form print actions where applicable. For the page summary, use your browser's print or save option."]
+      ["What should I review first?", "Start with the property record: square footage, year built, basement, garage, outbuildings, condition, lot size, property class, value history, and tax history."],
+      ["Why use a comparable worksheet?", "It helps organize basic public-record information side-by-side so differences are easier to see before any filing decision is made."],
+      ["Is the worksheet required to print Form 422?", "No. The worksheet is an educational preparation tool. Form 422 remains directly printable from the review view."],
+      ["How can I keep a copy?", "Use the packet print action for the worksheet and prepared Form 422 together, or print either document independently."]
     ],
     forms: ["recordConcern", "homestead", "valuationProtest"],
     learn: [
-      ["Summary", "A consolidated view of the major record, value, tax, and context signals."],
+      ["Preparation packet", "A printable packet that combines the comparable worksheet and prepared Form 422."],
       ["Record concern", "A factual review request about property record details."],
-      ["Protest window", "The formal period for filing a valuation protest."],
-      ["Next step", "The practical action to take after reviewing the available evidence."]
+      ["Comparable property", "A property reviewed because its public-record facts may help explain assessment differences."],
+      ["Protest window", "The formal period for filing a valuation protest."]
     ]
   }
 };
@@ -409,11 +409,37 @@ function initGuidedNavigation(snapshotModel, calendar) {
     });
   });
 
+  document.addEventListener("property-snapshot:select-guided-step", event => {
+    const selected = event.detail?.step;
+    const targetSelector = event.detail?.target;
+
+    if (selected) {
+      unlockThrough(selected);
+      markPreviousVisited(selected);
+      if (!selectStep(selected, { scrollTop: false })) return;
+    }
+
+    if (!targetSelector) return;
+    const target = document.querySelector(targetSelector);
+    if (!target) return;
+
+    if (target.id) history.pushState(null, "", `#${target.id}`);
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    target.classList.add("jump-target-active");
+    window.setTimeout(() => target.classList.remove("jump-target-active"), 1400);
+  });
+
   const hashTarget = window.location.hash?.slice(1);
   const initialStep = hashTarget ? stepForTarget(hashTarget) : sectionIds[0];
   unlockThrough(initialStep || sectionIds[0]);
   markPreviousVisited(initialStep || sectionIds[0]);
   selectStep(initialStep || sectionIds[0], { scrollTop: false });
+  if (hashTarget) {
+    window.setTimeout(() => {
+      const target = document.getElementById(hashTarget);
+      target?.scrollIntoView({ behavior: "auto", block: "start" });
+    }, 0);
+  }
   initGuidedPathStickiness(guidedPath);
 }
 

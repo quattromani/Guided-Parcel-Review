@@ -14,8 +14,11 @@ import {
   getSnapshotHistory
 } from "./data-service.js";
 import {
+  buildComparableWorksheetModel,
   buildForm422PrefillModel,
+  generateComparableWorksheetPdf,
   generateForm422Pdf,
+  generateProtestPacketPdf,
   printPdf
 } from "./form422Prefill.js";
 import {
@@ -81,9 +84,9 @@ const viewHeaderContent = {
     imageAlt: "Map of Nebraska"
   },
   "review-checklist": {
-    eyebrow: "Step 8 · Review checklist",
-    title: "What should I check before I protest?",
-    description: "Bring the property record, assessment, tax history, market context, and calendar into a practical review list.",
+    eyebrow: "Step 8 · Review",
+    title: "Need to review anything?",
+    description: "Confirm the record, organize unresolved questions, and use comparable research before deciding whether any filing step is needed.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   }
 };
@@ -97,7 +100,7 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderPropertyDetails(data, recordCard);
   renderDiscrepancyForm(data, recordCard);
   initReportErrorModal(data, recordCard, governingOffice);
-  initForm422Modal(data, recordCard);
+  initProtestPreparationActions(data, recordCard);
   initForm458Modal(data, recordCard);
   renderSummary(data, recordCard, summaryContext);
   renderProcessTimeline(calendar);
@@ -977,81 +980,289 @@ function initReportErrorModal(data, recordCard, governingOffice) {
   });
 }
 
-function initForm422Modal(data, recordCard) {
-  const modal = document.getElementById("form422Modal");
-  const closeButtons = document.querySelectorAll("[data-close-form422]");
-  const generateButton = document.querySelector("[data-generate-form422]");
-  const fieldContainer = document.getElementById("form422ConfirmationFields");
-  const status = document.getElementById("form422Status");
+function navigateToProtestPreparation(targetSelector = "#protest-preparation") {
+  document.dispatchEvent(new CustomEvent("property-snapshot:select-guided-step", {
+    detail: {
+      step: "review-checklist",
+      target: targetSelector
+    }
+  }));
 
-  if (!modal || !fieldContainer || !generateButton) return;
+  window.setTimeout(() => {
+    const target = document.querySelector(targetSelector);
+    if (!target) return;
 
-  const model = buildForm422PrefillModel(data, recordCard);
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    target.classList.add("jump-target-active");
+    window.setTimeout(() => target.classList.remove("jump-target-active"), 1400);
+  }, 0);
+}
 
-  fieldContainer.innerHTML = model.confirmationFields.map(([label, value]) => `
-    <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(label)}</p>
-      <p class="mt-1 text-sm font-semibold leading-5 text-slate-700">${escapeHtml(value || "Not available")}</p>
+const comparableResearchChecklistFields = [
+  ["Location / neighborhood / market area", "Location / market area"],
+  ["Most recent sale, if available", "Most recent sale"],
+  ["Living area / square footage", "Living area / square footage"],
+  ["Style or property type", "Style or property type"],
+  ["Year built / age", "Year built / age"],
+  ["Basement: yes/no/finished/unfinished", "Basement"],
+  ["Garage: attached/detached/none", "Garage"],
+  ["Outbuildings or major improvements", "Outbuildings or major improvements"],
+  ["Lot size", "Lot size"],
+  ["General condition, if apparent", "Quality / condition"]
+];
+
+function worksheetRowValue(model, label) {
+  return model.rows.find(row => row.label === label)?.subject || "Not listed";
+}
+
+function renderComparableResearchChecklist(model) {
+  const container = document.getElementById("comparableResearchChecklist");
+  if (!container || !model) return;
+
+  container.innerHTML = `
+    <div class="comparable-checklist-header" aria-hidden="true">
+      <span></span>
+      <span>Research item</span>
+      <span>Subject property</span>
     </div>
-  `).join("");
+    ${comparableResearchChecklistFields.map(([label, sourceLabel]) => `
+      <label class="comparable-checklist-item">
+        <input type="checkbox" class="comparable-checklist-check" aria-label="Reviewed ${escapeHtml(label)}">
+        <span class="comparable-checklist-label">${escapeHtml(label)}</span>
+        <span class="comparable-checklist-reference">${escapeHtml(worksheetRowValue(model, sourceLabel))}</span>
+      </label>
+    `).join("")}
+  `;
+}
 
-  function close() {
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-    document.body.classList.remove("overflow-hidden");
-    if (status) {
-      status.textContent = "";
-      status.className = "mt-4 text-sm font-medium text-slate-600";
-    }
+function worksheetEntryId(rowIndex, comparableIndex) {
+  return `worksheet-row-${rowIndex}-comparable-${comparableIndex}`;
+}
+
+function worksheetEntryKey(rowIndex, comparableIndex) {
+  return `${rowIndex}:${comparableIndex}`;
+}
+
+function worksheetStorageKey(model) {
+  return `propertySnapshot:comparableWorksheet:${model.parcelId}:${model.snapshotYear}`;
+}
+
+function readWorksheetDraft(model) {
+  try {
+    return JSON.parse(window.sessionStorage.getItem(worksheetStorageKey(model)) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function writeWorksheetDraft(model, values) {
+  try {
+    window.sessionStorage.setItem(worksheetStorageKey(model), JSON.stringify(values));
+  } catch {
+    // Session storage is a convenience only; worksheet inputs still print from the page.
+  }
+}
+
+function collectWorksheetEntries(container) {
+  return Object.fromEntries(
+    [...container.querySelectorAll("[data-worksheet-entry]")]
+      .map(input => [input.dataset.worksheetKey, input.value.trim()])
+      .filter(([, value]) => value)
+  );
+}
+
+function worksheetModelWithEntries(model, entries) {
+  return {
+    ...model,
+    rows: model.rows.map((row, rowIndex) => ({
+      ...row,
+      comparables: [0, 1, 2].map(comparableIndex => entries[worksheetEntryKey(rowIndex, comparableIndex)] || "")
+    }))
+  };
+}
+
+function initWorksheetDraftStorage(container, model) {
+  const draft = readWorksheetDraft(model);
+  const inputs = [...container.querySelectorAll("[data-worksheet-entry]")];
+
+  inputs.forEach(input => {
+    input.value = draft[input.dataset.worksheetKey] || "";
+  });
+
+  container.addEventListener("input", event => {
+    if (!event.target.matches("[data-worksheet-entry]")) return;
+    writeWorksheetDraft(model, collectWorksheetEntries(container));
+  });
+}
+
+function worksheetCell(row, { subject = false, rowIndex = 0, comparableIndex = 0 } = {}) {
+  if (subject) {
+    return `<td class="worksheet-subject-cell">${escapeHtml(row.subject || "Not listed")}</td>`;
   }
 
-  function open() {
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    document.body.classList.add("overflow-hidden");
+  const id = worksheetEntryId(rowIndex, comparableIndex);
+  const key = worksheetEntryKey(rowIndex, comparableIndex);
+  const isNotes = row.label === "Notes";
+
+  return `
+    <td class="worksheet-blank-cell${isNotes ? " worksheet-notes-cell" : ""}">
+      <label class="sr-only" for="${id}">Comparable ${comparableIndex + 1} ${escapeHtml(row.label)}</label>
+      <textarea
+        id="${id}"
+        class="worksheet-entry-input${isNotes ? " worksheet-notes-input" : ""}"
+        data-worksheet-entry
+        data-worksheet-key="${key}"
+        rows="${isNotes ? 3 : 1}"
+        placeholder="${isNotes ? "Notes" : "Enter value"}"
+      ></textarea>
+    </td>
+  `;
+}
+
+function renderComparableWorksheet(model) {
+  const container = document.getElementById("comparableWorksheet");
+  if (!container || !model) return;
+
+  container.innerHTML = `
+    <div class="comparable-worksheet-shell" role="region" aria-label="Comparable value worksheet">
+      <table class="comparable-worksheet-table">
+        <thead>
+          <tr>
+            <th scope="col">Review field</th>
+            ${model.columns.map(column => `<th scope="col">${escapeHtml(column)}</th>`).join("")}
+          </tr>
+        </thead>
+        <tbody>
+          ${model.rows.map((row, rowIndex) => `
+            <tr>
+              <th scope="row">${escapeHtml(row.label)}</th>
+              ${worksheetCell(row, { subject: true })}
+              ${worksheetCell(row, { rowIndex, comparableIndex: 0 })}
+              ${worksheetCell(row, { rowIndex, comparableIndex: 1 })}
+              ${worksheetCell(row, { rowIndex, comparableIndex: 2 })}
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  initWorksheetDraftStorage(container, model);
+}
+
+function initProtestPreparationActions(data, recordCard) {
+  const fieldContainer = document.getElementById("form422ConfirmationFields");
+  const status = document.getElementById("protestPreparationStatus");
+
+  const formModel = buildForm422PrefillModel(data, recordCard);
+  const worksheetModel = buildComparableWorksheetModel(data, recordCard);
+  const printPacketButtons = [...document.querySelectorAll("[data-print-protest-packet]")];
+  const printWorksheetButtons = [...document.querySelectorAll("[data-print-comparable-worksheet]")];
+  const printFormButtons = [...document.querySelectorAll("[data-print-form422]")];
+
+  renderComparableResearchChecklist(worksheetModel);
+  renderComparableWorksheet(worksheetModel);
+
+  function currentWorksheetModel() {
+    const worksheetContainer = document.getElementById("comparableWorksheet");
+    return worksheetContainer
+      ? worksheetModelWithEntries(worksheetModel, collectWorksheetEntries(worksheetContainer))
+      : worksheetModel;
   }
 
-  async function generate() {
-    if (status) {
-      status.textContent = "Preparing Form 422 for printing...";
-      status.className = "mt-4 text-sm font-semibold text-slate-600";
-    }
-    generateButton.disabled = true;
-    generateButton.classList.add("opacity-60");
+  if (fieldContainer) {
+    fieldContainer.innerHTML = formModel.confirmationFields.map(([label, value]) => `
+      <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(label)}</p>
+        <p class="mt-1 text-sm font-semibold leading-5 text-slate-700">${escapeHtml(value || "Not available")}</p>
+      </div>
+    `).join("");
+  }
+
+  function setStatus(message, tone = "neutral") {
+    if (!status) return;
+    status.textContent = message;
+    status.className = `mt-4 text-sm font-semibold ${
+      tone === "success" ? "text-emerald-700" : tone === "error" ? "text-red-700" : "text-slate-600"
+    }`;
+  }
+
+  function setBusy(buttons, busy) {
+    buttons.forEach(button => {
+      button.disabled = busy;
+      button.classList.toggle("opacity-60", busy);
+    });
+  }
+
+  async function printPreparedDocument({ buttons, pending, success, errorMessage, documentLabel, generateBytes, fileName }) {
+    setStatus(pending);
+    setBusy(buttons, true);
 
     try {
-      const bytes = await generateForm422Pdf(model);
-      await printPdf(bytes, model.fileName);
-      if (status) {
-        status.textContent = "Print dialog opened. Review the form carefully before filing.";
-        status.className = "mt-4 text-sm font-semibold text-emerald-700";
-      }
+      const bytes = await generateBytes();
+      await printPdf(bytes, fileName, documentLabel);
+      setStatus(success, "success");
     } catch (error) {
       console.error(error);
-      if (status) {
-        status.textContent = error.message || "Form 422 could not be generated.";
-        status.className = "mt-4 text-sm font-semibold text-red-700";
-      }
+      setStatus(error.message || errorMessage, "error");
     } finally {
-      generateButton.disabled = false;
-      generateButton.classList.remove("opacity-60");
+      setBusy(buttons, false);
     }
   }
 
   document.addEventListener("click", event => {
-    const trigger = event.target.closest?.("[data-prepare-form422]");
-    if (!trigger) return;
+    const packetTrigger = event.target.closest?.("[data-print-protest-packet]");
+    if (packetTrigger) {
+      event.preventDefault();
+      printPreparedDocument({
+        buttons: printPacketButtons,
+        pending: "Preparing the protest preparation packet for printing...",
+        success: "Print dialog opened for the protest preparation packet.",
+        errorMessage: "The protest preparation packet could not be generated.",
+        documentLabel: "protest preparation packet",
+        fileName: worksheetModel.packetFileName,
+        generateBytes: () => generateProtestPacketPdf(formModel, currentWorksheetModel())
+      });
+      return;
+    }
+
+    const worksheetTrigger = event.target.closest?.("[data-print-comparable-worksheet]");
+    if (worksheetTrigger) {
+      event.preventDefault();
+      const mode = worksheetTrigger.dataset.printComparableWorksheet;
+      const isBlank = mode === "blank";
+      printPreparedDocument({
+        buttons: printWorksheetButtons,
+        pending: isBlank ? "Preparing a blank comparable value worksheet for printing..." : "Preparing the filled comparable value worksheet for printing...",
+        success: isBlank ? "Print dialog opened for the blank comparable value worksheet." : "Print dialog opened for the filled comparable value worksheet.",
+        errorMessage: "The comparable value worksheet could not be generated.",
+        documentLabel: "comparable value worksheet",
+        fileName: worksheetModel.fileName,
+        generateBytes: () => generateComparableWorksheetPdf(isBlank ? worksheetModel : currentWorksheetModel())
+      });
+      return;
+    }
+
+    const formTrigger = event.target.closest?.("[data-print-form422]");
+    if (formTrigger) {
+      event.preventDefault();
+      printPreparedDocument({
+        buttons: printFormButtons,
+        pending: "Preparing Form 422 for printing...",
+        success: "Print dialog opened. Review the form carefully before filing.",
+        errorMessage: "Form 422 could not be generated.",
+        documentLabel: "Form 422",
+        fileName: formModel.fileName,
+        generateBytes: () => generateForm422Pdf(formModel)
+      });
+      return;
+    }
+
+    const preparationTrigger = event.target.closest?.("[data-prepare-form422]");
+    if (!preparationTrigger) return;
 
     event.preventDefault();
-    open();
-  });
-  modal.addEventListener("click", close);
-  modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
-  closeButtons.forEach(button => button.addEventListener("click", close));
-  generateButton.addEventListener("click", generate);
-
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") close();
+    navigateToProtestPreparation("#form422-section");
   });
 }
 
@@ -2084,13 +2295,13 @@ function calendarStageDetailHtml(stage) {
     ` : ""}
     ${stage.id === "protest" ? `
       <div class="mt-4 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-slate-200">
-        <p>After reviewing the record and supporting context, you can prepare the official Form 422 with available property information filled in. Requested valuation, reasons, signature, and filing responsibility remain with the filer.</p>
+        <p>The review view brings record review, basic comparable-property organization, the worksheet, and the prepared Form 422 into one open resource. Requested valuation, reasons, signature, and filing responsibility remain with the filer.</p>
         <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <button type="button" data-calendar-review-record class="inline-flex justify-center rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
-            Review Your Record
+            Open Review
           </button>
           <button type="button" data-calendar-prepare-form422 class="inline-flex justify-center rounded-full bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-300 transition hover:bg-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
-            Prepare Form 422
+            Go to Form 422
           </button>
         </div>
       </div>
@@ -2119,11 +2330,11 @@ function initCalendarStageModal(calendar) {
     content.innerHTML = calendarStageDetailHtml(stage);
     content.querySelector("[data-calendar-review-record]")?.addEventListener("click", () => {
       close();
-      document.querySelector("#review-checklist-card [data-report-error]")?.click();
+      navigateToProtestPreparation("#protest-preparation");
     });
     content.querySelector("[data-calendar-prepare-form422]")?.addEventListener("click", () => {
       close();
-      document.querySelector("#review-checklist-card [data-prepare-form422]")?.click();
+      navigateToProtestPreparation("#form422-section");
     });
     modal.classList.remove("hidden");
     modal.classList.add("flex");

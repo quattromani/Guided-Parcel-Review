@@ -59,11 +59,11 @@ const guidedSections = [
   },
   {
     id: "review-checklist",
-    eyebrow: "Action",
+    eyebrow: "Review",
     label: "Review",
-    question: "What should I check before I protest?",
-    title: "Turn the story into a review checklist",
-    description: "Use this final step to confirm the record, note unresolved questions, and understand the calendar before taking action."
+    question: "Need to review anything?",
+    title: "Review and organize next steps",
+    description: "Use this final step to confirm the record, note unresolved questions, organize comparable research, and find filing materials if needed."
   }
 ];
 
