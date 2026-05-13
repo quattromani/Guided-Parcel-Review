@@ -26,6 +26,7 @@ import {
 import { applyVisualizationPalette } from "./config/visualization-palettes.js";
 import { initImageModal } from "./modal.js";
 import {
+  getCurrentStageText,
   renderPage,
   renderTaxDistrictAuthorities,
   renderViewHeader
@@ -228,7 +229,12 @@ async function main() {
   const data = withSnapshotModel(propertyData, snapshotModel);
   const imageModal = initImageModal(data.assets);
 
-  renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice);
+  renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, {
+    ctlData,
+    ratioData,
+    padRatioData,
+    iaaoStandards
+  });
   renderTaxDistrictAuthorities(data, taxDistrictAuthorities);
   buildIndexedChart(data);
   buildTaxBurdenPattern(data);
@@ -239,7 +245,7 @@ async function main() {
   buildCtlSummary(data, ctlData);
   initCountyComparison(data, ctlData, recordCard);
   initAssessmentRatioAnalysis(data, ratioData, iaaoStandards);
-  initGuidedNavigation(data.snapshotModel);
+  initGuidedNavigation(data.snapshotModel, calendar);
   initFooterNavigation();
 }
 
@@ -255,13 +261,15 @@ main().catch(error => {
   `;
 });
 
-function initGuidedNavigation(snapshotModel) {
+function initGuidedNavigation(snapshotModel, calendar) {
   const tabs = document.querySelectorAll("[data-guided-tab]");
   const panels = document.querySelectorAll("[data-guided-panel]");
   const propertyContext = document.getElementById("propertyViewContext");
   const guidedPath = document.querySelector(".guided-path-nav");
+  const stageSync = document.querySelector("[data-guided-current-stage]");
   const sectionIds = [...tabs].map(tab => tab.dataset.guidedTab);
   const visitedSteps = new Set();
+  const unlockedSteps = new Set([sectionIds[0]]);
   const legacyViewMap = {
     property: "your-property",
     market: "market-area",
@@ -273,19 +281,45 @@ function initGuidedNavigation(snapshotModel) {
     return document.getElementById(target)?.closest("[data-guided-panel]")?.dataset.guidedPanel;
   }
 
+  function unlockThrough(target) {
+    const targetIndex = sectionIds.indexOf(target);
+    if (targetIndex < 0) return;
+
+    sectionIds.slice(0, targetIndex + 1).forEach(id => unlockedSteps.add(id));
+  }
+
+  function markPreviousVisited(target) {
+    const targetIndex = sectionIds.indexOf(target);
+    if (targetIndex <= 0) return;
+
+    sectionIds.slice(0, targetIndex).forEach(id => visitedSteps.add(id));
+  }
+
   function selectStep(selected, options = {}) {
     const { scrollTop = true, markVisited = true } = options;
+
+    if (!unlockedSteps.has(selected)) {
+      return false;
+    }
 
     if (markVisited && sectionIds.includes(selected)) {
       visitedSteps.add(selected);
     }
 
-    tabs.forEach(item => {
+    tabs.forEach((item, index) => {
       const active = item.dataset.guidedTab === selected;
-      const complete = visitedSteps.has(item.dataset.guidedTab) && !active;
+      const unlocked = unlockedSteps.has(item.dataset.guidedTab);
+      const complete = unlocked && visitedSteps.has(item.dataset.guidedTab) && !active;
+      const future = !unlocked;
+      const marker = item.querySelector("span");
+
       item.classList.toggle("guided-step-active", active);
       item.classList.toggle("guided-step-complete", complete);
+      item.classList.toggle("guided-step-future", future);
+      item.disabled = future;
       item.setAttribute("aria-selected", String(active));
+      item.setAttribute("aria-disabled", String(future));
+      if (marker) marker.textContent = complete ? "✓" : String(index + 1);
     });
 
     panels.forEach(panel => {
@@ -300,6 +334,32 @@ function initGuidedNavigation(snapshotModel) {
     if (scrollTop) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+
+    return true;
+  }
+
+  if (stageSync && calendar) {
+    const propertyLabel = snapshotModel?.viewModels?.property?.situsAddress
+      || snapshotModel?.viewModels?.property?.countyName
+      || "Property snapshot";
+    const propertyStage = document.createElement("span");
+    const propertyContextLabel = document.createElement("span");
+    const propertyContextValue = document.createElement("strong");
+    const calendarContext = document.createElement("span");
+    const calendarLabel = document.createElement("span");
+    const calendarValue = document.createElement("strong");
+
+    propertyStage.className = "guided-stage-property";
+    propertyContextLabel.textContent = "Property:";
+    propertyContextValue.textContent = propertyLabel;
+    propertyStage.append(propertyContextLabel, propertyContextValue);
+
+    calendarContext.className = "guided-stage-calendar";
+    calendarLabel.textContent = "Calendar stage:";
+    calendarValue.textContent = getCurrentStageText(calendar);
+    calendarContext.append(calendarLabel, calendarValue);
+
+    stageSync.replaceChildren(propertyStage, calendarContext);
   }
 
   tabs.forEach(tab => {
@@ -310,6 +370,9 @@ function initGuidedNavigation(snapshotModel) {
 
   document.querySelectorAll("[data-guided-next]").forEach(button => {
     button.addEventListener("click", () => {
+      const current = button.closest("[data-guided-panel]")?.dataset.guidedPanel;
+      if (current) visitedSteps.add(current);
+      unlockThrough(button.dataset.guidedNext);
       selectStep(button.dataset.guidedNext);
     });
   });
@@ -319,7 +382,7 @@ function initGuidedNavigation(snapshotModel) {
       const target = document.getElementById(link.dataset.jumpTarget);
       const selected = legacyViewMap[link.dataset.viewLink] ?? stepForTarget(link.dataset.jumpTarget) ?? "your-property";
 
-      selectStep(selected, { scrollTop: false });
+      if (!selectStep(selected, { scrollTop: false })) return;
       if (!target) return;
 
       history.pushState(null, "", `#${target.id}`);
@@ -337,7 +400,7 @@ function initGuidedNavigation(snapshotModel) {
       event.preventDefault();
       const targetStep = stepForTarget(link.dataset.jumpTarget);
       if (targetStep) {
-        selectStep(targetStep, { scrollTop: false });
+        if (!selectStep(targetStep, { scrollTop: false })) return;
       }
       history.pushState(null, "", `#${target.id}`);
       target.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -348,6 +411,8 @@ function initGuidedNavigation(snapshotModel) {
 
   const hashTarget = window.location.hash?.slice(1);
   const initialStep = hashTarget ? stepForTarget(hashTarget) : sectionIds[0];
+  unlockThrough(initialStep || sectionIds[0]);
+  markPreviousVisited(initialStep || sectionIds[0]);
   selectStep(initialStep || sectionIds[0], { scrollTop: false });
   initGuidedPathStickiness(guidedPath);
 }

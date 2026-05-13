@@ -584,7 +584,7 @@ export function initAssessmentRatioAnalysis(data, ratioData, iaaoStandards) {
     <button
       type="button"
       data-assessment-class="${item.key}"
-      class="rounded-lg px-3 py-1.5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+      class="rounded-lg px-3 py-1.5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
       aria-pressed="${item.key === defaultKey}"
     >
       ${item.label}
@@ -1393,6 +1393,38 @@ function formatChange(value) {
   return percent.format(value);
 }
 
+function latestRow(rows) {
+  return rows?.length ? rows.at(-1) : null;
+}
+
+function pressureIndex(rows, statewideRows) {
+  const row = latestRow(rows);
+  const stateRow = latestRow(statewideRows);
+  if (!row?.averageTaxRate || !stateRow?.averageTaxRate) return null;
+
+  return (row.averageTaxRate / stateRow.averageTaxRate) * 100;
+}
+
+function formatPressureIndex(value) {
+  if (value === null || value === undefined) return "—";
+  return integer.format(value);
+}
+
+function pressureTone(value) {
+  if (value === null || value === undefined) return "neutral";
+  if (value >= 105) return "high";
+  if (value <= 95) return "low";
+  return "neutral";
+}
+
+function pressureNote(value) {
+  if (value === null || value === undefined) return "Nebraska = 100 baseline.";
+  const delta = value - 100;
+  if (Math.abs(delta) < 0.5) return "Aligned with Nebraska = 100.";
+
+  return `${Math.abs(delta).toFixed(0)} points ${delta > 0 ? "above" : "below"} Nebraska = 100.`;
+}
+
 function countyDisplayName(name) {
   if (name === "Statewide") return name;
   return `${name.toLowerCase().replace(/\b\w/g, character => character.toUpperCase())} County`;
@@ -1430,21 +1462,42 @@ function ctlIndexedRows(rows, valueKey, taxKey) {
   };
 }
 
-function renderCountyComparisonSummary(primaryRows, comparisonRows, primaryLabel, comparisonLabel) {
+function renderCountyComparisonSummary(primaryRows, comparisonRows, statewideRows, primaryLabel, comparisonLabel) {
   const container = document.getElementById("countyComparisonSummary");
   if (!container) return;
 
+  const primaryPressure = pressureIndex(primaryRows, statewideRows);
+  const comparisonPressure = pressureIndex(comparisonRows, statewideRows);
   const cards = [
-    [`${primaryLabel} value growth`, formatChange(indexChange(primaryRows, "totalValue"))],
-    [`${comparisonLabel} value growth`, formatChange(indexChange(comparisonRows, "totalValue"))],
-    [`${primaryLabel} tax growth`, formatChange(indexChange(primaryRows, "taxesLevied"))],
-    [`${comparisonLabel} tax growth`, formatChange(indexChange(comparisonRows, "taxesLevied"))]
+    {
+      label: `${primaryLabel} pressure index`,
+      value: formatPressureIndex(primaryPressure),
+      note: pressureNote(primaryPressure),
+      tone: pressureTone(primaryPressure)
+    },
+    {
+      label: `${comparisonLabel} pressure index`,
+      value: formatPressureIndex(comparisonPressure),
+      note: comparisonLabel === "Statewide" ? "Nebraska = 100 baseline." : pressureNote(comparisonPressure),
+      tone: comparisonLabel === "Statewide" ? "neutral" : pressureTone(comparisonPressure)
+    },
+    {
+      label: `${primaryLabel} growth`,
+      value: `${formatChange(indexChange(primaryRows, "totalValue"))} value`,
+      note: `${formatChange(indexChange(primaryRows, "taxesLevied"))} taxes levied.`
+    },
+    {
+      label: `${comparisonLabel} growth`,
+      value: `${formatChange(indexChange(comparisonRows, "totalValue"))} value`,
+      note: `${formatChange(indexChange(comparisonRows, "taxesLevied"))} taxes levied.`
+    }
   ];
 
-  container.innerHTML = cards.map(([label, value]) => `
-    <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-      <p class="mt-1 text-lg font-bold text-slate-700">${value}</p>
+  container.innerHTML = cards.map(card => `
+    <div class="pressure-card pressure-card-${card.tone ?? "neutral"}">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${card.label}</p>
+      <p class="mt-1 text-lg font-bold text-slate-700">${card.value}</p>
+      <p class="mt-1 text-xs leading-5 text-slate-600">${card.note}</p>
     </div>
   `).join("");
 }
@@ -1452,6 +1505,7 @@ function renderCountyComparisonSummary(primaryRows, comparisonRows, primaryLabel
 function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) {
   const primaryRows = getCtlRowsForTarget(ctlData, primaryCounty);
   const comparisonRows = getCtlRowsForTarget(ctlData, comparisonTarget);
+  const statewideRows = getCtlRowsForTarget(ctlData, "__STATE__");
   if (!primaryRows.length || !comparisonRows.length) return;
 
   const primaryLabel = countyDisplayName(primaryCounty);
@@ -1520,7 +1574,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
 
   document.getElementById("countyComparisonIndexedNote").textContent = `${primaryLabel} is compared with ${comparisonLabel}, indexed to ${years[0]}.`;
   document.getElementById("countyComparisonRateNote").textContent = `${primaryLabel} and ${comparisonLabel} average CTL tax rates.`;
-  renderCountyComparisonSummary(primaryRows, comparisonRows, primaryLabel, comparisonLabel);
+  renderCountyComparisonSummary(primaryRows, comparisonRows, statewideRows, primaryLabel, comparisonLabel);
 
   countyComparisonIndexedChart?.destroy();
   countyComparisonIndexedChart = new Chart(document.getElementById("countyComparisonIndexedChart"), {
@@ -1783,7 +1837,7 @@ function buildCountyAgeMixChart(contextData) {
         label: "Share of population",
         data: rows.map(row => row.value * 100),
         backgroundColor: visualizationTheme.sequences.blueScale,
-        borderColor: visualizationTheme.colors.primary,
+        borderColor: visualizationTheme.colors.secondary,
         borderWidth: 1
       }]
     },
@@ -1853,7 +1907,7 @@ function buildHouseholdSignalsChart(contextData) {
         label: "Households",
         data: rows.map(row => row.value),
         backgroundColor: visualizationTheme.sequences.blueScale,
-        borderColor: visualizationTheme.colors.primary,
+        borderColor: visualizationTheme.colors.secondary,
         borderWidth: 1
       }]
     },

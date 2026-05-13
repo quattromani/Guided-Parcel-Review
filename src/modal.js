@@ -41,7 +41,7 @@ export function initImageModal(assets = {}) {
       <button
         type="button"
         data-gallery-index="${index}"
-        class="h-16 w-24 shrink-0 overflow-hidden rounded-lg ring-2 transition ${index === currentIndex ? "ring-blue-400" : "ring-white/25 hover:ring-white/70"}"
+        class="h-16 w-24 shrink-0 overflow-hidden rounded-lg ring-2 transition ${index === currentIndex ? "ring-slate-300" : "ring-white/25 hover:ring-white/70"}"
         aria-label="Show ${item.caption}"
       >
         ${item.type === "image"

@@ -9,6 +9,7 @@ import {
   sumRates
 } from "./format.js";
 import {
+  getLatestFinalTaxHistory,
   getPreviousFinalValueHistory,
   getSnapshotHistory
 } from "./data-service.js";
@@ -87,7 +88,7 @@ const viewHeaderContent = {
   }
 };
 
-export function renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice) {
+export function renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, summaryContext = {}) {
   renderViewHeader("your-property", data.snapshotModel);
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard);
@@ -98,9 +99,9 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   initReportErrorModal(data, recordCard, governingOffice);
   initForm422Modal(data, recordCard);
   initForm458Modal(data, recordCard);
-  renderSummary(data);
+  renderSummary(data, recordCard, summaryContext);
   renderProcessTimeline(calendar);
-  renderHistoryTable(data);
+  renderHistoryTable(data, recordCard);
   renderPropertyMovementSummary(data);
   renderEtrSummary(data);
   renderTaxBurdenExplanation(data);
@@ -167,7 +168,7 @@ function getActiveStages(calendar) {
   return calendar.stages.filter(stage => isStageActive(stage));
 }
 
-function getCurrentStageText(calendar) {
+export function getCurrentStageText(calendar) {
   const activeStages = getActiveStages(calendar);
 
   if (!activeStages.length) {
@@ -339,7 +340,7 @@ function renderHeaderTimeline(calendar) {
     <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
       <div class="min-w-0">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property tax timeline</p>
-        <p class="mt-1 text-sm text-slate-600">Current stage: <strong class="text-blue-700">${getCurrentStageText(calendar)}</strong></p>
+        <p class="mt-1 text-sm text-slate-600">Current stage: <strong class="timeline-current-stage">${getCurrentStageText(calendar)}</strong></p>
       </div>
 
       <div class="relative flex flex-1 items-start justify-between gap-2">
@@ -347,11 +348,12 @@ function renderHeaderTimeline(calendar) {
         ${calendar.stages.map(stage => {
           const active = isStageActive(stage);
           const past = isStagePast(stage);
+          const state = active ? "active" : past ? "past" : "future";
 
           return `
-            <a href="#tax-cycle" data-jump-target="tax-cycle" class="relative z-10 flex min-w-0 flex-1 flex-col items-center gap-1 rounded-lg text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-label="View full ${stage.label} timeline details">
-              <span class="h-5 w-5 rounded-full transition ${active ? "bg-blue-600 ring-4 ring-blue-100" : past ? "bg-slate-200 ring-2 ring-slate-300" : "bg-white ring-2 ring-slate-300"}"></span>
-              <span class="text-[11px] transition ${active ? "font-bold text-blue-700" : past ? "font-medium text-slate-400" : "font-medium text-slate-500"}">${stage.label}</span>
+            <a href="#tax-cycle" data-jump-target="tax-cycle" class="timeline-sync-link relative z-10 flex min-w-0 flex-1 flex-col items-center gap-1 text-center" aria-label="View full ${stage.label} timeline details">
+              <span class="timeline-sync-dot timeline-sync-dot-${state}"></span>
+              <span class="timeline-sync-label timeline-sync-label-${state}">${stage.label}</span>
             </a>
           `;
         }).join("")}
@@ -402,20 +404,31 @@ function renderPropertyDetails(data, recordCard) {
     propertyValueTaxHistory(data, recordCard),
     ownershipHistory(recordCard),
     recordCardSource(recordCard),
-    reportErrorLink(data)
+    reportErrorLink(data, recordCard)
   ].join("");
 }
 
-function propertyRecordSourceText(data) {
-  return `Source: MIPS Property Record Card, Parcel ID ${data.parcel.parcelId}.`;
+function propertyRecordSourceYear(recordCard) {
+  if (!recordCard?.source?.printedAt) return null;
+
+  const printedAt = new Date(recordCard.source.printedAt);
+  return Number.isNaN(printedAt.getTime()) ? null : printedAt.getFullYear();
 }
 
-function reportErrorLink(data) {
+function propertyRecordSourceText(data, recordCard) {
+  const sourceYear = propertyRecordSourceYear(recordCard);
+  const sourceName = recordCard?.source?.displayCitation || "MIPS Property Record Card";
+  const yearPrefix = sourceYear ? `${sourceYear} ` : "";
+
+  return `Source: ${yearPrefix}${sourceName}, Parcel ID ${data.parcel.parcelId}.`;
+}
+
+function reportErrorLink(data, recordCard) {
   return `
-    <div class="sm:col-span-2 flex flex-col gap-2 px-1 pt-1 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-      <p>${escapeHtml(propertyRecordSourceText(data))}</p>
-      <button type="button" data-report-error class="underline decoration-slate-300 underline-offset-4 transition hover:text-slate-700">
-        Report an error
+    <div class="sm:col-span-2 flex flex-col gap-3 px-1 pt-1 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+      <p>${escapeHtml(propertyRecordSourceText(data, recordCard))}</p>
+      <button type="button" data-report-error class="secondary-link-button">
+        Open record review
       </button>
     </div>
   `;
@@ -572,7 +585,7 @@ function discrepancyChoiceCells(row) {
           name="${row.id}"
           type="radio"
           value="${value}"
-          class="h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
+          class="h-4 w-4 border-slate-300 text-slate-700 focus:ring-slate-500"
           aria-label="${escapeHtml(`${row.label}: ${label}`)}"
         />
       </td>
@@ -648,13 +661,13 @@ function renderDiscrepancyForm(data, recordCard) {
       <section class="grid items-start gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2">
           <label for="discrepancyComments" class="text-sm font-semibold text-slate-700">Comments or correction narrative</label>
-          <textarea id="discrepancyComments" name="comments" rows="5" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Describe what appears incorrect and what the record should show."></textarea>
+          <textarea id="discrepancyComments" name="comments" rows="5" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Describe what appears incorrect and what the record should show."></textarea>
         </div>
 
         <div class="space-y-3 lg:pt-7">
           <div>
             <label for="discrepancySenderName" class="text-sm font-semibold text-slate-700">Your name</label>
-            <input id="discrepancySenderName" name="senderName" type="text" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Your name" />
+            <input id="discrepancySenderName" name="senderName" type="text" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Your name" />
           </div>
 
           <fieldset class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
@@ -666,7 +679,7 @@ function renderDiscrepancyForm(data, recordCard) {
                 ["phone", "Phone call"]
               ].map(([value, label]) => `
                 <label class="flex items-center gap-2">
-                  <input type="radio" name="contactMethod" value="${value}" class="h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500" />
+                  <input type="radio" name="contactMethod" value="${value}" class="h-4 w-4 border-slate-300 text-slate-700 focus:ring-slate-500" />
                   <span>${label}</span>
                 </label>
               `).join("")}
@@ -675,12 +688,12 @@ function renderDiscrepancyForm(data, recordCard) {
 
           <div>
             <label for="discrepancyEmail" class="text-sm font-semibold text-slate-700">Email</label>
-            <input id="discrepancyEmail" name="email" type="email" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="name@example.com" />
+            <input id="discrepancyEmail" name="email" type="email" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="name@example.com" />
           </div>
 
           <div>
             <label for="discrepancyPhone" class="text-sm font-semibold text-slate-700">Phone</label>
-            <input id="discrepancyPhone" name="phone" type="tel" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="(555) 555-5555" />
+            <input id="discrepancyPhone" name="phone" type="tel" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="(555) 555-5555" />
           </div>
         </div>
       </section>
@@ -1505,68 +1518,13 @@ function technicalCostModel(recordCard, data) {
         </div>
       </div>
     </div>
-    <section class="border-t border-slate-200 bg-white p-3">
-      <p class="text-base font-semibold text-slate-700">How was the improvement value estimated?</p>
-      <p class="mt-1 text-sm leading-6 text-slate-600">Marshall & Swift cost data helps model the dwelling and related site improvements before detailed component records are reviewed.</p>
-      <div class="mt-3 grid gap-3 text-sm lg:grid-cols-3">
-        <section class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
-          <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Structure model</p>
-          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            ${[
-              ["Residential type", residentialInfo.type],
-              ["Quality", residentialInfo.quality],
-              ["Condition", residentialInfo.condition],
-              ["Year / effective age", cost.yearEffectiveAge]
-            ].map(([label, value]) => `
-              <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-                <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
-              </div>
-            `).join("")}
-          </div>
-        </section>
-        <section class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
-          <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Costing</p>
-          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            ${[
-              ["Adjusted cost", cost.adjustedCost.toFixed(3)],
-              ["RCN", formatNullableMoney(cost.rcn)],
-              ["RCNLD", formatNullableMoney(cost.rcnld)],
-              ["Cost per sq. ft.", moneyCents.format(cost.costPerSquareFoot)],
-              ["Depreciation", `${cost.depreciation.physicalPercent}% physical`]
-            ].map(([label, value]) => `
-              <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-                <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
-              </div>
-            `).join("")}
-          </div>
-        </section>
-        <section class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
-          <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">Component values</p>
-          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            ${[
-              ["Dwelling model", formatNullableMoney(cost.rcnld)],
-              ["Garage value", formatNullableMoney(garageTotal)],
-              ["Misc. improvements", formatNullableMoney(miscTotal)],
-              ["Outbuildings", formatNullableMoney(outbuildingValue)]
-            ].map(([label, value]) => `
-              <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-                <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
-              </div>
-            `).join("")}
-          </div>
-        </section>
-      </div>
-    </section>
     <details class="border-t border-slate-200 bg-white">
       <summary class="valuation-detail-toggle flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-sm font-semibold">
         <span class="flex min-w-0 items-center gap-2">
           <span class="valuation-detail-chevron" aria-hidden="true"></span>
-          <span class="truncate">View detailed valuation components</span>
+          <span class="truncate">View cost model and valuation components</span>
         </span>
-        <span class="hidden text-xs font-semibold sm:inline">Component drill-down</span>
+        <span class="hidden text-xs font-semibold sm:inline">Detailed model</span>
       </summary>
       <div class="grid gap-4 border-t border-slate-200 p-3">
         <section class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
@@ -1574,7 +1532,8 @@ function technicalCostModel(recordCard, data) {
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Marshall & Swift dwelling model</p>
             <p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">Subtotal ${formatNullableMoney(cost.rcnld)}</p>
           </div>
-          <div class="grid gap-3 text-sm lg:grid-cols-3">
+          <div class="grid gap-4 text-sm">
+            <div class="grid gap-3 lg:grid-cols-3">
             <section>
               <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Structure model</p>
               <div class="grid gap-3">
@@ -1611,12 +1570,16 @@ function technicalCostModel(recordCard, data) {
               </div>
             </section>
             <section>
-              <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Systems / adjustments</p>
-              <div class="grid gap-2">
-                <div>
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Heating / cooling</p>
-                  <p class="mt-1 font-semibold text-slate-700">${escapeHtml(residentialInfo.heatingCooling)}</p>
-                </div>
+              <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Systems</p>
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Heating / cooling</p>
+                <p class="mt-1 font-semibold text-slate-700">${escapeHtml(residentialInfo.heatingCooling)}</p>
+              </div>
+            </section>
+            </div>
+            <section class="border-t border-slate-200 pt-3">
+              <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Cost adjustments</p>
+              <div class="adjustment-card-grid">
                 ${[
                   ["Roofing", cost.adjustments.roofing],
                   ["Subfloor", cost.adjustments.subfloor],
@@ -1624,9 +1587,9 @@ function technicalCostModel(recordCard, data) {
                   ["Plumbing", cost.adjustments.plumbing],
                   ["Basement", cost.adjustments.basement]
                 ].map(([label, value]) => `
-                  <div class="rounded-lg bg-white p-2 ring-1 ring-slate-200">
-                    <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500">${label} adj.</p>
-                    <p class="mt-1 font-semibold text-slate-700">${Number(value).toFixed(2)}</p>
+                  <div class="adjustment-card">
+                    <p class="adjustment-card-label">${label}</p>
+                    <p class="adjustment-card-value">${Number(value).toFixed(2)}</p>
                   </div>
                 `).join("")}
               </div>
@@ -1638,55 +1601,61 @@ function technicalCostModel(recordCard, data) {
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Garages</p>
             <p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">Subtotal ${formatNullableMoney(garageTotal)}</p>
           </div>
-          <table class="min-w-full divide-y divide-slate-200 rounded-xl text-sm ring-1 ring-slate-200">
-            <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Value</th></tr></thead>
-            <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
-              ${garageLines.map(row => `
-                <tr>
-                  <td class="px-3 py-2">${row.description}</td>
-                  <td class="px-3 py-2 text-right">${row.units}</td>
-                  <td class="px-3 py-2 text-right">${formatNullableMoney(row.rcnld)}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
+          <div class="table-clip ring-1 ring-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+              <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Value</th></tr></thead>
+              <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
+                ${garageLines.map(row => `
+                  <tr>
+                    <td class="px-3 py-2">${row.description}</td>
+                    <td class="px-3 py-2 text-right">${row.units}</td>
+                    <td class="px-3 py-2 text-right">${formatNullableMoney(row.rcnld)}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
         </section>
         <section>
           <div class="mb-2 flex items-center justify-between gap-3">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Miscellaneous improvements</p>
             <p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">Subtotal ${formatNullableMoney(miscTotal)}</p>
           </div>
-          <table class="min-w-full divide-y divide-slate-200 rounded-xl text-sm ring-1 ring-slate-200">
-            <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Item</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Value</th></tr></thead>
-            <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
-              ${miscLines.map(row => `
-                <tr>
-                  <td class="px-3 py-2">${row.description}</td>
-                  <td class="px-3 py-2 text-right">${Number(row.units).toLocaleString()}</td>
-                  <td class="px-3 py-2 text-right">${formatNullableMoney(row.value)}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
+          <div class="table-clip ring-1 ring-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+              <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Item</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Value</th></tr></thead>
+              <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
+                ${miscLines.map(row => `
+                  <tr>
+                    <td class="px-3 py-2">${row.description}</td>
+                    <td class="px-3 py-2 text-right">${Number(row.units).toLocaleString()}</td>
+                    <td class="px-3 py-2 text-right">${formatNullableMoney(row.value)}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
         </section>
         <section>
           <div class="mb-2 flex items-center justify-between gap-3">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Outbuildings</p>
             <p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">${data.outbuildingData.length ? `${data.outbuildingData.length} records` : "No records"}</p>
           </div>
-          <table class="min-w-full divide-y divide-slate-200 rounded-xl text-sm ring-1 ring-slate-200">
-            <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Year Built</th><th class="px-3 py-2 text-right font-semibold">Cost</th></tr></thead>
-            <tbody class="divide-y divide-slate-200 bg-white">
-              ${data.outbuildingData.length ? data.outbuildingData.map(row => `
-                <tr>
-                  <td class="px-3 py-2">${row.description}</td>
-                  <td class="px-3 py-2 text-right">${row.units}</td>
-                  <td class="px-3 py-2 text-right">${row.yearBuilt}</td>
-                  <td class="px-3 py-2 text-right">${row.cost}</td>
-                </tr>
-              `).join("") : `<tr><td class="px-3 py-3 text-slate-500" colspan="4">No outbuilding records listed for this property.</td></tr>`}
-            </tbody>
-          </table>
+          <div class="table-clip ring-1 ring-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+              <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Year Built</th><th class="px-3 py-2 text-right font-semibold">Cost</th></tr></thead>
+              <tbody class="divide-y divide-slate-200 bg-white">
+                ${data.outbuildingData.length ? data.outbuildingData.map(row => `
+                  <tr>
+                    <td class="px-3 py-2">${row.description}</td>
+                    <td class="px-3 py-2 text-right">${row.units}</td>
+                    <td class="px-3 py-2 text-right">${row.yearBuilt}</td>
+                    <td class="px-3 py-2 text-right">${row.cost}</td>
+                  </tr>
+                `).join("") : `<tr><td class="px-3 py-3 text-slate-500" colspan="4">No outbuilding records listed for this property.</td></tr>`}
+              </tbody>
+            </table>
+          </div>
         </section>
       </div>
     </details>
@@ -1733,9 +1702,148 @@ function outbuildingData(data) {
   `);
 }
 
-function renderSummary(data) {
+function summaryPercentChange(current, previous) {
+  if (!current || !previous) return null;
+  return (current - previous) / previous;
+}
+
+function summaryAnnualizedChange(current, previous, years) {
+  if (!current || !previous || !years || years <= 0) return null;
+  return Math.pow(current / previous, 1 / years) - 1;
+}
+
+function annualizedChangeText(value) {
+  if (value === null || value === undefined) return "not available";
+  const direction = value < 0 ? "down" : "up";
+  return `${direction} about ${formatNullablePercent(Math.abs(value))} per year`;
+}
+
+function getSummaryDefaultClass(data, ratioData) {
+  const rawClass = `${data.classification?.propertyClass ?? data.parcel?.accountType ?? ""}`.toLowerCase();
+
+  if (rawClass.includes("ag") || rawClass.includes("farm")) return "agFarm";
+  if (rawClass.includes("comm")) return "commercial";
+  if (rawClass.includes("res")) return "residential";
+
+  return ratioData?.classes?.[0]?.key ?? "residential";
+}
+
+function getSummaryLovTarget(classKey) {
+  return classKey === "agFarm" ? 75 : 100;
+}
+
+function extractSummaryValuationGroupId(recordCard) {
+  return `${recordCard?.locationModel?.valuationGroup ?? ""}`.match(/\d+/)?.[0] ?? null;
+}
+
+const summaryAssessmentStandardKeys = {
+  residential: "residential-improved-rural",
+  agFarm: "other-vacant-rural",
+  commercial: "income-producing-rural"
+};
+
+function getSummaryAssessmentBandConfig(classKey, iaaoStandards) {
+  const standardKey = summaryAssessmentStandardKeys[classKey] ?? summaryAssessmentStandardKeys.residential;
+  const codStandard = iaaoStandards?.codStandards?.find(item => item.key === standardKey)
+    ?? iaaoStandards?.codStandards?.find(item => item.key === summaryAssessmentStandardKeys.residential);
+
+  return {
+    cod: codStandard?.codRange ?? { min: 5, max: 20 },
+    prd: iaaoStandards?.prdStandards?.acceptableRange ?? { min: 0.98, max: 1.03 },
+    cov: codStandard?.estimatedCovRange ?? { min: 6.25, max: 25 }
+  };
+}
+
+function summaryRangeStatus(value, range, { tolerance = 0 } = {}) {
+  if (value === null || value === undefined || !range) return "not available";
+  const width = Math.max(Math.abs(range.max - range.min), 0.01);
+  const edgeTolerance = Math.max(tolerance, width * 0.25);
+
+  if (value < range.min) {
+    const distance = range.min - value;
+    return distance <= edgeTolerance ? "slightly below the standard band" : "below the standard band";
+  }
+
+  if (value > range.max) {
+    const distance = value - range.max;
+    return distance <= edgeTolerance ? "slightly above the standard band" : "above the standard band";
+  }
+
+  const lowerDistance = value - range.min;
+  const upperDistance = range.max - value;
+  if (lowerDistance <= edgeTolerance) return "near the lower edge of the standard band";
+  if (upperDistance <= edgeTolerance) return "near the upper edge of the standard band";
+
+  return "inside the standard band";
+}
+
+function summaryPrdStatus(value, range) {
+  if (value === null || value === undefined || !range) return "not available";
+
+  const edgeTolerance = 0.02;
+  if (value < range.min) {
+    return range.min - value <= edgeTolerance ? "near the lower edge of the standard band" : "below the standard band";
+  }
+
+  if (value > range.max) {
+    return value - range.max <= edgeTolerance ? "near the upper edge of the standard band" : "above the standard band";
+  }
+
+  if (value - range.min <= edgeTolerance) return "near the lower edge of the standard band";
+  if (range.max - value <= edgeTolerance) return "near the upper edge of the standard band";
+
+  return "inside the standard band";
+}
+
+function summaryLevelStatus(value, target) {
+  if (value === null || value === undefined || target === null || target === undefined) return "not available";
+  const distance = value - target;
+  if (Math.abs(distance) <= 5) return "near the target level";
+  return distance > 0 ? "above the target level" : "below the target level";
+}
+
+function formatRatioPercent(value) {
+  if (value === null || value === undefined) return "—";
+  return `${Number(value).toFixed(2)}%`;
+}
+
+function normalizePrd(value) {
+  if (value === null || value === undefined) return null;
+  return value > 10 ? value / 100 : value;
+}
+
+function formatPrd(value) {
+  const normalized = normalizePrd(value);
+  return normalized === null ? "—" : normalized.toFixed(3);
+}
+
+function sampleStrength(count) {
+  if (!count) return "no usable sales sample";
+  if (count >= 100) return "a large qualified-sales sample";
+  if (count >= 30) return "a usable qualified-sales sample";
+  if (count >= 15) return "a limited qualified-sales sample";
+  return "a thin qualified-sales sample";
+}
+
+function countyDisplayNameFromData(data) {
+  const name = `${data.parcel?.countyName ?? ""}`.trim().toLowerCase().replace(/\b\w/g, character => character.toUpperCase());
+  return name ? `${name} County` : "the county";
+}
+
+function summaryCtlRows(ctlData, countyName) {
+  const requested = `${countyName ?? ""}`.trim().toUpperCase();
+  const countyRows = (ctlData?.counties || [])
+    .filter(row => row.countyName === requested)
+    .sort((a, b) => a.year - b.year);
+  const statewideRows = (ctlData?.statewide || []).slice().sort((a, b) => a.year - b.year);
+
+  return { countyRows, statewideRows };
+}
+
+function renderSummary(data, recordCard, summaryContext = {}) {
   const snapshot = getSnapshotHistory(data);
   const previousValue = getPreviousFinalValueHistory(data);
+  const latestTax = getLatestFinalTaxHistory(data);
   const first = data.taxpayerHistory[0];
   const valueChangeFromPrior = previousValue?.assessedValue && snapshot.assessedValue
     ? (snapshot.assessedValue - previousValue.assessedValue) / previousValue.assessedValue
@@ -1743,12 +1851,59 @@ function renderSummary(data) {
   const valueChangeFromBase = first?.assessedValue && snapshot.assessedValue
     ? (snapshot.assessedValue - first.assessedValue) / first.assessedValue
     : null;
+  const finalizedValueChangeFromBase = first?.assessedValue && previousValue?.assessedValue
+    ? (previousValue.assessedValue - first.assessedValue) / first.assessedValue
+    : null;
+  const taxChangeFromBase = first?.taxes && latestTax?.taxes
+    ? summaryPercentChange(latestTax.taxes, first.taxes)
+    : null;
+  const historyYearSpan = latestTax?.year && first?.year ? latestTax.year - first.year : null;
+  const annualValueChange = summaryAnnualizedChange(previousValue?.assessedValue, first?.assessedValue, historyYearSpan);
+  const annualTaxChange = summaryAnnualizedChange(latestTax?.taxes, first?.taxes, historyYearSpan);
+  const firstEtr = calculateEtr(first);
+  const latestEtr = calculateEtr(latestTax);
+  const etrDecline = firstEtr && latestEtr
+    ? Math.abs((latestEtr - firstEtr) / firstEtr)
+    : null;
 
   const totalLevy = sumRates(data.latestFinalLevyComponents);
-  const schoolShare = data.latestFinalLevyComponents.find(row => row.description === "SCH 15 BEATRICE")?.rate / totalLevy;
-  const cityShare = data.latestFinalLevyComponents.find(row => row.description === "BEATRICE CITY")?.rate / totalLevy;
-  const countyShare = data.latestFinalLevyComponents.find(row => row.description === "COUNTY GENERAL")?.rate / totalLevy;
-  const otherShare = 1 - schoolShare - cityShare - countyShare;
+  const levyShare = description => {
+    if (!totalLevy) return null;
+    return (data.latestFinalLevyComponents.find(row => row.description === description)?.rate || 0) / totalLevy;
+  };
+  const schoolShare = levyShare("SCH 15 BEATRICE");
+  const cityShare = levyShare("BEATRICE CITY");
+  const countyShare = levyShare("COUNTY GENERAL");
+  const otherShare = schoolShare === null || cityShare === null || countyShare === null
+    ? null
+    : Math.max(0, 1 - schoolShare - cityShare - countyShare);
+  const majorLevyDescriptions = new Set(["SCH 15 BEATRICE", "BEATRICE CITY", "COUNTY GENERAL"]);
+  const otherLevyGroups = [...new Set(data.latestFinalLevyComponents
+    .filter(row => !majorLevyDescriptions.has(row.description))
+    .map(row => row.group?.toLowerCase())
+    .filter(Boolean))];
+  const otherLevyText = otherLevyGroups.length
+    ? otherLevyGroups.join(", ").replace(/, ([^,]*)$/, ", and $1")
+    : "smaller authorities";
+  const countyLabel = countyDisplayNameFromData(data);
+  const { ctlData, ratioData, padRatioData, iaaoStandards } = summaryContext;
+  const selectedClassKey = getSummaryDefaultClass(data, ratioData);
+  const selectedClass = ratioData?.classes?.find(item => item.key === selectedClassKey) ?? ratioData?.classes?.[0];
+  const latestCountyRatio = selectedClass?.records?.at(-1);
+  const assessmentBands = getSummaryAssessmentBandConfig(selectedClass?.key ?? selectedClassKey, iaaoStandards);
+  const countyTarget = getSummaryLovTarget(selectedClass?.key ?? selectedClassKey);
+  const marketGroupId = extractSummaryValuationGroupId(recordCard);
+  const selectedMarket = padRatioData?.valuationGroups?.find(group => String(group.group) === String(marketGroupId));
+  const marketLabel = selectedMarket?.label || data.snapshotModel?.viewModels?.property?.valuationGroup || "the local valuation group";
+  const { countyRows, statewideRows } = summaryCtlRows(ctlData, data.parcel.countyName);
+  const countyCtlFirst = countyRows[0];
+  const countyCtlLatest = countyRows.at(-1);
+  const statewideCtlFirst = statewideRows[0];
+  const statewideCtlLatest = statewideRows.at(-1);
+  const countyValueGrowth = summaryPercentChange(countyCtlLatest?.totalValue, countyCtlFirst?.totalValue);
+  const countyTaxGrowth = summaryPercentChange(countyCtlLatest?.taxesLevied, countyCtlFirst?.taxesLevied);
+  const statewideValueGrowth = summaryPercentChange(statewideCtlLatest?.totalValue, statewideCtlFirst?.totalValue);
+  const statewideTaxGrowth = summaryPercentChange(statewideCtlLatest?.taxesLevied, statewideCtlFirst?.taxesLevied);
   const currentAssessmentCopy = snapshot.assessedValue === null || snapshot.assessedValue === undefined
     ? `
       For <strong>${snapshot.year}</strong>, this property's assessed value has <strong>not been published yet</strong>.
@@ -1763,41 +1918,81 @@ function renderSummary(data) {
       <strong>not finalized yet</strong>; it will depend on later budgets, certified levies, credits, and exemptions.
     `;
 
+  const historyParagraph = `
+    From <strong>${first.year}</strong> through <strong>${latestTax?.year}</strong>, this parcel's final assessed value moved from
+    <strong>${formatNullableMoney(first.assessedValue)}</strong> to <strong>${formatNullableMoney(previousValue.assessedValue)}</strong>,
+    up <strong>${formatNullablePercent(finalizedValueChangeFromBase)}</strong>. Net taxes moved from
+    <strong>${formatNullableMoney(first.taxes, true)}</strong> to <strong>${formatNullableMoney(latestTax?.taxes, true)}</strong>,
+    up <strong>${formatNullablePercent(taxChangeFromBase)}</strong>, while the effective tax rate moved from
+    <strong>${formatNullablePercent(firstEtr)}</strong> to <strong>${formatNullablePercent(latestEtr)}</strong>.
+  `;
+  const levyParagraph = `
+    In the latest final levy, about <strong>${formatNullablePercent(schoolShare)}</strong> of the tax dollars go to schools,
+    <strong>${formatNullablePercent(cityShare)}</strong> to the city, and <strong>${formatNullablePercent(countyShare)}</strong>
+    to the county. The remaining <strong>${formatNullablePercent(otherShare)}</strong> is distributed across ${escapeHtml(otherLevyText)}.
+  `;
+  const marketParagraph = selectedMarket ? `
+    The local market read starts with <strong>${escapeHtml(marketLabel)}</strong>, which has
+    <strong>${selectedMarket.count.toLocaleString()} qualified sales</strong>, ${sampleStrength(selectedMarket.count)}.
+    The middle sale in that sample was assessed at <strong>${formatRatioPercent(selectedMarket.median)}</strong> of sale price
+    (${summaryLevelStatus(selectedMarket.median, 100)}). Uniformity is <strong>${formatRatioPercent(selectedMarket.cod)}</strong>
+    (${summaryRangeStatus(selectedMarket.cod, assessmentBands.cod)}), and price-level fairness is <strong>${formatPrd(selectedMarket.prd)}</strong>
+    (${summaryPrdStatus(normalizePrd(selectedMarket.prd), assessmentBands.prd)}).
+    Use that as market context, not as a parcel-specific decision.
+  ` : `
+    The market section will show the closest available valuation-group context and sale-price bands. Use that as comparison evidence, not as a parcel-specific decision.
+  `;
+  const countyParagraph = latestCountyRatio ? `
+    At the <strong>${escapeHtml(countyLabel)} ${escapeHtml(selectedClass?.label?.toLowerCase() || "property")}</strong> level, the latest ratio study has
+    <strong>${latestCountyRatio.sales.toLocaleString()} sales</strong>. The middle sale was assessed at
+    <strong>${formatRatioPercent(latestCountyRatio.levelOfValue)}</strong> of sale price (${summaryLevelStatus(latestCountyRatio.levelOfValue, countyTarget)}).
+    Uniformity is <strong>${formatRatioPercent(latestCountyRatio.cod)}</strong> (${summaryRangeStatus(latestCountyRatio.cod, assessmentBands.cod)}),
+    price-level fairness is <strong>${formatPrd(latestCountyRatio.prd)}</strong> (${summaryPrdStatus(latestCountyRatio.prd, assessmentBands.prd)}),
+    and reliability spread is <strong>${formatRatioPercent(latestCountyRatio.cov)}</strong>
+    (${summaryRangeStatus(latestCountyRatio.cov, assessmentBands.cov, { tolerance: 0.5 })}).
+  ` : `
+    County ratio-study context is available deeper in the page. It is useful for understanding the assessment environment, but it does not decide this parcel by itself.
+  `;
+  const stateParagraph = countyCtlLatest && statewideCtlLatest ? `
+    On the state baseline, ${escapeHtml(countyLabel)}'s latest CTL average tax rate is
+    <strong>${formatNullablePercent(countyCtlLatest.averageTaxRate)}</strong> versus Nebraska's
+    <strong>${formatNullablePercent(statewideCtlLatest.averageTaxRate)}</strong>, so the county rate is below the statewide average.
+    Since <strong>${countyCtlFirst.year}</strong>, county certified value is up <strong>${formatNullablePercent(countyValueGrowth)}</strong>
+    and taxes levied are up <strong>${formatNullablePercent(countyTaxGrowth)}</strong>; statewide, value is up
+    <strong>${formatNullablePercent(statewideValueGrowth)}</strong> and taxes levied are up <strong>${formatNullablePercent(statewideTaxGrowth)}</strong>.
+  ` : `
+    Statewide CTL context is available deeper in the page to compare county value growth, taxes levied, and average tax rates against Nebraska.
+  `;
+  const annualizedParagraph = `
+    For this parcel, the available <strong>${first.year}-${latestTax?.year}</strong> record works out to assessed value
+    <strong>${annualizedChangeText(annualValueChange)}</strong> and net taxes <strong>${annualizedChangeText(annualTaxChange)}</strong>.
+    More detail is available in the value and tax timeline in the next step.
+  `;
+
   document.getElementById("summaryText").innerHTML = `
+    <p class="mb-4 text-sm leading-6 text-slate-600">
+      The short version of what this valuation-change notice means, plus the main property, tax, market, county, and state signals that can be confirmed from the available records.
+    </p>
+
     <div class="focus-card mb-4">
-      <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-blue-700">Current assessment status</p>
+      <p class="pending-status-heading mb-1 text-xs font-semibold uppercase tracking-wide">Start here</p>
       <p class="leading-7 text-slate-700">
         ${currentAssessmentCopy}
       </p>
     </div>
 
-    <p>This snapshot separates <strong>current assessed value</strong> from <strong>finalized tax information</strong> so you can see what is known now and what is still pending.</p>
-    <p class="mb-4 mt-4 leading-7">From ${first.year} through ${previousValue.year}, assessed value increased by <strong>${formatNullablePercent((previousValue.assessedValue - first.assessedValue) / first.assessedValue)}</strong>. During the same period, the property's <strong>effective tax rate</strong> declined from <strong>1.96%</strong> to <strong>1.22%</strong>, a reduction of roughly <strong>38%</strong>.</p>
-
-    <div class="mb-4 rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
-      <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Latest finalized levy distribution</p>
-      <ul class="space-y-1 text-sm leading-6">
-        <li><strong>Schools:</strong> ${percent.format(schoolShare)}</li>
-        <li><strong>City:</strong> ${percent.format(cityShare)}</li>
-        <li><strong>County:</strong> ${percent.format(countyShare)}</li>
-        <li><strong>Other:</strong> ${percent.format(otherShare)}</li>
-      </ul>
+    <div class="express-summary-story">
+      <p>${historyParagraph}</p>
+      <p>${levyParagraph}</p>
+      <p>${marketParagraph}</p>
+      <p>${countyParagraph}</p>
+      <p>${stateParagraph}</p>
+      <p>${annualizedParagraph}</p>
     </div>
 
-    <div class="rounded-xl bg-white p-3 ring-1 ring-slate-200">
-      <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Jump to details</p>
-      <div class="flex flex-wrap gap-2">
-        ${[
-          ["#assessment-notice", "Assessment notice"],
-          ["#indexed-trends", "Value and tax movement"],
-          ["#etr-trend", "Tax rate trend"],
-          ["#tax-distribution", "Tax distribution"],
-          ["#market-overview", "Market area"],
-          ["#assessment-accuracy", "County equalization"],
-          ["#review-checklist-card", "Review checklist"]
-        ].map(([href, label]) => `<a href="${href}" data-jump-target="${href.slice(1)}" class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-200 transition hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-400">${label}</a>`).join("")}
-      </div>
-    </div>
+    <p class="summary-inline-next">
+      Take a look at your property details next; if something looks incorrect, you will see what to do there.
+    </p>
   `;
 }
 
@@ -1835,19 +2030,21 @@ function renderProcessTimeline(calendar) {
     const active = isStageActive(step);
     const past = isStagePast(step);
     const hasDetail = step.sourceEvents?.length || step.id === "protest";
+    const cardState = active ? "timeline-stage-card-active" : past ? "timeline-stage-card-past" : "";
+    const markerState = active ? "active" : past ? "past" : "future";
 
     return `
-      <div class="group relative flex h-full flex-col rounded-2xl p-4 ring-1 transition duration-200 ${active ? "z-10 scale-[1.03] bg-blue-50 shadow-md ring-blue-300" : past ? "bg-slate-50/60 opacity-70 ring-slate-200" : "bg-slate-50 ring-slate-200"}" tabindex="0">
+      <div class="timeline-stage-card ${cardState} group relative flex h-full flex-col rounded-2xl p-4 transition duration-200 ${active ? "z-10 scale-[1.03]" : ""}" tabindex="0">
         <div class="mb-3 flex items-center gap-2">
-          <span class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${active ? "bg-blue-600 text-white" : past ? "bg-slate-200 text-slate-500 ring-1 ring-slate-300" : "bg-white text-slate-600 ring-1 ring-slate-200"}">${index + 1}</span>
-          ${active ? `<span class="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">Now</span>` : past ? `<span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500 ring-1 ring-slate-200">Passed</span>` : ""}
+          <span class="timeline-stage-marker timeline-stage-marker-${markerState}">${index + 1}</span>
+          ${active ? `<span class="current-stage-pill">Now</span>` : past ? `<span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500 ring-1 ring-slate-200">Passed</span>` : ""}
         </div>
         <p class="font-semibold ${past && !active ? "text-slate-500" : "text-slate-700"}">${escapeHtml(step.label)}</p>
         <p class="mt-1 text-xs font-semibold uppercase tracking-wide ${past && !active ? "text-slate-400" : "text-slate-500"}">${escapeHtml(step.timing)}</p>
         <p class="mt-2 flex-1 text-sm leading-6 ${past && !active ? "text-slate-500" : "text-slate-600"}">${escapeHtml(step.description)}</p>
         ${hasDetail ? `
           <div class="mt-auto border-t border-slate-200 pt-3 text-center">
-            <button type="button" data-calendar-stage="${escapeHtml(step.id)}" class="inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-200 transition hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <button type="button" data-calendar-stage="${escapeHtml(step.id)}" class="secondary-link-button">
               Learn More
             </button>
           </div>
@@ -1886,13 +2083,13 @@ function calendarStageDetailHtml(stage) {
       </div>
     ` : ""}
     ${stage.id === "protest" ? `
-      <div class="mt-4 rounded-2xl bg-blue-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-blue-200">
+      <div class="mt-4 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-slate-200">
         <p>After reviewing the record and supporting context, you can prepare the official Form 422 with available property information filled in. Requested valuation, reasons, signature, and filing responsibility remain with the filer.</p>
         <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <button type="button" data-calendar-review-record class="inline-flex justify-center rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+          <button type="button" data-calendar-review-record class="inline-flex justify-center rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
             Review Your Record
           </button>
-          <button type="button" data-calendar-prepare-form422 class="inline-flex justify-center rounded-full bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-300 transition hover:bg-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+          <button type="button" data-calendar-prepare-form422 class="inline-flex justify-center rounded-full bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-300 transition hover:bg-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
             Prepare Form 422
           </button>
         </div>
@@ -1949,19 +2146,19 @@ function initCalendarStageModal(calendar) {
   });
 }
 
-function renderHistoryTable(data) {
+function renderHistoryTable(data, recordCard) {
   document.getElementById("historyRows").innerHTML = data.taxpayerHistory.slice().reverse().map((row, index) => {
     const etr = calculateEtr(row);
     const isCurrentNotice = row.status === "assessment_notice";
     const isPending = row.status === "pending";
 
     return `
-      <tr class="${isCurrentNotice || isPending ? "bg-blue-50/70" : index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
+      <tr class="${isCurrentNotice || isPending ? "pending-data-row" : index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
         <td class="px-3 py-2 font-medium">
           <div class="flex items-center gap-2">
             <span>${row.year}</span>
-            ${isCurrentNotice ? `<span class="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">Notice</span>` : ""}
-            ${isPending ? `<span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">Pending</span>` : ""}
+            ${isCurrentNotice ? `<span class="notice-status-pill">Notice</span>` : ""}
+            ${isPending ? `<span class="pending-status-pill">Pending</span>` : ""}
           </div>
         </td>
         <td class="px-3 py-2 text-right">${formatNullableMoney(row.assessedValue)}</td>
@@ -1972,7 +2169,7 @@ function renderHistoryTable(data) {
   }).join("");
 
   document.querySelectorAll("[data-property-record-source]").forEach(element => {
-    element.textContent = propertyRecordSourceText(data);
+    element.textContent = propertyRecordSourceText(data, recordCard);
   });
 }
 
@@ -2305,16 +2502,16 @@ function renderLevyHistoryTable(data) {
       const isIncrease = change > 0;
       const arrow = isDecrease ? "↓" : isIncrease ? "↑" : "→";
       const colorClass = isDecrease
-        ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
+        ? "movement-pill-decrease"
         : isIncrease
-          ? "bg-rose-50 text-rose-700 ring-rose-200"
-          : "bg-slate-50 text-slate-700 ring-slate-200";
+          ? "movement-pill-increase"
+          : "movement-pill-flat";
 
-      movementHtml = `<span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ring-1 ${colorClass}">${arrow} ${Math.abs(change).toFixed(2)}%</span>`;
+      movementHtml = `<span class="movement-pill ${colorClass}">${arrow} ${Math.abs(change).toFixed(2)}%</span>`;
     }
 
     return `
-      <tr>
+      <tr class="${row.status === "pending" ? "pending-data-row" : ""}">
         <td class="px-3 py-2 font-medium">${row.year}</td>
         <td class="px-3 py-2 text-center font-medium">${formatNullableLevy(row.levy)}</td>
         <td class="px-3 py-2"><div class="flex items-center justify-center gap-2">${movementHtml}</div></td>
