@@ -1,37 +1,27 @@
 export function initImageModal(assets = {}) {
   const modal = document.getElementById("imageModal");
   const modalImage = document.getElementById("modalImage");
-  const modalPlaceholder = document.getElementById("modalPlaceholder");
   const modalCaption = document.getElementById("modalCaption");
   const modalFilmstrip = document.getElementById("modalFilmstrip");
   const closeButton = document.getElementById("closeImageModal");
   const previousButton = document.getElementById("previousImage");
   const nextButton = document.getElementById("nextImage");
   const galleryItems = [
-    { type: "image", src: assets.photo, caption: "Property Photo" },
-    { type: "image", src: assets.sketch, caption: "Property Sketch" },
-    { type: "placeholder", caption: "Additional Property Photo 1" },
-    { type: "placeholder", caption: "Additional Property Photo 2" },
-    { type: "placeholder", caption: "Additional Property Photo 3" }
-  ].filter(item => item.type === "placeholder" || item.src);
+    { src: assets.photo, caption: "Property Photo" },
+    { src: assets.sketch, caption: "Property Sketch" },
+    ...(assets.additionalPhotos || [])
+  ].filter(item => item.src);
   let currentIndex = 0;
 
   function setCurrentImage(index) {
+    if (!galleryItems.length) return;
+
     currentIndex = (index + galleryItems.length) % galleryItems.length;
     const item = galleryItems[currentIndex];
 
-    if (item.type === "image") {
-      modalImage.src = item.src;
-      modalImage.alt = item.caption;
-      modalImage.classList.remove("hidden");
-      modalPlaceholder.classList.add("hidden");
-    } else {
-      modalImage.src = "";
-      modalImage.alt = "";
-      modalImage.classList.add("hidden");
-      modalPlaceholder.classList.remove("hidden");
-    }
-
+    modalImage.src = item.src;
+    modalImage.alt = item.caption;
+    modalImage.classList.remove("hidden");
     modalCaption.textContent = item.caption;
     renderFilmstrip();
   }
@@ -44,9 +34,7 @@ export function initImageModal(assets = {}) {
         class="h-16 w-24 shrink-0 overflow-hidden rounded-lg ring-2 transition ${index === currentIndex ? "ring-slate-300" : "ring-white/25 hover:ring-white/70"}"
         aria-label="Show ${item.caption}"
       >
-        ${item.type === "image"
-          ? `<img src="${item.src}" alt="${item.caption}" class="h-full w-full object-cover" />`
-          : `<span class="flex h-full w-full items-center justify-center bg-slate-300 text-xl font-bold text-slate-500">FPO</span>`}
+        <img src="${item.src}" alt="${item.caption}" class="h-full w-full object-cover" />
       </button>
     `).join("");
 
@@ -65,6 +53,8 @@ export function initImageModal(assets = {}) {
   }
 
   function open(src, caption) {
+    if (!galleryItems.length) return;
+
     const itemIndex = galleryItems.findIndex(item => item.src === src || item.caption === caption);
     setCurrentImage(itemIndex >= 0 ? itemIndex : 0);
     modal.classList.remove("hidden");

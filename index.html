@@ -51,8 +51,13 @@
       </section>
 
       <article class="ooda-decision-card">
-        <p class="guided-kicker">Decision check</p>
-        <h2>Does the record look right?</h2>
+        <div class="ooda-decision-header">
+          <div>
+            <p class="guided-kicker">Decision check</p>
+            <h2>Does the record look right?</h2>
+          </div>
+          <button type="button" data-report-error class="secondary-link-button">Open record review</button>
+        </div>
         <p>Review these facts against what you know about the property. Follow up if the owner, address, land size, class, condition, rooms, garage, improvements, or sketch appears inaccurate or incomplete. If the record looks right, continue to assessment.</p>
       </article>
 
@@ -869,9 +874,6 @@
           ‹
         </button>
         <img id="modalImage" src="" alt="" class="max-h-[78vh] max-w-[90vw] rounded-2xl bg-white shadow-2xl" />
-        <div id="modalPlaceholder" class="hidden flex h-[56vh] min-h-80 w-[80vw] max-w-5xl items-center justify-center rounded-2xl bg-slate-200 text-7xl font-bold tracking-wide text-slate-500 shadow-2xl ring-1 ring-slate-300">
-          FPO
-        </div>
         <button id="nextImage" type="button" class="absolute right-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-2xl font-semibold text-slate-700 shadow-lg transition hover:bg-white" aria-label="Next property image">
           ›
         </button>

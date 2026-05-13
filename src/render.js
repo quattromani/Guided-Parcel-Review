@@ -428,11 +428,8 @@ function propertyRecordSourceText(data, recordCard) {
 
 function reportErrorLink(data, recordCard) {
   return `
-    <div class="sm:col-span-2 flex flex-col gap-3 px-1 pt-1 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+    <div class="sm:col-span-2 px-1 pt-1 text-xs text-slate-500">
       <p>${escapeHtml(propertyRecordSourceText(data, recordCard))}</p>
-      <button type="button" data-report-error class="secondary-link-button">
-        Open record review
-      </button>
     </div>
   `;
 }
@@ -667,7 +664,7 @@ function renderDiscrepancyForm(data, recordCard) {
           <textarea id="discrepancyComments" name="comments" rows="5" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Describe what appears incorrect and what the record should show."></textarea>
         </div>
 
-        <div class="space-y-3 lg:pt-7">
+        <div class="space-y-3">
           <div>
             <label for="discrepancySenderName" class="text-sm font-semibold text-slate-700">Your name</label>
             <input id="discrepancySenderName" name="senderName" type="text" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Your name" />
