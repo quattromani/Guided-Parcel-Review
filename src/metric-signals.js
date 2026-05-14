@@ -23,6 +23,13 @@ const RESIDENTIAL_CONTEXT_TERMS = [
   "residential improved"
 ];
 
+const COMMERCIAL_CONTEXT_TERMS = [
+  "commercial",
+  "income-producing",
+  "industrial",
+  "apartments"
+];
+
 function numericValue(value) {
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
@@ -68,6 +75,10 @@ function isResidentialContext(context = {}) {
   return textIncludesAny(contextText(context), RESIDENTIAL_CONTEXT_TERMS);
 }
 
+function isCommercialContext(context = {}) {
+  return textIncludesAny(contextText(context), COMMERCIAL_CONTEXT_TERMS);
+}
+
 function findAssessmentLevelStandard(standards, context = {}) {
   const entries = standards?.assessmentLevelStandards ?? [];
   if (!entries.length) return null;
@@ -80,6 +91,10 @@ function findAssessmentLevelStandard(standards, context = {}) {
     return entries.find(standard => textIncludesAny(standardText(standard), RESIDENTIAL_CONTEXT_TERMS)) ?? null;
   }
 
+  if (isCommercialContext(context)) {
+    return entries.find(standard => textIncludesAny(standardText(standard), COMMERCIAL_CONTEXT_TERMS)) ?? null;
+  }
+
   return null;
 }
 
@@ -88,9 +103,17 @@ function findCodStandard(standards, context = {}) {
   if (!entries.length) return null;
 
   const text = contextText(context);
+  if (isAgriculturalContext(context) && !isResidentialContext(context) && !isCommercialContext(context)) {
+    return null;
+  }
+
   const classCandidates = isResidentialContext(context)
     ? entries.filter(standard => normalizeText(standard.propertyClass).includes("residential improved"))
-    : entries;
+    : isCommercialContext(context)
+      ? entries.filter(standard => normalizeText(standard.propertyClass).includes("income-producing"))
+      : isAgriculturalContext(context)
+        ? []
+        : entries;
   const candidates = classCandidates.length ? classCandidates : entries;
 
   if (textIncludesAny(text, ["rural", "small", "mixed", "depressed"])) {

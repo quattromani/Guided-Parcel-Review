@@ -34,6 +34,27 @@
       "notes": "Used for class-aware taxpayer-facing interpretation of residential median ratio and level-of-value context."
     },
     {
+      "key": "nebraska-commercial-real-property",
+      "label": "Nebraska commercial real property assessment level",
+      "sourceLabel": "Nebraska commercial assessment ratio context 92-100%",
+      "propertyClasses": [
+        "commercial",
+        "commercial improved",
+        "income-producing"
+      ],
+      "assessmentClasses": [
+        "commercial",
+        "income-producing"
+      ],
+      "range": {
+        "min": 92,
+        "max": 100
+      },
+      "idealValue": 96,
+      "unit": "percent",
+      "notes": "Used for class-aware taxpayer-facing interpretation of commercial median ratio and level-of-value context."
+    },
+    {
       "key": "nebraska-agricultural-horticultural-special-valuation",
       "label": "Nebraska agricultural and horticultural special valuation assessment level",
       "sourceLabel": "Nebraska agricultural/horticultural special valuation range 69-75%",
@@ -111,6 +132,8 @@
     }
   },
   "prdStandards": {
+    "key": "iaao-prd-98-103",
+    "sourceLabel": "IAAO PRD 98-103",
     "acceptableRange": {
       "min": 0.98,
       "max": 1.03

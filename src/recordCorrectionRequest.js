@@ -59,7 +59,7 @@ export function buildRecordCorrectionEmailPayload(submission, pdfBytes) {
     cc: sender.email,
     subject: `Property Record Correction Request - Parcel ${parcelId}`,
     body: [
-      `Attached is my property record correction request for parcel ${parcelId}.`,
+      `Attached is a property record correction request for parcel ${parcelId}.`,
       "",
       `Please contact me by ${preferredContact} if additional information is needed.`,
       "",

@@ -9,7 +9,6 @@ import {
   sumRates
 } from "./format.js";
 import {
-  getLatestFinalTaxHistory,
   getPreviousFinalValueHistory,
   getSnapshotHistory
 } from "./data-service.js";
@@ -43,7 +42,7 @@ const discrepancyChoiceLabels = Object.fromEntries(discrepancyChoices);
 const viewHeaderContent = {
   "your-property": {
     eyebrow: "Guided Property Snapshot",
-    title: "Your property story, step by step",
+    title: "This property, step by step",
     description: "Start with the record, then move through assessment, taxes, districts, market context, county equalization, and review action.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
@@ -94,7 +93,7 @@ const viewHeaderContent = {
 export function renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, summaryContext = {}) {
   renderViewHeader("your-property", data.snapshotModel);
   renderPropertyViewContext(data, recordCard, valuationGroups);
-  renderHeader(data, imageModal, recordCard);
+  renderHeader(data, imageModal, recordCard, valuationGroups);
   renderAssessmentNoticeSummary(data, recordCard);
   renderComparisonShells(data);
   renderHeaderTimeline(calendar);
@@ -351,11 +350,49 @@ function propertyMarketAreaLabel(data, recordCard, valuationGroups) {
     && group.class === propertyClass
   );
 
-  if (match?.description) {
-    return `${match.description} · VG ${match.valuationGroup}`;
+  if (recordCard?.locationModel?.valuationGroup) {
+    return normalizeValuationGroupLabel(recordCard.locationModel.valuationGroup);
   }
 
-  return recordCard?.locationModel?.valuationGroup || "Market area not listed";
+  if (match?.description) {
+    return `VG ${match.valuationGroup} - ${match.description}`;
+  }
+
+  return "Market area not listed";
+}
+
+function propertyMarketAreaHeaderLabel(data, recordCard, valuationGroups) {
+  const valuationGroupId = `${recordCard?.locationModel?.valuationGroup ?? ""}`.match(/\d+/)?.[0];
+  const propertyClass = data.classification.propertyClass;
+  const match = (valuationGroups?.valuationGroups || []).find(group =>
+    String(group.valuationGroup) === String(valuationGroupId)
+    && group.class === propertyClass
+  );
+
+  if (recordCard?.locationModel?.valuationGroup) {
+    return stripValuationGroupPrefix(recordCard.locationModel.valuationGroup);
+  }
+
+  if (match?.description) {
+    return match.description;
+  }
+
+  return "Market area not listed";
+}
+
+function normalizeValuationGroupLabel(value, { full = false } = {}) {
+  const label = `${value ?? ""}`.trim();
+  const prefix = full ? "Valuation Group" : "VG";
+  return /^\d/.test(label) ? `${prefix} ${label}` : label;
+}
+
+function stripValuationGroupPrefix(value) {
+  return `${value ?? ""}`.trim().replace(/^\d+\s*[-–]\s*/, "") || "Market area not listed";
+}
+
+function formatSchoolDistrictLabel(value) {
+  const districtNumber = `${value ?? ""}`.match(/\bSCH\s*(\d+)\b/i)?.[1];
+  return districtNumber ? `School District ${districtNumber}` : "School district not listed";
 }
 
 function getTodayToken() {
@@ -452,7 +489,7 @@ function disabledParcelLookupMarkup() {
         <span class="parcel-lookup-action" aria-hidden="true">Search</span>
       </button>
       <div id="parcelLookupPopover" class="parcel-lookup-popover" data-parcel-lookup-popover hidden>
-	        Search is not available in this demonstration. To review another property, use official county lookup tools.
+        Property lookup will be available when this site is connected to a parcel API or assessment database.
       </div>
     </div>
   `;
@@ -491,23 +528,22 @@ function initDisabledParcelLookup(root) {
 
 }
 
-function renderHeader(data, imageModal, recordCard) {
+function renderHeader(data, imageModal, recordCard, valuationGroups) {
   const header = document.getElementById("pageHeader");
+  const marketArea = propertyMarketAreaHeaderLabel(data, recordCard, valuationGroups);
 
   header.innerHTML = `
     <div class="property-hero-header">
       <div class="property-hero-identity">
         <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">${data.snapshotYear} Property Snapshot</p>
         <h2 class="mt-1 text-3xl font-bold tracking-tight text-slate-700">${data.parcel.situsAddress}</h2>
-        <p class="mt-2 text-base text-slate-600">
-          <span class="font-medium text-slate-700">
+        <div class="property-hero-meta">
+          <p class="property-hero-meta-primary">
             ${data.parcel.accountType} Property
-          </span>
-          <span class="text-slate-400">•</span>
-          School District ${data.parcel.schoolDistrict.replace("SCH ", "")}
-          <span class="text-slate-400">•</span>
-          ${data.classification.location}
-        </p>      
+          </p>
+          <p class="property-hero-market">${marketArea}</p>
+          <p class="property-hero-school">${formatSchoolDistrictLabel(data.parcel.schoolDistrict)}</p>
+        </div>
       </div>
 
       <div class="property-hero-notice">
@@ -1212,7 +1248,7 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
 
       if (submitStatus) {
         if (delivery.delivered) {
-          submitStatus.textContent = "Your property record correction request has been sent to the Assessor's Office. A copy has also been sent to your email for your records.";
+          submitStatus.textContent = "The property record correction request has been sent to the Assessor's Office. A copy has also been sent to the email provided.";
           submitStatus.className = "text-sm font-semibold text-emerald-700";
           localStorage.removeItem(draftKey);
         } else {
@@ -1650,15 +1686,14 @@ function initForm458Modal(data, recordCard) {
 
 function disclosure(title, meta, content) {
   return `
-    <details class="sm:col-span-2 rounded-xl bg-white ring-1 ring-slate-200">
-      <summary class="cursor-pointer list-none rounded-xl bg-slate-50 px-4 py-3 font-semibold text-slate-700">
+    <details class="record-disclosure sm:col-span-2 rounded-xl">
+      <summary class="record-disclosure-toggle cursor-pointer list-none rounded-xl px-4 py-3 font-semibold">
         <div class="flex items-center justify-between gap-3">
           <span>${title}</span>
           <span class="flex shrink-0 items-center gap-2 text-sm">
-            <span class="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-600 ring-1 ring-slate-200">${meta}</span>
-            <span class="disclosure-action text-slate-500">
-              <span data-disclosure-closed>Click to expand</span>
-              <span data-disclosure-open>Click to close</span>
+            <span class="record-disclosure-meta rounded-full px-2 py-0.5 text-xs font-semibold">${meta}</span>
+            <span class="record-disclosure-chevron-shell" aria-hidden="true">
+              <span class="record-disclosure-chevron"></span>
             </span>
           </span>
         </div>
@@ -1991,6 +2026,11 @@ function technicalCostModel(recordCard, data) {
   const currentValue = assessedRows[0];
   const garageLines = recordCard.garageCostLines || [];
   const miscLines = recordCard.miscImprovements || [];
+  const outbuildingRows = data.outbuildingData || [];
+  const landRows = data.landInformation || [];
+  const dwellingModelValue = Number(cost.rcnld) || 0;
+  const depreciationAmount = Number(cost.depreciation?.amount) || 0;
+  const physicalDepreciation = cost.depreciation?.physicalPercent;
   const garageTotal = garageLines.reduce((sum, row) => sum + row.rcnld, 0);
   const miscTotal = miscLines.reduce((sum, row) => sum + row.value, 0);
   const landValue = noticeValues.land ?? currentValue?.land ?? 0;
@@ -1999,6 +2039,39 @@ function technicalCostModel(recordCard, data) {
   const outbuildingValue = currentValue?.outbuilding ?? 0;
   const totalValue = noticeValues.total ?? currentValue?.total ?? landValue + buildingValue + otherImprovementValue;
   const residentialInfo = recordCard.residentialInformation || {};
+  const reconciliation = recordCard.valuationReconciliation || {};
+  const modeledComponentTotal = dwellingModelValue + garageTotal + miscTotal + outbuildingValue + landValue;
+  const reconciliationAdjustment = Number.isFinite(reconciliation.modelToFinalReconciliation)
+    ? reconciliation.modelToFinalReconciliation
+    : totalValue - modeledComponentTotal;
+  const showReconciliationAdjustment = Math.abs(reconciliationAdjustment) >= 1;
+  const formatSignedMoney = value => {
+    if (value === null || value === undefined) return "—";
+    if (value === 0) return formatNullableMoney(value);
+    return `${value > 0 ? "+" : "-"}${formatNullableMoney(Math.abs(value))}`;
+  };
+  const depreciationText = depreciationAmount
+    ? `${formatSignedMoney(-depreciationAmount)}${physicalDepreciation ? ` (${physicalDepreciation}% physical)` : ""}`
+    : physicalDepreciation ? `${physicalDepreciation}% physical` : "—";
+  const landAreaLabel = row => {
+    if (!row?.squareFeet) return "Area not listed";
+    const squareFeet = Number(row.squareFeet);
+    return `${squareFeet.toLocaleString()} sq. ft.`;
+  };
+  const rollupRows = [
+    { label: "Dwelling model after depreciation", value: dwellingModelValue },
+    ...(garageTotal ? [{ label: "Garages", value: garageTotal }] : []),
+    ...(miscTotal ? [{ label: "Miscellaneous improvements", value: miscTotal }] : []),
+    ...(outbuildingValue ? [{ label: "Outbuildings", value: outbuildingValue }] : []),
+    ...(showReconciliationAdjustment ? [{
+      label: "Recorded improvement adjustment",
+      value: reconciliationAdjustment,
+      displayValue: reconciliationAdjustment < 0
+        ? `-${formatNullableMoney(Math.abs(reconciliationAdjustment))}`
+        : formatNullableMoney(reconciliationAdjustment)
+    }] : []),
+    { label: "Land value", value: landValue }
+  ];
   const valueStack = [
     ["Land value", landValue],
     ["Building and site improvements", buildingValue],
@@ -2042,16 +2115,15 @@ function technicalCostModel(recordCard, data) {
         <span class="hidden text-xs font-semibold sm:inline">Detailed model</span>
       </summary>
       <div class="grid gap-4 border-t border-slate-200 p-3">
-        <section class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
-          <div class="mb-3 flex items-center justify-between gap-3">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Marshall & Swift dwelling model</p>
-            <p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">Subtotal ${formatNullableMoney(cost.rcnld)}</p>
+        <section class="dwelling-model-panel">
+          <div class="dwelling-model-heading">
+            <p>Marshall & Swift dwelling model</p>
+            <p class="component-subtotal-pill">Subtotal ${formatNullableMoney(dwellingModelValue)}</p>
           </div>
-          <div class="grid gap-4 text-sm">
-            <div class="grid gap-3 lg:grid-cols-3">
-            <section>
-              <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Structure model</p>
-              <div class="grid gap-3">
+          <div class="dwelling-model-list">
+            <section class="dwelling-model-group">
+              <p class="dwelling-model-group-title">Structure model</p>
+              <div class="dwelling-model-rows">
                 ${[
                   ["Residential type", residentialInfo.type],
                   ["Quality", residentialInfo.quality],
@@ -2059,42 +2131,43 @@ function technicalCostModel(recordCard, data) {
                   ["Base / total area", residentialInfo.baseTotalArea],
                   ["Year / effective age", cost.yearEffectiveAge]
                 ].map(([label, value]) => `
-                  <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-                    <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
+                  <div class="dwelling-model-row">
+                    <p>${label}</p>
+                    <p>${escapeHtml(value)}</p>
                   </div>
                 `).join("")}
               </div>
             </section>
-            <section>
-              <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Costing</p>
-              <div class="grid gap-3">
+            <section class="dwelling-model-group">
+              <p class="dwelling-model-group-title">Costing</p>
+              <div class="dwelling-model-rows">
                 ${[
                   ["Base cost", moneyCents.format(cost.baseCost)],
                   ["Adjusted cost", cost.adjustedCost.toFixed(3)],
                   ["RCN", formatNullableMoney(cost.rcn)],
-                  ["Depreciation", `${cost.depreciation.physicalPercent}% physical`],
-                  ["RCNLD", formatNullableMoney(cost.rcnld)],
+                  ["Depreciation adjustment", depreciationText],
+                  ["RCNLD", formatNullableMoney(dwellingModelValue)],
                   ["Cost per sq. ft.", moneyCents.format(cost.costPerSquareFoot)]
                 ].map(([label, value]) => `
-                  <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-                    <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
+                  <div class="dwelling-model-row">
+                    <p>${label}</p>
+                    <p>${escapeHtml(value)}</p>
                   </div>
                 `).join("")}
               </div>
             </section>
-            <section>
-              <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Systems</p>
-              <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Heating / cooling</p>
-                <p class="mt-1 font-semibold text-slate-700">${escapeHtml(residentialInfo.heatingCooling)}</p>
+            <section class="dwelling-model-group">
+              <p class="dwelling-model-group-title">Systems</p>
+              <div class="dwelling-model-rows">
+                <div class="dwelling-model-row">
+                  <p>Heating / cooling</p>
+                  <p>${escapeHtml(residentialInfo.heatingCooling)}</p>
+                </div>
               </div>
             </section>
-            </div>
-            <section class="border-t border-slate-200 pt-3">
-              <p class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Cost adjustments</p>
-              <div class="adjustment-card-grid">
+            <section class="dwelling-model-group">
+              <p class="dwelling-model-group-title">Cost adjustments</p>
+              <div class="dwelling-model-rows dwelling-model-adjustments">
                 ${[
                   ["Roofing", cost.adjustments.roofing],
                   ["Subfloor", cost.adjustments.subfloor],
@@ -2102,9 +2175,9 @@ function technicalCostModel(recordCard, data) {
                   ["Plumbing", cost.adjustments.plumbing],
                   ["Basement", cost.adjustments.basement]
                 ].map(([label, value]) => `
-                  <div class="adjustment-card">
-                    <p class="adjustment-card-label">${label}</p>
-                    <p class="adjustment-card-value">${Number(value).toFixed(2)}</p>
+                  <div class="dwelling-model-row">
+                    <p>${label}</p>
+                    <p>${Number(value).toFixed(2)}</p>
                   </div>
                 `).join("")}
               </div>
@@ -2114,7 +2187,7 @@ function technicalCostModel(recordCard, data) {
         <section>
           <div class="mb-2 flex items-center justify-between gap-3">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Garages</p>
-            <p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">Subtotal ${formatNullableMoney(garageTotal)}</p>
+            <p class="component-subtotal-pill rounded-full px-2 py-1 text-xs font-semibold">Subtotal ${formatNullableMoney(garageTotal)}</p>
           </div>
           <div class="table-clip ring-1 ring-slate-200">
             <table class="min-w-full divide-y divide-slate-200 text-sm">
@@ -2134,7 +2207,7 @@ function technicalCostModel(recordCard, data) {
         <section>
           <div class="mb-2 flex items-center justify-between gap-3">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Miscellaneous improvements</p>
-            <p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">Subtotal ${formatNullableMoney(miscTotal)}</p>
+            <p class="component-subtotal-pill rounded-full px-2 py-1 text-xs font-semibold">Subtotal ${formatNullableMoney(miscTotal)}</p>
           </div>
           <div class="table-clip ring-1 ring-slate-200">
             <table class="min-w-full divide-y divide-slate-200 text-sm">
@@ -2151,27 +2224,78 @@ function technicalCostModel(recordCard, data) {
             </table>
           </div>
         </section>
+        ${outbuildingRows.length ? `
+          <section>
+            <div class="mb-2 flex items-center justify-between gap-3">
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Outbuildings</p>
+              <p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">${outbuildingRows.length === 1 ? "1 record" : `${outbuildingRows.length} records`}</p>
+            </div>
+            <div class="table-clip ring-1 ring-slate-200">
+              <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Year Built</th><th class="px-3 py-2 text-right font-semibold">Cost</th></tr></thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                  ${outbuildingRows.map(row => `
+                    <tr>
+                      <td class="px-3 py-2">${row.description}</td>
+                      <td class="px-3 py-2 text-right">${row.units}</td>
+                      <td class="px-3 py-2 text-right">${row.yearBuilt}</td>
+                      <td class="px-3 py-2 text-right">${row.cost}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        ` : ""}
         <section>
           <div class="mb-2 flex items-center justify-between gap-3">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Outbuildings</p>
-            <p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">${data.outbuildingData.length ? `${data.outbuildingData.length} records` : "No records"}</p>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Land added back in</p>
+            <p class="component-subtotal-pill rounded-full px-2 py-1 text-xs font-semibold">Subtotal ${formatNullableMoney(landValue)}</p>
           </div>
           <div class="table-clip ring-1 ring-slate-200">
             <table class="min-w-full divide-y divide-slate-200 text-sm">
-              <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Year Built</th><th class="px-3 py-2 text-right font-semibold">Cost</th></tr></thead>
-              <tbody class="divide-y divide-slate-200 bg-white">
-                ${data.outbuildingData.length ? data.outbuildingData.map(row => `
+              <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Record detail</th></tr></thead>
+              <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
+                ${landRows.length ? landRows.map(row => `
                   <tr>
                     <td class="px-3 py-2">${row.description}</td>
-                    <td class="px-3 py-2 text-right">${row.units}</td>
-                    <td class="px-3 py-2 text-right">${row.yearBuilt}</td>
-                    <td class="px-3 py-2 text-right">${row.cost}</td>
+                    <td class="px-3 py-2 text-right">${landAreaLabel(row)}</td>
                   </tr>
-                `).join("") : `<tr><td class="px-3 py-3 text-slate-500" colspan="4">No outbuilding records listed for this property.</td></tr>`}
+                `).join("") : `
+                  <tr>
+                    <td class="px-3 py-2">Land value</td>
+                    <td class="px-3 py-2 text-right">${formatNullableMoney(landValue)}</td>
+                  </tr>
+                `}
+                <tr class="font-semibold">
+                  <td class="px-3 py-3">Total land value</td>
+                  <td class="px-3 py-3 text-right">${formatNullableMoney(landValue)}</td>
+                </tr>
               </tbody>
             </table>
           </div>
         </section>
+        <div class="assessment-rollup-summary">
+          <div class="assessment-rollup-copy">
+            <p>Component rollup</p>
+            <p>Improvement values are reconciled to the recorded building/site improvement total, then land is added to reach the assessed value.</p>
+          </div>
+          <div class="assessment-rollup-table">
+            ${rollupRows.map(row => `
+              <div class="assessment-rollup-row">
+                <div class="assessment-rollup-label">
+                  <p>${row.label}</p>
+                  ${row.note ? `<p>${row.note}</p>` : ""}
+                </div>
+                <p>${row.displayValue ?? formatNullableMoney(row.value)}</p>
+              </div>
+            `).join("")}
+            <div class="assessment-rollup-row assessment-rollup-total">
+              <p>Total assessed value</p>
+              <p>${formatNullableMoney(totalValue)}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </details>
   `);
@@ -2217,104 +2341,8 @@ function outbuildingData(data) {
   `);
 }
 
-function summaryPercentChange(current, previous) {
-  if (!current || !previous) return null;
-  return (current - previous) / previous;
-}
-
-function summaryAnnualizedChange(current, previous, years) {
-  if (!current || !previous || !years || years <= 0) return null;
-  return Math.pow(current / previous, 1 / years) - 1;
-}
-
-function annualizedChangeText(value) {
-  if (value === null || value === undefined) return "not available";
-  const direction = value < 0 ? "down" : "up";
-  return `${direction} about ${formatNullablePercent(Math.abs(value))} per year`;
-}
-
-function getSummaryDefaultClass(data, ratioData) {
-  const rawClass = `${data.classification?.propertyClass ?? data.parcel?.accountType ?? ""}`.toLowerCase();
-
-  if (rawClass.includes("ag") || rawClass.includes("farm")) return "agFarm";
-  if (rawClass.includes("comm")) return "commercial";
-  if (rawClass.includes("res")) return "residential";
-
-  return ratioData?.classes?.[0]?.key ?? "residential";
-}
-
-function getSummaryLovTarget(classKey) {
-  return classKey === "agFarm" ? 75 : 100;
-}
-
 function extractSummaryValuationGroupId(recordCard) {
   return `${recordCard?.locationModel?.valuationGroup ?? ""}`.match(/\d+/)?.[0] ?? null;
-}
-
-const summaryAssessmentStandardKeys = {
-  residential: "residential-improved-rural",
-  agFarm: "other-vacant-rural",
-  commercial: "income-producing-rural"
-};
-
-function getSummaryAssessmentBandConfig(classKey, iaaoStandards) {
-  const standardKey = summaryAssessmentStandardKeys[classKey] ?? summaryAssessmentStandardKeys.residential;
-  const codStandard = iaaoStandards?.codStandards?.find(item => item.key === standardKey)
-    ?? iaaoStandards?.codStandards?.find(item => item.key === summaryAssessmentStandardKeys.residential);
-
-  return {
-    cod: codStandard?.codRange ?? { min: 5, max: 20 },
-    prd: iaaoStandards?.prdStandards?.acceptableRange ?? { min: 0.98, max: 1.03 },
-    cov: codStandard?.estimatedCovRange ?? { min: 6.25, max: 25 }
-  };
-}
-
-function summaryRangeStatus(value, range, { tolerance = 0 } = {}) {
-  if (value === null || value === undefined || !range) return "not available";
-  const width = Math.max(Math.abs(range.max - range.min), 0.01);
-  const edgeTolerance = Math.max(tolerance, width * 0.25);
-
-  if (value < range.min) {
-    const distance = range.min - value;
-    return distance <= edgeTolerance ? "slightly below the standard band" : "below the standard band";
-  }
-
-  if (value > range.max) {
-    const distance = value - range.max;
-    return distance <= edgeTolerance ? "slightly above the standard band" : "above the standard band";
-  }
-
-  const lowerDistance = value - range.min;
-  const upperDistance = range.max - value;
-  if (lowerDistance <= edgeTolerance) return "near the lower edge of the standard band";
-  if (upperDistance <= edgeTolerance) return "near the upper edge of the standard band";
-
-  return "inside the standard band";
-}
-
-function summaryPrdStatus(value, range) {
-  if (value === null || value === undefined || !range) return "not available";
-
-  const edgeTolerance = 0.02;
-  if (value < range.min) {
-    return range.min - value <= edgeTolerance ? "near the lower edge of the standard band" : "below the standard band";
-  }
-
-  if (value > range.max) {
-    return value - range.max <= edgeTolerance ? "near the upper edge of the standard band" : "above the standard band";
-  }
-
-  if (value - range.min <= edgeTolerance) return "near the lower edge of the standard band";
-  if (range.max - value <= edgeTolerance) return "near the upper edge of the standard band";
-
-  return "inside the standard band";
-}
-
-function summaryLevelStatus(value, target) {
-  if (value === null || value === undefined || target === null || target === undefined) return "not available";
-  const distance = value - target;
-  if (Math.abs(distance) <= 5) return "near the target level";
-  return distance > 0 ? "above the target level" : "below the target level";
 }
 
 function formatRatioPercent(value) {
@@ -2322,193 +2350,93 @@ function formatRatioPercent(value) {
   return `${Number(value).toFixed(2)}%`;
 }
 
-function normalizePrd(value) {
-  if (value === null || value === undefined) return null;
-  return value > 10 ? value / 100 : value;
-}
+function localMarketQuickReadLine(selectedMarket) {
+  const count = Number(selectedMarket?.count) || 0;
+  const saleNoun = count === 1 ? "sale" : "sales";
+  const ratio = formatRatioPercent(selectedMarket?.median);
 
-function formatPrd(value) {
-  const normalized = normalizePrd(value);
-  return normalized === null ? "—" : normalized.toFixed(3);
-}
+  if (count === 1) {
+    return `
+      There was <strong>1 qualified sale</strong> in the local study.
+      That sale was assessed at <strong>${ratio}</strong> of sale price, so it is a context clue rather than a broad market pattern.
+    `;
+  }
 
-function sampleStrength(count) {
-  if (!count) return "no usable sales sample";
-  if (count >= 100) return "a large qualified-sales sample";
-  if (count >= 30) return "a usable qualified-sales sample";
-  if (count >= 15) return "a limited qualified-sales sample";
-  return "a thin qualified-sales sample";
-}
+  if (count < 5) {
+    return `
+      There were <strong>${count.toLocaleString()} qualified ${saleNoun}</strong> in the local study.
+      The median result was <strong>${ratio}</strong> of sale price, but a sample this small can move a lot from one sale to the next.
+    `;
+  }
 
-function countyDisplayNameFromData(data) {
-  const name = `${data.parcel?.countyName ?? ""}`.trim().toLowerCase().replace(/\b\w/g, character => character.toUpperCase());
-  return name ? `${name} County` : "the county";
-}
+  if (count < 10) {
+    return `
+      There were <strong>${count.toLocaleString()} qualified sales</strong> in the local study.
+      The middle sale was assessed at <strong>${ratio}</strong> of sale price, so this should be read as limited context.
+    `;
+  }
 
-function summaryCtlRows(ctlData, countyName) {
-  const requested = `${countyName ?? ""}`.trim().toUpperCase();
-  const countyRows = (ctlData?.counties || [])
-    .filter(row => row.countyName === requested)
-    .sort((a, b) => a.year - b.year);
-  const statewideRows = (ctlData?.statewide || []).slice().sort((a, b) => a.year - b.year);
+  if (count < 25) {
+    return `
+      There were <strong>${count.toLocaleString()} qualified sales</strong> in the local study.
+      The middle sale was assessed at <strong>${ratio}</strong> of sale price, based on a modest local sample.
+    `;
+  }
 
-  return { countyRows, statewideRows };
+  return `
+    There were <strong>${count.toLocaleString()} qualified sales</strong> in the local study.
+    The middle sale was assessed at <strong>${ratio}</strong> of sale price, based on a strong local sample.
+  `;
 }
 
 function renderSummary(data, recordCard, summaryContext = {}) {
   const snapshot = getSnapshotHistory(data);
   const previousValue = getPreviousFinalValueHistory(data);
-  const latestTax = getLatestFinalTaxHistory(data);
-  const first = data.taxpayerHistory[0];
   const valueChangeFromPrior = previousValue?.assessedValue && snapshot.assessedValue
     ? (snapshot.assessedValue - previousValue.assessedValue) / previousValue.assessedValue
     : null;
-  const valueChangeFromBase = first?.assessedValue && snapshot.assessedValue
-    ? (snapshot.assessedValue - first.assessedValue) / first.assessedValue
-    : null;
-  const finalizedValueChangeFromBase = first?.assessedValue && previousValue?.assessedValue
-    ? (previousValue.assessedValue - first.assessedValue) / first.assessedValue
-    : null;
-  const taxChangeFromBase = first?.taxes && latestTax?.taxes
-    ? summaryPercentChange(latestTax.taxes, first.taxes)
-    : null;
-  const historyYearSpan = latestTax?.year && first?.year ? latestTax.year - first.year : null;
-  const annualValueChange = summaryAnnualizedChange(previousValue?.assessedValue, first?.assessedValue, historyYearSpan);
-  const annualTaxChange = summaryAnnualizedChange(latestTax?.taxes, first?.taxes, historyYearSpan);
-  const firstEtr = calculateEtr(first);
-  const latestEtr = calculateEtr(latestTax);
-  const etrDecline = firstEtr && latestEtr
-    ? Math.abs((latestEtr - firstEtr) / firstEtr)
-    : null;
-
-  const totalLevy = sumRates(data.latestFinalLevyComponents);
-  const levyShare = description => {
-    if (!totalLevy) return null;
-    return (data.latestFinalLevyComponents.find(row => row.description === description)?.rate || 0) / totalLevy;
-  };
-  const schoolShare = levyShare("SCH 15 BEATRICE");
-  const cityShare = levyShare("BEATRICE CITY");
-  const countyShare = levyShare("COUNTY GENERAL");
-  const otherShare = schoolShare === null || cityShare === null || countyShare === null
-    ? null
-    : Math.max(0, 1 - schoolShare - cityShare - countyShare);
-  const majorLevyDescriptions = new Set(["SCH 15 BEATRICE", "BEATRICE CITY", "COUNTY GENERAL"]);
-  const otherLevyGroups = [...new Set(data.latestFinalLevyComponents
-    .filter(row => !majorLevyDescriptions.has(row.description))
-    .map(row => row.group?.toLowerCase())
-    .filter(Boolean))];
-  const otherLevyText = otherLevyGroups.length
-    ? otherLevyGroups.join(", ").replace(/, ([^,]*)$/, ", and $1")
-    : "smaller authorities";
-  const countyLabel = countyDisplayNameFromData(data);
-  const { ctlData, ratioData, padRatioData, iaaoStandards } = summaryContext;
-  const selectedClassKey = getSummaryDefaultClass(data, ratioData);
-  const selectedClass = ratioData?.classes?.find(item => item.key === selectedClassKey) ?? ratioData?.classes?.[0];
-  const latestCountyRatio = selectedClass?.records?.at(-1);
-  const assessmentBands = getSummaryAssessmentBandConfig(selectedClass?.key ?? selectedClassKey, iaaoStandards);
-  const countyTarget = getSummaryLovTarget(selectedClass?.key ?? selectedClassKey);
+  const { padRatioData } = summaryContext;
   const marketGroupId = extractSummaryValuationGroupId(recordCard);
   const selectedMarket = padRatioData?.valuationGroups?.find(group => String(group.group) === String(marketGroupId));
-  const marketLabel = selectedMarket?.label || data.snapshotModel?.viewModels?.property?.valuationGroup || "the local valuation group";
-  const { countyRows, statewideRows } = summaryCtlRows(ctlData, data.parcel.countyName);
-  const countyCtlFirst = countyRows[0];
-  const countyCtlLatest = countyRows.at(-1);
-  const statewideCtlFirst = statewideRows[0];
-  const statewideCtlLatest = statewideRows.at(-1);
-  const countyValueGrowth = summaryPercentChange(countyCtlLatest?.totalValue, countyCtlFirst?.totalValue);
-  const countyTaxGrowth = summaryPercentChange(countyCtlLatest?.taxesLevied, countyCtlFirst?.taxesLevied);
-  const statewideValueGrowth = summaryPercentChange(statewideCtlLatest?.totalValue, statewideCtlFirst?.totalValue);
-  const statewideTaxGrowth = summaryPercentChange(statewideCtlLatest?.taxesLevied, statewideCtlFirst?.taxesLevied);
-  const currentAssessmentCopy = snapshot.assessedValue === null || snapshot.assessedValue === undefined
+  const currentValueLine = snapshot.assessedValue === null || snapshot.assessedValue === undefined
     ? `
-      For <strong>${snapshot.year}</strong>, this property's assessed value has <strong>not been published yet</strong>.
-      The latest finalized assessed value is <strong>${formatNullableMoney(previousValue.assessedValue)}</strong> for
-      <strong>${previousValue.year}</strong>. The ${snapshot.year} tax bill is also <strong>not finalized yet</strong>;
-      it will depend on later values, budgets, certified levies, credits, and exemptions.
+      For <strong>${snapshot.year}</strong>, the assessed value has <strong>not been published yet</strong>.
+      The latest finalized value is <strong>${formatNullableMoney(previousValue?.assessedValue)}</strong>
+      for <strong>${previousValue?.year ?? "the prior year"}</strong>.
     `
     : `
-      For <strong>${snapshot.year}</strong>, this property's assessed value is <strong>${formatNullableMoney(snapshot.assessedValue)}</strong>,
-      an increase of <strong>${formatNullablePercent(valueChangeFromPrior)}</strong> from the prior year's value of
-      <strong>${formatNullableMoney(previousValue.assessedValue)}</strong>. The tax bill for this year is
-      <strong>not finalized yet</strong>; it will depend on later budgets, certified levies, credits, and exemptions.
+      For <strong>${snapshot.year}</strong>, the assessed value is <strong>${formatNullableMoney(snapshot.assessedValue)}</strong>,
+      <strong>${formatNullablePercent(valueChangeFromPrior)}</strong> from the prior finalized value.
     `;
-
-  const historyParagraph = `
-    From <strong>${first.year}</strong> through <strong>${latestTax?.year}</strong>, this parcel's final assessed value moved from
-    <strong>${formatNullableMoney(first.assessedValue)}</strong> to <strong>${formatNullableMoney(previousValue.assessedValue)}</strong>,
-    up <strong>${formatNullablePercent(finalizedValueChangeFromBase)}</strong>. Net taxes moved from
-    <strong>${formatNullableMoney(first.taxes, true)}</strong> to <strong>${formatNullableMoney(latestTax?.taxes, true)}</strong>,
-    up <strong>${formatNullablePercent(taxChangeFromBase)}</strong>, while the effective tax rate moved from
-    <strong>${formatNullablePercent(firstEtr)}</strong> to <strong>${formatNullablePercent(latestEtr)}</strong>.
+  const taxTimingLine = `
+    The <strong>${snapshot.year}</strong> tax bill is <strong>not final</strong>. Later budgets, certified levies,
+    credits, and exemptions still have to be applied.
   `;
-  const levyParagraph = `
-    In the latest final levy, about <strong>${formatNullablePercent(schoolShare)}</strong> of the tax dollars go to schools,
-    <strong>${formatNullablePercent(cityShare)}</strong> to the city, and <strong>${formatNullablePercent(countyShare)}</strong>
-    to the county. The remaining <strong>${formatNullablePercent(otherShare)}</strong> is distributed across ${escapeHtml(otherLevyText)}.
+  const marketLine = selectedMarket ? localMarketQuickReadLine(selectedMarket) : `
+    Local market context is available later in the guide, after the property facts and tax district are confirmed.
   `;
-  const marketParagraph = selectedMarket ? `
-    The local market read starts with <strong>${escapeHtml(marketLabel)}</strong>, which has
-    <strong>${selectedMarket.count.toLocaleString()} qualified sales</strong>, ${sampleStrength(selectedMarket.count)}.
-    The middle sale in that sample was assessed at <strong>${formatRatioPercent(selectedMarket.median)}</strong> of sale price
-    (${summaryLevelStatus(selectedMarket.median, 100)}). Uniformity is <strong>${formatRatioPercent(selectedMarket.cod)}</strong>
-    (${summaryRangeStatus(selectedMarket.cod, assessmentBands.cod)}), and price-level fairness is <strong>${formatPrd(selectedMarket.prd)}</strong>
-    (${summaryPrdStatus(normalizePrd(selectedMarket.prd), assessmentBands.prd)}).
-	    Together, these figures place the property in market context, but they are not a decision about this property by themselves.
-  ` : `
-	    The closest available local comparison group and sale-price bands offer context, not a final decision about this property.
+  const recordCheckLine = `
+    Check the property record: owner, address, land, building size, class, condition, rooms, garage,
+    improvements, and notes.
   `;
-  const countyStudyClass = selectedClass?.label?.toLowerCase() || "property";
-  const countyParagraph = latestCountyRatio ? `
-    The latest <strong>${escapeHtml(countyStudyClass)}</strong> sales study for <strong>${escapeHtml(countyLabel)}</strong> has
-    <strong>${latestCountyRatio.sales.toLocaleString()} sales</strong>. The middle sale was assessed at
-    <strong>${formatRatioPercent(latestCountyRatio.levelOfValue)}</strong> of sale price (${summaryLevelStatus(latestCountyRatio.levelOfValue, countyTarget)}).
-    Uniformity is <strong>${formatRatioPercent(latestCountyRatio.cod)}</strong> (${summaryRangeStatus(latestCountyRatio.cod, assessmentBands.cod)}),
-    price-level fairness is <strong>${formatPrd(latestCountyRatio.prd)}</strong> (${summaryPrdStatus(latestCountyRatio.prd, assessmentBands.prd)}),
-    and reliability spread is <strong>${formatRatioPercent(latestCountyRatio.cov)}</strong>
-    (${summaryRangeStatus(latestCountyRatio.cov, assessmentBands.cov, { tolerance: 0.5 })}).
-  ` : `
-	    County sales-study context appears later in the page. It helps explain the assessment environment, but it does not decide this parcel by itself.
-  `;
-  const stateParagraph = countyCtlLatest && statewideCtlLatest ? `
-    On the state baseline, ${escapeHtml(countyLabel)}'s latest CTL average tax rate is
-    <strong>${formatNullablePercent(countyCtlLatest.averageTaxRate)}</strong> versus Nebraska's
-    <strong>${formatNullablePercent(statewideCtlLatest.averageTaxRate)}</strong>, so the county rate is below the statewide average.
-    Since <strong>${countyCtlFirst.year}</strong>, county certified value is up <strong>${formatNullablePercent(countyValueGrowth)}</strong>
-    and taxes levied are up <strong>${formatNullablePercent(countyTaxGrowth)}</strong>; statewide, value is up
-    <strong>${formatNullablePercent(statewideValueGrowth)}</strong> and taxes levied are up <strong>${formatNullablePercent(statewideTaxGrowth)}</strong>.
-  ` : `
-    Statewide CTL context is available deeper in the page to compare county value growth, taxes levied, and average tax rates against Nebraska.
-  `;
-  const annualizedParagraph = `
-    For this parcel, the available <strong>${first.year}-${latestTax?.year}</strong> record works out to assessed value
-    <strong>${annualizedChangeText(annualValueChange)}</strong> and net taxes <strong>${annualizedChangeText(annualTaxChange)}</strong>.
-    More detail is available in the value and tax timeline in the next step.
-  `;
+  const summaryRows = [
+    ["Current value", currentValueLine],
+    ["Tax timing", taxTimingLine],
+    ["Local market", marketLine],
+    ["First check", recordCheckLine]
+  ];
 
   document.getElementById("summaryText").innerHTML = `
-    <p class="mb-4 text-sm leading-6 text-slate-600">
-      A plain-language read of the property record, value movement, tax context, and market signals available in the current records.
-    </p>
-
-    <div class="focus-card mb-4">
-      <p class="pending-status-heading mb-1 text-xs font-semibold uppercase tracking-wide">Current status</p>
-      <p class="leading-7 text-slate-700">
-        ${currentAssessmentCopy}
-      </p>
+    <p class="quick-read-intro">A quick first pass. Detailed history, taxes, and county context come in the next steps.</p>
+    <div class="quick-read-list" role="list">
+      ${summaryRows.map(([label, body]) => `
+        <div class="quick-read-item" role="listitem">
+          <p class="quick-read-label">${escapeHtml(label)}</p>
+          <p>${body}</p>
+        </div>
+      `).join("")}
     </div>
-
-    <div class="express-summary-story">
-      <p>${historyParagraph}</p>
-      <p>${levyParagraph}</p>
-      <p>${marketParagraph}</p>
-      <p>${countyParagraph}</p>
-      <p>${stateParagraph}</p>
-      <p>${annualizedParagraph}</p>
-    </div>
-
-    <p class="summary-inline-next">
-      If something in the property details appears inaccurate or incomplete, you may want to open a record review request.
-    </p>
+    <p class="quick-read-guidance">Start with the property details and confirm everything looks right.</p>
   `;
 }
 
@@ -2804,7 +2732,7 @@ function renderPropertyMovementSummary(data) {
       </div>
     </section>
     <section class="border-t border-slate-200 pt-4">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Your property historically</p>
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property history</p>
       <p class="mt-1 text-xs leading-5 text-slate-500">Longer-range movement from ${firstValue.year}-${lastValue.year}. Tax and ETR movement use finalized tax years only.</p>
       <div class="mt-2 grid gap-3 md:grid-cols-3">
         ${historicalCards.map(movementCard).join("")}

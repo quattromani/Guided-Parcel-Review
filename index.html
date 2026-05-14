@@ -21,11 +21,11 @@
       <div class="guided-stage-sync" data-guided-current-stage></div>
       <div class="guided-path-line" aria-hidden="true"></div>
       <div id="guidedPathTabs" class="relative z-10 flex min-w-max gap-2">
-        <button type="button" data-guided-tab="your-property" class="guided-step guided-step-active" aria-selected="true"><span>1</span>Your Property</button>
-        <button type="button" data-guided-tab="your-assessment" class="guided-step" aria-selected="false"><span>2</span>Your Assessment</button>
-        <button type="button" data-guided-tab="your-taxes" class="guided-step" aria-selected="false"><span>3</span>Your Taxes</button>
-        <button type="button" data-guided-tab="tax-districts" class="guided-step" aria-selected="false"><span>4</span>Your Tax Districts</button>
-        <button type="button" data-guided-tab="market-area" class="guided-step" aria-selected="false"><span>5</span>Your Market</button>
+        <button type="button" data-guided-tab="your-property" class="guided-step guided-step-active" aria-selected="true"><span>1</span>Property Record</button>
+        <button type="button" data-guided-tab="your-assessment" class="guided-step" aria-selected="false"><span>2</span>Assessment</button>
+        <button type="button" data-guided-tab="your-taxes" class="guided-step" aria-selected="false"><span>3</span>Taxes</button>
+        <button type="button" data-guided-tab="tax-districts" class="guided-step" aria-selected="false"><span>4</span>Tax Districts</button>
+        <button type="button" data-guided-tab="market-area" class="guided-step" aria-selected="false"><span>5</span>Market Area</button>
         <button type="button" data-guided-tab="county-equalization" class="guided-step" aria-selected="false"><span>6</span>The County</button>
         <button type="button" data-guided-tab="state-context" class="guided-step" aria-selected="false"><span>7</span>The State</button>
         <button type="button" data-guided-tab="review-checklist" class="guided-step" aria-selected="false"><span>8</span>Review</button>
@@ -38,15 +38,15 @@
       <header id="pageHeader" class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"></header>
 
       <section class="grid gap-6 lg:grid-cols-12">
+        <article class="self-start rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-5">
+          <h2 class="text-xl font-bold text-slate-700">Quick read for this property</h2>
+          <div id="summaryText" class="mt-3 text-sm leading-6 text-slate-700"></div>
+        </article>
+
         <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-7">
           <h2 class="text-xl font-bold text-slate-700">Property details</h2>
           <p class="mt-1 text-sm text-slate-600">These are the property details the county uses when reviewing value and taxes. Confirming them first makes the later numbers easier to understand.</p>
           <dl id="propertyDetails" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2"></dl>
-        </article>
-
-        <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-5">
-          <h2 class="text-xl font-bold text-slate-700">The big picture for this property</h2>
-          <div id="summaryText" class="mt-3 text-sm leading-6 text-slate-700"></div>
         </article>
       </section>
 
@@ -67,7 +67,7 @@
           <h3 class="mt-1 text-lg font-bold text-slate-700">Now review the assessment value.</h3>
           <p class="mt-1 text-sm text-slate-600">The next step explains whether the current value is final and keeps value changes separate from tax bills that are already complete.</p>
         </div>
-        <button type="button" data-guided-next="your-assessment" class="next-step-button">Go to Your Assessment</button>
+        <button type="button" data-guided-next="your-assessment" class="next-step-button">Go to Assessment</button>
       </article>
     </section>
 
@@ -99,7 +99,7 @@
           <h3 class="mt-1 text-lg font-bold text-slate-700">Now connect value to the tax bill.</h3>
 	          <p class="mt-1 text-sm text-slate-600">Next, compare the final tax bills with levy, credit, and effective-rate changes.</p>
         </div>
-        <button type="button" data-guided-next="your-taxes" class="next-step-button">Go to Your Taxes</button>
+        <button type="button" data-guided-next="your-taxes" class="next-step-button">Go to Taxes</button>
       </article>
     </section>
 
@@ -151,7 +151,7 @@
 
     <section data-guided-panel="tax-districts" class="hidden space-y-6">
       <article id="tax-district-authorities" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <p class="guided-kicker">Your Tax Districts</p>
+        <p class="guided-kicker">Tax Districts</p>
         <h2 class="mt-1 text-2xl font-bold text-slate-700">Who is taxing this property?</h2>
 	        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">The tax district, source year, total levy, and listed taxing bodies help confirm whether this property is assigned to the expected jurisdictions. The tax context page explains how the bill is divided.</p>
         <div id="taxDistrictAuthoritySummary" class="mt-4 grid gap-3 md:grid-cols-4"></div>
@@ -177,7 +177,7 @@
 
     <section data-guided-panel="market-area" class="hidden space-y-6">
       <article id="market-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Your Market Area</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Market Area</p>
         <div class="mt-1 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <h2 class="text-2xl font-bold text-slate-700">How is this property’s market area performing?</h2>
@@ -191,28 +191,47 @@
           </label>
         </div>
         <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
-        <div id="marketNarrative" class="mt-4 rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-slate-200"></div>
-        <div class="ooda-inline-note">
-          <p class="guided-kicker">Decision check</p>
-          <h3>How should I use this comparison?</h3>
-	          <p>These comparisons are context, not a final value decision. A closer review may be useful if this property differs meaningfully from the local comparison group, if the sales sample is thin, or if market ratios suggest the group is behaving differently from the countywide pattern.</p>
+        <div class="market-reading-path" aria-labelledby="marketReadingTitle">
+          <div class="market-reading-intro">
+            <p class="guided-kicker">Reading path</p>
+            <h3 id="marketReadingTitle">Start with the cards. Then look for the pattern.</h3>
+          </div>
+          <div class="market-reading-steps">
+            <section class="market-reading-step">
+              <h4>The cards give the quick signal</h4>
+              <p>Sales count tells you how much evidence is behind the group. Median ratio, COD, and PRD show level, spread, and balance.</p>
+            </section>
+            <section class="market-reading-step">
+              <h4>The chart shows position</h4>
+              <p>The highlighted dot is the selected local group. Dots nearer the shaded center sit closer to the county pattern.</p>
+            </section>
+            <section class="market-reading-step">
+              <h4>Context travels with the dot</h4>
+              <p>Small samples can move more, and outliers are not automatically wrong. They are places to read with care.</p>
+            </section>
+          </div>
         </div>
       </article>
 
       <section class="grid gap-6 lg:grid-cols-5">
-        <article id="market-indexed" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
-          <h2 class="text-xl font-bold text-slate-700">How does this market area compare with the county?</h2>
-	          <p class="mt-1 text-sm text-slate-600">The selected local comparison group is shown beside all qualified residential sales in Gage County.</p>
-          <div class="mt-4 h-72">
-            <canvas id="marketRatioChart"></canvas>
+        <article id="market-position-panel" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
+          <h2 class="text-xl font-bold text-slate-700">Where does this market area sit?</h2>
+	          <p id="marketPositionHelper" class="mt-1 text-sm text-slate-600">Each dot represents a local group. Use the menu or choose a dot to change the highlight; the shaded center shows the expected range and broader county pattern.</p>
+          <div id="marketPositionLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+          <div class="mt-4 h-80">
+            <canvas id="marketPositionScatter" role="img" tabindex="0" aria-describedby="marketScatterSummary"></canvas>
           </div>
+          <div class="mt-4 border-t border-slate-200 pt-4">
+            <p class="guided-kicker">Market area summary</p>
+            <p id="marketNarrative" class="mt-1 text-sm leading-6 text-slate-700"></p>
+          </div>
+          <p id="marketScatterSummary" class="mt-4 text-sm leading-6 text-slate-600"></p>
+          <p id="marketPositionSource" class="chart-source"></p>
         </article>
-        <article id="market-etr" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
+        <article id="market-price-context" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
           <h2 class="text-xl font-bold text-slate-700">What prices are represented?</h2>
-	          <p class="mt-1 text-sm text-slate-600">Average sale price and assessed value help show the price range represented in the selected group.</p>
-          <div class="mt-4 h-72">
-            <canvas id="marketValueChart"></canvas>
-          </div>
+	          <p class="mt-1 text-sm text-slate-600">Average sale price and assessed value show the price context behind the highlighted group.</p>
+          <div id="marketPriceSummary" class="mt-4 grid gap-3 text-sm"></div>
         </article>
       </section>
 
@@ -407,11 +426,11 @@
           <div class="protest-step-heading">
             <p class="guided-kicker">Comparable review</p>
             <h3>Thinking About Comparable Research?</h3>
-            <p>Start with your own property data before comparing values. This quick checklist highlights the basic data points to confirm in your record and then look for on other properties.</p>
+            <p>Start with this property’s data before comparing values. This quick checklist highlights the basic data points to confirm in the record and then look for on other properties.</p>
           </div>
           <div id="comparableResearchChecklist" class="comparable-checklist" aria-label="Comparable research checklist"></div>
           <div class="protest-note">
-            <p><strong>Important:</strong> The prepared worksheet assumes your property record is substantially accurate. If any of these items cannot be checked as correct, or if something appears inaccurate, incomplete, or misclassified, request a factual record review before relying on comparable research.</p>
+            <p><strong>Important:</strong> The prepared worksheet assumes the property record is substantially accurate. If any of these items cannot be checked as correct, or if something appears inaccurate, incomplete, or misclassified, request a factual record review before relying on comparable research.</p>
             <button type="button" data-report-error class="secondary-link-button mt-3">Request factual record review</button>
           </div>
           <div class="protest-note">
@@ -448,7 +467,7 @@
           <p class="guided-kicker">Final option</p>
           <h2>If You Want to Protest</h2>
           <div class="mt-3 max-w-4xl space-y-3 text-sm leading-6 text-slate-600">
-            <p>If, after reviewing your property information and comparable properties, you still believe your assessed value may be incorrect or not fairly equalized, you may use the prepared Form 422 below.</p>
+            <p>If, after reviewing this property’s information and comparable properties, you still believe the assessed value may be incorrect or not fairly equalized, you may use the prepared Form 422 below.</p>
 	            <p>This summary is based on the property data available in this prototype. Requested value, reasons, signature, filing, and deadlines remain the filer’s responsibility.</p>
           </div>
           <div id="form422ConfirmationFields" class="mt-4 grid gap-3 md:grid-cols-2"></div>

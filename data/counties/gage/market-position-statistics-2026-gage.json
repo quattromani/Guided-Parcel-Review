@@ -1,0 +1,643 @@
+{
+  "source": {
+    "title": "2026 Reports and Opinions of the Property Tax Administrator - Gage County",
+    "county": "Gage",
+    "countyNumber": "34",
+    "state": "Nebraska",
+    "taxYear": 2026,
+    "reportDate": "2026-04-07",
+    "extractedFromPages": {
+      "residential": [20, 21],
+      "commercial": [23, 24],
+      "agricultural": [27, 28, 29]
+    },
+    "notes": [
+      "Residential and commercial valuation groups are assessor-defined local comparison groups.",
+      "Agricultural data is organized by market area.",
+      "Median ratio and COD are the primary scatter dimensions.",
+      "PRD, weighted mean, mean, count, average sale price, average assessed value, min/max, and confidence intervals are supporting tooltip/context fields."
+    ]
+  },
+  "standardsReferences": {
+    "assessmentLevelStandards": {
+      "residential": "nebraska-residential-real-property",
+      "commercial": "nebraska-commercial-real-property",
+      "agricultural": "nebraska-agricultural-horticultural-special-valuation"
+    },
+    "codStandards": {
+      "residential": "residential-improved-rural",
+      "commercial": "income-producing-rural"
+    },
+    "prdStandard": "iaao-prd-98-103"
+  },
+  "standardsContext": {
+    "residential": {
+      "classLabel": "Residential Real Property",
+      "levelOfValue": 96,
+      "medianAcceptableRange": {
+        "min": 92,
+        "max": 100,
+        "center": 96
+      }
+    },
+    "commercial": {
+      "classLabel": "Commercial Real Property",
+      "levelOfValue": 96,
+      "medianAcceptableRange": {
+        "min": 92,
+        "max": 100,
+        "center": 96
+      }
+    },
+    "agricultural": {
+      "classLabel": "Agricultural Land",
+      "levelOfValue": 72,
+      "medianAcceptableRange": {
+        "min": 69,
+        "max": 75,
+        "center": 72
+      }
+    },
+    "prd": {
+      "acceptableRange": {
+        "min": 98,
+        "max": 103,
+        "center": 100
+      }
+    }
+  },
+  "classes": {
+    "residential": {
+      "countywide": {
+        "id": "ALL",
+        "label": "All Gage residential",
+        "count": 550,
+        "median": 96.44,
+        "mean": 101.5,
+        "weightedMean": 97.49,
+        "cod": 17.03,
+        "prd": 104.11,
+        "min": 35.41,
+        "max": 264.14,
+        "medianConfidenceInterval": {
+          "low": 94.99,
+          "high": 98.74
+        },
+        "averageAdjustedSalePrice": 208407,
+        "averageAssessedValue": 203170
+      },
+      "groups": [
+        {
+          "id": "1",
+          "label": "VG 1",
+          "count": 17,
+          "median": 94.23,
+          "mean": 99.65,
+          "weightedMean": 102.02,
+          "cod": 17.64,
+          "prd": 97.68,
+          "min": 75.87,
+          "max": 138.04,
+          "medianConfidenceInterval": {
+            "low": 82.11,
+            "high": 115.6
+          },
+          "averageAdjustedSalePrice": 289300,
+          "averageAssessedValue": 295154
+        },
+        {
+          "id": "2",
+          "label": "VG 2",
+          "count": 2,
+          "median": 76.64,
+          "mean": 76.64,
+          "weightedMean": 76.69,
+          "cod": 0.52,
+          "prd": 99.93,
+          "min": 76.24,
+          "max": 77.03,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 66000,
+          "averageAssessedValue": 50613
+        },
+        {
+          "id": "3",
+          "label": "VG 3 - Beatrice, Beatrice Subs",
+          "count": 398,
+          "median": 98.58,
+          "mean": 103.22,
+          "weightedMean": 100.33,
+          "cod": 15.61,
+          "prd": 102.88,
+          "min": 63.41,
+          "max": 264.14,
+          "medianConfidenceInterval": {
+            "low": 95.92,
+            "high": 100.8
+          },
+          "averageAdjustedSalePrice": 193237,
+          "averageAssessedValue": 193873
+        },
+        {
+          "id": "5",
+          "label": "VG 5",
+          "count": 1,
+          "median": 157.15,
+          "mean": 157.15,
+          "weightedMean": 157.15,
+          "cod": 0,
+          "prd": 100,
+          "min": 157.15,
+          "max": 157.15,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 23000,
+          "averageAssessedValue": 36145
+        },
+        {
+          "id": "6",
+          "label": "VG 6",
+          "count": 12,
+          "median": 93.02,
+          "mean": 106.71,
+          "weightedMean": 98.99,
+          "cod": 22.87,
+          "prd": 107.8,
+          "min": 73.13,
+          "max": 208.9,
+          "medianConfidenceInterval": {
+            "low": 86.76,
+            "high": 118.48
+          },
+          "averageAdjustedSalePrice": 153404,
+          "averageAssessedValue": 151862
+        },
+        {
+          "id": "7",
+          "label": "VG 7",
+          "count": 12,
+          "median": 95.07,
+          "mean": 97.71,
+          "weightedMean": 95.18,
+          "cod": 16.48,
+          "prd": 102.66,
+          "min": 74.85,
+          "max": 141.9,
+          "medianConfidenceInterval": {
+            "low": 76.64,
+            "high": 113.6
+          },
+          "averageAdjustedSalePrice": 224742,
+          "averageAssessedValue": 213915
+        },
+        {
+          "id": "9",
+          "label": "VG 9",
+          "count": 6,
+          "median": 89.5,
+          "mean": 100.72,
+          "weightedMean": 87.75,
+          "cod": 31.74,
+          "prd": 114.78,
+          "min": 62.08,
+          "max": 179.53,
+          "medianConfidenceInterval": {
+            "low": 62.08,
+            "high": 179.53
+          },
+          "averageAdjustedSalePrice": 170083,
+          "averageAssessedValue": 149251
+        },
+        {
+          "id": "10",
+          "label": "VG 10",
+          "count": 1,
+          "median": 134.4,
+          "mean": 134.4,
+          "weightedMean": 134.4,
+          "cod": 0,
+          "prd": 100,
+          "min": 134.4,
+          "max": 134.4,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 30000,
+          "averageAssessedValue": 40320
+        },
+        {
+          "id": "11",
+          "label": "VG 11",
+          "count": 11,
+          "median": 95.8,
+          "mean": 96.33,
+          "weightedMean": 91.7,
+          "cod": 14.93,
+          "prd": 105.05,
+          "min": 67.1,
+          "max": 140.03,
+          "medianConfidenceInterval": {
+            "low": 73.42,
+            "high": 115.34
+          },
+          "averageAdjustedSalePrice": 119628,
+          "averageAssessedValue": 109705
+        },
+        {
+          "id": "12",
+          "label": "VG 12",
+          "count": 7,
+          "median": 89.88,
+          "mean": 91.93,
+          "weightedMean": 88.8,
+          "cod": 11.74,
+          "prd": 103.52,
+          "min": 77.26,
+          "max": 114.96,
+          "medianConfidenceInterval": {
+            "low": 77.26,
+            "high": 114.96
+          },
+          "averageAdjustedSalePrice": 275143,
+          "averageAssessedValue": 244319
+        },
+        {
+          "id": "13",
+          "label": "VG 13",
+          "count": 1,
+          "median": 51.66,
+          "mean": 51.66,
+          "weightedMean": 51.66,
+          "cod": 0,
+          "prd": 100,
+          "min": 51.66,
+          "max": 51.66,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 2555,
+          "averageAssessedValue": 1320
+        },
+        {
+          "id": "15",
+          "label": "VG 15",
+          "count": 35,
+          "median": 93.15,
+          "mean": 89.96,
+          "weightedMean": 88.74,
+          "cod": 9.09,
+          "prd": 101.37,
+          "min": 63.7,
+          "max": 117.32,
+          "medianConfidenceInterval": {
+            "low": 86.19,
+            "high": 95.63
+          },
+          "averageAdjustedSalePrice": 422232,
+          "averageAssessedValue": 374681
+        },
+        {
+          "id": "16",
+          "label": "VG 16",
+          "count": 9,
+          "median": 93.64,
+          "mean": 90.3,
+          "weightedMean": 90.47,
+          "cod": 8.97,
+          "prd": 99.81,
+          "min": 76.52,
+          "max": 108.69,
+          "medianConfidenceInterval": {
+            "low": 76.98,
+            "high": 97.19
+          },
+          "averageAdjustedSalePrice": 614444,
+          "averageAssessedValue": 555870
+        },
+        {
+          "id": "18",
+          "label": "VG 18",
+          "count": 37,
+          "median": 94.19,
+          "mean": 101.41,
+          "weightedMean": 90.15,
+          "cod": 31.94,
+          "prd": 112.49,
+          "min": 35.41,
+          "max": 189.33,
+          "medianConfidenceInterval": {
+            "low": 81.52,
+            "high": 111.45
+          },
+          "averageAdjustedSalePrice": 73692,
+          "averageAssessedValue": 66432
+        },
+        {
+          "id": "19",
+          "label": "VG 19",
+          "count": 1,
+          "median": 78.6,
+          "mean": 78.6,
+          "weightedMean": 78.6,
+          "cod": 0,
+          "prd": 100,
+          "min": 78.6,
+          "max": 78.6,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 775000,
+          "averageAssessedValue": 609160
+        }
+      ]
+    },
+    "commercial": {
+      "countywide": {
+        "id": "ALL",
+        "label": "All Gage commercial",
+        "count": 46,
+        "median": 95.63,
+        "mean": 99.07,
+        "weightedMean": 88.39,
+        "cod": 15.69,
+        "prd": 112.08,
+        "min": 63.75,
+        "max": 201,
+        "medianConfidenceInterval": {
+          "low": 90.43,
+          "high": 101.64
+        },
+        "averageAdjustedSalePrice": 617636,
+        "averageAssessedValue": 545912
+      },
+      "groups": [
+        {
+          "id": "3",
+          "label": "VG 3",
+          "count": 34,
+          "median": 94.98,
+          "mean": 99.71,
+          "weightedMean": 90.17,
+          "cod": 16.14,
+          "prd": 110.58,
+          "min": 64.62,
+          "max": 201,
+          "medianConfidenceInterval": {
+            "low": 89.33,
+            "high": 102.92
+          },
+          "averageAdjustedSalePrice": 640353,
+          "averageAssessedValue": 577397
+        },
+        {
+          "id": "10",
+          "label": "VG 10",
+          "count": 4,
+          "median": 99.42,
+          "mean": 108.81,
+          "weightedMean": 102.5,
+          "cod": 12.37,
+          "prd": 106.16,
+          "min": 95.82,
+          "max": 140.57,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 170500,
+          "averageAssessedValue": 174761
+        },
+        {
+          "id": "15",
+          "label": "VG 15",
+          "count": 1,
+          "median": 88.77,
+          "mean": 88.77,
+          "weightedMean": 88.77,
+          "cod": 0,
+          "prd": 100,
+          "min": 88.77,
+          "max": 88.77,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 45000,
+          "averageAssessedValue": 39945
+        },
+        {
+          "id": "18",
+          "label": "VG 18",
+          "count": 2,
+          "median": 110.49,
+          "mean": 110.49,
+          "weightedMean": 104.81,
+          "cod": 9.25,
+          "prd": 105.42,
+          "min": 100.27,
+          "max": 120.7,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 22500,
+          "averageAssessedValue": 23583
+        },
+        {
+          "id": "50",
+          "label": "VG 50",
+          "count": 5,
+          "median": 91.15,
+          "mean": 84.41,
+          "weightedMean": 80.01,
+          "cod": 15.35,
+          "prd": 105.5,
+          "min": 63.75,
+          "max": 107.23,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 1173450,
+          "averageAssessedValue": 938858
+        }
+      ]
+    },
+    "agricultural": {
+      "countywide": {
+        "id": "ALL",
+        "label": "All Gage agricultural land",
+        "count": 80,
+        "median": 71.69,
+        "mean": 73.52,
+        "weightedMean": 70.48,
+        "cod": 15.37,
+        "prd": 104.31,
+        "min": 21.04,
+        "max": 202.99,
+        "medianConfidenceInterval": {
+          "low": 67.97,
+          "high": 73.29
+        },
+        "averageAdjustedSalePrice": 848906,
+        "averageAssessedValue": 598349
+      },
+      "groups": [
+        {
+          "id": "1",
+          "label": "Market Area 1",
+          "count": 68,
+          "median": 71.69,
+          "mean": 74.09,
+          "weightedMean": 70.66,
+          "cod": 16.25,
+          "prd": 104.85,
+          "min": 21.04,
+          "max": 202.99,
+          "medianConfidenceInterval": {
+            "low": 67.84,
+            "high": 73.42
+          },
+          "averageAdjustedSalePrice": 889528,
+          "averageAssessedValue": 628576
+        },
+        {
+          "id": "2",
+          "label": "Market Area 2",
+          "count": 12,
+          "median": 71.86,
+          "mean": 70.28,
+          "weightedMean": 69.02,
+          "cod": 10.44,
+          "prd": 101.83,
+          "min": 50.09,
+          "max": 90.2,
+          "medianConfidenceInterval": {
+            "low": 63.62,
+            "high": 76.02
+          },
+          "averageAdjustedSalePrice": 618713,
+          "averageAssessedValue": 427060
+        }
+      ],
+      "majorityLandUseBreakouts": {
+        "dry": [
+          {
+            "id": "county",
+            "label": "County - Dry",
+            "count": 49,
+            "median": 70.55,
+            "mean": 71.29,
+            "weightedMean": 70.41,
+            "cod": 11.16,
+            "prd": 101.25,
+            "min": 46.82,
+            "max": 111.43,
+            "medianConfidenceInterval": {
+              "low": 66.18,
+              "high": 72.34
+            },
+            "averageAdjustedSalePrice": 905399,
+            "averageAssessedValue": 637464
+          },
+          {
+            "id": "1",
+            "label": "Market Area 1 - Dry",
+            "count": 44,
+            "median": 70.22,
+            "mean": 71.36,
+            "weightedMean": 70.48,
+            "cod": 11.65,
+            "prd": 101.25,
+            "min": 46.82,
+            "max": 111.43,
+            "medianConfidenceInterval": {
+              "low": 65.53,
+              "high": 73.11
+            },
+            "averageAdjustedSalePrice": 907641,
+            "averageAssessedValue": 639730
+          },
+          {
+            "id": "2",
+            "label": "Market Area 2 - Dry",
+            "count": 5,
+            "median": 71.63,
+            "mean": 70.61,
+            "weightedMean": 69.72,
+            "cod": 6.85,
+            "prd": 101.28,
+            "min": 63.62,
+            "max": 80.92,
+            "medianConfidenceInterval": null,
+            "averageAdjustedSalePrice": 885672,
+            "averageAssessedValue": 617516
+          }
+        ],
+        "grass": [
+          {
+            "id": "county",
+            "label": "County - Grass",
+            "count": 9,
+            "median": 76.02,
+            "mean": 89.21,
+            "weightedMean": 69.43,
+            "cod": 40.07,
+            "prd": 128.49,
+            "min": 43.57,
+            "max": 202.99,
+            "medianConfidenceInterval": {
+              "low": 50.09,
+              "high": 124.45
+            },
+            "averageAdjustedSalePrice": 443087,
+            "averageAssessedValue": 307638
+          },
+          {
+            "id": "1",
+            "label": "Market Area 1 - Grass",
+            "count": 4,
+            "median": 103.66,
+            "mean": 113.47,
+            "weightedMean": 73,
+            "cod": 48.48,
+            "prd": 155.44,
+            "min": 43.57,
+            "max": 202.99,
+            "medianConfidenceInterval": null,
+            "averageAdjustedSalePrice": 484895,
+            "averageAssessedValue": 353969
+          },
+          {
+            "id": "2",
+            "label": "Market Area 2 - Grass",
+            "count": 5,
+            "median": 74.41,
+            "mean": 69.8,
+            "weightedMean": 66.05,
+            "cod": 15.55,
+            "prd": 105.68,
+            "min": 50.09,
+            "max": 90.2,
+            "medianConfidenceInterval": null,
+            "averageAdjustedSalePrice": 409640,
+            "averageAssessedValue": 270574
+          }
+        ],
+        "irrigated": [
+          {
+            "id": "county",
+            "label": "County - Irrigated",
+            "count": 3,
+            "median": 71.63,
+            "mean": 70.44,
+            "weightedMean": 71.25,
+            "cod": 4.5,
+            "prd": 98.86,
+            "min": 65.02,
+            "max": 74.68,
+            "medianConfidenceInterval": null,
+            "averageAdjustedSalePrice": 1334363,
+            "averageAssessedValue": 950793
+          },
+          {
+            "id": "1",
+            "label": "Market Area 1 - Irrigated",
+            "count": 3,
+            "median": 71.63,
+            "mean": 70.44,
+            "weightedMean": 71.25,
+            "cod": 4.5,
+            "prd": 98.86,
+            "min": 65.02,
+            "max": 74.68,
+            "medianConfidenceInterval": null,
+            "averageAdjustedSalePrice": 1334363,
+            "averageAssessedValue": 950793
+          }
+        ]
+      }
+    }
+  }
+}

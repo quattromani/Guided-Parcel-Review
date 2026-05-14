@@ -4,7 +4,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     panelId: "landing-primer",
     eyebrow: "Start here",
     label: "Start",
-    question: "You are looking at your property.",
+    question: "You are looking at this property.",
     title: "Start with a calm snapshot of the property",
     description: "Confirm that this is the property you meant to review. The opening snapshot brings the parcel, status, key values, and source context into one starting point."
   },
@@ -13,7 +13,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     panelId: "your-property",
     eyebrow: "Orient",
     label: "Property Record",
-    question: "Does the county record describe my property correctly?",
+    question: "Does the county record describe this property correctly?",
     title: "Review the property record before value or taxes",
     description: "Start with the factual record: identity, land, dwelling facts, quality, condition, photos, and source notes. These details establish the property description used in later value and tax views."
   },
@@ -58,7 +58,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     panelId: "final-summary",
     eyebrow: "Summary",
     label: "Summary",
-    question: "What did I review?",
+    question: "What was reviewed?",
     title: "Leave with orientation and optional next steps",
     description: "Summarize the property record, value movement, tax context, and any neutral review signals. The summary keeps what has been covered separate from any optional next steps."
   },

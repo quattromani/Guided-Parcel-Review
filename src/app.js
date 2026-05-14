@@ -15,6 +15,7 @@ import {
   loadCertifiedTaxesLevied,
   loadCountyContext,
   loadGoverningOffice,
+  loadMarketPositionStatistics,
   loadPropertyData,
   loadPropertyRecordCard,
   loadPadRatioStatistics,
@@ -66,7 +67,7 @@ const resourcesByView = {
       ["What should I do first?", "Confirm that you are looking at the right property, then review the record before interpreting values or taxes."],
       ["Is this telling me to protest?", "No. The primary goal is orientation and understanding. Filing steps remain optional resources."],
       ["Why are some current-year values pending?", "Assessment-year information can appear before final tax bills or complete current-year values are available."],
-      ["What if I only want to understand my tax bill?", "Use the Tax Context step after reviewing the property and value movement basics."]
+      ["What if the question is only about the tax bill?", "Use the Tax Context step after reviewing the property and value movement basics."]
     ],
     forms: ["recordConcern", "homestead"],
     learn: [
@@ -101,7 +102,7 @@ const resourcesByView = {
     faqs: [
       ["Is assessed value the same as market value?", "For most residential real property, assessed value is intended to reflect market value as of the assessment date."],
       ["Why are land and improvement values separated?", "Separating land from buildings helps show which part of the property model changed."],
-      ["Why did my value change?", "Value can change because of updated property facts, market movement, depreciation, new construction, or comparable sales."],
+      ["Why did the value change?", "Value can change because of updated property facts, market movement, depreciation, new construction, or comparable sales."],
       ["How do comparable sales matter?", "Comparable sales help test whether the assessment is reasonable for similar properties in the market."]
     ],
     forms: ["recordConcern", "valuationProtest"],
@@ -174,7 +175,7 @@ const resourcesByView = {
       ["Why look at countywide trends?", "Countywide data shows the assessment system around the parcel, not just one property."],
       ["What is equalization?", "Equalization is the process of keeping assessments at required levels and reasonably uniform."],
       ["What do COD and PRD measure?", "COD describes assessment uniformity. PRD helps flag whether high- and low-value properties are treated consistently."],
-      ["Can countywide measures prove my parcel value is wrong?", "Not by themselves. They are context; parcel facts and comparable evidence still matter."]
+      ["Can countywide measures prove the parcel value is wrong?", "Not by themselves. They are context; parcel facts and comparable evidence still matter."]
     ],
     forms: ["valuationProtest"],
     learn: [
@@ -228,7 +229,7 @@ const resourcesByView = {
       ["What is in Resources?", "The Resources tab keeps the assessment calendar, comparable worksheet, and optional protest preparation materials separate from the main review path."],
       ["Does opening Resources mean I should file something?", "No. These are reference and preparation materials. Use them only if they help answer a specific question."],
       ["Why is the calendar first?", "Calendar context helps explain what stage the assessment process is in before worksheet or filing materials appear."],
-      ["Can the worksheet change my assessed value?", "No. It is an organization tool and does not guarantee a change or outcome."]
+      ["Can the worksheet change the assessed value?", "No. It is an organization tool and does not guarantee a change or outcome."]
     ],
     forms: ["recordConcern", "valuationProtest", "homestead"],
     learn: [
@@ -251,7 +252,7 @@ const resourceAliases = {
 
 async function main() {
   applyVisualizationPalette();
-  const [propertyData, recordCard, calendar, ctlData, ratioData, countyContext, governingOffice, padRatioData, schoolDistrictColors, taxDistrictAuthorities, valuationGroups, iaaoStandards] = await Promise.all([
+  const [propertyData, recordCard, calendar, ctlData, ratioData, countyContext, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, taxDistrictAuthorities, valuationGroups, iaaoStandards] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
     loadAssessmentCalendar(),
@@ -260,6 +261,7 @@ async function main() {
     loadCountyContext(),
     loadGoverningOffice(),
     loadPadRatioStatistics(),
+    loadMarketPositionStatistics(),
     loadSchoolDistrictColors(),
     loadTaxDistrictAuthorities(),
     loadValuationGroups(),
@@ -273,6 +275,7 @@ async function main() {
     ratioData,
     countyContext,
     padRatioData,
+    marketPositionData,
     taxDistrictAuthorities,
     valuationGroups,
     iaaoStandards
@@ -284,6 +287,7 @@ async function main() {
     ctlData,
     ratioData,
     padRatioData,
+    marketPositionData,
     iaaoStandards
   });
   installCivicJourneyPanels(data, {
@@ -291,6 +295,7 @@ async function main() {
     ctlData,
     ratioData,
     padRatioData,
+    marketPositionData,
     iaaoStandards
   });
   renderTaxDistrictAuthorities(data, taxDistrictAuthorities);
@@ -299,7 +304,7 @@ async function main() {
   buildEtrChart(data);
   buildDistributionChart(data, schoolDistrictColors);
   buildOverviewCharts(data, ctlData);
-  initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards);
+  initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards, marketPositionData);
   buildCtlSummary(data, ctlData);
   initCountyComparison(data, ctlData, recordCard);
   initAssessmentRatioAnalysis(data, ratioData, iaaoStandards);

@@ -4,6 +4,17 @@ import {
   semanticChartColors,
   visualizationTheme
 } from "./config/visualization-palettes.js";
+import {
+  getClassMarketStats,
+  getCodInterpretationRange,
+  getCountywideMarketPoint,
+  getMarketScatterPoints,
+  getMedianRatioRange,
+  getParcelMarketClass,
+  getParcelMarketGroupId,
+  getSelectedMarketGroup,
+  normalizeMarketClassKey
+} from "./market-stats.js";
 import { getMetricSignal } from "./metric-signals.js";
 
 const levyGroupColors = visualizationTheme.districtGroups;
@@ -27,8 +38,7 @@ const palette = {
 let assessmentAccuracyChart;
 let countyComparisonIndexedChart;
 let countyComparisonRateChart;
-let marketRatioChart;
-let marketValueChart;
+let marketPositionScatterChart;
 let marketSalePriceChart;
 let taxBurdenPatternChart;
 
@@ -548,6 +558,100 @@ const assessmentStandardBandPlugin = {
   }
 };
 
+const marketPositionReferencePlugin = {
+  id: "marketPositionReference",
+  beforeDatasetsDraw(chart, args, options = {}) {
+    const { ctx, chartArea, scales } = chart;
+    if (!chartArea || !scales.x || !scales.y) return;
+
+    ctx.save();
+    const medianRange = options.medianRange;
+    if (medianRange) {
+      const xStart = scales.x.getPixelForValue(medianRange.min);
+      const xEnd = scales.x.getPixelForValue(medianRange.max);
+      const left = Math.max(chartArea.left, Math.min(xStart, xEnd));
+      const right = Math.min(chartArea.right, Math.max(xStart, xEnd));
+
+      if (right > left) {
+        ctx.fillStyle = options.medianBandColor ?? colorAlpha(visualizationTheme.roles.rate, 0.11);
+        ctx.fillRect(left, chartArea.top, right - left, chartArea.bottom - chartArea.top);
+      }
+    }
+
+    const countywide = options.countywide;
+    if (countywide) {
+      const centerX = scales.x.getPixelForValue(countywide.median);
+      const centerY = scales.y.getPixelForValue(countywide.cod);
+      if (Number.isFinite(centerX) && Number.isFinite(centerY)) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+        ctx.clip();
+
+        const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.min(chartArea.width, chartArea.height) * 0.42);
+        gradient.addColorStop(0, colorAlpha(visualizationTheme.roles.rate, 0.08));
+        gradient.addColorStop(0.72, colorAlpha(visualizationTheme.roles.rate, 0.025));
+        gradient.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+
+        [
+          { xRadius: 5, yRadius: 4, alpha: 0.14 },
+          { xRadius: 10, yRadius: 8, alpha: 0.10 },
+          { xRadius: 16, yRadius: 13, alpha: 0.07 }
+        ].forEach(ring => {
+          const radiusX = Math.abs(scales.x.getPixelForValue(countywide.median + ring.xRadius) - centerX);
+          const radiusY = Math.abs(scales.y.getPixelForValue(countywide.cod + ring.yRadius) - centerY);
+          if (!Number.isFinite(radiusX) || !Number.isFinite(radiusY) || radiusX <= 0 || radiusY <= 0) return;
+
+          ctx.beginPath();
+          ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
+          ctx.strokeStyle = colorAlpha(visualizationTheme.roles.rate, ring.alpha);
+          ctx.lineWidth = 1.1;
+          ctx.setLineDash([2, 5]);
+          ctx.stroke();
+        });
+        ctx.restore();
+      }
+    }
+
+    const codRange = options.codRange;
+    if (codRange) {
+      const yStart = scales.y.getPixelForValue(codRange.min);
+      const yEnd = scales.y.getPixelForValue(codRange.max);
+      const top = Math.max(chartArea.top, Math.min(yStart, yEnd));
+      const bottom = Math.min(chartArea.bottom, Math.max(yStart, yEnd));
+
+      if (bottom > top) {
+        ctx.fillStyle = options.codBandColor ?? colorAlpha(visualizationTheme.roles.comparison, 0.08);
+        ctx.fillRect(chartArea.left, top, chartArea.right - chartArea.left, bottom - top);
+      }
+    }
+    ctx.restore();
+  },
+  afterDatasetsDraw(chart, args, options = {}) {
+    const { ctx, chartArea, scales } = chart;
+    const countywide = options.countywide;
+    if (!chartArea || !scales.x || !scales.y || !countywide) return;
+
+    const x = scales.x.getPixelForValue(countywide.median);
+    const y = scales.y.getPixelForValue(countywide.cod);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+
+    ctx.save();
+    ctx.strokeStyle = options.countyLineColor ?? colorAlpha(visualizationTheme.roles.comparison, 0.42);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(x, chartArea.top);
+    ctx.lineTo(x, chartArea.bottom);
+    ctx.moveTo(chartArea.left, y);
+    ctx.lineTo(chartArea.right, y);
+    ctx.stroke();
+    ctx.restore();
+  }
+};
+
 function getAssessmentDisplayRecords(selectedClass) {
   return selectedClass.records.filter(row => (
     row.year >= assessmentDisplayYears.start && row.year <= assessmentDisplayYears.end
@@ -868,62 +972,84 @@ function renderCustomLegend(elementId, datasets) {
   return true;
 }
 
-function extractValuationGroupId(recordCard) {
-  const raw = `${recordCard?.locationModel?.valuationGroup ?? ""}`;
-  return raw.match(/\d+/)?.[0] ?? null;
-}
-
 function formatRatio(value, digits = 2) {
   if (value === null || value === undefined) return "—";
-  return value.toFixed(digits);
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toFixed(digits) : "—";
 }
 
-function marketAreaSignal(selected, summary) {
+function marketAreaSignal(selected, summary, classStats, medianRange = null, isParcelGroup = true) {
   const medianDelta = selected.median - summary.median;
   const codDelta = selected.cod - summary.cod;
+  const classLabel = classStats?.classLabel ?? "selected property class";
+  const className = classLabel.replace(/\s+real property/i, "").toLowerCase();
+  const groupKind = classStats?.classKey === "agricultural" ? "market area" : "valuation group";
+  const rangeText = medianRange
+    ? selected.median >= medianRange.min && selected.median <= medianRange.max
+      ? "inside the expected range"
+      : "outside the expected range"
+    : "shown for context";
   const medianText = Math.abs(medianDelta) < 1
-    ? "very close to the county residential median"
+    ? `close to the county ${className} median`
     : medianDelta > 0
-      ? `${Math.abs(medianDelta).toFixed(2)} points above the county residential median`
-      : `${Math.abs(medianDelta).toFixed(2)} points below the county residential median`;
+      ? `${Math.abs(medianDelta).toFixed(2)} points above the county ${className} median`
+      : `${Math.abs(medianDelta).toFixed(2)} points below the county ${className} median`;
   const codText = Math.abs(codDelta) < 1
-    ? "roughly as uniform as the countywide residential study"
+    ? "close to the countywide pattern"
     : codDelta < 0
-      ? `tighter than the countywide study by ${Math.abs(codDelta).toFixed(2)} COD points`
-      : `wider than the countywide study by ${Math.abs(codDelta).toFixed(2)} COD points`;
+      ? `less dispersed than the county overall by ${Math.abs(codDelta).toFixed(2)} COD points`
+      : `more dispersed than the county overall by ${Math.abs(codDelta).toFixed(2)} COD points`;
+  const sampleText = selected.count < 10
+    ? " Because this is a small sample, its position can move more from sale to sale."
+    : "";
 
-  return `${selected.label} is the local comparison group for this property. It includes ${integer.format(selected.count)} qualified residential sales. The middle sale was assessed at ${formatRatio(selected.median)} of sale price, ${medianText}. Its COD, a uniformity measure, is ${formatRatio(selected.cod)}, ${codText}.`;
+  const groupIntro = isParcelGroup
+    ? `${selected.label} is this property’s local ${groupKind}`
+    : `${selected.label} is the selected ${groupKind}`;
+
+  return `${groupIntro}. It includes ${integer.format(selected.count)} qualified ${className} sales. Its median ratio is ${formatRatio(selected.median)}, ${medianText} and ${rangeText}. Its COD is ${formatRatio(selected.cod)}, ${codText}.${sampleText}`;
 }
 
-function valuationGroupLookup(valuationGroups, propertyClass = "Residential") {
+function valuationGroupLookup(valuationGroups, propertyClass = "residential") {
+  const classKey = normalizeMarketClassKey(propertyClass);
+
   return new Map((valuationGroups?.valuationGroups || [])
-    .filter(item => item.class === propertyClass)
+    .filter(item => normalizeMarketClassKey(item.class) === classKey)
     .map(item => [String(item.valuationGroup), item]));
 }
 
-function enrichedMarketGroups(groups, valuationGroups, propertyClass = "Residential") {
+function enrichedMarketGroups(groups, valuationGroups, propertyClass = "residential") {
   const lookup = valuationGroupLookup(valuationGroups, propertyClass);
+  const classKey = normalizeMarketClassKey(propertyClass);
+  const isAgricultural = classKey === "agricultural";
 
   return groups.map(group => {
-    const listing = lookup.get(String(group.group));
+    const id = String(group.id ?? group.group);
+    const listing = lookup.get(id);
     const description = listing?.description || group.description || "";
     const marketGroup = listing?.marketGroup || null;
-    const descriptiveLabel = description
-      ? `Valuation Group ${group.group} - ${description}`
-      : group.label;
-    const areaFirstLabel = description
-      ? `${description} · VG ${group.group}`
-      : group.label;
+    const descriptiveLabel = isAgricultural
+      ? group.label
+      : description
+        ? `Valuation Group ${id} - ${description}`
+        : group.label;
+    const areaFirstLabel = isAgricultural
+      ? group.label
+      : description
+        ? `${description} · VG ${id}`
+        : group.label;
     const marketGroupLabel = marketGroup ? `${marketGroup} market` : "";
 
     return {
       ...group,
+      id,
+      group: id,
       description,
       marketGroup,
       label: areaFirstLabel,
       descriptiveLabel,
       optionLabel: marketGroupLabel ? `${areaFirstLabel} (${marketGroupLabel})` : areaFirstLabel,
-      shortLabel: description ? `VG ${group.group} - ${description}` : group.label
+      shortLabel: isAgricultural ? group.label : description ? `VG ${id} - ${description}` : group.label
     };
   });
 }
@@ -932,6 +1058,7 @@ function renderMarketSignalCards(selected, summary, standards, context = {}) {
   const container = document.getElementById("marketSignalCards");
   if (!container) return;
 
+  const countyCount = summary.count ?? summary.numberOfSales;
   const signalContext = {
     ...context,
     valuationGroup: selected.descriptiveLabel ?? selected.label,
@@ -942,9 +1069,9 @@ function renderMarketSignalCards(selected, summary, standards, context = {}) {
       metricKey: "qualifiedSales",
       label: "Qualified sales",
       rawValue: selected.count,
-      comparisonValue: summary.numberOfSales,
+      comparisonValue: countyCount,
       value: integer.format(selected.count),
-      note: `${integer.format(summary.numberOfSales)} countywide`
+      note: `${integer.format(countyCount)} countywide`
     },
     {
       metricKey: "medianRatio",
@@ -997,10 +1124,10 @@ function renderMarketSignalCards(selected, summary, standards, context = {}) {
   }).join("");
 }
 
-function renderMarketNarrative(selected, summary) {
+function renderMarketNarrative(selected, summary, classStats, medianRange, isParcelGroup = true) {
   const narrative = document.getElementById("marketNarrative");
   if (!narrative) return;
-  narrative.textContent = marketAreaSignal(selected, summary);
+  narrative.textContent = marketAreaSignal(selected, summary, classStats, medianRange, isParcelGroup);
 }
 
 function priceBandStudyForClass(padRatioData, classKey = "residential") {
@@ -1189,135 +1316,358 @@ function renderMarketSalePriceChart(rows, study = {}) {
   });
 }
 
-function renderMarketRatioChart(selected, summary) {
-  const canvas = document.getElementById("marketRatioChart");
-  if (!canvas) return;
-  const selectedLabel = selected.shortLabel || selected.label;
+function confidenceIntervalLabel(interval) {
+  if (!interval) return "Confidence interval: not available";
+  if (typeof interval === "string") return `Confidence interval: ${interval}`;
+  if (interval.low === null || interval.low === undefined || interval.high === null || interval.high === undefined) {
+    return "Confidence interval: not available";
+  }
 
-  marketRatioChart?.destroy();
-  marketRatioChart = new Chart(canvas, {
-    type: "bar",
-    data: {
-      labels: ["Median", "Weighted mean", "Mean", "PRD"],
-      datasets: [
-        {
-          label: selectedLabel,
-          data: [selected.median, selected.weightedMean, selected.mean, selected.prd],
-          backgroundColor: semanticChartColors.valueBg,
-          borderColor: chartColors.contextValue,
-          borderWidth: 2
-        },
-        {
-          label: "All Gage residential",
-          data: [summary.median, summary.weightedMean, summary.mean, summary.prd],
-          backgroundColor: visualizationTheme.roles.comparisonSoft,
-          borderColor: chartColors.propertyValue,
-          borderWidth: 2
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          suggestedMin: 75,
-          suggestedMax: 115
-        }
-      }
-    }
-  });
+  return `Confidence interval: ${formatRatio(interval.low)} to ${formatRatio(interval.high)}`;
 }
 
-function renderMarketValueChart(selected, summary) {
-  const canvas = document.getElementById("marketValueChart");
-  if (!canvas) return;
-  const selectedLabel = selected.shortLabel || selected.label;
+function getMarketPositionSourceAnchor(classStats) {
+  const source = classStats?.source || {};
+  const year = source.taxYear ?? source.reportDate?.match(/\b20\d{2}\b/)?.[0] ?? "Current";
+  const countyName = source.county ? `${source.county} County` : "county";
+  const pages = source.extractedFromPages?.[classStats?.classKey] ?? [];
+  const pageRange = pages.length > 1 ? `${pages[0]}-${pages.at(-1)}` : pages[0];
+  const pageText = pageRange ? `, pages ${pageRange}` : "";
 
-  marketValueChart?.destroy();
-  marketValueChart = new Chart(canvas, {
-    type: "bar",
+  return `Source: ${year} ${countyName} Reports and Opinions of the Property Tax Administrator${pageText}.`;
+}
+
+function renderMarketPositionLegend() {
+  const legend = document.getElementById("marketPositionLegend");
+  if (!legend) return;
+
+  const items = [
+    {
+      label: "Other local groups",
+      borderColor: colorAlpha(visualizationTheme.roles.comparison, 0.68),
+      backgroundColor: colorAlpha(visualizationTheme.roles.comparison, 0.18)
+    },
+    {
+      label: "Selected group",
+      borderColor: visualizationTheme.roles.market,
+      backgroundColor: colorAlpha(visualizationTheme.roles.market, 0.22)
+    },
+    {
+      label: "Countywide result",
+      borderColor: visualizationTheme.roles.property,
+      backgroundColor: palette.white,
+      dashed: true
+    },
+    {
+      label: "Expected median range",
+      borderColor: visualizationTheme.roles.rate,
+      backgroundColor: colorAlpha(visualizationTheme.roles.rate, 0.12),
+      square: true
+    }
+  ];
+
+  legend.innerHTML = items.map(item => `
+    <div class="flex items-center gap-2">
+      <span
+        class="chart-legend-dot inline-block border-2"
+        style="
+          border-color: ${item.borderColor};
+          background-color: ${item.backgroundColor};
+          ${item.dashed ? "border-style: dashed;" : ""}
+          ${item.square ? "border-radius: 0.25rem;" : ""}
+        "
+      ></span>
+      <span>${item.label}</span>
+    </div>
+  `).join("");
+}
+
+function marketPositionBounds(points, countywide, medianRange, codRange) {
+  const xValues = points.map(point => point.x).concat(countywide ? [countywide.x] : []);
+  const yValues = points.map(point => point.y).concat(countywide ? [countywide.y] : []);
+  if (medianRange) xValues.push(medianRange.min, medianRange.max);
+  if (codRange) yValues.push(codRange.min, codRange.max);
+
+  const xMinRaw = Math.min(...xValues);
+  const xMaxRaw = Math.max(...xValues);
+  const yMaxRaw = Math.max(...yValues);
+  const xPadding = Math.max(3, (xMaxRaw - xMinRaw) * 0.08);
+  const yPadding = Math.max(2, yMaxRaw * 0.12);
+
+  return {
+    xMin: Math.max(0, Math.floor(xMinRaw - xPadding)),
+    xMax: Math.ceil(xMaxRaw + xPadding),
+    yMax: Math.ceil(yMaxRaw + yPadding)
+  };
+}
+
+function centralMarketPoint(point, medianRange, codRange, countywide) {
+  const medianCenter = medianRange?.center
+    ?? (medianRange ? (medianRange.min + medianRange.max) / 2 : countywide?.median);
+  const medianPadding = medianRange
+    ? Math.max(6, (medianRange.max - medianRange.min) * 1.5)
+    : 10;
+  const codLimit = codRange?.max ?? (countywide ? countywide.cod * 1.6 : 25);
+
+  return Math.abs(point.median - medianCenter) <= medianPadding
+    && point.cod <= codLimit + 3;
+}
+
+function marketPointTooltip(point, classStats) {
+  return [
+    `Class: ${classStats?.classLabel ?? "Selected class"}`,
+    `Qualified sales: ${integer.format(point.count)}`,
+    `Median ratio: ${formatRatio(point.median)}`,
+    `COD: ${formatRatio(point.cod)}`,
+    `PRD: ${formatRatio(point.prd)}`,
+    `Average adjusted sale price: ${wholeMoney.format(point.averageAdjustedSalePrice)}`,
+    `Average assessed value: ${wholeMoney.format(point.averageAssessedValue)}`,
+    confidenceIntervalLabel(point.medianConfidenceInterval)
+  ];
+}
+
+function renderMarketScatterSummary(selected, countywide, classStats, medianRange) {
+  const summary = document.getElementById("marketScatterSummary");
+  if (!summary) return;
+
+  const medianInsideRange = medianRange
+    ? selected.median >= medianRange.min && selected.median <= medianRange.max
+    : null;
+  const medianRangeText = medianInsideRange === null
+    ? "is shown against the available median-ratio reference"
+    : medianInsideRange
+      ? "remains inside the expected median-ratio range"
+      : "sits outside the expected median-ratio range";
+  const codDelta = selected.cod - countywide.cod;
+  const codText = Math.abs(codDelta) < 1
+    ? "with COD close to the countywide pattern"
+    : codDelta > 0
+      ? `with COD ${formatRatio(Math.abs(codDelta))} points more dispersed than the county overall`
+      : `with COD ${formatRatio(Math.abs(codDelta))} points less dispersed than the county overall`;
+  const sampleText = selected.count < 10
+    ? " The sales sample is small, so read the point with context."
+    : "";
+
+  summary.textContent = `The highlighted group ${medianRangeText} and ${codText}. The nearby cluster shows how other local groups relate to the broader county pattern.${sampleText}`;
+}
+
+function renderMarketPriceSummary(selected, countywide) {
+  const container = document.getElementById("marketPriceSummary");
+  if (!container) return;
+
+  const rows = [
+    {
+      label: "Average adjusted sale price",
+      value: wholeMoney.format(selected.averageAdjustedSalePrice),
+      countyValue: wholeMoney.format(countywide.averageAdjustedSalePrice)
+    },
+    {
+      label: "Average assessed value",
+      value: wholeMoney.format(selected.averageAssessedValue),
+      countyValue: wholeMoney.format(countywide.averageAssessedValue)
+    },
+    {
+      label: "Qualified sales",
+      value: integer.format(selected.count),
+      countyValue: integer.format(countywide.count)
+    }
+  ];
+
+  container.innerHTML = rows.map(row => `
+    <div
+      class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200"
+      role="group"
+      aria-label="${escapeHtml(`${row.label}: ${row.value}. Countywide: ${row.countyValue}.`)}"
+    >
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(row.label)}</p>
+      <p class="mt-1 text-2xl font-bold leading-tight text-slate-700">${escapeHtml(row.value)}</p>
+      <p class="mt-2 text-xs leading-5 text-slate-500">Countywide: ${escapeHtml(row.countyValue)}</p>
+    </div>
+  `).join("");
+}
+
+function renderMarketPositionScatter(selected, classStats, iaaoStandards, onSelectGroup = null) {
+  const canvas = document.getElementById("marketPositionScatter");
+  if (!canvas) return;
+
+  const medianRange = getMedianRatioRange(classStats, iaaoStandards);
+  const codRange = getCodInterpretationRange(classStats, iaaoStandards);
+  const countywide = getCountywideMarketPoint(classStats);
+  const points = getMarketScatterPoints(classStats);
+  const selectedPoint = points.find(point => String(point.id) === String(selected.id)) ?? points[0];
+  const otherPoints = points.filter(point => String(point.id) !== String(selectedPoint.id));
+  const bounds = marketPositionBounds(points, countywide, medianRange, codRange);
+  const mutedPointColor = colorAlpha(visualizationTheme.roles.comparison, 0.55);
+  const mutedPointFill = colorAlpha(visualizationTheme.roles.comparison, 0.18);
+  const selectedColor = visualizationTheme.roles.market;
+  const countyColor = visualizationTheme.roles.property;
+  const otherPointRadii = otherPoints.map(point =>
+    centralMarketPoint(point, medianRange, codRange, countywide) ? 5.5 : 3.5
+  );
+  const otherPointBackgrounds = otherPoints.map(point =>
+    centralMarketPoint(point, medianRange, codRange, countywide)
+      ? mutedPointFill
+      : colorAlpha(visualizationTheme.roles.comparison, 0.08)
+  );
+  const otherPointBorders = otherPoints.map(point =>
+    centralMarketPoint(point, medianRange, codRange, countywide)
+      ? mutedPointColor
+      : colorAlpha(visualizationTheme.roles.comparison, 0.32)
+  );
+
+  renderMarketPositionLegend();
+  marketPositionScatterChart?.destroy();
+  marketPositionScatterChart = new Chart(canvas, {
+    type: "scatter",
     data: {
-      labels: ["Avg. adjusted sale price", "Avg. assessed value"],
       datasets: [
         {
-          label: selectedLabel,
-          data: [selected.averageAdjustedSalePrice, selected.averageAssessedValue],
-          backgroundColor: visualizationTheme.roles.marketSoft,
-          borderColor: visualizationTheme.roles.market,
-          borderWidth: 2
+          label: "Other local groups",
+          data: otherPoints,
+          pointRadius: otherPointRadii,
+          pointHoverRadius: otherPointRadii.map(radius => radius + 2),
+          pointBackgroundColor: otherPointBackgrounds,
+          pointBorderColor: otherPointBorders,
+          pointBorderWidth: 1.5
         },
         {
-          label: "All Gage residential",
-          data: [summary.averageAdjustedSalePrice, summary.averageAssessedValue],
-          backgroundColor: visualizationTheme.roles.attentionSoft,
-          borderColor: visualizationTheme.roles.attention,
-          borderWidth: 2
+          label: "Selected group",
+          data: selectedPoint ? [selectedPoint] : [],
+          pointRadius: 8,
+          pointHoverRadius: 10,
+          pointBackgroundColor: colorAlpha(selectedColor, 0.22),
+          pointBorderColor: selectedColor,
+          pointBorderWidth: 3
+        },
+        {
+          label: "Countywide result",
+          data: countywide ? [countywide] : [],
+          pointRadius: 7,
+          pointHoverRadius: 9,
+          pointStyle: "triangle",
+          pointBackgroundColor: palette.white,
+          pointBorderColor: countyColor,
+          pointBorderWidth: 2.5
         }
       ]
     },
+    plugins: [marketPositionReferencePlugin],
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: { mode: "nearest", intersect: true },
+      onClick: (event, elements, chart) => {
+        const hit = elements?.[0];
+        if (!hit || hit.datasetIndex === 2) return;
+
+        const point = chart.data.datasets[hit.datasetIndex]?.data?.[hit.index];
+        if (!point?.id || point.id === "ALL") return;
+
+        onSelectGroup?.(point.id);
+      },
+      onHover: (event, elements) => {
+        canvas.style.cursor = elements?.some(element => element.datasetIndex !== 2) ? "pointer" : "default";
+      },
       plugins: {
+        legend: { display: false },
         tooltip: {
           callbacks: {
-            label: context => `${context.dataset.label}: ${wholeMoney.format(context.parsed.y)}`
+            title: context => context[0]?.raw?.label ?? "",
+            label: context => `Median ${formatRatio(context.raw.median)}, COD ${formatRatio(context.raw.cod)}`,
+            afterLabel: context => marketPointTooltip(context.raw, classStats)
           }
+        },
+        marketPositionReference: {
+          medianRange,
+          codRange,
+          countywide: countywide ? {
+            median: countywide.median,
+            cod: countywide.cod
+          } : null
         }
       },
       scales: {
+        x: {
+          title: { display: true, text: "Median ratio" },
+          min: bounds.xMin,
+          max: bounds.xMax,
+          grid: { color: visualizationTheme.neutrals.gridline },
+          ticks: { callback: value => formatRatio(Number(value), 0) }
+        },
         y: {
-          ticks: { callback: value => compactMoney.format(value) }
+          title: { display: true, text: "COD" },
+          min: 0,
+          suggestedMax: bounds.yMax,
+          grid: { color: visualizationTheme.neutrals.gridline },
+          ticks: { callback: value => formatRatio(Number(value), 0) }
         }
       }
     }
   });
+
+  canvas.setAttribute(
+    "aria-label",
+    `${selected.label} is highlighted at median ratio ${formatRatio(selected.median)} and COD ${formatRatio(selected.cod)}. Countywide median ratio is ${formatRatio(countywide.median)} and countywide COD is ${formatRatio(countywide.cod)}.`
+  );
+  renderMarketScatterSummary(selected, countywide, classStats, medianRange);
+  const source = document.getElementById("marketPositionSource");
+  if (source) source.textContent = getMarketPositionSourceAnchor(classStats);
 }
 
-export function initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards) {
+export function initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards, marketPositionData) {
   const select = document.getElementById("marketAreaSelect");
-  if (!select || !padRatioData?.valuationGroups?.length) return;
+  const classKey = getParcelMarketClass(data);
+  const baseClassStats = getClassMarketStats(marketPositionData, classKey);
+  if (!select || !baseClassStats?.groups?.length) return;
 
-  const groups = enrichedMarketGroups(padRatioData.valuationGroups, valuationGroups, padRatioData.source.propertyClass);
+  const groups = enrichedMarketGroups(baseClassStats.groups, valuationGroups, baseClassStats.classKey);
+  const classStats = {
+    ...baseClassStats,
+    groups
+  };
+  const countywide = classStats.countywide;
+  const medianRange = getMedianRatioRange(classStats, iaaoStandards);
   const signalContext = {
     propertyClass: data.classification?.propertyClass ?? data.parcel?.accountType,
-    assessmentClass: padRatioData.source?.propertyClass,
-    jurisdictionType: padRatioData.source?.jurisdictionType ?? data.classification?.location,
-    ruralUrbanContext: padRatioData.source?.ruralUrbanContext ?? data.classification?.location,
-    countyName: padRatioData.source?.countyName ?? data.parcel?.countyName,
+    assessmentClass: classStats.classLabel,
+    jurisdictionType: padRatioData?.source?.jurisdictionType ?? data.classification?.location,
+    ruralUrbanContext: padRatioData?.source?.ruralUrbanContext ?? data.classification?.location,
+    countyName: classStats.source?.county ?? padRatioData?.source?.countyName ?? data.parcel?.countyName,
     specialValuation: Boolean(data.classification?.specialValuation),
     greenbelt: Boolean(data.classification?.greenbelt)
   };
-  const defaultGroup = extractValuationGroupId(recordCard) ?? groups[0].group;
+  const defaultGroup = getParcelMarketGroupId(recordCard, classStats.classKey) ?? groups[0].id;
   const sourceNote = document.getElementById("marketSourceNote");
   if (sourceNote) {
-    const defaultListing = groups.find(group => String(group.group) === String(defaultGroup));
+    const defaultListing = getSelectedMarketGroup(recordCard, classStats, defaultGroup);
     const groupName = defaultListing?.description || defaultListing?.label || recordCard.locationModel.valuationGroup;
-    const groupNumber = defaultListing?.group ?? extractValuationGroupId(recordCard);
-    sourceNote.textContent = groupNumber
-      ? `This property resides in the ${groupName} Valuation Group ${groupNumber}.`
-      : `This property resides in the ${groupName} local comparison group.`;
+    const groupNumber = defaultListing?.id ?? getParcelMarketGroupId(recordCard, classStats.classKey);
+    sourceNote.textContent = classStats.classKey === "agricultural"
+      ? `This property is reviewed against ${groupName}.`
+      : groupNumber
+        ? `This property resides in the ${groupName} Valuation Group ${groupNumber}.`
+        : `This property resides in the ${groupName} local comparison group.`;
   }
 
   select.innerHTML = groups.map(group => `
-    <option value="${group.group}">${group.optionLabel ?? group.label}</option>
+    <option value="${group.id}">${group.optionLabel ?? group.label}</option>
   `).join("");
 
   const update = groupId => {
-    const selected = groups.find(group => String(group.group) === String(groupId)) ?? groups[0];
-    select.value = selected.group;
-    renderMarketSignalCards(selected, padRatioData.summary, iaaoStandards, signalContext);
-    renderMarketNarrative(selected, padRatioData.summary);
-    renderMarketRatioChart(selected, padRatioData.summary);
-    renderMarketValueChart(selected, padRatioData.summary);
+    const selected = getSelectedMarketGroup(recordCard, classStats, groupId) ?? groups[0];
+    const isParcelGroup = String(selected.id) === String(defaultGroup);
+    select.value = selected.id;
+    renderMarketSignalCards(selected, countywide, iaaoStandards, signalContext);
+    renderMarketNarrative(selected, countywide, classStats, medianRange, isParcelGroup);
+    renderMarketPositionScatter(selected, classStats, iaaoStandards, update);
+    renderMarketPriceSummary(selected, countywide);
   };
 
   select.addEventListener("change", () => update(select.value));
   window.addEventListener("assessment-class-change", event => {
-    renderMarketSalePriceRows(padRatioData, event.detail?.key);
+    if (padRatioData) renderMarketSalePriceRows(padRatioData, event.detail?.key);
   });
-  renderMarketSalePriceRows(padRatioData, getDefaultAssessmentClass(data, padRatioData));
+  if (padRatioData) renderMarketSalePriceRows(padRatioData, getDefaultAssessmentClass(data, padRatioData));
   update(defaultGroup);
 }
 

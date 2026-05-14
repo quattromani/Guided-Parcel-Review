@@ -13,6 +13,8 @@ const DATA_PATHS = {
 };
 
 let manifestPromise;
+let activeRecordCardPromise;
+let activePropertyDataPromise;
 
 export function loadPropertyManifest() {
   manifestPromise ??= loadJson(DATA_PATHS.manifest, "property manifest");
@@ -47,14 +49,25 @@ async function getActiveCountyEntry() {
   return { manifest, property, county };
 }
 
-export function loadPropertyData() {
-  return getActivePropertyEntry()
-    .then(({ property }) => loadJson(property.propertyDataPath, "property data"));
+function propertyDataFromRecordCard(recordCard) {
+  if (!recordCard?.guidedSnapshot) {
+    throw new Error("The active MIPS property record card is missing guided snapshot context.");
+  }
+
+  return recordCard.guidedSnapshot;
 }
 
 export function loadPropertyRecordCard() {
-  return getActivePropertyEntry()
+  activeRecordCardPromise ??= getActivePropertyEntry()
     .then(({ property }) => loadJson(property.recordCardPath, "property record card"));
+
+  return activeRecordCardPromise;
+}
+
+export function loadPropertyData() {
+  activePropertyDataPromise ??= loadPropertyRecordCard().then(propertyDataFromRecordCard);
+
+  return activePropertyDataPromise;
 }
 
 export function loadAssessmentCalendar() {
@@ -88,6 +101,11 @@ export function loadGoverningOffice() {
 export function loadPadRatioStatistics() {
   return getActiveCountyEntry()
     .then(({ county }) => loadJson(county.padRatioStatisticsPath, "PAD ratio statistics"));
+}
+
+export function loadMarketPositionStatistics() {
+  return getActiveCountyEntry()
+    .then(({ county }) => loadJson(county.marketPositionStatisticsPath, "market position statistics"));
 }
 
 export function loadTaxDistrictAuthorities() {
