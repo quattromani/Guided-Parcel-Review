@@ -13,18 +13,6 @@ import {
   getSnapshotHistory
 } from "./data-service.js";
 import {
-  buildComparableWorksheetModel,
-  buildForm422PrefillModel,
-  generateComparableWorksheetPdf,
-  generateForm422Pdf,
-  generateProtestPacketPdf,
-  printPdf
-} from "./form422Prefill.js";
-import {
-  buildForm458PrefillModel,
-  generateForm458Pdf
-} from "./homesteadPrefill.js";
-import {
   buildRecordCorrectionEmailPayload,
   buildRecordCorrectionSubmission,
   generateRecordCorrectionPdf
@@ -38,6 +26,50 @@ const discrepancyChoices = [
   ["other", "Other"]
 ];
 const discrepancyChoiceLabels = Object.fromEntries(discrepancyChoices);
+
+function legalReferenceById(legalReferences, id) {
+  return (legalReferences?.references || []).find(reference => reference.id === id) ?? null;
+}
+
+function statuteNumber(value) {
+  return `${value ?? ""}`.match(/\b\d{2}-\d+(?:\.\d+)?\b/)?.[0] ?? "";
+}
+
+function legalReferenceForAuthority(legalReferences, authority) {
+  const statute = statuteNumber(authority);
+  if (!statute) return null;
+
+  return (legalReferences?.references || []).find(reference =>
+    statuteNumber(reference.label) === statute
+  ) ?? null;
+}
+
+function legalReferenceLink(reference, label = reference?.label) {
+  if (!reference) return escapeHtml(label);
+
+  const text = label || reference.label;
+  const title = reference.title ? ` title="${escapeHtml(reference.title)}"` : "";
+
+  if (!reference.url) {
+    return `<span class="legal-reference"${title}>${escapeHtml(text)}</span>`;
+  }
+
+  return `<a class="legal-reference" href="${escapeHtml(reference.url)}" target="_blank" rel="noreferrer"${title}>${escapeHtml(text)}</a>`;
+}
+
+function legalReferenceHtml(legalReferences, id, fallbackLabel = id) {
+  const reference = legalReferenceById(legalReferences, id);
+
+  return legalReferenceLink(reference, reference?.label || fallbackLabel);
+}
+
+function legalAuthorityListHtml(authorities, legalReferences) {
+  return (authorities || []).map(authority => {
+    const reference = legalReferenceForAuthority(legalReferences, authority);
+
+    return legalReferenceLink(reference, authority);
+  }).join(", ");
+}
 
 const viewHeaderContent = {
   "your-property": {
@@ -53,39 +85,39 @@ const viewHeaderContent = {
     imageAlt: "Map of Nebraska highlighting the local market area"
   },
   "your-taxes": {
-    eyebrow: "Step 3 · Taxes",
+    eyebrow: "Step 5 · Tax context",
     title: "What does this mean for taxes?",
-    description: "Connect the finalized tax history, effective tax rate, and tax-pressure context before looking at individual taxing bodies.",
+    description: "Once the value base is set, taxes show how levies, credits, exemptions, and district boundaries turn assessed value into the final bill.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "tax-districts": {
-    eyebrow: "Step 4 · Tax districts",
+    eyebrow: "Tax district detail",
     title: "Who is taxing this property?",
     description: "Separate the tax bill distribution from the list of organizations inside this property’s tax district.",
     imageAlt: "Map of Nebraska"
   },
   "market-area": {
-    eyebrow: "Step 5 · Market area",
+    eyebrow: "Step 3 · Value detail",
     title: "How does this compare nearby?",
     description: "The property's local comparison group and state assessment reports provide market context.",
     imageAlt: "Map of Nebraska highlighting the local market area"
   },
   "county-equalization": {
-    eyebrow: "Step 6 · County equalization",
-    title: "How is the county performing overall?",
-    description: "Countywide sales studies and certified-tax trends help explain the assessment environment around the property.",
+    eyebrow: "Step 4 · Equalization",
+    title: "Is the value base being checked for fairness?",
+    description: "Equalization is the fairness check between value and tax. It does not stop market values from moving or set the levy; it checks required level and reasonable uniformity before levies are applied.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "state-context": {
-    eyebrow: "Step 7 · State context",
+    eyebrow: "State baseline",
     title: "How does the county compare statewide?",
     description: "Statewide CTL baselines provide a broader frame for local value growth, taxes levied, and average tax rates.",
     imageAlt: "Map of Nebraska"
   },
   "review-checklist": {
-    eyebrow: "Step 8 · Review",
+    eyebrow: "Step 6 · Review",
     title: "Need to review anything?",
-    description: "Confirm the record, organize unresolved questions, and keep optional filing resources clearly separated from the main review.",
+    description: "Synthesize the record, value movement, equalization context, and tax history into neutral items to verify.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   }
 };
@@ -95,15 +127,11 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard, valuationGroups);
   renderAssessmentNoticeSummary(data, recordCard);
-  renderComparisonShells(data);
-  renderHeaderTimeline(calendar);
+  renderComparisonShells(data, recordCard, summaryContext);
   renderPropertyDetails(data, recordCard);
   renderDiscrepancyForm(data, recordCard);
   initReportErrorModal(data, recordCard, governingOffice);
-  initProtestPreparationActions(data, recordCard);
-  initForm458Modal(data, recordCard);
   renderSummary(data, recordCard, summaryContext);
-  renderProcessTimeline(calendar);
   renderHistoryTable(data, recordCard);
   renderPropertyMovementSummary(data);
   renderTaxHistoryTable(data);
@@ -111,12 +139,20 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderSources(data);
 }
 
-function renderComparisonShells(data) {
+function renderComparisonShells(data, recordCard, summaryContext = {}) {
   renderValueTaxHistoryShell();
   renderTaxHistoryShell();
   renderTaxDistributionShell(data);
   renderMarketSalePriceShell();
-  renderAssessmentAccuracyShell();
+  renderAssessmentAccuracyShell(summaryContext);
+  renderAssessmentSnapshotSource(data, recordCard);
+}
+
+function renderAssessmentSnapshotSource(data, recordCard) {
+  const sourceNote = document.querySelector("[data-assessment-snapshot-source]");
+  if (!sourceNote) return;
+
+  sourceNote.textContent = propertyRecordSourceText(data, recordCard);
 }
 
 function renderValueTaxHistoryShell() {
@@ -172,7 +208,7 @@ function renderTaxHistoryShell() {
   container.innerHTML = `
     <article id="tax-history" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
       <h2 class="text-xl font-bold text-slate-700">How did levy, credits, and net taxes move?</h2>
-      <p class="mt-1 text-sm text-slate-600">Finalized statement years show the levy, gross tax, credits, net amount paid, and effective tax rate in one place.</p>
+      <p class="mt-1 text-sm text-slate-600">After equalization frames the value base, finalized statement years show how levy, credits, exemptions, and district boundaries become the final bill.</p>
       <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
         <table class="tax-burden-table min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
           <thead class="tax-burden-table-head">
@@ -189,6 +225,7 @@ function renderTaxHistoryShell() {
           <tbody id="taxHistoryRows" class="divide-y divide-slate-200"></tbody>
         </table>
       </div>
+      <p id="taxHistorySourceNote" class="mt-2 text-xs leading-5 text-slate-500"></p>
     </article>
 
     <article id="etr-trend" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -227,16 +264,16 @@ function renderTaxDistributionShell(data) {
 
       <article class="lg:col-span-3">
         <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
-	        <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. The current-year breakdown appears after levies are finalized.</p>
-        <div class="mt-4 grid gap-4 md:grid-cols-[minmax(150px,220px)_minmax(0,1fr)] md:items-center">
+	        <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. Dollar amounts allocate the latest net bill by each group’s levy share.</p>
+        <div class="tax-distribution-visual-grid mt-4 grid gap-4 md:items-center">
           <div id="distributionNotes" class="space-y-2 text-sm text-slate-700"></div>
-          <div class="h-72 sm:h-80">
+          <div class="distribution-chart-shell h-72 sm:h-80">
             <canvas id="distributionChart"></canvas>
           </div>
         </div>
       </article>
     </div>
-	    <p class="chart-source">Source: ${escapeHtml(data.latestFinalTaxYear ?? "Latest finalized")} finalized tax breakdown for this property's tax district.</p>
+	    <p class="chart-source">Source: ${escapeHtml(data.latestFinalTaxYear ?? "Latest finalized")} finalized tax statement and levy breakdown for this property's tax district.</p>
   `;
 }
 
@@ -252,7 +289,7 @@ function renderMarketSalePriceShell() {
         <table class="min-w-full divide-y divide-slate-200 text-xs">
           <thead>
             <tr>
-              <th class="px-2 py-2 text-left font-semibold">Sale price range</th>
+              <th id="marketSalePriceRangeHeader" class="px-2 py-2 text-left font-semibold">Sale price range</th>
               <th class="px-2 py-2 text-right font-semibold">Sales</th>
               <th class="px-2 py-2 text-right font-semibold">Median</th>
               <th class="px-2 py-2 text-right font-semibold">COD</th>
@@ -276,9 +313,13 @@ function renderMarketSalePriceShell() {
   `;
 }
 
-function renderAssessmentAccuracyShell() {
+function renderAssessmentAccuracyShell(summaryContext = {}) {
   const container = document.getElementById("assessment-accuracy-body");
   if (!container) return;
+  const ratioCitation = summaryContext.ratioData?.source?.displayCitation || "2019-2026 Gage County PAD Reports and Opinions";
+  const iaaoCitation = summaryContext.iaaoStandards?.metadata?.source?.displayCitation || "IAAO Standard on Ratio Studies";
+  const rangeAuthority = legalReferenceHtml(summaryContext.legalReferences, "neb-rev-stat-77-5023", "§ 77-5023");
+  const reportsAuthority = legalReferenceHtml(summaryContext.legalReferences, "neb-rev-stat-77-5027", "§ 77-5027");
 
   container.innerHTML = `
     <div id="assessmentAccuracySummary" class="mt-5 grid gap-3 md:grid-cols-4"></div>
@@ -304,19 +345,22 @@ function renderAssessmentAccuracyShell() {
         <div class="mt-4 rounded-xl bg-white p-3 text-xs leading-5 text-slate-600 ring-1 ring-slate-200">
           <p class="font-semibold text-slate-700">How to read the chart</p>
           <p class="mt-1">
-            COD, PRD, and COV use different scales, so the chart converts each measure to its own standard band. The shaded area is the preferred range. Each line shows whether that measure is moving into the band, out of it, or moving differently from the others.
+            COD, PRD, and COV use different scales, so the chart converts each measure to its selected comparison band. COV bands are approximate context when available. Each line shows whether that measure is moving into the band, out of it, or moving differently from the others.
           </p>
         </div>
       </article>
       <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
-	        <h3 class="text-lg font-bold text-slate-700">Are the county measures inside the preferred range?</h3>
-	        <p class="mt-1 text-sm text-slate-600">Each line is compared with its own preferred range. The shaded band marks the range for the selected property class.</p>
+	        <h3 class="text-lg font-bold text-slate-700">Are the county measures inside the applicable range?</h3>
+	        <p class="mt-1 text-sm text-slate-600">Each line is compared with its applicable band. The shaded band marks the selected range; some class and metric combinations have no direct standard band.</p>
         <div class="mt-4 h-80">
           <canvas id="assessmentAccuracyChart"></canvas>
         </div>
         <div id="assessmentAccuracyNotes" class="mt-4 grid gap-2 text-xs leading-5 text-slate-600 sm:grid-cols-3"></div>
       </article>
     </section>
+    <p id="assessmentAccuracySourceNote" class="chart-source">
+      Source: ${escapeHtml(ratioCitation)}; ${escapeHtml(iaaoCitation)}. Authority context: ${rangeAuthority}, ${reportsAuthority}.
+    </p>
   `;
 }
 
@@ -680,34 +724,6 @@ function valuationNoticeRow(label, priorValue, currentValue, emphasized = false)
     </div>
   `;
 }
-
-function renderHeaderTimeline(calendar) {
-  document.getElementById("headerTimeline").innerHTML = `
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-      <div class="min-w-0">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property tax timeline</p>
-        <p class="mt-1 text-sm text-slate-600">Current stage: <strong class="timeline-current-stage">${getCurrentStageText(calendar)}</strong></p>
-      </div>
-
-      <div class="relative flex flex-1 items-start justify-between gap-2">
-        <div class="absolute left-0 right-0 top-2.5 h-0.5 bg-slate-200"></div>
-        ${calendar.stages.map(stage => {
-          const active = isStageActive(stage);
-          const past = isStagePast(stage);
-          const state = active ? "active" : past ? "past" : "future";
-
-          return `
-            <a href="#tax-cycle" data-jump-target="tax-cycle" class="timeline-sync-link relative z-10 flex min-w-0 flex-1 flex-col items-center gap-1 text-center" aria-label="View full ${stage.label} timeline details">
-              <span class="timeline-sync-dot timeline-sync-dot-${state}"></span>
-              <span class="timeline-sync-label timeline-sync-label-${state}">${stage.label}</span>
-            </a>
-          `;
-        }).join("")}
-      </div>
-    </div>
-  `;
-}
-
 
 function imageButton(src, caption, label) {
   return `
@@ -1314,370 +1330,6 @@ function initReportErrorModal(data, recordCard, governingOffice) {
   modal.addEventListener("click", close);
   modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
   closeButtons.forEach(button => button.addEventListener("click", close));
-
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") close();
-  });
-}
-
-function navigateToProtestPreparation(targetSelector = "#protest-preparation") {
-  document.dispatchEvent(new CustomEvent("property-snapshot:select-guided-step", {
-    detail: {
-      step: "resources",
-      target: targetSelector
-    }
-  }));
-
-  window.setTimeout(() => {
-    const target = document.querySelector(targetSelector);
-    if (!target) return;
-
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
-    target.classList.add("jump-target-active");
-    window.setTimeout(() => target.classList.remove("jump-target-active"), 1400);
-  }, 0);
-}
-
-const comparableResearchChecklistFields = [
-  ["Location / neighborhood / market area", "Location / market area"],
-  ["Most recent sale, if available", "Most recent sale"],
-  ["Living area / square footage", "Living area / square footage"],
-  ["Style or property type", "Style or property type"],
-  ["Year built / age", "Year built / age"],
-  ["Basement: yes/no/finished/unfinished", "Basement"],
-  ["Garage: attached/detached/none", "Garage"],
-  ["Outbuildings or major improvements", "Outbuildings or major improvements"],
-  ["Lot size", "Lot size"],
-  ["General condition, if apparent", "Quality / condition"]
-];
-
-function worksheetRowValue(model, label) {
-  return model.rows.find(row => row.label === label)?.subject || "Not listed";
-}
-
-function renderComparableResearchChecklist(model) {
-  const container = document.getElementById("comparableResearchChecklist");
-  if (!container || !model) return;
-
-  container.innerHTML = `
-    <div class="comparable-checklist-header" aria-hidden="true">
-      <span></span>
-      <span>Research item</span>
-      <span>Subject property</span>
-    </div>
-    ${comparableResearchChecklistFields.map(([label, sourceLabel]) => `
-      <label class="comparable-checklist-item">
-        <input type="checkbox" class="comparable-checklist-check" aria-label="Reviewed ${escapeHtml(label)}">
-        <span class="comparable-checklist-label">${escapeHtml(label)}</span>
-        <span class="comparable-checklist-reference">${escapeHtml(worksheetRowValue(model, sourceLabel))}</span>
-      </label>
-    `).join("")}
-  `;
-}
-
-function worksheetEntryId(rowIndex, comparableIndex) {
-  return `worksheet-row-${rowIndex}-comparable-${comparableIndex}`;
-}
-
-function worksheetEntryKey(rowIndex, comparableIndex) {
-  return `${rowIndex}:${comparableIndex}`;
-}
-
-function worksheetStorageKey(model) {
-  return `propertySnapshot:comparableWorksheet:${model.parcelId}:${model.snapshotYear}`;
-}
-
-function readWorksheetDraft(model) {
-  try {
-    return JSON.parse(window.sessionStorage.getItem(worksheetStorageKey(model)) || "{}");
-  } catch {
-    return {};
-  }
-}
-
-function writeWorksheetDraft(model, values) {
-  try {
-    window.sessionStorage.setItem(worksheetStorageKey(model), JSON.stringify(values));
-  } catch {
-    // Session storage is a convenience only; worksheet inputs still print from the page.
-  }
-}
-
-function collectWorksheetEntries(container) {
-  return Object.fromEntries(
-    [...container.querySelectorAll("[data-worksheet-entry]")]
-      .map(input => [input.dataset.worksheetKey, input.value.trim()])
-      .filter(([, value]) => value)
-  );
-}
-
-function worksheetModelWithEntries(model, entries) {
-  return {
-    ...model,
-    rows: model.rows.map((row, rowIndex) => ({
-      ...row,
-      comparables: [0, 1, 2].map(comparableIndex => entries[worksheetEntryKey(rowIndex, comparableIndex)] || "")
-    }))
-  };
-}
-
-function initWorksheetDraftStorage(container, model) {
-  const draft = readWorksheetDraft(model);
-  const inputs = [...container.querySelectorAll("[data-worksheet-entry]")];
-
-  inputs.forEach(input => {
-    input.value = draft[input.dataset.worksheetKey] || "";
-  });
-
-  container.addEventListener("input", event => {
-    if (!event.target.matches("[data-worksheet-entry]")) return;
-    writeWorksheetDraft(model, collectWorksheetEntries(container));
-  });
-}
-
-function worksheetCell(row, { subject = false, rowIndex = 0, comparableIndex = 0 } = {}) {
-  if (subject) {
-    return `<td class="worksheet-subject-cell">${escapeHtml(row.subject || "Not listed")}</td>`;
-  }
-
-  const id = worksheetEntryId(rowIndex, comparableIndex);
-  const key = worksheetEntryKey(rowIndex, comparableIndex);
-  const isNotes = row.label === "Notes";
-
-  return `
-    <td class="worksheet-blank-cell${isNotes ? " worksheet-notes-cell" : ""}">
-      <label class="sr-only" for="${id}">Comparable ${comparableIndex + 1} ${escapeHtml(row.label)}</label>
-      <textarea
-        id="${id}"
-        class="worksheet-entry-input${isNotes ? " worksheet-notes-input" : ""}"
-        data-worksheet-entry
-        data-worksheet-key="${key}"
-        rows="${isNotes ? 3 : 1}"
-        placeholder="${isNotes ? "Notes" : "Enter value"}"
-      ></textarea>
-    </td>
-  `;
-}
-
-function renderComparableWorksheet(model) {
-  const container = document.getElementById("comparableWorksheet");
-  if (!container || !model) return;
-
-  container.innerHTML = `
-    <div class="comparable-worksheet-shell" role="region" aria-label="Comparable value worksheet">
-      <table class="comparable-worksheet-table">
-        <thead>
-          <tr>
-            <th scope="col">Review field</th>
-            ${model.columns.map(column => `<th scope="col">${escapeHtml(column)}</th>`).join("")}
-          </tr>
-        </thead>
-        <tbody>
-          ${model.rows.map((row, rowIndex) => `
-            <tr>
-              <th scope="row">${escapeHtml(row.label)}</th>
-              ${worksheetCell(row, { subject: true })}
-              ${worksheetCell(row, { rowIndex, comparableIndex: 0 })}
-              ${worksheetCell(row, { rowIndex, comparableIndex: 1 })}
-              ${worksheetCell(row, { rowIndex, comparableIndex: 2 })}
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  initWorksheetDraftStorage(container, model);
-}
-
-function initProtestPreparationActions(data, recordCard) {
-  const fieldContainer = document.getElementById("form422ConfirmationFields");
-  const status = document.getElementById("protestPreparationStatus");
-
-  const formModel = buildForm422PrefillModel(data, recordCard);
-  const worksheetModel = buildComparableWorksheetModel(data, recordCard);
-  const printPacketButtons = [...document.querySelectorAll("[data-print-protest-packet]")];
-  const printWorksheetButtons = [...document.querySelectorAll("[data-print-comparable-worksheet]")];
-  const printFormButtons = [...document.querySelectorAll("[data-print-form422]")];
-
-  renderComparableResearchChecklist(worksheetModel);
-  renderComparableWorksheet(worksheetModel);
-
-  function currentWorksheetModel() {
-    const worksheetContainer = document.getElementById("comparableWorksheet");
-    return worksheetContainer
-      ? worksheetModelWithEntries(worksheetModel, collectWorksheetEntries(worksheetContainer))
-      : worksheetModel;
-  }
-
-  if (fieldContainer) {
-    fieldContainer.innerHTML = formModel.confirmationFields.map(([label, value]) => `
-      <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(label)}</p>
-        <p class="mt-1 text-sm font-semibold leading-5 text-slate-700">${escapeHtml(value || "Not available")}</p>
-      </div>
-    `).join("");
-  }
-
-  function setStatus(message, tone = "neutral") {
-    if (!status) return;
-    status.textContent = message;
-    status.className = `mt-4 text-sm font-semibold ${
-      tone === "success" ? "text-emerald-700" : tone === "error" ? "text-red-700" : "text-slate-600"
-    }`;
-  }
-
-  function setBusy(buttons, busy) {
-    buttons.forEach(button => {
-      button.disabled = busy;
-      button.classList.toggle("opacity-60", busy);
-    });
-  }
-
-  async function printPreparedDocument({ buttons, pending, success, errorMessage, documentLabel, generateBytes, fileName }) {
-    setStatus(pending);
-    setBusy(buttons, true);
-
-    try {
-      const bytes = await generateBytes();
-      await printPdf(bytes, fileName, documentLabel);
-      setStatus(success, "success");
-    } catch (error) {
-      console.error(error);
-      setStatus(error.message || errorMessage, "error");
-    } finally {
-      setBusy(buttons, false);
-    }
-  }
-
-  document.addEventListener("click", event => {
-    const packetTrigger = event.target.closest?.("[data-print-protest-packet]");
-    if (packetTrigger) {
-      event.preventDefault();
-      printPreparedDocument({
-        buttons: printPacketButtons,
-        pending: "Preparing the protest preparation packet for printing...",
-        success: "Print dialog opened for the protest preparation packet.",
-        errorMessage: "The protest preparation packet could not be generated.",
-        documentLabel: "protest preparation packet",
-        fileName: worksheetModel.packetFileName,
-        generateBytes: () => generateProtestPacketPdf(formModel, currentWorksheetModel())
-      });
-      return;
-    }
-
-    const worksheetTrigger = event.target.closest?.("[data-print-comparable-worksheet]");
-    if (worksheetTrigger) {
-      event.preventDefault();
-      const mode = worksheetTrigger.dataset.printComparableWorksheet;
-      const isBlank = mode === "blank";
-      printPreparedDocument({
-        buttons: printWorksheetButtons,
-        pending: isBlank ? "Preparing a blank comparable value worksheet for printing..." : "Preparing the filled comparable value worksheet for printing...",
-        success: isBlank ? "Print dialog opened for the blank comparable value worksheet." : "Print dialog opened for the filled comparable value worksheet.",
-        errorMessage: "The comparable value worksheet could not be generated.",
-        documentLabel: "comparable value worksheet",
-        fileName: worksheetModel.fileName,
-        generateBytes: () => generateComparableWorksheetPdf(isBlank ? worksheetModel : currentWorksheetModel())
-      });
-      return;
-    }
-
-    const formTrigger = event.target.closest?.("[data-print-form422]");
-    if (formTrigger) {
-      event.preventDefault();
-      printPreparedDocument({
-        buttons: printFormButtons,
-        pending: "Preparing Form 422 for printing...",
-        success: "Print dialog opened. Review the form carefully before filing.",
-        errorMessage: "Form 422 could not be generated.",
-        documentLabel: "Form 422",
-        fileName: formModel.fileName,
-        generateBytes: () => generateForm422Pdf(formModel)
-      });
-      return;
-    }
-
-    const preparationTrigger = event.target.closest?.("[data-prepare-form422]");
-    if (!preparationTrigger) return;
-
-    event.preventDefault();
-    navigateToProtestPreparation("#form422-section");
-  });
-}
-
-function initForm458Modal(data, recordCard) {
-  const modal = document.getElementById("form458Modal");
-  const closeButtons = document.querySelectorAll("[data-close-form458]");
-  const generateButton = document.querySelector("[data-generate-form458]");
-  const fieldContainer = document.getElementById("form458ConfirmationFields");
-  const status = document.getElementById("form458Status");
-
-  if (!modal || !fieldContainer || !generateButton) return;
-
-  const model = buildForm458PrefillModel(data, recordCard);
-
-  fieldContainer.innerHTML = model.confirmationFields.map(([label, value]) => `
-    <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(label)}</p>
-      <p class="mt-1 text-sm font-semibold leading-5 text-slate-700">${escapeHtml(value || "Not available")}</p>
-    </div>
-  `).join("");
-
-  function close() {
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-    document.body.classList.remove("overflow-hidden");
-    if (status) {
-      status.textContent = "";
-      status.className = "mt-4 text-sm font-medium text-slate-600";
-    }
-  }
-
-  function open() {
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    document.body.classList.add("overflow-hidden");
-  }
-
-  async function generate() {
-    if (status) {
-      status.textContent = "Preparing Form 458 for printing...";
-      status.className = "mt-4 text-sm font-semibold text-slate-600";
-    }
-    generateButton.disabled = true;
-    generateButton.classList.add("opacity-60");
-
-    try {
-      const bytes = await generateForm458Pdf(model);
-      await printPdf(bytes, model.fileName);
-      if (status) {
-        status.textContent = "Print dialog opened. Review the form carefully before filing.";
-        status.className = "mt-4 text-sm font-semibold text-emerald-700";
-      }
-    } catch (error) {
-      console.error(error);
-      if (status) {
-        status.textContent = error.message || "Form 458 could not be generated.";
-        status.className = "mt-4 text-sm font-semibold text-red-700";
-      }
-    } finally {
-      generateButton.disabled = false;
-      generateButton.classList.remove("opacity-60");
-    }
-  }
-
-  document.addEventListener("click", event => {
-    const trigger = event.target.closest?.("[data-prepare-homestead]");
-    if (!trigger) return;
-
-    event.preventDefault();
-    open();
-  });
-  modal.addEventListener("click", close);
-  modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
-  closeButtons.forEach(button => button.addEventListener("click", close));
-  generateButton.addEventListener("click", generate);
 
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") close();
@@ -2455,141 +2107,6 @@ function initJumpLinks() {
   });
 }
 
-function renderProcessTimeline(calendar) {
-  const currentStage = document.querySelector("[data-current-stage]");
-  const sourceNote = document.querySelector("[data-calendar-source]");
-  const timeline = document.getElementById("processTimeline");
-
-  if (currentStage) {
-    currentStage.textContent = `Current stage: ${getCurrentStageText(calendar)}`;
-  }
-
-  if (sourceNote) {
-    sourceNote.textContent = `Source: 2025 Nebraska Property Assessment Division Main Property Assessment and Taxation Calendar${calendar.sourceRevision ? `, ${calendar.sourceRevision}` : ""}. Filing dates follow the Nebraska legal-date rule for weekends and legal holidays.`;
-  }
-
-  if (!timeline) return;
-
-  timeline.innerHTML = calendar.stages.map((step, index) => {
-    const active = isStageActive(step);
-    const past = isStagePast(step);
-    const hasDetail = step.sourceEvents?.length || step.id === "protest";
-    const cardState = active ? "timeline-stage-card-active" : past ? "timeline-stage-card-past" : "";
-    const markerState = active ? "active" : past ? "past" : "future";
-
-    return `
-      <div class="timeline-stage-card ${cardState} group relative flex h-full flex-col rounded-2xl p-4 transition duration-200 ${active ? "z-10 scale-[1.03]" : ""}" tabindex="0">
-        <div class="mb-3 flex items-center gap-2">
-          <span class="timeline-stage-marker timeline-stage-marker-${markerState}">${index + 1}</span>
-          ${active ? `<span class="current-stage-pill">Now</span>` : past ? `<span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500 ring-1 ring-slate-200">Passed</span>` : ""}
-        </div>
-        <p class="font-semibold ${past && !active ? "text-slate-500" : "text-slate-700"}">${escapeHtml(step.label)}</p>
-        <p class="mt-1 text-xs font-semibold uppercase tracking-wide ${past && !active ? "text-slate-400" : "text-slate-500"}">${escapeHtml(step.timing)}</p>
-        <p class="mt-2 flex-1 text-sm leading-6 ${past && !active ? "text-slate-500" : "text-slate-600"}">${escapeHtml(step.description)}</p>
-        ${hasDetail ? `
-          <div class="mt-auto border-t border-slate-200 pt-3 text-center">
-            <button type="button" data-calendar-stage="${escapeHtml(step.id)}" class="secondary-link-button">
-              Learn More
-            </button>
-          </div>
-        ` : ""}
-      </div>
-    `;
-  }).join("");
-
-  initCalendarStageModal(calendar);
-}
-
-function calendarStageDetailHtml(stage) {
-  const sourceEvents = stage.id === "protest"
-    ? (stage.sourceEvents || []).slice().sort((a, b) => {
-      const priority = event => /deadline.*file|file.*valuation protest/i.test(event.duty) ? 1 : /hearing|review|deciding/i.test(event.duty) ? 2 : 0;
-      return priority(a) - priority(b);
-    })
-    : stage.sourceEvents || [];
-
-  return `
-    <div class="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
-      <p class="text-sm leading-6 text-slate-600">${escapeHtml(stage.description)}</p>
-    </div>
-    ${sourceEvents.length ? `
-      <div class="mt-4 rounded-2xl bg-white p-4 ring-1 ring-slate-200">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Calendar milestones</p>
-        <ul class="mt-3 space-y-3 text-sm leading-6 text-slate-600">
-          ${sourceEvents.map(event => `
-            <li class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
-              <span class="block font-semibold text-slate-700">${escapeHtml(event.timing)}</span>
-              <span>${escapeHtml(event.duty)}</span>
-              ${event.authority?.length ? `<span class="mt-1 block text-xs text-slate-500">${escapeHtml(event.authority.join(", "))}</span>` : ""}
-            </li>
-          `).join("")}
-        </ul>
-      </div>
-    ` : ""}
-    ${stage.id === "protest" ? `
-      <div class="mt-4 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-slate-200">
-        <p>The Resources tab brings calendar context, basic comparable-property organization, the worksheet, and the prepared Form 422 into one optional reference area. Requested valuation, reasons, signature, and filing responsibility remain with the filer.</p>
-        <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <button type="button" data-calendar-review-record class="inline-flex justify-center rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
-            Open Resources
-          </button>
-          <button type="button" data-calendar-prepare-form422 class="inline-flex justify-center rounded-full bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-300 transition hover:bg-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
-            Go to Form 422
-          </button>
-        </div>
-      </div>
-    ` : ""}
-  `;
-}
-
-function initCalendarStageModal(calendar) {
-  const modal = document.getElementById("calendarStageModal");
-  const title = document.getElementById("calendarStageTitle");
-  const timing = document.getElementById("calendarStageTiming");
-  const content = document.getElementById("calendarStageModalContent");
-  const closeButtons = document.querySelectorAll("[data-close-calendar-stage]");
-
-  if (!modal || !title || !timing || !content) return;
-
-  function close() {
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-    document.body.classList.remove("overflow-hidden");
-  }
-
-  function open(stage) {
-    title.textContent = stage.label;
-    timing.textContent = stage.timing;
-    content.innerHTML = calendarStageDetailHtml(stage);
-    content.querySelector("[data-calendar-review-record]")?.addEventListener("click", () => {
-      close();
-      navigateToProtestPreparation("#protest-preparation");
-    });
-    content.querySelector("[data-calendar-prepare-form422]")?.addEventListener("click", () => {
-      close();
-      navigateToProtestPreparation("#form422-section");
-    });
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    document.body.classList.add("overflow-hidden");
-  }
-
-  document.querySelectorAll("[data-calendar-stage]").forEach(button => {
-    button.addEventListener("click", () => {
-      const stage = calendar.stages.find(item => item.id === button.dataset.calendarStage);
-      if (stage) open(stage);
-    });
-  });
-
-  modal.addEventListener("click", close);
-  modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
-  closeButtons.forEach(button => button.addEventListener("click", close));
-
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") close();
-  });
-}
-
 function renderHistoryTable(data, recordCard) {
   document.getElementById("historyRows").innerHTML = data.taxpayerHistory.slice().reverse().map((row, index) => {
     const etr = calculateEtr(row);
@@ -2804,10 +2321,14 @@ function renderTaxHistoryTable(data) {
     ...levyRows.map(row => row.year),
     ...statements.map(statement => statement.taxYear)
   ])].sort((a, b) => b - a);
+  const displayLevyByYear = new Map(years.map(year => [
+    year,
+    taxHistoryDisplayLevyRow(levyByYear.get(year), statementsByYear.get(year))
+  ]));
 
   container.innerHTML = years.map(year => {
-    const levyRow = levyByYear.get(year);
-    const priorLevyRow = levyByYear.get(year - 1);
+    const levyRow = displayLevyByYear.get(year);
+    const priorLevyRow = displayLevyByYear.get(year - 1);
     const statement = statementsByYear.get(year);
     const netTaxes = statement?.netAmountDue ?? statement?.totalTaxesDue ?? null;
     const effectiveTaxRate = statement && statement.assessedValue && netTaxes
@@ -2820,7 +2341,7 @@ function renderTaxHistoryTable(data) {
     return `
       <tr class="${pendingClass}"${rowStyle}>
         <th scope="row" class="px-2 py-2 text-left font-semibold text-slate-700 sm:px-3">${year}</th>
-        <td class="px-2 py-2 text-right font-medium sm:px-3">${formatNullableLevy(levyRow?.levy)}</td>
+        <td class="px-2 py-2 text-right font-medium sm:px-3">${taxHistoryLevyDisplay(levyRow)}</td>
         <td class="px-2 py-2 text-center sm:px-3">${levyMovementPill(levyRow, priorLevyRow)}</td>
         <td class="px-2 py-2 text-right sm:px-3">${formatNullableMoney(statement?.grossTaxAmount, true)}</td>
         <td class="px-2 py-2 text-right sm:px-3">${statement ? formatNullableMoney(statementTotalCredits(statement), true) : "—"}</td>
@@ -2829,6 +2350,74 @@ function renderTaxHistoryTable(data) {
       </tr>
     `;
   }).join("");
+
+  const inferredRows = years
+    .map(year => displayLevyByYear.get(year))
+    .filter(row => row?.status === "inferred" || row?.status === "statement-derived");
+  const sourceNote = document.getElementById("taxHistorySourceNote");
+  if (sourceNote) {
+    const notes = [
+      "Source: finalized Gage County property tax statements and MIPS record-card tax history; the tax-bill pattern chart uses the same statement years."
+    ];
+
+    if (inferredRows.length) {
+      notes.push("† Calculated from available statement columns and taxable value where the standalone tax-rate line was not available.");
+    }
+
+    sourceNote.textContent = notes.join(" ");
+  }
+}
+
+function taxHistoryLevyDisplay(row) {
+  const value = formatNullableLevy(row?.levy);
+  if (!row || (row.status !== "inferred" && row.status !== "statement-derived")) return value;
+
+  const note = row.note || "Calculated from available statement columns and taxable value.";
+  return `
+    <span class="tax-history-levy-value" title="${escapeHtml(note)}" aria-label="${escapeHtml(`${value}, calculated`)}">${value}<sup class="tax-history-levy-marker" aria-hidden="true">†</sup></span>
+  `;
+}
+
+function statementGrossLevy(statement) {
+  if (!statement) return null;
+  if (statement.derived?.grossLevyRate !== null && statement.derived?.grossLevyRate !== undefined) {
+    return statement.derived.grossLevyRate * 100;
+  }
+
+  if (statement.grossTaxAmount && statement.assessedValue) {
+    return (statement.grossTaxAmount / statement.assessedValue) * 100;
+  }
+
+  return null;
+}
+
+function taxHistoryDisplayLevyRow(levyRow, statement) {
+  const statementLevy = statementGrossLevy(statement);
+  if (statementLevy === null || statementLevy === undefined) return levyRow;
+
+  if (!levyRow?.levy) {
+    return {
+      ...(levyRow ?? { year: statement.taxYear }),
+      levy: statementLevy,
+      status: "statement-derived",
+      note: "Derived from the tax statement gross tax and assessed value."
+    };
+  }
+
+  const grossFromDistrictLevy = statement.assessedValue
+    ? statement.assessedValue * (levyRow.levy / 100)
+    : null;
+  const reconcilesToStatement = grossFromDistrictLevy !== null
+    && Math.abs(grossFromDistrictLevy - statement.grossTaxAmount) <= 0.05;
+
+  if (reconcilesToStatement) return levyRow;
+
+  return {
+    ...levyRow,
+    levy: statementLevy,
+    status: "statement-derived",
+    note: "Derived from the tax statement gross tax and assessed value because the district levy history did not reconcile to the statement."
+  };
 }
 
 function finalizedTaxStatements(data) {

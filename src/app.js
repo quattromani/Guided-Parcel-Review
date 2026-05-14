@@ -15,10 +15,12 @@ import {
   loadCertifiedTaxesLevied,
   loadCountyContext,
   loadGoverningOffice,
+  loadLegalReferences,
   loadMarketPositionStatistics,
   loadPropertyData,
   loadPropertyRecordCard,
   loadPadRatioStatistics,
+  loadRealPropertyForms,
   loadSchoolDistrictColors,
   loadTaxDistrictAuthorities,
   loadValuationGroups,
@@ -40,23 +42,7 @@ import {
 } from "./config/taxpayer-journey.js";
 import { installCivicJourneyPanels } from "./routes/landing-primer.js";
 
-const footerFormActions = {
-  recordConcern: {
-    title: "Property record concern",
-    cta: "Open record review",
-    actionAttribute: "data-report-error"
-  },
-  homestead: {
-    title: "Homestead exemption",
-    cta: "Prepare Form 458",
-    actionAttribute: "data-prepare-homestead"
-  },
-  valuationProtest: {
-    title: "Review and protest materials",
-    cta: "Open review",
-    actionAttribute: "data-prepare-form422"
-  }
-};
+let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 
 const resourcesByView = {
   "landing-primer": {
@@ -65,11 +51,10 @@ const resourcesByView = {
     learnTitle: "Assessment basics",
     faqs: [
       ["What should I do first?", "Confirm that you are looking at the right property, then review the record before interpreting values or taxes."],
-      ["Is this telling me to protest?", "No. The primary goal is orientation and understanding. Filing steps remain optional resources."],
+      ["Is this telling me to protest?", "No. The primary goal is orientation and understanding. Official filing materials remain outbound references."],
       ["Why are some current-year values pending?", "Assessment-year information can appear before final tax bills or complete current-year values are available."],
-      ["What if the question is only about the tax bill?", "Use the Tax Context step after reviewing the property and value movement basics."]
+      ["What if the question is only about the tax bill?", "Use Tax Context after the property, value, and equalization steps frame the value base."]
     ],
-    forms: ["recordConcern", "homestead"],
     learn: [
       ["Assessment year", "The year for which the property value is being reviewed."],
       ["Assessed value", "The value used as the basis for property taxation."],
@@ -87,7 +72,6 @@ const resourcesByView = {
       ["What if a photo or property characteristic looks outdated?", "Use the record review request to describe what appears inaccurate, incomplete, or misclassified."],
       ["Is a record concern the same as a valuation protest?", "No. A record concern asks for factual review. A formal valuation protest is a separate filing process."]
     ],
-    forms: ["recordConcern", "homestead", "valuationProtest"],
     learn: [
       ["Parcel", "A specific piece of property identified for assessment and tax administration."],
       ["Situs address", "The physical location address associated with the property."],
@@ -102,10 +86,9 @@ const resourcesByView = {
     faqs: [
       ["Is assessed value the same as market value?", "For most residential real property, assessed value is intended to reflect market value as of the assessment date."],
       ["Why are land and improvement values separated?", "Separating land from buildings helps show which part of the property model changed."],
-      ["Why did the value change?", "Value can change because of updated property facts, market movement, depreciation, new construction, or comparable sales."],
-      ["How do comparable sales matter?", "Comparable sales help test whether the assessment is reasonable for similar properties in the market."]
+      ["Why did the value change?", "Value can change because of updated property facts, market movement, depreciation, new construction, or sale evidence."],
+      ["How does market evidence matter?", "Sales evidence helps explain whether assessments are moving with the market."]
     ],
-    forms: ["recordConcern", "valuationProtest"],
     learn: [
       ["Assessed value", "The value used as the property basis for taxation."],
       ["Land value", "The assessed portion attributed to the site itself."],
@@ -118,12 +101,12 @@ const resourcesByView = {
     formTitle: "Tax and exemption forms",
     learnTitle: "Tax terms",
     faqs: [
+      ["Why does tax context come after equalization?", "Equalization is the fairness check on the value base. Tax context then shows how levies, credits, exemptions, and boundaries turn that value base into a bill."],
       ["What is the difference between gross tax and net taxes paid?", "Gross tax starts from value and levy. Net taxes paid reflects applicable credits and adjustments."],
       ["Why do value and taxes not always move together?", "Taxes also depend on budgets, levies, exemptions, credits, and tax district changes."],
       ["What does effective tax rate show?", "It divides final taxes by assessed value so different years can be compared more clearly."],
       ["Where do credits fit?", "Credits reduce the final amount due after the tax calculation is applied."]
     ],
-    forms: ["homestead"],
     learn: [
       ["Levy", "The tax rate applied by taxing entities to taxable value."],
       ["Gross tax", "The tax amount before credits or similar reductions."],
@@ -141,7 +124,6 @@ const resourcesByView = {
       ["Why is the school district important?", "School levies are often a major part of the total levy and can vary by district."],
       ["Which taxing bodies are included?", "The tax district is made up of separate school, county, city, and other public bodies whose rates combine into the total levy."]
     ],
-    forms: ["recordConcern"],
     learn: [
       ["Taxing district", "The combination of taxing entities that apply to a parcel."],
       ["Levy authority", "An entity authorized to levy property tax."],
@@ -155,31 +137,29 @@ const resourcesByView = {
     learnTitle: "Market terms",
     faqs: [
       ["What is a market area?", "It is a group of properties reviewed together because they share market or valuation characteristics."],
-      ["Are comparable sales exact matches?", "Usually no. They are market evidence selected because they are reasonably similar and useful for comparison."],
+      ["Are nearby sales exact matches?", "Usually no. Sales are market evidence because they are reasonably related to the same local market."],
       ["What do local sales trends show?", "They help explain whether values are moving with nearby market evidence."],
       ["What is a ratio study?", "It compares assessed values with sale prices to test assessment level and uniformity."]
     ],
-    forms: ["valuationProtest"],
     learn: [
       ["Market area", "A local comparison group used to review properties with similar market behavior."],
-      ["Comparable sale", "A sale used as evidence because it is similar enough to inform value."],
+      ["Sale evidence", "Sale information used to understand market value and assessment level."],
       ["Sales ratio", "Assessed value divided by sale price."],
       ["Valuation group", "A grouping used to organize assessment analysis and market review."]
     ]
   },
   "county-equalization": {
-    faqTitle: "County equalization FAQs",
-    formTitle: "County review forms",
-    learnTitle: "County terms",
+    faqTitle: "Equalization FAQs",
+    formTitle: "Equalization resources",
+    learnTitle: "Equalization terms",
     faqs: [
-      ["Why look at countywide trends?", "Countywide data shows the assessment system around the parcel, not just one property."],
-      ["What is equalization?", "Equalization is the process of keeping assessments at required levels and reasonably uniform."],
+      ["Why does equalization sit before taxes?", "It checks whether the value base is at the required level and reasonably uniform before levies are applied."],
+      ["What does equalization not do?", "It does not stop market values from moving, set the tax levy, or decide whether one parcel outcome is right or wrong."],
       ["What do COD and PRD measure?", "COD describes assessment uniformity. PRD helps flag whether high- and low-value properties are treated consistently."],
-      ["Can countywide measures prove the parcel value is wrong?", "Not by themselves. They are context; parcel facts and comparable evidence still matter."]
+      ["Can countywide measures prove the parcel value is wrong?", "Not by themselves. They are context; parcel facts and market evidence still matter."]
     ],
-    forms: ["valuationProtest"],
     learn: [
-      ["Equalization", "Review intended to keep assessed values consistent with required assessment standards."],
+      ["Equalization", "The fairness check that reviews assessment level and uniformity before levies are applied."],
       ["COD", "Coefficient of dispersion, a measure of assessment uniformity."],
       ["PRD", "Price-related differential, a measure used to review value-related assessment patterns."],
       ["Level of value", "How assessed values compare with market value overall."]
@@ -195,7 +175,6 @@ const resourcesByView = {
       ["What is statewide equalization?", "It is the state-level role of reviewing whether county assessments meet required standards."],
       ["Are credits decided here?", "No. Official credits and tax calculations are applied through the tax process."]
     ],
-    forms: ["homestead", "valuationProtest"],
     learn: [
       ["Property Assessment Division", "The state office that helps oversee property assessment standards in Nebraska."],
       ["Abstract", "A county summary of assessed property values reported for review."],
@@ -209,34 +188,16 @@ const resourcesByView = {
     learnTitle: "Review terms",
     faqs: [
       ["What should I review first?", "Start with the property record: square footage, year built, basement, garage, outbuildings, condition, lot size, property class, value history, and tax history."],
-      ["Why use a comparable worksheet?", "It helps organize basic public-record information side-by-side so differences are easier to see before any filing decision is made."],
-      ["Is the worksheet required to print Form 422?", "No. The worksheet is an optional preparation tool. Form 422 remains directly printable from the review view."],
-      ["How can I keep a copy?", "Use the packet print action for the worksheet and prepared Form 422 together, or print either document independently."]
+      ["What should I do with an unresolved question?", "Keep notes, verify official source documents, and contact the appropriate county or state office if the issue depends on official records or deadlines."],
+      ["What steps feed these signals?", "They synthesize the property record, value movement, equalization context, tax context, and source documents."],
+      ["Where are filing forms kept?", "The Forms footer links to official state sources. This site does not prepare, prefill, submit, or store filing forms."],
+      ["Does this summary decide an outcome?", "No. It is a review aid that separates property facts, value movement, taxes, and context from any official filing decision."]
     ],
-    forms: ["recordConcern", "homestead", "valuationProtest"],
     learn: [
-      ["Preparation packet", "A printable packet that combines the comparable worksheet and prepared Form 422."],
       ["Record concern", "A factual review request about property record details."],
-      ["Comparable property", "A property reviewed because its public-record facts may help explain assessment differences."],
-      ["Protest window", "The formal period for filing a valuation protest."]
-    ]
-  },
-  "resources": {
-    faqTitle: "Resource FAQs",
-    formTitle: "Resource forms",
-    learnTitle: "Resource terms",
-    faqs: [
-      ["What is in Resources?", "The Resources tab keeps the assessment calendar, comparable worksheet, and optional protest preparation materials separate from the main review path."],
-      ["Does opening Resources mean I should file something?", "No. These are reference and preparation materials. Use them only if they help answer a specific question."],
-      ["Why is the calendar first?", "Calendar context helps explain what stage the assessment process is in before worksheet or filing materials appear."],
-      ["Can the worksheet change the assessed value?", "No. It is an organization tool and does not guarantee a change or outcome."]
-    ],
-    forms: ["recordConcern", "valuationProtest", "homestead"],
-    learn: [
-      ["Assessment calendar", "The sequence of dates for assessment, protest, review, budgets, levies, and final tax bills."],
-      ["Comparable worksheet", "An organizer for side-by-side public-record property facts."],
-      ["Form 422", "Nebraska's property valuation protest form."],
-      ["Preparation packet", "A printable packet that can combine the worksheet and prepared Form 422."]
+      ["Official form", "A form published by the Nebraska Department of Revenue or another official public office."],
+      ["Protest window", "The formal period for filing a valuation protest."],
+      ["Source document", "An official record, report, tax statement, or form used to verify a claim."]
     ]
   }
 };
@@ -245,6 +206,7 @@ const resourceAliases = {
   "property-record": "your-property",
   "what-changed": "your-assessment",
   "valuation-detail": "market-area",
+  "equalization": "county-equalization",
   "tax-context": "your-taxes",
   "review-signals": "review-checklist",
   "final-summary": "review-checklist"
@@ -252,10 +214,12 @@ const resourceAliases = {
 
 async function main() {
   applyVisualizationPalette();
-  const [propertyData, recordCard, calendar, ctlData, ratioData, countyContext, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, taxDistrictAuthorities, valuationGroups, iaaoStandards] = await Promise.all([
+  const [propertyData, recordCard, calendar, legalReferences, realPropertyForms, ctlData, ratioData, countyContext, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, taxDistrictAuthorities, valuationGroups, iaaoStandards] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
     loadAssessmentCalendar(),
+    loadLegalReferences(),
+    loadRealPropertyForms(),
     loadCertifiedTaxesLevied(),
     loadAssessmentRatioAnalysis(),
     loadCountyContext(),
@@ -267,6 +231,7 @@ async function main() {
     loadValuationGroups(),
     loadIaaoStandards()
   ]);
+  officialRealPropertyForms = realPropertyForms;
   const snapshotModel = buildPropertySnapshotModel({
     propertyData,
     recordCard,
@@ -286,6 +251,7 @@ async function main() {
   renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, {
     ctlData,
     ratioData,
+    legalReferences,
     padRatioData,
     marketPositionData,
     iaaoStandards
@@ -597,7 +563,7 @@ function renderGuidedResourceContent(viewKey) {
   const learnContent = document.getElementById("footerLearnContent");
 
   if (faqTitle) faqTitle.textContent = resources.faqTitle;
-  if (formsTitle) formsTitle.textContent = resources.formTitle;
+  if (formsTitle) formsTitle.textContent = officialRealPropertyForms.metadata?.title ?? "Official real property forms";
   if (learnTitle) learnTitle.textContent = resources.learnTitle;
 
   if (faqContent) {
@@ -610,7 +576,7 @@ function renderGuidedResourceContent(viewKey) {
   }
 
   if (formsContent) {
-    formsContent.innerHTML = resources.forms.map(formKey => renderFooterFormAction(footerFormActions[formKey])).join("");
+    formsContent.innerHTML = renderOfficialForms();
   }
 
   if (learnContent) {
@@ -623,15 +589,58 @@ function renderGuidedResourceContent(viewKey) {
   }
 }
 
-function renderFooterFormAction(form) {
+function renderOfficialForms() {
+  const forms = officialRealPropertyForms.forms || [];
+  if (!forms.length) return "";
+
+  return `
+    ${forms.map(renderOfficialFormLink).join("")}
+    ${renderOfficialFormsSource()}
+  `;
+}
+
+function renderOfficialFormLink(form) {
   if (!form) return "";
 
   return `
-    <button type="button" ${form.actionAttribute} class="form-action-button">
-      <span class="font-semibold text-slate-700">${escapeHtml(form.title)}</span>
-      <span class="form-action-cta">${escapeHtml(form.cta)}</span>
-    </button>
+    <a href="${escapeHtml(form.url)}" target="_blank" rel="noreferrer" class="form-action-button official-form-link">
+      <span>
+        <span class="form-action-number">${escapeHtml(form.number)}</span>
+        <span class="block font-semibold text-slate-700">${escapeHtml(form.title)}</span>
+        <span class="mt-1 block text-xs leading-5 text-slate-500">${escapeHtml(form.note)}</span>
+      </span>
+      <span class="form-action-cta">Open official</span>
+    </a>
   `;
+}
+
+function renderOfficialFormsSource() {
+  const source = officialRealPropertyForms.metadata?.source;
+  const sourceLinks = officialRealPropertyForms.sourceLinks || [];
+  const verified = formatSourceDate(officialRealPropertyForms.metadata?.verifiedAsOf);
+
+  return `
+    <p class="official-forms-source">
+      Source: ${escapeHtml(source?.displayCitation || "Nebraska Department of Revenue Property Assessment Division")}${verified ? `, verified ${escapeHtml(verified)}` : ""}.
+      ${sourceLinks.map(link => `
+        <a href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer">${escapeHtml(link.label)}</a>
+      `).join(" | ")}
+    </p>
+  `;
+}
+
+function formatSourceDate(value) {
+  const match = `${value ?? ""}`.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return value || "";
+
+  const [, year, month, day] = match.map(Number);
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(Date.UTC(year, month - 1, day)));
 }
 
 function escapeHtml(value) {

@@ -123,7 +123,7 @@
         "taxYear": 2019,
         "totalTaxesDue": 3384.66,
         "dueDate": "2019-12-31",
-        "sourceNote": "Inferred from the 2020 statement prior-year column.",
+        "sourceNote": "Inferred from the 2020 tax statement prior-year column and MIPS record-card taxable value; no standalone 2019 statement was available.",
         "assessedValue": 172940,
         "grossTaxAmount": 3564.78,
         "credits": {
@@ -146,7 +146,7 @@
         },
         "netAmountDue": 3384.66,
         "derived": {
-          "grossLevyRate": 0.0206128,
+          "grossLevyRate": 0.02061281,
           "netEffectiveTaxRate": 0.0195713,
           "totalCreditAmount": -180.12
         }
@@ -342,9 +342,9 @@
     "districtLevyHistory": [
       {
         "year": 2019,
-        "levy": 1.7019,
-        "status": "confirmed",
-        "note": "Baseline year for this levy history series."
+        "levy": 2.061281,
+        "status": "inferred",
+        "note": "Calculated from the 2020 tax statement prior-year tax and tax-credit column plus the MIPS record-card taxable value; no standalone 2019 tax-rate line was available."
       },
       {
         "year": 2020,

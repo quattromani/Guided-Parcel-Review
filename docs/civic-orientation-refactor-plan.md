@@ -130,8 +130,7 @@ Working systems currently present:
 - Formatting helpers: `src/format.js`.
 - Image modal and property photo/sketch viewer: `src/modal.js`.
 - Record correction request workflow: `src/recordCorrectionRequest.js`.
-- Homestead Form 458 prefill workflow: `src/homesteadPrefill.js`.
-- Form 422 and comparable worksheet workflow: `src/form422Prefill.js`.
+- Official real property form references: `data/app/real-property-forms.json`.
 - Guided path navigation and section locking in `src/app.js`.
 - Footer resource layer with FAQs, forms, and learn content in `src/app.js`.
 - Static configuration: `data/app/property-manifest.json`, `data/app/navigation.json`, `data/app/view-copy.json`.
@@ -147,7 +146,7 @@ Current view inventory:
 - `market-area`: valuation group and PAD ratio/sales context.
 - `county-equalization`: COD/PRD/COV/LOV and county comparison context.
 - `state-context`: county/state CTL comparison.
-- `review-checklist`: comparable worksheet, calendar, Form 422 preparation.
+- `review-checklist`: neutral review signals, unresolved questions, and summary handoff.
 
 ## 4. Reusable Component and Refactor Map
 
@@ -162,10 +161,9 @@ Primary journey reuse:
 | `initMarketAreaView` | Valuation Detail or Advanced Context | Lead with concepts, then terminology. Default to secondary unless needed for "what may be driving value." |
 | `renderTaxDistrictAuthorities`, `buildDistributionChart` | Tax Context resource | Keep in tax context, but make district detail secondary after the "value to taxes" explanation. |
 | `initAssessmentRatioAnalysis`, county/state charts | Advanced Context/Methodology | Move off mainline route. Provide as optional system context. |
-| `renderProcessTimeline` and calendar normalization | Timeline/trust layer | Surface relevant dates early, with full calendar in resources or final summary. |
+| Calendar normalization | Timeline/trust layer | Use only where it supports current-stage context or source grounding. |
 | `recordCorrectionRequest.js` | Optional factual record review | Keep as neutral "request factual record review," not protest-adjacent escalation. |
-| `form422Prefill.js` | Additional Review Resources | Move off primary conclusion. Access only after neutral review signals and summary. |
-| `homesteadPrefill.js` | Forms/resources | Keep as an optional tax/exemption resource. |
+| `data/app/real-property-forms.json` | Forms/resources | Link to official state forms only; do not prefill, print, submit, or store filings. |
 | `resourcesByView` | Resource layer | Convert to route-specific Learn More, Advanced Context, Forms, and Methodology drawers. |
 
 Likely removals from primary path:
@@ -173,6 +171,7 @@ Likely removals from primary path:
 - County equalization dashboard as a required mainline step.
 - Statewide CTL comparison as a required mainline step.
 - Form 422 packet as the terminal destination.
+- Generated side-by-side evidence tools and prefilled protest or homestead forms.
 - Dense multi-chart clusters that do not answer the route's primary question.
 
 ## 5. Route and View Architecture
@@ -184,9 +183,10 @@ Target primary route order:
 1. Orient / Property Record
 2. Observe / What Changed
 3. Observe / Valuation Detail
-4. Understand / Tax Context
-5. Decide / Review Signals
-6. Final Review / Summary
+4. Check / Equalization
+5. Understand / Tax Context
+6. Decide / Review Signals
+7. Final Review / Summary
 ```
 
 Route contracts:
@@ -208,12 +208,17 @@ Route contracts:
 
 - Valuation Detail
   - Primary question: "What may be driving the value?"
-  - Content: cost approach, market group, valuation group, comparable context, sales ratio context, terminology after concept explanation.
+  - Content: cost approach, market group, valuation group, sales ratio context, terminology after concept explanation.
   - Mainline display: limited. Advanced panels hold deeper PAD and ratio-study material.
+
+- Equalization
+  - Primary question: "Is the value base being checked for fairness?"
+  - Content: required level, uniformity, COD, PRD, and class-aware standards as taxpayer-facing context.
+  - Language: "fairness check between value and tax," not a parcel outcome or levy-control tool.
 
 - Tax Context
   - Primary question: "How do values connect to taxes?"
-  - Content: value, levy, exemptions/credits, effective tax rate, tax district summary, timeline for final tax bills.
+  - Content: value base, levy, exemptions/credits, effective tax rate, tax district summary, timeline for final tax bills.
   - Mainline display: education first, table/chart second.
 
 - Review Signals
@@ -223,7 +228,7 @@ Route contracts:
 
 - Final Review / Summary
   - Primary question: "What did I learn, and what are optional next steps?"
-  - Content: reviewed facts, value movement, tax context, review signals, source confidence, optional official resources.
+  - Content: reviewed facts, value movement, equalization context, tax context, review signals, source confidence, optional official resources.
   - Terminal feeling: informed, not pushed.
 
 Route state should be hash-compatible at first, then can be promoted later to a real router if the app moves into a framework.
@@ -288,14 +293,14 @@ Progressive disclosure lanes:
 - Learn More: plain-language concepts and definitions.
 - Advanced Context: market area, county/state analytics, detailed ratio studies.
 - Methodology: source and calculation explanation.
-- Forms and Resources: optional official forms, worksheets, checklists.
+- Forms and Resources: official outbound forms and plain-language references.
 
 Disclosure rules:
 
 - Introduce concepts before terminology.
 - Define technical terms at first contact.
 - Hide system-level analytics until the user has property-level orientation.
-- Keep protest/review preparation optional and off-path.
+- Keep protest filing as an official outbound reference, not an in-product preparation workflow.
 - Avoid turning "more data" into a visual reward.
 - Every disclosure label should describe user value, not internal data type.
 
@@ -336,6 +341,7 @@ Primary navigation labels:
 - Property Record
 - What Changed
 - Value Detail
+- Equalization
 - Tax Context
 - Review Signals
 - Summary
@@ -400,7 +406,7 @@ Current data sources and main uses:
 | Valuation groups | `data/counties/gage/valuation-groups.json` | Market/valuation group labels | Keep in Valuation Detail. |
 | County context | `data/counties/gage/county-context.json` | Demographics/context charts | Off-path unless a future resource needs it. |
 | IAAO standards/glossary | `data/standards/*.json` | Standards and definitions | Learn More and Methodology. |
-| Forms | `assets/forms/*.pdf` | Form 422 and 458 prefill | Optional resource layer. |
+| Official real property forms | `data/app/real-property-forms.json` | Outbound links to state source forms | Footer reference layer only; no prefill or filing workflow. |
 | Images | `assets/images/*.jpg`, map PNG | Property photos, sketch, map | Keep for Property Record. Reduce decorative map reliance. |
 
 Data gaps to address:
@@ -423,7 +429,7 @@ Portability contracts:
 - Avoid direct JSON path assumptions inside route components.
 - Use model contracts such as `notice`, `propertyRecord`, `valueHistory`, `taxContext`, `reviewSignals`, and `resources`.
 - Keep PDF generation behind a service boundary so it can later move server-side.
-- Treat localStorage worksheet drafts as replaceable client storage.
+- Treat any future client draft tools as replaceable storage and outside the core orientation layer.
 - Keep official-source URLs and source metadata in data/config, not hardcoded inside renderers.
 - Support multiple parcels by manifest entry before introducing search.
 
@@ -472,7 +478,7 @@ Phase 0: Foundation and inventory
 
 Phase 1: Route and model contracts
 
-- Add route config for Start, Property Record, What Changed, Value Detail, Tax Context, Review Signals, Summary.
+- Add route config for Start, Property Record, What Changed, Value Detail, Equalization, Tax Context, Review Signals, Summary.
 - Create `notice-model` and `review-signal-model`.
 - Keep current UI intact while new models are testable in console/smoke checks.
 
@@ -485,13 +491,13 @@ Phase 2: Landing / Primer
 Phase 3: Mainline taxpayer journey
 
 - Split current views into route modules.
-- Build Property Record, What Changed, Valuation Detail, Tax Context, Review Signals, and Summary around one primary question each.
+- Build Property Record, What Changed, Valuation Detail, Equalization, Tax Context, Review Signals, and Summary around one primary question each.
 - Keep charts but reduce simultaneous visual density.
 
 Phase 4: Secondary resources
 
-- Move county equalization, state context, advanced market context, forms, worksheets, methodology, and glossary into optional resource areas.
-- Keep protest preparation neutral and off-path.
+- Move county equalization, state context, advanced market context, official forms, methodology, and glossary into optional resource areas.
+- Keep protest filing references neutral and off-path.
 
 Phase 5: Visual system and accessibility
 

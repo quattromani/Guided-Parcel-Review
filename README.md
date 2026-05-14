@@ -1,6 +1,6 @@
 # Property Snapshot
 
-A static taxpayer-facing prototype for reviewing a property record, assessment movement, tax context, market-area signals, and optional review resources in a guided plain-English flow.
+A static taxpayer-facing prototype for reviewing a property record, assessment movement, value detail, equalization, tax context, review signals, and official reference resources in a guided plain-English flow.
 
 The current branch, `codex/civic-orientation-refactor`, treats the app as a civic orientation tool rather than a generic data dashboard. The goal is to help someone understand what record was used, what changed, how value connects to taxes, and whether anything deserves closer review without requiring assessment-ratio expertise.
 
@@ -12,12 +12,12 @@ The active guided path is defined in `src/config/taxpayer-journey.js`:
 2. Property Record
 3. What Changed
 4. Value Detail
-5. Tax Context
-6. Review Signals
-7. Summary
-8. Resources
+5. Equalization
+6. Tax Context
+7. Review Signals
+8. Summary
 
-The main path is deliberately sequential. It starts with the property identity and source record, then introduces value movement, local market context, tax context, neutral review signals, and optional resources. Resources are available without making filing or protest preparation feel like the default outcome.
+The main path is deliberately sequential. It starts with the property identity and source record, then introduces value movement, local market context, equalization as the fairness layer, tax context, neutral review signals, and a summary. Official forms live as outbound footer references so filing materials do not become the product's endpoint.
 
 ## Design Principles
 

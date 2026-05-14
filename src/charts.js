@@ -401,10 +401,6 @@ function getDefaultAssessmentClass(data, ratioData) {
   return ratioData.classes[0]?.key ?? "residential";
 }
 
-function getLovTarget(classKey) {
-  return classKey === "agFarm" ? 75 : 100;
-}
-
 function formatSignedChange(value, digits = 2) {
   if (value === null || value === undefined) return "—";
   const prefix = value > 0 ? "+" : "";
@@ -429,8 +425,13 @@ function colorAlpha(hex, alpha) {
 
 const assessmentStandardKeys = {
   residential: "residential-improved-rural",
-  agFarm: "other-vacant-rural",
   commercial: "income-producing-rural"
+};
+
+const assessmentLevelStandardKeys = {
+  residential: "nebraska-residential-real-property",
+  agFarm: "nebraska-agricultural-horticultural-special-valuation",
+  commercial: "nebraska-commercial-real-property"
 };
 
 const assessmentMeasureDefinitions = [
@@ -442,7 +443,7 @@ const assessmentMeasureDefinitions = [
     cardBackground: semanticChartColors.etrSoft,
     cardBorder: semanticChartColors.etrRing,
     digits: 2,
-    definition: "Uniformity is measured by COD. It shows how tightly individual assessments cluster around typical market value."
+    definition: "Uniformity is measured by COD. It shows how tightly individual assessment ratios cluster around the median ratio."
   },
   {
     key: "prd",
@@ -456,30 +457,45 @@ const assessmentMeasureDefinitions = [
   },
   {
     key: "cov",
-    label: "Reliability",
+    label: "Variation",
     color: chartColors.cov,
     fill: semanticChartColors.valueBg,
     cardBackground: semanticChartColors.valueSoft,
     cardBorder: semanticChartColors.valueRing,
     digits: 2,
-    definition: "Reliability is measured by COV. It shows whether the study results are stable enough to trust across the sales sample."
+    approximateBand: true,
+    definition: "COV measures relative variation around the mean ratio. When a comparison band is available, it is approximate context derived from the selected COD guidance."
   }
 ];
 
-function getAssessmentStandard(selectedClass, iaaoStandards) {
+function getAssessmentStandardByKey(collection, key) {
+  return collection?.find(item => item.key === key) ?? null;
+}
+
+function getCodAssessmentStandard(selectedClass, iaaoStandards) {
+  if (selectedClass.key === "agFarm") return null;
+
   const standardKey = assessmentStandardKeys[selectedClass.key] ?? assessmentStandardKeys.residential;
 
-  return iaaoStandards?.codStandards?.find(item => item.key === standardKey)
-    ?? iaaoStandards?.codStandards?.find(item => item.key === assessmentStandardKeys.residential);
+  return getAssessmentStandardByKey(iaaoStandards?.codStandards, standardKey);
+}
+
+function getAssessmentLevelStandard(selectedClass, iaaoStandards) {
+  const standardKey = assessmentLevelStandardKeys[selectedClass.key] ?? assessmentLevelStandardKeys.residential;
+
+  return getAssessmentStandardByKey(iaaoStandards?.assessmentLevelStandards, standardKey)
+    ?? getAssessmentStandardByKey(iaaoStandards?.assessmentLevelStandards, assessmentLevelStandardKeys.residential);
 }
 
 function getAssessmentBandConfig(selectedClass, iaaoStandards) {
-  const codStandard = getAssessmentStandard(selectedClass, iaaoStandards);
+  const codStandard = getCodAssessmentStandard(selectedClass, iaaoStandards);
+  const levelStandard = getAssessmentLevelStandard(selectedClass, iaaoStandards);
 
   return {
-    cod: codStandard?.codRange ?? { min: 5, max: 20 },
+    levelOfValue: levelStandard?.range ?? { min: 92, max: 100, center: 96 },
+    cod: codStandard?.codRange ?? null,
     prd: iaaoStandards?.prdStandards?.acceptableRange ?? { min: 0.98, max: 1.03 },
-    cov: codStandard?.estimatedCovRange ?? { min: 6.25, max: 25 }
+    cov: codStandard?.estimatedCovRange ?? null
   };
 }
 
@@ -489,34 +505,37 @@ function bandPosition(value, range) {
   return (value - range.min) / (range.max - range.min);
 }
 
-function bandStatus(value) {
-  if (value === null || value === undefined) return "no measure";
-  if (value < 0) return "below standard band";
-  if (value > 1) return "above standard band";
+function bandStatus(value, approximate = false) {
+  const bandLabel = approximate ? "context band" : "standard band";
 
-  return "inside standard band";
+  if (value === null || value === undefined) return "no measure";
+  if (value < 0) return `below ${bandLabel}`;
+  if (value > 1) return `above ${bandLabel}`;
+
+  return `inside ${bandLabel}`;
 }
 
-function rawBandStatus(value, range) {
+function rawBandStatus(value, range, { approximate = false } = {}) {
+  const bandLabel = approximate ? "context band" : "standard band";
+
   if (value === null || value === undefined || !range) {
-    return { label: "No standard status", tone: "unknown" };
+    return { label: "No direct band", tone: "unknown" };
   }
 
-  if (value < range.min) return { label: "Below standard band", tone: "outside" };
-  if (value > range.max) return { label: "Above standard band", tone: "outside" };
+  if (value < range.min) return { label: `Below ${bandLabel}`, tone: "outside" };
+  if (value > range.max) return { label: `Above ${bandLabel}`, tone: "outside" };
 
-  return { label: "Inside standard band", tone: "inside" };
+  return { label: `Inside ${bandLabel}`, tone: "inside" };
 }
 
-function levelOfValueStatus(value, target) {
-  if (value === null || value === undefined || target === null || target === undefined) {
+function assessmentLevelStatus(value, range) {
+  if (value === null || value === undefined || !range) {
     return { label: "No target status", tone: "unknown" };
   }
 
-  const distance = value - target;
-  if (Math.abs(distance) <= 5) return { label: "Within 5 pts of target", tone: "inside" };
-  if (distance > 0) return { label: "Above target", tone: "outside" };
-  return { label: "Below target", tone: "outside" };
+  if (value < range.min) return { label: "Below class range", tone: "outside" };
+  if (value > range.max) return { label: "Above class range", tone: "outside" };
+  return { label: "Inside class range", tone: "inside" };
 }
 
 function formatMeasureValue(measureKey, value, digits) {
@@ -526,8 +545,8 @@ function formatMeasureValue(measureKey, value, digits) {
   return value.toFixed(digits);
 }
 
-function standardRangeLabel(range, digits = 2) {
-  if (!range) return "standard band";
+function standardRangeLabel(range, digits = 2, fallback = "No direct band") {
+  if (!range) return fallback;
 
   return `${range.min.toFixed(digits)}-${range.max.toFixed(digits)}`;
 }
@@ -663,8 +682,13 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
   if (!summary) return;
 
   const latest = selectedClass.records.at(-1);
-  const target = getLovTarget(selectedClass.key);
   const bandConfig = getAssessmentBandConfig(selectedClass, iaaoStandards);
+  const levelRange = bandConfig.levelOfValue;
+  const levelRangeText = standardRangeLabel(levelRange, 0, "No class range");
+  const levelRangeNote = levelRange ? `Class range: ${levelRangeText}%` : levelRangeText;
+  const levelHelp = levelRange
+    ? `Level of value uses the median ratio as the class-level assessment indicator. The applicable range for this class is ${levelRangeText}%.`
+    : "Level of value uses the median ratio as the class-level assessment indicator.";
 
   const cards = [
     {
@@ -688,16 +712,16 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
       value: latest.cov.toFixed(2),
       note: `${formatSignedChange(selectedClass.summary.covChangeSince2025)} from 2025`,
       color: chartColors.cov,
-      status: rawBandStatus(latest.cov, bandConfig.cov),
-      help: "Coefficient of Variation shows how spread out assessment ratios are around their average. Lower values generally indicate more consistent results."
+      status: rawBandStatus(latest.cov, bandConfig.cov, { approximate: true }),
+      help: "Coefficient of Variation shows how spread out assessment ratios are around their mean. The displayed band is approximate context, not a direct COD substitute."
     },
     {
       label: "Level of value",
       value: `${latest.levelOfValue.toFixed(2)}%`,
-      note: `Target: ${target}%`,
+      note: levelRangeNote,
       color: palette.teal,
-      status: levelOfValueStatus(latest.levelOfValue, target),
-      help: `Level of value compares assessed value with market value. The target for this class is ${target}%.`
+      status: assessmentLevelStatus(latest.levelOfValue, levelRange),
+      help: levelHelp
     }
   ];
 
@@ -738,13 +762,19 @@ function renderAssessmentAccuracyNotes(selectedClass, iaaoStandards) {
   if (!notes) return;
 
   const bandConfig = getAssessmentBandConfig(selectedClass, iaaoStandards);
+  const bandLabel = definition => {
+    const range = bandConfig[definition.key];
+    if (!range) return "No direct standard band";
+    const label = definition.approximateBand ? "Approx. context band" : "Standard band";
+    return `${label}: ${standardRangeLabel(range, definition.key === "prd" ? 2 : 1)}`;
+  };
 
   notes.innerHTML = assessmentMeasureDefinitions.map(definition => `
     <div class="assessment-note-card flex min-h-32 flex-col rounded-lg p-3" style="--measure-color: ${definition.color};">
       <p class="assessment-note-title">${definition.label}</p>
       <p class="assessment-note-body mt-2">${definition.definition}</p>
       <p class="assessment-note-band mt-auto pt-3 text-[11px] font-semibold uppercase tracking-wide">
-        Standard band: ${standardRangeLabel(bandConfig[definition.key], definition.key === "prd" ? 2 : 1)}
+        ${bandLabel(definition)}
       </p>
     </div>
   `).join("");
@@ -762,6 +792,7 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
     measureKey: definition.key,
     digits: definition.digits,
     range: bandConfig[definition.key],
+    approximateBand: Boolean(definition.approximateBand),
     data: records.map(row => bandPosition(row[definition.key], bandConfig[definition.key])),
     tension: 0.25,
     borderWidth: 3,
@@ -774,6 +805,9 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
   const chartValues = datasets.flatMap(dataset => dataset.data.filter(value => value !== null && value !== undefined));
   const minValue = Math.min(0, ...chartValues);
   const maxValue = Math.max(1, ...chartValues);
+  const hasApproximateBand = assessmentMeasureDefinitions.some(definition =>
+    definition.approximateBand && bandConfig[definition.key]
+  );
 
   assessmentAccuracyChart?.destroy();
   assessmentAccuracyChart = new Chart(canvas, {
@@ -798,9 +832,11 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
             label: context => {
               const rawValue = records[context.dataIndex]?.[context.dataset.measureKey];
               const value = formatMeasureValue(context.dataset.measureKey, rawValue, context.dataset.digits);
-              return `${context.dataset.label}: ${value} (${bandStatus(context.parsed.y)})`;
+              return `${context.dataset.label}: ${value} (${bandStatus(context.parsed.y, context.dataset.approximateBand)})`;
             },
-            footer: () => "Shaded area = standard band"
+            footer: () => hasApproximateBand
+              ? "Shaded area = standard band; COV band is approximate context"
+              : "Shaded area = standard band"
           }
         },
         assessmentStandardBand: {
@@ -810,7 +846,7 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
       },
       scales: {
         y: {
-          title: { display: true, text: "Position within standard range" },
+          title: { display: true, text: "Position within selected band" },
           suggestedMin: Math.min(-0.25, Math.floor(minValue - 0.25)),
           suggestedMax: Math.max(1.5, Math.ceil(maxValue + 0.25)),
           ticks: {
@@ -978,6 +1014,13 @@ function formatRatio(value, digits = 2) {
   return Number.isFinite(number) ? number.toFixed(digits) : "—";
 }
 
+function priceBandStudyKeyForClass(classKey = "residential") {
+  const normalized = normalizeMarketClassKey(classKey);
+  if (normalized === "agricultural") return "agFarm";
+  if (normalized === "commercial") return "commercial";
+  return "residential";
+}
+
 function marketAreaSignal(selected, summary, classStats, medianRange = null, isParcelGroup = true) {
   const medianDelta = selected.median - summary.median;
   const codDelta = selected.cod - summary.cod;
@@ -1130,15 +1173,36 @@ function renderMarketNarrative(selected, summary, classStats, medianRange, isPar
   narrative.textContent = marketAreaSignal(selected, summary, classStats, medianRange, isParcelGroup);
 }
 
-function priceBandStudyForClass(padRatioData, classKey = "residential") {
-  if (classKey === "residential" || !padRatioData.priceBandStudies?.[classKey]) {
+function countywideTotalForClass(marketPositionData, classKey = "residential") {
+  const normalized = normalizeMarketClassKey(classKey);
+  const countywide = marketPositionData?.classes?.[normalized]?.countywide;
+  if (!countywide) return null;
+
+  return {
+    count: countywide.count,
+    median: countywide.median,
+    mean: countywide.mean,
+    weightedMean: countywide.weightedMean,
+    cod: countywide.cod,
+    prd: countywide.prd,
+    averageAdjustedSalePrice: countywide.averageAdjustedSalePrice,
+    averageAssessedValue: countywide.averageAssessedValue
+  };
+}
+
+function priceBandStudyForClass(padRatioData, classKey = "residential", marketPositionData = null) {
+  const studyKey = priceBandStudyKeyForClass(classKey);
+
+  if (studyKey === "residential" || !padRatioData.priceBandStudies?.[studyKey]) {
     return {
       key: "residential",
       label: "Residential sale-price bands",
       description: "Sale-price ranges show where qualified residential sales are concentrated and whether the study is based mostly on lower-, middle-, or higher-priced properties.",
       chartNote: "Qualified sales by price band, including empty upper bands.",
+      rangeHeader: "Sale price range",
       rows: padRatioData.salePriceRanges.filter(row => row.section === "Incremental Ranges"),
-      totalRow: padRatioData.salePriceRanges
+      totalRow: countywideTotalForClass(marketPositionData, "residential")
+        ?? padRatioData.salePriceRanges
         .find(row => row.range === "ALL" || row.section === "All") ?? {
           count: padRatioData.summary.numberOfSales,
           median: padRatioData.summary.median,
@@ -1149,7 +1213,13 @@ function priceBandStudyForClass(padRatioData, classKey = "residential") {
     };
   }
 
-  return padRatioData.priceBandStudies[classKey];
+  const study = padRatioData.priceBandStudies[studyKey];
+
+  return {
+    ...study,
+    rangeHeader: study.rangeHeader ?? (studyKey === "agFarm" ? "Study group" : "Sale price range"),
+    totalRow: countywideTotalForClass(marketPositionData, studyKey) ?? study.totalRow
+  };
 }
 
 function propertyClassLabelForStudy(classKey = "residential", study = {}) {
@@ -1185,29 +1255,50 @@ function getPadRoRefreshWatch(padRatioData) {
   return ` Newer sales-study data may be available; this section still uses ${source.reportYear} data.`;
 }
 
-function renderMarketSalePriceRows(padRatioData, classKey = "residential") {
+function duplicateBandLabels(rows) {
+  const counts = rows.reduce((acc, row) => {
+    acc[row.range] = (acc[row.range] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  return new Set(Object.entries(counts).filter(([, count]) => count > 1).map(([label]) => label));
+}
+
+function priceBandDisplayLabel(row, duplicateLabels) {
+  return duplicateLabels.has(row.range) && row.section
+    ? `${row.section} · ${row.range}`
+    : row.range;
+}
+
+function renderMarketSalePriceRows(padRatioData, classKey = "residential", marketPositionData = null) {
   const table = document.getElementById("marketSalePriceRows");
   if (!table) return;
 
-  const study = priceBandStudyForClass(padRatioData, classKey);
+  const study = priceBandStudyForClass(padRatioData, classKey, marketPositionData);
   const rows = study.rows || [];
   const totalRow = study.totalRow;
   const title = document.getElementById("marketSalePriceTitle");
   const description = document.getElementById("marketSalePriceDescription");
   const chartTitle = document.getElementById("marketSalePriceChartTitle");
   const chartNote = document.getElementById("marketSalePriceChartNote");
+  const rangeHeader = document.getElementById("marketSalePriceRangeHeader");
   const source = document.getElementById("marketSalePriceSource");
   const propertyClassLabel = propertyClassLabelForStudy(study.key ?? classKey, study);
+  const duplicateLabels = duplicateBandLabels(rows);
+  const nonAdditiveNote = study.key === "agFarm"
+    ? " Rows are stratified views and should not be summed."
+    : "";
 
   if (title) title.textContent = `What makes up the ${propertyClassLabel} sales data?`;
   if (description) description.textContent = study.description || "";
   if (chartTitle) chartTitle.textContent = study.chartTitle || "Sales distribution";
-  if (chartNote) chartNote.textContent = study.chartNote || "Qualified sales by band.";
+  if (chartNote) chartNote.textContent = `${study.chartNote || "Qualified sales by band."}${nonAdditiveNote}`;
+  if (rangeHeader) rangeHeader.textContent = study.rangeHeader || "Sale price range";
   if (source) source.textContent = `${getPadRoSourceAnchor(padRatioData)}${getPadRoRefreshWatch(padRatioData)}`;
 
   const dataRows = rows.map(row => `
     <tr>
-      <td class="px-2 py-2 font-medium text-slate-700">${row.range}</td>
+      <td class="px-2 py-2 font-medium text-slate-700">${priceBandDisplayLabel(row, duplicateLabels)}</td>
       <td class="px-2 py-2 text-right">${integer.format(row.count)}</td>
       <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.median) : "—"}</td>
       <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.cod) : "—"}</td>
@@ -1217,7 +1308,7 @@ function renderMarketSalePriceRows(padRatioData, classKey = "residential") {
   `).join("");
   const footerRow = totalRow ? `
     <tr class="table-total-row font-semibold">
-      <td class="px-2 py-2">Total / average</td>
+      <td class="px-2 py-2">Countywide total</td>
       <td class="px-2 py-2 text-right">${integer.format(totalRow.count)}</td>
       <td class="px-2 py-2 text-right">${formatRatio(totalRow.median)}</td>
       <td class="px-2 py-2 text-right">${formatRatio(totalRow.cod)}</td>
@@ -1227,7 +1318,7 @@ function renderMarketSalePriceRows(padRatioData, classKey = "residential") {
   ` : "";
 
   table.innerHTML = dataRows + footerRow;
-  renderMarketSalePriceChart(rows, study);
+  renderMarketSalePriceChart(rows, study, duplicateLabels);
 }
 
 function shortPriceBandLabel(range) {
@@ -1244,7 +1335,7 @@ function shortPriceBandLabel(range) {
   return range;
 }
 
-function renderMarketSalePriceChart(rows, study = {}) {
+function renderMarketSalePriceChart(rows, study = {}, duplicateLabels = new Set()) {
   const canvas = document.getElementById("marketSalePriceChart");
   if (!canvas) return;
   const datasets = [
@@ -1277,7 +1368,7 @@ function renderMarketSalePriceChart(rows, study = {}) {
   marketSalePriceChart?.destroy();
   marketSalePriceChart = new Chart(canvas, {
     data: {
-      labels: rows.map(row => shortPriceBandLabel(row.range)),
+      labels: rows.map(row => shortPriceBandLabel(priceBandDisplayLabel(row, duplicateLabels))),
       datasets
     },
     options: {
@@ -1664,10 +1755,7 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
   };
 
   select.addEventListener("change", () => update(select.value));
-  window.addEventListener("assessment-class-change", event => {
-    if (padRatioData) renderMarketSalePriceRows(padRatioData, event.detail?.key);
-  });
-  if (padRatioData) renderMarketSalePriceRows(padRatioData, getDefaultAssessmentClass(data, padRatioData));
+  if (padRatioData) renderMarketSalePriceRows(padRatioData, classKey, marketPositionData);
   update(defaultGroup);
 }
 
@@ -2322,14 +2410,24 @@ function findMetric(rows, metric, subgroup = "County") {
   return rows.find(row => row.metric === metric && (!subgroup || row.subgroup === subgroup));
 }
 
+function formatNumberWithDecimals(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "—";
+
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: Number.isInteger(number) ? 0 : 2
+  }).format(number);
+}
+
 function formatContextValue(row) {
   if (!row) return "—";
   if (typeof row.value === "string") return row.value;
   if (row.unit === "$") return wholeMoney.format(row.value);
   if (row.unit === "%") return percent.format(row.value);
   if (row.unit === "people" || row.unit === "count") return integer.format(row.value);
-  if (row.unit) return `${integer.format(row.value)} ${row.unit}`;
-  return integer.format(row.value);
+  if (row.unit) return `${formatNumberWithDecimals(row.value)} ${row.unit}`;
+  return formatNumberWithDecimals(row.value);
 }
 
 function formatCardValue(row) {
@@ -2338,8 +2436,8 @@ function formatCardValue(row) {
   if (row.unit === "$") return { value: wholeMoney.format(row.value), note: row.dataYear ?? row.year ?? "" };
   if (row.unit === "%") return { value: percent.format(row.value), note: row.dataYear ?? row.year ?? "" };
   if (row.unit === "people" || row.unit === "count") return { value: integer.format(row.value), note: row.dataYear ?? row.year ?? "" };
-  if (row.unit) return { value: integer.format(row.value), note: `${row.unit} • ${row.dataYear ?? row.year ?? ""}` };
-  return { value: integer.format(row.value), note: row.dataYear ?? row.year ?? "" };
+  if (row.unit) return { value: formatNumberWithDecimals(row.value), note: `${row.unit} • ${row.dataYear ?? row.year ?? ""}` };
+  return { value: formatNumberWithDecimals(row.value), note: row.dataYear ?? row.year ?? "" };
 }
 
 function renderDemographicCards(contextData) {
@@ -2600,12 +2698,29 @@ function levyColorForGroup(label, schoolColor) {
     : levyGroupColors[label] ?? levyGroupColors.Other;
 }
 
+function latestFinalTaxAmount(data) {
+  const finalYear = data.latestFinalTaxYear;
+  const finalRow = data.taxpayerHistory?.find(row =>
+    row.year === finalYear && hasDataValue(row.taxes)
+  );
+
+  return finalRow?.taxes
+    ?? data.snapshotModel?.viewModels?.taxes?.latestFinalTax
+    ?? null;
+}
+
 export function buildDistributionChart(data, schoolDistrictColors) {
   const grouped = groupLevy(data.latestFinalLevyComponents);
   const total = Object.values(grouped).reduce((sum, value) => sum + value, 0);
+  const latestTaxesPaid = latestFinalTaxAmount(data);
   const schoolDistrictColor = findSchoolDistrictColor(data, schoolDistrictColors)?.map_color;
   const sorted = Object.entries(grouped)
-    .map(([label, rate]) => ({ label, rate, share: rate / total }))
+    .map(([label, rate]) => ({
+      label,
+      rate,
+      share: rate / total,
+      paidAmount: hasDataValue(latestTaxesPaid) ? (rate / total) * latestTaxesPaid : null
+    }))
     .sort((a, b) => b.rate - a.rate);
   const labels = sorted.map(row => row.label);
   const values = sorted.map(row => row.rate);
@@ -2637,10 +2752,13 @@ export function buildDistributionChart(data, schoolDistrictColors) {
   });
 
   document.getElementById("distributionNotes").innerHTML = sorted.map(row => `
-    <div class="rounded-lg bg-slate-50 px-3 py-2 ring-1 ring-slate-200">
-      <div class="flex items-center gap-2">
-        <span class="h-2.5 w-2.5 rounded-full" style="background-color: ${levyColorForGroup(row.label, schoolDistrictColor)}"></span>
-        <p class="font-semibold leading-5 text-slate-700">${row.label}</p>
+    <div class="distribution-note-card">
+      <div class="distribution-note-heading">
+        <span class="distribution-note-label">
+          <span class="h-2.5 w-2.5 rounded-full" style="background-color: ${levyColorForGroup(row.label, schoolDistrictColor)}"></span>
+          <span class="font-semibold leading-5 text-slate-700">${row.label}</span>
+        </span>
+        <span class="distribution-note-amount">${hasDataValue(row.paidAmount) ? moneyCents.format(row.paidAmount) : "—"}</span>
       </div>
       <p class="mt-0.5 text-xs leading-4 text-slate-600">${percent.format(row.share)} of levy</p>
     </div>

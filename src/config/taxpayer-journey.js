@@ -36,13 +36,22 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     description: "Review the main value drivers in plain language before opening deeper market or method detail. Local sales-study data helps place the parcel record in context."
   },
   {
+    id: "equalization",
+    panelId: "county-equalization",
+    eyebrow: "Check",
+    label: "Equalization",
+    question: "Is the value base being checked for fairness?",
+    title: "Use equalization as the fairness layer between value and tax",
+    description: "Equalization does not stop market values from moving or set the levy. It checks whether assessed values are at the required level and reasonably uniform before levies are applied."
+  },
+  {
     id: "tax-context",
     panelId: "your-taxes",
     eyebrow: "Understand",
     label: "Tax Context",
     question: "How do values connect to taxes?",
     title: "Separate value, levy, credits, and final tax bills",
-    description: "Assessed value is only one part of the tax bill. Levies, budgets, exemptions, credits, and tax district boundaries can also affect the final amount."
+    description: "Once the value base is set, taxes show how levies, credits, exemptions, and district boundaries turn assessed value into the final bill."
   },
   {
     id: "review-signals",
@@ -51,7 +60,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Review Signals",
     question: "Is there anything worth reviewing more closely?",
     title: "Review neutral signals and organize questions",
-    description: "Review signals organize facts or patterns that may be worth verifying against the property record, value history, tax context, or source documents."
+    description: "Review signals synthesize the property record, value movement, equalization context, tax history, and source documents without deciding an outcome."
   },
   {
     id: "final-summary",
@@ -60,18 +69,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Summary",
     question: "What was reviewed?",
     title: "Leave with orientation and optional next steps",
-    description: "Summarize the property record, value movement, tax context, and any neutral review signals. The summary keeps what has been covered separate from any optional next steps."
-  },
-  {
-    id: "resources",
-    panelId: "resources",
-    eyebrow: "Resources",
-    label: "Resources",
-    icon: "stacked-papers",
-    secondary: true,
-    question: "Resources and forms",
-    title: "Use optional resources when you need them",
-    description: "Review the assessment calendar, organize comparable-property notes, and access protest preparation materials without making those resources the endpoint of the main review."
+    description: "Summarize the property record, value movement, equalization context, tax context, and any neutral review signals. The summary keeps what has been covered separate from any optional next steps."
   }
 ];
 

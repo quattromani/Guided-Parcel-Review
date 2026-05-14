@@ -76,6 +76,16 @@ export function loadAssessmentCalendar() {
     .then(normalizePadCalendar);
 }
 
+export function loadLegalReferences() {
+  return loadPropertyManifest()
+    .then(manifest => loadJson(manifest.sharedData.legalReferencesPath, "legal references"));
+}
+
+export function loadRealPropertyForms() {
+  return loadPropertyManifest()
+    .then(manifest => loadJson(manifest.sharedData.realPropertyFormsPath, "real property forms"));
+}
+
 export function loadCertifiedTaxesLevied() {
   return loadPropertyManifest()
     .then(manifest => loadJson(manifest.sharedData.statewideCtlPath, "certified taxes levied"));

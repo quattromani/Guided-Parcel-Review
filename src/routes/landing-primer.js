@@ -175,7 +175,7 @@ function buildFinalReviewModel(data, context = {}) {
 
   return {
     heading: `Review of the main assessment story for ${notice.situsAddress}`,
-    intro: "The main takeaways from the property record, value movement, market context, taxes, and review signals are gathered here for orientation. This is not a filing recommendation.",
+    intro: "The main takeaways from the property record, value movement, market context, equalization, taxes, and review signals are gathered here for orientation. This is not a filing recommendation.",
     blocks: [
       {
         narrative: "The first part of the review anchors the parcel facts, then separates current value status from finalized value history. That keeps the property description and value movement clear before adding market or tax context.",
@@ -201,7 +201,7 @@ function buildFinalReviewModel(data, context = {}) {
         ]
       },
       {
-        narrative: "The later steps add context from market studies, tax history, and neutral review signals. These items help explain the available records without treating any outcome as expected.",
+        narrative: "The later steps move from market context to equalization, then to taxes. Equalization is the fairness check before levies are applied; tax context shows how that value base becomes a bill.",
         cards: [
           {
             step: "Step 3 · Value Detail",
@@ -212,13 +212,19 @@ function buildFinalReviewModel(data, context = {}) {
               : "Market data helps place the property in context, but it is not a conclusion about this parcel by itself."
           },
           {
-            step: "Step 4 · Tax Context",
+            step: "Step 4 · Equalization",
+            value: "Fairness check",
+            meta: "Required level and uniformity",
+            note: "Equalization does not stop market movement or set the levy. It checks whether assessments are at the required level and reasonably uniform."
+          },
+          {
+            step: "Step 5 · Tax Context",
             value: latestEtr !== null ? `ETR ${formatNullablePercent(latestEtr)}` : "ETR pending",
             meta: latestTax ? `Net taxes ${moneyCents.format(latestTax.taxes)} (${latestTax.year})` : "No final tax bill listed",
             note: "Effective tax rate compares finalized taxes paid with assessed value after levy, credits, and exemptions are reflected in the final bill."
           },
           {
-            step: "Step 5 · Review Signals",
+            step: "Step 6 · Review Signals",
             value: reviewSignals.length ? itemCountLabel(reviewSignals.length, "item") : "No items surfaced",
             meta: signalMeta(reviewSignals),
             note: reviewSignals.some(signal => signal.tone === "review")
@@ -327,7 +333,7 @@ function installReviewSignalsPanel(data) {
       <div>
         <p class="guided-kicker">Review signals</p>
         <h2 id="reviewSignalsTitle">Items worth verifying, if any</h2>
-        <p>Review signals collect facts or patterns from the earlier steps. They are neutral prompts for review, not findings or filing recommendations.</p>
+        <p>Review signals collect facts or patterns from the record, value, equalization, and tax steps. They are neutral prompts for review, not findings or filing recommendations.</p>
       </div>
       <div class="civic-review-signal-grid">
         ${cards}
@@ -377,7 +383,8 @@ function installFinalSummary(data, context = {}) {
 function alignPrimaryJourneyNextSteps() {
   updateNextStep("your-property", "what-changed", "Now review what changed.", "Go to What Changed");
   updateNextStep("your-assessment", "valuation-detail", "Now review what may be driving the value.", "Go to Value Detail");
-  updateNextStep("market-area", "tax-context", "Now connect values to taxes.", "Go to Tax Context");
+  updateNextStep("market-area", "equalization", "Now check the fairness layer.", "Go to Equalization");
+  updateNextStep("county-equalization", "tax-context", "Now connect the value base to taxes.", "Go to Tax Context");
   updateNextStep("your-taxes", "review-signals", "Now review neutral signals.", "Go to Review Signals");
   appendFinalSummaryStep();
 }
