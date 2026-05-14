@@ -91,8 +91,52 @@ const viewHeaderContent = {
   }
 };
 
+const viewPrimerContent = {
+  "your-property": [
+    "This is the starting point. It shows the public-record facts used to identify the property before value or taxes are reviewed.",
+    "Start by checking whether the record describes the right property: location, class, land, building details, and major features.",
+    "Do not treat this page as a value decision. It is mainly a record check before you read assessment and tax data."
+  ],
+  "your-assessment": [
+    "This page separates value from taxes. Assessed value is the value used to calculate this property’s share of taxes.",
+    "The current assessed value may be available before the final tax bill is known. Prior years show taxes paid after bills were finalized.",
+    "Do not over-read one year by itself. Use the history to see whether value, taxes, and ETR, or taxes divided by value, are moving together or separately."
+  ],
+  "your-taxes": [
+    "This page shows finalized tax history and how levy movement relates to the bill. A levy is the rate set after budgets and taxable value are known.",
+    "ETR means effective tax rate: taxes divided by value. It shows what share of the property’s value went to taxes.",
+    "The assessor does not set levies. Do not assume a higher bill came only from the assessment; budgets, credits, exemptions, and tax districts can also matter."
+  ],
+  "tax-districts": [
+    "This page shows the tax district for this parcel and the taxing bodies that receive part of the bill.",
+    "A taxing body is a public entity such as a school district, county, city, fire district, or other local unit. A levy is the rate used to collect from taxable value.",
+    "Use this mainly to check jurisdiction and bill distribution. It explains where the tax bill goes, not whether the property’s assessed value is correct."
+  ],
+  "market-area": [
+    "This page compares the property’s local valuation group with the county residential sales study. A valuation group, or market area, is the local group this property is compared within for assessment review.",
+    "Ratio-study numbers compare assessed values with sale prices. COD and PRD are consistency and price-level fairness measures.",
+    "These statistics do not prove an individual value is right or wrong. They help show whether the group looks consistent enough to use as context."
+  ],
+  "county-equalization": [
+    "This page uses sales-study statistics to show how county assessments are performing overall.",
+    "LOV shows the typical assessment level compared with sale price. COD measures uniformity, PRD reviews lower- and higher-priced properties, and COV shows how spread out the ratios are.",
+    "Countywide measures are system context. They do not decide this parcel by themselves; property facts and local market evidence still matter."
+  ],
+  "state-context": [
+    "This page gives broader context by comparing county value and tax movement against statewide patterns.",
+    "CTL means Certificates of Taxes Levied data: certified county and state tax and value totals. Taxes levied are the total taxes requested through that process.",
+    "Use this for scale and comparison. It should not be used by itself to judge whether one parcel is correctly assessed."
+  ],
+  "review-checklist": [
+    "This page helps you organize what you already reviewed: property facts, comparable-property notes, calendar timing, and optional filing materials.",
+    "A comparable property is one used for side-by-side review because its public record may help explain value differences. Form 422 is Nebraska’s valuation protest form.",
+    "Use this as an organization checklist, not legal advice or a guaranteed outcome. Confirm facts, dates, and filing requirements with official sources before taking any action."
+  ]
+};
+
 export function renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, summaryContext = {}) {
   renderViewHeader("your-property", data.snapshotModel);
+  renderPagePrimer("your-property");
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard);
   renderAssessmentNoticeSummary(data, recordCard);
@@ -111,6 +155,23 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderLevyHistoryTable(data);
   renderLevyTable(data);
   renderSources(data);
+}
+
+export function renderPagePrimer(view = "your-property") {
+  const primer = document.getElementById("pagePrimer");
+  const points = viewPrimerContent[view] || viewPrimerContent["your-property"];
+
+  if (!primer) return;
+
+  primer.innerHTML = `
+    <article class="page-primer" aria-labelledby="pagePrimerTitle">
+      <p class="guided-kicker">Page Primer</p>
+      <h2 id="pagePrimerTitle">Before you review this page</h2>
+      <ul class="page-primer-list">
+        ${points.map(point => `<li>${point}</li>`).join("")}
+      </ul>
+    </article>
+  `;
 }
 
 export function renderPropertyViewContext(data, recordCard, valuationGroups) {
@@ -2608,7 +2669,7 @@ function renderTaxBurdenExplanation(data) {
 
     return `
       <tr style="background-color: ${heatColor};">
-        <td class="px-3 py-2 font-semibold text-slate-700">${statement.taxYear}</td>
+        <th scope="row" class="px-3 py-2 text-left font-semibold text-slate-700">${statement.taxYear}</th>
         <td class="px-3 py-2 text-right">${formatNullableMoney(statement.grossTaxAmount, true)}</td>
         <td class="px-3 py-2 text-right">
           <span class="font-medium">${formatNullableMoney(totalCredits, true)}</span>
@@ -2623,7 +2684,9 @@ function renderTaxBurdenExplanation(data) {
   container.innerHTML = `
     <div class="grid gap-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
       <div>
-        <p class="max-w-3xl text-sm leading-6 text-slate-600">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax Statement Math</p>
+        <h2 class="mt-1 text-xl font-bold text-slate-700">From levy to actual tax burden</h2>
+        <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-600">
           Your levy shows the tax rate before credits. Your actual tax burden is what remains after credits are applied,
           including the Non-Ag Tax Credit and School Tax Credit. That is why effective tax rate uses net taxes paid divided
           by assessed value: it shows what you paid after levy changes and credits across the available statement record.
@@ -2645,8 +2708,8 @@ function renderTaxBurdenExplanation(data) {
         </div>
       </div>
       <div class="overflow-x-auto rounded-xl ring-1 ring-slate-200">
-        <table class="min-w-full divide-y divide-slate-200 text-sm">
-          <thead class="bg-slate-50 text-slate-600">
+        <table class="tax-burden-table min-w-full divide-y divide-slate-200 text-sm">
+          <thead class="tax-burden-table-head">
             <tr>
               <th class="px-3 py-2 text-left font-semibold">Year</th>
               <th class="px-3 py-2 text-right font-semibold">Gross tax</th>

@@ -152,10 +152,12 @@ export function buildTaxBurdenPattern(data) {
   ];
 
   cards.innerHTML = cardItems.map(item => `
-    <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${item.label}</p>
-      <p class="mt-1 text-2xl font-bold text-slate-700">${item.value}</p>
-      <p class="mt-1 text-xs leading-5 text-slate-500">${item.note}</p>
+    <div class="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+      <div class="min-w-0">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${item.label}</p>
+        <p class="mt-1 text-2xl font-bold text-slate-700">${item.value}</p>
+      </div>
+      <p class="max-w-40 text-right text-sm font-semibold leading-5 text-slate-600">${item.note}</p>
     </div>
   `).join("");
 

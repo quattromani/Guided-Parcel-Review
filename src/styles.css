@@ -538,8 +538,6 @@ body {
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
 }
 
-.guided-intro,
-.guided-wrapup,
 .next-step-card,
 .ooda-decision-card {
   background: white;
@@ -548,41 +546,37 @@ body {
   padding: 1.25rem;
 }
 
-.guided-intro h2 {
-  color: rgb(var(--color-slate-700));
-  font-size: 1.35rem;
-  font-weight: 750;
-  letter-spacing: 0;
-  line-height: 1.25;
-  margin-top: 0.25rem;
+.page-primer {
+  background: white;
+  border-left: 0.25rem solid rgb(var(--color-secondary));
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgb(var(--brand-ink) / 0.06), inset 0 0 0 1px rgb(var(--border-muted));
+  padding: 1rem 1.25rem 1.1rem;
 }
 
-.guided-intro p:not(.guided-kicker) {
-  color: rgb(var(--color-slate-600));
-  line-height: 1.65;
-  margin-top: 0.5rem;
-  max-width: 62rem;
-}
-
-.guided-wrapup {
-  background: rgb(var(--surface-card));
-}
-
-.guided-wrapup h2 {
+.page-primer h2 {
   color: rgb(var(--color-slate-700));
   font-size: 1.1rem;
-  font-weight: 750;
+  font-weight: 800;
   letter-spacing: 0;
   line-height: 1.3;
   margin-top: 0.2rem;
 }
 
-.guided-wrapup p:not(.guided-kicker) {
+.page-primer-list {
   color: rgb(var(--color-slate-600));
+  display: grid;
   font-size: 0.9375rem;
-  line-height: 1.65;
-  margin-top: 0.5rem;
-  max-width: 62rem;
+  gap: 0.4rem;
+  line-height: 1.6;
+  list-style: disc;
+  margin-top: 0.65rem;
+  max-width: 72rem;
+  padding-left: 1.15rem;
+}
+
+.page-primer-list li {
+  padding-left: 0.1rem;
 }
 
 .calendar-context-intro {
@@ -1123,6 +1117,25 @@ body {
 
 .pressure-card-neutral {
   background: rgb(var(--surface-muted));
+}
+
+.tax-burden-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.tax-burden-table-head th {
+  background: rgb(var(--brand-ink));
+  color: white;
+  font-weight: 800;
+}
+
+.tax-burden-table-head th {
+  box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.12);
+}
+
+.tax-burden-table-head th + th {
+  box-shadow: inset 1px 0 0 rgb(255 255 255 / 0.12), inset 0 -1px 0 rgb(255 255 255 / 0.12);
 }
 
 .timeline-current-stage {

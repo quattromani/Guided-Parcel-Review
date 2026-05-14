@@ -17,6 +17,8 @@
   <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
     <section id="pageTitle" class="mb-4 px-1"></section>
 
+    <section id="pagePrimer" class="mb-5"></section>
+
     <nav aria-label="Guided property snapshot path" class="guided-path-nav mb-5 overflow-x-auto rounded-2xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-200">
       <div class="guided-stage-sync" data-guided-current-stage></div>
       <div class="guided-path-line" aria-hidden="true"></div>
@@ -61,12 +63,6 @@
         <p>Review these facts against what you know about the property. Follow up if the owner, address, land size, class, condition, rooms, garage, improvements, or sketch appears inaccurate or incomplete. If the record looks right, continue to assessment.</p>
       </article>
 
-      <article class="guided-wrapup">
-        <p class="guided-kicker">More information</p>
-        <h2>What this section shows</h2>
-        <p>This page shows the property record itself: parcel facts, classification, land, dwelling features, measurements, and listed characteristics. It helps identify whether the factual record appears complete and accurate before value or tax patterns are interpreted. Next, review how those record details connect to the current assessed value.</p>
-      </article>
-
       <article class="next-step-card">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
@@ -78,12 +74,6 @@
     </section>
 
     <section data-guided-panel="your-assessment" class="hidden space-y-6">
-      <article class="guided-intro">
-        <p class="guided-kicker">Your Assessment</p>
-        <h2>Read value movement before tax movement.</h2>
-        <p>This step separates the assessment notice, year-by-year value history, and indexed value/tax movement so the current value is understood before tax impact.</p>
-      </article>
-
       <section id="assessment-notice" class="grid gap-6 lg:grid-cols-5">
         <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
           <h2 class="text-xl font-bold text-slate-700">Assessment notice value</h2>
@@ -140,12 +130,6 @@
         <p data-property-record-source class="chart-source"></p>
       </section>
 
-      <article class="guided-wrapup">
-        <p class="guided-kicker">More information</p>
-        <h2>What this section shows</h2>
-        <p>This page shows assessment-year value information, including the notice breakdown, land and building allocation, and value movement over time. It helps separate the current assessment record from prior finalized tax years. Next, review how assessed value, levy movement, and effective tax rate show up in finalized tax outcomes.</p>
-      </article>
-
       <article class="next-step-card">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
@@ -157,12 +141,6 @@
     </section>
 
     <section data-guided-panel="your-taxes" class="hidden space-y-6">
-      <article class="guided-intro">
-        <p class="guided-kicker">Your Taxes</p>
-        <h2>Value changes do not automatically explain the bill.</h2>
-        <p>This step separates assessed value from finalized taxes, levy movement, and effective tax rate so tax burden can be reviewed on its own terms.</p>
-      </article>
-
       <section class="grid gap-6 lg:grid-cols-5">
         <article id="levy-history" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
           <h2 class="text-xl font-bold text-slate-700">How has the levy changed over time?</h2>
@@ -193,16 +171,20 @@
       </section>
 
       <article id="tax-burden-explainer" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax Statement Math</p>
-        <h2 class="mt-1 text-xl font-bold text-slate-700">From levy to actual tax burden</h2>
-        <div id="taxBurdenExplanation" class="mt-4"></div>
+        <div id="taxBurdenExplanation"></div>
       </article>
 
       <article id="equalization-pressure" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax Burden Pattern</p>
-          <h2 class="mt-1 text-xl font-bold text-slate-700">Where did the final tax bill peak?</h2>
-          <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">This view uses the property’s finalized statement years to show net taxes paid over time.</p>
+        <div class="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax Burden Pattern</p>
+            <h2 class="mt-1 text-xl font-bold text-slate-700">Where did the tax bill peak?</h2>
+            <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">This view uses the property’s finalized statement years to show net taxes paid over time.</p>
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Key figures</p>
+            <h3 class="mt-1 text-xl font-bold text-slate-700">Useful numbers to know</h3>
+          </div>
         </div>
         <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]">
           <div>
@@ -221,12 +203,6 @@
         <p class="guided-kicker">Decision check</p>
         <h2>What kind of tax question is this?</h2>
         <p>A tax bill can change because of value, levy, budgets, exemptions, or credits. Review valuation if the assessed value seems unsupported. Review tax districts or official tax statements if the question is about where the bill goes, credits, or payment.</p>
-      </article>
-
-      <article class="guided-wrapup">
-        <p class="guided-kicker">More information</p>
-        <h2>What this section shows</h2>
-        <p>This page shows finalized tax history, levy movement, and effective tax rate after bills are complete. It helps distinguish assessment changes from tax outcomes that also depend on levies, budgets, credits, and exemptions. Next, review the taxing bodies that receive portions of the levy.</p>
       </article>
 
       <article class="next-step-card">
@@ -285,12 +261,6 @@
         <p id="taxDistrictAuthoritySource" class="chart-source"></p>
       </article>
 
-      <article class="guided-wrapup">
-        <p class="guided-kicker">More information</p>
-        <h2>What this section shows</h2>
-        <p>This page shows the overlapping jurisdictions in the property’s tax district and how the finalized levy is distributed among them. It helps explain where the tax bill goes without treating the district list as a value comparison. Next, review the local market area for nearby valuation-group context.</p>
-      </article>
-
       <article class="next-step-card">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
@@ -302,12 +272,6 @@
     </section>
 
     <section data-guided-panel="market-area" class="hidden space-y-6">
-      <article class="guided-intro">
-        <p class="guided-kicker">Your Market Area</p>
-        <h2>Use the valuation group as the local comparison lens.</h2>
-        <p>This step focuses on the property’s selected valuation group, then shows countywide residential sales context and sale-price distribution.</p>
-      </article>
-
       <article id="market-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Your Market Area</p>
         <div class="mt-1 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -379,12 +343,6 @@
         <p id="marketSalePriceSource" class="chart-source"></p>
       </article>
 
-      <article class="guided-wrapup">
-        <p class="guided-kicker">More information</p>
-        <h2>What this section shows</h2>
-        <p>This page shows the property’s valuation group alongside county residential sales measures and sale-price bands. It helps frame local comparison evidence and whether the group differs from countywide residential patterns. Next, review county equalization measures to see the broader assessment system around the property.</p>
-      </article>
-
       <article class="next-step-card">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
@@ -396,12 +354,6 @@
     </section>
 
     <section data-guided-panel="county-equalization" class="hidden space-y-6">
-      <article class="guided-intro">
-        <p class="guided-kicker">County Equalization</p>
-        <h2>Countywide measures describe the system around the property.</h2>
-        <p>These measures do not determine an individual property value. They summarize confirmed sales measured against assessment standards to show the track record of county assessment practices.</p>
-      </article>
-
       <article id="assessment-accuracy" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -482,12 +434,6 @@
         <div id="countyCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
       </article>
 
-      <article class="guided-wrapup">
-        <p class="guided-kicker">More information</p>
-        <h2>What this section shows</h2>
-        <p>This page shows countywide assessment-ratio measures and certified value and tax movement. It helps explain how the county’s residential assessment system is measured for level of value and uniformity, separate from any single parcel. Next, compare the county with statewide CTL benchmarks.</p>
-      </article>
-
       <article class="next-step-card">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
@@ -499,12 +445,6 @@
     </section>
 
     <section data-guided-panel="state-context" class="hidden space-y-6">
-      <article class="guided-intro">
-        <p class="guided-kicker">State Context</p>
-        <h2>Use the state baseline to judge whether the county stands out.</h2>
-        <p>This step compares the county with statewide CTL trends before showing the broader statewide pattern behind value growth, taxes levied, and average tax rates.</p>
-      </article>
-
       <article id="county-comparison" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -575,12 +515,6 @@
           </section>
         </section>
         <p class="chart-source">Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL).</p>
-      </article>
-
-      <article class="guided-wrapup">
-        <p class="guided-kicker">More information</p>
-        <h2>What this section shows</h2>
-        <p>This page shows statewide CTL benchmarks and county-to-state comparisons for value growth, taxes levied, and average tax rates. It helps place the county pattern in a broader Nebraska context without deciding the individual property question by itself. Next, use the review checklist to connect the record, value, taxes, districts, and comparison context.</p>
       </article>
 
       <article class="next-step-card">
@@ -694,11 +628,6 @@
         </section>
       </article>
 
-      <article class="guided-wrapup">
-        <p class="guided-kicker">More information</p>
-        <h2>What this review brings together</h2>
-        <p>This page combines property record review, basic comparable-property organization, and calendar context before presenting optional filing materials. It supports better taxpayer understanding, better evidence quality, and better organized submissions without deciding the valuation question for the taxpayer.</p>
-      </article>
     </section>
   </main>
 

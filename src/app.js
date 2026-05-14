@@ -28,6 +28,7 @@ import { initImageModal } from "./modal.js";
 import {
   getCurrentStageText,
   renderPage,
+  renderPagePrimer,
   renderTaxDistrictAuthorities,
   renderViewHeader
 } from "./render.js";
@@ -328,6 +329,7 @@ function initGuidedNavigation(snapshotModel, calendar) {
 
     propertyContext?.classList.toggle("hidden", selected === "your-property");
     renderViewHeader(selected, snapshotModel);
+    renderPagePrimer(selected);
     renderGuidedResourceContent(selected);
     window.dispatchEvent(new Event("resize"));
 
