@@ -17,8 +17,6 @@
   <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
     <section id="pageTitle" class="mb-4 px-1"></section>
 
-    <section id="pagePrimer" class="mb-5"></section>
-
     <nav aria-label="Guided property snapshot path" class="guided-path-nav mb-5 overflow-x-auto rounded-2xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-200">
       <div class="guided-stage-sync" data-guided-current-stage></div>
       <div class="guided-path-line" aria-hidden="true"></div>
@@ -40,15 +38,15 @@
       <header id="pageHeader" class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"></header>
 
       <section class="grid gap-6 lg:grid-cols-12">
-        <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-5">
-          <h2 class="text-xl font-bold text-slate-700">Here's what you need to know.</h2>
-          <div id="summaryText" class="mt-3 text-sm leading-6 text-slate-700"></div>
-        </article>
-
         <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-7">
           <h2 class="text-xl font-bold text-slate-700">Property details</h2>
           <p class="mt-1 text-sm text-slate-600">Basic public-record information used to understand the property before reviewing value and taxes.</p>
           <dl id="propertyDetails" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2"></dl>
+        </article>
+
+        <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-5">
+          <h2 class="text-xl font-bold text-slate-700">The big picture for this property</h2>
+          <div id="summaryText" class="mt-3 text-sm leading-6 text-slate-700"></div>
         </article>
       </section>
 
@@ -76,7 +74,7 @@
     <section data-guided-panel="your-assessment" class="hidden space-y-6">
       <section id="assessment-notice" class="grid gap-6 lg:grid-cols-5">
         <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
-          <h2 class="text-xl font-bold text-slate-700">Assessment notice value</h2>
+          <h2 class="text-xl font-bold text-slate-700">Prior & Current Assessments</h2>
           <p class="mt-1 text-sm text-slate-600">Review the land, building, other improvements, and total value before moving into tax impact.</p>
           <div id="assessmentNoticeSummary" class="mt-4"></div>
         </article>
@@ -90,45 +88,10 @@
       <article class="ooda-decision-card">
         <p class="guided-kicker">Decision check</p>
         <h2>Is the value movement worth a closer look?</h2>
-        <p>This value change is worth reviewing if the factual record is wrong, if the change is much larger than the property story explains, or if the land and building split appears unusual. If the record looks right, use the tax and market sections for context before deciding what to do.</p>
+        <p>This value change is worth reviewing if the factual record is wrong, if the change is much larger than the property story explains, or if the land and building split appears unusual. If the record looks right, use the tax and market sections for added context.</p>
       </article>
 
-      <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <div class="grid gap-6 lg:grid-cols-5">
-          <article id="value-history" class="lg:col-span-2">
-            <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
-            <p class="mt-1 text-sm text-slate-600">Assessment-year view: current value first, with prior finalized tax bills for context.</p>
-            <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-              <table class="min-w-full divide-y divide-slate-200 text-sm">
-                <thead class="bg-slate-50">
-                  <tr>
-                    <th class="px-3 py-2 text-left font-semibold">Year</th>
-                    <th class="px-3 py-2 text-right font-semibold">Assessed Value</th>
-                    <th class="px-3 py-2 text-right font-semibold">Taxes Paid</th>
-                    <th class="px-3 py-2 text-right font-semibold">ETR</th>
-                  </tr>
-                </thead>
-                <tbody id="historyRows" class="divide-y divide-slate-200 bg-white"></tbody>
-              </table>
-            </div>
-          </article>
-
-          <article id="indexed-trends" class="lg:col-span-3">
-            <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 class="text-xl font-bold text-slate-700">How are this property’s value and taxes moving together?</h2>
-                <p class="text-sm text-slate-600">This chart resets both values and taxes to the same starting point so their changes can be compared side by side. Tax bills are shown only after they are finalized.</p>
-              </div>
-              <p id="baseYearNote" class="text-xs font-medium text-slate-500"></p>
-            </div>
-            <div id="indexedChartLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-            <div class="mt-4 h-64 sm:h-72">
-              <canvas id="indexedChart"></canvas>
-            </div>
-          </article>
-        </div>
-        <p data-property-record-source class="chart-source"></p>
-      </section>
+      <section id="value-tax-history-panel" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></section>
 
       <article class="next-step-card">
         <div>
@@ -141,38 +104,7 @@
     </section>
 
     <section data-guided-panel="your-taxes" class="hidden space-y-6">
-      <section class="grid gap-6 lg:grid-cols-5">
-        <article id="levy-history" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
-          <h2 class="text-xl font-bold text-slate-700">How has the levy changed over time?</h2>
-          <p class="mt-1 text-sm text-slate-600">Use this to explain levy movement separately from taxpayer burden.</p>
-          <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-              <thead class="bg-slate-50">
-                <tr>
-                  <th class="px-3 py-2 text-left font-semibold">Year</th>
-                  <th class="px-3 py-2 text-center font-semibold">Final levy</th>
-                  <th class="w-28 px-3 py-2 text-center font-semibold">Change</th>
-                  <th class="px-3 py-2 text-left font-semibold">Note</th>
-                </tr>
-              </thead>
-              <tbody id="levyHistoryRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-            </table>
-          </div>
-        </article>
-
-        <article id="etr-trend" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
-          <h2 class="text-xl font-bold text-slate-700">What share of value went to property taxes?</h2>
-          <p class="mt-1 text-sm text-slate-600">ETR shows the final tax bill as a share of assessed value.</p>
-          <div class="mt-4 h-64 sm:h-72">
-            <canvas id="etrChart"></canvas>
-          </div>
-          <div id="etrSummary" class="mt-4 rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200"></div>
-        </article>
-      </section>
-
-      <article id="tax-burden-explainer" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <div id="taxBurdenExplanation"></div>
-      </article>
+      <section id="tax-history-panel"></section>
 
       <article id="equalization-pressure" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <div class="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]">
@@ -199,6 +131,8 @@
         </div>
       </article>
 
+      <section id="tax-distribution" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></section>
+
       <article class="ooda-decision-card">
         <p class="guided-kicker">Decision check</p>
         <h2>What kind of tax question is this?</h2>
@@ -209,7 +143,7 @@
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Now look at the taxing entities.</h3>
-          <p class="mt-1 text-sm text-slate-600">The next step separates levy distribution from the district authority list.</p>
+          <p class="mt-1 text-sm text-slate-600">The next step separates neutral review signals from tax context.</p>
         </div>
         <button type="button" data-guided-next="tax-districts" class="next-step-button">Go to Tax Districts</button>
       </article>
@@ -219,45 +153,15 @@
       <article id="tax-district-authorities" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <p class="guided-kicker">Your Tax Districts</p>
         <h2 class="mt-1 text-2xl font-bold text-slate-700">Who is taxing this property?</h2>
-        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Start with the parcel’s tax district, source year, total levy, and the number of authorities included. The breakdown below then shows how that levy is distributed.</p>
+        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Use this as a jurisdiction check: confirm the parcel’s tax district, source year, total levy, and the authorities included. The Tax Context step shows how the levy is distributed.</p>
         <div id="taxDistrictAuthoritySummary" class="mt-4 grid gap-3 md:grid-cols-4"></div>
 
         <div class="ooda-inline-note">
           <p class="guided-kicker">Decision check</p>
           <h3>Does the jurisdiction list match the property?</h3>
-          <p>This section is mainly a jurisdiction check. Follow up if the school district, city, county, NRD, ESU, college, or other listed authority does not match where the property is located. The levy share explains where the bill goes, but it does not decide the property’s assessed value.</p>
+          <p>This section is mainly a jurisdiction check. Follow up if the school district, city, county, NRD, ESU, college, or other listed authority does not match where the property is located. The levy distribution explains where the bill goes, but it does not decide the property’s assessed value.</p>
         </div>
 
-        <section id="tax-distribution" class="mt-5 grid gap-6 border-t border-slate-200 pt-5 lg:grid-cols-5">
-          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
-            <h2 class="text-xl font-bold text-slate-700">What organizations make up the tax levy?</h2>
-            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill depends on finalized budgets, levies, credits, and exemptions.</p>
-            <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-              <table class="min-w-full divide-y divide-slate-200 text-sm">
-                <thead class="bg-slate-50">
-                  <tr>
-                    <th class="px-3 py-2 text-left font-semibold">Taxing body</th>
-                    <th class="px-3 py-2 text-right font-semibold">Rate</th>
-                    <th class="px-3 py-2 text-right font-semibold">Share</th>
-                    <th class="px-3 py-2 text-right font-semibold">Per $100k</th>
-                  </tr>
-                </thead>
-                <tbody id="levyRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-              </table>
-            </div>
-          </article>
-
-          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
-            <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
-            <p class="mt-1 text-sm text-slate-600">Based on the latest finalized levy components. Current-year distribution appears after levies are finalized.</p>
-            <div class="mt-4 grid gap-4 md:grid-cols-[minmax(150px,220px)_minmax(0,1fr)] md:items-center">
-              <div id="distributionNotes" class="space-y-2 text-sm text-slate-700"></div>
-              <div class="h-72 sm:h-80">
-                <canvas id="distributionChart"></canvas>
-              </div>
-            </div>
-          </article>
-        </section>
         <p id="taxDistrictAuthoritySource" class="chart-source"></p>
       </article>
 
@@ -312,36 +216,7 @@
         </article>
       </section>
 
-      <article id="county-sale-price-bands" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <h2 id="marketSalePriceTitle" class="text-xl font-bold text-slate-700">What makes up the residential sales data?</h2>
-        <p id="marketSalePriceDescription" class="mt-1 text-sm text-slate-600">Incremental residential sale-price ranges from the same PAD R&O pages help reviewers understand where the qualified sales are concentrated.</p>
-        <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
-          <div class="overflow-x-auto rounded-xl ring-1 ring-slate-200">
-            <table class="min-w-full divide-y divide-slate-200 text-xs">
-              <thead class="bg-slate-50">
-                <tr>
-                  <th class="px-2 py-2 text-left font-semibold">Sale price range</th>
-                  <th class="px-2 py-2 text-right font-semibold">Sales</th>
-                  <th class="px-2 py-2 text-right font-semibold">Median</th>
-                  <th class="px-2 py-2 text-right font-semibold">COD</th>
-                  <th class="px-2 py-2 text-right font-semibold">PRD</th>
-                  <th class="px-2 py-2 text-right font-semibold">Avg. sale</th>
-                </tr>
-              </thead>
-              <tbody id="marketSalePriceRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-            </table>
-          </div>
-          <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-            <p id="marketSalePriceChartTitle" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sales distribution</p>
-            <p id="marketSalePriceChartNote" class="mt-1 text-sm leading-5 text-slate-600">Qualified sales by price band, including empty upper bands.</p>
-            <div id="marketSalePriceChartLegend" class="chart-disc-legend mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-            <div class="mt-3 h-64">
-              <canvas id="marketSalePriceChart"></canvas>
-            </div>
-          </div>
-        </div>
-        <p id="marketSalePriceSource" class="chart-source"></p>
-      </article>
+      <article id="county-sale-price-bands" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></article>
 
       <article class="next-step-card">
         <div>
@@ -365,42 +240,7 @@
           </div>
           <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
         </div>
-        <div id="assessmentAccuracySummary" class="mt-5 grid gap-3 md:grid-cols-4"></div>
-        <section class="mt-5 grid gap-6 lg:grid-cols-5">
-          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
-            <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
-            <p class="mt-1 text-sm text-slate-600">Latest years first, preserving the workbook measures for reviewer context.</p>
-            <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
-              <table class="min-w-full divide-y divide-slate-200 text-sm">
-                <thead class="sticky top-0 bg-slate-50">
-                  <tr>
-                    <th class="px-3 py-2 text-left font-semibold">Year</th>
-                    <th class="px-3 py-2 text-right font-semibold">Sales</th>
-                    <th class="px-3 py-2 text-right font-semibold">COD</th>
-                    <th class="px-3 py-2 text-right font-semibold">PRD</th>
-                    <th class="px-3 py-2 text-right font-semibold">COV</th>
-                    <th class="px-3 py-2 text-right font-semibold">LOV</th>
-                  </tr>
-                </thead>
-                <tbody id="assessmentMeasureRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-              </table>
-            </div>
-            <div class="mt-4 rounded-xl bg-white p-3 text-xs leading-5 text-slate-600 ring-1 ring-slate-200">
-              <p class="font-semibold text-slate-700">How to read the chart</p>
-              <p class="mt-1">
-                COD, PRD, and COV use different scales, so the chart converts each measure to its own standard band. The shaded area is the preferred range. Each line shows whether that measure is moving into the band, out of it, or moving differently from the others.
-              </p>
-            </div>
-          </article>
-          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
-            <h3 class="text-lg font-bold text-slate-700">How are equalization measures moving?</h3>
-            <p class="mt-1 text-sm text-slate-600">Common-scale view where the shaded band marks the standard range for the selected class.</p>
-            <div class="mt-4 h-80">
-              <canvas id="assessmentAccuracyChart"></canvas>
-            </div>
-            <div id="assessmentAccuracyNotes" class="mt-4 grid gap-2 text-xs leading-5 text-slate-600 sm:grid-cols-3"></div>
-          </article>
-        </section>
+        <div id="assessment-accuracy-body"></div>
         <p class="chart-source">Source: 2019-2026 Gage County PAD Reports and Opinions.</p>
       </article>
 
@@ -527,59 +367,9 @@
       </article>
     </section>
 
-    <section data-guided-panel="review-checklist" class="hidden space-y-6">
-      <article id="protest-preparation" class="protest-prep-view">
-        <section class="protest-prep-intro">
-          <p class="guided-kicker">Review and organization</p>
-          <h2>Need to Review Anything?</h2>
-          <div class="mt-3 max-w-4xl space-y-3 text-sm leading-6 text-slate-600">
-            <p>This page helps taxpayers confirm basic property details, organize comparable information, and keep track of what they reviewed before deciding on any next step.</p>
-            <p>Reviewing comparable properties and verifying property details can help taxpayers better understand how assessed values are determined.</p>
-            <p>This resource is informational only and does not guarantee a valuation change.</p>
-          </div>
-        </section>
+    <section data-guided-panel="review-checklist" class="hidden space-y-6"></section>
 
-        <section id="protest-comparable-research" class="protest-prep-step">
-          <div class="protest-step-heading">
-            <p class="guided-kicker">Step 1</p>
-            <h3>Thinking About Comparable Research?</h3>
-            <p>Start with your own property data before comparing values. This quick checklist highlights the basic data points to confirm in your record and then look for on other properties.</p>
-          </div>
-          <div id="comparableResearchChecklist" class="comparable-checklist" aria-label="Comparable research checklist"></div>
-          <div class="protest-note">
-            <p><strong>Important:</strong> The prepared worksheet assumes your property record is substantially accurate. If any of these items cannot be checked as correct, or if something appears inaccurate, incomplete, or misclassified, request a factual record review before relying on comparable research.</p>
-            <button type="button" data-report-error class="secondary-link-button mt-3">Request factual record review</button>
-          </div>
-          <div class="protest-note">
-            <p>Assessment differences are not always evidence of error. Small differences between properties are common due to condition, features, timing, location, and market activity. Once the subject record looks substantially accurate, use the worksheet below to organize comparable information.</p>
-          </div>
-        </section>
-
-        <section id="comparable-worksheet-section" class="protest-prep-step">
-          <div class="protest-step-heading">
-            <p class="guided-kicker">Step 2</p>
-            <h3>Comparable Value Worksheet</h3>
-            <p>Use this worksheet to organize information, compare properties side-by-side, and better understand equalization concepts before deciding whether further action makes sense.</p>
-          </div>
-          <div class="protest-note">
-            <p>The subject property data is pre-filled from available records. The worksheet assumes those details are substantially accurate.</p>
-          </div>
-          <p class="worksheet-entry-note">You may type comparable details here for a filled printout, or print a blank worksheet and fill it out manually. Typed entries are only a temporary working copy in this browser.</p>
-          <div id="comparableWorksheet" class="mt-4"></div>
-          <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-xs leading-5 text-slate-500">The worksheet is part of the educational preparation process. It is not required before printing Form 422.</p>
-            <div class="flex flex-col gap-2 sm:flex-row">
-              <button type="button" data-print-comparable-worksheet="filled" class="protest-action-button">
-                Print Filled Worksheet
-              </button>
-              <button type="button" data-print-comparable-worksheet="blank" class="protest-action-button">
-                Print Blank Worksheet
-              </button>
-            </div>
-          </div>
-        </section>
-      </article>
-
+    <section data-guided-panel="resources" class="hidden space-y-6">
       <article class="calendar-context-intro">
         <p class="guided-kicker">Calendar context</p>
         <h2>Familiarize yourself with the calendar.</h2>
@@ -600,6 +390,59 @@
         <p data-calendar-source class="chart-source"></p>
       </section>
 
+      <div class="resource-section-separator" role="presentation"></div>
+
+      <article id="protest-preparation" class="protest-prep-view">
+        <section class="protest-prep-intro">
+          <p class="guided-kicker">Comparable resources</p>
+          <h2>Organize comparable-property notes</h2>
+          <div class="mt-3 max-w-4xl space-y-3 text-sm leading-6 text-slate-600">
+            <p>This section helps taxpayers confirm basic property details, organize comparable information, and keep track of what they reviewed.</p>
+            <p>Reviewing comparable properties and verifying property details can help taxpayers better understand how assessed values are determined.</p>
+            <p>This resource is informational only and does not guarantee a valuation change.</p>
+          </div>
+        </section>
+
+        <section id="protest-comparable-research" class="protest-prep-step">
+          <div class="protest-step-heading">
+            <p class="guided-kicker">Comparable review</p>
+            <h3>Thinking About Comparable Research?</h3>
+            <p>Start with your own property data before comparing values. This quick checklist highlights the basic data points to confirm in your record and then look for on other properties.</p>
+          </div>
+          <div id="comparableResearchChecklist" class="comparable-checklist" aria-label="Comparable research checklist"></div>
+          <div class="protest-note">
+            <p><strong>Important:</strong> The prepared worksheet assumes your property record is substantially accurate. If any of these items cannot be checked as correct, or if something appears inaccurate, incomplete, or misclassified, request a factual record review before relying on comparable research.</p>
+            <button type="button" data-report-error class="secondary-link-button mt-3">Request factual record review</button>
+          </div>
+          <div class="protest-note">
+            <p>Assessment differences are not always evidence of error. Small differences between properties are common due to condition, features, timing, location, and market activity. Once the subject record looks substantially accurate, use the worksheet below to organize comparable information.</p>
+          </div>
+        </section>
+
+        <section id="comparable-worksheet-section" class="protest-prep-step">
+          <div class="protest-step-heading">
+            <p class="guided-kicker">Worksheet</p>
+            <h3>Comparable Value Worksheet</h3>
+            <p>Use this worksheet to organize information, compare properties side-by-side, and better understand equalization concepts.</p>
+          </div>
+          <div class="protest-note">
+            <p>The subject property data is pre-filled from available records. The worksheet assumes those details are substantially accurate.</p>
+          </div>
+          <p class="worksheet-entry-note">You may type comparable details here for the worksheet printout. Typed entries are only a temporary working copy in this browser.</p>
+          <div id="comparableWorksheet" class="mt-4"></div>
+          <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-xs leading-5 text-slate-500">The worksheet is part of the educational preparation process. It does not guarantee a change or outcome.</p>
+            <div class="flex flex-col gap-2 sm:flex-row">
+              <button type="button" data-print-comparable-worksheet="filled" class="protest-action-button">
+                Print Worksheet
+              </button>
+            </div>
+          </div>
+        </section>
+      </article>
+
+      <div class="resource-section-separator" role="presentation"></div>
+
       <article id="form422-section" class="protest-prep-view">
         <section class="protest-prep-intro">
           <p class="guided-kicker">Final option</p>
@@ -612,10 +455,7 @@
           <p class="mt-4 text-xs leading-5 text-slate-500">The official Nebraska Form 422 PDF is used as the source form. The packet prints the comparable worksheet first and the prepared Form 422 second.</p>
           <div class="protest-packet-actions">
             <button type="button" data-print-comparable-worksheet="filled" class="protest-action-button">
-              Print Filled Worksheet
-            </button>
-            <button type="button" data-print-comparable-worksheet="blank" class="protest-action-button">
-              Print Blank Worksheet
+              Print Worksheet
             </button>
             <button type="button" data-print-form422 class="protest-action-button">
               Print Form 422 Only

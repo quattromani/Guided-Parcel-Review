@@ -1,71 +1,7 @@
 import { calculateEtr, sumRates } from "./format.js";
-
-const guidedSections = [
-  {
-    id: "your-property",
-    eyebrow: "Start here",
-    label: "Your Property",
-    question: "What changed about this property?",
-    title: "Start with the property record",
-    description: "Confirm the basic facts first. Values and taxes only make sense after the property story is clear."
-  },
-  {
-    id: "your-assessment",
-    eyebrow: "Value",
-    label: "Your Assessment",
-    question: "What changed about the assessed value?",
-    title: "Understand the assessment before the tax bill",
-    description: "This separates current assessment information from finalized tax years so pending pieces are not treated as final."
-  },
-  {
-    id: "your-taxes",
-    eyebrow: "Tax impact",
-    label: "Your Taxes",
-    question: "What does this mean for taxes?",
-    title: "Connect value, levy, and tax burden",
-    description: "The tax bill is the result of assessed value, budgets, levies, exemptions, and credits. This step shows the finalized history."
-  },
-  {
-    id: "tax-districts",
-    eyebrow: "Taxing entities",
-    label: "Your Tax Districts",
-    question: "Who is taxing this property?",
-    title: "See the organizations in the tax district",
-    description: "Taxes levied and tax district details sit near each other, but answer different questions: where the bill goes and who is in the district."
-  },
-  {
-    id: "market-area",
-    eyebrow: "Nearby market",
-    label: "Your Market",
-    question: "How does this compare nearby?",
-    title: "Compare the local valuation group",
-    description: "Market-area context uses PAD Reports and Opinions data rather than placeholder comparable-property cards."
-  },
-  {
-    id: "county-equalization",
-    eyebrow: "County system",
-    label: "The County",
-    question: "How is the county performing overall?",
-    title: "Review countywide assessment quality",
-    description: "County equalization measures show whether appraisals are generally close to market value and reasonably uniform."
-  },
-  {
-    id: "state-context",
-    eyebrow: "State baseline",
-    label: "The State",
-    question: "How does the county compare statewide?",
-    title: "Place the property in Nebraska context",
-    description: "Statewide CTL trends give a broader baseline for value growth, taxes levied, and average tax-rate movement."
-  },
-  {
-    id: "review-checklist",
-    eyebrow: "Review",
-    label: "Review",
-    question: "Need to review anything?",
-    title: "Review and organize next steps",
-    description: "Use this final step to confirm the record, note unresolved questions, organize comparable research, and find filing materials if needed."
-  }
-];
+import { TAXPAYER_JOURNEY_ROUTES } from "./config/taxpayer-journey.js";
+import { buildAssessmentNoticeModel } from "./data/notice-model.js";
+import { buildReviewSignalModel } from "./data/review-signal-model.js";
 
 function latestKnown(rows, key) {
   return rows
@@ -150,12 +86,14 @@ function deriveDistrict(propertyData, taxDistrictAuthorities) {
   };
 }
 
-function buildViewModels(propertyData, recordCard, taxDistrictAuthorities) {
+function buildViewModels(propertyData, recordCard, taxDistrictAuthorities, calendar) {
   return {
+    notice: buildAssessmentNoticeModel(propertyData, recordCard, calendar),
     property: normalizeProperty(propertyData, recordCard),
     assessment: deriveAssessment(propertyData, recordCard),
     taxes: deriveTaxes(propertyData),
-    district: deriveDistrict(propertyData, taxDistrictAuthorities)
+    district: deriveDistrict(propertyData, taxDistrictAuthorities),
+    reviewSignals: buildReviewSignalModel(propertyData, recordCard)
   };
 }
 
@@ -173,7 +111,7 @@ export function buildPropertySnapshotModel({
 }) {
   return {
     pipeline: "raw JSON -> normalized property snapshot model -> derived metrics -> view-specific data objects -> UI sections",
-    sections: guidedSections,
+    sections: TAXPAYER_JOURNEY_ROUTES,
     rawSources: {
       propertyRecord: recordCard?.source?.displayCitation ?? "MIPS property record card",
       ctlYears: ctlData?.statewide?.map(row => row.year) ?? [],
@@ -182,7 +120,7 @@ export function buildPropertySnapshotModel({
       countyContext: countyContext?.source?.title ?? "County context",
       marketArea: padRatioData?.source?.title ?? "PAD Reports and Opinions"
     },
-    viewModels: buildViewModels(propertyData, recordCard, taxDistrictAuthorities),
+    viewModels: buildViewModels(propertyData, recordCard, taxDistrictAuthorities, calendar),
     staticReference: {
       calendar,
       valuationGroups,

@@ -86,60 +86,17 @@ const viewHeaderContent = {
   "review-checklist": {
     eyebrow: "Step 8 · Review",
     title: "Need to review anything?",
-    description: "Confirm the record, organize unresolved questions, and use comparable research before deciding whether any filing step is needed.",
+    description: "Confirm the record, organize unresolved questions, and keep optional filing resources clearly separated from the main review.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   }
 };
 
-const viewPrimerContent = {
-  "your-property": [
-    "This is the starting point. It shows the public-record facts used to identify the property before value or taxes are reviewed.",
-    "Start by checking whether the record describes the right property: location, class, land, building details, and major features.",
-    "Do not treat this page as a value decision. It is mainly a record check before you read assessment and tax data."
-  ],
-  "your-assessment": [
-    "This page separates value from taxes. Assessed value is the value used to calculate this property’s share of taxes.",
-    "The current assessed value may be available before the final tax bill is known. Prior years show taxes paid after bills were finalized.",
-    "Do not over-read one year by itself. Use the history to see whether value, taxes, and ETR, or taxes divided by value, are moving together or separately."
-  ],
-  "your-taxes": [
-    "This page shows finalized tax history and how levy movement relates to the bill. A levy is the rate set after budgets and taxable value are known.",
-    "ETR means effective tax rate: taxes divided by value. It shows what share of the property’s value went to taxes.",
-    "The assessor does not set levies. Do not assume a higher bill came only from the assessment; budgets, credits, exemptions, and tax districts can also matter."
-  ],
-  "tax-districts": [
-    "This page shows the tax district for this parcel and the taxing bodies that receive part of the bill.",
-    "A taxing body is a public entity such as a school district, county, city, fire district, or other local unit. A levy is the rate used to collect from taxable value.",
-    "Use this mainly to check jurisdiction and bill distribution. It explains where the tax bill goes, not whether the property’s assessed value is correct."
-  ],
-  "market-area": [
-    "This page compares the property’s local valuation group with the county residential sales study. A valuation group, or market area, is the local group this property is compared within for assessment review.",
-    "Ratio-study numbers compare assessed values with sale prices. COD and PRD are consistency and price-level fairness measures.",
-    "These statistics do not prove an individual value is right or wrong. They help show whether the group looks consistent enough to use as context."
-  ],
-  "county-equalization": [
-    "This page uses sales-study statistics to show how county assessments are performing overall.",
-    "LOV shows the typical assessment level compared with sale price. COD measures uniformity, PRD reviews lower- and higher-priced properties, and COV shows how spread out the ratios are.",
-    "Countywide measures are system context. They do not decide this parcel by themselves; property facts and local market evidence still matter."
-  ],
-  "state-context": [
-    "This page gives broader context by comparing county value and tax movement against statewide patterns.",
-    "CTL means Certificates of Taxes Levied data: certified county and state tax and value totals. Taxes levied are the total taxes requested through that process.",
-    "Use this for scale and comparison. It should not be used by itself to judge whether one parcel is correctly assessed."
-  ],
-  "review-checklist": [
-    "This page helps you organize what you already reviewed: property facts, comparable-property notes, calendar timing, and optional filing materials.",
-    "A comparable property is one used for side-by-side review because its public record may help explain value differences. Form 422 is Nebraska’s valuation protest form.",
-    "Use this as an organization checklist, not legal advice or a guaranteed outcome. Confirm facts, dates, and filing requirements with official sources before taking any action."
-  ]
-};
-
 export function renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, summaryContext = {}) {
   renderViewHeader("your-property", data.snapshotModel);
-  renderPagePrimer("your-property");
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard);
   renderAssessmentNoticeSummary(data, recordCard);
+  renderComparisonShells(data);
   renderHeaderTimeline(calendar);
   renderPropertyDetails(data, recordCard);
   renderDiscrepancyForm(data, recordCard);
@@ -150,27 +107,217 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderProcessTimeline(calendar);
   renderHistoryTable(data, recordCard);
   renderPropertyMovementSummary(data);
-  renderEtrSummary(data);
-  renderTaxBurdenExplanation(data);
-  renderLevyHistoryTable(data);
+  renderTaxHistoryTable(data);
   renderLevyTable(data);
   renderSources(data);
 }
 
-export function renderPagePrimer(view = "your-property") {
-  const primer = document.getElementById("pagePrimer");
-  const points = viewPrimerContent[view] || viewPrimerContent["your-property"];
+function renderComparisonShells(data) {
+  renderValueTaxHistoryShell();
+  renderTaxHistoryShell();
+  renderTaxDistributionShell(data);
+  renderMarketSalePriceShell();
+  renderAssessmentAccuracyShell();
+}
 
-  if (!primer) return;
+function renderValueTaxHistoryShell() {
+  const container = document.getElementById("value-tax-history-panel");
+  if (!container) return;
 
-  primer.innerHTML = `
-    <article class="page-primer" aria-labelledby="pagePrimerTitle">
-      <p class="guided-kicker">Page Primer</p>
-      <h2 id="pagePrimerTitle">Before you review this page</h2>
-      <ul class="page-primer-list">
-        ${points.map(point => `<li>${point}</li>`).join("")}
-      </ul>
+  container.innerHTML = `
+    <div class="data-split-view grid gap-6 lg:grid-cols-5">
+      <article id="value-history" class="lg:col-span-2">
+        <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
+        <p class="mt-1 text-sm text-slate-600">
+          Assessment-year view: current value first, with prior finalized tax bills for context.
+          Effective tax rate (ETR) shows actual taxes paid as a percentage of assessed value after levy, credits, and exemptions are reflected in the final bill.
+        </p>
+        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
+          <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <thead>
+              <tr>
+                <th class="px-3 py-2 text-left font-semibold">Year</th>
+                <th class="px-3 py-2 text-right font-semibold">Assessed Value</th>
+                <th class="px-3 py-2 text-right font-semibold">Taxes Paid</th>
+                <th class="px-3 py-2 text-right font-semibold">ETR</th>
+              </tr>
+            </thead>
+            <tbody id="historyRows" class="divide-y divide-slate-200 bg-white"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article id="indexed-trends" class="lg:col-span-3">
+        <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="text-xl font-bold text-slate-700">How are this property’s value and taxes moving together?</h2>
+            <p class="text-sm text-slate-600">This chart resets both values and taxes to the same starting point so their changes can be compared side by side. Tax bills are shown only after they are finalized.</p>
+          </div>
+          <p id="baseYearNote" class="text-xs font-medium text-slate-500"></p>
+        </div>
+        <div id="indexedChartLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+        <div class="mt-4 h-64 sm:h-72">
+          <canvas id="indexedChart"></canvas>
+        </div>
+      </article>
+    </div>
+    <p data-property-record-source class="chart-source"></p>
+  `;
+}
+
+function renderTaxHistoryShell() {
+  const container = document.getElementById("tax-history-panel");
+  if (!container) return;
+
+  container.className = "data-split-view grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(320px,2fr)]";
+  container.innerHTML = `
+    <article id="tax-history" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <h2 class="text-xl font-bold text-slate-700">How did levy, credits, and net taxes move?</h2>
+      <p class="mt-1 text-sm text-slate-600">Finalized statement years show the levy, gross tax, credits, net amount paid, and effective tax rate in one place.</p>
+      <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
+        <table class="tax-burden-table min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
+          <thead class="tax-burden-table-head">
+            <tr>
+              <th class="px-2 py-2 text-left font-semibold sm:px-3">Year</th>
+              <th class="px-2 py-2 text-right font-semibold sm:px-3">Levy</th>
+              <th class="px-2 py-2 text-center font-semibold sm:px-3">Change</th>
+              <th class="px-2 py-2 text-right font-semibold sm:px-3">Gross</th>
+              <th class="px-2 py-2 text-right font-semibold sm:px-3">Credits</th>
+              <th class="px-2 py-2 text-right font-semibold sm:px-3">Net</th>
+              <th class="px-2 py-2 text-right font-semibold sm:px-3">ETR</th>
+            </tr>
+          </thead>
+          <tbody id="taxHistoryRows" class="divide-y divide-slate-200"></tbody>
+        </table>
+      </div>
     </article>
+
+    <article id="etr-trend" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <h2 class="text-xl font-bold text-slate-700">What share of value went to property taxes?</h2>
+      <p class="mt-1 text-sm text-slate-600">ETR shows the final tax bill as a share of assessed value.</p>
+      <div class="mt-4 h-64 sm:h-72">
+        <canvas id="etrChart"></canvas>
+      </div>
+    </article>
+  `;
+}
+
+function renderTaxDistributionShell(data) {
+  const container = document.getElementById("tax-distribution");
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="data-split-view grid gap-6 lg:grid-cols-5">
+      <article class="lg:col-span-2">
+        <h2 class="text-xl font-bold text-slate-700">What organizations make up the tax levy?</h2>
+        <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill depends on finalized budgets, levies, credits, and exemptions.</p>
+        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
+          <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <thead>
+              <tr>
+                <th class="px-3 py-2 text-left font-semibold">Taxing body</th>
+                <th class="px-3 py-2 text-right font-semibold">Rate</th>
+                <th class="px-3 py-2 text-right font-semibold">Share</th>
+                <th class="px-3 py-2 text-right font-semibold">Per $100k</th>
+              </tr>
+            </thead>
+            <tbody id="levyRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="lg:col-span-3">
+        <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
+        <p class="mt-1 text-sm text-slate-600">Based on the latest finalized levy components. Current-year distribution appears after levies are finalized.</p>
+        <div class="mt-4 grid gap-4 md:grid-cols-[minmax(150px,220px)_minmax(0,1fr)] md:items-center">
+          <div id="distributionNotes" class="space-y-2 text-sm text-slate-700"></div>
+          <div class="h-72 sm:h-80">
+            <canvas id="distributionChart"></canvas>
+          </div>
+        </div>
+      </article>
+    </div>
+    <p class="chart-source">Source: ${escapeHtml(data.latestFinalTaxYear ?? "Latest finalized")} levy components for this parcel’s tax district.</p>
+  `;
+}
+
+function renderMarketSalePriceShell() {
+  const container = document.getElementById("county-sale-price-bands");
+  if (!container) return;
+
+  container.innerHTML = `
+    <h2 id="marketSalePriceTitle" class="text-xl font-bold text-slate-700">What makes up the residential sales data?</h2>
+    <p id="marketSalePriceDescription" class="mt-1 text-sm text-slate-600">Incremental residential sale-price ranges from the same PAD R&O pages help reviewers understand where the qualified sales are concentrated.</p>
+    <div class="data-split-view mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
+      <div class="overflow-x-auto rounded-xl ring-1 ring-slate-200">
+        <table class="min-w-full divide-y divide-slate-200 text-xs">
+          <thead>
+            <tr>
+              <th class="px-2 py-2 text-left font-semibold">Sale price range</th>
+              <th class="px-2 py-2 text-right font-semibold">Sales</th>
+              <th class="px-2 py-2 text-right font-semibold">Median</th>
+              <th class="px-2 py-2 text-right font-semibold">COD</th>
+              <th class="px-2 py-2 text-right font-semibold">PRD</th>
+              <th class="px-2 py-2 text-right font-semibold">Avg. sale</th>
+            </tr>
+          </thead>
+          <tbody id="marketSalePriceRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+        </table>
+      </div>
+      <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+        <p id="marketSalePriceChartTitle" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sales distribution</p>
+        <p id="marketSalePriceChartNote" class="mt-1 text-sm leading-5 text-slate-600">Qualified sales by price band, including empty upper bands.</p>
+        <div id="marketSalePriceChartLegend" class="chart-disc-legend mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+        <div class="mt-3 h-64">
+          <canvas id="marketSalePriceChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <p id="marketSalePriceSource" class="chart-source"></p>
+  `;
+}
+
+function renderAssessmentAccuracyShell() {
+  const container = document.getElementById("assessment-accuracy-body");
+  if (!container) return;
+
+  container.innerHTML = `
+    <div id="assessmentAccuracySummary" class="mt-5 grid gap-3 md:grid-cols-4"></div>
+    <section class="data-split-view mt-5 grid gap-6 lg:grid-cols-5">
+      <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
+        <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
+        <p class="mt-1 text-sm text-slate-600">Latest years first, preserving the workbook measures for reviewer context.</p>
+        <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
+          <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <thead class="sticky top-0">
+              <tr>
+                <th class="px-3 py-2 text-left font-semibold">Year</th>
+                <th class="px-3 py-2 text-right font-semibold">Sales</th>
+                <th class="px-3 py-2 text-right font-semibold">COD</th>
+                <th class="px-3 py-2 text-right font-semibold">PRD</th>
+                <th class="px-3 py-2 text-right font-semibold">COV</th>
+                <th class="px-3 py-2 text-right font-semibold">LOV</th>
+              </tr>
+            </thead>
+            <tbody id="assessmentMeasureRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+          </table>
+        </div>
+        <div class="mt-4 rounded-xl bg-white p-3 text-xs leading-5 text-slate-600 ring-1 ring-slate-200">
+          <p class="font-semibold text-slate-700">How to read the chart</p>
+          <p class="mt-1">
+            COD, PRD, and COV use different scales, so the chart converts each measure to its own standard band. The shaded area is the preferred range. Each line shows whether that measure is moving into the band, out of it, or moving differently from the others.
+          </p>
+        </div>
+      </article>
+      <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
+        <h3 class="text-lg font-bold text-slate-700">How are equalization measures moving?</h3>
+        <p class="mt-1 text-sm text-slate-600">Common-scale view where the shaded band marks the standard range for the selected class.</p>
+        <div class="mt-4 h-80">
+          <canvas id="assessmentAccuracyChart"></canvas>
+        </div>
+        <div id="assessmentAccuracyNotes" class="mt-4 grid gap-2 text-xs leading-5 text-slate-600 sm:grid-cols-3"></div>
+      </article>
+    </section>
   `;
 }
 
@@ -244,10 +391,15 @@ export function getCurrentStageText(calendar) {
 
 export function renderViewHeader(view = "your-property", snapshotModel) {
   const section = snapshotModel?.sections?.find(item => item.id === view);
+  const noticeAddress = snapshotModel?.viewModels?.notice?.displayAddress
+    || snapshotModel?.viewModels?.notice?.situsAddress;
+  const showLookupPlaceholder = view === "landing-primer";
   const content = section
     ? {
       eyebrow: section.eyebrow,
-      title: section.question,
+      title: view === "landing-primer" && noticeAddress
+        ? `You are looking at ${noticeAddress}.`
+        : section.question,
       description: section.description,
       imageAlt: viewHeaderContent[view]?.imageAlt ?? "Map of Nebraska"
     }
@@ -255,7 +407,7 @@ export function renderViewHeader(view = "your-property", snapshotModel) {
   const title = document.getElementById("pageTitle");
 
   title.innerHTML = `
-    <div class="flex items-start justify-between gap-4">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
       <div>
         <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
           ${content.eyebrow}
@@ -270,13 +422,73 @@ export function renderViewHeader(view = "your-property", snapshotModel) {
         </p>
       </div>
 
-      <img
-        src="assets/images/gage-county-map.png"
-        alt="${content.imageAlt}"
-        class="hidden h-20 w-auto shrink-0 opacity-80 sm:block grayscale"
-      />
+      <div class="page-title-utility">
+        <img
+          src="assets/images/gage-county-map.png"
+          alt="${content.imageAlt}"
+          class="hidden h-20 w-auto shrink-0 opacity-80 sm:block grayscale"
+        />
+        ${showLookupPlaceholder ? disabledParcelLookupMarkup() : ""}
+      </div>
     </div>
   `;
+
+  initDisabledParcelLookup(title);
+}
+
+function disabledParcelLookupMarkup() {
+  return `
+    <div class="parcel-lookup-placeholder" data-parcel-lookup>
+      <p class="parcel-lookup-label">Find another property</p>
+      <button
+        type="button"
+        class="parcel-lookup-shell"
+        data-parcel-lookup-trigger
+        aria-disabled="true"
+        aria-expanded="false"
+        aria-controls="parcelLookupPopover"
+      >
+        <span class="parcel-lookup-input">Address, parcel ID, or owner name</span>
+        <span class="parcel-lookup-action" aria-hidden="true">Search</span>
+      </button>
+      <div id="parcelLookupPopover" class="parcel-lookup-popover" data-parcel-lookup-popover hidden>
+        Property lookup will be available when this site is connected to a parcel API or assessment database.
+      </div>
+    </div>
+  `;
+}
+
+function initDisabledParcelLookup(root) {
+  const lookup = root.querySelector("[data-parcel-lookup]");
+  const trigger = root.querySelector("[data-parcel-lookup-trigger]");
+  const popover = root.querySelector("[data-parcel-lookup-popover]");
+
+  if (!lookup || !trigger || !popover) return;
+
+  function handleDocumentClick(event) {
+    if (!lookup.contains(event.target)) {
+      setOpen(false);
+    }
+  }
+
+  function setOpen(open) {
+    popover.hidden = !open;
+    trigger.setAttribute("aria-expanded", String(open));
+    document[open ? "addEventListener" : "removeEventListener"]("click", handleDocumentClick);
+  }
+
+  trigger.addEventListener("click", event => {
+    event.stopPropagation();
+    setOpen(popover.hidden);
+  });
+
+  trigger.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      setOpen(false);
+      trigger.blur();
+    }
+  });
+
 }
 
 function renderHeader(data, imageModal, recordCard) {
@@ -344,6 +556,41 @@ function valuationNoticeSummary(data, recordCard) {
 }
 
 function valuationNoticeValues(data, recordCard) {
+  const rows = (data.assessedValueBreakdown || [])
+    .filter(row => row?.year)
+    .slice()
+    .sort((a, b) => b.year - a.year);
+  const snapshotBreakdown = rows.find(row =>
+    row.year === data.snapshotYear
+    && row.total !== null
+    && row.total !== undefined
+  );
+
+  if (snapshotBreakdown) {
+    const prior = rows.find(row =>
+      row.year < snapshotBreakdown.year
+      && row.total !== null
+      && row.total !== undefined
+    ) ?? {};
+
+    return {
+      prior: {
+        year: prior.year,
+        building: prior.dwelling,
+        improvement: prior.outbuilding,
+        land: prior.land,
+        total: prior.total
+      },
+      current: {
+        year: snapshotBreakdown.year,
+        building: snapshotBreakdown.dwelling,
+        improvement: snapshotBreakdown.outbuilding,
+        land: snapshotBreakdown.land,
+        total: snapshotBreakdown.total
+      }
+    };
+  }
+
   if (recordCard?.currentCardValue?.previous && recordCard?.currentCardValue?.current) {
     const noticeYear = data.latestFinalTaxYear ?? data.snapshotYear;
 
@@ -365,8 +612,7 @@ function valuationNoticeValues(data, recordCard) {
     };
   }
 
-  const rows = data.assessedValueBreakdown || [];
-  const current = rows.find(row => row.year === data.snapshotYear) ?? rows[0] ?? {};
+  const current = rows[0] ?? {};
   const prior = rows.find(row => row.year < current.year && row.total !== null && row.total !== undefined)
     ?? rows.find(row => row.total !== null && row.total !== undefined)
     ?? {};
@@ -1041,7 +1287,7 @@ function initReportErrorModal(data, recordCard, governingOffice) {
 function navigateToProtestPreparation(targetSelector = "#protest-preparation") {
   document.dispatchEvent(new CustomEvent("property-snapshot:select-guided-step", {
     detail: {
-      step: "review-checklist",
+      step: "resources",
       target: targetSelector
     }
   }));
@@ -2211,8 +2457,9 @@ function renderSummary(data, recordCard, summaryContext = {}) {
   ` : `
     The market section will show the closest available valuation-group context and sale-price bands. Use that as comparison evidence, not as a parcel-specific decision.
   `;
+  const countyStudyClass = selectedClass?.label?.toLowerCase() || "property";
   const countyParagraph = latestCountyRatio ? `
-    At the <strong>${escapeHtml(countyLabel)} ${escapeHtml(selectedClass?.label?.toLowerCase() || "property")}</strong> level, the latest ratio study has
+    The latest <strong>${escapeHtml(countyStudyClass)}</strong> sales study for <strong>${escapeHtml(countyLabel)}</strong> has
     <strong>${latestCountyRatio.sales.toLocaleString()} sales</strong>. The middle sale was assessed at
     <strong>${formatRatioPercent(latestCountyRatio.levelOfValue)}</strong> of sale price (${summaryLevelStatus(latestCountyRatio.levelOfValue, countyTarget)}).
     Uniformity is <strong>${formatRatioPercent(latestCountyRatio.cod)}</strong> (${summaryRangeStatus(latestCountyRatio.cod, assessmentBands.cod)}),
@@ -2240,11 +2487,11 @@ function renderSummary(data, recordCard, summaryContext = {}) {
 
   document.getElementById("summaryText").innerHTML = `
     <p class="mb-4 text-sm leading-6 text-slate-600">
-      The short version of what this valuation-change notice means, plus the main property, tax, market, county, and state signals that can be confirmed from the available records.
+      A plain-language read of the property record, value movement, tax context, and market signals available in the current records.
     </p>
 
     <div class="focus-card mb-4">
-      <p class="pending-status-heading mb-1 text-xs font-semibold uppercase tracking-wide">Start here</p>
+      <p class="pending-status-heading mb-1 text-xs font-semibold uppercase tracking-wide">Current status</p>
       <p class="leading-7 text-slate-700">
         ${currentAssessmentCopy}
       </p>
@@ -2260,7 +2507,7 @@ function renderSummary(data, recordCard, summaryContext = {}) {
     </div>
 
     <p class="summary-inline-next">
-      Take a look at your property details next; if something looks incorrect, you will see what to do there.
+      If something in the property details appears inaccurate or incomplete, you may want to open a record review request.
     </p>
   `;
 }
@@ -2353,10 +2600,10 @@ function calendarStageDetailHtml(stage) {
     ` : ""}
     ${stage.id === "protest" ? `
       <div class="mt-4 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-slate-200">
-        <p>The review view brings record review, basic comparable-property organization, the worksheet, and the prepared Form 422 into one open resource. Requested valuation, reasons, signature, and filing responsibility remain with the filer.</p>
+        <p>The Resources tab brings calendar context, basic comparable-property organization, the worksheet, and the prepared Form 422 into one optional reference area. Requested valuation, reasons, signature, and filing responsibility remain with the filer.</p>
         <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <button type="button" data-calendar-review-record class="inline-flex justify-center rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
-            Open Review
+            Open Resources
           </button>
           <button type="button" data-calendar-prepare-form422 class="inline-flex justify-center rounded-full bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-300 transition hover:bg-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
             Go to Form 422
@@ -2617,114 +2864,68 @@ function assessedValuesData(data) {
   );
 }
 
-function renderEtrSummary(data) {
-  document.getElementById("etrSummary").innerHTML = `
-    <p class="text-sm leading-7 text-slate-700">
-      Effective tax rate helps show the relationship between assessed value and the final tax bill.
-      When assessed values rise faster than the budgets they support, the levy generally has to move
-      down because the same budget need is being spread across more taxable value.
-    </p>
-  `;
-}
-
-function renderTaxBurdenExplanation(data) {
-  const container = document.getElementById("taxBurdenExplanation");
+function renderTaxHistoryTable(data) {
+  const container = document.getElementById("taxHistoryRows");
   if (!container) return;
 
-  const statements = (data.taxStatements || [])
-    .slice()
-    .sort((a, b) => b.taxYear - a.taxYear)
-    .filter(statement => statement.netAmountDue !== null && statement.netAmountDue !== undefined);
-  const formulas = [
-    {
-      firstLine: "Assessed value",
-      operator: "&times;",
-      secondLine: "Levy",
-      result: "Gross tax"
-    },
-    {
-      firstLine: "Gross tax",
-      operator: "&minus;",
-      secondLine: "Credits",
-      result: "Net taxes paid"
-    },
-    {
-      firstLine: "Net taxes paid",
-      operator: "&divide;",
-      secondLine: "Assessed value",
-      result: "ETR"
-    }
-  ];
+  const levyRows = (data.districtLevyHistory || []).slice();
+  const levyByYear = new Map(levyRows.map(row => [row.year, row]));
+  const statements = finalizedTaxStatements(data);
+  const statementsByYear = new Map(statements.map(statement => [statement.taxYear, statement]));
+  const years = [...new Set([
+    ...levyRows.map(row => row.year),
+    ...statements.map(statement => statement.taxYear)
+  ])].sort((a, b) => b - a);
 
-  const rows = statements.map(statement => {
-    const nonAgCredit = Math.abs(statement.credits?.nonAgTax?.amount || 0);
-    const schoolCredit = Math.abs(statement.credits?.schoolTax?.amount || 0);
-    const totalCredits = statementTotalCredits(statement);
-    const creditDetail = statementCreditDetail(nonAgCredit, schoolCredit);
-    const netTaxes = statement.netAmountDue ?? statement.totalTaxesDue;
-    const effectiveTaxRate = netTaxes && statement.assessedValue
+  container.innerHTML = years.map(year => {
+    const levyRow = levyByYear.get(year);
+    const priorLevyRow = levyByYear.get(year - 1);
+    const statement = statementsByYear.get(year);
+    const netTaxes = statement?.netAmountDue ?? statement?.totalTaxesDue ?? null;
+    const effectiveTaxRate = statement && statement.assessedValue && netTaxes
       ? netTaxes / statement.assessedValue
-      : statement.derived?.netEffectiveTaxRate;
+      : statement?.derived?.netEffectiveTaxRate ?? null;
     const heatColor = statementBurdenHeatColor(netTaxes, statements);
+    const pendingClass = levyRow?.status === "pending" ? "pending-data-row" : "";
+    const rowStyle = heatColor === "transparent" ? "" : ` style="background-color: ${heatColor};"`;
 
     return `
-      <tr style="background-color: ${heatColor};">
-        <th scope="row" class="px-3 py-2 text-left font-semibold text-slate-700">${statement.taxYear}</th>
-        <td class="px-3 py-2 text-right">${formatNullableMoney(statement.grossTaxAmount, true)}</td>
-        <td class="px-3 py-2 text-right">
-          <span class="font-medium">${formatNullableMoney(totalCredits, true)}</span>
-          <span class="block text-xs text-slate-500">${creditDetail}</span>
-        </td>
-        <td class="px-3 py-2 text-right font-semibold text-slate-700">${formatNullableMoney(netTaxes, true)}</td>
-        <td class="px-3 py-2 text-right font-semibold text-slate-700">${formatNullablePercent(effectiveTaxRate)}</td>
+      <tr class="${pendingClass}"${rowStyle}>
+        <th scope="row" class="px-2 py-2 text-left font-semibold text-slate-700 sm:px-3">${year}</th>
+        <td class="px-2 py-2 text-right font-medium sm:px-3">${formatNullableLevy(levyRow?.levy)}</td>
+        <td class="px-2 py-2 text-center sm:px-3">${levyMovementPill(levyRow, priorLevyRow)}</td>
+        <td class="px-2 py-2 text-right sm:px-3">${formatNullableMoney(statement?.grossTaxAmount, true)}</td>
+        <td class="px-2 py-2 text-right sm:px-3">${statement ? formatNullableMoney(statementTotalCredits(statement), true) : "—"}</td>
+        <td class="px-2 py-2 text-right font-semibold text-slate-700 sm:px-3">${formatNullableMoney(netTaxes, true)}</td>
+        <td class="px-2 py-2 text-right font-semibold text-slate-700 sm:px-3">${formatNullablePercent(effectiveTaxRate)}</td>
       </tr>
     `;
   }).join("");
+}
 
-  container.innerHTML = `
-    <div class="grid gap-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax Statement Math</p>
-        <h2 class="mt-1 text-xl font-bold text-slate-700">From levy to actual tax burden</h2>
-        <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-600">
-          Your levy shows the tax rate before credits. Your actual tax burden is what remains after credits are applied,
-          including the Non-Ag Tax Credit and School Tax Credit. That is why effective tax rate uses net taxes paid divided
-          by assessed value: it shows what you paid after levy changes and credits across the available statement record.
-        </p>
-        <div class="mt-4 grid gap-3 sm:grid-cols-3">
-          ${formulas.map(formula => `
-            <div class="rounded-xl bg-slate-50 p-4 text-sm font-bold text-slate-700 ring-1 ring-slate-200">
-              <div class="grid grid-cols-[1.25rem_minmax(0,1fr)] gap-x-2 gap-y-1">
-                <div></div>
-                <div>${formula.firstLine}</div>
-                <div class="text-center text-slate-500">${formula.operator}</div>
-                <div>${formula.secondLine}</div>
-                <div class="col-span-2 border-t border-slate-300"></div>
-                <div class="text-center text-slate-500">=</div>
-                <div>${formula.result}</div>
-              </div>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-      <div class="overflow-x-auto rounded-xl ring-1 ring-slate-200">
-        <table class="tax-burden-table min-w-full divide-y divide-slate-200 text-sm">
-          <thead class="tax-burden-table-head">
-            <tr>
-              <th class="px-3 py-2 text-left font-semibold">Year</th>
-              <th class="px-3 py-2 text-right font-semibold">Gross tax</th>
-              <th class="px-3 py-2 text-right font-semibold">Credits</th>
-              <th class="px-3 py-2 text-right font-semibold">Net paid</th>
-              <th class="px-3 py-2 text-right font-semibold">ETR</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-200">
-            ${rows}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
+function finalizedTaxStatements(data) {
+  return (data.taxStatements || [])
+    .slice()
+    .sort((a, b) => b.taxYear - a.taxYear)
+    .filter(statement => statement.netAmountDue !== null && statement.netAmountDue !== undefined);
+}
+
+function levyMovementPill(row, priorRow) {
+  if (!row || row.levy === null || row.levy === undefined || priorRow?.levy === null || priorRow?.levy === undefined) {
+    return `<span class="text-slate-400">—</span>`;
+  }
+
+  const change = ((row.levy - priorRow.levy) / priorRow.levy) * 100;
+  const isDecrease = change < 0;
+  const isIncrease = change > 0;
+  const arrow = isDecrease ? "↓" : isIncrease ? "↑" : "→";
+  const colorClass = isDecrease
+    ? "movement-pill-decrease"
+    : isIncrease
+      ? "movement-pill-increase"
+      : "movement-pill-flat";
+
+  return `<span class="movement-pill ${colorClass}">${arrow} ${Math.abs(change).toFixed(2)}%</span>`;
 }
 
 function statementTotalCredits(statement) {
@@ -2733,13 +2934,6 @@ function statementTotalCredits(statement) {
   }
 
   return Math.abs(Object.values(statement.credits || {}).reduce((sum, credit) => sum + (credit?.amount || 0), 0));
-}
-
-function statementCreditDetail(nonAgCredit, schoolCredit) {
-  const details = [];
-  if (nonAgCredit > 0) details.push(`Non-Ag ${formatNullableMoney(nonAgCredit, true)}`);
-  if (schoolCredit > 0) details.push(`School ${formatNullableMoney(schoolCredit, true)}`);
-  return details.length ? details.join(" + ") : "No statement credits";
 }
 
 function statementBurdenHeatColor(netTaxes, statements) {
@@ -2758,76 +2952,6 @@ function statementBurdenHeatColor(netTaxes, statements) {
   const hue = 145 - (intensity * 140);
   const alpha = 0.04 + (intensity * 0.09);
   return `hsla(${hue.toFixed(0)}, 62%, 42%, ${alpha.toFixed(3)})`;
-}
-
-function renderLevyHistoryTable(data) {
-  const sortedRows = data.districtLevyHistory.slice().sort((a, b) => b.year - a.year);
-
-  document.getElementById("levyHistoryRows").innerHTML = sortedRows.map(row => {
-    const priorRow = data.districtLevyHistory.find(item => item.year === row.year - 1);
-    let movementHtml = `<span class="text-slate-400">—</span>`;
-
-    if (row.levy !== null && row.levy !== undefined && priorRow?.levy !== null && priorRow?.levy !== undefined) {
-      const change = ((row.levy - priorRow.levy) / priorRow.levy) * 100;
-      const isDecrease = change < 0;
-      const isIncrease = change > 0;
-      const arrow = isDecrease ? "↓" : isIncrease ? "↑" : "→";
-      const colorClass = isDecrease
-        ? "movement-pill-decrease"
-        : isIncrease
-          ? "movement-pill-increase"
-          : "movement-pill-flat";
-
-      movementHtml = `<span class="movement-pill ${colorClass}">${arrow} ${Math.abs(change).toFixed(2)}%</span>`;
-    }
-
-    return `
-      <tr class="${row.status === "pending" ? "pending-data-row" : ""}">
-        <td class="px-3 py-2 font-medium">${row.year}</td>
-        <td class="px-3 py-2 text-center font-medium">${formatNullableLevy(row.levy)}</td>
-        <td class="px-3 py-2"><div class="flex items-center justify-center gap-2">${movementHtml}</div></td>
-        <td class="px-3 py-2 leading-6 text-slate-600">${buildLevyMovementNote(data, row, priorRow)}</td>
-      </tr>
-    `;
-  }).join("");
-}
-
-function buildLevyMovementNote(data, row, priorRow) {
-  const valueRow = data.taxpayerHistory.find(item => item.year === row.year);
-  const priorValueRow = data.taxpayerHistory.find(item => item.year === row.year - 1);
-
-  if (!valueRow || !priorValueRow) return row.note || "Baseline year for this levy history series.";
-
-  const valueChange = valueRow.assessedValue && priorValueRow.assessedValue
-    ? (valueRow.assessedValue - priorValueRow.assessedValue) / priorValueRow.assessedValue
-    : null;
-  const levyChange = row.levy !== null && row.levy !== undefined && priorRow?.levy !== null && priorRow?.levy !== undefined
-    ? (row.levy - priorRow.levy) / priorRow.levy
-    : null;
-  const taxChange = valueRow.taxes && priorValueRow.taxes
-    ? (valueRow.taxes - priorValueRow.taxes) / priorValueRow.taxes
-    : null;
-
-  if (row.status === "pending") {
-    if (valueChange === null) {
-      return `Your ${row.year} property value, levy, and tax bill are not available yet.`;
-    }
-
-    return `Your ${row.year} value is up ${formatNullablePercent(valueChange)}, but the levy and tax bill are not finalized yet.`;
-  }
-
-  if (levyChange === null) {
-    return `Your value changed by ${formatNullablePercent(valueChange)}. Levy comparison is not available for this year.`;
-  }
-
-  const levyDirection = levyChange < 0 ? "down" : levyChange > 0 ? "up" : "unchanged";
-
-  if (taxChange === null) {
-    return `Your value changed by ${formatNullablePercent(valueChange)}, while the levy went ${levyDirection} ${formatNullablePercent(Math.abs(levyChange))}. Tax bill data is not available for this year.`;
-  }
-
-  const taxDirection = taxChange < 0 ? "decrease" : taxChange > 0 ? "increase" : "change";
-  return `Your value changed by ${formatNullablePercent(valueChange)}, the levy went ${levyDirection} ${formatNullablePercent(Math.abs(levyChange))}, resulting in a ${formatNullablePercent(Math.abs(taxChange))} tax ${taxDirection}.`;
 }
 
 function renderLevyTable(data) {

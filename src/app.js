@@ -28,11 +28,16 @@ import { initImageModal } from "./modal.js";
 import {
   getCurrentStageText,
   renderPage,
-  renderPagePrimer,
   renderTaxDistrictAuthorities,
   renderViewHeader
 } from "./render.js";
 import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.js";
+import {
+  TAXPAYER_JOURNEY_ROUTES,
+  getJourneyRoute,
+  getRouteForPanel
+} from "./config/taxpayer-journey.js";
+import { installCivicJourneyPanels } from "./routes/landing-primer.js";
 
 const footerFormActions = {
   recordConcern: {
@@ -53,6 +58,24 @@ const footerFormActions = {
 };
 
 const resourcesByView = {
+  "landing-primer": {
+    faqTitle: "Getting oriented FAQs",
+    formTitle: "Optional resources",
+    learnTitle: "Assessment basics",
+    faqs: [
+      ["What should I do first?", "Confirm that you are looking at the right property, then review the record before interpreting values or taxes."],
+      ["Is this telling me to protest?", "No. The primary goal is orientation and understanding. Filing steps remain optional resources."],
+      ["Why are some current-year values pending?", "Assessment-year information can appear before final tax bills or complete current-year values are available."],
+      ["What if I only want to understand my tax bill?", "Use the Tax Context step after reviewing the property and value movement basics."]
+    ],
+    forms: ["recordConcern", "homestead"],
+    learn: [
+      ["Assessment year", "The year for which the property value is being reviewed."],
+      ["Assessed value", "The value used as the basis for property taxation."],
+      ["Prior value", "The most recent earlier value available for comparison."],
+      ["Review deadline", "A procedural date that should be confirmed with official sources before any filing."]
+    ]
+  },
   "your-property": {
     faqTitle: "Property record FAQs",
     formTitle: "Property record forms",
@@ -196,7 +219,34 @@ const resourcesByView = {
       ["Comparable property", "A property reviewed because its public-record facts may help explain assessment differences."],
       ["Protest window", "The formal period for filing a valuation protest."]
     ]
+  },
+  "resources": {
+    faqTitle: "Resource FAQs",
+    formTitle: "Resource forms",
+    learnTitle: "Resource terms",
+    faqs: [
+      ["What is in Resources?", "The Resources tab keeps the assessment calendar, comparable worksheet, and optional protest preparation materials separate from the main review path."],
+      ["Does opening Resources mean I should file something?", "No. These are reference and preparation materials. Use them only if they help answer a specific question."],
+      ["Why is the calendar first?", "Calendar context helps explain what stage the assessment process is in before worksheet or filing materials appear."],
+      ["Can the worksheet change my assessed value?", "No. It is an educational organization tool and does not guarantee a change or outcome."]
+    ],
+    forms: ["recordConcern", "valuationProtest", "homestead"],
+    learn: [
+      ["Assessment calendar", "The sequence of dates for assessment, protest, review, budgets, levies, and final tax bills."],
+      ["Comparable worksheet", "A working organizer for side-by-side public-record property facts."],
+      ["Form 422", "Nebraska's property valuation protest form."],
+      ["Preparation packet", "A printable packet that can combine the worksheet and prepared Form 422."]
+    ]
   }
+};
+
+const resourceAliases = {
+  "property-record": "your-property",
+  "what-changed": "your-assessment",
+  "valuation-detail": "market-area",
+  "tax-context": "your-taxes",
+  "review-signals": "review-checklist",
+  "final-summary": "review-checklist"
 };
 
 async function main() {
@@ -236,6 +286,13 @@ async function main() {
     padRatioData,
     iaaoStandards
   });
+  installCivicJourneyPanels(data, {
+    recordCard,
+    ctlData,
+    ratioData,
+    padRatioData,
+    iaaoStandards
+  });
   renderTaxDistrictAuthorities(data, taxDistrictAuthorities);
   buildIndexedChart(data);
   buildTaxBurdenPattern(data);
@@ -263,55 +320,111 @@ main().catch(error => {
 });
 
 function initGuidedNavigation(snapshotModel, calendar) {
+  const routeList = snapshotModel?.sections?.length ? snapshotModel.sections : TAXPAYER_JOURNEY_ROUTES;
+  const tabsContainer = document.getElementById("guidedPathTabs");
+
+  if (tabsContainer) {
+    tabsContainer.innerHTML = routeList.map((route, index) => `
+      <button type="button" data-guided-tab="${route.id}" class="guided-step ${route.secondary ? "guided-step-secondary" : ""} ${index === 0 ? "guided-step-active" : ""}" aria-selected="${index === 0 ? "true" : "false"}">
+        ${guidedStepMarker(route, index)}${route.label}
+      </button>
+    `).join("");
+  }
+
   const tabs = document.querySelectorAll("[data-guided-tab]");
   const panels = document.querySelectorAll("[data-guided-panel]");
   const propertyContext = document.getElementById("propertyViewContext");
   const guidedPath = document.querySelector(".guided-path-nav");
   const stageSync = document.querySelector("[data-guided-current-stage]");
-  const sectionIds = [...tabs].map(tab => tab.dataset.guidedTab);
+  const primarySectionIds = routeList.filter(route => !route.secondary).map(route => route.id);
   const visitedSteps = new Set();
-  const unlockedSteps = new Set([sectionIds[0]]);
+  const unlockedSteps = new Set([primarySectionIds[0]]);
   const legacyViewMap = {
-    property: "your-property",
-    market: "market-area",
+    property: "property-record",
+    market: "valuation-detail",
     county: "county-equalization",
     statewide: "state-context"
   };
 
+  function resolveRoute(value) {
+    if (!value) return null;
+
+    const configured = getJourneyRoute(value) || routeList.find(route =>
+      route.id === value || route.panelId === value
+    );
+
+    if (configured) return configured;
+
+    if (document.querySelector(`[data-guided-panel="${value}"]`)) {
+      return {
+        id: value,
+        panelId: value,
+        label: value
+      };
+    }
+
+    return routeList[0];
+  }
+
+  function routeIdFor(value) {
+    return value ? resolveRoute(value)?.id : null;
+  }
+
+  function routeIdForPanel(panelId) {
+    return getRouteForPanel(panelId)?.id ?? panelId;
+  }
+
+  function routeForId(id) {
+    return routeList.find(route => route.id === id);
+  }
+
+  function isPrimaryRouteId(id) {
+    return primarySectionIds.includes(id);
+  }
+
   function stepForTarget(target) {
-    return document.getElementById(target)?.closest("[data-guided-panel]")?.dataset.guidedPanel;
+    const panelId = document.getElementById(target)?.closest("[data-guided-panel]")?.dataset.guidedPanel;
+    return panelId ? routeIdForPanel(panelId) : null;
   }
 
   function unlockThrough(target) {
-    const targetIndex = sectionIds.indexOf(target);
-    if (targetIndex < 0) return;
+    const targetId = routeIdFor(target);
+    if (!isPrimaryRouteId(targetId)) return;
 
-    sectionIds.slice(0, targetIndex + 1).forEach(id => unlockedSteps.add(id));
+    const targetIndex = primarySectionIds.indexOf(targetId);
+    primarySectionIds.slice(0, targetIndex + 1).forEach(id => unlockedSteps.add(id));
   }
 
   function markPreviousVisited(target) {
-    const targetIndex = sectionIds.indexOf(target);
+    const targetId = routeIdFor(target);
+    const targetIndex = primarySectionIds.indexOf(targetId);
     if (targetIndex <= 0) return;
 
-    sectionIds.slice(0, targetIndex).forEach(id => visitedSteps.add(id));
+    primarySectionIds.slice(0, targetIndex).forEach(id => visitedSteps.add(id));
   }
 
-  function selectStep(selected, options = {}) {
+  function selectStep(selectedRoute, options = {}) {
     const { scrollTop = true, markVisited = true } = options;
+    const route = resolveRoute(selectedRoute) ?? routeList[0];
+    const selected = route.id;
+    const selectedPanel = route.panelId;
+    const primaryRoute = isPrimaryRouteId(selected);
 
-    if (!unlockedSteps.has(selected)) {
+    if (primaryRoute && !unlockedSteps.has(selected)) {
       return false;
     }
 
-    if (markVisited && sectionIds.includes(selected)) {
+    if (markVisited && primaryRoute) {
       visitedSteps.add(selected);
     }
 
     tabs.forEach((item, index) => {
       const active = item.dataset.guidedTab === selected;
-      const unlocked = unlockedSteps.has(item.dataset.guidedTab);
-      const complete = unlocked && visitedSteps.has(item.dataset.guidedTab) && !active;
-      const future = !unlocked;
+      const tabRoute = routeForId(item.dataset.guidedTab);
+      const tabIsPrimary = isPrimaryRouteId(item.dataset.guidedTab);
+      const unlocked = tabIsPrimary ? unlockedSteps.has(item.dataset.guidedTab) : true;
+      const complete = tabIsPrimary && unlocked && visitedSteps.has(item.dataset.guidedTab) && !active;
+      const future = tabIsPrimary && !unlocked;
       const marker = item.querySelector("span");
 
       item.classList.toggle("guided-step-active", active);
@@ -320,16 +433,18 @@ function initGuidedNavigation(snapshotModel, calendar) {
       item.disabled = future;
       item.setAttribute("aria-selected", String(active));
       item.setAttribute("aria-disabled", String(future));
-      if (marker) marker.textContent = complete ? "✓" : String(index + 1);
+      if (marker && tabRoute?.icon !== "stacked-papers") {
+        const primaryIndex = primarySectionIds.indexOf(item.dataset.guidedTab);
+        marker.textContent = complete ? "✓" : primaryIndex === 0 ? "0" : String(primaryIndex);
+      }
     });
 
     panels.forEach(panel => {
-      panel.classList.toggle("hidden", panel.dataset.guidedPanel !== selected);
+      panel.classList.toggle("hidden", panel.dataset.guidedPanel !== selectedPanel);
     });
 
-    propertyContext?.classList.toggle("hidden", selected === "your-property");
+    propertyContext?.classList.toggle("hidden", selected === "landing-primer" || selectedPanel === "your-property");
     renderViewHeader(selected, snapshotModel);
-    renderPagePrimer(selected);
     renderGuidedResourceContent(selected);
     window.dispatchEvent(new Event("resize"));
 
@@ -347,21 +462,24 @@ function initGuidedNavigation(snapshotModel, calendar) {
     const propertyStage = document.createElement("span");
     const propertyContextLabel = document.createElement("span");
     const propertyContextValue = document.createElement("strong");
-    const calendarContext = document.createElement("span");
-    const calendarLabel = document.createElement("span");
-    const calendarValue = document.createElement("strong");
+    const notice = snapshotModel?.viewModels?.notice;
+    const assessmentContext = document.createElement("span");
+    const assessmentLabel = document.createElement("span");
+    const assessmentStatus = document.createElement("span");
 
     propertyStage.className = "guided-stage-property";
     propertyContextLabel.textContent = "Property:";
     propertyContextValue.textContent = propertyLabel;
     propertyStage.append(propertyContextLabel, propertyContextValue);
 
-    calendarContext.className = "guided-stage-calendar";
-    calendarLabel.textContent = "Calendar stage:";
-    calendarValue.textContent = getCurrentStageText(calendar);
-    calendarContext.append(calendarLabel, calendarValue);
+    assessmentContext.className = "guided-stage-assessment";
+    assessmentContext.setAttribute("aria-label", `${notice?.assessmentLabel ?? "Assessment"} status ${notice?.valueStatusLabel ?? getCurrentStageText(calendar)}`);
+    assessmentLabel.textContent = `${notice?.assessmentLabel ?? "Assessment"}:`;
+    assessmentStatus.className = "notice-status-pill notice-status-pill-pending";
+    assessmentStatus.textContent = notice?.valueStatusLabel ?? getCurrentStageText(calendar);
+    assessmentContext.append(assessmentLabel, assessmentStatus);
 
-    stageSync.replaceChildren(propertyStage, calendarContext);
+    stageSync.replaceChildren(propertyStage, assessmentContext);
   }
 
   tabs.forEach(tab => {
@@ -372,10 +490,12 @@ function initGuidedNavigation(snapshotModel, calendar) {
 
   document.querySelectorAll("[data-guided-next]").forEach(button => {
     button.addEventListener("click", () => {
-      const current = button.closest("[data-guided-panel]")?.dataset.guidedPanel;
-      if (current) visitedSteps.add(current);
-      unlockThrough(button.dataset.guidedNext);
-      selectStep(button.dataset.guidedNext);
+      const currentPanel = button.closest("[data-guided-panel]")?.dataset.guidedPanel;
+      const currentRoute = routeIdForPanel(currentPanel);
+      const nextRoute = routeIdFor(button.dataset.guidedNext);
+      if (currentRoute && isPrimaryRouteId(currentRoute)) visitedSteps.add(currentRoute);
+      unlockThrough(nextRoute);
+      selectStep(nextRoute);
     });
   });
 
@@ -412,7 +532,7 @@ function initGuidedNavigation(snapshotModel, calendar) {
   });
 
   document.addEventListener("property-snapshot:select-guided-step", event => {
-    const selected = event.detail?.step;
+    const selected = routeIdFor(event.detail?.step);
     const targetSelector = event.detail?.target;
 
     if (selected) {
@@ -432,10 +552,10 @@ function initGuidedNavigation(snapshotModel, calendar) {
   });
 
   const hashTarget = window.location.hash?.slice(1);
-  const initialStep = hashTarget ? stepForTarget(hashTarget) : sectionIds[0];
-  unlockThrough(initialStep || sectionIds[0]);
-  markPreviousVisited(initialStep || sectionIds[0]);
-  selectStep(initialStep || sectionIds[0], { scrollTop: false });
+  const initialStep = hashTarget ? stepForTarget(hashTarget) : primarySectionIds[0];
+  unlockThrough(initialStep || primarySectionIds[0]);
+  markPreviousVisited(initialStep || primarySectionIds[0]);
+  selectStep(initialStep || primarySectionIds[0], { scrollTop: false });
   if (hashTarget) {
     window.setTimeout(() => {
       const target = document.getElementById(hashTarget);
@@ -445,8 +565,25 @@ function initGuidedNavigation(snapshotModel, calendar) {
   initGuidedPathStickiness(guidedPath);
 }
 
+function guidedStepMarker(route, index) {
+  if (route.icon === "stacked-papers") {
+    return `
+      <span class="guided-step-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M8 7.5h9.5a1.5 1.5 0 0 1 1.5 1.5v9.5a1.5 1.5 0 0 1-1.5 1.5H8a1.5 1.5 0 0 1-1.5-1.5V9A1.5 1.5 0 0 1 8 7.5Z"></path>
+          <path d="M4.5 15.5V5.5A1.5 1.5 0 0 1 6 4h10"></path>
+          <path d="M6.5 17.5H4A1.5 1.5 0 0 1 2.5 16V7"></path>
+        </svg>
+      </span>
+    `;
+  }
+
+  return `<span>${index === 0 ? "0" : index}</span>`;
+}
+
 function renderGuidedResourceContent(viewKey) {
-  const resources = resourcesByView[viewKey] ?? resourcesByView["your-property"];
+  const resourceKey = resourceAliases[viewKey] ?? viewKey;
+  const resources = resourcesByView[resourceKey] ?? resourcesByView["your-property"];
   const faqTitle = document.getElementById("footerFaqTitle");
   const formsTitle = document.getElementById("footerFormsTitle");
   const learnTitle = document.getElementById("footerLearnTitle");
@@ -504,6 +641,7 @@ function escapeHtml(value) {
 function initGuidedPathStickiness(guidedPath) {
   if (!guidedPath) return;
 
+  const noticeStatus = document.querySelector(".civic-notice-heading .notice-status-group");
   let stickPoint = 0;
 
   function measure() {
@@ -513,7 +651,14 @@ function initGuidedPathStickiness(guidedPath) {
   }
 
   function update() {
-    guidedPath.classList.toggle("guided-path-nav-stuck", window.scrollY > stickPoint);
+    const stuck = window.scrollY > stickPoint;
+    guidedPath.classList.toggle("guided-path-nav-stuck", stuck);
+
+    if (!noticeStatus) return;
+
+    const navBottom = guidedPath.getBoundingClientRect().bottom;
+    const statusBottom = noticeStatus.getBoundingClientRect().bottom;
+    guidedPath.classList.toggle("guided-path-nav-show-assessment", stuck && statusBottom <= navBottom);
   }
 
   measure();
