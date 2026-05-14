@@ -4,6 +4,7 @@ import {
   semanticChartColors,
   visualizationTheme
 } from "./config/visualization-palettes.js";
+import { getMetricSignal } from "./metric-signals.js";
 
 const levyGroupColors = visualizationTheme.districtGroups;
 const palette = {
@@ -53,20 +54,170 @@ const moneyCents = new Intl.NumberFormat("en-US", {
   currency: "USD"
 });
 
+function hasDataValue(value) {
+  return value !== null && value !== undefined;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function formattedTooltipValues(rows, key, formatter, factor = 1) {
+  return rows.map(row => hasDataValue(row?.[key]) ? formatter.format(row[key] * factor) : "Pending");
+}
+
+function indexedTooltipLabel(context) {
+  const label = context.dataset.tooltipLabel ?? context.dataset.label;
+  const tooltipValues = context.dataset.tooltipValues;
+
+  if (tooltipValues) {
+    return `${label}: ${tooltipValues[context.dataIndex] ?? "Pending"}`;
+  }
+
+  return `${label}: ${context.parsed.y?.toFixed(1) ?? "Pending"}`;
+}
+
+function hexToRgba(hex, alpha) {
+  const value = `${hex ?? ""}`.replace("#", "");
+  if (![3, 6].includes(value.length)) return hex;
+  const normalized = value.length === 3
+    ? value.split("").map(character => character + character).join("")
+    : value;
+  const red = parseInt(normalized.slice(0, 2), 16);
+  const green = parseInt(normalized.slice(2, 4), 16);
+  const blue = parseInt(normalized.slice(4, 6), 16);
+
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+}
+
+function drawRoundedRect(ctx, x, y, width, height, radius) {
+  const safeRadius = Math.min(radius, width / 2, height / 2);
+
+  ctx.beginPath();
+  if (typeof ctx.roundRect === "function") {
+    ctx.roundRect(x, y, width, height, safeRadius);
+    return;
+  }
+
+  ctx.moveTo(x + safeRadius, y);
+  ctx.lineTo(x + width - safeRadius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + safeRadius);
+  ctx.lineTo(x + width, y + height - safeRadius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - safeRadius, y + height);
+  ctx.lineTo(x + safeRadius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - safeRadius);
+  ctx.lineTo(x, y + safeRadius);
+  ctx.quadraticCurveTo(x, y, x + safeRadius, y);
+}
+
+function pendingColumnBounds(xScale, chartArea, index, labelCount) {
+  const current = xScale.getPixelForValue(index);
+  const previous = index > 0 ? xScale.getPixelForValue(index - 1) : chartArea.left;
+  const next = index < labelCount - 1 ? xScale.getPixelForValue(index + 1) : chartArea.right;
+  let left = index > 0 ? previous : chartArea.left;
+  let right = current;
+
+  if (!Number.isFinite(left) || !Number.isFinite(right) || right <= left) {
+    left = index > 0 ? (previous + current) / 2 : chartArea.left;
+    right = index < labelCount - 1 ? (current + next) / 2 : chartArea.right;
+  }
+
+  return {
+    left: Math.max(chartArea.left, left),
+    right: Math.min(chartArea.right, right)
+  };
+}
+
+const indexedPendingColumnPlugin = {
+  id: "indexedPendingColumn",
+  beforeDatasetsDraw(chart, args, options = {}) {
+    const { ctx, chartArea, scales } = chart;
+    const columns = options.columns ?? [];
+    if (!chartArea || !scales.x || !columns.length) return;
+
+    const labelCount = chart.data.labels?.length ?? 0;
+
+    ctx.save();
+    columns.forEach(column => {
+      const { left, right } = pendingColumnBounds(scales.x, chartArea, column.index, labelCount);
+      const width = right - left;
+      if (width <= 0) return;
+
+      ctx.fillStyle = options.backgroundColor ?? hexToRgba(visualizationTheme.roles.pending, 0.25);
+      ctx.fillRect(left, chartArea.top, width, chartArea.bottom - chartArea.top);
+      ctx.strokeStyle = options.borderColor ?? hexToRgba(visualizationTheme.roles.pendingText, 0.20);
+      ctx.lineWidth = 1;
+      ctx.strokeRect(left, chartArea.top, width, chartArea.bottom - chartArea.top);
+    });
+    ctx.restore();
+  },
+  afterDatasetsDraw(chart, args, options = {}) {
+    const { ctx, chartArea, scales } = chart;
+    const columns = options.columns ?? [];
+    if (!chartArea || !scales.x || !columns.length || options.showLabel === false) return;
+
+    const labelCount = chart.data.labels?.length ?? 0;
+    const label = options.label ?? "Pending";
+
+    ctx.save();
+    ctx.font = "700 11px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    columns.forEach(column => {
+      const { left, right } = pendingColumnBounds(scales.x, chartArea, column.index, labelCount);
+      const width = right - left;
+      if (width < 32) return;
+
+      const pillWidth = Math.min(Math.max(ctx.measureText(label).width + 18, 64), Math.max(width - 10, 40));
+      const pillHeight = 22;
+      const x = left + (width - pillWidth) / 2;
+      const y = chartArea.top + 8;
+
+      ctx.fillStyle = options.labelBackgroundColor ?? visualizationTheme.roles.pending;
+      ctx.strokeStyle = options.labelBorderColor ?? hexToRgba(visualizationTheme.roles.pendingText, 0.24);
+      ctx.lineWidth = 1;
+      drawRoundedRect(ctx, x, y, pillWidth, pillHeight, pillHeight / 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = options.labelColor ?? visualizationTheme.roles.pendingText;
+      ctx.fillText(label, x + pillWidth / 2, y + pillHeight / 2 + 0.5);
+    });
+    ctx.restore();
+  }
+};
+
 export function buildIndexedChart(data) {
-  const usableValueRows = data.taxpayerHistory.filter(row => row.assessedValue !== null);
-  const usableTaxRows = data.taxpayerHistory.filter(row => row.taxes !== null);
+  const usableValueRows = data.taxpayerHistory.filter(row => hasDataValue(row.assessedValue));
+  const usableTaxRows = data.taxpayerHistory.filter(row => hasDataValue(row.taxes));
   const years = data.taxpayerHistory.map(row => row.year);
   const baseValue = usableValueRows[0]?.assessedValue;
   const baseTaxes = usableTaxRows[0]?.taxes;
+  const pendingColumns = data.taxpayerHistory
+    .map((row, index) => ({
+      index,
+      year: row.year,
+      pending: !hasDataValue(row.assessedValue) || !hasDataValue(row.taxes)
+    }))
+    .filter(row => row.pending);
 
   document.getElementById("baseYearNote").textContent = `Base year: ${usableValueRows[0]?.year ?? "—"}`;
 
-  const valueIndex = data.taxpayerHistory.map(row => row.assessedValue && baseValue ? (row.assessedValue / baseValue) * 100 : null);
-  const taxIndex = data.taxpayerHistory.map(row => row.taxes && baseTaxes ? (row.taxes / baseTaxes) * 100 : null);
+  const valueIndex = data.taxpayerHistory.map(row =>
+    hasDataValue(row.assessedValue) && baseValue ? (row.assessedValue / baseValue) * 100 : null
+  );
+  const taxIndex = data.taxpayerHistory.map(row =>
+    hasDataValue(row.taxes) && baseTaxes ? (row.taxes / baseTaxes) * 100 : null
+  );
   const datasets = [
     {
-      label: "Assessed value index",
+      label: "Assessed value",
+      tooltipValues: formattedTooltipValues(data.taxpayerHistory, "assessedValue", wholeMoney),
       data: valueIndex,
       tension: 0.25,
       borderWidth: 3,
@@ -75,7 +226,8 @@ export function buildIndexedChart(data) {
       spanGaps: true
     },
     {
-      label: "Tax bill index",
+      label: "Tax bill",
+      tooltipValues: formattedTooltipValues(data.taxpayerHistory, "taxes", moneyCents),
       data: taxIndex,
       tension: 0.25,
       borderWidth: 3,
@@ -88,6 +240,7 @@ export function buildIndexedChart(data) {
 
   new Chart(document.getElementById("indexedChart"), {
     type: "line",
+    plugins: [indexedPendingColumnPlugin],
     data: {
       labels: years,
       datasets
@@ -97,10 +250,13 @@ export function buildIndexedChart(data) {
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
+        indexedPendingColumn: {
+          columns: pendingColumns
+        },
         legend: { display: !hasCustomLegend },
         tooltip: {
           callbacks: {
-            label: context => `${context.dataset.label}: ${context.parsed.y?.toFixed(1) ?? "Pending"}`
+            label: indexedTooltipLabel
           }
         }
       },
@@ -615,15 +771,15 @@ export function initAssessmentRatioAnalysis(data, ratioData, iaaoStandards) {
 }
 
 function indexedSeries(rows, valueFactor = 1, taxFactor = 1) {
-  const usableValueRows = rows.filter(row => row.assessedValue !== null);
-  const usableTaxRows = rows.filter(row => row.taxes !== null);
+  const usableValueRows = rows.filter(row => hasDataValue(row.assessedValue));
+  const usableTaxRows = rows.filter(row => hasDataValue(row.taxes));
   const baseValue = usableValueRows[0]?.assessedValue;
   const baseTaxes = usableTaxRows[0]?.taxes;
 
   return {
     years: rows.map(row => row.year),
-    valueIndex: rows.map(row => row.assessedValue && baseValue ? (row.assessedValue / baseValue) * 100 * valueFactor : null),
-    taxIndex: rows.map(row => row.taxes && baseTaxes ? (row.taxes / baseTaxes) * 100 * taxFactor : null)
+    valueIndex: rows.map(row => hasDataValue(row.assessedValue) && baseValue ? (row.assessedValue / baseValue) * 100 * valueFactor : null),
+    taxIndex: rows.map(row => hasDataValue(row.taxes) && baseTaxes ? (row.taxes / baseTaxes) * 100 * taxFactor : null)
   };
 }
 
@@ -642,7 +798,8 @@ function propertyIndexedDatasets(propertyRows, years, palette = {}) {
 
   return [
     {
-      label: "This property value index",
+      label: "This property value",
+      tooltipValues: formattedTooltipValues(alignedRows, "assessedValue", wholeMoney),
       data: series.valueIndex,
       tension: 0.25,
       borderWidth: 2,
@@ -654,7 +811,8 @@ function propertyIndexedDatasets(propertyRows, years, palette = {}) {
       spanGaps: true
     },
     {
-      label: "This property tax index",
+      label: "This property tax bill",
+      tooltipValues: formattedTooltipValues(alignedRows, "taxes", moneyCents),
       data: series.taxIndex,
       tension: 0.25,
       borderWidth: 2,
@@ -734,7 +892,7 @@ function marketAreaSignal(selected, summary) {
       ? `tighter than the countywide study by ${Math.abs(codDelta).toFixed(2)} COD points`
       : `wider than the countywide study by ${Math.abs(codDelta).toFixed(2)} COD points`;
 
-  return `${selected.label} includes ${integer.format(selected.count)} qualified residential sales. Its median ratio is ${formatRatio(selected.median)}, ${medianText}, and its COD is ${formatRatio(selected.cod)}, ${codText}.`;
+  return `${selected.label} is the local comparison group for this property. It includes ${integer.format(selected.count)} qualified residential sales. The middle sale was assessed at ${formatRatio(selected.median)} of sale price, ${medianText}. Its COD, a uniformity measure, is ${formatRatio(selected.cod)}, ${codText}.`;
 }
 
 function valuationGroupLookup(valuationGroups, propertyClass = "Residential") {
@@ -770,24 +928,73 @@ function enrichedMarketGroups(groups, valuationGroups, propertyClass = "Resident
   });
 }
 
-function renderMarketSignalCards(selected, summary) {
+function renderMarketSignalCards(selected, summary, standards, context = {}) {
   const container = document.getElementById("marketSignalCards");
   if (!container) return;
 
+  const signalContext = {
+    ...context,
+    valuationGroup: selected.descriptiveLabel ?? selected.label,
+    marketAreaType: selected.marketGroup
+  };
   const cards = [
-    ["Qualified sales", integer.format(selected.count), `${integer.format(summary.numberOfSales)} countywide`],
-    ["Median ratio", formatRatio(selected.median), `County: ${formatRatio(summary.median)}`],
-    ["COD", formatRatio(selected.cod), `County: ${formatRatio(summary.cod)}`],
-    ["PRD", formatRatio(selected.prd), `County: ${formatRatio(summary.prd)}`]
+    {
+      metricKey: "qualifiedSales",
+      label: "Qualified sales",
+      rawValue: selected.count,
+      comparisonValue: summary.numberOfSales,
+      value: integer.format(selected.count),
+      note: `${integer.format(summary.numberOfSales)} countywide`
+    },
+    {
+      metricKey: "medianRatio",
+      label: "Median ratio",
+      rawValue: selected.median,
+      comparisonValue: summary.median,
+      value: formatRatio(selected.median),
+      note: `County: ${formatRatio(summary.median)}`
+    },
+    {
+      metricKey: "cod",
+      label: "COD",
+      rawValue: selected.cod,
+      comparisonValue: summary.cod,
+      value: formatRatio(selected.cod),
+      note: `County: ${formatRatio(summary.cod)}`
+    },
+    {
+      metricKey: "prd",
+      label: "PRD",
+      rawValue: selected.prd,
+      comparisonValue: summary.prd,
+      value: formatRatio(selected.prd),
+      note: `County: ${formatRatio(summary.prd)}`
+    }
   ];
 
-  container.innerHTML = cards.map(([label, value, note]) => `
-    <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-      <p class="mt-1 text-lg font-bold text-slate-700">${value}</p>
-      <p class="mt-1 text-xs leading-5 text-slate-500">${note}</p>
+  container.innerHTML = cards.map(card => {
+    const signal = getMetricSignal({
+      metricKey: card.metricKey,
+      value: card.rawValue,
+      comparisonValue: card.comparisonValue,
+      standards,
+      context: signalContext
+    });
+    const ariaLabel = [
+      `${card.label}: ${card.value}.`,
+      signal.label,
+      signal.explanation
+    ].join(" ");
+
+    return `
+    <div class="metric-signal-card metric-signal-card-${signal.tone} rounded-xl p-4" role="group" aria-label="${escapeHtml(ariaLabel)}">
+      <p class="text-xs font-semibold uppercase tracking-wide">${escapeHtml(card.label)}</p>
+      <p class="mt-1 text-lg font-bold text-slate-700">${escapeHtml(card.value)}</p>
+      <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(card.note)}</p>
+      <p class="metric-signal-text mt-2">${escapeHtml(signal.label)}</p>
     </div>
-  `).join("");
+  `;
+  }).join("");
 }
 
 function renderMarketNarrative(selected, summary) {
@@ -801,7 +1008,7 @@ function priceBandStudyForClass(padRatioData, classKey = "residential") {
     return {
       key: "residential",
       label: "Residential sale-price bands",
-      description: "Incremental residential sale-price ranges from the same PAD R&O pages help reviewers understand where the qualified sales are concentrated.",
+      description: "Sale-price ranges show where qualified residential sales are concentrated and whether the study is based mostly on lower-, middle-, or higher-priced properties.",
       chartNote: "Qualified sales by price band, including empty upper bands.",
       rows: padRatioData.salePriceRanges.filter(row => row.section === "Incremental Ranges"),
       totalRow: padRatioData.salePriceRanges
@@ -833,7 +1040,7 @@ function getPadRoSourceAnchor(padRatioData) {
     ?? (source.sourcePages?.length ? `${source.sourcePages[0]}-${source.sourcePages.at(-1)}` : "");
   const pageText = pageRange ? `, pages ${pageRange}` : "";
 
-  return `Source: ${year} ${countyName} PAD R&O${pageText}.`;
+  return `Source: ${year} ${countyName} Property Assessment Division Reports and Opinions${pageText}.`;
 }
 
 function getPadRoRefreshWatch(padRatioData) {
@@ -848,7 +1055,7 @@ function getPadRoRefreshWatch(padRatioData) {
   // R&Os are due around April 7, but the app cannot assume the new PDF has been
   // digested into JSON that day. Keep this as a quiet refresh watch until the
   // next report file is extracted and the manifest points at the new JSON.
-  return ` R&O refresh watch: ${nextYear} data may be available; this section still uses ${source.reportYear} data.`;
+  return ` Newer sales-study data may be available; this section still uses ${source.reportYear} data.`;
 }
 
 function renderMarketSalePriceRows(padRatioData, classKey = "residential") {
@@ -1068,16 +1275,29 @@ function renderMarketValueChart(selected, summary) {
   });
 }
 
-export function initMarketAreaView(data, recordCard, padRatioData, valuationGroups) {
+export function initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards) {
   const select = document.getElementById("marketAreaSelect");
   if (!select || !padRatioData?.valuationGroups?.length) return;
 
   const groups = enrichedMarketGroups(padRatioData.valuationGroups, valuationGroups, padRatioData.source.propertyClass);
+  const signalContext = {
+    propertyClass: data.classification?.propertyClass ?? data.parcel?.accountType,
+    assessmentClass: padRatioData.source?.propertyClass,
+    jurisdictionType: padRatioData.source?.jurisdictionType ?? data.classification?.location,
+    ruralUrbanContext: padRatioData.source?.ruralUrbanContext ?? data.classification?.location,
+    countyName: padRatioData.source?.countyName ?? data.parcel?.countyName,
+    specialValuation: Boolean(data.classification?.specialValuation),
+    greenbelt: Boolean(data.classification?.greenbelt)
+  };
   const defaultGroup = extractValuationGroupId(recordCard) ?? groups[0].group;
   const sourceNote = document.getElementById("marketSourceNote");
   if (sourceNote) {
     const defaultListing = groups.find(group => String(group.group) === String(defaultGroup));
-    sourceNote.textContent = `${padRatioData.source.title}, ${padRatioData.source.countyName} County ${padRatioData.source.propertyClass}, pages ${padRatioData.source.sourcePages.join("-")}. The property default follows ${defaultListing?.label ?? recordCard.locationModel.valuationGroup}.`;
+    const groupName = defaultListing?.description || defaultListing?.label || recordCard.locationModel.valuationGroup;
+    const groupNumber = defaultListing?.group ?? extractValuationGroupId(recordCard);
+    sourceNote.textContent = groupNumber
+      ? `This property resides in the ${groupName} Valuation Group ${groupNumber}.`
+      : `This property resides in the ${groupName} local comparison group.`;
   }
 
   select.innerHTML = groups.map(group => `
@@ -1087,7 +1307,7 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
   const update = groupId => {
     const selected = groups.find(group => String(group.group) === String(groupId)) ?? groups[0];
     select.value = selected.group;
-    renderMarketSignalCards(selected, padRatioData.summary);
+    renderMarketSignalCards(selected, padRatioData.summary, iaaoStandards, signalContext);
     renderMarketNarrative(selected, padRatioData.summary);
     renderMarketRatioChart(selected, padRatioData.summary);
     renderMarketValueChart(selected, padRatioData.summary);
@@ -1106,6 +1326,11 @@ function buildIndexedOverviewChart(canvasId, data, labels, valueFactor, taxFacto
   if (!canvas) return;
 
   const series = indexedSeries(data.taxpayerHistory, valueFactor, taxFactor);
+  const contextualRows = data.taxpayerHistory.map(row => ({
+    ...row,
+    assessedValue: hasDataValue(row.assessedValue) ? row.assessedValue * valueFactor : null,
+    taxes: hasDataValue(row.taxes) ? row.taxes * taxFactor : null
+  }));
 
   new Chart(canvas, {
     type: "line",
@@ -1114,6 +1339,7 @@ function buildIndexedOverviewChart(canvasId, data, labels, valueFactor, taxFacto
       datasets: [
         {
           label: labels.value,
+          tooltipValues: formattedTooltipValues(contextualRows, "assessedValue", wholeMoney),
           data: series.valueIndex,
           tension: 0.25,
           borderWidth: 3,
@@ -1123,6 +1349,7 @@ function buildIndexedOverviewChart(canvasId, data, labels, valueFactor, taxFacto
         },
         {
           label: labels.tax,
+          tooltipValues: formattedTooltipValues(contextualRows, "taxes", moneyCents),
           data: series.taxIndex,
           tension: 0.25,
           borderWidth: 3,
@@ -1143,6 +1370,11 @@ function buildIndexedOverviewChart(canvasId, data, labels, valueFactor, taxFacto
             boxWidth: 34,
             boxHeight: 10,
             padding: 18
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: indexedTooltipLabel
           }
         }
       },
@@ -1171,6 +1403,7 @@ function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palett
   const datasets = [
     {
       label: labels.value,
+      tooltipValues: formattedTooltipValues(rows, "totalValue", compactMoney),
       data: rows.map(row => (row.totalValue / baseValue) * 100),
       tension: 0.25,
       borderWidth: 3,
@@ -1179,6 +1412,7 @@ function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palett
     },
     {
       label: labels.tax,
+      tooltipValues: formattedTooltipValues(rows, "taxesLevied", compactMoney),
       data: rows.map(row => (row.taxesLevied / baseTaxes) * 100),
       tension: 0.25,
       borderWidth: 3,
@@ -1206,6 +1440,11 @@ function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palett
             boxWidth: 34,
             boxHeight: 10,
             padding: 18
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: indexedTooltipLabel
           }
         }
       },
@@ -1361,13 +1600,13 @@ export function buildOverviewCharts(data, ctlData) {
     .sort((a, b) => a.year - b.year);
   const stateRows = ctlData.statewide.slice().sort((a, b) => a.year - b.year);
 
-  buildIndexedOverviewChart("marketIndexedChart", data, { value: "Market area value index", tax: "Market area tax index" }, 0.96, 1.01);
+  buildIndexedOverviewChart("marketIndexedChart", data, { value: "Market area value", tax: "Market area tax bill" }, 0.96, 1.01);
   buildEtrOverviewChart("marketEtrChart", data, "Market area ETR", 0.98);
 
-  buildCertifiedIndexedChart("countyIndexedChart", countyRows, { value: `${countyLabel} value index`, tax: `${countyLabel} tax index` }, data.taxpayerHistory);
+  buildCertifiedIndexedChart("countyIndexedChart", countyRows, { value: `${countyLabel} value`, tax: `${countyLabel} taxes levied` }, data.taxpayerHistory);
   buildCertifiedRateChart("countyEtrChart", countyRows, `${countyLabel} average tax rate`, data.taxpayerHistory);
 
-  buildCertifiedIndexedChart("stateIndexedChart", stateRows, { value: "Statewide value index", tax: "Statewide tax index" }, data.taxpayerHistory, {
+  buildCertifiedIndexedChart("stateIndexedChart", stateRows, { value: "Statewide value", tax: "Statewide taxes levied" }, data.taxpayerHistory, {
     valueColor: semanticChartColors.value,
     valueBg: semanticChartColors.valueBg,
     taxColor: semanticChartColors.tax,
@@ -1420,11 +1659,11 @@ function pressureTone(value) {
 }
 
 function pressureNote(value) {
-  if (value === null || value === undefined) return "Nebraska = 100 baseline.";
+  if (value === null || value === undefined) return "Nebraska's average tax rate is indexed to 100.";
   const delta = value - 100;
-  if (Math.abs(delta) < 0.5) return "Aligned with Nebraska = 100.";
+  if (Math.abs(delta) < 0.5) return "Aligned with Nebraska's average tax rate.";
 
-  return `${Math.abs(delta).toFixed(0)} points ${delta > 0 ? "above" : "below"} Nebraska = 100.`;
+  return `${Math.abs(delta).toFixed(0)} points ${delta > 0 ? "above" : "below"} Nebraska's average tax rate.`;
 }
 
 function countyDisplayName(name) {
@@ -1472,15 +1711,15 @@ function renderCountyComparisonSummary(primaryRows, comparisonRows, statewideRow
   const comparisonPressure = pressureIndex(comparisonRows, statewideRows);
   const cards = [
     {
-      label: `${primaryLabel} pressure index`,
+      label: `${primaryLabel} average rate comparison`,
       value: formatPressureIndex(primaryPressure),
       note: pressureNote(primaryPressure),
       tone: pressureTone(primaryPressure)
     },
     {
-      label: `${comparisonLabel} pressure index`,
+      label: `${comparisonLabel} average rate comparison`,
       value: formatPressureIndex(comparisonPressure),
-      note: comparisonLabel === "Statewide" ? "Nebraska = 100 baseline." : pressureNote(comparisonPressure),
+      note: comparisonLabel === "Statewide" ? "Nebraska's average tax rate is indexed to 100." : pressureNote(comparisonPressure),
       tone: comparisonLabel === "Statewide" ? "neutral" : pressureTone(comparisonPressure)
     },
     {
@@ -1518,7 +1757,8 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
   const comparisonTaxColor = colorAlpha(semanticChartColors.tax, 0.52);
   const indexedDatasets = [
     {
-      label: `${primaryLabel} value index`,
+      label: `${primaryLabel} value`,
+      tooltipValues: formattedTooltipValues(primaryRows, "totalValue", compactMoney),
       data: primaryIndex.value,
       tension: 0.25,
       borderWidth: 3,
@@ -1526,7 +1766,8 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       backgroundColor: semanticChartColors.valueBg
     },
     {
-      label: `${primaryLabel} tax index`,
+      label: `${primaryLabel} taxes levied`,
+      tooltipValues: formattedTooltipValues(primaryRows, "taxesLevied", compactMoney),
       data: primaryIndex.taxes,
       tension: 0.25,
       borderWidth: 3,
@@ -1534,7 +1775,8 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       backgroundColor: semanticChartColors.taxBg
     },
     {
-      label: `${comparisonLabel} value index`,
+      label: `${comparisonLabel} value`,
+      tooltipValues: formattedTooltipValues(comparisonRows, "totalValue", compactMoney),
       data: comparisonIndex.value,
       tension: 0.25,
       borderWidth: 2,
@@ -1543,7 +1785,8 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       borderDash: [6, 5]
     },
     {
-      label: `${comparisonLabel} tax index`,
+      label: `${comparisonLabel} taxes levied`,
+      tooltipValues: formattedTooltipValues(comparisonRows, "taxesLevied", compactMoney),
       data: comparisonIndex.taxes,
       tension: 0.25,
       borderWidth: 2,
@@ -1590,7 +1833,12 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
-        legend: { display: !hasIndexedLegend }
+        legend: { display: !hasIndexedLegend },
+        tooltip: {
+          callbacks: {
+            label: indexedTooltipLabel
+          }
+        }
       },
       scales: {
         y: {
@@ -1678,7 +1926,7 @@ export function buildCtlSummary(data, ctlData) {
   if (stateSummary) {
     const stateCards = [
       {
-        label: "Statewide value index",
+        label: "Statewide value growth",
         value: formatChange(indexChange(stateRows, "totalValue")),
         note: "Total certified value growth since 2019.",
         color: semanticChartColors.value,
@@ -1686,7 +1934,7 @@ export function buildCtlSummary(data, ctlData) {
         ring: semanticChartColors.valueRing
       },
       {
-        label: "Statewide tax index",
+        label: "Statewide tax growth",
         value: formatChange(indexChange(stateRows, "taxesLevied")),
         note: "Total taxes levied growth since 2019.",
         color: semanticChartColors.tax,

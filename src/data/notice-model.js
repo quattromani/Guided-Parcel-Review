@@ -23,9 +23,17 @@ function monthName(month) {
   return new Date(2000, month - 1, 1).toLocaleString("en-US", { month: "long" });
 }
 
-function calendarDateLabel(parts, year) {
-  if (!parts?.month || !parts?.day || !year) return null;
-  return `${monthName(parts.month)} ${parts.day}, ${year}`;
+function calendarMonthDayLabel(parts) {
+  if (!parts?.month || !parts?.day) return null;
+  return `${monthName(parts.month)} ${parts.day}`;
+}
+
+function calendarDateRangeLabel(start, end) {
+  const startLabel = calendarMonthDayLabel(start);
+  const endLabel = calendarMonthDayLabel(end);
+
+  if (startLabel && endLabel) return `${startLabel} - ${endLabel}`;
+  return startLabel ?? endLabel ?? null;
 }
 
 function assessmentDateLabel(year) {
@@ -65,14 +73,12 @@ function statusLabel(value) {
   return `${value}`.charAt(0).toUpperCase() + `${value}`.slice(1).toLowerCase();
 }
 
-function protestDeadline(calendar, year) {
+function protestWindow(calendar) {
   const protestStage = calendar?.stages?.find(stage => stage.id === "protest");
-  const end = protestStage?.end;
 
   return {
-    label: calendarDateLabel(end, year) ?? "Not listed",
-    sourceLabel: protestStage?.label ?? "Review/protest window",
-    note: protestStage?.description ?? "Confirm deadlines with the governing office before taking action."
+    label: calendarDateRangeLabel(protestStage?.start, protestStage?.end) ?? "Not listed",
+    sourceLabel: "Protest Window"
   };
 }
 
@@ -122,7 +128,10 @@ export function buildAssessmentNoticeModel(propertyData, recordCard, calendar) {
   const currentImprovementValue = currentBreakdown?.dwelling !== null && currentBreakdown?.dwelling !== undefined
     ? (currentBreakdown.dwelling ?? 0) + (currentBreakdown.outbuilding ?? 0)
     : null;
-  const deadline = protestDeadline(calendar, snapshotYear);
+  const deadline = protestWindow(calendar);
+  const assessmentDateName = calendar?.jurisdiction
+    ? `${calendar.jurisdiction} Assessment Date`
+    : "Assessment Date";
 
   return {
     situsAddress: propertyData.parcel.situsAddress,
@@ -133,6 +142,7 @@ export function buildAssessmentNoticeModel(propertyData, recordCard, calendar) {
     propertyClass: propertyData.classification.propertyClass,
     countyName: propertyData.parcel.countyName,
     taxDistrict: propertyData.parcel.taxDistrict,
+    assessmentDateLabel: assessmentDateName,
     assessmentDate: assessmentDateLabel(snapshotYear),
     taxYear: snapshotYear,
     valueStatus: currentYearRow?.status ?? "unknown",
@@ -159,10 +169,9 @@ export function buildAssessmentNoticeModel(propertyData, recordCard, calendar) {
     latestKnownTotalValue: latestKnownBreakdown.total,
     reviewDeadline: deadline.label,
     reviewDeadlineLabel: deadline.sourceLabel,
-    reviewDeadlineNote: deadline.note,
     source: recordCard?.source?.displayCitation ?? "Property record card",
     statusNote: currentAssessedValue === null
-      ? `The ${snapshotYear} assessment value is not listed in the current static data. The latest known final value is shown for orientation.`
-      : `The ${snapshotYear} value is available in the current static data.`
+      ? `The ${snapshotYear} assessed value is not listed in this demonstration record. The latest known final value is shown for orientation.`
+      : `The ${snapshotYear} assessed value is available in this demonstration record.`
   };
 }

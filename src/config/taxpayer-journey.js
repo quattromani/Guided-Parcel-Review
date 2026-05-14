@@ -6,7 +6,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Start",
     question: "You are looking at your property.",
     title: "Start with a calm snapshot of the property",
-    description: "Confirm that this is the property you meant to review, then use the snapshot to see the parcel, status, key values, and what this site can help you understand."
+    description: "Confirm that this is the property you meant to review. The opening snapshot brings the parcel, status, key values, and source context into one starting point."
   },
   {
     id: "property-record",
@@ -15,7 +15,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Property Record",
     question: "Does the county record describe my property correctly?",
     title: "Review the property record before value or taxes",
-    description: "Start with the factual record: identity, land, dwelling facts, quality, condition, photos, and source notes. This page establishes the property description used in later value and tax views."
+    description: "Start with the factual record: identity, land, dwelling facts, quality, condition, photos, and source notes. These details establish the property description used in later value and tax views."
   },
   {
     id: "what-changed",
@@ -33,7 +33,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Value Detail",
     question: "What may be driving the value?",
     title: "Connect the value to the record and market context",
-    description: "Review the main value drivers in plain language before opening deeper market, ratio, or methodology detail. Market-area and ratio-study data provide context for the parcel record."
+    description: "Review the main value drivers in plain language before opening deeper market or method detail. Local sales-study data helps place the parcel record in context."
   },
   {
     id: "tax-context",
@@ -60,7 +60,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Summary",
     question: "What did I review?",
     title: "Leave with orientation and optional next steps",
-    description: "Summarize the property record, value movement, tax context, and any neutral review signals. Use this page to review what has been covered and what remains optional."
+    description: "Summarize the property record, value movement, tax context, and any neutral review signals. The summary keeps what has been covered separate from any optional next steps."
   },
   {
     id: "resources",

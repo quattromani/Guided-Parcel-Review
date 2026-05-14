@@ -40,7 +40,7 @@
       <section class="grid gap-6 lg:grid-cols-12">
         <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-7">
           <h2 class="text-xl font-bold text-slate-700">Property details</h2>
-          <p class="mt-1 text-sm text-slate-600">Basic public-record information used to understand the property before reviewing value and taxes.</p>
+          <p class="mt-1 text-sm text-slate-600">These are the property details the county uses when reviewing value and taxes. Confirming them first makes the later numbers easier to understand.</p>
           <dl id="propertyDetails" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2"></dl>
         </article>
 
@@ -65,7 +65,7 @@
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Now review the assessment value.</h3>
-          <p class="mt-1 text-sm text-slate-600">The next step explains the current value status and separates pending assessment-year data from finalized tax years.</p>
+          <p class="mt-1 text-sm text-slate-600">The next step explains whether the current value is final and keeps value changes separate from tax bills that are already complete.</p>
         </div>
         <button type="button" data-guided-next="your-assessment" class="next-step-button">Go to Your Assessment</button>
       </article>
@@ -75,7 +75,7 @@
       <section id="assessment-notice" class="grid gap-6 lg:grid-cols-5">
         <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
           <h2 class="text-xl font-bold text-slate-700">Prior & Current Assessments</h2>
-          <p class="mt-1 text-sm text-slate-600">Review the land, building, other improvements, and total value before moving into tax impact.</p>
+	          <p class="mt-1 text-sm text-slate-600">Review land, building, other improvements, and total value before connecting those numbers to taxes.</p>
           <div id="assessmentNoticeSummary" class="mt-4"></div>
         </article>
         <article id="property-movement-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
@@ -97,7 +97,7 @@
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Now connect value to the tax bill.</h3>
-          <p class="mt-1 text-sm text-slate-600">Move from assessment movement into finalized tax burden and effective tax rate.</p>
+	          <p class="mt-1 text-sm text-slate-600">Next, compare the final tax bills with levy, credit, and effective-rate changes.</p>
         </div>
         <button type="button" data-guided-next="your-taxes" class="next-step-button">Go to Your Taxes</button>
       </article>
@@ -109,9 +109,9 @@
       <article id="equalization-pressure" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <div class="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax Burden Pattern</p>
-            <h2 class="mt-1 text-xl font-bold text-slate-700">Where did the tax bill peak?</h2>
-            <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">This view uses the property’s finalized statement years to show net taxes paid over time.</p>
+	            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax Bill Pattern</p>
+	            <h2 class="mt-1 text-xl font-bold text-slate-700">Where did the tax bill peak?</h2>
+	            <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Final statement years show how the net amount paid changed over time.</p>
           </div>
           <div>
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Key figures</p>
@@ -142,8 +142,8 @@
       <article class="next-step-card">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Now look at the taxing entities.</h3>
-          <p class="mt-1 text-sm text-slate-600">The next step separates neutral review signals from tax context.</p>
+	          <h3 class="mt-1 text-lg font-bold text-slate-700">Now look at where the bill goes.</h3>
+	          <p class="mt-1 text-sm text-slate-600">The next step connects the tax district with the taxing bodies listed for this property.</p>
         </div>
         <button type="button" data-guided-next="tax-districts" class="next-step-button">Go to Tax Districts</button>
       </article>
@@ -153,13 +153,13 @@
       <article id="tax-district-authorities" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <p class="guided-kicker">Your Tax Districts</p>
         <h2 class="mt-1 text-2xl font-bold text-slate-700">Who is taxing this property?</h2>
-        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Use this as a jurisdiction check: confirm the parcel’s tax district, source year, total levy, and the authorities included. The Tax Context step shows how the levy is distributed.</p>
+	        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">The tax district, source year, total levy, and listed taxing bodies help confirm whether this property is assigned to the expected jurisdictions. The tax context page explains how the bill is divided.</p>
         <div id="taxDistrictAuthoritySummary" class="mt-4 grid gap-3 md:grid-cols-4"></div>
 
         <div class="ooda-inline-note">
           <p class="guided-kicker">Decision check</p>
           <h3>Does the jurisdiction list match the property?</h3>
-          <p>This section is mainly a jurisdiction check. Follow up if the school district, city, county, NRD, ESU, college, or other listed authority does not match where the property is located. The levy distribution explains where the bill goes, but it does not decide the property’s assessed value.</p>
+	          <p>Follow up if the school district, city, county, NRD, ESU, college, or other listed body does not match where the property is located. The levy breakdown explains where the bill goes, but it does not decide the property’s assessed value.</p>
         </div>
 
         <p id="taxDistrictAuthoritySource" class="chart-source"></p>
@@ -169,7 +169,7 @@
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Now compare the local market area.</h3>
-          <p class="mt-1 text-sm text-slate-600">The next step moves from taxing entities into nearby valuation-group context.</p>
+	          <p class="mt-1 text-sm text-slate-600">Next, place the property in its local comparison group.</p>
         </div>
         <button type="button" data-guided-next="market-area" class="next-step-button">Go to Market Area</button>
       </article>
@@ -182,7 +182,7 @@
           <div>
             <h2 class="text-2xl font-bold text-slate-700">How is this property’s market area performing?</h2>
             <p id="marketSourceNote" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-              PAD R&O residential statistics show how the property’s valuation group compares with the countywide residential study.
+	              The local comparison group helps place this property's value in context against qualified residential sales for Gage County.
             </p>
           </div>
           <label class="min-w-72 text-sm font-semibold text-slate-700">
@@ -195,21 +195,21 @@
         <div class="ooda-inline-note">
           <p class="guided-kicker">Decision check</p>
           <h3>How should I use this comparison?</h3>
-          <p>Use this as context, not as a final value decision. A closer review may be useful if this property differs meaningfully from the valuation group, if the group’s sales sample is thin, or if market ratios suggest the group is behaving differently from the countywide pattern.</p>
+	          <p>These comparisons are context, not a final value decision. A closer review may be useful if this property differs meaningfully from the local comparison group, if the sales sample is thin, or if market ratios suggest the group is behaving differently from the countywide pattern.</p>
         </div>
       </article>
 
       <section class="grid gap-6 lg:grid-cols-5">
         <article id="market-indexed" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
           <h2 class="text-xl font-bold text-slate-700">How does this market area compare with the county?</h2>
-          <p class="mt-1 text-sm text-slate-600">Selected valuation group compared with all Gage County residential qualified sales.</p>
+	          <p class="mt-1 text-sm text-slate-600">The selected local comparison group is shown beside all qualified residential sales in Gage County.</p>
           <div class="mt-4 h-72">
             <canvas id="marketRatioChart"></canvas>
           </div>
         </article>
         <article id="market-etr" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
           <h2 class="text-xl font-bold text-slate-700">What prices are represented?</h2>
-          <p class="mt-1 text-sm text-slate-600">Average adjusted sale price and average assessed value for the selected group.</p>
+	          <p class="mt-1 text-sm text-slate-600">Average sale price and assessed value help show the price range represented in the selected group.</p>
           <div class="mt-4 h-72">
             <canvas id="marketValueChart"></canvas>
           </div>
@@ -222,7 +222,7 @@
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Now zoom out to the county.</h3>
-          <p class="mt-1 text-sm text-slate-600">County equalization shows whether local assessments are generally close to market value.</p>
+	          <p class="mt-1 text-sm text-slate-600">County equalization explains whether assessments are generally close to market value and reasonably uniform.</p>
         </div>
         <button type="button" data-guided-next="county-equalization" class="next-step-button">Go to County Equalization</button>
       </article>
@@ -232,36 +232,36 @@
       <article id="assessment-accuracy" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Assessment Ratio Analysis</p>
-            <h2 class="mt-1 text-2xl font-bold text-slate-700">How close are county appraisals to market value?</h2>
-            <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-              COD, PRD, COV, and level of value show whether assessments are moving toward tighter, more equitable results. The selected class defaults to this property’s class.
-            </p>
+	            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County Assessment Context</p>
+	            <h2 class="mt-1 text-2xl font-bold text-slate-700">How close are county appraisals to market value?</h2>
+	            <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+	              County sales studies compare assessed values with sale prices. Measures such as COD, PRD, COV, and level of value help show whether assessments are generally uniform and near the required level for the selected property class.
+	            </p>
           </div>
           <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
         </div>
         <div id="assessment-accuracy-body"></div>
-        <p class="chart-source">Source: 2019-2026 Gage County PAD Reports and Opinions.</p>
+        <p class="chart-source">Source: 2019-2026 Gage County Property Assessment Division Reports and Opinions.</p>
       </article>
 
       <article class="ooda-decision-card">
         <p class="guided-kicker">Decision check</p>
         <h2>What can county measures decide?</h2>
-        <p>Countywide measures can explain the assessment environment, but parcel-specific facts and market evidence still matter most. Use this section to understand system context, then return to the property or market page for individual review.</p>
+	        <p>Countywide measures can explain the assessment environment, but property-specific facts and market evidence still matter most. These measures add background context before returning to the property record or market page for individual review.</p>
       </article>
 
       <section class="grid gap-6 lg:grid-cols-5">
         <article id="county-indexed" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
           <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
-          <p class="mt-1 text-sm text-slate-600">Illustrative indexed view for countywide taxable value and tax movement.</p>
+	          <p class="mt-1 text-sm text-slate-600">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>
           <div id="countyIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
           <div class="mt-4 h-72">
             <canvas id="countyIndexedChart"></canvas>
           </div>
         </article>
         <article id="county-etr" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
-          <h2 class="text-xl font-bold text-slate-700">What share of county value becomes taxes?</h2>
-          <p class="mt-1 text-sm text-slate-600">Countywide ETR context gives reviewers a broader baseline.</p>
+	          <h2 class="text-xl font-bold text-slate-700">How do county taxes compare with value?</h2>
+	          <p class="mt-1 text-sm text-slate-600">The countywide effective tax rate divides taxes levied by certified value, giving a broad tax-rate baseline.</p>
           <div id="countyEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
           <div class="mt-4 h-72">
             <canvas id="countyEtrChart"></canvas>
@@ -270,7 +270,7 @@
       </section>
       <article id="county-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <h2 class="text-xl font-bold text-slate-700">County summary</h2>
-        <p class="mt-1 text-sm text-slate-600">Certified CTL movement from 2019 through 2025.</p>
+	        <p class="mt-1 text-sm text-slate-600">Certified values and taxes levied from 2019 through 2025.</p>
         <div id="countyCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
       </article>
 
@@ -291,7 +291,7 @@
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County Comparison</p>
             <h2 id="countyComparisonTitle" class="mt-1 text-2xl font-bold text-slate-700">How does this county compare?</h2>
             <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-              Start with the county-level answer: a tax-pressure index where Nebraska equals 100, plus certified CTL values, taxes levied, and average tax rate compared with the statewide baseline or another Nebraska county.
+	              The first comparison uses a simple rate baseline: Nebraska equals 100. A county above 100 has a higher average tax rate than the statewide average; below 100 is lower. Certified values, taxes levied, and average tax rate give the rest of the context.
             </p>
           </div>
           <div class="grid gap-2 text-sm sm:min-w-80">
@@ -303,7 +303,7 @@
         <div class="ooda-inline-note">
           <p class="guided-kicker">Decision check</p>
           <h3>Does the county stand out?</h3>
-          <p>Compared with the Nebraska = 100 baseline, this county’s pressure index, value growth, tax growth, and average rate movement show whether the local pattern is unusual or broadly typical. This does not decide the parcel question, but it helps set expectations before final review.</p>
+	          <p>The Nebraska = 100 comparison, value growth, tax growth, and average rate movement help show whether the local pattern is unusual or broadly typical. This does not decide the parcel question, but it helps set expectations before final review.</p>
         </div>
         <section class="mt-5 grid gap-6 lg:grid-cols-5">
           <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
@@ -335,15 +335,15 @@
         <section class="mt-5 grid gap-6 lg:grid-cols-5">
           <article id="state-indexed" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
             <h3 class="text-lg font-bold text-slate-700">How are statewide values and taxes moving?</h3>
-            <p class="mt-1 text-sm text-slate-600">Illustrative indexed view for statewide comparison.</p>
+	            <p class="mt-1 text-sm text-slate-600">Statewide values and taxes are indexed to 2019 so their movement can be compared over time.</p>
             <div id="stateIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
             <div class="mt-4 h-72">
               <canvas id="stateIndexedChart"></canvas>
             </div>
           </article>
           <article id="state-etr" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
-            <h3 class="text-lg font-bold text-slate-700">How is statewide ETR trending?</h3>
-            <p class="mt-1 text-sm text-slate-600">A statewide ETR benchmark helps place local tax burden in context.</p>
+	            <h3 class="text-lg font-bold text-slate-700">How is the statewide average tax rate trending?</h3>
+	            <p class="mt-1 text-sm text-slate-600">The statewide average tax rate is a broad reference point for understanding local tax patterns.</p>
             <div id="stateEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
             <div class="mt-4 h-72">
               <canvas id="stateEtrChart"></canvas>
@@ -382,7 +382,7 @@
         <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 class="text-xl font-bold text-slate-700">Where are we in this property’s tax process?</h2>
-            <p class="mt-1 text-sm text-slate-600">PAD calendar milestones frame values, protests, budgets, levies, and final tax bills.</p>
+            <p class="mt-1 text-sm text-slate-600">Nebraska assessment calendar milestones frame values, protests, budgets, levies, and final tax bills.</p>
           </div>
           <span data-current-stage class="current-stage-pill">Current stage: Assessment</span>
         </div>
@@ -397,7 +397,7 @@
           <p class="guided-kicker">Comparable resources</p>
           <h2>Organize comparable-property notes</h2>
           <div class="mt-3 max-w-4xl space-y-3 text-sm leading-6 text-slate-600">
-            <p>This section helps taxpayers confirm basic property details, organize comparable information, and keep track of what they reviewed.</p>
+	            <p>These materials help taxpayers confirm basic property details, organize comparable information, and keep track of what they reviewed.</p>
             <p>Reviewing comparable properties and verifying property details can help taxpayers better understand how assessed values are determined.</p>
             <p>This resource is informational only and does not guarantee a valuation change.</p>
           </div>
@@ -423,15 +423,15 @@
           <div class="protest-step-heading">
             <p class="guided-kicker">Worksheet</p>
             <h3>Comparable Value Worksheet</h3>
-            <p>Use this worksheet to organize information, compare properties side-by-side, and better understand equalization concepts.</p>
+	            <p>The worksheet organizes comparable-property details side by side and keeps helpful context in one place.</p>
           </div>
           <div class="protest-note">
             <p>The subject property data is pre-filled from available records. The worksheet assumes those details are substantially accurate.</p>
           </div>
-          <p class="worksheet-entry-note">You may type comparable details here for the worksheet printout. Typed entries are only a temporary working copy in this browser.</p>
+          <p class="worksheet-entry-note">Typed comparable details are for the worksheet printout only. They are not submitted as an official filing.</p>
           <div id="comparableWorksheet" class="mt-4"></div>
           <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-xs leading-5 text-slate-500">The worksheet is part of the educational preparation process. It does not guarantee a change or outcome.</p>
+	            <p class="text-xs leading-5 text-slate-500">The worksheet is for basic preparation. It does not guarantee a change or outcome.</p>
             <div class="flex flex-col gap-2 sm:flex-row">
               <button type="button" data-print-comparable-worksheet="filled" class="protest-action-button">
                 Print Worksheet
@@ -449,7 +449,7 @@
           <h2>If You Want to Protest</h2>
           <div class="mt-3 max-w-4xl space-y-3 text-sm leading-6 text-slate-600">
             <p>If, after reviewing your property information and comparable properties, you still believe your assessed value may be incorrect or not fairly equalized, you may use the prepared Form 422 below.</p>
-            <p>Prepared from available property record data. Requested valuation, protest reasons, signature, and filing responsibility remain with the filer.</p>
+	            <p>This summary is based on the property data available in this prototype. Requested value, reasons, signature, filing, and deadlines remain the filer’s responsibility.</p>
           </div>
           <div id="form422ConfirmationFields" class="mt-4 grid gap-3 md:grid-cols-2"></div>
           <p class="mt-4 text-xs leading-5 text-slate-500">The official Nebraska Form 422 PDF is used as the source form. The packet prints the comparable worksheet first and the prepared Form 422 second.</p>
@@ -493,25 +493,25 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">About</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">What this snapshot is meant to do</h3>
           <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
-            This prototype brings property records, assessment-year value, finalized tax history, levy distribution, market context, and countywide benchmarks into a single review surface. It is intended to help an intelligent reviewer understand what is known, what is pending, and which view best answers their question.
+	            This snapshot brings property records, current value information, final tax history, where the bill goes, market context, and countywide benchmarks into one guided review. It is meant to help taxpayers understand the available information, notice what is still pending, and decide whether anything needs a closer look.
           </p>
         </section>
 
         <section data-footer-panel="terms" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Terms of Use</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Use of this prototype</h3>
-          <div class="mt-2 grid gap-3 text-sm leading-6 text-slate-600 md:grid-cols-3">
-            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">This page is a working interface prototype and should not be treated as a certified tax statement, appeal filing, or legal determination.</p>
-            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Final tax bills depend on certified levies, budgets, credits, exemptions, and other official adjustments that may not appear in current-year assessment data.</p>
-            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Production versions should link directly to the governing jurisdiction’s adopted terms and official records policy.</p>
-          </div>
+	          <h3 class="mt-1 text-lg font-bold text-slate-700">Important limits</h3>
+	          <div class="mt-2 grid gap-3 text-sm leading-6 text-slate-600 md:grid-cols-3">
+	            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">This demonstration uses sample data and is not an official county record, certified tax statement, appeal filing, or legal determination.</p>
+	            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Final tax bills depend on certified levies, budgets, credits, exemptions, and other official adjustments that may not appear in current-year assessment data.</p>
+	            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Do not use this prototype as a substitute for official county records, notices, filing requirements, or deadlines.</p>
+	          </div>
         </section>
 
         <section data-footer-panel="privacy" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Privacy Policy</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Privacy and data handling</h3>
           <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
-            The current prototype uses static demonstration data and does not submit forms, store user-entered information, or upload files. A production version should clearly describe analytics, file uploads, form submissions, retention rules, public-record treatment, and any third-party services used to process information.
+	            This demonstration uses static sample data. It does not submit forms, store typed information outside this browser, or upload files. Before any public release, the county or project sponsor should clearly explain data collection, retention, public-record treatment, form delivery, and outside service providers.
           </p>
         </section>
 
@@ -519,7 +519,7 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Accessibility</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Accessibility statement</h3>
           <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
-            This interface is being structured with semantic headings, keyboard-operable controls, visible focus states, descriptive link text, and chart-adjacent data tables or notes. Before production release, it should receive a formal WCAG review, assistive-technology testing, and color-contrast verification against the final brand palette.
+	            This demonstration is intended to be readable, keyboard-accessible, and usable with assistive technology. Before public release, it should receive formal accessibility review, assistive-technology testing, and color-contrast verification.
           </p>
         </section>
 
@@ -545,7 +545,7 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Contact</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Contact and support</h3>
           <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
-            FPO: production versions should point users to the correct assessor, treasurer, clerk, or state resource depending on whether the question is about records, valuation, exemptions, levies, or payment.
+	            For questions about official records, valuation, exemptions, levies, payment, or filing deadlines, contact the appropriate county or state office. This demonstration does not replace official guidance.
           </p>
         </section>
       </div>
@@ -567,7 +567,7 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property record correction request</p>
           <h2 id="reportErrorTitle" class="mt-1 text-2xl font-bold text-slate-700">Report a property record discrepancy</h2>
           <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">
-            This is not a protest form and may be submitted at any time during the year. Use it to request a factual review if something about the parcel, land, dwelling, improvements, or other property details appears inaccurate, incomplete, or misclassified. Submissions help alert the Assessor's Office to potential data issues that may improve the accuracy and quality of the individual assessment record.
+            This is not a protest form and may be submitted at any time during the year. It requests a factual review when something about the parcel, land, dwelling, improvements, or other property details appears inaccurate, incomplete, or misclassified. Submissions help alert the Assessor's Office to potential data issues that may improve the accuracy and quality of the individual assessment record.
           </p>
         </div>
         <button type="button" data-close-report-error class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700" aria-label="Close property record correction form">
@@ -603,7 +603,7 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Homestead exemption preparation</p>
           <h2 id="form458Title" class="mt-1 text-2xl font-bold text-slate-700">Confirm Information for Form 458</h2>
           <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">
-            Review the property-record information before generating the form. Eligibility, personal identifiers, signature, and filing responsibility remain with the applicant.
+	            Confirm the property-record information before printing the form. Eligibility, personal identifiers, signature, and filing responsibility remain with the applicant.
           </p>
         </div>
         <button type="button" data-close-form458 class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700" aria-label="Close Form 458 preparation">
@@ -615,10 +615,10 @@
         <div id="form458ConfirmationFields" class="grid gap-3 md:grid-cols-2"></div>
         <div class="mt-5 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600 ring-1 ring-slate-200">
           <p class="font-semibold text-slate-700">The applicant must complete eligibility information.</p>
-          <p class="mt-1">This prototype fills only available property-record information. Social Security number, date of birth, citizenship status, filing status, eligibility category, owner-occupant questions, signature, and date are left blank for the applicant.</p>
+	          <p class="mt-1">This demonstration fills only available property-record information. Social Security number, date of birth, citizenship status, filing status, eligibility category, owner-occupant questions, signature, and date are left blank for the applicant.</p>
         </div>
         <div class="mt-4 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-700 ring-1 ring-slate-200">
-          <p>Prepared from available property record data using the official Nebraska Form 458 PDF.</p>
+	          <p>This summary is based on the property data available in this prototype. Official records and filing requirements should be confirmed with the county.</p>
         </div>
         <p id="form458Status" class="mt-4 text-sm font-medium text-slate-600" aria-live="polite"></p>
       </div>

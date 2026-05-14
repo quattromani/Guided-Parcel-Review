@@ -119,7 +119,7 @@ const resourcesByView = {
     faqs: [
       ["What is the difference between gross tax and net taxes paid?", "Gross tax starts from value and levy. Net taxes paid reflects applicable credits and adjustments."],
       ["Why do value and taxes not always move together?", "Taxes also depend on budgets, levies, exemptions, credits, and tax district changes."],
-      ["What does effective tax rate show?", "It divides taxes by value so tax burden can be compared across years."],
+      ["What does effective tax rate show?", "It divides final taxes by assessed value so different years can be compared more clearly."],
       ["Where do credits fit?", "Credits reduce the final amount due after the tax calculation is applied."]
     ],
     forms: ["homestead"],
@@ -138,7 +138,7 @@ const resourcesByView = {
       ["Why are several taxing entities listed?", "A parcel can sit inside overlapping jurisdictions, such as a school district, city, county, and special districts."],
       ["Why can a nearby parcel have a different tax bill?", "District boundaries can change which entities and levy rates apply, even for close neighbors."],
       ["Why is the school district important?", "School levies are often a major part of the total levy and can vary by district."],
-      ["What are levy components?", "They are the separate taxing-body rates that combine into the property tax district levy."]
+      ["Which taxing bodies are included?", "The tax district is made up of separate school, county, city, and other public bodies whose rates combine into the total levy."]
     ],
     forms: ["recordConcern"],
     learn: [
@@ -160,7 +160,7 @@ const resourcesByView = {
     ],
     forms: ["valuationProtest"],
     learn: [
-      ["Market area", "A valuation grouping used to compare properties with similar market behavior."],
+      ["Market area", "A local comparison group used to review properties with similar market behavior."],
       ["Comparable sale", "A sale used as evidence because it is similar enough to inform value."],
       ["Sales ratio", "Assessed value divided by sale price."],
       ["Valuation group", "A grouping used to organize assessment analysis and market review."]
@@ -189,16 +189,16 @@ const resourcesByView = {
     formTitle: "State-related forms",
     learnTitle: "State context terms",
     faqs: [
-      ["What does PAD do?", "Nebraska Property Assessment Division data helps frame statewide assessment oversight and comparison."],
-      ["How do Reports and Opinions help?", "They summarize assessment-ratio and county review information used for statewide context."],
+      ["What does the Property Assessment Division do?", "Nebraska's Property Assessment Division helps frame statewide assessment oversight and comparison."],
+      ["How do state assessment reports help?", "They summarize county sales studies and equalization information used for statewide context."],
       ["What is statewide equalization?", "It is the state-level role of reviewing whether county assessments meet required standards."],
-      ["Are credits decided on this page?", "No. This page explains context. Official credits and tax calculations are applied through the tax process."]
+      ["Are credits decided here?", "No. Official credits and tax calculations are applied through the tax process."]
     ],
     forms: ["homestead", "valuationProtest"],
     learn: [
-      ["PAD", "Nebraska's Property Assessment Division."],
+      ["Property Assessment Division", "The state office that helps oversee property assessment standards in Nebraska."],
       ["Abstract", "A county summary of assessed property values reported for review."],
-      ["Reports and Opinions", "State assessment reports that summarize ratio and equalization findings."],
+      ["State assessment reports", "Reports that summarize county sales studies and equalization findings."],
       ["Statewide equalization", "State review of assessment levels across counties."]
     ]
   },
@@ -209,7 +209,7 @@ const resourcesByView = {
     faqs: [
       ["What should I review first?", "Start with the property record: square footage, year built, basement, garage, outbuildings, condition, lot size, property class, value history, and tax history."],
       ["Why use a comparable worksheet?", "It helps organize basic public-record information side-by-side so differences are easier to see before any filing decision is made."],
-      ["Is the worksheet required to print Form 422?", "No. The worksheet is an educational preparation tool. Form 422 remains directly printable from the review view."],
+      ["Is the worksheet required to print Form 422?", "No. The worksheet is an optional preparation tool. Form 422 remains directly printable from the review view."],
       ["How can I keep a copy?", "Use the packet print action for the worksheet and prepared Form 422 together, or print either document independently."]
     ],
     forms: ["recordConcern", "homestead", "valuationProtest"],
@@ -228,12 +228,12 @@ const resourcesByView = {
       ["What is in Resources?", "The Resources tab keeps the assessment calendar, comparable worksheet, and optional protest preparation materials separate from the main review path."],
       ["Does opening Resources mean I should file something?", "No. These are reference and preparation materials. Use them only if they help answer a specific question."],
       ["Why is the calendar first?", "Calendar context helps explain what stage the assessment process is in before worksheet or filing materials appear."],
-      ["Can the worksheet change my assessed value?", "No. It is an educational organization tool and does not guarantee a change or outcome."]
+      ["Can the worksheet change my assessed value?", "No. It is an organization tool and does not guarantee a change or outcome."]
     ],
     forms: ["recordConcern", "valuationProtest", "homestead"],
     learn: [
       ["Assessment calendar", "The sequence of dates for assessment, protest, review, budgets, levies, and final tax bills."],
-      ["Comparable worksheet", "A working organizer for side-by-side public-record property facts."],
+      ["Comparable worksheet", "An organizer for side-by-side public-record property facts."],
       ["Form 422", "Nebraska's property valuation protest form."],
       ["Preparation packet", "A printable packet that can combine the worksheet and prepared Form 422."]
     ]
@@ -299,7 +299,7 @@ async function main() {
   buildEtrChart(data);
   buildDistributionChart(data, schoolDistrictColors);
   buildOverviewCharts(data, ctlData);
-  initMarketAreaView(data, recordCard, padRatioData, valuationGroups);
+  initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards);
   buildCtlSummary(data, ctlData);
   initCountyComparison(data, ctlData, recordCard);
   initAssessmentRatioAnalysis(data, ratioData, iaaoStandards);

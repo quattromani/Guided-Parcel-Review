@@ -68,13 +68,13 @@ const viewHeaderContent = {
   "market-area": {
     eyebrow: "Step 5 · Market area",
     title: "How does this compare nearby?",
-    description: "Use the property’s valuation group and PAD Reports and Opinions data for local market context.",
+    description: "The property's local comparison group and state assessment reports provide market context.",
     imageAlt: "Map of Nebraska highlighting the local market area"
   },
   "county-equalization": {
     eyebrow: "Step 6 · County equalization",
     title: "How is the county performing overall?",
-    description: "Countywide ratio measures and certified-tax trends help explain the assessment system around the property.",
+    description: "Countywide sales studies and certified-tax trends help explain the assessment environment around the property.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "state-context": {
@@ -129,8 +129,8 @@ function renderValueTaxHistoryShell() {
       <article id="value-history" class="lg:col-span-2">
         <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
         <p class="mt-1 text-sm text-slate-600">
-          Assessment-year view: current value first, with prior finalized tax bills for context.
-          Effective tax rate (ETR) shows actual taxes paid as a percentage of assessed value after levy, credits, and exemptions are reflected in the final bill.
+	          Current values and prior final tax bills are kept together here so timing is clear.
+	          Effective tax rate (ETR) compares final taxes paid with assessed value after levy, credits, and exemptions are reflected in the bill.
         </p>
         <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
           <table class="min-w-full divide-y divide-slate-200 text-sm">
@@ -151,12 +151,12 @@ function renderValueTaxHistoryShell() {
         <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 class="text-xl font-bold text-slate-700">How are this property’s value and taxes moving together?</h2>
-            <p class="text-sm text-slate-600">This chart resets both values and taxes to the same starting point so their changes can be compared side by side. Tax bills are shown only after they are finalized.</p>
+	            <p class="text-sm text-slate-600">Assessed value and taxes begin from the same baseline so their changes can be compared side by side. Tax bills are included only after they are finalized.</p>
           </div>
           <p id="baseYearNote" class="text-xs font-medium text-slate-500"></p>
         </div>
-        <div id="indexedChartLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-        <div class="mt-4 h-64 sm:h-72">
+        <div id="indexedChartLegend" class="chart-disc-legend mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+        <div class="indexed-trends-chart mt-4">
           <canvas id="indexedChart"></canvas>
         </div>
       </article>
@@ -193,8 +193,8 @@ function renderTaxHistoryShell() {
     </article>
 
     <article id="etr-trend" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-      <h2 class="text-xl font-bold text-slate-700">What share of value went to property taxes?</h2>
-      <p class="mt-1 text-sm text-slate-600">ETR shows the final tax bill as a share of assessed value.</p>
+	      <h2 class="text-xl font-bold text-slate-700">How much tax was paid for each dollar of value?</h2>
+	      <p class="mt-1 text-sm text-slate-600">Effective tax rate compares the final tax bill with assessed value, making years easier to compare.</p>
       <div class="mt-4 h-64 sm:h-72">
         <canvas id="etrChart"></canvas>
       </div>
@@ -209,8 +209,8 @@ function renderTaxDistributionShell(data) {
   container.innerHTML = `
     <div class="data-split-view grid gap-6 lg:grid-cols-5">
       <article class="lg:col-span-2">
-        <h2 class="text-xl font-bold text-slate-700">What organizations make up the tax levy?</h2>
-        <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill depends on finalized budgets, levies, credits, and exemptions.</p>
+	        <h2 class="text-xl font-bold text-slate-700">Which taxing bodies are included?</h2>
+	        <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill depends on finalized budgets, levies, credits, and exemptions.</p>
         <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
           <table class="min-w-full divide-y divide-slate-200 text-sm">
             <thead>
@@ -228,7 +228,7 @@ function renderTaxDistributionShell(data) {
 
       <article class="lg:col-span-3">
         <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
-        <p class="mt-1 text-sm text-slate-600">Based on the latest finalized levy components. Current-year distribution appears after levies are finalized.</p>
+	        <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. The current-year breakdown appears after levies are finalized.</p>
         <div class="mt-4 grid gap-4 md:grid-cols-[minmax(150px,220px)_minmax(0,1fr)] md:items-center">
           <div id="distributionNotes" class="space-y-2 text-sm text-slate-700"></div>
           <div class="h-72 sm:h-80">
@@ -237,7 +237,7 @@ function renderTaxDistributionShell(data) {
         </div>
       </article>
     </div>
-    <p class="chart-source">Source: ${escapeHtml(data.latestFinalTaxYear ?? "Latest finalized")} levy components for this parcel’s tax district.</p>
+	    <p class="chart-source">Source: ${escapeHtml(data.latestFinalTaxYear ?? "Latest finalized")} finalized tax breakdown for this property's tax district.</p>
   `;
 }
 
@@ -247,7 +247,7 @@ function renderMarketSalePriceShell() {
 
   container.innerHTML = `
     <h2 id="marketSalePriceTitle" class="text-xl font-bold text-slate-700">What makes up the residential sales data?</h2>
-    <p id="marketSalePriceDescription" class="mt-1 text-sm text-slate-600">Incremental residential sale-price ranges from the same PAD R&O pages help reviewers understand where the qualified sales are concentrated.</p>
+	    <p id="marketSalePriceDescription" class="mt-1 text-sm text-slate-600">Sale-price ranges show where qualified sales are concentrated and whether the local study is based mostly on lower-, middle-, or higher-priced properties.</p>
     <div class="data-split-view mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
       <div class="overflow-x-auto rounded-xl ring-1 ring-slate-200">
         <table class="min-w-full divide-y divide-slate-200 text-xs">
@@ -286,7 +286,7 @@ function renderAssessmentAccuracyShell() {
     <section class="data-split-view mt-5 grid gap-6 lg:grid-cols-5">
       <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
         <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
-        <p class="mt-1 text-sm text-slate-600">Latest years first, preserving the workbook measures for reviewer context.</p>
+	        <p class="mt-1 text-sm text-slate-600">Latest years appear first so recent county sales-study results are easy to compare with prior years.</p>
         <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
           <table class="min-w-full divide-y divide-slate-200 text-sm">
             <thead class="sticky top-0">
@@ -310,8 +310,8 @@ function renderAssessmentAccuracyShell() {
         </div>
       </article>
       <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
-        <h3 class="text-lg font-bold text-slate-700">How are equalization measures moving?</h3>
-        <p class="mt-1 text-sm text-slate-600">Common-scale view where the shaded band marks the standard range for the selected class.</p>
+	        <h3 class="text-lg font-bold text-slate-700">Are the county measures inside the preferred range?</h3>
+	        <p class="mt-1 text-sm text-slate-600">Each line is compared with its own preferred range. The shaded band marks the range for the selected property class.</p>
         <div class="mt-4 h-80">
           <canvas id="assessmentAccuracyChart"></canvas>
         </div>
@@ -452,7 +452,7 @@ function disabledParcelLookupMarkup() {
         <span class="parcel-lookup-action" aria-hidden="true">Search</span>
       </button>
       <div id="parcelLookupPopover" class="parcel-lookup-popover" data-parcel-lookup-popover hidden>
-        Property lookup will be available when this site is connected to a parcel API or assessment database.
+	        Search is not available in this demonstration. To review another property, use official county lookup tools.
       </div>
     </div>
   `;
@@ -1006,7 +1006,7 @@ function renderDiscrepancyForm(data, recordCard) {
       </section>
 
       <section id="discrepancyDeliveryNotice" class="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900 ring-1 ring-amber-200">
-        Development mode: email delivery is not connected yet. Submitting will generate the correction-request PDF and email payload without sending a message.
+	        This demonstration prepares a printable correction request and keeps your draft in this browser. It does not send email to the Assessor's Office.
       </section>
 
       <div class="flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
@@ -1216,7 +1216,7 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
           submitStatus.className = "text-sm font-semibold text-emerald-700";
           localStorage.removeItem(draftKey);
         } else {
-          submitStatus.textContent = `Development mode: correction-request PDF generated and email payload prepared for ${emailPayload.to}. Email delivery is not connected yet, so no message was sent and your draft remains available.`;
+	          submitStatus.textContent = `Correction-request PDF prepared for ${emailPayload.to}. This demonstration does not send email, so no message was sent and your draft remains available in this browser.`;
           submitStatus.className = "text-sm font-semibold text-amber-800";
         }
       }
@@ -1675,7 +1675,7 @@ function recordCardSource(recordCard) {
     return disclosure("What source record is this based on?", recordCard.recordStatus || "Pending", `
       <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
         <p class="font-semibold text-slate-700">${escapeHtml(recordCard.source || "Source record pending")}</p>
-        <p class="mt-1">${escapeHtml(recordCard.notes || "Detailed record-card fields are not available for this sample fixture.")}</p>
+	        <p class="mt-1">${escapeHtml(recordCard.notes || "Detailed record-card fields are not available in this demonstration record.")}</p>
       </div>
     `);
   }
@@ -1727,7 +1727,7 @@ function recordCardSource(recordCard) {
           ["Printed", printed],
           ["Card / perm", recordCard.parcelIdentifiers.cardFilePerm],
           ["Cadastral ID", recordCard.parcelIdentifiers.cadastralId],
-          ["PAD class code", recordCard.parcelIdentifiers.padClassCode],
+	          ["State property class code", recordCard.parcelIdentifiers.padClassCode],
           ["Appraiser ID", recordCard.parcelIdentifiers.appraiserId]
         ].map(([label, value], index) => `
           <tr>
@@ -1738,7 +1738,7 @@ function recordCardSource(recordCard) {
         `).join("")}
       </tbody>
     </table>
-    <p class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">${escapeHtml(recordCard.source.notes)}</p>
+	    <p class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">This summary is based on the property data available in this prototype. Official county records should be used to confirm parcel details, values, filing requirements, and deadlines.</p>
     ${reviewRows}
   `);
 }
@@ -2453,9 +2453,9 @@ function renderSummary(data, recordCard, summaryContext = {}) {
     (${summaryLevelStatus(selectedMarket.median, 100)}). Uniformity is <strong>${formatRatioPercent(selectedMarket.cod)}</strong>
     (${summaryRangeStatus(selectedMarket.cod, assessmentBands.cod)}), and price-level fairness is <strong>${formatPrd(selectedMarket.prd)}</strong>
     (${summaryPrdStatus(normalizePrd(selectedMarket.prd), assessmentBands.prd)}).
-    Use that as market context, not as a parcel-specific decision.
+	    Together, these figures place the property in market context, but they are not a decision about this property by themselves.
   ` : `
-    The market section will show the closest available valuation-group context and sale-price bands. Use that as comparison evidence, not as a parcel-specific decision.
+	    The closest available local comparison group and sale-price bands offer context, not a final decision about this property.
   `;
   const countyStudyClass = selectedClass?.label?.toLowerCase() || "property";
   const countyParagraph = latestCountyRatio ? `
@@ -2467,7 +2467,7 @@ function renderSummary(data, recordCard, summaryContext = {}) {
     and reliability spread is <strong>${formatRatioPercent(latestCountyRatio.cov)}</strong>
     (${summaryRangeStatus(latestCountyRatio.cov, assessmentBands.cov, { tolerance: 0.5 })}).
   ` : `
-    County ratio-study context is available deeper in the page. It is useful for understanding the assessment environment, but it does not decide this parcel by itself.
+	    County sales-study context appears later in the page. It helps explain the assessment environment, but it does not decide this parcel by itself.
   `;
   const stateParagraph = countyCtlLatest && statewideCtlLatest ? `
     On the state baseline, ${escapeHtml(countyLabel)}'s latest CTL average tax rate is
@@ -2537,7 +2537,7 @@ function renderProcessTimeline(calendar) {
   }
 
   if (sourceNote) {
-    sourceNote.textContent = `Source: 2025 Nebraska PAD Main Property Assessment and Taxation Calendar${calendar.sourceRevision ? `, ${calendar.sourceRevision}` : ""}. Filing dates follow the PAD legal-date rule for weekends and legal holidays.`;
+    sourceNote.textContent = `Source: 2025 Nebraska Property Assessment Division Main Property Assessment and Taxation Calendar${calendar.sourceRevision ? `, ${calendar.sourceRevision}` : ""}. Filing dates follow the Nebraska legal-date rule for weekends and legal holidays.`;
   }
 
   if (!timeline) return;
@@ -2586,7 +2586,7 @@ function calendarStageDetailHtml(stage) {
     </div>
     ${sourceEvents.length ? `
       <div class="mt-4 rounded-2xl bg-white p-4 ring-1 ring-slate-200">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">PAD milestones</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Calendar milestones</p>
         <ul class="mt-3 space-y-3 text-sm leading-6 text-slate-600">
           ${sourceEvents.map(event => `
             <li class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
@@ -3013,12 +3013,12 @@ export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
     {
       label: "Authorities",
       value: authorities.length,
-      note: district ? "Matched by parcel tax district." : "Using latest levy components."
+	      note: district ? "Matched to this parcel's tax district." : "Using the most recent finalized tax breakdown."
     },
     {
       label: "Total levy",
       value: formatNullableLevy(district?.districtLevy ?? total),
-      note: "Sum of district authorities."
+	      note: "Combined rate for the listed taxing bodies."
     },
     {
       label: "Source year",

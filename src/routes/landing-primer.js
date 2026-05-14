@@ -35,18 +35,6 @@ function noticeMetric(label, value, note = "") {
   `;
 }
 
-function orientationItem(title, body) {
-  return `
-    <li>
-      <span aria-hidden="true"></span>
-      <div>
-        <p>${escapeHtml(title)}</p>
-        <small>${escapeHtml(body)}</small>
-      </div>
-    </li>
-  `;
-}
-
 function statusToneClass(status) {
   return `${status ?? ""}`.toLowerCase() === "pending" ? "notice-status-pill-pending" : "";
 }
@@ -187,10 +175,10 @@ function buildFinalReviewModel(data, context = {}) {
 
   return {
     heading: `Review of the main assessment story for ${notice.situsAddress}`,
-    intro: "This summary covers the main takeaways from the property record, value movement, valuation context, tax context, and review signals. It is descriptive, not a filing recommendation.",
+    intro: "The main takeaways from the property record, value movement, market context, taxes, and review signals are gathered here for orientation. This is not a filing recommendation.",
     blocks: [
       {
-        narrative: "The first part of the review anchors the parcel facts, then separates current assessment-year status from finalized value history. That keeps the property description and the value movement easy to read before adding market or tax context.",
+        narrative: "The first part of the review anchors the parcel facts, then separates current value status from finalized value history. That keeps the property description and value movement clear before adding market or tax context.",
         cards: [
           {
             step: "Step 1 · Property Record",
@@ -198,7 +186,7 @@ function buildFinalReviewModel(data, context = {}) {
             meta: `Parcel ${notice.parcelId}`,
             note: propertyDetails
               ? `The record includes ${propertyDetails}.`
-              : "The record provides the parcel identity and core property description used in later views."
+              : "The record provides the parcel identity and core property description used later in the review."
           },
           {
             step: "Step 2 · What Changed",
@@ -213,7 +201,7 @@ function buildFinalReviewModel(data, context = {}) {
         ]
       },
       {
-        narrative: "The later views add context from market studies, tax history, and neutral review signals. These items help explain what the loaded records show without treating any outcome as expected.",
+        narrative: "The later steps add context from market studies, tax history, and neutral review signals. These items help explain the available records without treating any outcome as expected.",
         cards: [
           {
             step: "Step 3 · Value Detail",
@@ -221,7 +209,7 @@ function buildFinalReviewModel(data, context = {}) {
             meta: marketArea?.count ? itemCountLabel(marketArea.count, "qualified sale") : "Market-area context",
             note: marketArea
               ? `Median ratio ${formatRatio(marketArea.median)}, COD ${formatRatio(marketArea.cod)}, PRD ${formatRatio(marketArea.prd)}.`
-              : "Market and ratio data are context for the parcel, not a parcel-specific conclusion by themselves."
+              : "Market data helps place the property in context, but it is not a conclusion about this parcel by itself."
           },
           {
             step: "Step 4 · Tax Context",
@@ -272,14 +260,14 @@ function installLandingPrimer(data) {
         <h2 class="civic-mailing-address">
           ${mailingAddressLines.map(line => `<span>${escapeHtml(line)}</span>`).join("")}
         </h2>
-        <p>This page is a plain-language orientation layer over public property assessment data. Start here to confirm which property you are reviewing and what information is available before moving into details.</p>
+        <p>Property, value, and tax records are easier to review when the basic facts come first. Begin by confirming the property and noticing which information is final, pending, or available only as context.</p>
       </div>
 
       <section class="civic-notice-summary" aria-labelledby="assessmentSnapshotTitle">
         <div class="civic-notice-heading">
           <div>
-            <p class="guided-kicker">Property Record Card</p>
-            <h3 id="assessmentSnapshotTitle">Summary</h3>
+            <p class="guided-kicker">Property record</p>
+            <h3 id="assessmentSnapshotTitle">Starting point</h3>
           </div>
           <div class="notice-status-group" aria-label="${escapeHtml(`${notice.assessmentLabel} status ${notice.valueStatusLabel}`)}">
             <span>${escapeHtml(notice.assessmentLabel)}:</span>
@@ -298,29 +286,12 @@ function installLandingPrimer(data) {
           ${noticeMetric("Percent change", formatNullablePercent(notice.percentChange))}
           ${noticeMetric("Land value", displayMoneyWithFallback(notice.landValue, notice.latestKnownLandValue, notice.latestKnownValueYear))}
           ${noticeMetric("Improvement value", displayMoneyWithFallback(notice.improvementValue, notice.latestKnownImprovementValue, notice.latestKnownValueYear))}
-          ${noticeMetric("Assessment date", escapeHtml(notice.assessmentDate))}
-          ${noticeMetric(notice.reviewDeadlineLabel, escapeHtml(notice.reviewDeadline), "Confirm official dates before filing anything.")}
+          ${noticeMetric(notice.assessmentDateLabel ?? "Assessment Date", escapeHtml(notice.assessmentDate))}
+          ${noticeMetric(notice.reviewDeadlineLabel, escapeHtml(notice.reviewDeadline))}
         </dl>
 
-        <p class="civic-source-note">${escapeHtml(notice.statusNote)} Source: ${escapeHtml(notice.source)}.</p>
+        <p class="civic-source-note">${escapeHtml(notice.statusNote)} Source: ${escapeHtml(notice.source)}. Official records and deadlines should be confirmed with the county.</p>
       </section>
-    </article>
-
-    <article class="civic-orientation-layer" aria-labelledby="whatYouCanDoTitle">
-      <div>
-        <p class="guided-kicker">What you can do here</p>
-        <h2 id="whatYouCanDoTitle">Use this site to get oriented before moving into details.</h2>
-        <p>The path below starts with the property record, then moves through value movement, valuation context, taxes, neutral review signals, and a final summary.</p>
-      </div>
-
-      <ul class="civic-orientation-list">
-        ${orientationItem("Review your property record", "Check parcel identity, land, structures, photos, quality, and condition.")}
-        ${orientationItem("See what changed", "Compare current and prior values without mixing assessment-year data with final tax bills.")}
-        ${orientationItem("Understand what may drive value", "Look at value components, market area context, and methodology only after the basics are clear.")}
-        ${orientationItem("Review tax context", "Separate assessed value from levies, credits, exemptions, and final bills.")}
-        ${orientationItem("Notice review signals", "Surface neutral items that may deserve a closer look without assuming a problem.")}
-        ${orientationItem("Leave with a summary", "End with orientation, source context, and optional next steps.")}
-      </ul>
     </article>
 
     <article class="next-step-card">
@@ -356,7 +327,7 @@ function installReviewSignalsPanel(data) {
       <div>
         <p class="guided-kicker">Review signals</p>
         <h2 id="reviewSignalsTitle">Items worth verifying, if any</h2>
-        <p>These signals organize facts or patterns from the earlier views. They are neutral prompts for review, not findings or filing recommendations.</p>
+        <p>Review signals collect facts or patterns from the earlier steps. They are neutral prompts for review, not findings or filing recommendations.</p>
       </div>
       <div class="civic-review-signal-grid">
         ${cards}
@@ -395,7 +366,7 @@ function installFinalSummary(data, context = {}) {
 
     <article class="ooda-decision-card">
       <p class="guided-kicker">Optional next steps</p>
-      <h2>Use official records for decisions and filings.</h2>
+      <h2>Rely on official records for decisions and filings.</h2>
       <p>If something appears incomplete or materially different, confirm it with the assessor or other governing office. If everything appears generally consistent, the useful outcome may simply be that the property owner understands the record, value movement, and tax context more clearly.</p>
     </article>
   `;
@@ -432,7 +403,7 @@ function appendFinalSummaryStep() {
     <div>
       <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Final step</p>
       <h3 class="mt-1 text-lg font-bold text-slate-700">Finish with a calm summary.</h3>
-      <p class="mt-1 text-sm text-slate-600">Review what you learned and any optional next steps without treating escalation as the goal.</p>
+      <p class="mt-1 text-sm text-slate-600">Review what you learned and any optional next steps without treating a filing as the expected outcome.</p>
     </div>
     <button type="button" data-guided-next="final-summary" class="next-step-button">Go to Summary</button>
   `;

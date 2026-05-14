@@ -13,6 +13,103 @@
       "PRD below 0.98 tends to indicate progressivity."
     ]
   },
+  "assessmentLevelStandards": [
+    {
+      "key": "nebraska-residential-real-property",
+      "label": "Nebraska residential real property assessment level",
+      "sourceLabel": "Nebraska residential assessment ratio context 92-100%",
+      "propertyClasses": [
+        "residential",
+        "residential improved"
+      ],
+      "assessmentClasses": [
+        "residential"
+      ],
+      "range": {
+        "min": 92,
+        "max": 100
+      },
+      "idealValue": 96,
+      "unit": "percent",
+      "notes": "Used for class-aware taxpayer-facing interpretation of residential median ratio and level-of-value context."
+    },
+    {
+      "key": "nebraska-agricultural-horticultural-special-valuation",
+      "label": "Nebraska agricultural and horticultural special valuation assessment level",
+      "sourceLabel": "Nebraska agricultural/horticultural special valuation range 69-75%",
+      "propertyClasses": [
+        "agricultural",
+        "agriculture",
+        "horticultural",
+        "farm",
+        "greenbelt"
+      ],
+      "assessmentClasses": [
+        "agricultural",
+        "agricultural land",
+        "horticultural",
+        "special valuation",
+        "greenbelt"
+      ],
+      "range": {
+        "min": 69,
+        "max": 75
+      },
+      "idealValue": 72,
+      "unit": "percent",
+      "notes": "Used when agricultural, horticultural, farm, or greenbelt special valuation context is present."
+    }
+  ],
+  "sampleSizeGuidance": {
+    "qualifiedSales": {
+      "sourceLabel": "Property Snapshot qualified-sales sample signal",
+      "direction": "sampleSize",
+      "thresholds": [
+        {
+          "min": 500,
+          "minShare": 0.75,
+          "tone": "green",
+          "severity": "useful",
+          "label": "Broad sample",
+          "trigger": "large share of countywide qualified sales",
+          "explanation": "The sales sample is broad enough to provide useful context for this comparison."
+        },
+        {
+          "min": 100,
+          "minShare": 0.25,
+          "tone": "yellowGreen",
+          "severity": "context",
+          "label": "Usable sample",
+          "trigger": "usable share of countywide qualified sales",
+          "explanation": "Enough qualified sales are available to provide useful context for this comparison."
+        },
+        {
+          "min": 50,
+          "tone": "yellow",
+          "severity": "context",
+          "label": "Limited sample",
+          "trigger": "modest number of qualified sales",
+          "explanation": "The sales sample can help with context, but it should be read carefully."
+        },
+        {
+          "min": 10,
+          "tone": "orange",
+          "severity": "caution",
+          "label": "Thin sample",
+          "trigger": "small number of qualified sales",
+          "explanation": "The sales sample is thin, so this comparison may be less reliable."
+        },
+        {
+          "max": 9,
+          "tone": "red",
+          "severity": "alarm",
+          "label": "Very thin sample",
+          "trigger": "fewer than 10 qualified sales",
+          "explanation": "The sales sample is too thin to support a confident comparison by itself."
+        }
+      ]
+    }
+  },
   "prdStandards": {
     "acceptableRange": {
       "min": 0.98,

@@ -28,6 +28,8 @@
   --surface-card: 255 255 255;
   --surface-muted: var(--color-slate-50);
   --border-muted: var(--color-slate-200);
+  --table-total-bg: var(--accent-primary);
+  --table-total-rule: 185 185 185;
   --brand-ink: var(--color-slate-700);
   --semantic-value: var(--color-green);
   --semantic-tax: var(--color-red);
@@ -251,12 +253,12 @@ table thead th + th {
 }
 
 .valuation-notice-row-total {
-  background: rgb(var(--brand-ink));
+  background: rgb(var(--table-total-bg));
   color: white;
 }
 
 .valuation-notice-row-total > p + p {
-  border-left-color: rgb(255 255 255 / 0.2);
+  border-left-color: rgb(var(--table-total-rule) / 0.58);
 }
 
 .property-hero-header {
@@ -795,18 +797,39 @@ body {
 }
 
 .next-step-button {
+  align-items: center;
   background: rgb(var(--accent-primary));
   border-radius: 9999px;
   color: white;
+  display: inline-flex;
   flex: 0 0 auto;
   font-size: 0.875rem;
   font-weight: 700;
+  gap: 0.45rem;
+  justify-content: center;
   padding: 0.65rem 1rem;
   transition: background-color 0.16s ease, box-shadow 0.16s ease;
+  white-space: nowrap;
+}
+
+.next-step-button::after {
+  border-color: currentColor;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  content: "";
+  height: 0.42rem;
+  opacity: 0.9;
+  transform: rotate(-45deg);
+  transition: transform 0.16s ease;
+  width: 0.42rem;
 }
 
 .next-step-button:hover {
   background: rgb(var(--accent-primary-dark));
+}
+
+.next-step-button:hover::after {
+  transform: translateX(2px) rotate(-45deg);
 }
 
 .next-step-button:focus-visible {
@@ -1061,12 +1084,16 @@ body {
 
 .table-total-row,
 #marketSalePriceRows > .table-total-row {
-  background: rgb(var(--brand-ink));
+  background: rgb(var(--table-total-bg));
   color: white;
 }
 
 .table-total-row :is(td, th) {
   color: inherit;
+}
+
+.table-total-row :is(td, th) + :is(td, th) {
+  box-shadow: inset 1px 0 0 rgb(var(--table-total-rule) / 0.58);
 }
 
 .chart-source {
@@ -1095,6 +1122,16 @@ body {
   width: 0.875rem;
   flex: 0 0 auto;
   border-radius: 9999px;
+}
+
+.indexed-trends-chart {
+  height: 20rem;
+}
+
+@media (min-width: 640px) {
+  .indexed-trends-chart {
+    height: 23.5rem;
+  }
 }
 
 .guided-stage-sync {
@@ -1759,7 +1796,6 @@ body {
 }
 
 .civic-landing-shell,
-.civic-orientation-layer,
 .civic-summary-shell,
 .civic-review-signals {
   background: white;
@@ -1778,7 +1814,6 @@ body {
 }
 
 .civic-landing-intro h2,
-.civic-orientation-layer h2,
 .civic-summary-shell h2,
 .civic-review-signals h2 {
   color: rgb(var(--brand-ink));
@@ -1797,7 +1832,6 @@ body {
 }
 
 .civic-landing-intro p:not(.guided-kicker),
-.civic-orientation-layer > div > p:not(.guided-kicker),
 .civic-summary-shell > div > p:not(.guided-kicker),
 .civic-review-signals > div > p:not(.guided-kicker) {
   color: rgb(var(--color-slate-600));
@@ -1905,53 +1939,11 @@ body {
   padding: 0.875rem 1rem;
 }
 
-.civic-orientation-layer {
-  display: grid;
-  gap: 1.25rem;
-  grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 1.1fr);
-}
-
-.civic-orientation-list {
-  display: grid;
-  gap: 0.625rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.civic-orientation-list li {
-  align-items: flex-start;
-  background: rgb(var(--surface-muted));
-  border-radius: 0.5rem;
-  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
-  display: grid;
-  gap: 0.75rem;
-  grid-template-columns: auto minmax(0, 1fr);
-  padding: 0.75rem;
-}
-
-.civic-orientation-list li > span {
-  background: rgb(var(--accent-primary));
-  border-radius: 999px;
-  height: 0.55rem;
-  margin-top: 0.45rem;
-  width: 0.55rem;
-}
-
-.civic-orientation-list p,
 .civic-summary-grid h3,
 .review-signal-card h3 {
   color: rgb(var(--brand-ink));
   font-weight: 800;
   line-height: 1.3;
-}
-
-.civic-orientation-list small {
-  color: rgb(var(--color-slate-600));
-  display: block;
-  font-size: 0.875rem;
-  line-height: 1.55;
-  margin-top: 0.2rem;
 }
 
 .civic-summary-grid,
@@ -2058,6 +2050,89 @@ body {
   box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.34);
 }
 
+.metric-signal-card {
+  --metric-signal-accent: var(--color-slate-500);
+  background: rgb(var(--surface-muted));
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+}
+
+.metric-signal-card-strongGreen {
+  --metric-signal-accent: var(--color-green-dark);
+  background: rgb(var(--color-green-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-green) / 0.34);
+}
+
+.metric-signal-card-green {
+  --metric-signal-accent: var(--color-green);
+  background: rgb(244 250 246);
+  box-shadow: inset 0 0 0 1px rgb(var(--color-green) / 0.26);
+}
+
+.metric-signal-card-yellowGreen {
+  --metric-signal-accent: 116 126 55;
+  background: rgb(249 250 239);
+  box-shadow: inset 0 0 0 1px rgb(149 161 73 / 0.28);
+}
+
+.metric-signal-card-yellow {
+  --metric-signal-accent: var(--color-yellow);
+  background: rgb(var(--color-yellow-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-yellow) / 0.3);
+}
+
+.metric-signal-card-orange {
+  --metric-signal-accent: 177 87 23;
+  background: rgb(255 248 240);
+  box-shadow: inset 0 0 0 1px rgb(190 104 33 / 0.32);
+}
+
+.metric-signal-card-red {
+  --metric-signal-accent: var(--color-red);
+  background: rgb(var(--color-red-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-red) / 0.34);
+}
+
+.metric-signal-card-neutral {
+  --metric-signal-accent: var(--color-slate-500);
+}
+
+.metric-signal-text {
+  align-items: center;
+  color: rgb(var(--metric-signal-accent));
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 800;
+  gap: 0.4rem;
+  line-height: 1.2;
+}
+
+.metric-signal-text::before {
+  background: rgb(var(--metric-signal-accent));
+  border-radius: 999px;
+  content: "";
+  display: inline-block;
+  height: 0.42rem;
+  width: 0.42rem;
+}
+
+.details-card dt,
+.civic-notice-metric dt,
+.assessment-metric-card .assessment-metric-label,
+.adjustment-card .adjustment-card-label,
+.final-review-kpi-card > p:first-child,
+#propertyMovementSummary .rounded-xl > p:first-child,
+#taxBurdenPatternCards .rounded-xl p:first-child,
+#marketSignalCards .rounded-xl > p:first-child,
+#countyComparisonSummary .pressure-card > p:first-child,
+#countyCtlSummary .rounded-xl > p:first-child,
+#stateCtlSummary .rounded-xl p:first-child,
+#stateCtlSummary .rounded-xl .flex > p,
+#demographicProfileCards .rounded-xl > p:first-child,
+#taxDistrictAuthoritySummary .rounded-xl > p:first-child,
+#sourceCards .rounded-xl > p:first-child {
+  color: rgb(var(--accent-primary));
+}
+
 @media (max-width: 960px) {
   .civic-notice-grid,
   .civic-summary-grid,
@@ -2074,9 +2149,6 @@ body {
     border-right: 0;
   }
 
-  .civic-orientation-layer {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 640px) {
