@@ -19,16 +19,28 @@
 
     <nav aria-label="Guided property snapshot path" class="guided-path-nav mb-5 overflow-x-auto rounded-2xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-200">
       <div class="guided-stage-sync" data-guided-current-stage></div>
-      <div class="guided-path-line" aria-hidden="true"></div>
-      <div id="guidedPathTabs" class="relative z-10 flex min-w-max gap-2">
-        <button type="button" data-guided-tab="landing-primer" class="guided-step guided-step-active" aria-selected="true"><span>0</span>Start</button>
-        <button type="button" data-guided-tab="property-record" class="guided-step" aria-selected="false"><span>1</span>Property Record</button>
-        <button type="button" data-guided-tab="what-changed" class="guided-step" aria-selected="false"><span>2</span>What Changed</button>
-        <button type="button" data-guided-tab="valuation-detail" class="guided-step" aria-selected="false"><span>3</span>Value Detail</button>
-        <button type="button" data-guided-tab="equalization" class="guided-step" aria-selected="false"><span>4</span>Equalization</button>
-        <button type="button" data-guided-tab="tax-context" class="guided-step" aria-selected="false"><span>5</span>Tax Context</button>
-        <button type="button" data-guided-tab="review-signals" class="guided-step" aria-selected="false"><span>6</span>Review Signals</button>
-        <button type="button" data-guided-tab="final-summary" class="guided-step" aria-selected="false"><span>7</span>Summary</button>
+      <div class="guided-nav-row">
+        <div class="guided-path-track">
+          <div class="guided-path-line" aria-hidden="true"></div>
+          <div id="guidedPathTabs" class="relative z-10 flex min-w-max gap-2">
+            <button type="button" data-guided-tab="landing-primer" class="guided-step guided-step-active" aria-selected="true"><span>0</span>Start</button>
+            <button type="button" data-guided-tab="property-record" class="guided-step" aria-selected="false"><span>1</span>Property Record</button>
+            <button type="button" data-guided-tab="what-changed" class="guided-step" aria-selected="false"><span>2</span>What Changed</button>
+            <button type="button" data-guided-tab="valuation-detail" class="guided-step" aria-selected="false"><span>3</span>Value Detail</button>
+            <button type="button" data-guided-tab="equalization" class="guided-step" aria-selected="false"><span>4</span>Equalization</button>
+            <button type="button" data-guided-tab="tax-context" class="guided-step" aria-selected="false"><span>5</span>Tax Context</button>
+            <button type="button" data-guided-tab="review-signals" class="guided-step" aria-selected="false"><span>6</span>Review Signals</button>
+            <button type="button" data-guided-tab="final-summary" class="guided-step" aria-selected="false"><span>7</span>Summary</button>
+          </div>
+        </div>
+        <button type="button" data-assessment-dates-open class="assessment-dates-nav-button" aria-controls="assessmentDatesPanel" aria-label="Assessment Dates" title="Assessment Dates">
+          <svg class="assessment-dates-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M8 2.75v3.5"></path>
+            <path d="M16 2.75v3.5"></path>
+            <path d="M3.75 9.25h16.5"></path>
+            <path d="M5.75 4.75h12.5a2 2 0 0 1 2 2v11.5a2 2 0 0 1-2 2H5.75a2 2 0 0 1-2-2V6.75a2 2 0 0 1 2-2Z"></path>
+          </svg>
+        </button>
       </div>
     </nav>
 
@@ -451,6 +463,21 @@
       <button type="button" data-assessors-report class="footer-site-link footer-report-link text-slate-600">Assessor&rsquo;s Report</button>
     </nav>
   </footer>
+
+  <div id="assessmentDatesPanel" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-700/70 p-4 backdrop-blur-sm sm:p-6" aria-hidden="true">
+    <section role="dialog" aria-modal="true" aria-labelledby="assessmentDatesTitle" class="assessment-dates-dialog flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl bg-white text-slate-700 shadow-2xl ring-1 ring-slate-200">
+      <div class="assessment-dates-dialog-bar">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Assessment year reference</p>
+          <p class="mt-1 text-sm leading-6 text-slate-600">Nebraska assessment process dates.</p>
+        </div>
+        <button type="button" data-close-assessment-dates class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700" aria-label="Close assessment dates">
+          ×
+        </button>
+      </div>
+      <div id="assessmentDatesContent" class="overflow-y-auto p-5"></div>
+    </section>
+  </div>
 
   <div id="reportErrorModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-700/70 p-4 backdrop-blur-sm sm:p-6">
     <section role="dialog" aria-modal="true" aria-labelledby="reportErrorTitle" class="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl bg-white text-slate-700 shadow-2xl ring-1 ring-slate-200">

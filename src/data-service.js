@@ -11,6 +11,7 @@ async function loadJson(path, label) {
 }
 
 const DATA_PATHS = {
+  assessmentDateEvents: "data/app/assessment-calendar-events.json",
   manifest: "data/app/property-manifest.json"
 };
 
@@ -68,6 +69,10 @@ export function loadAssessmentCalendar() {
   return loadPropertyManifest()
     .then(manifest => loadJson(manifest.sharedData.calendarPath, "PAD main assessment calendar"))
     .then(normalizePadCalendar);
+}
+
+export function loadAssessmentDateEvents() {
+  return loadJson(DATA_PATHS.assessmentDateEvents, "assessment date events");
 }
 
 export function loadLegalReferences() {

@@ -23,7 +23,8 @@ import {
   loadSchoolDistrictColors,
   loadTaxDistrictAuthorities,
   loadValuationGroups,
-  loadIaaoStandards
+  loadIaaoStandards,
+  loadAssessmentDateEvents
 } from "./data-service.js";
 import { applyChartDefaults, applyVisualizationPalette } from "./config/visualization-palettes.js";
 import { initImageModal } from "./modal.js";
@@ -43,13 +44,14 @@ import { resourceAliases, resourcesByView } from "./content/route-resources.js";
 import { renderTaxDistrictAuthorities } from "./views/tax-district-authorities.js";
 import { escapeHtml } from "./utils/html.js";
 import { initAssessorsReport } from "./assessors-report.js";
+import { initAssessmentDatesPanel } from "./assessment-dates.js";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 
 async function main() {
   applyVisualizationPalette();
   applyChartDefaults();
-  const [propertyData, recordCard, calendar, legalReferences, realPropertyForms, ctlData, ratioData, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, valuationGroups, iaaoStandards] = await Promise.all([
+  const [propertyData, recordCard, calendar, legalReferences, realPropertyForms, ctlData, ratioData, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, valuationGroups, iaaoStandards, assessmentDateEvents] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
     loadAssessmentCalendar(),
@@ -62,7 +64,8 @@ async function main() {
     loadMarketPositionStatistics(),
     loadSchoolDistrictColors(),
     loadValuationGroups(),
-    loadIaaoStandards()
+    loadIaaoStandards(),
+    loadAssessmentDateEvents()
   ]);
   officialRealPropertyForms = realPropertyForms;
   const snapshotModel = buildPropertySnapshotModel({
@@ -105,6 +108,7 @@ async function main() {
   initCountyComparison(data, ctlData, recordCard);
   initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padRatioData, marketPositionData);
   initGuidedNavigation(data, calendar);
+  initAssessmentDatesPanel(assessmentDateEvents);
   initFooterNavigation();
   initAssessorsReport({
     data,
@@ -151,6 +155,7 @@ function initGuidedNavigation(data, calendar) {
   const panels = document.querySelectorAll("[data-guided-panel]");
   const propertyContext = document.getElementById("propertyViewContext");
   const guidedPath = document.querySelector(".guided-path-nav");
+  const guidedPathTrack = document.querySelector(".guided-path-track");
   const stageSync = document.querySelector("[data-guided-current-stage]");
   const primarySectionIds = routeList.filter(route => !route.secondary).map(route => route.id);
   const visitedSteps = new Set();
@@ -217,18 +222,20 @@ function initGuidedNavigation(data, calendar) {
   }
 
   function alignActiveGuidedStep({ behavior = "smooth" } = {}) {
-    if (!guidedPath || !tabsContainer || !mobileNavQuery.matches) return;
+    const scrollContainer = guidedPathTrack || guidedPath;
+
+    if (!scrollContainer || !tabsContainer || !mobileNavQuery.matches) return;
 
     const activeStep = tabsContainer.querySelector(".guided-step-active");
     if (!activeStep) return;
 
-    const navRect = guidedPath.getBoundingClientRect();
+    const navRect = scrollContainer.getBoundingClientRect();
     const activeRect = activeStep.getBoundingClientRect();
-    const navStyle = window.getComputedStyle(guidedPath);
+    const navStyle = window.getComputedStyle(scrollContainer);
     const leftPadding = Number.parseFloat(navStyle.paddingLeft) || 0;
-    const left = guidedPath.scrollLeft + activeRect.left - navRect.left - leftPadding;
+    const left = scrollContainer.scrollLeft + activeRect.left - navRect.left - leftPadding;
 
-    guidedPath.scrollTo({
+    scrollContainer.scrollTo({
       left: Math.max(0, left),
       behavior
     });

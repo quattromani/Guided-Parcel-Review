@@ -962,6 +962,7 @@ body {
 }
 
 .guided-path-nav {
+  overflow: visible;
   position: sticky;
   top: 0.5rem;
   transition: background-color 0.18s ease, border-color 0.18s ease, border-radius 0.18s ease, box-shadow 0.18s ease, margin 0.18s ease, padding 0.18s ease, top 0.18s ease;
@@ -983,9 +984,8 @@ body {
   top: 0;
 }
 
-.guided-path-nav-stuck .guided-path-line,
 .guided-path-nav-stuck .guided-stage-sync,
-.guided-path-nav-stuck #guidedPathTabs {
+.guided-path-nav-stuck .guided-nav-row {
   margin-left: auto;
   margin-right: auto;
   max-width: 80rem;
@@ -1007,6 +1007,61 @@ body {
   position: absolute;
   right: 1.25rem;
   top: 1.25rem;
+}
+
+.guided-nav-row {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.guided-path-track {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: 0.05rem;
+  position: relative;
+}
+
+.assessment-dates-nav-button {
+  align-items: center;
+  background: rgb(var(--color-slate-50));
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 2.35rem;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.16s ease, box-shadow 0.16s ease, color 0.16s ease;
+  width: 2.35rem;
+}
+
+.assessment-dates-nav-icon {
+  height: 1.05rem;
+  width: 1.05rem;
+}
+
+.assessment-dates-nav-icon path {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.assessment-dates-nav-button:hover,
+.assessment-dates-nav-button[aria-expanded="true"] {
+  background: rgb(var(--color-secondary-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.28);
+  color: rgb(var(--accent-primary));
+}
+
+.assessment-dates-nav-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(var(--accent-primary) / 0.24), inset 0 0 0 1px rgb(var(--accent-primary) / 0.34);
 }
 
 .guided-step {
@@ -1128,6 +1183,581 @@ body {
   line-height: 1.65;
   margin-top: 0.45rem;
   max-width: 62rem;
+}
+
+.assessment-dates-dialog {
+  border-radius: var(--radius-container-lg);
+}
+
+.assessment-dates-dialog-bar {
+  align-items: flex-start;
+  border-bottom: 1px solid rgb(var(--border-muted));
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1.25rem;
+}
+
+.assessment-dates-shell {
+  --assessment-view-ink: rgb(var(--accent-primary));
+  --assessment-view-ring: rgb(var(--accent-primary) / 0.28);
+  --assessment-view-tint: rgb(var(--accent-primary) / 0.15);
+  display: grid;
+  gap: 1.25rem;
+}
+
+.assessment-dates-mode-taxpayer {
+  --assessment-view-ink: rgb(var(--color-green-dark));
+  --assessment-view-ring: rgb(var(--color-green) / 0.28);
+  --assessment-view-tint: rgb(var(--color-green) / 0.15);
+}
+
+.assessment-dates-mode-admin {
+  --assessment-view-ink: rgb(var(--color-blue));
+  --assessment-view-ring: rgb(var(--color-blue) / 0.28);
+  --assessment-view-tint: rgb(var(--color-blue) / 0.15);
+}
+
+.assessment-dates-hero {
+  align-items: flex-start;
+  border-bottom: 1px solid rgb(var(--border-muted));
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding-bottom: 1.25rem;
+}
+
+.assessment-dates-hero h2 {
+  color: rgb(var(--color-slate-700));
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.15;
+  margin-top: 0.25rem;
+}
+
+.assessment-dates-hero p:not(.guided-kicker) {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-top: 0.4rem;
+  max-width: 44rem;
+}
+
+.assessment-dates-mode {
+  background: rgb(var(--color-slate-100));
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 0.25rem;
+  padding: 0.25rem;
+}
+
+.assessment-dates-mode button {
+  border-radius: 9999px;
+  color: rgb(var(--color-slate-600));
+  font-size: 0.78rem;
+  font-weight: 750;
+  padding: 0.45rem 0.7rem;
+  transition: background-color 0.16s ease, box-shadow 0.16s ease, color 0.16s ease;
+  white-space: nowrap;
+}
+
+.assessment-dates-mode button:hover {
+  background: white;
+}
+
+.assessment-dates-mode button:focus-visible,
+.assessment-month-switcher button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(var(--accent-primary) / 0.24);
+}
+
+.assessment-dates-mode .assessment-mode-active {
+  background: var(--assessment-view-tint);
+  color: var(--assessment-view-ink);
+  box-shadow: inset 0 0 0 1px var(--assessment-view-ring);
+}
+
+.assessment-dates-section {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.assessment-dates-section-reference,
+.assessment-dates-section-timeline {
+  border-top: 1px solid rgb(var(--border-muted));
+  margin-top: 1.1rem;
+  padding-top: 2.2rem;
+}
+
+.assessment-section-heading {
+  align-items: flex-end;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.assessment-section-heading h3,
+.assessment-meaning-panel h3,
+.assessment-month-list h4 {
+  color: rgb(var(--color-slate-700));
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.25;
+  margin-top: 0.2rem;
+}
+
+.assessment-now-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.assessment-now-card,
+.assessment-meaning-panel,
+.assessment-timeline-event,
+.assessment-month-event,
+.assessment-dates-source-note {
+  background: white;
+  border-radius: var(--radius-container-lg);
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+}
+
+.assessment-event-type-taxpayer-action {
+  background: rgb(var(--color-green) / 0.15);
+  box-shadow: inset 0 0 0 1px rgb(var(--color-green) / 0.24);
+}
+
+.assessment-event-type-assessor-duty,
+.assessment-event-type-state-certification {
+  background: rgb(var(--color-blue) / 0.15);
+  box-shadow: inset 0 0 0 1px rgb(var(--color-blue) / 0.22);
+}
+
+.assessment-event-type-boe-process,
+.assessment-event-type-informational {
+  background: rgb(var(--color-teal) / 0.12);
+  box-shadow: inset 0 0 0 1px rgb(var(--color-teal) / 0.20);
+}
+
+.assessment-event-type-taxing-authority,
+.assessment-event-type-treasurer {
+  background: rgb(var(--color-yellow) / 0.13);
+  box-shadow: inset 0 0 0 1px rgb(var(--color-yellow) / 0.20);
+}
+
+.assessment-now-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-height: 14rem;
+  padding: 1rem;
+}
+
+.assessment-status-active.assessment-now-card,
+.assessment-status-active.assessment-timeline-event,
+.assessment-status-active.assessment-month-event {
+  box-shadow: inset 3px 0 0 rgb(var(--color-green)), inset 0 0 0 1px rgb(var(--color-green) / 0.34);
+}
+
+.assessment-status-past.assessment-now-card,
+.assessment-status-past.assessment-timeline-event,
+.assessment-status-past.assessment-month-event {
+  background: rgb(var(--color-slate-100));
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  filter: grayscale(0.55);
+  opacity: 0.66;
+}
+
+.assessment-status-past .assessment-type-badge,
+.assessment-status-past .assessment-status-label {
+  background: white;
+  color: rgb(var(--color-slate-500));
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+}
+
+.assessment-card-topline {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: space-between;
+}
+
+.assessment-card-topline > span:first-child {
+  color: rgb(var(--accent-primary));
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.assessment-now-card h4,
+.assessment-timeline-event h5,
+.assessment-month-event h5 {
+  color: rgb(var(--color-slate-700));
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.28;
+}
+
+.assessment-now-card p,
+.assessment-timeline-event p,
+.assessment-month-event p,
+.assessment-dates-source-note p {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.83rem;
+  line-height: 1.55;
+}
+
+.assessment-date-label,
+.assessment-month-date {
+  color: rgb(var(--color-slate-700));
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.assessment-card-why {
+  background: rgb(var(--color-slate-50));
+  border-radius: var(--radius-container-md);
+  margin-top: auto;
+  padding: 0.65rem;
+}
+
+.assessment-card-why span,
+.assessment-admin-note span {
+  color: rgb(var(--color-slate-500));
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.18rem;
+  text-transform: uppercase;
+}
+
+.assessment-card-why p {
+  color: rgb(var(--color-slate-700));
+}
+
+.assessment-type-badge,
+.assessment-status-label {
+  align-items: center;
+  border-radius: 9999px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  min-height: 1.45rem;
+  padding: 0.26rem 0.5rem;
+  white-space: nowrap;
+}
+
+.assessment-type-badge {
+  background: rgb(var(--color-slate-100));
+  color: rgb(var(--color-slate-600));
+}
+
+.assessment-type-taxpayer-action {
+  background: rgb(var(--color-green-soft));
+  color: rgb(var(--color-green-dark));
+}
+
+.assessment-type-assessor-duty,
+.assessment-type-state-certification {
+  background: rgb(var(--color-blue-soft));
+  color: rgb(var(--color-blue));
+}
+
+.assessment-type-boe-process,
+.assessment-type-informational {
+  background: rgb(var(--color-teal-soft));
+  color: rgb(var(--color-teal));
+}
+
+.assessment-type-taxing-authority,
+.assessment-type-treasurer {
+  background: rgb(var(--color-yellow-soft));
+  color: rgb(var(--color-yellow));
+}
+
+.assessment-source p {
+  color: rgb(var(--color-slate-500)) !important;
+  font-size: 0.72rem !important;
+  line-height: 1.45 !important;
+}
+
+.assessment-source .assessment-source-note {
+  color: rgb(var(--color-slate-400)) !important;
+  font-size: 0.68rem !important;
+  font-weight: 500;
+  margin-top: 0.12rem;
+}
+
+.assessment-source a,
+.assessment-dates-source-note a {
+  color: rgb(var(--accent-primary));
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.assessment-source a:hover,
+.assessment-dates-source-note a:hover {
+  text-decoration: underline;
+}
+
+.assessment-meaning-panel {
+  background: rgb(var(--color-secondary-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.2);
+  padding: 1rem;
+}
+
+.assessment-meaning-panel p:not(.guided-kicker) {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.92rem;
+  line-height: 1.65;
+  margin-top: 0.45rem;
+  max-width: 62rem;
+}
+
+.assessment-timeline {
+  display: grid;
+  gap: 1rem;
+}
+
+.assessment-timeline-disclosure {
+  background: white;
+  border-radius: var(--radius-container-lg);
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+}
+
+.assessment-timeline-disclosure summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  list-style: none;
+  padding: 1rem;
+}
+
+.assessment-timeline-disclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.assessment-timeline-disclosure summary > span:first-child {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.assessment-timeline-disclosure summary > span:first-child > span:last-child {
+  color: rgb(var(--color-slate-700));
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+
+.assessment-timeline-disclosure-action {
+  align-items: center;
+  background: rgb(var(--color-slate-50));
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.76rem;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.7rem;
+  transition: background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.assessment-timeline-disclosure summary:hover .assessment-timeline-disclosure-action,
+.assessment-timeline-disclosure[open] .assessment-timeline-disclosure-action {
+  background: var(--assessment-view-tint);
+  box-shadow: inset 0 0 0 1px var(--assessment-view-ring);
+  color: var(--assessment-view-ink);
+}
+
+.assessment-timeline-disclosure[open] .assessment-timeline-disclosure-action {
+  font-size: 0;
+}
+
+.assessment-timeline-disclosure[open] .assessment-timeline-disclosure-action::after {
+  content: "Hide Timeline";
+  font-size: 0.76rem;
+}
+
+.assessment-timeline-disclosure-body {
+  border-top: 1px solid rgb(var(--border-muted));
+  padding: 1rem;
+}
+
+.assessment-timeline-phase {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: 1rem minmax(0, 1fr);
+}
+
+.assessment-timeline-phase-marker {
+  background: rgb(var(--color-slate-200));
+  border-radius: 9999px;
+  height: 0.72rem;
+  margin-top: 0.4rem;
+  position: relative;
+  width: 0.72rem;
+}
+
+.assessment-timeline-phase-marker::after {
+  background: rgb(var(--color-slate-200));
+  content: "";
+  height: calc(100% + 1.2rem);
+  left: 50%;
+  position: absolute;
+  top: 0.72rem;
+  transform: translateX(-50%);
+  width: 1px;
+}
+
+.assessment-timeline-phase:last-child .assessment-timeline-phase-marker::after {
+  display: none;
+}
+
+.assessment-timeline-phase h4 {
+  color: rgb(var(--color-slate-700));
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+
+.assessment-timeline-events {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.55rem;
+}
+
+.assessment-timeline-event {
+  align-items: flex-start;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 0.85rem;
+}
+
+.assessment-timeline-event > div:last-child {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.assessment-status-label {
+  background: rgb(var(--color-slate-50));
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-500));
+}
+
+.assessment-status-active .assessment-status-label {
+  background: rgb(var(--color-green-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-green) / 0.22);
+  color: rgb(var(--color-green-dark));
+}
+
+.assessment-month-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.assessment-month-switcher button {
+  background: white;
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
+  font-size: 0.75rem;
+  font-weight: 800;
+  min-width: 2.85rem;
+  padding: 0.42rem 0.58rem;
+  transition: background-color 0.16s ease, box-shadow 0.16s ease, color 0.16s ease;
+}
+
+.assessment-month-switcher button:hover {
+  background: rgb(var(--color-slate-50));
+}
+
+.assessment-month-switcher .assessment-month-active {
+  background: rgb(var(--accent-primary));
+  box-shadow: none;
+  color: white;
+}
+
+.assessment-month-list {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+}
+
+.assessment-month-event {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: 7.5rem minmax(0, 1fr) auto;
+  padding: 0.85rem;
+}
+
+.assessment-month-event-body {
+  min-width: 0;
+}
+
+.assessment-month-event-meta {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  justify-self: end;
+}
+
+.assessment-admin-note {
+  background: rgb(var(--color-slate-50));
+  border-radius: var(--radius-container-md);
+  margin-top: 0.55rem;
+  padding: 0.6rem;
+}
+
+.assessment-empty-month {
+  background: rgb(var(--color-slate-50));
+  border-radius: var(--radius-container-lg);
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-500));
+  font-size: 0.9rem;
+  line-height: 1.55;
+  padding: 1rem;
+}
+
+.assessment-dates-source-note {
+  background: rgb(var(--color-slate-50));
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.85rem;
+}
+
+.assessment-dates-source-note div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.85rem;
+}
+
+@media (max-width: 1100px) {
+  .assessment-now-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .resource-section-separator {
@@ -1956,6 +2586,52 @@ body {
   .guided-stage-assessment > span:first-child,
   .guided-stage-property > span {
     display: none;
+  }
+
+  .guided-nav-row {
+    gap: 0.5rem;
+  }
+
+  .assessment-dates-nav-button {
+    height: 2.3rem;
+    width: 2.3rem;
+  }
+
+  .assessment-dates-dialog-bar,
+  #assessmentDatesContent {
+    padding: 1rem;
+  }
+
+  .assessment-dates-hero,
+  .assessment-section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .assessment-dates-mode {
+    align-self: flex-start;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .assessment-now-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .assessment-timeline-event,
+  .assessment-month-event {
+    grid-template-columns: 1fr;
+  }
+
+  .assessment-timeline-disclosure summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .assessment-timeline-event > div:last-child,
+  .assessment-month-event-meta {
+    align-items: flex-start;
+    justify-self: start;
   }
 }
 
