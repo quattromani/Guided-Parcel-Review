@@ -45,12 +45,78 @@
   --radius-container-sm: 0.25rem;
 }
 
+/*
+  Mobile overflow style guide
+  - Let content wrap first; use overflow-wrap:anywhere for parcel IDs, addresses, legal text, and source strings.
+  - Let badges, pills, and button rows wrap on narrow screens unless they are the guided mobile nav.
+  - Keep dense tables inside a table wrapper with local overflow-x:auto; never let tables set page width.
+  - Use min-width:0 on grid/flex children so table/chart min-content width cannot expand the document.
+  - Keep chart canvases and legends inside responsive containers; simplify or wrap labels before truncating.
+  - Truncate only low-priority labels, and pair truncation with title/aria-label when the full text matters.
+  - Preserve the guided nav track as the only intentional horizontal mobile scroller.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
+  max-width: 100%;
   scroll-behavior: smooth;
 }
 
 body {
+  max-width: 100%;
   min-width: 320px;
+}
+
+:where(main, footer, header, section, article, aside, nav, div, dl, form, fieldset) {
+  min-width: 0;
+}
+
+:where(.grid, .flex, [class*="grid-cols-"]) {
+  min-width: 0;
+}
+
+:where(.grid, .flex, [class*="grid-cols-"]) > * {
+  min-width: 0;
+}
+
+:where(img, svg, canvas, select, input, textarea, button) {
+  max-width: 100%;
+}
+
+:where(h1, h2, h3, h4, h5, h6, p, dt, dd, label, summary, li) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+canvas {
+  max-width: 100% !important;
+}
+
+.overflow-safe {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.overflow-wrap-anywhere {
+  overflow-wrap: anywhere;
+}
+
+.mobile-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .page-title-utility {
@@ -72,6 +138,7 @@ body {
 
 .page-title-situs {
   display: inline;
+  overflow-wrap: anywhere;
 }
 
 .parcel-lookup-placeholder {
@@ -322,6 +389,7 @@ table thead th[class] + th[class] {
 
 .property-hero-meta p {
   margin: 0;
+  overflow-wrap: normal;
 }
 
 .property-hero-meta-primary {
@@ -336,6 +404,7 @@ table thead th[class] + th[class] {
 
 .property-hero-school {
   font-weight: 200;
+  overflow-wrap: normal;
 }
 
 .property-hero-notice {
@@ -354,6 +423,34 @@ table thead th[class] + th[class] {
   flex-wrap: nowrap;
   gap: 1rem;
   justify-content: flex-end;
+}
+
+.details-card,
+.metric-card,
+.pressure-card,
+.footer-resource-card,
+.quick-read-item,
+.assessment-metric-card,
+.assessment-band-card,
+.distribution-note-card,
+.civic-notice-metric,
+.civic-summary-grid section,
+.review-signal-card,
+.final-review-kpi-card,
+.ooda-decision-card,
+.ooda-inline-note,
+.next-step-card,
+.advanced-context-card {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.data-split-view,
+.data-split-view > *,
+.related-panel-section,
+.related-panel-section > * {
+  max-width: 100%;
+  min-width: 0;
 }
 
 @media (max-width: 1180px) {
@@ -385,18 +482,24 @@ table thead th[class] + th[class] {
 .table-shell {
   background: white;
   border-radius: 0 0 0.75rem 0.75rem;
+  max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   contain: paint;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table-clip,
 .overflow-x-auto.rounded-xl:has(> table) {
   background: white;
   border-radius: 0.75rem;
+  max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   contain: paint;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table-shell table,
@@ -405,6 +508,13 @@ table thead th[class] + th[class] {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
+}
+
+.table-shell :is(th, td),
+.table-clip :is(th, td),
+.overflow-x-auto.rounded-xl:has(> table) :is(th, td) {
+  max-width: min(18rem, 72vw);
+  overflow-wrap: anywhere;
 }
 
 .assessment-rollup-summary {
@@ -601,6 +711,9 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   background: rgb(var(--color-blue-soft));
   box-shadow: inset 0 0 0 1px rgb(var(--color-blue) / 0.12);
   color: rgb(var(--color-secondary));
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .dwelling-model-group {
@@ -720,6 +833,9 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   background: rgb(var(--color-secondary-soft));
   color: rgb(var(--color-secondary));
   box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.24);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .record-disclosure-chevron-shell {
@@ -824,6 +940,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   flex-wrap: wrap;
   gap: 0.5rem;
   justify-content: flex-end;
+  min-width: 0;
 }
 
 .footer-resource-card {
@@ -840,6 +957,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   font-weight: 700;
   padding: 0.4rem 0.75rem;
   transition: background-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+  white-space: normal;
 }
 
 .footer-pill-button:hover,
@@ -883,6 +1001,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   display: flex;
   gap: 0.9rem;
   justify-content: space-between;
+  min-width: 0;
   padding: 1rem;
   text-align: left;
   transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
@@ -907,8 +1026,11 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   font-size: 0.75rem;
   font-weight: 800;
   line-height: 1;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   padding: 0.6rem 0.75rem;
   text-transform: uppercase;
+  white-space: normal;
 }
 
 .form-action-button:hover .form-action-cta {
@@ -957,12 +1079,15 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   text-decoration: underline;
 }
 
-body {
-  overflow-x: hidden;
-}
-
 .guided-path-nav {
+  border-left-color: transparent !important;
+  border-radius: 0 !important;
+  border-right-color: transparent !important;
+  margin-left: calc(50% - (var(--layout-viewport-width, 100vw) / 2));
+  margin-right: calc(50% - (var(--layout-viewport-width, 100vw) / 2));
   overflow: visible;
+  padding-left: 1rem;
+  padding-right: 1rem;
   position: sticky;
   top: 0.5rem;
   transition: background-color 0.18s ease, border-color 0.18s ease, border-radius 0.18s ease, box-shadow 0.18s ease, margin 0.18s ease, padding 0.18s ease, top 0.18s ease;
@@ -977,14 +1102,10 @@ body {
   border-right-color: transparent !important;
   border-top-color: transparent !important;
   box-shadow: 0 12px 24px rgb(var(--brand-ink) / 0.08);
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-  padding-left: 1rem;
-  padding-right: 1rem;
   top: 0;
 }
 
-.guided-path-nav-stuck .guided-stage-sync,
+.guided-path-nav .guided-nav-row,
 .guided-path-nav-stuck .guided-nav-row {
   margin-left: auto;
   margin-right: auto;
@@ -993,6 +1114,23 @@ body {
 
 .guided-path-nav-stuck #guidedPathTabs {
   justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .guided-path-nav {
+    border-color: rgb(var(--border-muted)) !important;
+    border-radius: calc(var(--radius-container-lg) / 2) !important;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .guided-path-nav-stuck {
+    border-color: rgb(var(--border-muted)) !important;
+    border-radius: calc(var(--radius-container-lg) / 2) !important;
+    top: 0.5rem;
+  }
 }
 
 .guided-path-line {
@@ -1251,6 +1389,7 @@ body {
   display: inline-flex;
   flex: 0 0 auto;
   gap: 0.25rem;
+  max-width: 100%;
   padding: 0.25rem;
 }
 
@@ -1453,7 +1592,9 @@ body {
   font-size: 0.68rem;
   font-weight: 800;
   line-height: 1;
+  max-width: 100%;
   min-height: 1.45rem;
+  overflow-wrap: anywhere;
   padding: 0.26rem 0.5rem;
   white-space: nowrap;
 }
@@ -1942,6 +2083,8 @@ body {
   padding: 0.55rem 0.85rem;
   box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.25);
   transition: background-color 0.16s ease, box-shadow 0.16s ease, color 0.16s ease;
+  max-width: 100%;
+  min-width: 0;
   white-space: nowrap;
 }
 
@@ -1969,6 +2112,8 @@ body {
   justify-content: center;
   padding: 0.65rem 1rem;
   transition: background-color 0.16s ease, box-shadow 0.16s ease;
+  max-width: 100%;
+  min-width: 0;
   white-space: nowrap;
 }
 
@@ -2179,7 +2324,11 @@ body {
   font-weight: 850;
   justify-content: center;
   line-height: 1.2;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
   padding: 0.45rem 0.7rem;
+  white-space: normal;
 }
 
 .assessment-detail-toggle:focus-visible {
@@ -2228,6 +2377,7 @@ body {
 
 .assessment-line-legend {
   align-items: center;
+  min-width: 0;
 }
 
 .assessment-line-legend-item {
@@ -2235,6 +2385,8 @@ body {
   display: inline-flex;
   gap: 0.45rem;
   font-weight: 700;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .assessment-line-legend-swatch {
@@ -2242,6 +2394,18 @@ body {
   display: inline-block;
   flex: 0 0 auto;
   width: 2.25rem;
+}
+
+#assessmentClassFilter {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+#assessmentClassFilter button {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 @media (min-width: 768px) {
@@ -2322,8 +2486,11 @@ body {
   font-size: 0.78rem;
   font-weight: 700;
   line-height: 1;
+  max-width: 100%;
+  min-width: 0;
   padding: 0.55rem 0.8rem;
   transition: background-color 0.15s ease, transform 0.15s ease;
+  white-space: normal;
 }
 
 .checklist-jump-button:hover {
@@ -2354,10 +2521,12 @@ body {
 
   .next-step-button {
     text-align: center;
+    white-space: normal;
     width: 100%;
   }
 
   .advanced-context-button {
+    white-space: normal;
     width: 100%;
   }
 
@@ -2398,6 +2567,7 @@ body {
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1rem;
+  overflow-wrap: anywhere;
   text-transform: none;
 }
 
@@ -2421,6 +2591,14 @@ body {
 
 .chart-disc-legend {
   align-items: center;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.chart-disc-legend > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .chart-legend-dot {
@@ -2490,79 +2668,20 @@ body {
   }
 }
 
-.guided-stage-sync {
-  align-items: center;
-  color: rgb(var(--color-slate-600));
-  display: none;
-  font-size: 0.75rem;
-  font-weight: 700;
-  gap: 0.4rem;
-  justify-content: flex-end;
-  margin-bottom: 0;
-  min-height: 0;
-}
-
-.guided-stage-assessment,
-.guided-stage-property {
-  align-items: center;
-  display: flex;
-  gap: 0.4rem;
-  min-width: 0;
-}
-
-.guided-stage-assessment {
-  color: inherit;
-  flex: 0 0 auto;
-  font-size: inherit;
-  font-weight: inherit;
-  gap: 0.4rem;
-  letter-spacing: 0;
-  margin-left: auto;
-  opacity: 0;
-  text-transform: none;
-  transform: translateY(0.25rem);
-  transition: opacity 0.16s ease, transform 0.16s ease;
-  visibility: hidden;
-}
-
-.guided-stage-assessment .notice-status-pill {
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 0.22rem 0.48rem;
-}
-
-.guided-stage-property {
-  display: none;
-}
-
-.guided-path-nav-stuck .guided-stage-sync {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.65rem;
-  min-height: 1.35rem;
-}
-
-.guided-path-nav-stuck .guided-stage-property {
-  display: flex;
-}
-
-.guided-path-nav-stuck.guided-path-nav-show-assessment .guided-stage-assessment {
-  opacity: 1;
-  transform: translateY(0);
-  visibility: visible;
-}
-
-.guided-stage-property strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.guided-stage-sync strong {
-  color: rgb(var(--accent-primary));
-}
-
 @media (max-width: 640px) {
+  .mobile-review-canvas {
+    background: rgb(var(--color-slate-500));
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .page-title-nowrap {
+    white-space: normal;
+  }
+
   .page-title-situs {
     display: block;
   }
@@ -2579,22 +2698,149 @@ body {
     width: 100%;
   }
 
-  .guided-path-nav-stuck .guided-stage-property {
-    max-width: 50vw;
+  .parcel-lookup-shell {
+    align-items: flex-start;
   }
 
-  .guided-stage-assessment > span:first-child,
-  .guided-stage-property > span {
-    display: none;
+  .parcel-lookup-input {
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .min-w-72 {
+    min-width: 0 !important;
+  }
+
+  .market-area-select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .valuation-notice-row {
+    font-size: 0.8125rem;
+    grid-template-columns: minmax(0, 1fr) minmax(4.35rem, auto) minmax(4.35rem, auto);
+  }
+
+  .valuation-notice-row > p {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    padding: 0.55rem 0.5rem;
+  }
+
+  .valuation-notice-header {
+    font-size: 0.75rem;
+  }
+
+  .valuation-notice-header > p {
+    min-height: 2.35rem;
+  }
+
+  .record-disclosure-toggle > div {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .record-disclosure-toggle > div > span:first-child {
+    flex: 1 1 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .record-disclosure-toggle > div > span:last-child {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    min-width: 0;
+  }
+
+  .assessment-type-badge,
+  .assessment-status-label,
+  .pending-status-pill,
+  .notice-status-pill,
+  .current-stage-pill,
+  .movement-pill,
+  .assessment-metric-status,
+  .assessment-band-code {
+    line-height: 1.2;
+    white-space: normal;
+  }
+
+  .adjustment-card-label {
+    white-space: normal;
+  }
+
+  .chart-disc-legend,
+  .assessment-line-legend {
+    font-size: 0.8125rem;
+  }
+
+  .assessment-line-legend-swatch {
+    width: 1.5rem;
   }
 
   .guided-nav-row {
     gap: 0.5rem;
   }
 
+  .guided-path-nav {
+    box-shadow: inset 0 0 0 1px rgb(var(--border-muted)), 0 0.35rem 0.6rem -0.25rem rgb(var(--brand-ink) / 0.28) !important;
+  }
+
+  .guided-path-track {
+    flex: 1 1 auto;
+    max-width: none;
+    overflow-x: hidden;
+    padding-right: 0.5rem;
+  }
+
+  #guidedPathTabs {
+    min-width: 0 !important;
+    width: auto;
+  }
+
+  .guided-step {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .guided-step:not(.guided-step-active) {
+    display: none;
+  }
+
+  .guided-step-active + .guided-step {
+    display: inline-flex;
+  }
+
+  .guided-step-active {
+    flex: 0 0 auto;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .guided-step-active + .guided-step {
+    flex: 0 1 auto;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .assessment-dates-nav-button {
+    flex: 0 0 3.25rem;
     height: 2.3rem;
+    margin-left: auto;
+    position: relative;
     width: 2.3rem;
+  }
+
+  .assessment-dates-nav-button::before {
+    background: rgb(var(--border-muted));
+    bottom: 0.3rem;
+    content: "";
+    left: 0;
+    position: absolute;
+    top: 0.3rem;
+    width: 1px;
   }
 
   .assessment-dates-dialog-bar,
@@ -2651,6 +2897,8 @@ body {
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   padding: 0.28rem 0.55rem;
 }
 
@@ -2681,6 +2929,8 @@ body {
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   padding: 0.28rem 0.55rem;
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
 }
@@ -2765,9 +3015,12 @@ body {
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   padding: 0.55rem 0.8rem;
   box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.28);
   transition: background-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+  white-space: normal;
 }
 
 .secondary-link-button:hover {

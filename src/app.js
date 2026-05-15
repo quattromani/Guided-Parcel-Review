@@ -29,7 +29,6 @@ import {
 import { applyChartDefaults, applyVisualizationPalette } from "./config/visualization-palettes.js";
 import { initImageModal } from "./modal.js";
 import {
-  getCurrentStageText,
   renderPage,
   renderViewHeader
 } from "./render.js";
@@ -47,6 +46,13 @@ import { initAssessorsReport } from "./assessors-report.js";
 import { initAssessmentDatesPanel } from "./assessment-dates.js";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
+
+function syncLayoutViewportWidth() {
+  document.documentElement.style.setProperty("--layout-viewport-width", `${document.documentElement.clientWidth}px`);
+}
+
+syncLayoutViewportWidth();
+window.addEventListener("resize", syncLayoutViewportWidth, { passive: true });
 
 async function main() {
   applyVisualizationPalette();
@@ -107,7 +113,7 @@ async function main() {
   buildCtlSummary(data, ctlData);
   initCountyComparison(data, ctlData, recordCard);
   initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padRatioData, marketPositionData);
-  initGuidedNavigation(data, calendar);
+  initGuidedNavigation(data);
   initAssessmentDatesPanel(assessmentDateEvents);
   initFooterNavigation();
   initAssessorsReport({
@@ -138,7 +144,7 @@ main().catch(error => {
   `;
 });
 
-function initGuidedNavigation(data, calendar) {
+function initGuidedNavigation(data) {
   const snapshotModel = data.snapshotModel;
   const routeList = snapshotModel?.sections?.length ? snapshotModel.sections : TAXPAYER_JOURNEY_ROUTES;
   const tabsContainer = document.getElementById("guidedPathTabs");
@@ -156,7 +162,6 @@ function initGuidedNavigation(data, calendar) {
   const propertyContext = document.getElementById("propertyViewContext");
   const guidedPath = document.querySelector(".guided-path-nav");
   const guidedPathTrack = document.querySelector(".guided-path-track");
-  const stageSync = document.querySelector("[data-guided-current-stage]");
   const primarySectionIds = routeList.filter(route => !route.secondary).map(route => route.id);
   const visitedSteps = new Set();
   const unlockedSteps = new Set([primarySectionIds[0]]);
@@ -313,33 +318,6 @@ function initGuidedNavigation(data, calendar) {
         console.error(error);
         renderTaxDistrictAuthorities(data, null);
       });
-  }
-
-  if (stageSync && calendar) {
-    const propertyLabel = snapshotModel?.viewModels?.property?.situsAddress
-      || snapshotModel?.viewModels?.property?.countyName
-      || "Property snapshot";
-    const propertyStage = document.createElement("span");
-    const propertyContextLabel = document.createElement("span");
-    const propertyContextValue = document.createElement("strong");
-    const notice = snapshotModel?.viewModels?.notice;
-    const assessmentContext = document.createElement("span");
-    const assessmentLabel = document.createElement("span");
-    const assessmentStatus = document.createElement("span");
-
-    propertyStage.className = "guided-stage-property";
-    propertyContextLabel.textContent = "Property:";
-    propertyContextValue.textContent = propertyLabel;
-    propertyStage.append(propertyContextLabel, propertyContextValue);
-
-    assessmentContext.className = "guided-stage-assessment";
-    assessmentContext.setAttribute("aria-label", `${notice?.assessmentLabel ?? "Assessment"} status ${notice?.valueStatusLabel ?? getCurrentStageText(calendar)}`);
-    assessmentLabel.textContent = `${notice?.assessmentLabel ?? "Assessment"}:`;
-    assessmentStatus.className = "notice-status-pill notice-status-pill-pending";
-    assessmentStatus.textContent = notice?.valueStatusLabel ?? getCurrentStageText(calendar);
-    assessmentContext.append(assessmentLabel, assessmentStatus);
-
-    stageSync.replaceChildren(propertyStage, assessmentContext);
   }
 
   tabs.forEach(tab => {
@@ -521,7 +499,6 @@ function formatSourceDate(value) {
 function initGuidedPathStickiness(guidedPath) {
   if (!guidedPath) return;
 
-  const noticeStatus = document.querySelector(".civic-notice-heading .notice-status-group");
   let stickPoint = 0;
 
   function measure() {
@@ -533,12 +510,6 @@ function initGuidedPathStickiness(guidedPath) {
   function update() {
     const stuck = window.scrollY > stickPoint;
     guidedPath.classList.toggle("guided-path-nav-stuck", stuck);
-
-    if (!noticeStatus) return;
-
-    const navBottom = guidedPath.getBoundingClientRect().bottom;
-    const statusBottom = noticeStatus.getBoundingClientRect().bottom;
-    guidedPath.classList.toggle("guided-path-nav-show-assessment", stuck && statusBottom <= navBottom);
   }
 
   measure();

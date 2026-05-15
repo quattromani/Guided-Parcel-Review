@@ -428,37 +428,6 @@ function formatSchoolDistrictLabel(value) {
   return districtNumber ? `School District ${districtNumber}` : "School district not listed";
 }
 
-function getTodayToken() {
-  const today = new Date();
-  return (today.getMonth() + 1) * 100 + today.getDate();
-}
-
-function stageToken(datePart) {
-  return datePart.month * 100 + datePart.day;
-}
-
-function isStageActive(stage, todayToken = getTodayToken()) {
-  return todayToken >= stageToken(stage.start) && todayToken <= stageToken(stage.end);
-}
-
-function isStagePast(stage, todayToken = getTodayToken()) {
-  return todayToken > stageToken(stage.end);
-}
-
-function getActiveStages(calendar) {
-  return calendar.stages.filter(stage => isStageActive(stage));
-}
-
-export function getCurrentStageText(calendar) {
-  const activeStages = getActiveStages(calendar);
-
-  if (!activeStages.length) {
-    return "Between calendar stages";
-  }
-
-  return activeStages.map(stage => stage.label).join(" + ");
-}
-
 function landingPrimerTitleHtml(noticeAddress) {
   return `
     <span class="page-title-nowrap">You are looking at</span>
@@ -518,7 +487,7 @@ export function renderViewHeader(view = "your-property", snapshotModel) {
 function disabledParcelLookupMarkup() {
   return `
     <div class="parcel-lookup-placeholder" data-parcel-lookup>
-      <p class="parcel-lookup-label">Find another property</p>
+      <p class="parcel-lookup-label">Looking for another property?</p>
       <button
         type="button"
         class="parcel-lookup-shell"
@@ -526,8 +495,9 @@ function disabledParcelLookupMarkup() {
         aria-disabled="true"
         aria-expanded="false"
         aria-controls="parcelLookupPopover"
+        aria-label="Looking for another property? Search by address, parcel ID, or owner name"
       >
-        <span class="parcel-lookup-input">Address, parcel ID, or owner name</span>
+        <span class="parcel-lookup-input" title="Address, parcel ID, or owner name">Address, parcel ID, or owner name</span>
         <span class="parcel-lookup-action" aria-hidden="true">Search</span>
       </button>
       <div id="parcelLookupPopover" class="parcel-lookup-popover" data-parcel-lookup-popover hidden>
