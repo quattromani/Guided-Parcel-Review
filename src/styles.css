@@ -1964,6 +1964,73 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   padding-top: 1.25rem;
 }
 
+.mobile-support-disclosure {
+  min-width: 0;
+}
+
+.mobile-support-toggle {
+  align-items: center;
+  background: white;
+  border-radius: 999px;
+  color: rgb(var(--color-secondary));
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 800;
+  gap: 0.55rem;
+  justify-content: space-between;
+  line-height: 1.15;
+  list-style: none;
+  max-width: 100%;
+  padding: 0.7rem 0.85rem;
+  box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.3), 0 2px 5px rgb(var(--brand-ink) / 0.08);
+}
+
+.mobile-support-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.mobile-support-toggle:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: 3px;
+}
+
+.mobile-support-chevron {
+  border-bottom: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  flex: 0 0 auto;
+  height: 0.45rem;
+  margin-top: -0.18rem;
+  transform: rotate(45deg);
+  transition: transform 0.16s ease, margin 0.16s ease;
+  width: 0.45rem;
+}
+
+.mobile-support-disclosure[open] > .mobile-support-toggle .mobile-support-chevron {
+  margin-top: 0.16rem;
+  transform: rotate(225deg);
+}
+
+.mobile-support-content {
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .mobile-support-disclosure {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .mobile-support-toggle {
+    display: none;
+  }
+
+  .mobile-support-content {
+    margin-top: 0;
+  }
+}
+
 .market-reading-intro h3 {
   color: rgb(var(--color-slate-700));
   font-size: 1rem;
@@ -2669,6 +2736,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 @media (max-width: 640px) {
+  #indexed-trends {
+    order: -1;
+  }
+
   .mobile-review-canvas {
     background: rgb(var(--color-slate-500));
     margin-left: -1rem;

@@ -109,28 +109,37 @@ function renderAssessmentSnapshotSource(data, recordCard) {
 function renderValueTaxHistoryShell() {
   const container = document.getElementById("value-tax-history-panel");
   if (!container) return;
+  const historyOpen = mobileSupportOpenAttribute();
 
   container.innerHTML = `
     <div class="data-split-view grid gap-6 lg:grid-cols-5">
       <article id="value-history" class="lg:col-span-2">
-        <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
-        <p class="mt-1 text-sm text-slate-600">
-	          Current values and prior final tax bills are kept together here so timing is clear.
-	          Effective tax rate (ETR) compares final taxes paid with assessed value after levy, credits, and exemptions are reflected in the bill.
-        </p>
-        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-          <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead>
-              <tr>
-                <th class="px-3 py-2 text-left font-semibold">Year</th>
-                <th class="px-3 py-2 text-right font-semibold">Assessed Value</th>
-                <th class="px-3 py-2 text-right font-semibold">Taxes Paid</th>
-                <th class="px-3 py-2 text-right font-semibold">ETR</th>
-              </tr>
-            </thead>
-            <tbody id="historyRows" class="divide-y divide-slate-200 bg-white"></tbody>
-          </table>
-        </div>
+        <details class="mobile-support-disclosure" data-mobile-support${historyOpen}>
+          <summary class="mobile-support-toggle">
+            <span>See yearly values and taxes</span>
+            <span class="mobile-support-chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="mobile-support-content">
+            <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
+            <p class="mt-1 text-sm text-slate-600">
+	              Current values and prior final tax bills are kept together here so timing is clear.
+	              Effective tax rate (ETR) compares final taxes paid with assessed value after levy, credits, and exemptions are reflected in the bill.
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
+              <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <thead>
+                  <tr>
+                    <th class="px-3 py-2 text-left font-semibold">Year</th>
+                    <th class="px-3 py-2 text-right font-semibold">Assessed Value</th>
+                    <th class="px-3 py-2 text-right font-semibold">Taxes Paid</th>
+                    <th class="px-3 py-2 text-right font-semibold">ETR</th>
+                  </tr>
+                </thead>
+                <tbody id="historyRows" class="divide-y divide-slate-200 bg-white"></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
       </article>
 
       <article id="indexed-trends" class="lg:col-span-3">
@@ -149,6 +158,7 @@ function renderValueTaxHistoryShell() {
     </div>
     <p data-property-record-source class="chart-source"></p>
   `;
+  initMobileSupportDisclosureCharts(container);
 }
 
 function renderTaxHistoryShell() {
@@ -187,32 +197,16 @@ function renderTaxHistoryShell() {
       </div>
     </article>
   `;
+  initMobileSupportDisclosureCharts(container);
 }
 
 function renderTaxDistributionShell(data) {
   const container = document.getElementById("tax-distribution");
   if (!container) return;
+  const levyTableOpen = mobileSupportOpenAttribute();
 
   container.innerHTML = `
     <div class="data-split-view grid gap-6 lg:grid-cols-5">
-      <article class="lg:col-span-2">
-	        <h2 class="text-xl font-bold text-slate-700">Which taxing bodies are included?</h2>
-	        <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill depends on finalized budgets, levies, credits, and exemptions.</p>
-        <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-          <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead>
-              <tr>
-                <th class="px-3 py-2 text-left font-semibold">Taxing body</th>
-                <th class="px-3 py-2 text-right font-semibold">Rate</th>
-                <th class="px-3 py-2 text-right font-semibold">Share</th>
-                <th class="px-3 py-2 text-right font-semibold">Per $100k</th>
-              </tr>
-            </thead>
-            <tbody id="levyRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-          </table>
-        </div>
-      </article>
-
       <article class="lg:col-span-3">
         <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
 	        <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. Dollar amounts allocate the latest net bill by each group’s levy share.</p>
@@ -223,6 +217,32 @@ function renderTaxDistributionShell(data) {
           </div>
         </div>
       </article>
+
+      <article class="lg:col-span-2">
+        <details class="mobile-support-disclosure" data-mobile-support${levyTableOpen}>
+          <summary class="mobile-support-toggle">
+            <span>See full levy table</span>
+            <span class="mobile-support-chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="mobile-support-content">
+	          <h2 class="text-xl font-bold text-slate-700">Which taxing bodies are included?</h2>
+	          <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill depends on finalized budgets, levies, credits, and exemptions.</p>
+            <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
+              <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <thead>
+                  <tr>
+                    <th class="px-3 py-2 text-left font-semibold">Taxing body</th>
+                    <th class="px-3 py-2 text-right font-semibold">Rate</th>
+                    <th class="px-3 py-2 text-right font-semibold">Share</th>
+                    <th class="px-3 py-2 text-right font-semibold">Per $100k</th>
+                  </tr>
+                </thead>
+                <tbody id="levyRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </article>
     </div>
   `;
 }
@@ -230,13 +250,71 @@ function renderTaxDistributionShell(data) {
 function renderAssessmentAccuracyShell(summaryContext = {}) {
   const container = document.getElementById("assessment-accuracy-body");
   if (!container) return;
+  const supportOpen = mobileSupportOpenAttribute();
   const ratioCitation = summaryContext.ratioData?.source?.displayCitation || "2019-2026 Gage County PAD Reports and Opinions";
   const iaaoCitation = summaryContext.iaaoStandards?.metadata?.source?.displayCitation || "IAAO Standard on Ratio Studies";
   const rangeAuthority = legalReferenceHtml(summaryContext.legalReferences, "neb-rev-stat-77-5023", "§ 77-5023");
   const reportsAuthority = legalReferenceHtml(summaryContext.legalReferences, "neb-rev-stat-77-5027", "§ 77-5027");
 
   container.innerHTML = `
-    <section class="mt-5" aria-labelledby="equalizationLocalPositionTitle">
+    <section class="mt-5 border-t border-slate-200 pt-5" aria-labelledby="assessmentBandCardsTitle">
+      <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Class band checks</p>
+          <h3 id="assessmentBandCardsTitle" class="text-lg font-bold text-slate-700">Where does each measure stand now?</h3>
+        </div>
+        <p class="max-w-2xl text-sm leading-6 text-slate-600">COD, PRD, and COV are ratio-study statistics. Level of value is the class median ratio range. Current status stays first, with each measure's band history carried inside the same card.</p>
+      </div>
+      <div id="assessmentAccuracySummary" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
+    </section>
+
+    <section class="mt-5 border-t border-slate-200 pt-5" aria-labelledby="assessmentUnifiedViewTitle">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Reported values and unified view</p>
+      <h3 id="assessmentUnifiedViewTitle" class="mt-1 text-lg font-bold text-slate-700">How do the raw measures come together?</h3>
+      <p class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">The table keeps the reported values by year. The chart normalizes COD, PRD, and COV to their own bands so their movement can be compared without mixing raw scales.</p>
+    </section>
+    <section class="data-split-view related-panel-section grid gap-6 lg:grid-cols-5">
+      <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
+	        <h3 class="text-lg font-bold text-slate-700">How do the statistical measures come together?</h3>
+	        <p id="assessmentAccuracyConvergenceNote" class="mt-1 text-sm text-slate-600">COD, PRD, and COV are normalized to their own bands so their relative movement can be read together.</p>
+        <div id="assessmentAccuracyLegend" class="assessment-line-legend mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600"></div>
+        <div class="mt-4 h-80">
+          <canvas id="assessmentAccuracyChart"></canvas>
+        </div>
+      </article>
+      <details class="mobile-support-disclosure rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2" data-mobile-support${supportOpen}>
+        <summary class="mobile-support-toggle">
+          <span>See reported values table</span>
+          <span class="mobile-support-chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="mobile-support-content">
+          <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
+	        <p class="mt-1 text-sm text-slate-600">Latest years appear first so recent county sales-study results are easy to compare with prior years.</p>
+          <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+              <thead class="sticky top-0">
+                <tr>
+                  <th class="px-3 py-2 text-left font-semibold">Year</th>
+                  <th class="px-3 py-2 text-right font-semibold">Sales</th>
+                  <th class="px-3 py-2 text-right font-semibold">COD</th>
+                  <th class="px-3 py-2 text-right font-semibold">PRD</th>
+                  <th class="px-3 py-2 text-right font-semibold">COV</th>
+                  <th class="px-3 py-2 text-right font-semibold">LOV</th>
+                </tr>
+              </thead>
+              <tbody id="assessmentMeasureRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <details class="mobile-support-disclosure related-panel-section" data-mobile-support${supportOpen}>
+      <summary class="mobile-support-toggle">
+        <span>See local market position</span>
+        <span class="mobile-support-chevron" aria-hidden="true"></span>
+      </summary>
+      <div class="mobile-support-content" aria-labelledby="equalizationLocalPositionTitle">
       <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Local starting point</p>
@@ -269,9 +347,15 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
         </section>
       </section>
       <p id="marketPositionSource" class="chart-source"></p>
-    </section>
+      </div>
+    </details>
 
-    <section class="related-panel-section border-t border-slate-200 pt-5" aria-labelledby="equalizationSalePriceTitle">
+    <details class="mobile-support-disclosure related-panel-section" data-mobile-support${supportOpen}>
+      <summary class="mobile-support-toggle">
+        <span>See class sales makeup</span>
+        <span class="mobile-support-chevron" aria-hidden="true"></span>
+      </summary>
+      <div class="mobile-support-content" aria-labelledby="equalizationSalePriceTitle">
       <h3 id="equalizationSalePriceTitle" class="text-lg font-bold text-slate-700">What makes up the class sales data?</h3>
       <p id="equalizationSalePriceDescription" class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">Sale-price ranges show where qualified sales are concentrated and whether the class study is based mostly on lower-, middle-, or higher-priced properties.</p>
       <div class="data-split-view mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
@@ -300,57 +384,32 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
         </div>
       </div>
       <p id="equalizationSalePriceSource" class="chart-source"></p>
-    </section>
-
-    <section class="mt-5 border-t border-slate-200 pt-5" aria-labelledby="assessmentBandCardsTitle">
-      <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Class band checks</p>
-          <h3 id="assessmentBandCardsTitle" class="text-lg font-bold text-slate-700">Where does each measure stand now?</h3>
-        </div>
-        <p class="max-w-2xl text-sm leading-6 text-slate-600">COD, PRD, and COV are ratio-study statistics. Level of value is the class median ratio range. Current status stays first, with each measure's band history carried inside the same card.</p>
       </div>
-      <div id="assessmentAccuracySummary" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
-    </section>
-
-    <section class="mt-5 border-t border-slate-200 pt-5" aria-labelledby="assessmentUnifiedViewTitle">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Reported values and unified view</p>
-      <h3 id="assessmentUnifiedViewTitle" class="mt-1 text-lg font-bold text-slate-700">How do the raw measures come together?</h3>
-      <p class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">The table keeps the reported values by year. The chart normalizes COD, PRD, and COV to their own bands so their movement can be compared without mixing raw scales.</p>
-    </section>
-    <section class="data-split-view related-panel-section grid gap-6 lg:grid-cols-5">
-      <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
-        <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
-	        <p class="mt-1 text-sm text-slate-600">Latest years appear first so recent county sales-study results are easy to compare with prior years.</p>
-        <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
-          <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="sticky top-0">
-              <tr>
-                <th class="px-3 py-2 text-left font-semibold">Year</th>
-                <th class="px-3 py-2 text-right font-semibold">Sales</th>
-                <th class="px-3 py-2 text-right font-semibold">COD</th>
-                <th class="px-3 py-2 text-right font-semibold">PRD</th>
-                <th class="px-3 py-2 text-right font-semibold">COV</th>
-                <th class="px-3 py-2 text-right font-semibold">LOV</th>
-              </tr>
-            </thead>
-            <tbody id="assessmentMeasureRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-          </table>
-        </div>
-      </article>
-      <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
-	        <h3 class="text-lg font-bold text-slate-700">How do the statistical measures come together?</h3>
-	        <p id="assessmentAccuracyConvergenceNote" class="mt-1 text-sm text-slate-600">COD, PRD, and COV are normalized to their own bands so their relative movement can be read together.</p>
-        <div id="assessmentAccuracyLegend" class="assessment-line-legend mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600"></div>
-        <div class="mt-4 h-80">
-          <canvas id="assessmentAccuracyChart"></canvas>
-        </div>
-      </article>
-    </section>
+    </details>
     <p id="assessmentAccuracySourceNote" class="chart-source">
       Source: ${escapeHtml(ratioCitation)}; ${escapeHtml(iaaoCitation)}. Authority context: ${rangeAuthority}, ${reportsAuthority}.
     </p>
   `;
+  initMobileSupportDisclosureCharts(container);
+}
+
+function mobileSupportOpenAttribute() {
+  return typeof window !== "undefined" && window.matchMedia?.("(min-width: 768px)").matches ? " open" : "";
+}
+
+function initMobileSupportDisclosureCharts(root = document) {
+  root.querySelectorAll("details[data-mobile-support]").forEach(detail => {
+    if (detail.dataset.chartResizeBound === "true") return;
+    detail.dataset.chartResizeBound = "true";
+    detail.addEventListener("toggle", () => {
+      if (!detail.open) return;
+      window.requestAnimationFrame(() => {
+        detail.querySelectorAll("canvas").forEach(canvas => {
+          window.Chart?.getChart(canvas)?.resize();
+        });
+      });
+    });
+  });
 }
 
 export function renderPropertyViewContext(data, recordCard, valuationGroups) {
