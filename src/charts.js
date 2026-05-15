@@ -38,10 +38,12 @@ const palette = {
 };
 
 let assessmentAccuracyChart;
+let assessmentBandCharts = [];
 let countyComparisonIndexedChart;
 let countyComparisonRateChart;
+let equalizationSalePriceChart;
 let marketPositionScatterChart;
-let marketSalePriceChart;
+let marketSignalCharts = [];
 let taxBurdenPatternChart;
 
 const assessmentDisplayYears = {
@@ -440,34 +442,67 @@ const assessmentMeasureDefinitions = [
   {
     key: "cod",
     label: "Uniformity",
+    shortLabel: "COD",
+    category: "Statistical measure",
     color: chartColors.cod,
     fill: semanticChartColors.equalizationBg,
     cardBackground: semanticChartColors.equalizationSoft,
     cardBorder: semanticChartColors.equalizationRing,
     digits: 2,
+    borderDash: [],
+    pointStyle: "circle",
     definition: "Uniformity is measured by COD. It shows how tightly individual assessment ratios cluster around the median ratio."
   },
   {
     key: "prd",
     label: "Price level fairness",
+    shortLabel: "PRD",
+    category: "Statistical measure",
     color: chartColors.prd,
     fill: semanticChartColors.equalizationBg,
     cardBackground: semanticChartColors.equalizationSoft,
     cardBorder: semanticChartColors.equalizationRing,
     digits: 3,
+    borderDash: [7, 5],
+    pointStyle: "rectRot",
     definition: "Price level fairness is measured by PRD. It shows whether lower- and higher-priced properties are being treated evenly."
   },
   {
     key: "cov",
     label: "Variation",
+    shortLabel: "COV",
+    category: "Statistical measure",
     color: chartColors.cov,
     fill: semanticChartColors.equalizationBg,
     cardBackground: semanticChartColors.equalizationSoft,
     cardBorder: semanticChartColors.equalizationRing,
     digits: 2,
+    borderDash: [2, 5],
+    pointStyle: "triangle",
     approximateBand: true,
     definition: "COV measures relative variation around the mean ratio. When a comparison band is available, it is approximate context derived from the selected COD guidance."
   }
+];
+
+const assessmentLevelDefinition = {
+  key: "levelOfValue",
+  label: "Level of value",
+  shortLabel: "LOV",
+  category: "Class median range",
+  color: chartColors.levelOfValue,
+  fill: semanticChartColors.equalizationBg,
+  cardBackground: semanticChartColors.equalizationSoft,
+  cardBorder: semanticChartColors.equalizationRing,
+  digits: 2,
+  valueSuffix: "%",
+  borderDash: [],
+  pointStyle: "rect",
+  definition: "Level of value uses the median ratio to show whether the class is within the applicable assessment level range."
+};
+
+const assessmentBandDefinitions = [
+  ...assessmentMeasureDefinitions,
+  assessmentLevelDefinition
 ];
 
 function getAssessmentStandardByKey(collection, key) {
@@ -540,17 +575,30 @@ function assessmentLevelStatus(value, range) {
   return { label: "Inside class range", tone: "inside" };
 }
 
-function formatMeasureValue(measureKey, value, digits) {
+function formatMeasureValue(measureKey, value, digits, suffix = "") {
   if (value === null || value === undefined) return "—";
   if (measureKey === "prd") return value.toFixed(digits);
 
-  return value.toFixed(digits);
+  return `${value.toFixed(digits)}${suffix}`;
 }
 
 function standardRangeLabel(range, digits = 2, fallback = "No direct band") {
   if (!range) return fallback;
 
   return `${range.min.toFixed(digits)}-${range.max.toFixed(digits)}`;
+}
+
+function assessmentDefinitionRangeLabel(definition, range) {
+  if (!range) return "No direct standard band";
+
+  if (definition.key === "levelOfValue") {
+    return `Class range: ${standardRangeLabel(range, 0)}%`;
+  }
+
+  const label = definition.approximateBand ? "Approx. context band" : "Standard band";
+  const digits = definition.key === "prd" ? 2 : 1;
+
+  return `${label}: ${standardRangeLabel(range, digits)}`;
 }
 
 const assessmentStandardBandPlugin = {
@@ -575,6 +623,98 @@ const assessmentStandardBandPlugin = {
     ctx.moveTo(chartArea.left, bottom);
     ctx.lineTo(chartArea.right, bottom);
     ctx.stroke();
+    ctx.restore();
+  }
+};
+
+const assessmentEndLabelPlugin = {
+  id: "assessmentEndLabels",
+  afterDatasetsDraw(chart, args, options = {}) {
+    if (!options.enabled) return;
+
+    const { ctx, chartArea } = chart;
+    if (!chartArea) return;
+
+    const labels = chart.data.datasets
+      .map((dataset, datasetIndex) => {
+        const meta = chart.getDatasetMeta(datasetIndex);
+        if (meta.hidden) return null;
+
+        let pointIndex = dataset.data.length - 1;
+        while (pointIndex >= 0 && !Number.isFinite(dataset.data[pointIndex])) {
+          pointIndex -= 1;
+        }
+
+        const point = meta.data[pointIndex];
+        if (!point) return null;
+
+        const { x, y } = typeof point.getProps === "function"
+          ? point.getProps(["x", "y"], true)
+          : point;
+
+        if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+
+        return {
+          text: dataset.endLabel ?? dataset.label,
+          color: dataset.borderColor,
+          pointX: x,
+          pointY: y,
+          labelY: y
+        };
+      })
+      .filter(Boolean)
+      .sort((left, right) => left.labelY - right.labelY);
+
+    if (!labels.length) return;
+
+    const minGap = options.minGap ?? 17;
+    const top = chartArea.top + 8;
+    const bottom = chartArea.bottom - 8;
+    let previousY = top - minGap;
+
+    labels.forEach(label => {
+      label.labelY = Math.min(bottom, Math.max(top, label.labelY));
+      if (label.labelY < previousY + minGap) {
+        label.labelY = previousY + minGap;
+      }
+      previousY = label.labelY;
+    });
+
+    const overflow = labels.at(-1).labelY - bottom;
+    if (overflow > 0) {
+      labels.forEach(label => {
+        label.labelY = Math.max(top, label.labelY - overflow);
+      });
+    }
+
+    ctx.save();
+    ctx.font = "700 11px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+
+    labels.forEach(label => {
+      const labelX = Math.min(chart.width - 40, chartArea.right + 9);
+      const width = ctx.measureText(label.text).width + 13;
+      const height = 18;
+
+      ctx.strokeStyle = colorAlpha(label.color, 0.54);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(label.pointX + 4, label.pointY);
+      ctx.lineTo(labelX - 5, label.labelY);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
+      ctx.strokeStyle = colorAlpha(label.color, 0.34);
+      ctx.lineWidth = 1;
+      drawRoundedRect(ctx, labelX - 6, label.labelY - height / 2, width, height, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = label.color;
+      ctx.fillText(label.text, labelX, label.labelY + 0.5);
+    });
+
     ctx.restore();
   }
 };
@@ -617,9 +757,9 @@ const marketPositionReferencePlugin = {
         ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
 
         [
-          { xRadius: 5, yRadius: 4, alpha: 0.14 },
-          { xRadius: 10, yRadius: 8, alpha: 0.10 },
-          { xRadius: 16, yRadius: 13, alpha: 0.07 }
+          { xRadius: 5.5, yRadius: 4.4, alpha: 0.155 },
+          { xRadius: 11, yRadius: 8.8, alpha: 0.11 },
+          { xRadius: 17.6, yRadius: 14.3, alpha: 0.078 }
         ].forEach(ring => {
           const radiusX = Math.abs(scales.x.getPixelForValue(countywide.median + ring.xRadius) - centerX);
           const radiusY = Math.abs(scales.y.getPixelForValue(countywide.cod + ring.yRadius) - centerY);
@@ -726,21 +866,57 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
       help: levelHelp
     }
   ];
+  const cardByKey = new Map([
+    ["cod", cards[0]],
+    ["prd", cards[1]],
+    ["cov", cards[2]],
+    ["levelOfValue", cards[3]]
+  ]);
+  const detailOpen = window.matchMedia("(min-width: 768px)").matches;
 
-  summary.innerHTML = cards.map(card => `
-    <div class="assessment-metric-card rounded-xl p-4" style="--metric-color: ${card.color}; --metric-bg: ${colorAlpha(card.color, 0.045)}; --metric-border: ${colorAlpha(card.color, 0.24)};">
-      <div class="assessment-metric-heading">
-        <p class="assessment-metric-label text-xs font-semibold uppercase tracking-wide">${card.label}</p>
-        <span class="assessment-metric-help">
-          <button type="button" class="assessment-help-button" aria-label="${card.label} explanation">?</button>
-          <span class="assessment-help-tooltip" role="tooltip">${card.help}</span>
-        </span>
+  assessmentBandCharts.forEach(chart => chart.destroy());
+  assessmentBandCharts = [];
+
+  summary.innerHTML = assessmentBandDefinitions.map(definition => {
+    const card = cardByKey.get(definition.key);
+    const range = bandConfig[definition.key];
+
+    return `
+    <article class="assessment-metric-card assessment-band-card rounded-xl p-4" style="--metric-color: ${card.color}; --metric-bg: ${colorAlpha(card.color, 0.045)}; --metric-border: ${colorAlpha(card.color, 0.24)}; --measure-color: ${definition.color}; --measure-bg: ${colorAlpha(definition.color, 0.045)}; --measure-border: ${colorAlpha(definition.color, 0.25)};">
+      <div class="assessment-metric-topline">
+        <div class="min-w-0">
+          <div class="assessment-metric-heading">
+            <p class="assessment-metric-label text-xs font-semibold uppercase tracking-wide">${card.label}</p>
+            <span class="assessment-metric-help">
+              <button type="button" class="assessment-help-button" aria-label="${card.label} explanation">?</button>
+              <span class="assessment-help-tooltip" role="tooltip">${card.help}</span>
+            </span>
+          </div>
+          <p class="assessment-metric-value mt-1 text-lg font-bold">${card.value}</p>
+          <p class="assessment-metric-status assessment-metric-status-${card.status.tone}">${card.status.label}</p>
+          <p class="assessment-metric-note mt-1 text-xs leading-5">${card.note}</p>
+        </div>
+        <span class="assessment-band-code">${definition.shortLabel}</span>
       </div>
-      <p class="assessment-metric-value mt-1 text-lg font-bold">${card.value}</p>
-      <p class="assessment-metric-status assessment-metric-status-${card.status.tone}">${card.status.label}</p>
-      <p class="assessment-metric-note mt-1 text-xs leading-5">${card.note}</p>
-    </div>
-  `).join("");
+
+      <details class="assessment-detail-drawer" ${detailOpen ? "open" : ""}>
+        <summary class="assessment-detail-toggle">See statistics + chart</summary>
+        <div class="assessment-detail-content">
+          <p class="assessment-band-kicker mt-4">${definition.category}</p>
+          <div class="assessment-band-chart mt-3 h-40">
+            <canvas id="assessmentBandChart-${definition.key}"></canvas>
+          </div>
+          <p class="assessment-band-copy mt-3">${definition.definition}</p>
+          <div class="assessment-band-footer mt-3">
+            <span>${assessmentDefinitionRangeLabel(definition, range)}</span>
+          </div>
+        </div>
+      </details>
+    </article>
+    `;
+  }).join("");
+
+  renderAssessmentBandCharts(selectedClass, iaaoStandards);
 }
 
 function renderAssessmentRows(selectedClass) {
@@ -759,27 +935,141 @@ function renderAssessmentRows(selectedClass) {
   `).join("");
 }
 
-function renderAssessmentAccuracyNotes(selectedClass, iaaoStandards) {
-  const notes = document.getElementById("assessmentAccuracyNotes");
-  if (!notes) return;
-
+function renderAssessmentBandCharts(selectedClass, iaaoStandards) {
+  const records = getAssessmentDisplayRecords(selectedClass);
+  const labels = records.map(row => row.year);
   const bandConfig = getAssessmentBandConfig(selectedClass, iaaoStandards);
-  const bandLabel = definition => {
-    const range = bandConfig[definition.key];
-    if (!range) return "No direct standard band";
-    const label = definition.approximateBand ? "Approx. context band" : "Standard band";
-    return `${label}: ${standardRangeLabel(range, definition.key === "prd" ? 2 : 1)}`;
-  };
 
-  notes.innerHTML = assessmentMeasureDefinitions.map(definition => `
-    <div class="assessment-note-card flex min-h-32 flex-col rounded-lg p-4" style="--measure-color: ${definition.color};">
-      <p class="assessment-note-title">${definition.label}</p>
-      <p class="assessment-note-body mt-2">${definition.definition}</p>
-      <p class="assessment-note-band mt-auto pt-3 text-[11px] font-semibold uppercase tracking-wide">
-        ${bandLabel(definition)}
-      </p>
-    </div>
-  `).join("");
+  assessmentBandCharts.forEach(chart => chart.destroy());
+  assessmentBandCharts = [];
+
+  assessmentBandDefinitions.forEach(definition => {
+    const canvas = document.getElementById(`assessmentBandChart-${definition.key}`);
+    const range = bandConfig[definition.key];
+    if (!canvas || !range) return;
+
+    const data = records.map(row => bandPosition(row[definition.key], range));
+    const chartValues = data.filter(value => value !== null && value !== undefined);
+    const minValue = Math.min(0, ...chartValues);
+    const maxValue = Math.max(1, ...chartValues);
+
+    assessmentBandCharts.push(new Chart(canvas, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: definition.shortLabel,
+          measureKey: definition.key,
+          digits: definition.digits,
+          valueSuffix: definition.valueSuffix,
+          approximateBand: Boolean(definition.approximateBand),
+          data,
+          tension: 0.25,
+          borderWidth: 2.5,
+          borderColor: definition.color,
+          borderDash: definition.borderDash,
+          backgroundColor: definition.fill,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          pointBackgroundColor: definition.color,
+          pointBorderColor: definition.color,
+          pointStyle: definition.pointStyle,
+          spanGaps: true
+        }]
+      },
+      plugins: [assessmentStandardBandPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: items => items[0]?.label ?? "",
+              label: context => {
+                const rawValue = records[context.dataIndex]?.[context.dataset.measureKey];
+                const value = formatMeasureValue(context.dataset.measureKey, rawValue, context.dataset.digits, context.dataset.valueSuffix);
+                return `${definition.shortLabel}: ${value} (${bandStatus(context.parsed.y, context.dataset.approximateBand)})`;
+              }
+            }
+          },
+          assessmentStandardBand: {
+            min: 0,
+            max: 1,
+            backgroundColor: colorAlpha(definition.color, 0.08),
+            borderColor: colorAlpha(definition.color, 0.32)
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              maxRotation: 0,
+              autoSkip: true,
+              maxTicksLimit: 4
+            }
+          },
+          y: {
+            suggestedMin: Math.min(-0.25, Math.floor(minValue - 0.25)),
+            suggestedMax: Math.max(1.5, Math.ceil(maxValue + 0.25)),
+            ticks: {
+              maxTicksLimit: 4,
+              callback: value => {
+                if (Number(value) === 0) return "Lower";
+                if (Number(value) === 1) return "Upper";
+                return Number(value).toFixed(1);
+              }
+            }
+          }
+        }
+      }
+    }));
+  });
+
+  document.querySelectorAll(".assessment-detail-drawer").forEach(drawer => {
+    drawer.addEventListener("toggle", () => {
+      if (!drawer.open) return;
+
+      const canvas = drawer.querySelector("canvas");
+      window.requestAnimationFrame(() => Chart.getChart(canvas)?.resize());
+    });
+  });
+}
+
+function renderAssessmentConvergenceNote(records, datasets) {
+  const note = document.getElementById("assessmentAccuracyConvergenceNote");
+  if (!note) return;
+
+  const spreads = records.map((row, index) => {
+    const values = datasets
+      .map(dataset => dataset.data[index])
+      .filter(value => Number.isFinite(value));
+
+    if (values.length < 2) return null;
+
+    return {
+      year: row.year,
+      spread: Math.max(...values) - Math.min(...values)
+    };
+  }).filter(Boolean);
+
+  const latest = spreads.at(-1);
+  if (!latest) {
+    note.textContent = "COD, PRD, and COV are normalized to their own bands so their relative movement can be read together.";
+    return;
+  }
+
+  const tightest = spreads.reduce((best, item) => item.spread < best.spread ? item : best, spreads[0]);
+  const firstYear = records[0]?.year;
+  const yearWindow = firstYear ? `${firstYear}-${latest.year}` : "the displayed";
+
+  if (latest.spread <= tightest.spread + 0.05) {
+    note.textContent = `${latest.year} is one of the tightest convergences in the ${yearWindow} window: COD, PRD, and COV are ${latest.spread.toFixed(2)} normalized band-widths apart. They remain different statistics, but their latest readings land in a similar position relative to their own ranges.`;
+    return;
+  }
+
+  note.textContent = `${latest.year} places COD, PRD, and COV ${latest.spread.toFixed(2)} normalized band-widths apart. The combined view keeps their raw scales separate while showing how each measure sits relative to its own range.`;
 }
 
 function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
@@ -798,11 +1088,16 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
     data: records.map(row => bandPosition(row[definition.key], bandConfig[definition.key])),
     tension: 0.25,
     borderWidth: 3,
+    borderDash: definition.borderDash,
     borderColor: definition.color,
     backgroundColor: definition.fill,
+    pointRadius: 4,
+    pointHoverRadius: 6,
     pointBackgroundColor: definition.color,
     pointBorderColor: definition.color,
-    pointStyle: "circle"
+    pointStyle: definition.pointStyle,
+    endLabel: definition.shortLabel,
+    spanGaps: true
   }));
   const chartValues = datasets.flatMap(dataset => dataset.data.filter(value => value !== null && value !== undefined));
   const minValue = Math.min(0, ...chartValues);
@@ -810,21 +1105,29 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
   const hasApproximateBand = assessmentMeasureDefinitions.some(definition =>
     definition.approximateBand && bandConfig[definition.key]
   );
+  const hasLineLegend = renderLineLegend("assessmentAccuracyLegend", datasets);
+
+  renderAssessmentConvergenceNote(records, datasets);
 
   assessmentAccuracyChart?.destroy();
   assessmentAccuracyChart = new Chart(canvas, {
     type: "line",
     data: { labels, datasets },
-    plugins: [assessmentStandardBandPlugin],
+    plugins: [assessmentStandardBandPlugin, assessmentEndLabelPlugin],
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
+      layout: {
+        padding: {
+          right: 48
+        }
+      },
       plugins: {
         legend: {
+          display: !hasLineLegend,
           labels: {
             usePointStyle: true,
-            pointStyle: "circle",
             boxWidth: 8,
             boxHeight: 8
           }
@@ -844,6 +1147,9 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
         assessmentStandardBand: {
           min: 0,
           max: 1
+        },
+        assessmentEndLabels: {
+          enabled: true
         }
       },
       scales: {
@@ -864,17 +1170,141 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
   });
 }
 
-function renderAssessmentClass(selectedClass, iaaoStandards) {
+function renderEqualizationSalePriceRows(padRatioData, classKey = "residential", marketPositionData = null) {
+  const table = document.getElementById("equalizationSalePriceRows");
+  if (!table || !padRatioData) return;
+
+  const study = priceBandStudyForClass(padRatioData, classKey, marketPositionData);
+  const rows = study.rows || [];
+  const totalRow = study.totalRow;
+  const title = document.getElementById("equalizationSalePriceTitle");
+  const description = document.getElementById("equalizationSalePriceDescription");
+  const chartTitle = document.getElementById("equalizationSalePriceChartTitle");
+  const chartNote = document.getElementById("equalizationSalePriceChartNote");
+  const rangeHeader = document.getElementById("equalizationSalePriceRangeHeader");
+  const source = document.getElementById("equalizationSalePriceSource");
+  const propertyClassLabel = propertyClassLabelForStudy(study.key ?? classKey, study);
+  const duplicateLabels = duplicateBandLabels(rows);
+  const nonAdditiveNote = study.key === "agFarm"
+    ? " Rows are stratified views and should not be summed."
+    : "";
+
+  if (title) title.textContent = `What makes up the ${propertyClassLabel} sales data?`;
+  if (description) description.textContent = study.description || "";
+  if (chartTitle) chartTitle.textContent = study.chartTitle || "Sales distribution";
+  if (chartNote) chartNote.textContent = `${study.chartNote || "Qualified sales by band."}${nonAdditiveNote}`;
+  if (rangeHeader) rangeHeader.textContent = study.rangeHeader || "Sale price range";
+  if (source) source.textContent = `${getPadRoSourceAnchor(padRatioData)}${getPadRoRefreshWatch(padRatioData)}`;
+
+  const dataRows = rows.map(row => `
+    <tr>
+      <td class="px-2 py-2 font-medium text-slate-700">${priceBandDisplayLabel(row, duplicateLabels)}</td>
+      <td class="px-2 py-2 text-right">${formatCountValue(row.count)}</td>
+      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.median) : "—"}</td>
+      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.cod) : "—"}</td>
+      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.prd) : "—"}</td>
+      <td class="px-2 py-2 text-right">${row.count ? formatMoneyValue(row.averageAdjustedSalePrice) : "—"}</td>
+    </tr>
+  `).join("");
+  const footerRow = totalRow ? `
+    <tr class="table-total-row font-semibold">
+      <td class="px-2 py-2">Countywide total</td>
+      <td class="px-2 py-2 text-right">${formatCountValue(totalRow.count)}</td>
+      <td class="px-2 py-2 text-right">${formatRatio(totalRow.median)}</td>
+      <td class="px-2 py-2 text-right">${formatRatio(totalRow.cod)}</td>
+      <td class="px-2 py-2 text-right">${formatRatio(totalRow.prd)}</td>
+      <td class="px-2 py-2 text-right">${formatMoneyValue(totalRow.averageAdjustedSalePrice)}</td>
+    </tr>
+  ` : "";
+
+  table.innerHTML = dataRows + footerRow;
+  renderEqualizationSalePriceChart(rows, study, duplicateLabels);
+}
+
+function renderEqualizationSalePriceChart(rows, study = {}, duplicateLabels = new Set()) {
+  const canvas = document.getElementById("equalizationSalePriceChart");
+  if (!canvas) return;
+
+  const datasets = [
+    {
+      type: "bar",
+      label: study.countLabel || "Sales",
+      data: rows.map(row => row.count),
+      backgroundColor: semanticChartColors.equalizationBg,
+      borderColor: chartColors.equalization,
+      borderWidth: 2,
+      borderRadius: 6,
+      order: 2
+    },
+    {
+      type: "line",
+      label: study.lineLabel || "Distribution curve",
+      data: rows.map(row => row.count),
+      tension: 0.38,
+      borderWidth: 3,
+      borderColor: semanticChartColors.comparison,
+      backgroundColor: semanticChartColors.comparisonBg,
+      pointBackgroundColor: semanticChartColors.comparison,
+      pointRadius: 3,
+      fill: true,
+      order: 1
+    }
+  ];
+  const hasCustomLegend = renderCustomLegend("equalizationSalePriceChartLegend", datasets);
+
+  equalizationSalePriceChart?.destroy();
+  equalizationSalePriceChart = new Chart(canvas, {
+    data: {
+      labels: rows.map(row => shortPriceBandLabel(priceBandDisplayLabel(row, duplicateLabels))),
+      datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: {
+          display: !hasCustomLegend,
+          labels: {
+            boxWidth: 28,
+            boxHeight: 9
+          }
+        },
+        tooltip: {
+          callbacks: {
+            title: context => rows[context[0].dataIndex]?.range ?? "",
+            label: context => `${context.dataset.label}: ${integer.format(context.parsed.y)}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            maxRotation: 45,
+            minRotation: 45
+          }
+        },
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: study.yAxisTitle || "Qualified sales" },
+          ticks: { precision: 0 }
+        }
+      }
+    }
+  });
+}
+
+function renderAssessmentClass(selectedClass, iaaoStandards, padRatioData = null, marketPositionData = null) {
   renderAssessmentSummary(selectedClass, iaaoStandards);
   renderAssessmentRows(selectedClass);
   renderAssessmentAccuracyChart(selectedClass, iaaoStandards);
-  renderAssessmentAccuracyNotes(selectedClass, iaaoStandards);
+  renderEqualizationSalePriceRows(padRatioData, selectedClass.key, marketPositionData);
   window.dispatchEvent(new CustomEvent("assessment-class-change", {
     detail: { key: selectedClass.key, label: selectedClass.label }
   }));
 }
 
-export function initAssessmentRatioAnalysis(data, ratioData, iaaoStandards) {
+export function initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padRatioData = null, marketPositionData = null) {
   const filter = document.getElementById("assessmentClassFilter");
   if (!filter) return;
 
@@ -902,7 +1332,7 @@ export function initAssessmentRatioAnalysis(data, ratioData, iaaoStandards) {
       button.classList.toggle("hover:bg-white", !active);
       button.setAttribute("aria-pressed", String(active));
     });
-    renderAssessmentClass(selectedClass, iaaoStandards);
+    renderAssessmentClass(selectedClass, iaaoStandards, padRatioData, marketPositionData);
   };
 
   buttons.forEach(button => {
@@ -1013,6 +1443,56 @@ function renderCustomLegend(elementId, datasets) {
   return true;
 }
 
+function lineStyleForDash(borderDash = []) {
+  if (!borderDash.length) return "solid";
+  return borderDash[0] <= 2 ? "dotted" : "dashed";
+}
+
+function renderLineLegend(elementId, datasets) {
+  const legend = document.getElementById(elementId);
+  if (!legend) return false;
+
+  legend.innerHTML = datasets.map(dataset => `
+    <div class="assessment-line-legend-item">
+      <span
+        class="assessment-line-legend-swatch"
+        style="border-top-color: ${dataset.borderColor}; border-top-style: ${lineStyleForDash(dataset.borderDash)};"
+      ></span>
+      <span>${dataset.endLabel ?? dataset.label}</span>
+    </div>
+  `).join("");
+  return true;
+}
+
+function renderMarketComparisonLegend(elementId, selectedLabel = "Selected market area", countyLabel = "Countywide") {
+  const legend = document.getElementById(elementId);
+  if (!legend) return false;
+
+  const items = [
+    {
+      label: selectedLabel,
+      borderColor: visualizationTheme.roles.equalization,
+      backgroundColor: colorAlpha(visualizationTheme.roles.equalization, 0.22)
+    },
+    {
+      label: countyLabel,
+      borderColor: visualizationTheme.roles.comparison,
+      backgroundColor: colorAlpha(visualizationTheme.roles.comparison, 0.16)
+    }
+  ];
+
+  legend.innerHTML = items.map(item => `
+    <div class="flex items-center gap-2">
+      <span
+        class="chart-legend-dot inline-block border-2"
+        style="border-color: ${item.borderColor}; background-color: ${item.backgroundColor};"
+      ></span>
+      <span>${item.label}</span>
+    </div>
+  `).join("");
+  return true;
+}
+
 function formatRatio(value, digits = 2) {
   if (value === null || value === undefined) return "—";
   const number = Number(value);
@@ -1024,6 +1504,16 @@ function priceBandStudyKeyForClass(classKey = "residential") {
   if (normalized === "agricultural") return "agFarm";
   if (normalized === "commercial") return "commercial";
   return "residential";
+}
+
+function normalizedPrdRange(range) {
+  if (!range) return null;
+
+  const min = Number(range.min);
+  const max = Number(range.max);
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return null;
+
+  return max <= 2 ? { min: min * 100, max: max * 100 } : { min, max };
 }
 
 function marketAreaSignal(selected, summary, classStats, medianRange = null, isParcelGroup = true) {
@@ -1086,7 +1576,11 @@ function enrichedMarketGroups(groups, valuationGroups, propertyClass = "resident
       : description
         ? `${description} · VG ${id}`
         : group.label;
-    const marketGroupLabel = marketGroup ? `${marketGroup} market` : "";
+    const optionLabel = isAgricultural
+      ? group.label
+      : description && marketGroup
+        ? `${description} · ${marketGroup}`
+        : description || `Local group ${id}`;
 
     return {
       ...group,
@@ -1096,9 +1590,167 @@ function enrichedMarketGroups(groups, valuationGroups, propertyClass = "resident
       marketGroup,
       label: areaFirstLabel,
       descriptiveLabel,
-      optionLabel: marketGroupLabel ? `${areaFirstLabel} (${marketGroupLabel})` : areaFirstLabel,
+      optionLabel,
       shortLabel: isAgricultural ? group.label : description ? `VG ${id} - ${description}` : group.label
     };
+  });
+}
+
+function marketSignalDefinitions(selected, summary, classStats, standards) {
+  const medianRange = getMedianRatioRange(classStats, standards);
+  const codRange = getCodInterpretationRange(classStats, standards);
+  const prdRange = normalizedPrdRange(standards?.prdStandards?.acceptableRange);
+
+  return [
+    {
+      metricKey: "qualifiedSales",
+      label: "Qualified sales",
+      shortLabel: "Sales",
+      category: "Evidence depth",
+      rawValue: selected.count,
+      comparisonValue: summary.count ?? summary.numberOfSales,
+      value: integer.format(selected.count),
+      note: `${integer.format(summary.count ?? summary.numberOfSales)} countywide`,
+      color: visualizationTheme.roles.equalization,
+      range: null,
+      formatter: value => integer.format(value),
+      definition: "Qualified sales tell you how much evidence is behind this local group before reading the ratio measures."
+    },
+    {
+      metricKey: "medianRatio",
+      label: "Median ratio",
+      shortLabel: "Median",
+      category: "Level",
+      rawValue: selected.median,
+      comparisonValue: summary.median,
+      value: formatRatio(selected.median),
+      note: `County: ${formatRatio(summary.median)}`,
+      color: chartColors.levelOfValue,
+      range: medianRange,
+      formatter: value => formatRatio(value),
+      definition: "Median ratio shows the middle assessment-to-sale ratio for the group, which is the local level signal before countywide equalization."
+    },
+    {
+      metricKey: "cod",
+      label: "COD",
+      shortLabel: "COD",
+      category: "Uniformity",
+      rawValue: selected.cod,
+      comparisonValue: summary.cod,
+      value: formatRatio(selected.cod),
+      note: `County: ${formatRatio(summary.cod)}`,
+      color: chartColors.cod,
+      range: codRange,
+      formatter: value => formatRatio(value),
+      definition: "COD shows how tightly this local group's sales ratios cluster around the median ratio."
+    },
+    {
+      metricKey: "prd",
+      label: "PRD",
+      shortLabel: "PRD",
+      category: "Price fairness",
+      rawValue: selected.prd,
+      comparisonValue: summary.prd,
+      value: formatRatio(selected.prd),
+      note: `County: ${formatRatio(summary.prd)}`,
+      color: chartColors.prd,
+      range: prdRange,
+      formatter: value => formatRatio(value),
+      definition: "PRD shows whether lower- and higher-priced properties in the group are being treated evenly."
+    }
+  ];
+}
+
+function renderMarketSignalChart(definition) {
+  const canvas = document.getElementById(`marketSignalChart-${definition.metricKey}`);
+  if (!canvas) return;
+
+  const values = [definition.rawValue, definition.comparisonValue].map(Number);
+  const finiteValues = values.filter(Number.isFinite);
+  const rangeValues = definition.range ? [definition.range.min, definition.range.max].map(Number) : [];
+  const yValues = [...finiteValues, ...rangeValues].filter(Number.isFinite);
+  const maxRaw = Math.max(...yValues, 1);
+  const minRaw = Math.min(...yValues, definition.metricKey === "qualifiedSales" ? 0 : maxRaw);
+  const padding = definition.metricKey === "qualifiedSales"
+    ? Math.max(5, maxRaw * 0.12)
+    : Math.max(1, (maxRaw - minRaw) * 0.22);
+  const suggestedMin = definition.metricKey === "qualifiedSales"
+    ? 0
+    : Math.max(0, Math.floor(minRaw - padding));
+  const suggestedMax = Math.ceil(maxRaw + padding);
+  const selectedColor = definition.color;
+  const countyColor = visualizationTheme.roles.comparison;
+
+  marketSignalCharts.push(new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: ["Selected", "Countywide"],
+      datasets: [{
+        label: definition.label,
+        data: values,
+        backgroundColor: [
+          colorAlpha(selectedColor, 0.24),
+          colorAlpha(countyColor, 0.16)
+        ],
+        borderColor: [
+          selectedColor,
+          countyColor
+        ],
+        borderWidth: 2,
+        borderRadius: 6
+      }]
+    },
+    plugins: definition.range ? [assessmentStandardBandPlugin] : [],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: context => `${context.label}: ${definition.formatter(context.parsed.y)}`
+          }
+        },
+        assessmentStandardBand: definition.range ? {
+          min: definition.range.min,
+          max: definition.range.max,
+          backgroundColor: colorAlpha(selectedColor, 0.08),
+          borderColor: colorAlpha(selectedColor, 0.30)
+        } : false
+      },
+      scales: {
+        x: {
+          grid: { display: false }
+        },
+        y: {
+          beginAtZero: definition.metricKey === "qualifiedSales",
+          suggestedMin,
+          suggestedMax,
+          ticks: {
+            precision: definition.metricKey === "qualifiedSales" ? 0 : undefined,
+            callback: value => definition.metricKey === "qualifiedSales"
+              ? integer.format(Number(value))
+              : formatRatio(Number(value), 0)
+          }
+        }
+      }
+    }
+  }));
+}
+
+function renderMarketSignalCharts(definitions) {
+  marketSignalCharts.forEach(chart => chart.destroy());
+  marketSignalCharts = [];
+  definitions.forEach(renderMarketSignalChart);
+
+  document.querySelectorAll("#marketSignalCards .assessment-detail-drawer").forEach(drawer => {
+    drawer.addEventListener("toggle", () => {
+      if (!drawer.open) return;
+
+      const canvas = drawer.querySelector("canvas");
+      window.requestAnimationFrame(() => Chart.getChart(canvas)?.resize());
+    });
   });
 }
 
@@ -1106,46 +1758,13 @@ function renderMarketSignalCards(selected, summary, standards, context = {}) {
   const container = document.getElementById("marketSignalCards");
   if (!container) return;
 
-  const countyCount = summary.count ?? summary.numberOfSales;
   const signalContext = {
     ...context,
     valuationGroup: selected.descriptiveLabel ?? selected.label,
     marketAreaType: selected.marketGroup
   };
-  const cards = [
-    {
-      metricKey: "qualifiedSales",
-      label: "Qualified sales",
-      rawValue: selected.count,
-      comparisonValue: countyCount,
-      value: integer.format(selected.count),
-      note: `${integer.format(countyCount)} countywide`
-    },
-    {
-      metricKey: "medianRatio",
-      label: "Median ratio",
-      rawValue: selected.median,
-      comparisonValue: summary.median,
-      value: formatRatio(selected.median),
-      note: `County: ${formatRatio(summary.median)}`
-    },
-    {
-      metricKey: "cod",
-      label: "COD",
-      rawValue: selected.cod,
-      comparisonValue: summary.cod,
-      value: formatRatio(selected.cod),
-      note: `County: ${formatRatio(summary.cod)}`
-    },
-    {
-      metricKey: "prd",
-      label: "PRD",
-      rawValue: selected.prd,
-      comparisonValue: summary.prd,
-      value: formatRatio(selected.prd),
-      note: `County: ${formatRatio(summary.prd)}`
-    }
-  ];
+  const cards = marketSignalDefinitions(selected, summary, context.classStats, standards);
+  const detailOpen = window.matchMedia("(min-width: 768px)").matches;
 
   container.innerHTML = cards.map(card => {
     const signal = getMetricSignal({
@@ -1160,16 +1779,45 @@ function renderMarketSignalCards(selected, summary, standards, context = {}) {
       signal.label,
       signal.explanation
     ].join(" ");
+    const rangeLabel = assessmentDefinitionRangeLabel({
+      key: card.metricKey === "medianRatio" ? "levelOfValue" : card.metricKey,
+      approximateBand: false
+    }, card.range);
 
     return `
-    <div class="metric-signal-card metric-signal-card-${signal.tone} rounded-xl p-4" role="group" aria-label="${escapeHtml(ariaLabel)}">
-      <p class="text-xs font-semibold uppercase tracking-wide">${escapeHtml(card.label)}</p>
-      <p class="mt-1 text-lg font-bold text-slate-700">${escapeHtml(card.value)}</p>
-      <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(card.note)}</p>
-      <p class="metric-signal-text mt-2">${escapeHtml(signal.label)}</p>
-    </div>
+    <article
+      class="metric-signal-card metric-signal-card-${signal.tone} rounded-xl p-4"
+      role="group"
+      aria-label="${escapeHtml(ariaLabel)}"
+      style="--measure-color: ${card.color}; --measure-border: ${colorAlpha(card.color, 0.26)};"
+    >
+      <div class="assessment-metric-topline">
+        <div class="min-w-0">
+          <p class="text-xs font-semibold uppercase tracking-wide">${escapeHtml(card.label)}</p>
+          <p class="mt-1 text-lg font-bold text-slate-700">${escapeHtml(card.value)}</p>
+          <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(card.note)}</p>
+          <p class="metric-signal-text mt-2">${escapeHtml(signal.label)}</p>
+        </div>
+        <span class="assessment-band-code">${escapeHtml(card.shortLabel)}</span>
+      </div>
+      <details class="assessment-detail-drawer" ${detailOpen ? "open" : ""}>
+        <summary class="assessment-detail-toggle">See statistics + chart</summary>
+        <div class="assessment-detail-content">
+          <p class="assessment-band-kicker mt-4">${escapeHtml(card.category)}</p>
+          <div class="assessment-band-chart mt-3 h-40">
+            <canvas id="marketSignalChart-${card.metricKey}"></canvas>
+          </div>
+          <p class="assessment-band-copy mt-3">${escapeHtml(card.definition)}</p>
+          <div class="assessment-band-footer mt-3">
+            <span>${escapeHtml(card.range ? rangeLabel : "Benchmark: selected market area vs. countywide")}</span>
+          </div>
+        </div>
+      </details>
+    </article>
   `;
   }).join("");
+
+  renderMarketSignalCharts(cards);
 }
 
 function renderMarketNarrative(selected, summary, classStats, medianRange, isParcelGroup = true) {
@@ -1275,55 +1923,14 @@ function priceBandDisplayLabel(row, duplicateLabels) {
     : row.range;
 }
 
-function renderMarketSalePriceRows(padRatioData, classKey = "residential", marketPositionData = null) {
-  const table = document.getElementById("marketSalePriceRows");
-  if (!table) return;
+function formatCountValue(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? integer.format(number) : "—";
+}
 
-  const study = priceBandStudyForClass(padRatioData, classKey, marketPositionData);
-  const rows = study.rows || [];
-  const totalRow = study.totalRow;
-  const title = document.getElementById("marketSalePriceTitle");
-  const description = document.getElementById("marketSalePriceDescription");
-  const chartTitle = document.getElementById("marketSalePriceChartTitle");
-  const chartNote = document.getElementById("marketSalePriceChartNote");
-  const rangeHeader = document.getElementById("marketSalePriceRangeHeader");
-  const source = document.getElementById("marketSalePriceSource");
-  const propertyClassLabel = propertyClassLabelForStudy(study.key ?? classKey, study);
-  const duplicateLabels = duplicateBandLabels(rows);
-  const nonAdditiveNote = study.key === "agFarm"
-    ? " Rows are stratified views and should not be summed."
-    : "";
-
-  if (title) title.textContent = `What makes up the ${propertyClassLabel} sales data?`;
-  if (description) description.textContent = study.description || "";
-  if (chartTitle) chartTitle.textContent = study.chartTitle || "Sales distribution";
-  if (chartNote) chartNote.textContent = `${study.chartNote || "Qualified sales by band."}${nonAdditiveNote}`;
-  if (rangeHeader) rangeHeader.textContent = study.rangeHeader || "Sale price range";
-  if (source) source.textContent = `${getPadRoSourceAnchor(padRatioData)}${getPadRoRefreshWatch(padRatioData)}`;
-
-  const dataRows = rows.map(row => `
-    <tr>
-      <td class="px-2 py-2 font-medium text-slate-700">${priceBandDisplayLabel(row, duplicateLabels)}</td>
-      <td class="px-2 py-2 text-right">${integer.format(row.count)}</td>
-      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.median) : "—"}</td>
-      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.cod) : "—"}</td>
-      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.prd) : "—"}</td>
-      <td class="px-2 py-2 text-right">${row.count ? wholeMoney.format(row.averageAdjustedSalePrice) : "—"}</td>
-    </tr>
-  `).join("");
-  const footerRow = totalRow ? `
-    <tr class="table-total-row font-semibold">
-      <td class="px-2 py-2">Countywide total</td>
-      <td class="px-2 py-2 text-right">${integer.format(totalRow.count)}</td>
-      <td class="px-2 py-2 text-right">${formatRatio(totalRow.median)}</td>
-      <td class="px-2 py-2 text-right">${formatRatio(totalRow.cod)}</td>
-      <td class="px-2 py-2 text-right">${formatRatio(totalRow.prd)}</td>
-      <td class="px-2 py-2 text-right">${wholeMoney.format(totalRow.averageAdjustedSalePrice)}</td>
-    </tr>
-  ` : "";
-
-  table.innerHTML = dataRows + footerRow;
-  renderMarketSalePriceChart(rows, study, duplicateLabels);
+function formatMoneyValue(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? wholeMoney.format(number) : "—";
 }
 
 function shortPriceBandLabel(range) {
@@ -1338,78 +1945,6 @@ function shortPriceBandLabel(range) {
   if (numbers.length >= 2) return `${compactBandNumber(numbers[0])}-${compactBandNumber(numbers[1] + 1)}`;
 
   return range;
-}
-
-function renderMarketSalePriceChart(rows, study = {}, duplicateLabels = new Set()) {
-  const canvas = document.getElementById("marketSalePriceChart");
-  if (!canvas) return;
-  const datasets = [
-    {
-      type: "bar",
-      label: study.countLabel || "Sales",
-      data: rows.map(row => row.count),
-      backgroundColor: semanticChartColors.equalizationBg,
-      borderColor: chartColors.equalization,
-      borderWidth: 2,
-      borderRadius: 6,
-      order: 2
-    },
-    {
-      type: "line",
-      label: study.lineLabel || "Distribution curve",
-      data: rows.map(row => row.count),
-      tension: 0.38,
-      borderWidth: 3,
-      borderColor: semanticChartColors.comparison,
-      backgroundColor: semanticChartColors.comparisonBg,
-      pointBackgroundColor: semanticChartColors.comparison,
-      pointRadius: 3,
-      fill: true,
-      order: 1
-    }
-  ];
-  const hasCustomLegend = renderCustomLegend("marketSalePriceChartLegend", datasets);
-
-  marketSalePriceChart?.destroy();
-  marketSalePriceChart = new Chart(canvas, {
-    data: {
-      labels: rows.map(row => shortPriceBandLabel(priceBandDisplayLabel(row, duplicateLabels))),
-      datasets
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: "index", intersect: false },
-      plugins: {
-        legend: {
-          display: !hasCustomLegend,
-          labels: {
-            boxWidth: 28,
-            boxHeight: 9
-          }
-        },
-        tooltip: {
-          callbacks: {
-            title: context => rows[context[0].dataIndex]?.range ?? "",
-            label: context => `${context.dataset.label}: ${integer.format(context.parsed.y)}`
-          }
-        }
-      },
-      scales: {
-        x: {
-          ticks: {
-            maxRotation: 45,
-            minRotation: 45
-          }
-        },
-        y: {
-          beginAtZero: true,
-          title: { display: true, text: study.yAxisTitle || "Qualified sales" },
-          ticks: { precision: 0 }
-        }
-      }
-    }
-  });
 }
 
 function confidenceIntervalLabel(interval) {
@@ -1711,10 +2246,12 @@ function renderMarketPositionScatter(selected, classStats, iaaoStandards, onSele
 }
 
 export function initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards, marketPositionData) {
-  const select = document.getElementById("marketAreaSelect");
+  const legacySelect = document.getElementById("marketAreaSelect");
+  const marketAreaSelects = [...document.querySelectorAll("[data-market-area-select]")];
+  if (!marketAreaSelects.length && legacySelect) marketAreaSelects.push(legacySelect);
   const classKey = getParcelMarketClass(data);
   const baseClassStats = getClassMarketStats(marketPositionData, classKey);
-  if (!select || !baseClassStats?.groups?.length) return;
+  if (!marketAreaSelects.length || !baseClassStats?.groups?.length) return;
 
   const groups = enrichedMarketGroups(baseClassStats.groups, valuationGroups, baseClassStats.classKey);
   const classStats = {
@@ -1738,29 +2275,39 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
     const defaultListing = getSelectedMarketGroup(recordCard, classStats, defaultGroup);
     const groupName = defaultListing?.description || defaultListing?.label || recordCard.locationModel.valuationGroup;
     const groupNumber = defaultListing?.id ?? getParcelMarketGroupId(recordCard, classStats.classKey);
-    sourceNote.textContent = classStats.classKey === "agricultural"
+    const groupText = classStats.classKey === "agricultural"
       ? `This property is reviewed against ${groupName}.`
       : groupNumber
         ? `This property resides in the ${groupName} Valuation Group ${groupNumber}.`
         : `This property resides in the ${groupName} local comparison group.`;
+    sourceNote.textContent = `${groupText} These local sales-study measures introduce the evidence used in the countywide equalization check.`;
   }
 
-  select.innerHTML = groups.map(group => `
+  const optionsMarkup = groups.map(group => `
     <option value="${group.id}">${group.optionLabel ?? group.label}</option>
   `).join("");
+  marketAreaSelects.forEach(select => {
+    select.innerHTML = optionsMarkup;
+  });
 
   const update = groupId => {
     const selected = getSelectedMarketGroup(recordCard, classStats, groupId) ?? groups[0];
     const isParcelGroup = String(selected.id) === String(defaultGroup);
-    select.value = selected.id;
-    renderMarketSignalCards(selected, countywide, iaaoStandards, signalContext);
+    marketAreaSelects.forEach(select => {
+      select.value = selected.id;
+    });
+    renderMarketSignalCards(selected, countywide, iaaoStandards, {
+      ...signalContext,
+      classStats
+    });
     renderMarketNarrative(selected, countywide, classStats, medianRange, isParcelGroup);
     renderMarketPositionScatter(selected, classStats, iaaoStandards, update);
     renderMarketPriceSummary(selected, countywide);
   };
 
-  select.addEventListener("change", () => update(select.value));
-  if (padRatioData) renderMarketSalePriceRows(padRatioData, classKey, marketPositionData);
+  marketAreaSelects.forEach(select => {
+    select.addEventListener("change", () => update(select.value));
+  });
   update(defaultGroup);
 }
 

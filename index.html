@@ -166,62 +166,38 @@
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Market Area</p>
         <div class="mt-1 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <h2 class="text-2xl font-bold text-slate-700">How is this property’s market area performing?</h2>
+            <h2 class="text-2xl font-bold text-slate-700">How does this property’s market area measure up?</h2>
             <p id="marketSourceNote" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-	              The local comparison group helps place this property's value in context against qualified residential sales for Gage County.
+	              Local sales-study measures show how this property’s comparison group looks before those patterns roll into the countywide equalization check.
             </p>
           </div>
           <label class="min-w-72 text-sm font-semibold text-slate-700">
-            Viewing market area
-            <select id="marketAreaSelect" class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
+            Want to see another area?
+            <select id="marketAreaSelect" data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
           </label>
         </div>
         <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
         <div class="market-reading-path" aria-labelledby="marketReadingTitle">
           <div class="market-reading-intro">
             <p class="guided-kicker">Reading path</p>
-            <h3 id="marketReadingTitle">Start with the cards. Then look for the pattern.</h3>
+            <h3 id="marketReadingTitle">Start local. Then roll up.</h3>
           </div>
           <div class="market-reading-steps">
             <section class="market-reading-step">
-              <h4>The cards give the quick signal</h4>
-              <p>Sales count tells you how much evidence is behind the group. Median ratio, COD, and PRD show level, spread, and balance.</p>
+              <h4>The cards introduce the measures</h4>
+              <p>Qualified sales tell you how much evidence is behind the group. Median ratio, COD, and PRD introduce level, uniformity, and price fairness.</p>
             </section>
             <section class="market-reading-step">
-              <h4>The chart shows position</h4>
-              <p>The highlighted dot is the selected local group. Dots nearer the shaded center sit closer to the county pattern.</p>
+              <h4>The sales data follows the area</h4>
+              <p>The table below keeps the selected local group beside the countywide class result so the sample and ratios stay in view.</p>
             </section>
             <section class="market-reading-step">
-              <h4>Context travels with the dot</h4>
-              <p>Small samples can move more, and outliers are not automatically wrong. They are places to read with care.</p>
+              <h4>Equalization rolls it up</h4>
+              <p>The next step places this group within the broader class and county pattern before reading the countywide measures together.</p>
             </section>
           </div>
         </div>
-
-        <section class="related-panel-section grid gap-6 lg:grid-cols-5">
-          <section id="market-position-panel" class="lg:col-span-3">
-            <h2 class="text-xl font-bold text-slate-700">Where does this market area sit?</h2>
-	          <p id="marketPositionHelper" class="mt-1 text-sm text-slate-600">Each dot represents a local group. Use the menu or choose a dot to change the highlight; the shaded center shows the expected range and broader county pattern.</p>
-            <div id="marketPositionLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-            <div class="mt-4 h-80">
-              <canvas id="marketPositionScatter" role="img" tabindex="0" aria-describedby="marketScatterSummary"></canvas>
-            </div>
-            <div class="mt-4 border-t border-slate-200 pt-4">
-              <p class="guided-kicker">Market area summary</p>
-              <p id="marketNarrative" class="mt-1 text-sm leading-6 text-slate-700"></p>
-            </div>
-            <p id="marketScatterSummary" class="mt-4 text-sm leading-6 text-slate-600"></p>
-          </section>
-          <section id="market-price-context" class="lg:col-span-2">
-            <h2 class="text-xl font-bold text-slate-700">What prices are represented?</h2>
-	          <p class="mt-1 text-sm text-slate-600">Average sale price and assessed value show the price context behind the highlighted group.</p>
-            <div id="marketPriceSummary" class="mt-4 grid gap-3 text-sm"></div>
-          </section>
-        </section>
-        <p id="marketPositionSource" class="chart-source"></p>
       </article>
-
-      <article id="county-sale-price-bands" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></article>
 
       <article class="next-step-card">
         <div>
@@ -240,7 +216,7 @@
 	            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Equalization Context</p>
 	            <h2 class="mt-1 text-2xl font-bold text-slate-700">Is the value base being checked for fairness?</h2>
 	            <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-	              Equalization is the fairness check between value and tax. It does not stop market values from moving or set the tax levy. It asks whether properties are being assessed at the required level and with reasonable uniformity, so the tax base is not tilted before levies are applied.
+	              Equalization reads from the property record into the valuation group or market area, then into the class and countywide study. It does not stop market values from moving or set the tax levy. It asks whether properties are being assessed at the required level and with reasonable uniformity, so the tax base is not tilted before levies are applied.
 	            </p>
           </div>
           <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>

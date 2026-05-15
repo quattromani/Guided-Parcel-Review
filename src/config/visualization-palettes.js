@@ -35,8 +35,9 @@ const civicDefault = {
     rateSurface: "rgb(238 243 247)",
     rateBorder: "rgb(190 205 218)",
     equalization: "#48657F",
-    equalizationAlt: "#5F7488",
-    equalizationMuted: "#7B8FA1",
+    equalizationAlt: "#A9792B",
+    equalizationMuted: "#3A7D8C",
+    equalizationLevel: "#002D62",
     equalizationSoft: "rgba(72, 101, 127, 0.13)",
     equalizationSurface: "rgb(241 245 248)",
     equalizationBorder: "rgb(198 211 222)",
@@ -101,7 +102,7 @@ export const chartColors = {
   cod: visualizationTheme.roles.equalization,
   prd: visualizationTheme.roles.equalizationAlt,
   cov: visualizationTheme.roles.equalizationMuted,
-  levelOfValue: visualizationTheme.roles.equalization,
+  levelOfValue: visualizationTheme.roles.equalizationLevel,
   standardBand: visualizationTheme.roles.standardBand,
   standardBandBorder: visualizationTheme.roles.standardBandBorder
 };

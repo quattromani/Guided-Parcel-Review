@@ -95,7 +95,6 @@ function renderComparisonShells(data, recordCard, summaryContext = {}) {
   renderValueTaxHistoryShell();
   renderTaxHistoryShell();
   renderTaxDistributionShell(data);
-  renderMarketSalePriceShell();
   renderAssessmentAccuracyShell(summaryContext);
   renderAssessmentSnapshotSource(data, recordCard);
 }
@@ -228,42 +227,6 @@ function renderTaxDistributionShell(data) {
   `;
 }
 
-function renderMarketSalePriceShell() {
-  const container = document.getElementById("county-sale-price-bands");
-  if (!container) return;
-
-  container.innerHTML = `
-    <h2 id="marketSalePriceTitle" class="text-xl font-bold text-slate-700">What makes up the residential sales data?</h2>
-	    <p id="marketSalePriceDescription" class="mt-1 text-sm text-slate-600">Sale-price ranges show where qualified sales are concentrated and whether the local study is based mostly on lower-, middle-, or higher-priced properties.</p>
-    <div class="data-split-view mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
-      <div class="overflow-x-auto rounded-xl ring-1 ring-slate-200">
-        <table class="min-w-full divide-y divide-slate-200 text-xs">
-          <thead>
-            <tr>
-              <th id="marketSalePriceRangeHeader" class="px-2 py-2 text-left font-semibold">Sale price range</th>
-              <th class="px-2 py-2 text-right font-semibold">Sales</th>
-              <th class="px-2 py-2 text-right font-semibold">Median</th>
-              <th class="px-2 py-2 text-right font-semibold">COD</th>
-              <th class="px-2 py-2 text-right font-semibold">PRD</th>
-              <th class="px-2 py-2 text-right font-semibold">Avg. sale</th>
-            </tr>
-          </thead>
-          <tbody id="marketSalePriceRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-        </table>
-      </div>
-      <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-        <p id="marketSalePriceChartTitle" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sales distribution</p>
-        <p id="marketSalePriceChartNote" class="mt-1 text-sm leading-5 text-slate-600">Qualified sales by price band, including empty upper bands.</p>
-        <div id="marketSalePriceChartLegend" class="chart-disc-legend mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-        <div class="mt-3 h-64">
-          <canvas id="marketSalePriceChart"></canvas>
-        </div>
-      </div>
-    </div>
-    <p id="marketSalePriceSource" class="chart-source"></p>
-  `;
-}
-
 function renderAssessmentAccuracyShell(summaryContext = {}) {
   const container = document.getElementById("assessment-accuracy-body");
   if (!container) return;
@@ -273,7 +236,88 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
   const reportsAuthority = legalReferenceHtml(summaryContext.legalReferences, "neb-rev-stat-77-5027", "§ 77-5027");
 
   container.innerHTML = `
-    <div id="assessmentAccuracySummary" class="mt-5 grid gap-3 md:grid-cols-4"></div>
+    <section class="mt-5" aria-labelledby="equalizationLocalPositionTitle">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Local starting point</p>
+          <h3 id="equalizationLocalPositionTitle" class="text-lg font-bold text-slate-700">Where does this local group sit?</h3>
+          <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Equalization reads outward from the property record into its valuation group or market area, then into the class and countywide study. This view shows the selected local group before the broader class measures are combined.</p>
+        </div>
+        <label class="min-w-72 text-sm font-semibold text-slate-700">
+          Want to see another area?
+          <select id="equalizationMarketAreaSelect" data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
+        </label>
+      </div>
+      <section class="related-panel-section grid gap-6 lg:grid-cols-5">
+        <section id="market-position-panel" class="lg:col-span-3">
+          <h4 class="text-xl font-bold text-slate-700">Where does this local group sit?</h4>
+          <p id="marketPositionHelper" class="mt-1 text-sm text-slate-600">Each dot represents a valuation group or market area. Use the area menu or choose a dot to change the highlight; the shaded center shows the expected range and broader county pattern.</p>
+          <div id="marketPositionLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+          <div class="mt-4 h-80">
+            <canvas id="marketPositionScatter" role="img" tabindex="0" aria-describedby="marketScatterSummary"></canvas>
+          </div>
+          <div class="mt-4 border-t border-slate-200 pt-4">
+            <p class="guided-kicker">Market area summary</p>
+            <p id="marketNarrative" class="mt-1 text-sm leading-6 text-slate-700"></p>
+          </div>
+          <p id="marketScatterSummary" class="mt-4 text-sm leading-6 text-slate-600"></p>
+        </section>
+        <section id="market-price-context" class="lg:col-span-2">
+          <h4 class="text-xl font-bold text-slate-700">What prices are represented?</h4>
+          <p class="mt-1 text-sm text-slate-600">Average sale price and assessed value show the price context behind the highlighted group.</p>
+          <div id="marketPriceSummary" class="mt-4 grid gap-3 text-sm"></div>
+        </section>
+      </section>
+      <p id="marketPositionSource" class="chart-source"></p>
+    </section>
+
+    <section class="related-panel-section border-t border-slate-200 pt-5" aria-labelledby="equalizationSalePriceTitle">
+      <h3 id="equalizationSalePriceTitle" class="text-lg font-bold text-slate-700">What makes up the class sales data?</h3>
+      <p id="equalizationSalePriceDescription" class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">Sale-price ranges show where qualified sales are concentrated and whether the class study is based mostly on lower-, middle-, or higher-priced properties.</p>
+      <div class="data-split-view mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
+        <div class="overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
+          <table class="min-w-full divide-y divide-slate-200 text-xs">
+            <thead>
+              <tr>
+                <th id="equalizationSalePriceRangeHeader" class="px-2 py-2 text-left font-semibold">Sale price range</th>
+                <th class="px-2 py-2 text-right font-semibold">Sales</th>
+                <th class="px-2 py-2 text-right font-semibold">Median</th>
+                <th class="px-2 py-2 text-right font-semibold">COD</th>
+                <th class="px-2 py-2 text-right font-semibold">PRD</th>
+                <th class="px-2 py-2 text-right font-semibold">Avg. sale</th>
+              </tr>
+            </thead>
+            <tbody id="equalizationSalePriceRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+          </table>
+        </div>
+        <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+          <p id="equalizationSalePriceChartTitle" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sales distribution</p>
+          <p id="equalizationSalePriceChartNote" class="mt-1 text-sm leading-5 text-slate-600">Qualified sales by price band, including empty upper bands.</p>
+          <div id="equalizationSalePriceChartLegend" class="chart-disc-legend mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+          <div class="mt-3 h-64">
+            <canvas id="equalizationSalePriceChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <p id="equalizationSalePriceSource" class="chart-source"></p>
+    </section>
+
+    <section class="mt-5 border-t border-slate-200 pt-5" aria-labelledby="assessmentBandCardsTitle">
+      <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Class band checks</p>
+          <h3 id="assessmentBandCardsTitle" class="text-lg font-bold text-slate-700">Where does each measure stand now?</h3>
+        </div>
+        <p class="max-w-2xl text-sm leading-6 text-slate-600">COD, PRD, and COV are ratio-study statistics. Level of value is the class median ratio range. Current status stays first, with each measure's band history carried inside the same card.</p>
+      </div>
+      <div id="assessmentAccuracySummary" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
+    </section>
+
+    <section class="mt-5 border-t border-slate-200 pt-5" aria-labelledby="assessmentUnifiedViewTitle">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Reported values and unified view</p>
+      <h3 id="assessmentUnifiedViewTitle" class="mt-1 text-lg font-bold text-slate-700">How do the raw measures come together?</h3>
+      <p class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">The table keeps the reported values by year. The chart normalizes COD, PRD, and COV to their own bands so their movement can be compared without mixing raw scales.</p>
+    </section>
     <section class="data-split-view related-panel-section grid gap-6 lg:grid-cols-5">
       <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
         <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
@@ -293,20 +337,14 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
             <tbody id="assessmentMeasureRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
           </table>
         </div>
-        <div class="mt-4 rounded-xl bg-white p-3 text-xs leading-5 text-slate-600 ring-1 ring-slate-200">
-          <p class="font-semibold text-slate-700">How to read the chart</p>
-          <p class="mt-1">
-            COD, PRD, and COV use different scales, so the chart converts each measure to its selected comparison band. COV bands are approximate context when available. Each line shows whether that measure is moving into the band, out of it, or moving differently from the others.
-          </p>
-        </div>
       </article>
       <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
-	        <h3 class="text-lg font-bold text-slate-700">Are the county measures inside the applicable range?</h3>
-	        <p class="mt-1 text-sm text-slate-600">Each line is compared with its applicable band. The shaded band marks the selected range; some class and metric combinations have no direct standard band.</p>
+	        <h3 class="text-lg font-bold text-slate-700">How do the statistical measures come together?</h3>
+	        <p id="assessmentAccuracyConvergenceNote" class="mt-1 text-sm text-slate-600">COD, PRD, and COV are normalized to their own bands so their relative movement can be read together.</p>
+        <div id="assessmentAccuracyLegend" class="assessment-line-legend mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600"></div>
         <div class="mt-4 h-80">
           <canvas id="assessmentAccuracyChart"></canvas>
         </div>
-        <div id="assessmentAccuracyNotes" class="mt-4 grid gap-2 text-xs leading-5 text-slate-600 sm:grid-cols-3"></div>
       </article>
     </section>
     <p id="assessmentAccuracySourceNote" class="chart-source">
@@ -323,7 +361,7 @@ export function renderPropertyViewContext(data, recordCard, valuationGroups) {
   context.innerHTML = `
     <div class="property-context-bar mb-4">
       <div class="min-w-0">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${data.snapshotYear} Property Snapshot</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Subject Property</p>
         <p class="mt-0.5 truncate text-xl font-bold tracking-tight text-slate-700">${data.parcel.situsAddress}</p>
       </div>
       <p class="min-w-0 text-sm font-medium text-slate-600">

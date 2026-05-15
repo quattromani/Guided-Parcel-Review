@@ -102,7 +102,7 @@ async function main() {
   initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards, marketPositionData);
   buildCtlSummary(data, ctlData);
   initCountyComparison(data, ctlData, recordCard);
-  initAssessmentRatioAnalysis(data, ratioData, iaaoStandards);
+  initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padRatioData, marketPositionData);
   initGuidedNavigation(data, calendar);
   initFooterNavigation();
 }
