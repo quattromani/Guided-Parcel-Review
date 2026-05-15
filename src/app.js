@@ -42,6 +42,7 @@ import { installCivicJourneyPanels } from "./routes/landing-primer.js";
 import { resourceAliases, resourcesByView } from "./content/route-resources.js";
 import { renderTaxDistrictAuthorities } from "./views/tax-district-authorities.js";
 import { escapeHtml } from "./utils/html.js";
+import { initAssessorsReport } from "./assessors-report.js";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 
@@ -105,6 +106,20 @@ async function main() {
   initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padRatioData, marketPositionData);
   initGuidedNavigation(data, calendar);
   initFooterNavigation();
+  initAssessorsReport({
+    data,
+    recordCard,
+    valuationGroups,
+    context: {
+      calendar,
+      ctlData,
+      ratioData,
+      padRatioData,
+      marketPositionData,
+      iaaoStandards
+    },
+    loadTaxDistrictAuthorities
+  });
 }
 
 main().catch(error => {
