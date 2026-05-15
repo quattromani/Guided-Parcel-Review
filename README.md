@@ -39,12 +39,19 @@ The prototype now uses one loaded property source:
 
 That file contains the MIPS-derived property record facts and the guided snapshot context that was previously split across lighter sample-property data. The older `data/properties/residential-property-data.json` path has been removed so the app does not compete between two property-record sources.
 
-Shared datasets remain separate from the property record:
+Shared runtime datasets remain separate from the property record:
 
+- `data/app/assessment-calendar-events.json`
+- `data/app/legal-references.json`
+- `data/app/navigation.json`
+- `data/app/real-property-forms.json`
+- `data/app/view-copy.json`
 - `data/counties/gage/assessment-ratio-analysis.json`
 - `data/counties/gage/county-context.json`
+- `data/counties/gage/governing-office.json`
 - `data/counties/gage/market-position-statistics-2026-gage.json`
 - `data/counties/gage/pad-ratio-statistics-2026-gage.json`
+- `data/counties/gage/school-district-colors.json`
 - `data/counties/gage/tax-district-authorities-2025.json`
 - `data/counties/gage/valuation-groups.json`
 - `data/statewide/certified-taxes-levied.json`
@@ -96,10 +103,15 @@ Reusable helpers live in:
 - `src/render.js` renders the taxpayer-facing record, assessment, tax, review, and resource sections.
 - `src/charts.js` builds charts, market-position visuals, and county/state context displays.
 - `src/charts/` contains chart families that can be maintained separately from the main chart entrypoint.
+- `src/assessment-dates.js` renders the assessment-calendar reference panel.
+- `src/assessors-report.js` builds the supplemental assessor report print view.
 - `src/metric-signals.js` centralizes neutral signal language for assessment metrics.
+- `src/modal.js` owns reusable modal behavior for image and record-support surfaces.
 - `src/recordCorrectionRequest.js` prepares the property-record correction request PDF.
 - `src/calculations/` contains shared derived-value helpers that should stay independent of DOM rendering.
 - `src/content/` contains route copy and resource content used by the guided taxpayer journey.
+- `src/data/` contains app-ready notice and review-signal model helpers.
+- `src/routes/` contains route-specific renderers such as the landing primer.
 - `src/views/` contains view-specific renderers that do not need to live in the main render module.
 - `src/utils/` contains small shared utilities that have no domain dependency.
 - `src/config/taxpayer-journey.js` defines the current guided route labels and sequencing.
@@ -120,6 +132,7 @@ Reusable helpers live in:
 - `docs/` contains project planning and source-provenance audit notes.
 - `docs/data-contracts/` contains JSON Schema drafts for the manifest and vendor property record card contract.
 - `assets/images/` contains local property images and sketches used by the prototype.
+- `assets/vendor/` contains vendored browser libraries used by static flows such as PDF generation.
 
 ## Run Locally
 
@@ -162,6 +175,12 @@ node -e "for (const file of ['data/sources/nebraska-pad-source-registry.json','d
 ```
 
 After frontend changes, reload `http://localhost:4173/` and spot-check the affected step in the browser.
+
+Before handoff or push, run a quick hygiene check for local paths and merge artifacts:
+
+```bash
+rg -n "/Users/|/private/tmp|<<<<<<<|>>>>>>>|debugger" src index.html docs data scripts server.js
+```
 
 ## Deployment
 

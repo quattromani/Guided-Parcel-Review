@@ -2843,9 +2843,22 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     width: 1px;
   }
 
-  .assessment-dates-dialog-bar,
-  #assessmentDatesContent {
+  #assessmentDatesPanel {
+    padding: max(2rem, env(safe-area-inset-top)) 1rem max(2rem, env(safe-area-inset-bottom));
+  }
+
+  .assessment-dates-dialog {
+    max-height: calc(100vh - 4rem) !important;
+    max-height: calc(100dvh - 4rem) !important;
+  }
+
+  .assessment-dates-dialog-bar {
     padding: 1rem;
+  }
+
+  #assessmentDatesContent {
+    padding: 1rem 1rem 1.5rem;
+    scroll-padding-block: 1rem 1.5rem;
   }
 
   .assessment-dates-hero,
