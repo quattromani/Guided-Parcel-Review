@@ -40,6 +40,9 @@
   --accent-primary: var(--color-blue);
   --accent-primary-dark: var(--color-blue-dark);
   --accent-primary-soft: var(--color-blue-soft);
+  --radius-container-lg: 0.5rem;
+  --radius-container-md: 0.375rem;
+  --radius-container-sm: 0.25rem;
 }
 
 html {
@@ -1736,11 +1739,11 @@ body {
 }
 
 .pending-data-row {
-  background: rgb(var(--status-pending) / 0.68);
+  background: rgb(var(--color-yellow-soft) / 0.78);
 }
 
 .pending-status-heading {
-  color: rgb(var(--status-pending-ink));
+  color: rgb(var(--color-yellow));
 }
 
 .pending-status-pill,
@@ -1754,13 +1757,13 @@ body {
   padding: 0.28rem 0.55rem;
 }
 
-.pending-status-pill,
 .notice-status-pill {
   background: rgb(var(--status-pending));
   color: rgb(var(--status-pending-ink));
   box-shadow: inset 0 0 0 1px rgb(var(--status-pending-border) / 0.72);
 }
 
+.pending-status-pill,
 .notice-status-pill-pending {
   background: rgb(var(--color-yellow-soft));
   color: rgb(var(--color-yellow));
@@ -2100,6 +2103,15 @@ body {
   line-height: 1.25;
 }
 
+.final-review-kpi-card-pending {
+  background: rgb(var(--color-yellow-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-yellow) / 0.3);
+}
+
+.final-review-kpi-card-pending h3 {
+  color: rgb(var(--color-yellow));
+}
+
 .final-review-kpi-card small {
   color: rgb(var(--color-slate-500));
   font-size: 0.82rem;
@@ -2287,4 +2299,64 @@ body {
   100% {
     box-shadow: 0 0 0 14px rgb(var(--accent-primary) / 0), inset 0 0 0 1px rgb(var(--border-muted));
   }
+}
+
+/* Keep framed surfaces crisp while preserving fully rounded pills and icon controls. */
+.rounded-2xl {
+  border-radius: var(--radius-container-lg);
+}
+
+.rounded-xl {
+  border-radius: var(--radius-container-md);
+}
+
+.rounded-lg {
+  border-radius: var(--radius-container-sm);
+}
+
+.guided-path-nav.rounded-2xl,
+footer > section.rounded-2xl {
+  border-radius: calc(var(--radius-container-lg) / 2);
+}
+
+.next-step-card,
+.ooda-decision-card {
+  border-radius: var(--radius-container-lg);
+}
+
+.metric-card,
+.details-card,
+.property-context-bar,
+.assessment-rollup-table,
+.dwelling-model-panel,
+.checklist-item,
+.pressure-card,
+.table-clip,
+.overflow-x-auto.rounded-xl:has(> table) {
+  border-radius: var(--radius-container-md);
+}
+
+.table-shell {
+  border-radius: 0 0 var(--radius-container-md) var(--radius-container-md);
+}
+
+.dwelling-model-rows {
+  border-radius: 0.325rem;
+}
+
+.ooda-inline-note {
+  border-radius: 0.4375rem;
+}
+
+.assessment-help-tooltip,
+.adjustment-card,
+.distribution-note-card,
+.civic-landing-shell,
+.civic-summary-shell,
+.civic-review-signals,
+.civic-notice-summary,
+.civic-summary-grid section,
+.review-signal-card,
+.final-review-kpi-card {
+  border-radius: var(--radius-container-sm);
 }

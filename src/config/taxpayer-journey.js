@@ -2,11 +2,11 @@ export const TAXPAYER_JOURNEY_ROUTES = [
   {
     id: "landing-primer",
     panelId: "landing-primer",
-    eyebrow: "Start here",
+    eyebrow: "Begin here",
     label: "Start",
     question: "You are looking at this property.",
     title: "Start with a calm snapshot of the property",
-    description: "Confirm that this is the property you meant to review. The opening snapshot brings the parcel, status, key values, and source context into one starting point."
+    description: "Confirm that this is the property you meant to review. The opening snapshot brings the parcel, status, key values, and source context into one place."
   },
   {
     id: "property-record",

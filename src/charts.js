@@ -931,9 +931,9 @@ function propertyIndexedDatasets(propertyRows, years, palette = {}) {
   const propertyByYear = rowsByYear(propertyRows);
   const alignedRows = years.map(year => propertyByYear.get(year) ?? { year, assessedValue: null, taxes: null });
   const series = indexedSeries(alignedRows);
-  const valueColor = palette.propertyValueColor ?? chartColors.propertyValue;
-  const valueBg = palette.propertyValueBg ?? visualizationTheme.roles.comparisonSoft;
-  const taxColor = palette.propertyTaxColor ?? chartColors.propertyTax;
+  const valueColor = colorAlpha(palette.propertyValueColor ?? palette.valueColor ?? chartColors.contextValue, 0.4);
+  const valueBg = palette.propertyValueBg ?? semanticChartColors.valueBg;
+  const taxColor = colorAlpha(palette.propertyTaxColor ?? palette.taxColor ?? chartColors.contextTax, 0.4);
   const taxBg = palette.propertyTaxBg ?? semanticChartColors.taxBg;
 
   return [
@@ -945,9 +945,10 @@ function propertyIndexedDatasets(propertyRows, years, palette = {}) {
       borderWidth: 2,
       borderColor: valueColor,
       backgroundColor: valueBg,
-      borderDash: [6, 5],
       pointRadius: 3,
       pointStyle: "circle",
+      pointBackgroundColor: valueColor,
+      pointBorderColor: valueColor,
       spanGaps: true
     },
     {
@@ -958,9 +959,10 @@ function propertyIndexedDatasets(propertyRows, years, palette = {}) {
       borderWidth: 2,
       borderColor: taxColor,
       backgroundColor: taxBg,
-      borderDash: [6, 5],
       pointRadius: 3,
       pointStyle: "circle",
+      pointBackgroundColor: taxColor,
+      pointBorderColor: taxColor,
       spanGaps: true
     }
   ];
@@ -968,8 +970,8 @@ function propertyIndexedDatasets(propertyRows, years, palette = {}) {
 
 function propertyRateDataset(propertyRows, years, palette = {}) {
   const propertyByYear = rowsByYear(propertyRows);
-  const rateColor = palette.propertyRateColor ?? chartColors.propertyRate;
-  const rateBg = palette.propertyRateBg ?? visualizationTheme.roles.comparisonSoft;
+  const rateColor = colorAlpha(palette.propertyRateColor ?? palette.rateColor ?? chartColors.contextValue, 0.4);
+  const rateBg = palette.propertyRateBg ?? semanticChartColors.valueBg;
 
   return {
     label: "This property ETR",
@@ -982,8 +984,9 @@ function propertyRateDataset(propertyRows, years, palette = {}) {
     borderWidth: 2,
     borderColor: rateColor,
     backgroundColor: rateBg,
-    borderDash: [6, 5],
     pointRadius: 3,
+    pointBackgroundColor: rateColor,
+    pointBorderColor: rateColor,
     spanGaps: true
   };
 }
@@ -2192,7 +2195,8 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
   const years = primaryRows.map(row => row.year);
   const primaryIndex = ctlIndexedRows(primaryRows, "totalValue", "taxesLevied");
   const comparisonIndex = ctlIndexedRows(comparisonRows, "totalValue", "taxesLevied");
-  const comparisonTaxColor = colorAlpha(semanticChartColors.tax, 0.52);
+  const comparisonValueColor = colorAlpha(chartColors.contextValue, 0.4);
+  const comparisonTaxColor = colorAlpha(chartColors.contextTax, 0.4);
   const indexedDatasets = [
     {
       label: `${primaryLabel} value`,
@@ -2218,9 +2222,10 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       data: comparisonIndex.value,
       tension: 0.25,
       borderWidth: 2,
-      borderColor: chartColors.propertyValue,
-      backgroundColor: visualizationTheme.roles.comparisonSoft,
-      borderDash: [6, 5]
+      borderColor: comparisonValueColor,
+      backgroundColor: semanticChartColors.valueBg,
+      pointBackgroundColor: comparisonValueColor,
+      pointBorderColor: comparisonValueColor
     },
     {
       label: `${comparisonLabel} taxes levied`,
@@ -2230,7 +2235,8 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       borderWidth: 2,
       borderColor: comparisonTaxColor,
       backgroundColor: semanticChartColors.taxBg,
-      borderDash: [6, 5]
+      pointBackgroundColor: comparisonTaxColor,
+      pointBorderColor: comparisonTaxColor
     }
   ];
   const rateDatasets = [
@@ -2247,9 +2253,10 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       data: comparisonRows.map(row => row.averageTaxRate * 100),
       tension: 0.25,
       borderWidth: 2,
-      borderColor: chartColors.propertyValue,
-      backgroundColor: visualizationTheme.roles.comparisonSoft,
-      borderDash: [6, 5]
+      borderColor: comparisonValueColor,
+      backgroundColor: semanticChartColors.valueBg,
+      pointBackgroundColor: comparisonValueColor,
+      pointBorderColor: comparisonValueColor
     }
   ];
   const hasIndexedLegend = renderCustomLegend("countyComparisonIndexedChartLegend", indexedDatasets);

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-05-14",
+  "notes": "App-ready acceptable level-of-value ranges used for Nebraska county equalization context. Legal anchors remain in data/app/legal-references.json; this file keeps app use separate from provenance.",
+  "sourceDocumentIds": [
+    "ne-pad-index-statewideequalization"
+  ],
+  "ranges": [
+    {
+      "propertyClass": "residential",
+      "levelOfValueCenter": 96,
+      "medianAcceptableRange": {
+        "min": 92,
+        "max": 100
+      },
+      "unit": "percent ratio",
+      "yearType": "assessmentYear"
+    },
+    {
+      "propertyClass": "commercial",
+      "levelOfValueCenter": 96,
+      "medianAcceptableRange": {
+        "min": 92,
+        "max": 100
+      },
+      "unit": "percent ratio",
+      "yearType": "assessmentYear"
+    },
+    {
+      "propertyClass": "agricultural",
+      "levelOfValueCenter": 72,
+      "medianAcceptableRange": {
+        "min": 69,
+        "max": 75
+      },
+      "unit": "percent ratio",
+      "yearType": "assessmentYear"
+    },
+    {
+      "metric": "prd",
+      "acceptableRange": {
+        "min": 98,
+        "max": 103
+      },
+      "unit": "percent ratio",
+      "normalizationRule": "Source PRD values may be stored as 98-103 whole-percent scale or 0.98-1.03 decimal scale; ledger records both when applicable."
+    }
+  ]
+}

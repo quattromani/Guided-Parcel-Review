@@ -133,8 +133,10 @@ function signalMeta(signals) {
 }
 
 function finalReviewCard(card) {
+  const toneClass = card.tone ? ` final-review-kpi-card-${card.tone}` : "";
+
   return `
-    <section class="final-review-kpi-card">
+    <section class="final-review-kpi-card${toneClass}">
       <p>${escapeHtml(card.step)}</p>
       <h3>${escapeHtml(card.value)}</h3>
       ${card.meta ? `<small>${escapeHtml(card.meta)}</small>` : ""}
@@ -191,6 +193,7 @@ function buildFinalReviewModel(data, context = {}) {
           {
             step: "Step 2 · What Changed",
             value: currentYearPending ? `${notice.taxYear} pending` : formatNullableMoney(notice.currentAssessedValue),
+            tone: currentYearPending ? "pending" : "",
             meta: latestValue
               ? `Latest final value: ${formatNullableMoney(latestValue.assessedValue)} (${latestValue.year})`
               : "No final assessed value listed",
@@ -273,7 +276,7 @@ function installLandingPrimer(data) {
         <div class="civic-notice-heading">
           <div>
             <p class="guided-kicker">Property record</p>
-            <h3 id="assessmentSnapshotTitle">Starting point</h3>
+            <h3 id="assessmentSnapshotTitle">Property snapshot</h3>
           </div>
           <div class="notice-status-group" aria-label="${escapeHtml(`${notice.assessmentLabel} status ${notice.valueStatusLabel}`)}">
             <span>${escapeHtml(notice.assessmentLabel)}:</span>

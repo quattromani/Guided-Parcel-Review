@@ -48,9 +48,23 @@ Shared datasets remain separate from the property record:
 - `data/counties/gage/tax-district-authorities-2025.json`
 - `data/counties/gage/valuation-groups.json`
 - `data/statewide/certified-taxes-levied.json`
+- `data/statewide/statewide-ctl-summary.json`
+- `data/statewide/county-ctl-comparisons.json`
+- `data/statewide/pad-ratio-statistics-by-county.json`
+- `data/statewide/county-assessment-ranges.json`
 - `data/calendars/pad_main_calendar_2025.json`
 - `data/standards/iaao-standards.json`
 - `data/standards/iaao-glossary.json`
+
+## Source Registry And Provenance
+
+Nebraska Department of Revenue Property Assessment Division source provenance is tracked separately from the app-ready data. The frontend should consume static JSON only; it should not fetch, scrape, or parse PAD PDFs at runtime.
+
+- `data/sources/nebraska-pad-source-registry.json` records official PAD source documents, landing pages, direct document URLs, year types, jurisdiction, publisher, confidence, and manual-review flags.
+- `data/sources/nebraska-pad-metric-ledger.json` records extracted or verified metrics with page/table/row/column provenance, extraction method, confidence, verification status, and any comparison against existing project JSON.
+- `docs/source-provenance-audit.md` summarizes official source discovery, schema decisions, verification results, mismatches, extraction reliability, and remaining review items.
+
+The current source registry covers statewide CTL context, all 93 Nebraska counties for 2026 Reports and Opinions class-level ratio statistics, Gage historical R&O support, annual PAD reports, assessment calendar references, PAD forms, and official PAD index pages. Mismatches are recorded in the ledger and audit doc rather than silently applied to existing project data.
 
 ## Market Area System
 
@@ -91,8 +105,10 @@ Reusable helpers live in:
 - `data/property-records/mips/` contains the active MIPS property record card and guided snapshot context.
 - `data/counties/` contains county-level reports, ratio statistics, market-position data, valuation groups, school colors, and tax district authority data.
 - `data/statewide/` contains statewide and county comparison datasets.
+- `data/sources/` contains the official-source registry and metric extraction ledger.
 - `data/calendars/` contains static assessment calendar data.
 - `data/standards/` contains static IAAO standards and glossary references.
+- `docs/` contains project planning and source-provenance audit notes.
 - `assets/images/` contains local property images and sketches used by the prototype.
 
 ## Run Locally
@@ -127,9 +143,11 @@ Useful local checks:
 
 ```bash
 node --check src/render.js
+node --check src/charts.js
 git diff --check
 node -e "JSON.parse(require('fs').readFileSync('data/app/property-manifest.json','utf8')); console.log('manifest json ok')"
 node -e "JSON.parse(require('fs').readFileSync('data/property-records/mips/residential-010496000-record-card.json','utf8')); console.log('record card json ok')"
+node -e "for (const file of ['data/sources/nebraska-pad-source-registry.json','data/sources/nebraska-pad-metric-ledger.json','data/statewide/statewide-ctl-summary.json','data/statewide/county-ctl-comparisons.json','data/statewide/pad-ratio-statistics-by-county.json','data/statewide/county-assessment-ranges.json']) JSON.parse(require('fs').readFileSync(file,'utf8')); console.log('pad provenance json ok')"
 ```
 
 After frontend changes, reload `http://localhost:4173/` and spot-check the affected step in the browser.
