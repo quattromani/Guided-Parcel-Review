@@ -311,6 +311,7 @@ function initGuidedNavigation(snapshotModel, calendar) {
   const primarySectionIds = routeList.filter(route => !route.secondary).map(route => route.id);
   const visitedSteps = new Set();
   const unlockedSteps = new Set([primarySectionIds[0]]);
+  const mobileNavQuery = window.matchMedia("(max-width: 640px)");
   const legacyViewMap = {
     property: "property-record",
     market: "valuation-detail",
@@ -375,6 +376,28 @@ function initGuidedNavigation(snapshotModel, calendar) {
     primarySectionIds.slice(0, targetIndex).forEach(id => visitedSteps.add(id));
   }
 
+  function alignActiveGuidedStep({ behavior = "smooth" } = {}) {
+    if (!guidedPath || !tabsContainer || !mobileNavQuery.matches) return;
+
+    const activeStep = tabsContainer.querySelector(".guided-step-active");
+    if (!activeStep) return;
+
+    const navRect = guidedPath.getBoundingClientRect();
+    const activeRect = activeStep.getBoundingClientRect();
+    const navStyle = window.getComputedStyle(guidedPath);
+    const leftPadding = Number.parseFloat(navStyle.paddingLeft) || 0;
+    const left = guidedPath.scrollLeft + activeRect.left - navRect.left - leftPadding;
+
+    guidedPath.scrollTo({
+      left: Math.max(0, left),
+      behavior
+    });
+  }
+
+  function queueActiveGuidedStepAlignment(behavior = "smooth") {
+    window.requestAnimationFrame(() => alignActiveGuidedStep({ behavior }));
+  }
+
   function selectStep(selectedRoute, options = {}) {
     const { scrollTop = true, markVisited = true } = options;
     const route = resolveRoute(selectedRoute) ?? routeList[0];
@@ -419,6 +442,7 @@ function initGuidedNavigation(snapshotModel, calendar) {
     renderViewHeader(selected, snapshotModel);
     renderGuidedResourceContent(selected);
     window.dispatchEvent(new Event("resize"));
+    queueActiveGuidedStepAlignment(scrollTop ? "smooth" : "auto");
 
     if (scrollTop) {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -528,6 +552,7 @@ function initGuidedNavigation(snapshotModel, calendar) {
   unlockThrough(initialStep || primarySectionIds[0]);
   markPreviousVisited(initialStep || primarySectionIds[0]);
   selectStep(initialStep || primarySectionIds[0], { scrollTop: false });
+  mobileNavQuery.addEventListener?.("change", () => queueActiveGuidedStepAlignment("auto"));
   if (hashTarget) {
     window.setTimeout(() => {
       const target = document.getElementById(hashTarget);

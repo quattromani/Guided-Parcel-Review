@@ -66,6 +66,14 @@ body {
   align-self: center;
 }
 
+.page-title-nowrap {
+  white-space: nowrap;
+}
+
+.page-title-situs {
+  display: inline;
+}
+
 .parcel-lookup-placeholder {
   position: relative;
   width: 100%;
@@ -1741,6 +1749,10 @@ body {
 }
 
 @media (max-width: 640px) {
+  .page-title-situs {
+    display: block;
+  }
+
   .page-title-utility {
     width: 100%;
   }

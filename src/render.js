@@ -470,15 +470,23 @@ export function getCurrentStageText(calendar) {
   return activeStages.map(stage => stage.label).join(" + ");
 }
 
+function landingPrimerTitleHtml(noticeAddress) {
+  return `
+    <span class="page-title-nowrap">You are looking at</span>
+    <span class="page-title-situs">${escapeHtml(noticeAddress)}.</span>
+  `;
+}
+
 export function renderViewHeader(view = "your-property", snapshotModel) {
   const section = snapshotModel?.sections?.find(item => item.id === view);
   const noticeAddress = snapshotModel?.viewModels?.notice?.displayAddress
     || snapshotModel?.viewModels?.notice?.situsAddress;
   const showLookupPlaceholder = view === "landing-primer";
+  const hasLandingAddressTitle = view === "landing-primer" && noticeAddress;
   const content = section
     ? {
       eyebrow: section.eyebrow,
-      title: view === "landing-primer" && noticeAddress
+      title: hasLandingAddressTitle
         ? `You are looking at ${noticeAddress}.`
         : section.question,
       description: section.description,
@@ -486,6 +494,7 @@ export function renderViewHeader(view = "your-property", snapshotModel) {
     }
     : viewHeaderContent[view] || viewHeaderContent["your-property"];
   const title = document.getElementById("pageTitle");
+  const titleHtml = hasLandingAddressTitle ? landingPrimerTitleHtml(noticeAddress) : escapeHtml(content.title);
 
   title.innerHTML = `
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -495,7 +504,7 @@ export function renderViewHeader(view = "your-property", snapshotModel) {
         </p>
 
         <h1 class="mt-1 text-4xl font-bold tracking-tight text-slate-700">
-          ${content.title}
+          ${titleHtml}
         </h1>
 
         <p class="mt-2 max-w-3xl text-base text-slate-600">
@@ -622,7 +631,7 @@ function valuationNoticeSummary(data, recordCard) {
     <div class="valuation-notice-card">
       <div class="overflow-hidden rounded-lg ring-1 ring-slate-200">
         <div class="valuation-notice-row valuation-notice-header">
-          <p>Notice value breakdown</p>
+          <p>Value breakdown</p>
           <p>${values.prior.year}</p>
           <p>${values.current.year}</p>
         </div>
