@@ -1,23 +1,4 @@
-function latestKnown(rows, key) {
-  return rows
-    .filter(row => row[key] !== null && row[key] !== undefined)
-    .slice()
-    .sort((a, b) => a.year - b.year)
-    .at(-1);
-}
-
-function previousKnown(rows, year, key) {
-  return rows
-    .filter(row => row.year < year && row[key] !== null && row[key] !== undefined)
-    .slice()
-    .sort((a, b) => a.year - b.year)
-    .at(-1);
-}
-
-function percentChange(current, previous) {
-  if (!current || !previous) return null;
-  return (current - previous) / previous;
-}
+import { latestKnown, percentChange, previousKnown } from "../calculations/history.js";
 
 function monthName(month) {
   return new Date(2000, month - 1, 1).toLocaleString("en-US", { month: "long" });

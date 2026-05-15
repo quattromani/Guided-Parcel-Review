@@ -2,6 +2,31 @@ const PAGE_WIDTH = 612;
 const PAGE_HEIGHT = 792;
 const MARGIN = 42;
 const CONTENT_WIDTH = PAGE_WIDTH - MARGIN * 2;
+const PDF_LIB_PATH = "assets/vendor/pdf-lib.min.js";
+
+let pdfLibPromise;
+
+function loadPdfLib() {
+  if (window.PDFLib) return Promise.resolve(window.PDFLib);
+
+  pdfLibPromise ??= new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = PDF_LIB_PATH;
+    script.async = true;
+    script.onload = () => {
+      if (window.PDFLib) {
+        resolve(window.PDFLib);
+        return;
+      }
+
+      reject(new Error("PDF generation library loaded but did not expose PDFLib."));
+    };
+    script.onerror = () => reject(new Error("PDF generation library could not be loaded."));
+    document.head.append(script);
+  });
+
+  return pdfLibPromise;
+}
 
 export function buildRecordCorrectionSubmission({ data, rows, formValues, selectedItems, governingOffice }) {
   const office = governingOffice?.office ?? {};
@@ -78,10 +103,8 @@ export function buildRecordCorrectionEmailPayload(submission, pdfBytes) {
 }
 
 export async function generateRecordCorrectionPdf(submission) {
-  const pdfLib = window.PDFLib;
-  if (!pdfLib) {
-    throw new Error("PDF generation library is not available.");
-  }
+  // PDF generation is an optional action path, so the vendor asset loads only when a user prepares a correction request.
+  const pdfLib = await loadPdfLib();
 
   const { PDFDocument, StandardFonts, rgb } = pdfLib;
   const doc = await PDFDocument.create();

@@ -1,27 +1,4 @@
-function latestKnown(rows, key) {
-  return rows
-    .filter(row => row[key] !== null && row[key] !== undefined)
-    .slice()
-    .sort((a, b) => a.year - b.year)
-    .at(-1);
-}
-
-function previousKnown(rows, year, key) {
-  return rows
-    .filter(row => row.year < year && row[key] !== null && row[key] !== undefined)
-    .slice()
-    .sort((a, b) => a.year - b.year)
-    .at(-1);
-}
-
-function percentChange(current, previous) {
-  if (!current || !previous) return null;
-  return (current - previous) / previous;
-}
-
-function hasValue(value) {
-  return value !== null && value !== undefined && value !== "";
-}
+import { hasValue, latestKnown, percentChange, previousKnown } from "../calculations/history.js";
 
 function signal(id, tone, title, summary, detail) {
   return { id, tone, title, summary, detail };

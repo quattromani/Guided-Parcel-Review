@@ -141,8 +141,7 @@ Current view inventory:
 
 - `your-property`: parcel identity, record details, photos, notice summary, record review.
 - `your-assessment`: notice values, value movement, value/tax history, indexed chart.
-- `your-taxes`: levy history, ETR, tax burden, net tax trend.
-- `tax-districts`: levy authorities and distribution.
+- `your-taxes`: levy history, ETR, tax burden, levy authorities, and distribution.
 - `market-area`: valuation group and PAD ratio/sales context.
 - `county-equalization`: COD/PRD/COV/LOV and county comparison context.
 - `state-context`: county/state CTL comparison.

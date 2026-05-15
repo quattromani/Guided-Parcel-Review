@@ -1,3 +1,5 @@
+import { guidedSnapshotFromMipsRecordCard } from "./adapters/mips/record-card.js";
+
 async function loadJson(path, label) {
   const response = await fetch(path);
 
@@ -49,14 +51,6 @@ async function getActiveCountyEntry() {
   return { manifest, property, county };
 }
 
-function propertyDataFromRecordCard(recordCard) {
-  if (!recordCard?.guidedSnapshot) {
-    throw new Error("The active MIPS property record card is missing guided snapshot context.");
-  }
-
-  return recordCard.guidedSnapshot;
-}
-
 export function loadPropertyRecordCard() {
   activeRecordCardPromise ??= getActivePropertyEntry()
     .then(({ property }) => loadJson(property.recordCardPath, "property record card"));
@@ -65,7 +59,7 @@ export function loadPropertyRecordCard() {
 }
 
 export function loadPropertyData() {
-  activePropertyDataPromise ??= loadPropertyRecordCard().then(propertyDataFromRecordCard);
+  activePropertyDataPromise ??= loadPropertyRecordCard().then(guidedSnapshotFromMipsRecordCard);
 
   return activePropertyDataPromise;
 }
@@ -96,6 +90,7 @@ export function loadAssessmentRatioAnalysis() {
     .then(({ county }) => loadJson(county.assessmentRatioPath, "assessment ratio analysis"));
 }
 
+// Reserved for a future county-context view; it is intentionally not part of the initial app boot payload.
 export function loadCountyContext() {
   return getActiveCountyEntry()
     .then(({ county }) => loadJson(county.countyContextPath, "county context"));
@@ -138,25 +133,6 @@ export function loadValuationGroups() {
 export function loadIaaoStandards() {
   return loadPropertyManifest()
     .then(manifest => loadJson(manifest.sharedData.standards.iaaoStandardsPath, "IAAO standards"));
-}
-
-export function getSnapshotHistory(data) {
-  return data.taxpayerHistory.find(row => row.year === data.snapshotYear)
-    ?? data.taxpayerHistory[data.taxpayerHistory.length - 1];
-}
-
-export function getLatestFinalTaxHistory(data) {
-  return data.taxpayerHistory
-    .filter(row => row.taxes !== null && row.taxes !== undefined)
-    .at(-1);
-}
-
-export function getPreviousFinalValueHistory(data) {
-  const snapshot = getSnapshotHistory(data);
-
-  return data.taxpayerHistory
-    .filter(row => row.year < snapshot.year && row.assessedValue !== null && row.assessedValue !== undefined)
-    .at(-1);
 }
 
 function dateParts(isoDate) {

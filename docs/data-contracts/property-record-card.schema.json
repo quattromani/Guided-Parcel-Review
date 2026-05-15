@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://property-snapshot.local/schemas/property-record-card.schema.json",
+  "title": "Vendor Property Record Card",
+  "type": "object",
+  "required": ["source", "guidedSnapshot", "parcelIdentifiers"],
+  "properties": {
+    "source": {
+      "type": "object",
+      "required": ["sourceType", "system", "displayCitation"],
+      "properties": {
+        "sourceType": { "type": "string" },
+        "system": { "type": "string" },
+        "displayCitation": { "type": "string" },
+        "county": { "type": "string" },
+        "reportName": { "type": "string" },
+        "recordType": { "type": "string" },
+        "printedAt": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "guidedSnapshot": {
+      "$ref": "#/$defs/guidedSnapshot"
+    },
+    "parcelIdentifiers": {
+      "type": "object",
+      "required": ["parcelId"],
+      "properties": {
+        "parcelId": { "type": "string" },
+        "cardFilePerm": { "type": "string" },
+        "cadastralId": { "type": "string" },
+        "padClassCode": { "type": "string" },
+        "stateGeo": { "type": "string" },
+        "appraiserId": { "type": "string" }
+      }
+    },
+    "locationModel": { "type": "object" },
+    "landModel": { "type": "object" },
+    "currentCardValue": { "type": "object" },
+    "ownershipHistory": { "type": "array" },
+    "valuationHistory": { "type": "array" },
+    "propertyValuation": { "type": "object" },
+    "valuationReconciliation": { "type": "object" },
+    "reviewHistory": { "type": "array" },
+    "residentialInformation": { "type": "object" },
+    "costApproach": { "type": "object" },
+    "garageCostLines": { "type": "array" },
+    "miscImprovements": { "type": "array" }
+  },
+  "$defs": {
+    "moneyOrNull": {
+      "type": ["number", "null"]
+    },
+    "guidedSnapshot": {
+      "type": "object",
+      "required": ["snapshotYear", "latestFinalTaxYear", "parcel", "classification", "taxpayerHistory"],
+      "properties": {
+        "snapshotYear": { "type": "integer" },
+        "latestFinalTaxYear": { "type": "integer" },
+        "assets": { "type": "object" },
+        "parcel": {
+          "type": "object",
+          "required": ["parcelId", "situsAddress", "countyName", "taxDistrict"],
+          "properties": {
+            "parcelId": { "type": "string" },
+            "mapNumber": { "type": "string" },
+            "stateGeoCode": { "type": "string" },
+            "owner": { "type": "string" },
+            "mailingAddress": { "type": "string" },
+            "situsAddress": { "type": "string" },
+            "countyName": { "type": "string" },
+            "taxDistrict": { "type": "string" },
+            "schoolDistrict": { "type": "string" },
+            "accountType": { "type": "string" },
+            "legalDescription": { "type": "string" }
+          }
+        },
+        "classification": {
+          "type": "object",
+          "required": ["propertyClass"],
+          "properties": {
+            "status": { "type": "string" },
+            "location": { "type": "string" },
+            "propertyClass": { "type": "string" },
+            "citySize": { "type": "string" },
+            "zoning": { "type": "string" },
+            "lotSize": { "type": "string" }
+          }
+        },
+        "residential": { "type": "object" },
+        "taxpayerHistory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["year", "assessedValue", "taxes", "status"],
+            "properties": {
+              "year": { "type": "integer" },
+              "assessedValue": { "$ref": "#/$defs/moneyOrNull" },
+              "taxes": { "$ref": "#/$defs/moneyOrNull" },
+              "status": { "type": "string" }
+            }
+          }
+        },
+        "taxStatements": { "type": "array" },
+        "districtLevyHistory": { "type": "array" },
+        "assessedValueBreakdown": { "type": "array" },
+        "latestFinalLevyComponents": { "type": "array" },
+        "sources": { "type": "array" },
+        "sourcePolicy": { "type": "object" }
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "sourceSystem": "MIPS / GWorks property record card",
+  "adapterStatus": "draft",
+  "canonicalGroups": {
+    "parcelIdentity": [
+      "parcelIdentifiers.parcelId",
+      "guidedSnapshot.parcel",
+      "source"
+    ],
+    "classification": [
+      "guidedSnapshot.classification",
+      "parcelIdentifiers.padClassCode",
+      "locationModel"
+    ],
+    "valuation": [
+      "currentCardValue",
+      "valuationHistory",
+      "propertyValuation",
+      "valuationReconciliation",
+      "guidedSnapshot.assessedValueBreakdown"
+    ],
+    "tax": [
+      "guidedSnapshot.taxpayerHistory",
+      "guidedSnapshot.taxStatements",
+      "guidedSnapshot.latestFinalLevyComponents",
+      "guidedSnapshot.districtLevyHistory"
+    ],
+    "propertyFacts": [
+      "residentialInformation",
+      "costApproach",
+      "landModel",
+      "garageCostLines",
+      "miscImprovements",
+      "guidedSnapshot.dwellingData",
+      "guidedSnapshot.outbuildingData",
+      "guidedSnapshot.landInformation"
+    ]
+  },
+  "notes": [
+    "The current demo record still includes guidedSnapshot as app-ready data.",
+    "A production adapter should map raw MIPS fields into a canonical property record, then generate the guided snapshot from domain logic."
+  ]
+}

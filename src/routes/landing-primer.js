@@ -5,6 +5,7 @@ import {
   money,
   moneyCents
 } from "../format.js";
+import { hasValue, latestKnown, percentChange, previousKnown } from "../calculations/history.js";
 
 const integer = new Intl.NumberFormat("en-US");
 
@@ -53,31 +54,6 @@ function renderSignal(signal) {
       <p>${escapeHtml(signal.summary)}</p>
     </article>
   `;
-}
-
-function hasValue(value) {
-  return value !== null && value !== undefined && value !== "";
-}
-
-function latestKnown(rows, key) {
-  return (rows ?? [])
-    .filter(row => hasValue(row[key]))
-    .slice()
-    .sort((a, b) => a.year - b.year)
-    .at(-1);
-}
-
-function previousKnown(rows, year, key) {
-  return (rows ?? [])
-    .filter(row => row.year < year && hasValue(row[key]))
-    .slice()
-    .sort((a, b) => a.year - b.year)
-    .at(-1);
-}
-
-function percentChange(current, previous) {
-  if (!hasValue(current) || !hasValue(previous) || Number(previous) === 0) return null;
-  return (Number(current) - Number(previous)) / Number(previous);
 }
 
 function formatSquareFeet(value) {
@@ -394,7 +370,7 @@ function alignPrimaryJourneyNextSteps() {
 
 function updateNextStep(panelId, nextRoute, heading, buttonLabel) {
   const panel = document.querySelector(`[data-guided-panel="${panelId}"]`);
-  const button = panel?.querySelector("[data-guided-next]");
+  const button = panel?.querySelector(".next-step-card [data-guided-next]");
   const headingNode = button?.closest(".next-step-card")?.querySelector("h3");
 
   if (!button) return;

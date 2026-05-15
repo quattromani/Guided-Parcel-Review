@@ -11,12 +11,15 @@ import {
 import {
   getPreviousFinalValueHistory,
   getSnapshotHistory
-} from "./data-service.js";
+} from "./calculations/history.js";
 import {
   buildRecordCorrectionEmailPayload,
   buildRecordCorrectionSubmission,
   generateRecordCorrectionPdf
 } from "./recordCorrectionRequest.js";
+import { viewHeaderContent } from "./content/view-headers.js";
+import { propertyRecordSourceText } from "./domain/source-labels.js";
+import { escapeHtml } from "./utils/html.js";
 
 const discrepancyChoices = [
   ["incorrect", "Incorrect"],
@@ -70,57 +73,6 @@ function legalAuthorityListHtml(authorities, legalReferences) {
     return legalReferenceLink(reference, authority);
   }).join(", ");
 }
-
-const viewHeaderContent = {
-  "your-property": {
-    eyebrow: "Guided Property Snapshot",
-    title: "This property, step by step",
-    description: "Start with the record, then move through assessment, taxes, districts, market context, county equalization, and review action.",
-    imageAlt: "Map of Nebraska highlighting Gage County"
-  },
-  "your-assessment": {
-    eyebrow: "Step 2 · Assessment",
-    title: "What changed about the assessed value?",
-    description: "Review the assessed value before interpreting the tax bill. Current-year values and finalized tax years are intentionally separated.",
-    imageAlt: "Map of Nebraska highlighting the local market area"
-  },
-  "your-taxes": {
-    eyebrow: "Step 5 · Tax context",
-    title: "What does this mean for taxes?",
-    description: "Once the value base is set, taxes show how levies, credits, exemptions, and district boundaries turn assessed value into the final bill.",
-    imageAlt: "Map of Nebraska highlighting Gage County"
-  },
-  "tax-districts": {
-    eyebrow: "Tax district detail",
-    title: "Who is taxing this property?",
-    description: "Separate the tax bill distribution from the list of organizations inside this property’s tax district.",
-    imageAlt: "Map of Nebraska"
-  },
-  "market-area": {
-    eyebrow: "Step 3 · Value detail",
-    title: "How does this compare nearby?",
-    description: "The property's local comparison group and state assessment reports provide market context.",
-    imageAlt: "Map of Nebraska highlighting the local market area"
-  },
-  "county-equalization": {
-    eyebrow: "Step 4 · Equalization",
-    title: "Is the value base being checked for fairness?",
-    description: "Equalization is the fairness check between value and tax. It does not stop market values from moving or set the levy; it checks required level and reasonable uniformity before levies are applied.",
-    imageAlt: "Map of Nebraska highlighting Gage County"
-  },
-  "state-context": {
-    eyebrow: "State baseline",
-    title: "How does the county compare statewide?",
-    description: "Statewide CTL baselines provide a broader frame for local value growth, taxes levied, and average tax rates.",
-    imageAlt: "Map of Nebraska"
-  },
-  "review-checklist": {
-    eyebrow: "Step 6 · Review",
-    title: "Need to review anything?",
-    description: "Synthesize the record, value movement, equalization context, and tax history into neutral items to verify.",
-    imageAlt: "Map of Nebraska highlighting Gage County"
-  }
-};
 
 export function renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, summaryContext = {}) {
   renderViewHeader("your-property", data.snapshotModel);
@@ -273,7 +225,6 @@ function renderTaxDistributionShell(data) {
         </div>
       </article>
     </div>
-	    <p class="chart-source">Source: ${escapeHtml(data.latestFinalTaxYear ?? "Latest finalized")} finalized tax statement and levy breakdown for this property's tax district.</p>
   `;
 }
 
@@ -323,7 +274,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
 
   container.innerHTML = `
     <div id="assessmentAccuracySummary" class="mt-5 grid gap-3 md:grid-cols-4"></div>
-    <section class="data-split-view mt-5 grid gap-6 lg:grid-cols-5">
+    <section class="data-split-view related-panel-section grid gap-6 lg:grid-cols-5">
       <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
         <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
 	        <p class="mt-1 text-sm text-slate-600">Latest years appear first so recent county sales-study results are easy to compare with prior years.</p>
@@ -779,36 +730,12 @@ function renderPropertyDetails(data, recordCard) {
   ].join("");
 }
 
-function propertyRecordSourceYear(recordCard) {
-  if (!recordCard?.source?.printedAt) return null;
-
-  const printedAt = new Date(recordCard.source.printedAt);
-  return Number.isNaN(printedAt.getTime()) ? null : printedAt.getFullYear();
-}
-
-function propertyRecordSourceText(data, recordCard) {
-  const sourceYear = propertyRecordSourceYear(recordCard);
-  const sourceName = recordCard?.source?.displayCitation || "MIPS Property Record Card";
-  const yearPrefix = sourceYear ? `${sourceYear} ` : "";
-
-  return `Source: ${yearPrefix}${sourceName}, Parcel ID ${data.parcel.parcelId}.`;
-}
-
 function reportErrorLink(data, recordCard) {
   return `
     <div class="sm:col-span-2 px-1 pt-1 text-xs text-slate-500">
       <p>${escapeHtml(propertyRecordSourceText(data, recordCard))}</p>
     </div>
   `;
-}
-
-function escapeHtml(value) {
-  return `${value ?? ""}`
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }
 
 function formSafeId(value) {
@@ -2510,61 +2437,6 @@ function renderLevyTable(data) {
   `;
 
   document.getElementById("levyRows").innerHTML = dataRows + totalRow;
-}
-
-export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
-  const summary = document.getElementById("taxDistrictAuthoritySummary");
-  if (!summary) return;
-
-  const district = taxDistrictAuthorities?.districts?.find(item =>
-    String(item.taxDistrict) === String(data.parcel.taxDistrict)
-  );
-  const authorities = district?.authorities ?? data.latestFinalLevyComponents.map(row => ({
-    description: row.description,
-    category: row.group,
-    levy: row.rate
-  }));
-  const total = authorities.reduce((sum, row) => sum + row.levy, 0);
-  const districtDescription = district?.districtDescription ?? null;
-  const districtDescriptionNote = districtDescription
-    ? `Report label: ${districtDescription}`
-    : "No district description found in the authority report.";
-
-  summary.innerHTML = [
-    {
-      label: "Tax district",
-      value: data.parcel.taxDistrict,
-      note: districtDescriptionNote
-    },
-    {
-      label: "Authorities",
-      value: authorities.length,
-	      note: district ? "Matched to this parcel's tax district." : "Using the most recent finalized tax breakdown."
-    },
-    {
-      label: "Total levy",
-      value: formatNullableLevy(district?.districtLevy ?? total),
-	      note: "Combined rate for the listed taxing bodies."
-    },
-    {
-      label: "Source year",
-      value: taxDistrictAuthorities?.source?.taxYear ?? data.latestFinalTaxYear,
-      note: "District Authority Report."
-    }
-  ].map(card => `
-    <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(card.label)}</p>
-      <p class="mt-1 text-lg font-bold text-slate-700">${escapeHtml(card.value)}</p>
-      <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(card.note)}</p>
-    </div>
-  `).join("");
-
-  const source = document.getElementById("taxDistrictAuthoritySource");
-  if (source) {
-    source.textContent = taxDistrictAuthorities?.source
-      ? `Source: ${taxDistrictAuthorities.source.title}, printed ${new Date(taxDistrictAuthorities.source.printedAt).toLocaleDateString("en-US")}.`
-      : propertyRecordSourceText(data);
-  }
 }
 
 function renderSources(data) {

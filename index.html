@@ -132,7 +132,18 @@
         </div>
       </article>
 
-      <section id="tax-distribution" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></section>
+      <article id="tax-district-authorities" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <p class="guided-kicker">Tax Districts</p>
+        <h2 class="mt-1 text-xl font-bold text-slate-700">Which tax district applies here?</h2>
+        <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">The tax district, source year, total levy, and listed taxing bodies help confirm whether this property is assigned to the expected jurisdictions before reading the levy breakdown.</p>
+        <div id="taxDistrictAuthoritySummary" class="mt-4 grid gap-3 md:grid-cols-4"></div>
+        <div class="ooda-inline-note">
+          <p class="guided-kicker">Jurisdiction check</p>
+          <p>Follow up if the school district, city, county, NRD, ESU, college, or other listed body does not match where the property is located. The levy breakdown explains where the bill goes, but it does not decide the property’s assessed value.</p>
+        </div>
+        <section id="tax-distribution" class="related-panel-section"></section>
+        <p id="taxDistrictAuthoritySource" class="chart-source"></p>
+      </article>
 
       <article class="ooda-decision-card">
         <p class="guided-kicker">Decision check</p>
@@ -147,32 +158,6 @@
 	          <p class="mt-1 text-sm text-slate-600">The next step synthesizes the record, value, equalization, and tax context into items to verify.</p>
         </div>
         <button type="button" data-guided-next="review-signals" class="next-step-button">Go to Review Signals</button>
-      </article>
-    </section>
-
-    <section data-guided-panel="tax-districts" class="hidden space-y-6">
-      <article id="tax-district-authorities" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <p class="guided-kicker">Tax Districts</p>
-        <h2 class="mt-1 text-2xl font-bold text-slate-700">Who is taxing this property?</h2>
-	        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">The tax district, source year, total levy, and listed taxing bodies help confirm whether this property is assigned to the expected jurisdictions. The tax context page explains how the bill is divided.</p>
-        <div id="taxDistrictAuthoritySummary" class="mt-4 grid gap-3 md:grid-cols-4"></div>
-
-        <div class="ooda-inline-note">
-          <p class="guided-kicker">Decision check</p>
-          <h3>Does the jurisdiction list match the property?</h3>
-	          <p>Follow up if the school district, city, county, NRD, ESU, college, or other listed body does not match where the property is located. The levy breakdown explains where the bill goes, but it does not decide the property’s assessed value.</p>
-        </div>
-
-        <p id="taxDistrictAuthoritySource" class="chart-source"></p>
-      </article>
-
-      <article class="next-step-card">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Now compare the local market area.</h3>
-	          <p class="mt-1 text-sm text-slate-600">Next, place the property in its local comparison group.</p>
-        </div>
-        <button type="button" data-guided-next="market-area" class="next-step-button">Go to Market Area</button>
       </article>
     </section>
 
@@ -212,29 +197,29 @@
             </section>
           </div>
         </div>
-      </article>
 
-      <section class="grid gap-6 lg:grid-cols-5">
-        <article id="market-position-panel" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
-          <h2 class="text-xl font-bold text-slate-700">Where does this market area sit?</h2>
+        <section class="related-panel-section grid gap-6 lg:grid-cols-5">
+          <section id="market-position-panel" class="lg:col-span-3">
+            <h2 class="text-xl font-bold text-slate-700">Where does this market area sit?</h2>
 	          <p id="marketPositionHelper" class="mt-1 text-sm text-slate-600">Each dot represents a local group. Use the menu or choose a dot to change the highlight; the shaded center shows the expected range and broader county pattern.</p>
-          <div id="marketPositionLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-          <div class="mt-4 h-80">
-            <canvas id="marketPositionScatter" role="img" tabindex="0" aria-describedby="marketScatterSummary"></canvas>
-          </div>
-          <div class="mt-4 border-t border-slate-200 pt-4">
-            <p class="guided-kicker">Market area summary</p>
-            <p id="marketNarrative" class="mt-1 text-sm leading-6 text-slate-700"></p>
-          </div>
-          <p id="marketScatterSummary" class="mt-4 text-sm leading-6 text-slate-600"></p>
-          <p id="marketPositionSource" class="chart-source"></p>
-        </article>
-        <article id="market-price-context" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
-          <h2 class="text-xl font-bold text-slate-700">What prices are represented?</h2>
+            <div id="marketPositionLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+            <div class="mt-4 h-80">
+              <canvas id="marketPositionScatter" role="img" tabindex="0" aria-describedby="marketScatterSummary"></canvas>
+            </div>
+            <div class="mt-4 border-t border-slate-200 pt-4">
+              <p class="guided-kicker">Market area summary</p>
+              <p id="marketNarrative" class="mt-1 text-sm leading-6 text-slate-700"></p>
+            </div>
+            <p id="marketScatterSummary" class="mt-4 text-sm leading-6 text-slate-600"></p>
+          </section>
+          <section id="market-price-context" class="lg:col-span-2">
+            <h2 class="text-xl font-bold text-slate-700">What prices are represented?</h2>
 	          <p class="mt-1 text-sm text-slate-600">Average sale price and assessed value show the price context behind the highlighted group.</p>
-          <div id="marketPriceSummary" class="mt-4 grid gap-3 text-sm"></div>
-        </article>
-      </section>
+            <div id="marketPriceSummary" class="mt-4 grid gap-3 text-sm"></div>
+          </section>
+        </section>
+        <p id="marketPositionSource" class="chart-source"></p>
+      </article>
 
       <article id="county-sale-price-bands" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></article>
 
@@ -269,29 +254,40 @@
 	        <p>Equalization can explain whether the assessment system is generally level and uniform. It does not prove an individual parcel outcome by itself, and it does not control tax levies.</p>
       </article>
 
-      <section class="grid gap-6 lg:grid-cols-5">
-        <article id="county-indexed" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
-          <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
+      <article id="county-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <p class="guided-kicker">County Summary</p>
+        <h2 class="mt-1 text-xl font-bold text-slate-700">What is the countywide baseline?</h2>
+        <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Certified values and taxes levied provide background for the countywide value base before the parcel-level tax step.</p>
+        <div id="countyCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
+        <section class="related-panel-section grid gap-6 lg:grid-cols-5" aria-label="County value and tax charts">
+          <section id="county-indexed" class="lg:col-span-3">
+            <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
 	          <p class="mt-1 text-sm text-slate-600">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>
-          <div id="countyIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
-          <div class="mt-4 h-72">
-            <canvas id="countyIndexedChart"></canvas>
-          </div>
-        </article>
-        <article id="county-etr" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
+            <div id="countyIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
+            <div class="mt-4 h-72">
+              <canvas id="countyIndexedChart"></canvas>
+            </div>
+          </section>
+          <section id="county-etr" class="lg:col-span-2">
 	          <h2 class="text-xl font-bold text-slate-700">How do county taxes compare with value?</h2>
 	          <p class="mt-1 text-sm text-slate-600">The countywide effective tax rate divides taxes levied by certified value, giving a broad tax-rate baseline.</p>
-          <div id="countyEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-          <div class="mt-4 h-72">
-            <canvas id="countyEtrChart"></canvas>
-          </div>
-        </article>
-      </section>
-      <article id="county-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <h2 class="text-xl font-bold text-slate-700">County summary</h2>
-	        <p class="mt-1 text-sm text-slate-600">Certified values and taxes levied provide background for the countywide value base before the parcel-level tax step.</p>
-        <div id="countyCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
+            <div id="countyEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+            <div class="mt-4 h-72">
+              <canvas id="countyEtrChart"></canvas>
+            </div>
+          </section>
+        </section>
+        <p class="chart-source">Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL).</p>
       </article>
+
+      <aside class="advanced-context-card" aria-labelledby="stateContextPromptTitle">
+        <div>
+          <p class="guided-kicker">Statewide County View</p>
+          <h3 id="stateContextPromptTitle">Need the broader county comparison?</h3>
+          <p>Compare this county with statewide CTL patterns and other Nebraska counties without leaving the main review path.</p>
+        </div>
+        <button type="button" data-guided-next="state-context" class="advanced-context-button">Compare Counties</button>
+      </aside>
 
       <article class="next-step-card">
         <div>
@@ -517,7 +513,6 @@
     </div>
   </div>
 
-  <script src="assets/vendor/pdf-lib.min.js"></script>
   <script type="module" src="src/app.js"></script>
 </body>
 </html>

@@ -90,17 +90,26 @@ Reusable helpers live in:
 
 - `src/app.js` loads data, initializes the guided journey, and wires page behavior.
 - `src/data-service.js` loads the manifest, active MIPS record card, guided snapshot context, county data, standards, and shared app configuration.
-- `src/snapshot-model.js` normalizes property data and derives view models.
+- `src/adapters/mips/` documents and extracts the current MIPS/GWorks record-card handoff shape.
+- `src/domain/` normalizes property data, derives view models, and owns source-label helpers.
+- `src/snapshot-model.js` remains as a compatibility re-export for the active snapshot model.
 - `src/render.js` renders the taxpayer-facing record, assessment, tax, review, and resource sections.
 - `src/charts.js` builds charts, market-position visuals, and county/state context displays.
+- `src/charts/` contains chart families that can be maintained separately from the main chart entrypoint.
 - `src/metric-signals.js` centralizes neutral signal language for assessment metrics.
 - `src/recordCorrectionRequest.js` prepares the property-record correction request PDF.
+- `src/calculations/` contains shared derived-value helpers that should stay independent of DOM rendering.
+- `src/content/` contains route copy and resource content used by the guided taxpayer journey.
+- `src/views/` contains view-specific renderers that do not need to live in the main render module.
+- `src/utils/` contains small shared utilities that have no domain dependency.
 - `src/config/taxpayer-journey.js` defines the current guided route labels and sequencing.
 
 ## Repository Structure
 
 - `index.html` defines the static page shell and section mount points.
 - `src/` contains application logic, rendering, charts, formatting, modal behavior, and journey configuration.
+- `src/adapters/` contains vendor/source adapters and field maps.
+- `src/domain/` contains canonical app-domain assembly and source labels.
 - `data/app/` contains application configuration and the active property manifest.
 - `data/property-records/mips/` contains the active MIPS property record card and guided snapshot context.
 - `data/counties/` contains county-level reports, ratio statistics, market-position data, valuation groups, school colors, and tax district authority data.
@@ -109,6 +118,7 @@ Reusable helpers live in:
 - `data/calendars/` contains static assessment calendar data.
 - `data/standards/` contains static IAAO standards and glossary references.
 - `docs/` contains project planning and source-provenance audit notes.
+- `docs/data-contracts/` contains JSON Schema drafts for the manifest and vendor property record card contract.
 - `assets/images/` contains local property images and sketches used by the prototype.
 
 ## Run Locally
@@ -144,6 +154,7 @@ Useful local checks:
 ```bash
 node --check src/render.js
 node --check src/charts.js
+node scripts/validate-data-contracts.js
 git diff --check
 node -e "JSON.parse(require('fs').readFileSync('data/app/property-manifest.json','utf8')); console.log('manifest json ok')"
 node -e "JSON.parse(require('fs').readFileSync('data/property-records/mips/residential-010496000-record-card.json','utf8')); console.log('record card json ok')"
