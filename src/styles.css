@@ -21,10 +21,10 @@
   --color-yellow-soft: 250 245 235;
   --color-teal: 58 125 140;
   --color-teal-soft: 234 244 246;
-  --status-pending: 221 232 244;
-  --status-pending-ink: 36 73 111;
-  --status-pending-border: 181 199 220;
-  --standard-band: 95 143 114;
+  --status-pending: 243 226 194;
+  --status-pending-ink: 110 83 27;
+  --status-pending-border: 216 184 116;
+  --standard-band: 72 101 127;
   --surface-card: 255 255 255;
   --surface-muted: var(--color-slate-50);
   --border-muted: var(--color-slate-200);
@@ -941,13 +941,13 @@ body {
 }
 
 .guided-path-nav-stuck {
-  background: rgb(248 250 252 / 0.96) !important;
+  background: rgb(248 250 252 / 0.985) !important;
   border-radius: 0 !important;
   border-color: rgb(var(--border-muted)) !important;
   border-left-color: transparent !important;
   border-right-color: transparent !important;
   border-top-color: transparent !important;
-  box-shadow: 0 14px 32px rgb(var(--brand-ink) / 0.10);
+  box-shadow: 0 12px 24px rgb(var(--brand-ink) / 0.08);
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
   padding-left: 1rem;
@@ -1282,7 +1282,7 @@ body {
 .assessment-metric-card {
   background: var(--metric-bg);
   box-shadow: inset 0 0 0 1px var(--metric-border);
-  color: var(--metric-color);
+  color: rgb(var(--brand-ink));
   overflow: visible;
   position: relative;
 }
@@ -1304,38 +1304,49 @@ body {
   color: rgb(var(--brand-ink));
 }
 
+.assessment-metric-value {
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
 .assessment-metric-note {
   opacity: 0.86;
 }
 
 .assessment-metric-status {
   align-self: flex-start;
-  background: white;
   border-radius: 999px;
   display: inline-flex;
   font-size: 0.6875rem;
   font-weight: 800;
+  letter-spacing: 0.035em;
   line-height: 1.2;
   margin-top: 0.45rem;
-  padding: 0.22rem 0.5rem;
+  padding: 0.25rem 0.55rem;
   text-transform: uppercase;
 }
 
 .assessment-metric-status-inside {
-  color: rgb(var(--semantic-value));
+  background: rgb(var(--color-green-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-green) / 0.32);
+  color: rgb(var(--color-green-dark));
 }
 
 .assessment-metric-status-outside {
+  background: rgb(var(--color-red-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-red) / 0.30);
   color: rgb(var(--color-red));
 }
 
 .assessment-metric-status-unknown {
+  background: rgb(var(--color-slate-50));
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   color: rgb(var(--color-slate-500));
 }
 
 .assessment-help-button {
   align-items: center;
-  background: white;
+  background: rgb(var(--surface-card));
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px var(--metric-border);
   color: rgb(var(--brand-ink));
@@ -1386,30 +1397,44 @@ body {
 }
 
 .assessment-note-card {
-  background: var(--measure-color);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22), 0 1px 2px rgb(var(--brand-ink) / 0.08);
-  color: white;
+  background: rgb(var(--surface-card));
+  border-left: 3px solid var(--measure-color);
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
 }
 
 .assessment-note-title {
+  align-items: center;
   align-self: flex-start;
-  background: rgb(248 250 252 / 0.16);
+  background: rgb(var(--color-slate-50));
   border-radius: 999px;
-  color: rgb(248 250 252 / 0.9);
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--brand-ink));
+  display: inline-flex;
   font-size: 0.75rem;
   font-weight: 800;
+  gap: 0.4rem;
   line-height: 1.2;
   padding: 0.25rem 0.5rem;
 }
 
+.assessment-note-title::before {
+  background: var(--measure-color);
+  border-radius: 999px;
+  content: "";
+  display: inline-block;
+  height: 0.42rem;
+  width: 0.42rem;
+}
+
 .assessment-note-body {
-  color: white;
+  color: rgb(var(--color-slate-600));
   line-height: 1.55;
 }
 
 .assessment-note-band {
-  border-top: 1px solid rgb(255 255 255 / 0.22);
-  color: rgb(248 250 252 / 0.86);
+  border-top: 1px solid rgb(var(--border-muted));
+  color: rgb(var(--color-slate-500));
 }
 
 .adjustment-card-grid {
@@ -2227,7 +2252,6 @@ body {
 
 .details-card dt,
 .civic-notice-metric dt,
-.assessment-metric-card .assessment-metric-label,
 .adjustment-card .adjustment-card-label,
 .final-review-kpi-card > p:first-child,
 #propertyMovementSummary .rounded-xl > p:first-child,
@@ -2241,6 +2265,10 @@ body {
 #taxDistrictAuthoritySummary .rounded-xl > p:first-child,
 #sourceCards .rounded-xl > p:first-child {
   color: rgb(var(--accent-primary));
+}
+
+.assessment-metric-card .assessment-metric-label {
+  color: rgb(var(--color-slate-500));
 }
 
 @media (max-width: 960px) {

@@ -34,18 +34,25 @@ const civicDefault = {
     rateSoft: "rgba(72, 101, 127, 0.14)",
     rateSurface: "rgb(238 243 247)",
     rateBorder: "rgb(190 205 218)",
-    pending: "#DDE8F4",
-    pendingText: "#24496F",
-    market: "#3A7D8C",
-    marketSoft: "rgba(58, 125, 140, 0.16)",
+    equalization: "#48657F",
+    equalizationAlt: "#5F7488",
+    equalizationMuted: "#7B8FA1",
+    equalizationSoft: "rgba(72, 101, 127, 0.13)",
+    equalizationSurface: "rgb(241 245 248)",
+    equalizationBorder: "rgb(198 211 222)",
+    pending: "#F3E2C2",
+    pendingText: "#6E531B",
+    pendingBorder: "#D8B874",
+    market: "#48657F",
+    marketSoft: "rgba(72, 101, 127, 0.13)",
     comparison: "#667085",
     comparisonSoft: "rgba(100, 116, 139, 0.12)",
     attention: "#A9792B",
     attentionSoft: "rgba(169, 121, 43, 0.16)",
     outlier: "#9B3D3D",
     outlierSoft: "rgba(155, 61, 61, 0.12)",
-    standardBand: "rgba(95, 143, 114, 0.18)",
-    standardBandBorder: "rgba(95, 143, 114, 0.46)"
+    standardBand: "rgba(72, 101, 127, 0.11)",
+    standardBandBorder: "rgba(72, 101, 127, 0.34)"
   },
   districtGroups: {
     School: "#A9792B",
@@ -86,12 +93,15 @@ export const visualizationTheme = getVisualizationPalette();
 export const chartColors = {
   contextValue: visualizationTheme.roles.value,
   contextTax: visualizationTheme.roles.tax,
+  contextRate: visualizationTheme.roles.tax,
   propertyValue: visualizationTheme.roles.property,
   propertyTax: visualizationTheme.roles.taxSoft,
-  propertyRate: visualizationTheme.roles.rate,
-  cod: visualizationTheme.colors.secondary,
-  prd: visualizationTheme.colors.danger,
-  cov: "#73a35b",
+  propertyRate: visualizationTheme.roles.tax,
+  equalization: visualizationTheme.roles.equalization,
+  cod: visualizationTheme.roles.equalization,
+  prd: visualizationTheme.roles.equalizationAlt,
+  cov: visualizationTheme.roles.equalizationMuted,
+  levelOfValue: visualizationTheme.roles.equalization,
   standardBand: visualizationTheme.roles.standardBand,
   standardBandBorder: visualizationTheme.roles.standardBandBorder
 };
@@ -105,10 +115,18 @@ export const semanticChartColors = {
   taxBg: visualizationTheme.roles.taxSoft,
   taxSoft: visualizationTheme.roles.taxSurface,
   taxRing: visualizationTheme.roles.taxBorder,
-  etr: visualizationTheme.roles.rate,
-  etrBg: visualizationTheme.roles.rateSoft,
-  etrSoft: visualizationTheme.roles.rateSurface,
-  etrRing: visualizationTheme.roles.rateBorder
+  etr: visualizationTheme.roles.tax,
+  etrBg: visualizationTheme.roles.taxSoft,
+  etrSoft: visualizationTheme.roles.taxSurface,
+  etrRing: visualizationTheme.roles.taxBorder,
+  equalization: visualizationTheme.roles.equalization,
+  equalizationBg: visualizationTheme.roles.equalizationSoft,
+  equalizationSoft: visualizationTheme.roles.equalizationSurface,
+  equalizationRing: visualizationTheme.roles.equalizationBorder,
+  comparison: visualizationTheme.roles.comparison,
+  comparisonBg: visualizationTheme.roles.comparisonSoft,
+  pending: visualizationTheme.roles.pending,
+  pendingRing: visualizationTheme.roles.pendingBorder
 };
 
 export function applyVisualizationPalette(palette = visualizationTheme) {
@@ -125,6 +143,33 @@ export function applyVisualizationPalette(palette = visualizationTheme) {
     "--viz-text": palette.neutrals.text,
     "--viz-muted-text": palette.neutrals.mutedText,
     "--viz-border": palette.neutrals.border,
-    "--viz-surface-muted": palette.neutrals.surfaceMuted
+    "--viz-surface-muted": palette.neutrals.surfaceMuted,
+    "--chart-gridline": palette.neutrals.gridline
   }).forEach(([name, value]) => root.style.setProperty(name, value));
+}
+
+export function applyChartDefaults(chart = globalThis.Chart, palette = visualizationTheme) {
+  if (!chart?.defaults) return;
+
+  chart.defaults.color = palette.neutrals.text;
+  chart.defaults.borderColor = palette.neutrals.gridline;
+  chart.defaults.font = {
+    ...chart.defaults.font,
+    family: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+  };
+
+  if (chart.defaults.plugins?.legend?.labels) {
+    chart.defaults.plugins.legend.labels.color = palette.neutrals.text;
+    chart.defaults.plugins.legend.labels.boxWidth = 18;
+    chart.defaults.plugins.legend.labels.boxHeight = 8;
+    chart.defaults.plugins.legend.labels.padding = 14;
+  }
+
+  if (chart.defaults.scale?.grid) {
+    chart.defaults.scale.grid.color = palette.neutrals.gridline;
+  }
+
+  if (chart.defaults.scale?.border) {
+    chart.defaults.scale.border.color = palette.neutrals.border;
+  }
 }

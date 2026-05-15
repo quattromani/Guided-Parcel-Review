@@ -439,9 +439,9 @@ const assessmentMeasureDefinitions = [
     key: "cod",
     label: "Uniformity",
     color: chartColors.cod,
-    fill: semanticChartColors.etrBg,
-    cardBackground: semanticChartColors.etrSoft,
-    cardBorder: semanticChartColors.etrRing,
+    fill: semanticChartColors.equalizationBg,
+    cardBackground: semanticChartColors.equalizationSoft,
+    cardBorder: semanticChartColors.equalizationRing,
     digits: 2,
     definition: "Uniformity is measured by COD. It shows how tightly individual assessment ratios cluster around the median ratio."
   },
@@ -449,9 +449,9 @@ const assessmentMeasureDefinitions = [
     key: "prd",
     label: "Price level fairness",
     color: chartColors.prd,
-    fill: semanticChartColors.taxBg,
-    cardBackground: semanticChartColors.taxSoft,
-    cardBorder: semanticChartColors.taxRing,
+    fill: semanticChartColors.equalizationBg,
+    cardBackground: semanticChartColors.equalizationSoft,
+    cardBorder: semanticChartColors.equalizationRing,
     digits: 3,
     definition: "Price level fairness is measured by PRD. It shows whether lower- and higher-priced properties are being treated evenly."
   },
@@ -459,9 +459,9 @@ const assessmentMeasureDefinitions = [
     key: "cov",
     label: "Variation",
     color: chartColors.cov,
-    fill: semanticChartColors.valueBg,
-    cardBackground: semanticChartColors.valueSoft,
-    cardBorder: semanticChartColors.valueRing,
+    fill: semanticChartColors.equalizationBg,
+    cardBackground: semanticChartColors.equalizationSoft,
+    cardBorder: semanticChartColors.equalizationRing,
     digits: 2,
     approximateBand: true,
     definition: "COV measures relative variation around the mean ratio. When a comparison band is available, it is approximate context derived from the selected COD guidance."
@@ -592,7 +592,7 @@ const marketPositionReferencePlugin = {
       const right = Math.min(chartArea.right, Math.max(xStart, xEnd));
 
       if (right > left) {
-        ctx.fillStyle = options.medianBandColor ?? colorAlpha(visualizationTheme.roles.rate, 0.11);
+        ctx.fillStyle = options.medianBandColor ?? colorAlpha(visualizationTheme.roles.equalization, 0.10);
         ctx.fillRect(left, chartArea.top, right - left, chartArea.bottom - chartArea.top);
       }
     }
@@ -608,8 +608,8 @@ const marketPositionReferencePlugin = {
         ctx.clip();
 
         const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.min(chartArea.width, chartArea.height) * 0.42);
-        gradient.addColorStop(0, colorAlpha(visualizationTheme.roles.rate, 0.08));
-        gradient.addColorStop(0.72, colorAlpha(visualizationTheme.roles.rate, 0.025));
+        gradient.addColorStop(0, colorAlpha(visualizationTheme.roles.equalization, 0.07));
+        gradient.addColorStop(0.72, colorAlpha(visualizationTheme.roles.equalization, 0.022));
         gradient.addColorStop(1, "rgba(255,255,255,0)");
         ctx.fillStyle = gradient;
         ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
@@ -625,7 +625,7 @@ const marketPositionReferencePlugin = {
 
           ctx.beginPath();
           ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
-          ctx.strokeStyle = colorAlpha(visualizationTheme.roles.rate, ring.alpha);
+          ctx.strokeStyle = colorAlpha(visualizationTheme.roles.equalization, ring.alpha);
           ctx.lineWidth = 1.1;
           ctx.setLineDash([2, 5]);
           ctx.stroke();
@@ -719,14 +719,14 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
       label: "Level of value",
       value: `${latest.levelOfValue.toFixed(2)}%`,
       note: levelRangeNote,
-      color: palette.teal,
+      color: chartColors.levelOfValue,
       status: assessmentLevelStatus(latest.levelOfValue, levelRange),
       help: levelHelp
     }
   ];
 
   summary.innerHTML = cards.map(card => `
-    <div class="assessment-metric-card rounded-xl p-4" style="--metric-color: ${card.color}; --metric-bg: ${colorAlpha(card.color, 0.14)}; --metric-border: ${colorAlpha(card.color, 0.28)};">
+    <div class="assessment-metric-card rounded-xl p-4" style="--metric-color: ${card.color}; --metric-bg: ${colorAlpha(card.color, 0.045)}; --metric-border: ${colorAlpha(card.color, 0.24)};">
       <div class="assessment-metric-heading">
         <p class="assessment-metric-label text-xs font-semibold uppercase tracking-wide">${card.label}</p>
         <span class="assessment-metric-help">
@@ -770,7 +770,7 @@ function renderAssessmentAccuracyNotes(selectedClass, iaaoStandards) {
   };
 
   notes.innerHTML = assessmentMeasureDefinitions.map(definition => `
-    <div class="assessment-note-card flex min-h-32 flex-col rounded-lg p-3" style="--measure-color: ${definition.color};">
+    <div class="assessment-note-card flex min-h-32 flex-col rounded-lg p-4" style="--measure-color: ${definition.color};">
       <p class="assessment-note-title">${definition.label}</p>
       <p class="assessment-note-body mt-2">${definition.definition}</p>
       <p class="assessment-note-band mt-auto pt-3 text-[11px] font-semibold uppercase tracking-wide">
@@ -970,8 +970,8 @@ function propertyIndexedDatasets(propertyRows, years, palette = {}) {
 
 function propertyRateDataset(propertyRows, years, palette = {}) {
   const propertyByYear = rowsByYear(propertyRows);
-  const rateColor = colorAlpha(palette.propertyRateColor ?? palette.rateColor ?? chartColors.contextValue, 0.4);
-  const rateBg = palette.propertyRateBg ?? semanticChartColors.valueBg;
+  const rateColor = colorAlpha(palette.propertyRateColor ?? palette.rateColor ?? chartColors.contextRate, 0.4);
+  const rateBg = palette.propertyRateBg ?? semanticChartColors.etrBg;
 
   return {
     label: "This property ETR",
@@ -1346,8 +1346,8 @@ function renderMarketSalePriceChart(rows, study = {}, duplicateLabels = new Set(
       type: "bar",
       label: study.countLabel || "Sales",
       data: rows.map(row => row.count),
-      backgroundColor: semanticChartColors.valueBg,
-      borderColor: chartColors.contextValue,
+      backgroundColor: semanticChartColors.equalizationBg,
+      borderColor: chartColors.equalization,
       borderWidth: 2,
       borderRadius: 6,
       order: 2
@@ -1358,9 +1358,9 @@ function renderMarketSalePriceChart(rows, study = {}, duplicateLabels = new Set(
       data: rows.map(row => row.count),
       tension: 0.38,
       borderWidth: 3,
-      borderColor: chartColors.contextTax,
-      backgroundColor: semanticChartColors.taxBg,
-      pointBackgroundColor: chartColors.contextTax,
+      borderColor: semanticChartColors.comparison,
+      backgroundColor: semanticChartColors.comparisonBg,
+      pointBackgroundColor: semanticChartColors.comparison,
       pointRadius: 3,
       fill: true,
       order: 1
@@ -1443,19 +1443,19 @@ function renderMarketPositionLegend() {
     },
     {
       label: "Selected group",
-      borderColor: visualizationTheme.roles.market,
-      backgroundColor: colorAlpha(visualizationTheme.roles.market, 0.22)
+      borderColor: visualizationTheme.roles.equalization,
+      backgroundColor: colorAlpha(visualizationTheme.roles.equalization, 0.20)
     },
     {
       label: "Countywide result",
-      borderColor: visualizationTheme.roles.property,
+      borderColor: visualizationTheme.roles.comparison,
       backgroundColor: palette.white,
       dashed: true
     },
     {
       label: "Expected median range",
-      borderColor: visualizationTheme.roles.rate,
-      backgroundColor: colorAlpha(visualizationTheme.roles.rate, 0.12),
+      borderColor: visualizationTheme.roles.equalization,
+      backgroundColor: colorAlpha(visualizationTheme.roles.equalization, 0.10),
       square: true
     }
   ];
@@ -1593,8 +1593,8 @@ function renderMarketPositionScatter(selected, classStats, iaaoStandards, onSele
   const bounds = marketPositionBounds(points, countywide, medianRange, codRange);
   const mutedPointColor = colorAlpha(visualizationTheme.roles.comparison, 0.55);
   const mutedPointFill = colorAlpha(visualizationTheme.roles.comparison, 0.18);
-  const selectedColor = visualizationTheme.roles.market;
-  const countyColor = visualizationTheme.roles.property;
+  const selectedColor = visualizationTheme.roles.equalization;
+  const countyColor = visualizationTheme.roles.comparison;
   const otherPointRadii = otherPoints.map(point =>
     centralMarketPoint(point, medianRange, codRange, countywide) ? 5.5 : 3.5
   );
@@ -1917,7 +1917,7 @@ export function buildEtrChart(data) {
           data: etrValues,
           tension: 0.25,
           borderWidth: 3,
-          borderColor: chartColors.contextValue,
+          borderColor: chartColors.contextRate,
           backgroundColor: semanticChartColors.etrBg,
           spanGaps: true
         }
@@ -1966,7 +1966,7 @@ function buildEtrOverviewChart(canvasId, data, label, factor) {
           data: etrValues,
           tension: 0.25,
           borderWidth: 3,
-          borderColor: chartColors.contextValue,
+          borderColor: chartColors.contextRate,
           backgroundColor: semanticChartColors.etrBg,
           spanGaps: true
         },
@@ -1993,8 +1993,8 @@ function buildCertifiedRateChart(canvasId, rows, label, propertyRows, palette = 
   const canvas = document.getElementById(canvasId);
   if (!canvas || !rows?.length) return;
   const years = rows.map(row => row.year);
-  const rateColor = palette.rateColor ?? chartColors.contextValue;
-  const rateBg = palette.rateBg ?? semanticChartColors.valueBg;
+  const rateColor = palette.rateColor ?? chartColors.contextRate;
+  const rateBg = palette.rateBg ?? semanticChartColors.etrBg;
   const datasets = [
     {
       label,
@@ -2245,18 +2245,18 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       data: primaryRows.map(row => row.averageTaxRate * 100),
       tension: 0.25,
       borderWidth: 3,
-      borderColor: chartColors.contextValue,
-      backgroundColor: semanticChartColors.valueBg
+      borderColor: chartColors.contextRate,
+      backgroundColor: semanticChartColors.etrBg
     },
     {
       label: `${comparisonLabel} average tax rate`,
       data: comparisonRows.map(row => row.averageTaxRate * 100),
       tension: 0.25,
       borderWidth: 2,
-      borderColor: comparisonValueColor,
-      backgroundColor: semanticChartColors.valueBg,
-      pointBackgroundColor: comparisonValueColor,
-      pointBorderColor: comparisonValueColor
+      borderColor: comparisonTaxColor,
+      backgroundColor: semanticChartColors.etrBg,
+      pointBackgroundColor: comparisonTaxColor,
+      pointBorderColor: comparisonTaxColor
     }
   ];
   const hasIndexedLegend = renderCustomLegend("countyComparisonIndexedChartLegend", indexedDatasets);

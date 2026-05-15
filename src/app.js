@@ -26,7 +26,7 @@ import {
   loadValuationGroups,
   loadIaaoStandards
 } from "./data-service.js";
-import { applyVisualizationPalette } from "./config/visualization-palettes.js";
+import { applyChartDefaults, applyVisualizationPalette } from "./config/visualization-palettes.js";
 import { initImageModal } from "./modal.js";
 import {
   getCurrentStageText,
@@ -214,6 +214,7 @@ const resourceAliases = {
 
 async function main() {
   applyVisualizationPalette();
+  applyChartDefaults();
   const [propertyData, recordCard, calendar, legalReferences, realPropertyForms, ctlData, ratioData, countyContext, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, taxDistrictAuthorities, valuationGroups, iaaoStandards] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
