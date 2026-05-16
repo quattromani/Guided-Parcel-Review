@@ -766,9 +766,9 @@ function imageButton(src, caption, label) {
 function renderPropertyDetails(data, recordCard) {
   const identityDetails = [
     ["Parcel ID", data.parcel.parcelId],
+    ["Tax district", data.parcel.taxDistrict],
     ["Owner", data.parcel.owner],
     ["Situs address", data.parcel.situsAddress],
-    ["Tax district", data.parcel.taxDistrict],
     ["Legal description", data.parcel.legalDescription],
     ["Status", data.classification.status],
     ["Zoning", data.classification.zoning],
@@ -776,8 +776,21 @@ function renderPropertyDetails(data, recordCard) {
   ];
   const physicalDetails = physicalDetailsForProperty(data);
 
+  const compactDetailLabels = new Set([
+    "Parcel ID",
+    "Tax district",
+    "Status",
+    "Zoning",
+    "Year built",
+    "Style",
+    "Building size",
+    "Basement size",
+    "Bedrooms / bathrooms",
+    "Quality / condition"
+  ]);
+
   const renderCards = details => details.map(([label, value]) => `
-    <div class="details-card">
+    <div class="details-card ${compactDetailLabels.has(label) ? "details-card-compact" : "details-card-full"}">
       <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</dt>
       <dd class="mt-1 text-sm font-medium text-slate-700">${displayValue(value)}</dd>
     </div>
@@ -1343,13 +1356,13 @@ function disclosure(title, meta, content) {
   return `
     <details class="record-disclosure sm:col-span-2 rounded-xl">
       <summary class="record-disclosure-toggle cursor-pointer list-none rounded-xl px-4 py-3 font-semibold">
-        <div class="flex items-center justify-between gap-3">
-          <span>${title}</span>
-          <span class="flex shrink-0 items-center gap-2 text-sm">
+        <div class="record-disclosure-summary">
+          <span class="record-disclosure-summary-copy">
+            <span class="record-disclosure-title">${title}</span>
             <span class="record-disclosure-meta rounded-full px-2 py-0.5 text-xs font-semibold">${meta}</span>
-            <span class="record-disclosure-chevron-shell" aria-hidden="true">
-              <span class="record-disclosure-chevron"></span>
-            </span>
+          </span>
+          <span class="record-disclosure-chevron-shell" aria-hidden="true">
+            <span class="record-disclosure-chevron"></span>
           </span>
         </div>
       </summary>
@@ -2091,7 +2104,6 @@ function renderSummary(data, recordCard, summaryContext = {}) {
         </div>
       `).join("")}
     </div>
-    <p class="quick-read-guidance">Start with the property details and confirm everything looks right.</p>
   `;
 }
 

@@ -266,6 +266,20 @@ table thead th[class] + th[class] {
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
 }
 
+@media (max-width: 639px) {
+  #propertyDetails {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #propertyDetails > :not(.details-card-compact) {
+    grid-column: 1 / -1;
+  }
+
+  #propertyDetails .details-card-full {
+    grid-column: 1 / -1;
+  }
+}
+
 .property-context-bar {
   align-items: center;
   background: white;
@@ -291,7 +305,7 @@ table thead th[class] + th[class] {
 
 .valuation-notice-row {
   display: grid;
-  grid-template-columns: minmax(9rem, 1fr) 5.75rem 5.75rem;
+  grid-template-columns: minmax(9rem, 1fr) minmax(5.75rem, 5.75rem) minmax(5.75rem, 5.75rem);
   align-items: baseline;
   border-bottom: 1px solid rgb(var(--border-muted));
   background: white;
@@ -300,7 +314,14 @@ table thead th[class] + th[class] {
 }
 
 .valuation-notice-row > p {
+  min-width: 0;
   padding: 0.625rem 0.75rem;
+}
+
+.valuation-notice-row > p:not(:first-child) {
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: normal;
+  white-space: nowrap;
 }
 
 .valuation-notice-row > p + p {
@@ -399,11 +420,11 @@ table thead th[class] + th[class] {
 
 .property-hero-market {
   color: rgb(var(--color-slate-600));
-  font-weight: 200;
+  font-weight: 400;
 }
 
 .property-hero-school {
-  font-weight: 200;
+  font-weight: 400;
   overflow-wrap: normal;
 }
 
@@ -475,7 +496,20 @@ table thead th[class] + th[class] {
   }
 
   .property-hero-media {
-    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: stretch;
+    width: 100%;
+  }
+
+  .property-hero-media button {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .property-hero-media img {
+    aspect-ratio: 16 / 10;
+    height: auto;
+    width: 100%;
   }
 }
 
@@ -822,6 +856,29 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .record-disclosure-toggle {
   color: rgb(var(--brand-ink));
+  height: 100%;
+}
+
+.record-disclosure-summary {
+  display: flex;
+  gap: 0.75rem;
+  padding-right: 2.45rem;
+  position: relative;
+}
+
+.record-disclosure-summary-copy {
+  align-items: flex-start;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.record-disclosure-title {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .record-disclosure-toggle:focus-visible {
@@ -847,6 +904,9 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   display: inline-flex;
   height: 1.7rem;
   justify-content: center;
+  position: absolute;
+  right: 0;
+  bottom: 0;
   width: 1.7rem;
 }
 
@@ -906,13 +966,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   letter-spacing: 0.04em;
   line-height: 1.25;
   text-transform: uppercase;
-}
-
-.quick-read-guidance {
-  color: rgb(var(--color-slate-600));
-  font-size: 0.8rem;
-  line-height: 1.55;
-  margin: 0.8rem 0 0;
 }
 
 @media (min-width: 640px) {
@@ -1939,15 +1992,19 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .ooda-decision-header {
   align-items: flex-start;
   display: flex;
-  flex-direction: column;
   gap: 0.75rem;
   justify-content: space-between;
 }
 
-@media (min-width: 640px) {
-  .ooda-decision-header {
-    flex-direction: row;
-  }
+.ooda-decision-header > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ooda-decision-header .secondary-link-button {
+  flex: 0 0 auto;
+  margin-top: 0.25rem;
+  white-space: nowrap;
 }
 
 .ooda-decision-card h2,
@@ -2880,12 +2937,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
   .valuation-notice-row {
     font-size: 0.8125rem;
-    grid-template-columns: minmax(0, 1fr) minmax(4.35rem, auto) minmax(4.35rem, auto);
+    grid-template-columns: minmax(0, 1fr) minmax(4.85rem, 4.85rem) minmax(4.85rem, 4.85rem);
   }
 
   .valuation-notice-row > p {
-    min-width: 0;
-    overflow-wrap: anywhere;
     padding: 0.55rem 0.5rem;
   }
 
@@ -2895,24 +2950,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
   .valuation-notice-header > p {
     min-height: 2.35rem;
-  }
-
-  .record-disclosure-toggle > div {
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .record-disclosure-toggle > div > span:first-child {
-    flex: 1 1 100%;
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-
-  .record-disclosure-toggle > div > span:last-child {
-    flex: 1 1 auto;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    min-width: 0;
   }
 
   .assessment-type-badge,
