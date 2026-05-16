@@ -158,10 +158,16 @@ function signalMeta(signals) {
 
 function finalReviewCard(card) {
   const toneClass = card.tone ? ` final-review-kpi-card-${card.tone}` : "";
+  const reviewAction = card.route ? `
+      <button type="button" class="final-review-card-action" data-guided-next="${escapeHtml(card.route)}">Review</button>
+    ` : "";
 
   return `
     <section class="final-review-kpi-card${toneClass}">
-      <p>${escapeHtml(card.step)}</p>
+      <div class="final-review-card-topline">
+        <p class="final-review-card-step">${escapeHtml(card.step)}</p>
+        ${reviewAction}
+      </div>
       <h3>${escapeHtml(card.value)}</h3>
       ${card.meta ? `<small>${escapeHtml(card.meta)}</small>` : ""}
       <p>${escapeHtml(card.note)}</p>
@@ -208,6 +214,7 @@ function buildFinalReviewModel(data, context = {}) {
         cards: [
           {
             step: "Step 1 · Property Record",
+            route: "property-record",
             value: `${notice.propertyClass} property`,
             meta: `Parcel ${notice.parcelId}`,
             note: propertyDetails
@@ -216,6 +223,7 @@ function buildFinalReviewModel(data, context = {}) {
           },
           {
             step: "Step 2 · What Changed",
+            route: "what-changed",
             value: currentYearPending ? `${notice.taxYear} pending` : formatNullableMoney(notice.currentAssessedValue),
             tone: currentYearPending ? "pending" : "",
             meta: latestValue
@@ -232,6 +240,7 @@ function buildFinalReviewModel(data, context = {}) {
         cards: [
           {
             step: "Step 3 · Value Detail",
+            route: "valuation-detail",
             value: marketAreaName(context.recordCard, marketArea),
             meta: marketArea?.count ? itemCountLabel(marketArea.count, "qualified sale") : "Market-area context",
             note: marketArea
@@ -240,18 +249,21 @@ function buildFinalReviewModel(data, context = {}) {
           },
           {
             step: "Step 4 · Equalization",
+            route: "equalization",
             value: "Fairness check",
             meta: "Required level and uniformity",
             note: "Equalization does not stop market movement or set the levy. It checks whether assessments are at the required level and reasonably uniform."
           },
           {
             step: "Step 5 · Tax Context",
+            route: "tax-context",
             value: latestEtr !== null ? `ETR ${formatNullablePercent(latestEtr)}` : "ETR pending",
             meta: latestTax ? `Net taxes ${moneyCents.format(latestTax.taxes)} (${latestTax.year})` : "No final tax bill listed",
             note: "Effective tax rate compares finalized taxes paid with assessed value after levy, credits, and exemptions are reflected in the final bill."
           },
           {
             step: "Step 6 · Review Signals",
+            route: "review-signals",
             value: reviewSignals.length ? itemCountLabel(reviewSignals.length, "item") : "No items surfaced",
             meta: signalMeta(reviewSignals),
             note: reviewSignals.some(signal => signal.tone === "review")
@@ -448,7 +460,7 @@ function appendFinalSummaryStep() {
   next.innerHTML = `
     <div>
       <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Final step</p>
-      <h3 class="mt-1 text-lg font-bold text-slate-700">Finish with a calm summary.</h3>
+      <h3 class="mt-1 text-lg font-bold text-slate-700">Finish with a summary.</h3>
       <p class="mt-1 text-sm text-slate-600">Review what you learned and any optional next steps without treating a filing as the expected outcome.</p>
     </div>
     <button type="button" data-guided-next="final-summary" class="next-step-button">Go to Summary</button>

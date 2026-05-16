@@ -2096,7 +2096,7 @@ function renderSummary(data, recordCard, summaryContext = {}) {
   ];
 
   document.getElementById("summaryText").innerHTML = `
-    <p class="quick-read-intro">A quick first pass. Detailed history, taxes, and county context come in the next steps.</p>
+    <p class="quick-read-intro">Detailed history, taxes, and county context come in the next steps.</p>
     <div class="quick-read-list" role="list">
       ${summaryRows.map(([label, body]) => `
         <div class="quick-read-item" role="listitem">

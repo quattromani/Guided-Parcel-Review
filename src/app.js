@@ -442,6 +442,7 @@ function initGuidedNavigation(data) {
     guidedPath,
     propertyContext,
     mobileNavQuery,
+    heroIdentity: document.querySelector(".property-hero-identity"),
     situs: data.parcel.situsAddress
   });
 }
@@ -580,9 +581,10 @@ function initGuidedContextAnchor({
   guidedPath,
   propertyContext,
   mobileNavQuery,
+  heroIdentity,
   situs
 }) {
-  if (!anchor || !situsTarget || !guidedPath || !propertyContext) return null;
+  if (!anchor || !situsTarget || !guidedPath || !propertyContext || !heroIdentity) return null;
 
   situsTarget.textContent = situs || "";
 
@@ -593,16 +595,16 @@ function initGuidedContextAnchor({
   }
 
   function update() {
-    const contextBar = propertyContext.querySelector("[data-property-context-bar]");
-    if (!mobileNavQuery.matches || propertyContext.classList.contains("hidden") || !contextBar) {
+    const heroPanel = heroIdentity.closest("[data-guided-panel]");
+    if (!mobileNavQuery.matches || heroPanel?.classList.contains("hidden")) {
       setVisible(false);
       return;
     }
 
     const navRect = guidedPath.getBoundingClientRect();
-    const contextRect = contextBar.getBoundingClientRect();
-    const contextHasPassed = contextRect.bottom <= navRect.bottom + 2;
-    setVisible(contextHasPassed);
+    const identityRect = heroIdentity.getBoundingClientRect();
+    const identityHasPassed = identityRect.top <= navRect.bottom + 2;
+    setVisible(identityHasPassed);
   }
 
   update();

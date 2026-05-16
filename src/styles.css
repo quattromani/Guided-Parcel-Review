@@ -655,12 +655,18 @@ table thead th[class] + th[class] {
 
 @media (max-width: 1180px) {
   .property-hero-header {
-    grid-template-columns: minmax(16rem, 0.9fr) minmax(24rem, 1.1fr);
+    gap: 1.35rem 1.5rem;
+    grid-template-columns: minmax(14rem, 0.75fr) minmax(26rem, 1.25fr);
   }
 
   .property-hero-media {
     grid-column: 1 / -1;
-    justify-content: flex-start;
+    justify-content: center;
+  }
+
+  .property-hero-media button {
+    flex: 0 1 13rem;
+    max-width: 13rem;
   }
 }
 
@@ -676,12 +682,13 @@ table thead th[class] + th[class] {
 
   .property-hero-media {
     gap: 0.75rem;
-    justify-content: stretch;
+    justify-content: center;
     width: 100%;
   }
 
   .property-hero-media button {
     flex: 1 1 0;
+    max-width: 13rem;
     min-width: 0;
   }
 
@@ -1278,7 +1285,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   opacity: 0.72;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 1023px) {
   .footer-resource-pills {
     justify-content: center;
     width: 100%;
@@ -1379,6 +1386,8 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   border-left-color: transparent !important;
   border-radius: 0 !important;
   border-right-color: transparent !important;
+  display: flex;
+  flex-direction: column;
   margin-left: calc(50% - (var(--layout-viewport-width, 100vw) / 2));
   margin-right: calc(50% - (var(--layout-viewport-width, 100vw) / 2));
   overflow: visible;
@@ -1406,6 +1415,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   margin-left: auto;
   margin-right: auto;
   max-width: 80rem;
+  width: 100%;
 }
 
 .guided-path-nav-stuck #guidedPathTabs {
@@ -1413,13 +1423,14 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .guided-context-anchor {
-  color: rgb(var(--color-secondary));
-  font-size: 0.82rem;
-  font-weight: 750;
+  color: rgb(var(--brand-ink));
+  font-size: 0.78rem;
+  font-weight: 650;
   letter-spacing: 0;
   line-height: 1.2;
   max-height: 0;
   opacity: 0;
+  order: -1;
   overflow: hidden;
   padding-left: 0.25rem;
   padding-right: 0.25rem;
@@ -1432,7 +1443,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .guided-context-anchor-visible {
   max-height: 1.35rem;
   opacity: 1;
-  padding-top: 0.35rem;
+  padding-bottom: 0.3rem;
   transform: translateY(0);
   visibility: visible;
 }
@@ -3491,14 +3502,14 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
   .guided-path-nav {
     box-shadow: inset 0 0 0 1px rgb(var(--border-muted)), 0 0.35rem 0.6rem -0.25rem rgb(var(--brand-ink) / 0.28) !important;
+    overflow-x: hidden !important;
+    padding-right: 0 !important;
   }
 
   .guided-path-track {
     flex: 1 1 auto;
-    margin-right: -0.8rem;
     max-width: none;
     overflow-x: hidden;
-    padding-right: 1.05rem;
   }
 
   .guided-previous-button:not([hidden]) {
@@ -3511,40 +3522,27 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   }
 
   .guided-step {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
     min-width: 0;
-  }
-
-  .guided-step:not(.guided-step-active) {
-    display: none;
-  }
-
-  .guided-step-active + .guided-step {
-    display: inline-flex;
-  }
-
-  .guided-step-active + .guided-step + .guided-step {
-    display: inline-flex;
   }
 
   .guided-step-active {
     flex: 0 0 auto;
-    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .guided-step-active + .guided-step {
-    flex: 0 1 auto;
-    max-width: min(13rem, calc(100vw - 13.5rem));
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex: 0 0 auto;
+    max-width: none;
   }
 
   .guided-step-active + .guided-step + .guided-step {
     flex: 0 0 auto;
     max-width: none;
     overflow: visible;
+    padding-right: 0.85rem;
+    text-indent: 0;
   }
 
   #assessmentDatesPanel {
@@ -4025,6 +4023,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .final-review-kpi-grid {
+  align-items: start;
   display: grid;
   gap: 0.75rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -4050,13 +4049,44 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   min-height: 11rem;
 }
 
-.final-review-kpi-card > p:first-child {
+.final-review-card-topline {
+  align-items: center;
+  display: flex;
+  gap: 0.65rem;
+  justify-content: space-between;
+}
+
+.final-review-card-step {
   color: rgb(var(--color-slate-500));
   font-size: 0.72rem;
   font-weight: 850;
   letter-spacing: 0.08em;
   line-height: 1.25;
   text-transform: uppercase;
+}
+
+.final-review-card-action {
+  background: white;
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0.38rem 0.58rem;
+  transition: background-color 0.16s ease, box-shadow 0.16s ease, color 0.16s ease;
+}
+
+.final-review-card-action:hover {
+  background: rgb(var(--color-secondary-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.24);
+  color: rgb(var(--color-secondary));
+}
+
+.final-review-card-action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(var(--color-secondary) / 0.22), inset 0 0 0 1px rgb(var(--color-secondary) / 0.3);
 }
 
 .final-review-kpi-card h3 {
@@ -4229,6 +4259,17 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 @media (max-width: 640px) {
+  .mobile-review-canvas > [data-guided-panel] > .rounded-2xl,
+  .mobile-review-canvas > [data-guided-panel] > .next-step-card,
+  .mobile-review-canvas > [data-guided-panel] > .advanced-context-card,
+  .mobile-review-canvas > [data-guided-panel] > .ooda-decision-card,
+  .mobile-review-canvas > [data-guided-panel] > .civic-summary-shell,
+  .mobile-review-canvas > [data-guided-panel] > .civic-review-signals,
+  .mobile-review-canvas > [data-guided-panel] > section > .rounded-2xl,
+  .data-split-view > .rounded-2xl {
+    padding: 1rem !important;
+  }
+
   .metric-signal-card {
     padding: 1rem !important;
   }
@@ -4339,6 +4380,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .final-review-kpi-grid,
   .final-review-block + .final-review-block .final-review-kpi-grid {
     grid-template-columns: 1fr;
+  }
+
+  .final-review-kpi-card {
+    min-height: 0;
   }
 
   .civic-notice-grid {
