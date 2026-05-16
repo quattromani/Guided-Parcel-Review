@@ -416,20 +416,19 @@ export function renderPropertyViewContext(data, recordCard, valuationGroups) {
   const context = document.getElementById("propertyViewContext");
   if (!context) return;
   const marketArea = propertyMarketAreaLabel(data, recordCard, valuationGroups);
+  const propertyClass = data.classification.propertyClass || data.parcel.accountType;
 
   context.innerHTML = `
     <div class="property-context-bar mb-4">
-      <div class="min-w-0">
+      <div class="property-context-identity">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Subject Property</p>
-        <p class="mt-0.5 truncate text-xl font-bold tracking-tight text-slate-700">${data.parcel.situsAddress}</p>
+        <p class="property-context-situs">${data.parcel.situsAddress}</p>
       </div>
-      <p class="min-w-0 text-sm font-medium text-slate-600">
-        <span class="text-slate-700">${data.parcel.accountType} Property</span>
-        <span class="text-slate-400">•</span>
-        ${marketArea}
-        <span class="text-slate-400">•</span>
-        ${data.classification.location}
-      </p>
+      <div class="property-context-tags" aria-label="Property context">
+        <span>${propertyClass}</span>
+        <span>${marketArea}</span>
+        <span class="property-context-location">${data.classification.location}</span>
+      </div>
     </div>
   `;
 }
@@ -443,11 +442,11 @@ function propertyMarketAreaLabel(data, recordCard, valuationGroups) {
   );
 
   if (recordCard?.locationModel?.valuationGroup) {
-    return normalizeValuationGroupLabel(recordCard.locationModel.valuationGroup);
+    return stripValuationGroupPrefix(recordCard.locationModel.valuationGroup);
   }
 
   if (match?.description) {
-    return `VG ${match.valuationGroup} - ${match.description}`;
+    return match.description;
   }
 
   return "Market area not listed";
@@ -2172,12 +2171,18 @@ function percentChangeBetween(previous, current) {
 }
 
 function movementCard([label, value, note, range]) {
+  const status = /finalized/i.test(range) ? "Finalized" : "";
+
   return `
-    <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-      <p class="mt-1 text-lg font-bold text-slate-700">${value}</p>
-      <p class="mt-1 text-sm font-medium text-slate-600">${note}</p>
-      <p class="mt-1 text-xs leading-5 text-slate-500">${range}</p>
+    <div class="movement-card">
+      <div class="movement-card-header">
+        <p>${label}</p>
+        <p>${status}</p>
+      </div>
+      <div class="movement-card-body">
+        <p>${value}</p>
+        <p>${note}</p>
+      </div>
     </div>
   `;
 }
@@ -2258,13 +2263,19 @@ function renderPropertyMovementSummary(data) {
 
   container.innerHTML = `
     <section>
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Recent movement</p>
+      <div class="movement-section-heading">
+        <p>Recent movement</p>
+        <p>${previousValue?.year && lastValue?.year ? `${previousValue.year}-${lastValue.year}` : "Recent available years"}</p>
+      </div>
       <div class="mt-2 grid gap-3 md:grid-cols-3">
         ${recentCards.map(movementCard).join("")}
       </div>
     </section>
     <section class="border-t border-slate-200 pt-4">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property history</p>
+      <div class="movement-section-heading">
+        <p>Property history</p>
+        <p>${firstValue.year}-${lastValue.year}</p>
+      </div>
       <p class="mt-1 text-xs leading-5 text-slate-500">Longer-range movement from ${firstValue.year}-${lastValue.year}. Tax and ETR movement use finalized tax years only.</p>
       <div class="mt-2 grid gap-3 md:grid-cols-3">
         ${historicalCards.map(movementCard).join("")}

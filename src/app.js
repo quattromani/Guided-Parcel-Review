@@ -162,6 +162,7 @@ function initGuidedNavigation(data) {
   const propertyContext = document.getElementById("propertyViewContext");
   const guidedPath = document.querySelector(".guided-path-nav");
   const guidedPathTrack = document.querySelector(".guided-path-track");
+  const guidedPreviousButton = document.querySelector("[data-guided-previous-control]");
   const primarySectionIds = routeList.filter(route => !route.secondary).map(route => route.id);
   const visitedSteps = new Set();
   const unlockedSteps = new Set([primarySectionIds[0]]);
@@ -256,6 +257,25 @@ function initGuidedNavigation(data) {
     window.requestAnimationFrame(() => alignActiveGuidedStep({ behavior }));
   }
 
+  function updateGuidedPreviousButton(currentRouteId) {
+    if (!guidedPreviousButton) return;
+
+    const currentIndex = primarySectionIds.indexOf(currentRouteId);
+    const previousRoute = currentIndex > 0 ? primarySectionIds[currentIndex - 1] : null;
+
+    if (!previousRoute) {
+      guidedPreviousButton.hidden = true;
+      guidedPreviousButton.dataset.guidedPrevious = "";
+      guidedPreviousButton.setAttribute("aria-label", "Go back to previous step");
+      return;
+    }
+
+    const previousLabel = routeForId(previousRoute)?.label || "previous step";
+    guidedPreviousButton.hidden = false;
+    guidedPreviousButton.dataset.guidedPrevious = previousRoute;
+    guidedPreviousButton.setAttribute("aria-label", `Go back to ${previousLabel}`);
+  }
+
   function selectStep(selectedRoute, options = {}) {
     const { scrollTop = true, markVisited = true, updateHash = false } = options;
     const route = resolveRoute(selectedRoute) ?? routeList[0];
@@ -305,6 +325,7 @@ function initGuidedNavigation(data) {
     if (updateHash && window.location.hash !== `#${selected}`) {
       history.pushState(null, "", `#${selected}`);
     }
+    updateGuidedPreviousButton(selected);
     window.dispatchEvent(new Event("resize"));
     queueActiveGuidedStepAlignment(scrollTop ? "smooth" : "auto");
 
@@ -333,6 +354,12 @@ function initGuidedNavigation(data) {
     tab.addEventListener("click", () => {
       selectStep(tab.dataset.guidedTab, { updateHash: true });
     });
+  });
+
+  guidedPreviousButton?.addEventListener("click", () => {
+    const previousRoute = guidedPreviousButton.dataset.guidedPrevious;
+    if (!previousRoute) return;
+    selectStep(previousRoute, { updateHash: true });
   });
 
   document.querySelectorAll("[data-guided-next]").forEach(button => {
