@@ -173,4 +173,29 @@ export function applyChartDefaults(chart = globalThis.Chart, palette = visualiza
   if (chart.defaults.scale?.border) {
     chart.defaults.scale.border.color = palette.neutrals.border;
   }
+
+  if (!applyChartDefaults.responsiveAxisTitlePluginRegistered && typeof chart.register === "function") {
+    chart.register({
+      id: "civicResponsiveAxisTitles",
+      beforeUpdate(chartInstance) {
+        const isMobile = globalThis.matchMedia?.("(max-width: 640px)")?.matches ?? false;
+        Object.entries(chartInstance.options.scales ?? {}).forEach(([scaleId, scaleOptions]) => {
+          const title = scaleOptions?.title;
+          const isYAxis = scaleOptions?.axis === "y" || scaleId.startsWith("y");
+          if (!isYAxis || !title) return;
+
+          if (!Object.prototype.hasOwnProperty.call(title, "civicDesktopDisplay")) {
+            Object.defineProperty(title, "civicDesktopDisplay", {
+              configurable: true,
+              value: title.display ?? false,
+              writable: true
+            });
+          }
+
+          title.display = isMobile ? false : title.civicDesktopDisplay;
+        });
+      }
+    });
+    applyChartDefaults.responsiveAxisTitlePluginRegistered = true;
+  }
 }

@@ -102,7 +102,7 @@ function isMobileChartViewport() {
 }
 
 function mobileAxisTitle(text, display = true) {
-  return { display: display && !isMobileChartViewport(), text };
+  return { display, text };
 }
 
 function hexToRgba(hex, alpha) {
@@ -1226,12 +1226,17 @@ function renderEqualizationSalePriceRows(padRatioData, classKey = "residential",
   if (description) description.textContent = study.description || "";
   if (chartTitle) chartTitle.textContent = study.chartTitle || "Sales distribution";
   if (chartNote) chartNote.textContent = `${study.chartNote || "Qualified sales by band."}${nonAdditiveNote}`;
-  if (rangeHeader) rangeHeader.textContent = study.rangeHeader || "Sale price range";
+  if (rangeHeader) {
+    rangeHeader.querySelector(".sales-range-label-full").textContent = study.rangeHeader || "Sale price range";
+  }
   if (source) source.textContent = `${getPadRoSourceAnchor(padRatioData)}${getPadRoRefreshWatch(padRatioData)}`;
 
   const dataRows = rows.map(row => `
     <tr>
-      <td class="px-2 py-2 font-medium text-slate-700">${priceBandDisplayLabel(row, duplicateLabels)}</td>
+      <td class="px-2 py-2 font-medium text-slate-700">
+        <span class="sales-range-label-full">${priceBandDisplayLabel(row, duplicateLabels)}</span>
+        <span class="sales-range-label-compact">${compactPriceBandDisplayLabel(row, duplicateLabels)}</span>
+      </td>
       <td class="px-2 py-2 text-right">${formatCountValue(row.count)}</td>
       <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.median) : "—"}</td>
       <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.cod) : "—"}</td>
@@ -2100,6 +2105,13 @@ function priceBandDisplayLabel(row, duplicateLabels) {
   return duplicateLabels.has(row.range) && row.section
     ? `${row.section} · ${row.range}`
     : row.range;
+}
+
+function compactPriceBandDisplayLabel(row, duplicateLabels) {
+  const label = shortPriceBandLabel(row.range);
+  return duplicateLabels.has(row.range) && row.section
+    ? `${row.section} · ${label}`
+    : label;
 }
 
 function formatCountValue(value) {

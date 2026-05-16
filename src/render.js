@@ -365,7 +365,10 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
           <table class="min-w-full divide-y divide-slate-200 text-xs equalization-support-table equalization-sales-table">
             <thead>
               <tr>
-                <th id="equalizationSalePriceRangeHeader" class="px-2 py-2 text-left font-semibold">Sale price range</th>
+                <th id="equalizationSalePriceRangeHeader" class="px-2 py-2 text-left font-semibold">
+                  <span class="sales-range-label-full">Sale price range</span>
+                  <span class="sales-range-label-compact">Price band</span>
+                </th>
                 <th class="px-2 py-2 text-right font-semibold">Sales</th>
                 <th class="px-2 py-2 text-right font-semibold">Median</th>
                 <th class="px-2 py-2 text-right font-semibold">COD</th>

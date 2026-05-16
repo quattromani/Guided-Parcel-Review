@@ -737,6 +737,10 @@ table thead th[class] + th[class] {
   overflow-wrap: anywhere;
 }
 
+.sales-range-label-compact {
+  display: none;
+}
+
 .assessment-rollup-summary {
   border-top: 1px solid rgb(var(--border-muted));
   display: grid;
@@ -1031,8 +1035,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .record-disclosure {
+  align-self: start;
   background: rgb(var(--color-secondary-soft));
   box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.24), 0 8px 18px rgb(var(--brand-ink) / 0.035);
+  overflow: hidden;
   transition: box-shadow 0.16s ease, transform 0.16s ease;
 }
 
@@ -1043,6 +1049,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .record-disclosure-toggle {
   color: rgb(var(--brand-ink));
   height: 100%;
+}
+
+.record-disclosure[open] > .record-disclosure-toggle {
+  height: auto;
 }
 
 .record-disclosure-summary {
@@ -1109,6 +1119,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .record-disclosure[open] > .record-disclosure-toggle .record-disclosure-chevron {
   margin-top: 0.18rem;
   transform: rotate(225deg);
+}
+
+.record-disclosure .table-shell {
+  border-top: 1px solid rgb(var(--border-muted));
 }
 
 .quick-read-intro {
@@ -3459,6 +3473,18 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .assessment-band-code {
     line-height: 1.2;
     white-space: normal;
+  }
+
+  .pending-data-row .pending-status-pill {
+    display: none;
+  }
+
+  .equalization-sales-table .sales-range-label-full {
+    display: none;
+  }
+
+  .equalization-sales-table .sales-range-label-compact {
+    display: inline;
   }
 
   .adjustment-card-label {
