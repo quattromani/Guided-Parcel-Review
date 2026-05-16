@@ -110,10 +110,6 @@ export function buildAssessmentNoticeModel(propertyData, recordCard, calendar) {
     ? (currentBreakdown.dwelling ?? 0) + (currentBreakdown.outbuilding ?? 0)
     : null;
   const deadline = protestWindow(calendar);
-  const assessmentDateName = calendar?.jurisdiction
-    ? `${calendar.jurisdiction} Assessment Date`
-    : "Assessment Date";
-
   return {
     situsAddress: propertyData.parcel.situsAddress,
     displayAddress: displayAddress(propertyData.parcel.situsAddress),
@@ -123,7 +119,7 @@ export function buildAssessmentNoticeModel(propertyData, recordCard, calendar) {
     propertyClass: propertyData.classification.propertyClass,
     countyName: propertyData.parcel.countyName,
     taxDistrict: propertyData.parcel.taxDistrict,
-    assessmentDateLabel: assessmentDateName,
+    assessmentDateLabel: "Assessment Date",
     assessmentDate: assessmentDateLabel(snapshotYear),
     taxYear: snapshotYear,
     valueStatus: currentYearRow?.status ?? "unknown",

@@ -18,17 +18,20 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
-function displayMoneyWithFallback(value, fallbackValue, fallbackYear) {
+function displayMoneyWithFallback(value, fallbackValue, fallbackYear, options = {}) {
   if (value !== null && value !== undefined) return money.format(value);
   if (fallbackValue !== null && fallbackValue !== undefined) {
+    if (options.compactLatest) {
+      return `<span class="pending-value">Pending</span><small>${fallbackYear}: ${money.format(fallbackValue)}</small>`;
+    }
     return `<span class="pending-value">Pending</span><small>Latest known: ${money.format(fallbackValue)} (${fallbackYear})</small>`;
   }
   return `<span class="pending-value">Pending</span>`;
 }
 
-function noticeMetric(label, value, note = "") {
+function noticeMetric(label, value, note = "", layout = "pair") {
   return `
-    <div class="civic-notice-metric">
+    <div class="civic-notice-metric civic-notice-metric-${layout}">
       <dt>${escapeHtml(label)}</dt>
       <dd>${value}</dd>
       ${note ? `<p>${escapeHtml(note)}</p>` : ""}
@@ -301,12 +304,12 @@ function installLandingPrimer(data) {
           ${noticeMetric("Parcel ID", escapeHtml(notice.parcelId))}
           ${noticeMetric("Property class", escapeHtml(notice.propertyClass))}
           ${noticeMetric("Tax district", escapeHtml(notice.taxDistrict))}
-          ${noticeMetric("Current assessed value", displayMoneyWithFallback(notice.currentAssessedValue, notice.latestKnownValue, notice.latestKnownValueYear), `Tax year ${notice.taxYear}`)}
-          ${noticeMetric("Prior assessed value", formatNullableMoney(notice.priorAssessedValue), notice.priorAssessedValueYear ? `Latest known year ${notice.priorAssessedValueYear}` : "")}
+          ${noticeMetric("Current assessed value", displayMoneyWithFallback(notice.currentAssessedValue, notice.latestKnownValue, notice.latestKnownValueYear), `Tax year ${notice.taxYear}`, "full")}
+          ${noticeMetric("Prior assessed value", formatNullableMoney(notice.priorAssessedValue), notice.priorAssessedValueYear ? `Latest known year ${notice.priorAssessedValueYear}` : "", "full")}
           ${noticeMetric("Dollar change", formatNullableMoney(notice.dollarChange))}
           ${noticeMetric("Percent change", formatNullablePercent(notice.percentChange))}
-          ${noticeMetric("Land value", displayMoneyWithFallback(notice.landValue, notice.latestKnownLandValue, notice.latestKnownValueYear))}
-          ${noticeMetric("Improvement value", displayMoneyWithFallback(notice.improvementValue, notice.latestKnownImprovementValue, notice.latestKnownValueYear))}
+          ${noticeMetric("Land value", displayMoneyWithFallback(notice.landValue, notice.latestKnownLandValue, notice.latestKnownValueYear, { compactLatest: true }))}
+          ${noticeMetric("Improvement value", displayMoneyWithFallback(notice.improvementValue, notice.latestKnownImprovementValue, notice.latestKnownValueYear, { compactLatest: true }))}
           ${noticeMetric(notice.assessmentDateLabel ?? "Assessment Date", escapeHtml(notice.assessmentDate))}
           ${noticeMetric(notice.reviewDeadlineLabel, escapeHtml(notice.reviewDeadline))}
         </dl>

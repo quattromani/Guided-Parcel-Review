@@ -943,6 +943,19 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   min-width: 0;
 }
 
+.footer-resource-pills .footer-pill-button {
+  background: rgb(var(--color-secondary-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.18);
+  color: rgb(var(--color-secondary)) !important;
+}
+
+.footer-resource-pills .footer-pill-button:hover,
+.footer-resource-pills .footer-pill-button.footer-link-active {
+  background: rgb(var(--accent-primary-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--accent-primary) / 0.24);
+  color: rgb(var(--accent-primary)) !important;
+}
+
 .footer-resource-card {
   background: rgb(var(--surface-muted));
   border-radius: var(--radius-container-md);
@@ -987,6 +1000,13 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .footer-report-link[aria-busy="true"] {
   cursor: wait;
   opacity: 0.72;
+}
+
+@media (max-width: 640px) {
+  .footer-resource-pills {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 .assessors-report-print-layer {
@@ -3006,12 +3026,12 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   }
 
   #assessmentDatesPanel {
-    padding: max(2rem, env(safe-area-inset-top)) 1rem max(2rem, env(safe-area-inset-bottom));
+    padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
   }
 
   .assessment-dates-dialog {
-    max-height: calc(100vh - 4rem) !important;
-    max-height: calc(100dvh - 4rem) !important;
+    max-height: calc(100vh - 2rem) !important;
+    max-height: calc(100dvh - 2rem) !important;
   }
 
   .assessment-dates-dialog-bar {
@@ -3608,7 +3628,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     flex-direction: column;
   }
 
-  .civic-notice-grid,
   .civic-summary-grid,
   .civic-review-signal-grid,
   .final-review-kpi-grid,
@@ -3616,10 +3635,41 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     grid-template-columns: 1fr;
   }
 
+  .civic-notice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .civic-notice-metric,
   .civic-notice-metric:nth-child(2n),
   .civic-notice-metric:nth-child(4n) {
+    border-right: 1px solid rgb(var(--border-muted));
+  }
+
+  .civic-notice-metric {
+    padding: 0.8rem 0.85rem;
+  }
+
+  .civic-notice-metric:nth-child(2n),
+  .civic-notice-metric-full {
     border-right: 0;
+  }
+
+  .civic-notice-metric-full {
+    grid-column: 1 / -1;
+  }
+
+  .civic-notice-metric dt {
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+  }
+
+  .civic-notice-metric dd {
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .civic-notice-metric-full dd {
+    font-size: 1rem;
   }
 }
 
