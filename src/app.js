@@ -162,13 +162,14 @@ function initGuidedNavigation(data) {
   const propertyContext = document.getElementById("propertyViewContext");
   const guidedPath = document.querySelector(".guided-path-nav");
   const guidedPathTrack = document.querySelector(".guided-path-track");
+  const guidedMenuToggle = document.querySelector("[data-guided-menu-toggle]");
   const guidedPreviousButton = document.querySelector("[data-guided-previous-control]");
   const guidedContextAnchor = document.querySelector("[data-guided-context-anchor]");
   const guidedContextSitus = document.querySelector("[data-guided-context-situs]");
   const primarySectionIds = routeList.filter(route => !route.secondary).map(route => route.id);
   const visitedSteps = new Set();
   const unlockedSteps = new Set([primarySectionIds[0]]);
-  const mobileNavQuery = window.matchMedia("(max-width: 640px)");
+  const mobileNavQuery = window.matchMedia("(max-width: 1299px)");
   let guidedContextAnchorUpdate = null;
   let taxDistrictAuthoritiesPromise;
   let taxDistrictAuthoritiesRendered = false;
@@ -258,6 +259,20 @@ function initGuidedNavigation(data) {
 
   function queueActiveGuidedStepAlignment(behavior = "smooth") {
     window.requestAnimationFrame(() => alignActiveGuidedStep({ behavior }));
+  }
+
+  function setGuidedMenuOpen(open) {
+    if (!guidedPath || !guidedMenuToggle) return;
+
+    guidedPath.classList.toggle("guided-path-nav-open", open);
+    guidedMenuToggle.setAttribute("aria-expanded", String(open));
+    guidedMenuToggle.setAttribute("aria-label", open ? "Close guided steps" : "Open guided steps");
+    const guidedMenuLabel = guidedMenuToggle.querySelector(".guided-menu-label");
+    if (guidedMenuLabel) guidedMenuLabel.textContent = open ? "Close" : "Menu";
+  }
+
+  function closeGuidedMenu() {
+    setGuidedMenuOpen(false);
   }
 
   function updateGuidedPreviousButton(currentRouteId) {
@@ -356,14 +371,29 @@ function initGuidedNavigation(data) {
 
   tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-      selectStep(tab.dataset.guidedTab, { updateHash: true });
+      const selected = selectStep(tab.dataset.guidedTab, { updateHash: true });
+      if (selected) closeGuidedMenu();
     });
+  });
+
+  guidedMenuToggle?.addEventListener("click", () => {
+    setGuidedMenuOpen(!guidedPath?.classList.contains("guided-path-nav-open"));
   });
 
   guidedPreviousButton?.addEventListener("click", () => {
     const previousRoute = guidedPreviousButton.dataset.guidedPrevious;
     if (!previousRoute) return;
-    selectStep(previousRoute, { updateHash: true });
+    if (selectStep(previousRoute, { updateHash: true })) closeGuidedMenu();
+  });
+
+  document.addEventListener("click", event => {
+    if (!guidedPath?.classList.contains("guided-path-nav-open")) return;
+    if (guidedPath.contains(event.target)) return;
+    closeGuidedMenu();
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeGuidedMenu();
   });
 
   document.querySelectorAll("[data-guided-next]").forEach(button => {
@@ -427,7 +457,10 @@ function initGuidedNavigation(data) {
   unlockThrough(initialStep || primarySectionIds[0]);
   markPreviousVisited(initialStep || primarySectionIds[0]);
   selectStep(initialStep || primarySectionIds[0], { scrollTop: false });
-  mobileNavQuery.addEventListener?.("change", () => queueActiveGuidedStepAlignment("auto"));
+  mobileNavQuery.addEventListener?.("change", () => {
+    closeGuidedMenu();
+    queueActiveGuidedStepAlignment("auto");
+  });
   window.addEventListener("hashchange", selectStepFromHash);
   if (hashTarget && document.getElementById(hashTarget)) {
     window.setTimeout(() => {
@@ -440,9 +473,7 @@ function initGuidedNavigation(data) {
     anchor: guidedContextAnchor,
     situsTarget: guidedContextSitus,
     guidedPath,
-    propertyContext,
     mobileNavQuery,
-    heroIdentity: document.querySelector(".property-hero-identity"),
     situs: data.parcel.situsAddress
   });
 }
@@ -579,12 +610,10 @@ function initGuidedContextAnchor({
   anchor,
   situsTarget,
   guidedPath,
-  propertyContext,
   mobileNavQuery,
-  heroIdentity,
   situs
 }) {
-  if (!anchor || !situsTarget || !guidedPath || !propertyContext || !heroIdentity) return null;
+  if (!anchor || !situsTarget || !guidedPath) return null;
 
   situsTarget.textContent = situs || "";
 
@@ -595,16 +624,12 @@ function initGuidedContextAnchor({
   }
 
   function update() {
-    const heroPanel = heroIdentity.closest("[data-guided-panel]");
-    if (!mobileNavQuery.matches || heroPanel?.classList.contains("hidden")) {
+    if (!mobileNavQuery.matches || !situs) {
       setVisible(false);
       return;
     }
 
-    const navRect = guidedPath.getBoundingClientRect();
-    const identityRect = heroIdentity.getBoundingClientRect();
-    const identityHasPassed = identityRect.top <= navRect.bottom + 2;
-    setVisible(identityHasPassed);
+    setVisible(true);
   }
 
   update();
