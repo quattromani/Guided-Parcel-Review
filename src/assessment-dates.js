@@ -30,6 +30,8 @@ const MONTH_SHORT_LABELS = [
   "Dec"
 ];
 
+const MONTH_COMPACT_LABELS = MONTHS.map(month => month.slice(0, 1));
+
 const PHASES = [
   "Early Year: Exemptions & Reporting",
   "Valuation Notice Season",
@@ -327,9 +329,11 @@ function renderMonthReference(events, selectedMonthIndex, assessmentYear, today,
           type="button"
           data-assessment-month="${index}"
           class="${index === selectedMonthIndex ? "assessment-month-active" : ""}"
+          aria-label="${escapeHtml(MONTHS[index])}"
           aria-pressed="${String(index === selectedMonthIndex)}"
         >
-          ${escapeHtml(label)}
+          <span class="assessment-month-label-full">${escapeHtml(label)}</span>
+          <span class="assessment-month-label-compact" aria-hidden="true">${escapeHtml(MONTH_COMPACT_LABELS[index])}</span>
         </button>
       `).join("")}
     </div>
@@ -357,8 +361,8 @@ function renderMonthEvent(event, today, viewMode) {
         ${renderSource(event)}
       </div>
       <div class="assessment-month-event-meta">
-        ${renderBadge(event)}
         <span class="assessment-status-label">${escapeHtml(statusLabel(status))}</span>
+        ${renderBadge(event)}
       </div>
     </article>
   `;

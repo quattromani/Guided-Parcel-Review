@@ -320,8 +320,8 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Local starting point</p>
-          <h3 id="equalizationLocalPositionTitle" class="text-lg font-bold text-slate-700">Where does this local group sit?</h3>
-          <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Equalization reads outward from the property record into its valuation group or market area, then into the class and countywide study. This view shows the selected local group before the broader class measures are combined.</p>
+          <h3 id="equalizationLocalPositionTitle" class="text-lg font-bold text-slate-700">Start with the local group</h3>
+          <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Equalization reads outward from the property record into its valuation group or market area, then into the class and countywide study. Choose the local group first, then compare how it sits against the broader county pattern.</p>
         </div>
         <label class="min-w-72 text-sm font-semibold text-slate-700">
           Want to see another area?
@@ -330,8 +330,8 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       </div>
       <section class="related-panel-section grid gap-6 lg:grid-cols-5">
         <section id="market-position-panel" class="lg:col-span-3">
-          <h4 class="text-xl font-bold text-slate-700">Where does this local group sit?</h4>
-          <p id="marketPositionHelper" class="mt-1 text-sm text-slate-600">Each dot represents a valuation group or market area. Use the area menu or choose a dot to change the highlight; the shaded center shows the expected range and broader county pattern.</p>
+          <h4 class="text-xl font-bold text-slate-700">Compare it with nearby groups</h4>
+          <p id="marketPositionHelper" class="mt-1 text-sm text-slate-600">Each dot represents a valuation group or market area. The selected dot shows the local group you chose; the shaded center shows the expected range and broader county pattern.</p>
           <div id="marketPositionLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
           <div class="mt-4 h-80">
             <canvas id="marketPositionScatter" role="img" tabindex="0" aria-describedby="marketScatterSummary"></canvas>
