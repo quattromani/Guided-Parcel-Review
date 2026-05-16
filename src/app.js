@@ -147,12 +147,14 @@ main().catch(error => {
 function initGuidedNavigation(data) {
   const snapshotModel = data.snapshotModel;
   const routeList = snapshotModel?.sections?.length ? snapshotModel.sections : TAXPAYER_JOURNEY_ROUTES;
+  const progressRoutes = routeList.filter(route => !route.secondary && route.id !== "landing-primer");
   const tabsContainer = document.getElementById("guidedPathTabs");
 
   if (tabsContainer) {
-    tabsContainer.innerHTML = routeList.map((route, index) => `
-      <button type="button" data-guided-tab="${route.id}" class="guided-step ${route.secondary ? "guided-step-secondary" : ""} ${index === 0 ? "guided-step-active" : ""}" aria-selected="${index === 0 ? "true" : "false"}">
-        ${guidedStepMarker(route, index)}${route.label}
+    tabsContainer.innerHTML = progressRoutes.map((route, index) => `
+      <button type="button" data-guided-tab="${route.id}" class="guided-step" aria-selected="false">
+        ${guidedStepMarker(index + 1)}
+        <span class="guided-step-label">${route.label}</span>
       </button>
     `).join("");
   }
@@ -162,17 +164,16 @@ function initGuidedNavigation(data) {
   const propertyContext = document.getElementById("propertyViewContext");
   const guidedPath = document.querySelector(".guided-path-nav");
   const guidedPathTrack = document.querySelector(".guided-path-track");
-  const guidedMenuToggle = document.querySelector("[data-guided-menu-toggle]");
-  const guidedPreviousButton = document.querySelector("[data-guided-previous-control]");
-  const guidedContextAnchor = document.querySelector("[data-guided-context-anchor]");
-  const guidedContextSitus = document.querySelector("[data-guided-context-situs]");
-  const primarySectionIds = routeList.filter(route => !route.secondary).map(route => route.id);
+  const guidedProgressStatus = document.querySelector("[data-guided-progress-status]");
+  const guidedProgressNext = document.querySelector("[data-guided-progress-next]");
+  const primarySectionIds = progressRoutes.map(route => route.id);
   const visitedSteps = new Set();
   const unlockedSteps = new Set([primarySectionIds[0]]);
-  const mobileNavQuery = window.matchMedia("(max-width: 1299px)");
-  let guidedContextAnchorUpdate = null;
+  const railScrollQuery = window.matchMedia("(max-width: 1299px)");
+  const labelsHiddenProgressQuery = window.matchMedia("(max-width: 899px)");
   let taxDistrictAuthoritiesPromise;
   let taxDistrictAuthoritiesRendered = false;
+  let currentGuidedRouteId = null;
 
   function resolveRoute(value) {
     if (!value) return null;
@@ -202,10 +203,6 @@ function initGuidedNavigation(data) {
     return getRouteForPanel(panelId)?.id ?? panelId;
   }
 
-  function routeForId(id) {
-    return routeList.find(route => route.id === id);
-  }
-
   function isPrimaryRouteId(id) {
     return primarySectionIds.includes(id);
   }
@@ -229,18 +226,10 @@ function initGuidedNavigation(data) {
     primarySectionIds.slice(0, targetIndex + 1).forEach(id => unlockedSteps.add(id));
   }
 
-  function markPreviousVisited(target) {
-    const targetId = routeIdFor(target);
-    const targetIndex = primarySectionIds.indexOf(targetId);
-    if (targetIndex <= 0) return;
-
-    primarySectionIds.slice(0, targetIndex).forEach(id => visitedSteps.add(id));
-  }
-
   function alignActiveGuidedStep({ behavior = "smooth" } = {}) {
     const scrollContainer = guidedPathTrack || guidedPath;
 
-    if (!scrollContainer || !tabsContainer || !mobileNavQuery.matches) return;
+    if (!scrollContainer || !tabsContainer || !railScrollQuery.matches) return;
 
     const activeStep = tabsContainer.querySelector(".guided-step-active");
     if (!activeStep) return;
@@ -261,41 +250,47 @@ function initGuidedNavigation(data) {
     window.requestAnimationFrame(() => alignActiveGuidedStep({ behavior }));
   }
 
-  function setGuidedMenuOpen(open) {
-    if (!guidedPath || !guidedMenuToggle) return;
+  function animateGuidedStep(routeId) {
+    if (!routeId || !tabsContainer) return;
 
-    guidedPath.classList.toggle("guided-path-nav-open", open);
-    guidedMenuToggle.setAttribute("aria-expanded", String(open));
-    guidedMenuToggle.setAttribute("aria-label", open ? "Close guided steps" : "Open guided steps");
-    const guidedMenuLabel = guidedMenuToggle.querySelector(".guided-menu-label");
-    if (guidedMenuLabel) guidedMenuLabel.textContent = open ? "Close" : "Menu";
+    const step = tabsContainer.querySelector(`[data-guided-tab="${routeId}"]`);
+    if (!step) return;
+
+    step.classList.remove("guided-step-advanced");
+    window.requestAnimationFrame(() => {
+      step.classList.add("guided-step-advanced");
+      window.setTimeout(() => step.classList.remove("guided-step-advanced"), 360);
+    });
   }
 
-  function closeGuidedMenu() {
-    setGuidedMenuOpen(false);
-  }
+  function updateGuidedProgressStatus(currentRouteId) {
+    if (!guidedProgressStatus) return;
 
-  function updateGuidedPreviousButton(currentRouteId) {
-    if (!guidedPreviousButton) return;
-
+    currentGuidedRouteId = currentRouteId;
     const currentIndex = primarySectionIds.indexOf(currentRouteId);
-    const previousRoute = currentIndex > 0 ? primarySectionIds[currentIndex - 1] : null;
-
-    if (!previousRoute) {
-      guidedPreviousButton.hidden = true;
-      guidedPreviousButton.dataset.guidedPrevious = "";
-      guidedPreviousButton.setAttribute("aria-label", "Go back to previous step");
+    if (currentIndex === -1) {
+      guidedProgressStatus.innerHTML = "Start the guided review";
+      if (guidedProgressNext) guidedProgressNext.textContent = "";
       return;
     }
 
-    const previousLabel = routeForId(previousRoute)?.label || "previous step";
-    guidedPreviousButton.hidden = false;
-    guidedPreviousButton.dataset.guidedPrevious = previousRoute;
-    guidedPreviousButton.setAttribute("aria-label", `Go back to ${previousLabel}`);
+    const routeLabel = progressRoutes[currentIndex]?.label || `Step ${currentIndex + 1}`;
+    const compactRouteLabel = routeLabel === "What Changed" ? "What Changed?" : routeLabel;
+    const statusLabel = labelsHiddenProgressQuery.matches
+      ? `${compactRouteLabel} - Step ${currentIndex + 1} of ${primarySectionIds.length}`
+      : `step ${currentIndex + 1} of ${primarySectionIds.length}`;
+    const nextRouteLabel = progressRoutes[currentIndex + 1]?.label || "";
+
+    guidedProgressStatus.innerHTML = `You're reviewing <strong>${escapeHtml(statusLabel)}</strong>`;
+    if (guidedProgressNext) {
+      guidedProgressNext.textContent = labelsHiddenProgressQuery.matches && nextRouteLabel
+        ? `Next: ${nextRouteLabel}`
+        : "";
+    }
   }
 
   function selectStep(selectedRoute, options = {}) {
-    const { scrollTop = true, markVisited = true, updateHash = false } = options;
+    const { scrollTop = true, updateHash = false } = options;
     const route = resolveRoute(selectedRoute) ?? routeList[0];
     const selected = route.id;
     const selectedPanel = route.panelId;
@@ -305,18 +300,13 @@ function initGuidedNavigation(data) {
       return false;
     }
 
-    if (markVisited && primaryRoute) {
-      visitedSteps.add(selected);
-    }
-
     tabs.forEach((item, index) => {
       const active = item.dataset.guidedTab === selected;
-      const tabRoute = routeForId(item.dataset.guidedTab);
       const tabIsPrimary = isPrimaryRouteId(item.dataset.guidedTab);
       const unlocked = tabIsPrimary ? unlockedSteps.has(item.dataset.guidedTab) : true;
       const complete = tabIsPrimary && unlocked && visitedSteps.has(item.dataset.guidedTab) && !active;
       const future = tabIsPrimary && !unlocked;
-      const marker = item.querySelector("span");
+      const marker = item.querySelector(".guided-step-marker");
 
       item.classList.toggle("guided-step-active", active);
       item.classList.toggle("guided-step-complete", complete);
@@ -324,9 +314,9 @@ function initGuidedNavigation(data) {
       item.disabled = future;
       item.setAttribute("aria-selected", String(active));
       item.setAttribute("aria-disabled", String(future));
-      if (marker && tabRoute?.icon !== "stacked-papers") {
+      if (marker) {
         const primaryIndex = primarySectionIds.indexOf(item.dataset.guidedTab);
-        marker.textContent = complete ? "✓" : primaryIndex === 0 ? "0" : String(primaryIndex);
+        marker.textContent = complete ? "✓" : String(primaryIndex + 1);
       }
     });
 
@@ -337,14 +327,13 @@ function initGuidedNavigation(data) {
     propertyContext?.classList.toggle("hidden", selected === "landing-primer" || selectedPanel === "your-property");
     renderViewHeader(selected, snapshotModel);
     renderGuidedResourceContent(selected);
-    guidedContextAnchorUpdate?.();
     if (selectedPanel === "your-taxes") {
       renderTaxDistrictPanelWhenNeeded();
     }
     if (updateHash && window.location.hash !== `#${selected}`) {
       history.pushState(null, "", `#${selected}`);
     }
-    updateGuidedPreviousButton(selected);
+    updateGuidedProgressStatus(selected);
     window.dispatchEvent(new Event("resize"));
     queueActiveGuidedStepAlignment(scrollTop ? "smooth" : "auto");
 
@@ -371,29 +360,8 @@ function initGuidedNavigation(data) {
 
   tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-      const selected = selectStep(tab.dataset.guidedTab, { updateHash: true });
-      if (selected) closeGuidedMenu();
+      selectStep(tab.dataset.guidedTab, { updateHash: true });
     });
-  });
-
-  guidedMenuToggle?.addEventListener("click", () => {
-    setGuidedMenuOpen(!guidedPath?.classList.contains("guided-path-nav-open"));
-  });
-
-  guidedPreviousButton?.addEventListener("click", () => {
-    const previousRoute = guidedPreviousButton.dataset.guidedPrevious;
-    if (!previousRoute) return;
-    if (selectStep(previousRoute, { updateHash: true })) closeGuidedMenu();
-  });
-
-  document.addEventListener("click", event => {
-    if (!guidedPath?.classList.contains("guided-path-nav-open")) return;
-    if (guidedPath.contains(event.target)) return;
-    closeGuidedMenu();
-  });
-
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") closeGuidedMenu();
   });
 
   document.querySelectorAll("[data-guided-next]").forEach(button => {
@@ -403,7 +371,10 @@ function initGuidedNavigation(data) {
       const nextRoute = routeIdFor(button.dataset.guidedNext);
       if (currentRoute && isPrimaryRouteId(currentRoute)) visitedSteps.add(currentRoute);
       unlockThrough(nextRoute);
-      selectStep(nextRoute, { updateHash: true });
+      if (selectStep(nextRoute, { updateHash: true })) {
+        animateGuidedStep(currentRoute);
+        animateGuidedStep(nextRoute);
+      }
     });
   });
 
@@ -430,7 +401,6 @@ function initGuidedNavigation(data) {
 
     if (selected) {
       unlockThrough(selected);
-      markPreviousVisited(selected);
       if (!selectStep(selected, { scrollTop: false })) return;
     }
 
@@ -448,19 +418,17 @@ function initGuidedNavigation(data) {
     const hashStep = stepForHashTarget(window.location.hash?.slice(1));
     if (!hashStep) return false;
     unlockThrough(hashStep);
-    markPreviousVisited(hashStep);
     return selectStep(hashStep, { scrollTop: true, updateHash: false });
   }
 
   const hashTarget = window.location.hash?.slice(1);
-  const initialStep = hashTarget ? stepForHashTarget(hashTarget) : primarySectionIds[0];
+  const initialStep = hashTarget ? stepForHashTarget(hashTarget) : routeList[0]?.id;
   unlockThrough(initialStep || primarySectionIds[0]);
-  markPreviousVisited(initialStep || primarySectionIds[0]);
   selectStep(initialStep || primarySectionIds[0], { scrollTop: false });
-  mobileNavQuery.addEventListener?.("change", () => {
-    closeGuidedMenu();
+  railScrollQuery.addEventListener?.("change", () => {
     queueActiveGuidedStepAlignment("auto");
   });
+  labelsHiddenProgressQuery.addEventListener?.("change", () => updateGuidedProgressStatus(currentGuidedRouteId));
   window.addEventListener("hashchange", selectStepFromHash);
   if (hashTarget && document.getElementById(hashTarget)) {
     window.setTimeout(() => {
@@ -469,29 +437,10 @@ function initGuidedNavigation(data) {
     }, 0);
   }
   initGuidedPathStickiness(guidedPath);
-  guidedContextAnchorUpdate = initGuidedContextAnchor({
-    anchor: guidedContextAnchor,
-    situsTarget: guidedContextSitus,
-    guidedPath,
-    mobileNavQuery,
-    situs: data.parcel.situsAddress
-  });
 }
 
-function guidedStepMarker(route, index) {
-  if (route.icon === "stacked-papers") {
-    return `
-      <span class="guided-step-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" focusable="false">
-          <path d="M8 7.5h9.5a1.5 1.5 0 0 1 1.5 1.5v9.5a1.5 1.5 0 0 1-1.5 1.5H8a1.5 1.5 0 0 1-1.5-1.5V9A1.5 1.5 0 0 1 8 7.5Z"></path>
-          <path d="M4.5 15.5V5.5A1.5 1.5 0 0 1 6 4h10"></path>
-          <path d="M6.5 17.5H4A1.5 1.5 0 0 1 2.5 16V7"></path>
-        </svg>
-      </span>
-    `;
-  }
-
-  return `<span>${index === 0 ? "0" : index}</span>`;
+function guidedStepMarker(index) {
+  return `<span class="guided-step-marker">${index}</span>`;
 }
 
 function renderGuidedResourceContent(viewKey) {
@@ -604,40 +553,6 @@ function initGuidedPathStickiness(guidedPath) {
   measure();
   window.addEventListener("scroll", update, { passive: true });
   window.addEventListener("resize", measure);
-}
-
-function initGuidedContextAnchor({
-  anchor,
-  situsTarget,
-  guidedPath,
-  mobileNavQuery,
-  situs
-}) {
-  if (!anchor || !situsTarget || !guidedPath) return null;
-
-  situsTarget.textContent = situs || "";
-
-  function setVisible(visible) {
-    anchor.classList.toggle("guided-context-anchor-visible", visible);
-    guidedPath.classList.toggle("guided-path-nav-context-visible", visible);
-    anchor.setAttribute("aria-hidden", String(!visible));
-  }
-
-  function update() {
-    if (!mobileNavQuery.matches || !situs) {
-      setVisible(false);
-      return;
-    }
-
-    setVisible(true);
-  }
-
-  update();
-  window.addEventListener("scroll", update, { passive: true });
-  window.addEventListener("resize", update);
-  mobileNavQuery.addEventListener?.("change", update);
-
-  return update;
 }
 
 function initFooterNavigation() {

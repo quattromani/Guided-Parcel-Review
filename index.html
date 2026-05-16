@@ -21,27 +21,10 @@
 
     <div class="mobile-review-canvas">
       <nav aria-label="Guided property snapshot path" class="guided-path-nav mb-5 overflow-x-auto rounded-2xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-200">
-        <div class="guided-mobile-bar">
-          <button type="button" class="guided-menu-toggle" data-guided-menu-toggle aria-controls="guidedPathTabs" aria-expanded="false" aria-label="Open guided steps">
-            <span class="guided-menu-icon" aria-hidden="true">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-            <span class="guided-menu-label">Menu</span>
-          </button>
-          <div class="guided-context-anchor" data-guided-context-anchor aria-hidden="true">
-            <span data-guided-context-situs></span>
-          </div>
-        </div>
-        <div class="guided-nav-row">
-          <button type="button" data-guided-previous-control class="guided-previous-button" aria-label="Go back to previous step" hidden>
-            <span aria-hidden="true"></span>
-          </button>
+        <div class="guided-progress-shell">
+          <p class="guided-progress-status" data-guided-progress-status>You're reviewing step 1 of 7</p>
           <div class="guided-path-track">
-            <div class="guided-path-line" aria-hidden="true"></div>
             <div id="guidedPathTabs" class="relative z-10 flex min-w-max gap-4">
-              <button type="button" data-guided-tab="landing-primer" class="guided-step guided-step-active" aria-selected="true"><span>0</span>Start</button>
               <button type="button" data-guided-tab="property-record" class="guided-step" aria-selected="false"><span>1</span>Property Record</button>
               <button type="button" data-guided-tab="what-changed" class="guided-step" aria-selected="false"><span>2</span>What Changed</button>
               <button type="button" data-guided-tab="valuation-detail" class="guided-step" aria-selected="false"><span>3</span>Value Detail</button>
@@ -51,6 +34,7 @@
               <button type="button" data-guided-tab="final-summary" class="guided-step" aria-selected="false"><span>7</span>Summary</button>
             </div>
           </div>
+          <p class="guided-progress-next" data-guided-progress-next></p>
         </div>
       </nav>
 

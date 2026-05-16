@@ -11,7 +11,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
   {
     id: "property-record",
     panelId: "your-property",
-    eyebrow: "Orient",
+    eyebrow: "Observe",
     label: "Property Record",
     question: "Does the county record describe this property correctly?",
     title: "Review the property record before value or taxes",
@@ -20,7 +20,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
   {
     id: "what-changed",
     panelId: "your-assessment",
-    eyebrow: "Observe",
+    eyebrow: "Orient",
     label: "What Changed",
     question: "What changed?",
     title: "Look at the value movement",

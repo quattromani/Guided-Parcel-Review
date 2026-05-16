@@ -773,9 +773,16 @@ function renderPropertyDetails(data, recordCard) {
     ["Tax district", data.parcel.taxDistrict],
     ["Owner", data.parcel.owner],
     ["Situs address", data.parcel.situsAddress],
+    ["Mailing address", mailingAddressHtml(data.parcel.mailingAddress)],
     ["Legal description", data.parcel.legalDescription],
-    ["Status", data.classification.status],
-    ["Zoning", data.classification.zoning],
+    {
+      layout: "pair",
+      className: "details-card-compact",
+      items: [
+        ["Status", data.classification.status],
+        ["Zoning", data.classification.zoning]
+      ]
+    },
     ["Lot size", data.classification.lotSize]
   ];
   const physicalDetails = physicalDetailsForProperty(data);
@@ -785,6 +792,7 @@ function renderPropertyDetails(data, recordCard) {
     "Tax district",
     "Status",
     "Zoning",
+    "Status / zoning",
     "Year built",
     "Style",
     "Building size",
@@ -793,12 +801,31 @@ function renderPropertyDetails(data, recordCard) {
     "Quality / condition"
   ]);
 
-  const renderCards = details => details.map(([label, value]) => `
-    <div class="details-card ${compactDetailLabels.has(label) ? "details-card-compact" : "details-card-full"}">
-      <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</dt>
-      <dd class="mt-1 text-sm font-medium text-slate-700">${displayValue(value)}</dd>
-    </div>
-  `).join("");
+  const renderDetailCard = detail => {
+    if (detail?.layout === "pair") {
+      return `
+        <div class="details-card ${detail.className || "details-card-full"} metric-pair-card">
+          ${detail.items.map(([label, value]) => `
+            <div>
+              <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</dt>
+              <dd class="mt-1 text-sm font-medium text-slate-700">${displayValue(value)}</dd>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    const [label, value] = detail;
+
+    return `
+      <div class="details-card ${compactDetailLabels.has(label) ? "details-card-compact" : "details-card-full"}">
+        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</dt>
+        <dd class="mt-1 text-sm font-medium text-slate-700">${displayValue(value)}</dd>
+      </div>
+    `;
+  };
+
+  const renderCards = details => details.map(renderDetailCard).join("");
 
   document.getElementById("propertyDetails").innerHTML = [
     renderCards(identityDetails),
@@ -812,6 +839,23 @@ function renderPropertyDetails(data, recordCard) {
     recordCardSource(recordCard),
     reportErrorLink(data, recordCard)
   ].join("");
+}
+
+function mailingAddressHtml(value) {
+  const parts = `${value ?? ""}`
+    .split(",")
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  const lines = parts.length > 1
+    ? [parts[0], parts.slice(1).join(", ")]
+    : parts;
+
+  if (!lines.length) return value;
+
+  return lines.map((line, index) => `
+    <span class="details-card-address-line ${index > 0 ? "details-card-address-locality" : ""}">${escapeHtml(line)}</span>
+  `).join("");
 }
 
 function reportErrorLink(data, recordCard) {
@@ -843,21 +887,39 @@ function physicalDetailsForProperty(data) {
   if (data.commercial?.buildingDatasheet?.length || data.classification.propertyClass === "Commercial") {
     return [
       ["Primary occupancy", data.commercial?.primaryOccupancy],
-      ["Year built", data.commercial?.yearBuilt],
+      {
+        layout: "pair",
+        className: "details-card-compact",
+        items: [
+          ["Year built", data.commercial?.yearBuilt],
+          ["Construction", data.commercial?.constructionType]
+        ]
+      },
       ["Building size", formatSquareFeet(data.commercial?.buildingSize)],
       ["Perimeter", data.commercial?.perimeter ? `${data.commercial.perimeter} ft.` : null],
       ["Land use", data.commercial?.landUse],
-      ["Construction", data.commercial?.constructionType],
       ["Quality / condition", [data.commercial?.quality, data.commercial?.condition].filter(Boolean).join(" / ")],
       ["Heating / cooling", data.commercial?.heatingCooling]
     ];
   }
 
   return [
-    ["Year built", data.residential?.yearBuilt],
-    ["Style", data.residential?.style],
-    ["Building size", formatSquareFeet(data.residential?.buildingSize)],
-    ["Basement size", formatSquareFeet(data.residential?.basementSize)],
+    {
+      layout: "pair",
+      className: "details-card-compact",
+      items: [
+        ["Year built", data.residential?.yearBuilt],
+        ["Style", data.residential?.style]
+      ]
+    },
+    {
+      layout: "pair",
+      className: "details-card-compact",
+      items: [
+        ["Building size", formatSquareFeet(data.residential?.buildingSize)],
+        ["Basement size", formatSquareFeet(data.residential?.basementSize)]
+      ]
+    },
     ["Bedrooms / bathrooms", [data.residential?.bedrooms, data.residential?.bathrooms].every(value => value !== null && value !== undefined) ? `${data.residential.bedrooms} / ${data.residential.bathrooms}` : null],
     ["Quality / condition", [data.residential?.quality, data.residential?.condition].filter(Boolean).join(" / ")],
     ["Garage", [data.residential?.garage1, data.residential?.garage2].filter(Boolean).join("; ")],
