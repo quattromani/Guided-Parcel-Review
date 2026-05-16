@@ -97,6 +97,10 @@ function indexedTooltipLabel(context) {
   return `${label}: ${context.parsed.y?.toFixed(1) ?? "Pending"}`;
 }
 
+function isMobileChartViewport() {
+  return window.matchMedia?.("(max-width: 640px)")?.matches ?? false;
+}
+
 function hexToRgba(hex, alpha) {
   const value = `${hex ?? ""}`.replace("#", "");
   if (![3, 6].includes(value.length)) return hex;
@@ -220,6 +224,12 @@ export function buildIndexedChart(data) {
       pending: !hasDataValue(row.assessedValue) || !hasDataValue(row.taxes)
     }))
     .filter(row => row.pending);
+  const isMobileChart = isMobileChartViewport();
+  const indexedPendingBadge = document.getElementById("indexedPendingBadge");
+
+  if (indexedPendingBadge) {
+    indexedPendingBadge.classList.toggle("hidden", !isMobileChart || pendingColumns.length === 0);
+  }
 
   document.getElementById("baseYearNote").textContent = `Base year: ${usableValueRows[0]?.year ?? "—"}`;
 
@@ -266,7 +276,8 @@ export function buildIndexedChart(data) {
       interaction: { mode: "index", intersect: false },
       plugins: {
         indexedPendingColumn: {
-          columns: pendingColumns
+          columns: pendingColumns,
+          showLabel: !isMobileChart
         },
         legend: { display: !hasCustomLegend },
         tooltip: {
@@ -277,7 +288,7 @@ export function buildIndexedChart(data) {
       },
       scales: {
         y: {
-          title: { display: true, text: "Index" },
+          title: { display: !isMobileChart, text: "Index" },
           suggestedMin: 80,
           suggestedMax: 215
         }
@@ -1799,10 +1810,9 @@ function renderMarketSignalCards(selected, summary, standards, context = {}) {
           <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(card.note)}</p>
           <p class="metric-signal-text mt-2">${escapeHtml(signal.label)}</p>
         </div>
-        <span class="assessment-band-code">${escapeHtml(card.shortLabel)}</span>
       </div>
       <details class="assessment-detail-drawer" ${detailOpen ? "open" : ""}>
-        <summary class="assessment-detail-toggle">See statistics + chart</summary>
+        <summary class="assessment-detail-toggle"><span>See statistics + chart</span></summary>
         <div class="assessment-detail-content">
           <p class="assessment-band-kicker mt-4">${escapeHtml(card.category)}</p>
           <div class="assessment-band-chart mt-3 h-40">

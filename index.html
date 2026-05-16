@@ -88,19 +88,19 @@
       </article>
     </section>
 
-    <section data-guided-panel="your-assessment" class="hidden space-y-6">
+    <section data-guided-panel="your-assessment" class="guided-panel-assessment hidden space-y-6">
       <section id="assessment-notice" class="grid gap-6 lg:grid-cols-5">
         <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
           <h2 class="text-xl font-bold text-slate-700">Prior & Current Assessments</h2>
 	          <p class="mt-1 text-sm text-slate-600">Review land, building, other improvements, and total value before connecting those numbers to taxes.</p>
           <div id="assessmentNoticeSummary" class="mt-4"></div>
+          <p data-assessment-snapshot-source class="chart-source"></p>
         </article>
         <article id="property-movement-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
           <h2 class="text-xl font-bold text-slate-700">How much has this property changed?</h2>
           <p class="mt-1 text-sm text-slate-600">Start with the most recent available movement, then compare it with the longer historical pattern.</p>
           <div id="propertyMovementSummary" class="mt-4 space-y-4"></div>
         </article>
-        <p data-assessment-snapshot-source class="chart-source lg:col-span-5"></p>
       </section>
 
       <article class="ooda-decision-card">
@@ -193,8 +193,6 @@
             <select id="marketAreaSelect" data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
           </label>
         </div>
-        <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
-        <div id="marketGroupSalesDistribution" class="mt-5"></div>
         <div class="market-reading-path" aria-labelledby="marketReadingTitle">
           <div class="market-reading-intro">
             <p class="guided-kicker">Reading path</p>
@@ -206,14 +204,22 @@
               <p>Qualified sales tell you how much evidence is behind the group. Median ratio, COD, and PRD introduce level, uniformity, and price fairness.</p>
             </section>
             <section class="market-reading-step">
-              <h4>The sales data follows the area</h4>
-              <p>The table below keeps the selected local group beside the countywide class result so the sample and ratios stay in view.</p>
+              <h4>Sales depth is optional context</h4>
+              <p>Open the sales detail when you want to see how the selected local group compares with other groups in the same class.</p>
             </section>
-            <section class="market-reading-step">
+            <section class="market-reading-step market-reading-rollup-desktop">
               <h4>Equalization rolls it up</h4>
               <p>The next step places this group within the broader class and county pattern before reading the countywide measures together.</p>
             </section>
           </div>
+        </div>
+        <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
+        <div id="marketGroupSalesDistribution" class="mt-5"></div>
+        <div class="market-reading-path market-reading-rollup-mobile" aria-labelledby="marketReadingRollupTitle">
+          <section class="market-reading-step">
+            <h4 id="marketReadingRollupTitle">Equalization rolls it up</h4>
+            <p>The next step places this group within the broader class and county pattern before reading the countywide measures together.</p>
+          </section>
         </div>
       </article>
 
@@ -229,7 +235,7 @@
 
     <section data-guided-panel="county-equalization" class="hidden space-y-6">
       <article id="assessment-accuracy" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div>
           <div>
 	            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Equalization Context</p>
 	            <h2 class="mt-1 text-2xl font-bold text-slate-700">Is the value base being checked for fairness?</h2>
@@ -237,7 +243,6 @@
 	              Equalization reads from the property record into the valuation group or market area, then into the class and countywide study. It does not stop market values from moving or set the tax levy. It asks whether properties are being assessed at the required level and with reasonable uniformity, so the tax base is not tilted before levies are applied.
 	            </p>
           </div>
-          <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
         </div>
         <div id="assessment-accuracy-body"></div>
       </article>

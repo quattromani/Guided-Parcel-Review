@@ -286,6 +286,7 @@ table thead th[class] + th[class] {
 }
 
 .movement-section-heading p:last-child {
+  color: rgb(var(--accent-primary));
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
@@ -1541,13 +1542,15 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .guided-step-complete span {
-  background: rgb(var(--color-slate-100));
-  color: rgb(var(--color-slate-600));
-  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  background: white;
+  color: rgb(var(--color-secondary));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.26);
 }
 
 .guided-step-complete {
-  color: rgb(var(--color-slate-600));
+  background: rgb(var(--color-secondary-soft));
+  color: rgb(var(--color-secondary));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.18);
 }
 
 .guided-step-future {
@@ -2229,6 +2232,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   padding-top: 1rem;
 }
 
+.market-reading-rollup-mobile {
+  display: none;
+}
+
 .market-group-sales-panel {
   background: rgb(var(--surface-muted));
   border-radius: 0.5rem;
@@ -2345,6 +2352,16 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   margin-top: 1rem;
 }
 
+@media (max-width: 767px) {
+  .mobile-support-disclosure {
+    text-align: center;
+  }
+
+  .mobile-support-content {
+    text-align: left;
+  }
+}
+
 @media (min-width: 768px) {
   .mobile-support-disclosure {
     background: transparent !important;
@@ -2406,6 +2423,16 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .market-reading-step + .market-reading-step {
     border-left: 1px solid rgb(var(--border-muted));
     padding-left: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .market-reading-rollup-desktop {
+    display: none;
+  }
+
+  .market-reading-rollup-mobile {
+    display: block;
   }
 }
 
@@ -2803,6 +2830,13 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   max-width: 100%;
 }
 
+@media (max-width: 640px) {
+  #assessmentClassFilter {
+    display: flex;
+    width: 100%;
+  }
+}
+
 #assessmentClassFilter button {
   flex: 1 1 auto;
   min-width: 0;
@@ -2914,6 +2948,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .next-step-card {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .guided-panel-assessment > .ooda-decision-card {
+    margin-top: 1rem !important;
   }
 
   .advanced-context-card {
@@ -3062,11 +3100,35 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .indexed-trends-chart {
   height: 20rem;
+  position: relative;
+}
+
+.indexed-pending-badge {
+  align-items: center;
+  background: rgb(var(--status-pending));
+  border: 1px solid rgb(var(--status-pending-border) / 0.72);
+  border-radius: 999px;
+  color: rgb(var(--status-pending-ink));
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  padding: 0.45rem 0.7rem;
+  position: absolute;
+  right: 0.35rem;
+  text-transform: none;
+  top: -0.45rem;
+  z-index: 1;
 }
 
 @media (min-width: 640px) {
   .indexed-trends-chart {
     height: 23.5rem;
+  }
+
+  .indexed-pending-badge {
+    display: none;
   }
 }
 
@@ -3782,6 +3844,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   --metric-signal-accent: var(--color-slate-500);
   background: rgb(var(--surface-muted));
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  position: relative;
 }
 
 .metric-signal-card-strongGreen {
@@ -3896,6 +3959,98 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 @media (max-width: 640px) {
+  .metric-signal-card {
+    padding: 1rem !important;
+  }
+
+  .metric-signal-card:has(.assessment-detail-drawer) {
+    padding-bottom: 1.2rem !important;
+  }
+
+  .metric-signal-card .assessment-metric-topline {
+    gap: 0.6rem;
+  }
+
+  .metric-signal-card .assessment-metric-topline > .min-w-0 {
+    display: grid;
+    gap: 0.28rem 0.75rem;
+    grid-template-columns: minmax(7.25rem, 0.7fr) minmax(0, 1fr);
+  }
+
+  .metric-signal-card .assessment-metric-topline p {
+    margin: 0;
+  }
+
+  .metric-signal-card .assessment-metric-topline p:first-child {
+    grid-column: 1;
+  }
+
+  .metric-signal-card .assessment-metric-topline p:nth-child(2) {
+    font-size: 1.08rem;
+    grid-column: 1;
+  }
+
+  .metric-signal-card .assessment-metric-topline p:nth-child(3) {
+    align-self: end;
+    grid-column: 2;
+    grid-row: 2;
+    text-align: right;
+  }
+
+  .metric-signal-card .metric-signal-text {
+    grid-column: 1 / -1;
+    margin-top: 0.18rem;
+  }
+
+  .metric-signal-card .assessment-band-code {
+    font-size: 0.68rem;
+    min-width: 2.3rem;
+    padding: 0.32rem 0.44rem;
+  }
+
+  .metric-signal-card .assessment-detail-drawer {
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .metric-signal-card .assessment-detail-drawer[open] {
+    border-top: 1px solid rgb(var(--border-muted));
+    padding-top: 0.8rem;
+  }
+
+  .metric-signal-card .assessment-detail-toggle {
+    align-items: center;
+    display: flex;
+    height: 2rem;
+    justify-content: center;
+    margin-left: auto;
+    padding: 0;
+    position: absolute;
+    right: 1rem;
+    top: 3.4rem;
+    transform: translateY(-50%);
+    width: 2rem;
+  }
+
+  .metric-signal-card .assessment-detail-toggle span {
+    clip: rect(0 0 0 0);
+    border: 0;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .metric-signal-card .assessment-detail-toggle::after {
+    height: 0.44rem;
+    margin-left: 0;
+    width: 0.44rem;
+  }
+
   .civic-notice-heading {
     flex-direction: column;
   }

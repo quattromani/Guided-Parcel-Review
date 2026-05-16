@@ -152,6 +152,7 @@ function renderValueTaxHistoryShell() {
         </div>
         <div id="indexedChartLegend" class="chart-disc-legend mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-600"></div>
         <div class="indexed-trends-chart mt-4">
+          <span id="indexedPendingBadge" class="indexed-pending-badge hidden">Pending</span>
           <canvas id="indexedChart"></canvas>
         </div>
       </article>
@@ -265,6 +266,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
         </div>
         <p class="max-w-2xl text-sm leading-6 text-slate-600">COD, PRD, and COV are ratio-study statistics. Level of value is the class median ratio range. Current status stays first, with each measure's band history carried inside the same card.</p>
       </div>
+      <div id="assessmentClassFilter" class="mt-4 inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
       <div id="assessmentAccuracySummary" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
     </section>
 
@@ -2267,7 +2269,7 @@ function renderPropertyMovementSummary(data) {
         <p>Recent movement</p>
         <p>${previousValue?.year && lastValue?.year ? `${previousValue.year}-${lastValue.year}` : "Recent available years"}</p>
       </div>
-      <div class="mt-2 grid gap-3 md:grid-cols-3">
+      <div class="mt-2 grid gap-3 2xl:grid-cols-3">
         ${recentCards.map(movementCard).join("")}
       </div>
     </section>
@@ -2276,8 +2278,7 @@ function renderPropertyMovementSummary(data) {
         <p>Property history</p>
         <p>${firstValue.year}-${lastValue.year}</p>
       </div>
-      <p class="mt-1 text-xs leading-5 text-slate-500">Longer-range movement from ${firstValue.year}-${lastValue.year}. Tax and ETR movement use finalized tax years only.</p>
-      <div class="mt-2 grid gap-3 md:grid-cols-3">
+      <div class="mt-2 grid gap-3 2xl:grid-cols-3">
         ${historicalCards.map(movementCard).join("")}
       </div>
     </section>
