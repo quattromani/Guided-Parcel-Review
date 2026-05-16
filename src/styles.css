@@ -338,6 +338,33 @@ table thead th[class] + th[class] {
   text-align: right;
 }
 
+.county-growth-pair,
+.metric-pair-card {
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.county-growth-pair > div,
+.metric-pair-card > div {
+  min-width: 0;
+}
+
+.county-growth-pair > div + div,
+.metric-pair-card > div + div {
+  border-left: 1px solid rgb(var(--border-muted));
+  padding-left: 1rem;
+}
+
+.county-growth-pair > div:first-child,
+.metric-pair-card > div:first-child {
+  padding-right: 1rem;
+}
+
+.metric-pair-card-label {
+  color: rgb(var(--accent-primary));
+}
+
 @media (max-width: 360px) {
   .movement-card-body {
     grid-template-columns: 1fr;
@@ -1318,7 +1345,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   padding-left: 1rem;
   padding-right: 1rem;
   position: sticky;
-  top: 0.5rem;
+  top: 0;
   transition: background-color 0.18s ease, border-color 0.18s ease, border-radius 0.18s ease, box-shadow 0.18s ease, margin 0.18s ease, padding 0.18s ease, top 0.18s ease;
   z-index: 30;
 }
@@ -1345,6 +1372,38 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   justify-content: center;
 }
 
+.guided-context-anchor {
+  color: rgb(var(--color-secondary));
+  font-size: 0.82rem;
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.2;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  text-align: center;
+  transform: translateY(-0.25rem);
+  transition: max-height 0.18s ease, opacity 0.18s ease, padding 0.18s ease, transform 0.18s ease;
+  visibility: hidden;
+}
+
+.guided-context-anchor-visible {
+  max-height: 1.35rem;
+  opacity: 1;
+  padding-top: 0.35rem;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.guided-context-anchor span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @media (min-width: 768px) {
   .guided-path-nav {
     border-color: rgb(var(--border-muted)) !important;
@@ -1359,6 +1418,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     border-color: rgb(var(--border-muted)) !important;
     border-radius: calc(var(--radius-container-lg) / 2) !important;
     top: 0.5rem;
+  }
+
+  .guided-context-anchor {
+    display: none;
   }
 }
 
@@ -2360,6 +2423,102 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .mobile-support-content {
     text-align: left;
   }
+
+  .equalization-support-disclosure {
+    background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    text-align: left;
+  }
+
+  .equalization-support-disclosure.related-panel-section {
+    margin-top: 1rem;
+    padding-top: 1rem !important;
+  }
+
+  .equalization-support-disclosure .mobile-support-toggle {
+    background: rgb(var(--surface-muted));
+    border-radius: 0.75rem;
+    box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+    color: rgb(var(--color-secondary));
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0.9rem;
+    width: 100%;
+  }
+
+  .equalization-support-disclosure[open] .mobile-support-toggle {
+    border-bottom-left-radius: 0.45rem;
+    border-bottom-right-radius: 0.45rem;
+    color: rgb(var(--accent-primary));
+  }
+
+  .equalization-support-disclosure .mobile-support-content {
+    margin-top: 0.85rem;
+  }
+
+  .equalization-support-disclosure .overflow-x-auto {
+    border-radius: 0.65rem;
+  }
+
+  .equalization-support-table {
+    font-size: 0.78rem;
+    table-layout: fixed;
+  }
+
+  .equalization-support-table th,
+  .equalization-support-table td {
+    font-size: 0.78rem;
+    line-height: 1.25;
+    padding-left: 0.38rem !important;
+    padding-right: 0.38rem !important;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .equalization-support-table th {
+    white-space: normal;
+  }
+
+  .equalization-support-table td {
+    white-space: nowrap;
+  }
+
+  .equalization-mobile-optional {
+    display: none;
+  }
+
+  .equalization-support-table th:first-child,
+  .equalization-support-table td:first-child {
+    padding-left: 0.6rem !important;
+  }
+
+  .equalization-support-table th:last-child,
+  .equalization-support-table td:last-child {
+    padding-right: 0.6rem !important;
+  }
+
+  .equalization-sales-table th,
+  .equalization-sales-table td {
+    font-size: 0.72rem;
+    padding-left: 0.28rem !important;
+    padding-right: 0.28rem !important;
+  }
+
+  .equalization-sales-table th:first-child,
+  .equalization-sales-table td:first-child {
+    padding-left: 0.45rem !important;
+  }
+
+  .equalization-sales-table th:last-child,
+  .equalization-sales-table td:last-child {
+    padding-right: 0.45rem !important;
+  }
+
+  .tax-history-change-column {
+    display: none;
+  }
 }
 
 @media (min-width: 768px) {
@@ -2584,6 +2743,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   display: flex;
   gap: 0.35rem;
   min-width: 0;
+}
+
+.assessment-metric-label-short {
+  display: none;
 }
 
 .assessment-metric-topline {
@@ -3087,6 +3250,63 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   white-space: nowrap;
 }
 
+@media (max-width: 767px) {
+  .tax-distribution-visual-grid {
+    align-items: start;
+    gap: 0.75rem;
+    grid-template-columns: minmax(0, 0.98fr) minmax(8.5rem, 1.02fr);
+  }
+
+  #distributionNotes {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .distribution-note-card {
+    border-radius: 0.45rem;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .distribution-note-heading {
+    display: block;
+  }
+
+  .distribution-note-label {
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .distribution-note-label .rounded-full {
+    margin-top: 0.28rem;
+  }
+
+  .distribution-note-label .font-semibold {
+    font-size: 0.72rem;
+    line-height: 1.2;
+  }
+
+  .distribution-note-amount {
+    display: block;
+    font-size: 0.78rem;
+    line-height: 1.15;
+    margin-left: 0.85rem;
+    margin-top: 0.12rem;
+    text-align: left;
+  }
+
+  .distribution-note-card p {
+    font-size: 0.66rem;
+    line-height: 1.2;
+    margin-left: 0.85rem;
+    margin-top: 0.12rem;
+  }
+
+  .distribution-chart-shell {
+    height: min(52vw, 13rem) !important;
+    justify-self: stretch;
+  }
+}
+
 @media (min-width: 768px) {
   .tax-distribution-visual-grid {
     grid-template-columns: minmax(17rem, 21rem) minmax(12rem, 0.85fr);
@@ -3321,6 +3541,14 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     width: 2rem;
   }
 
+  .guided-path-nav-context-visible .assessment-dates-nav-button {
+    align-items: center;
+    height: 5.4rem;
+    justify-content: center;
+    margin-bottom: -2.1rem;
+    padding-right: 0;
+  }
+
   #assessmentDatesPanel {
     padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
   }
@@ -3481,6 +3709,38 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   line-height: 1;
   position: absolute;
   top: -0.2em;
+}
+
+.tax-pattern-context {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  justify-self: end;
+  min-width: 0;
+  text-align: right;
+}
+
+.tax-pattern-pill {
+  background: white;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-secondary));
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 850;
+  line-height: 1.15;
+  max-width: 100%;
+  padding: 0.34rem 0.58rem;
+  white-space: nowrap;
+}
+
+.tax-pattern-support {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.68rem;
+  font-weight: 750;
+  line-height: 1.15;
+  max-width: 6.75rem;
 }
 
 .tax-burden-table-head th {
@@ -3981,6 +4241,14 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     margin: 0;
   }
 
+  .metric-signal-card .assessment-metric-label-full {
+    display: none;
+  }
+
+  .metric-signal-card .assessment-metric-label-short {
+    display: inline;
+  }
+
   .metric-signal-card .assessment-metric-topline p:first-child {
     grid-column: 1;
   }
@@ -3994,6 +4262,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     align-self: end;
     grid-column: 2;
     grid-row: 2;
+    padding-right: 2.65rem;
     text-align: right;
   }
 

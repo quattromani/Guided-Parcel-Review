@@ -177,7 +177,7 @@ function renderTaxHistoryShell() {
             <tr>
               <th class="px-2 py-2 text-left font-semibold sm:px-3">Year</th>
               <th class="px-2 py-2 text-right font-semibold sm:px-3">Levy</th>
-              <th class="px-2 py-2 text-center font-semibold sm:px-3">Change</th>
+              <th class="tax-history-change-column px-2 py-2 text-center font-semibold sm:px-3">Change</th>
               <th class="px-2 py-2 text-right font-semibold sm:px-3">Gross</th>
               <th class="px-2 py-2 text-right font-semibold sm:px-3">Credits</th>
               <th class="px-2 py-2 text-right font-semibold sm:px-3">Net</th>
@@ -284,7 +284,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
           <canvas id="assessmentAccuracyChart"></canvas>
         </div>
       </article>
-      <details class="mobile-support-disclosure rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2" data-mobile-support${supportOpen}>
+      <details class="mobile-support-disclosure equalization-support-disclosure rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2" data-mobile-support${supportOpen}>
         <summary class="mobile-support-toggle">
           <span>See reported values table</span>
           <span class="mobile-support-chevron" aria-hidden="true"></span>
@@ -293,7 +293,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
           <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
 	        <p class="mt-1 text-sm text-slate-600">Latest years appear first so recent county sales-study results are easy to compare with prior years.</p>
           <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <table class="min-w-full divide-y divide-slate-200 text-sm equalization-support-table">
               <thead class="sticky top-0">
                 <tr>
                   <th class="px-3 py-2 text-left font-semibold">Year</th>
@@ -311,7 +311,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       </details>
     </section>
 
-    <details class="mobile-support-disclosure related-panel-section" data-mobile-support${supportOpen}>
+    <details class="mobile-support-disclosure equalization-support-disclosure related-panel-section" data-mobile-support${supportOpen}>
       <summary class="mobile-support-toggle">
         <span>See local market position</span>
         <span class="mobile-support-chevron" aria-hidden="true"></span>
@@ -352,7 +352,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       </div>
     </details>
 
-    <details class="mobile-support-disclosure related-panel-section" data-mobile-support${supportOpen}>
+    <details class="mobile-support-disclosure equalization-support-disclosure related-panel-section" data-mobile-support${supportOpen}>
       <summary class="mobile-support-toggle">
         <span>See class sales makeup</span>
         <span class="mobile-support-chevron" aria-hidden="true"></span>
@@ -362,7 +362,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       <p id="equalizationSalePriceDescription" class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">Sale-price ranges show where qualified sales are concentrated and whether the class study is based mostly on lower-, middle-, or higher-priced properties.</p>
       <div class="data-split-view mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
         <div class="overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
-          <table class="min-w-full divide-y divide-slate-200 text-xs">
+          <table class="min-w-full divide-y divide-slate-200 text-xs equalization-support-table equalization-sales-table">
             <thead>
               <tr>
                 <th id="equalizationSalePriceRangeHeader" class="px-2 py-2 text-left font-semibold">Sale price range</th>
@@ -421,7 +421,7 @@ export function renderPropertyViewContext(data, recordCard, valuationGroups) {
   const propertyClass = data.classification.propertyClass || data.parcel.accountType;
 
   context.innerHTML = `
-    <div class="property-context-bar mb-4">
+    <div class="property-context-bar mb-4" data-property-context-bar>
       <div class="property-context-identity">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Subject Property</p>
         <p class="property-context-situs">${data.parcel.situsAddress}</p>
@@ -2369,7 +2369,7 @@ function renderTaxHistoryTable(data) {
       <tr class="${pendingClass}"${rowStyle}>
         <th scope="row" class="px-2 py-2 text-left font-semibold text-slate-700 sm:px-3">${year}</th>
         <td class="px-2 py-2 text-right font-medium sm:px-3">${taxHistoryLevyDisplay(levyRow)}</td>
-        <td class="px-2 py-2 text-center sm:px-3">${levyMovementPill(levyRow, priorLevyRow)}</td>
+        <td class="tax-history-change-column px-2 py-2 text-center sm:px-3">${levyMovementPill(levyRow, priorLevyRow)}</td>
         <td class="px-2 py-2 text-right sm:px-3">${formatNullableMoney(statement?.grossTaxAmount, true)}</td>
         <td class="px-2 py-2 text-right sm:px-3">${statement ? formatNullableMoney(statementTotalCredits(statement), true) : "—"}</td>
         <td class="px-2 py-2 text-right font-semibold text-slate-700 sm:px-3">${formatNullableMoney(netTaxes, true)}</td>

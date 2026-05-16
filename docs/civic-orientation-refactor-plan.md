@@ -306,6 +306,8 @@ Disclosure rules:
 - TODO: Explore an assessment glossary as a non-mainline reference surface for plain-English terms. Prefer a static non-nav glossary page/view with clear "return to where you were" behavior over a dense modal if the glossary grows beyond a short route-level list.
 - TODO: Refine the Learn footer on mobile with voluntary disclosure: use drawer/chevron guidance or a "See more terms" pattern so only the first few relevant definitions are visible by default, while preserving a path to the fuller glossary/reference view.
 - TODO: Define analytics before launch. Use one Google tag or Google Tag Manager path, make consent/public-sector privacy decisions explicit, and track guided route/hash changes as virtual page views or events so single-page navigation, footer policy panels, assessment-date opens, and outbound official-form clicks are measurable without double-counting.
+- TODO: After mobile, tablet, and desktop views are locked, sweep for visually identical or near-identical components and consolidate their markup/CSS where practical. Prioritize shared metric cards, voluntary disclosure controls, drawers, chart containers, and section headers; keep legitimate page-specific exceptions only when the content model requires them.
+- TODO: After layout lock, clean and compress CSS/Sass where possible so repeated mobile overrides and one-off component rules are folded into reusable primitives without changing the approved visual behavior.
 
 Example:
 

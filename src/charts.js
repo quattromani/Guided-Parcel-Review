@@ -101,6 +101,10 @@ function isMobileChartViewport() {
   return window.matchMedia?.("(max-width: 640px)")?.matches ?? false;
 }
 
+function mobileAxisTitle(text, display = true) {
+  return { display: display && !isMobileChartViewport(), text };
+}
+
 function hexToRgba(hex, alpha) {
   const value = `${hex ?? ""}`.replace("#", "");
   if (![3, 6].includes(value.length)) return hex;
@@ -319,27 +323,33 @@ export function buildTaxBurdenPattern(data) {
     {
       label: "Highest net bill",
       value: moneyCents.format(peak.netAmountDue),
-      note: `${peak.taxYear} statement year`
+      pill: peak.taxYear,
+      support: "statement year"
     },
     {
       label: "Period average",
       value: moneyCents.format(average),
-      note: `${rows[0].taxYear}-${rows.at(-1).taxYear} statement years`
+      pill: `${rows[0].taxYear}-${rows.at(-1).taxYear}`,
+      support: "statement years"
     },
     {
       label: "Latest net bill",
       value: moneyCents.format(latest.netAmountDue),
-      note: `${latestVsAverage < 0 ? moneyCents.format(Math.abs(latestVsAverage)) + " below" : moneyCents.format(latestVsAverage) + " above"} average`
+      pill: `${latestVsAverage < 0 ? "-" : "+"}${moneyCents.format(Math.abs(latestVsAverage))}`,
+      support: latestVsAverage < 0 ? "below average" : "above average"
     }
   ];
 
   cards.innerHTML = cardItems.map(item => `
-    <div class="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+    <div class="tax-pattern-card grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
       <div class="min-w-0">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${item.label}</p>
         <p class="mt-1 text-2xl font-bold text-slate-700">${item.value}</p>
       </div>
-      <p class="max-w-40 text-right text-sm font-semibold leading-5 text-slate-600">${item.note}</p>
+      <div class="tax-pattern-context">
+        <span class="tax-pattern-pill">${item.pill}</span>
+        <span class="tax-pattern-support">${item.support}</span>
+      </div>
     </div>
   `).join("");
 
@@ -394,7 +404,7 @@ export function buildTaxBurdenPattern(data) {
       },
       scales: {
         y: {
-          title: { display: true, text: "Net taxes paid" },
+          title: mobileAxisTitle("Net taxes paid"),
           ticks: { callback: value => wholeMoney.format(value) },
           suggestedMin: Math.floor((Math.min(...netTaxes) - 150) / 250) * 250,
           suggestedMax: Math.ceil((Math.max(...netTaxes) + 150) / 250) * 250
@@ -564,6 +574,12 @@ function bandStatus(value, approximate = false) {
   return `inside ${bandLabel}`;
 }
 
+function metricSignalToneFromBandTone(tone) {
+  if (tone === "inside") return "green";
+  if (tone === "outside") return "red";
+  return "neutral";
+}
+
 function rawBandStatus(value, range, { approximate = false } = {}) {
   const bandLabel = approximate ? "context band" : "standard band";
 
@@ -705,7 +721,7 @@ const assessmentEndLabelPlugin = {
     ctx.textBaseline = "middle";
 
     labels.forEach(label => {
-      const labelX = Math.min(chart.width - 40, chartArea.right + 9);
+      const labelX = Math.min(chart.width - (options.maxRightInset ?? 40), chartArea.right + (options.offsetX ?? 9));
       const width = ctx.measureText(label.text).width + 13;
       const height = 18;
 
@@ -856,7 +872,7 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
     {
       label: "PRD",
       value: latest.prd.toFixed(3),
-      note: `${formatSignedChange(selectedClass.summary.prdDistanceChangeSince2025, 3)} distance from 2025`,
+      note: `${formatSignedChange(selectedClass.summary.prdDistanceChangeSince2025, 3)} from 2025`,
       color: chartColors.prd,
       status: rawBandStatus(latest.prd, bandConfig.prd),
       help: "Price-Related Differential checks whether lower- and higher-priced properties are assessed evenly. Values close to 1.00 are preferred."
@@ -871,8 +887,9 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
     },
     {
       label: "Level of value",
-      value: `${latest.levelOfValue.toFixed(2)}%`,
-      note: levelRangeNote,
+      mobileLabel: "LOV",
+      value: `${latest.levelOfValue.toFixed(2)}<span class="equalization-mobile-optional">%</span>`,
+      note: levelRange ? `${levelRangeText}<span class="equalization-mobile-optional">%</span> range` : levelRangeNote,
       color: chartColors.levelOfValue,
       status: assessmentLevelStatus(latest.levelOfValue, levelRange),
       help: levelHelp
@@ -892,27 +909,28 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
   summary.innerHTML = assessmentBandDefinitions.map(definition => {
     const card = cardByKey.get(definition.key);
     const range = bandConfig[definition.key];
+    const signalTone = metricSignalToneFromBandTone(card.status.tone);
 
     return `
-    <article class="assessment-metric-card assessment-band-card rounded-xl p-4" style="--metric-color: ${card.color}; --metric-bg: ${colorAlpha(card.color, 0.045)}; --metric-border: ${colorAlpha(card.color, 0.24)}; --measure-color: ${definition.color}; --measure-bg: ${colorAlpha(definition.color, 0.045)}; --measure-border: ${colorAlpha(definition.color, 0.25)};">
+    <article class="assessment-metric-card assessment-band-card metric-signal-card metric-signal-card-${signalTone} rounded-xl p-4" style="--metric-color: ${card.color}; --metric-bg: ${colorAlpha(card.color, 0.045)}; --metric-border: ${colorAlpha(card.color, 0.24)}; --measure-color: ${definition.color}; --measure-bg: ${colorAlpha(definition.color, 0.045)}; --measure-border: ${colorAlpha(definition.color, 0.25)};">
       <div class="assessment-metric-topline">
         <div class="min-w-0">
-          <div class="assessment-metric-heading">
-            <p class="assessment-metric-label text-xs font-semibold uppercase tracking-wide">${card.label}</p>
+          <p class="assessment-metric-label assessment-metric-heading text-xs font-semibold uppercase tracking-wide">
+            <span class="assessment-metric-label-full">${card.label}</span>
+            <span class="assessment-metric-label-short" aria-hidden="true">${card.mobileLabel ?? card.label}</span>
             <span class="assessment-metric-help">
               <button type="button" class="assessment-help-button" aria-label="${card.label} explanation">?</button>
               <span class="assessment-help-tooltip" role="tooltip">${card.help}</span>
             </span>
-          </div>
+          </p>
           <p class="assessment-metric-value mt-1 text-lg font-bold">${card.value}</p>
-          <p class="assessment-metric-status assessment-metric-status-${card.status.tone}">${card.status.label}</p>
           <p class="assessment-metric-note mt-1 text-xs leading-5">${card.note}</p>
+          <p class="metric-signal-text mt-2">${card.status.label}</p>
         </div>
-        <span class="assessment-band-code">${definition.shortLabel}</span>
       </div>
 
       <details class="assessment-detail-drawer" ${detailOpen ? "open" : ""}>
-        <summary class="assessment-detail-toggle">See statistics + chart</summary>
+        <summary class="assessment-detail-toggle"><span>See statistics + chart</span></summary>
         <div class="assessment-detail-content">
           <p class="assessment-band-kicker mt-4">${definition.category}</p>
           <div class="assessment-band-chart mt-3 h-40">
@@ -942,7 +960,7 @@ function renderAssessmentRows(selectedClass) {
       <td class="px-3 py-2 text-right">${row.cod.toFixed(2)}</td>
       <td class="px-3 py-2 text-right">${row.prd.toFixed(3)}</td>
       <td class="px-3 py-2 text-right">${row.cov.toFixed(2)}</td>
-      <td class="px-3 py-2 text-right">${row.levelOfValue.toFixed(2)}%</td>
+      <td class="px-3 py-2 text-right">${row.levelOfValue.toFixed(2)}<span class="equalization-mobile-optional">%</span></td>
     </tr>
   `).join("");
 }
@@ -1088,6 +1106,7 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
   const canvas = document.getElementById("assessmentAccuracyChart");
   if (!canvas) return;
 
+  const isMobileChart = isMobileChartViewport();
   const records = getAssessmentDisplayRecords(selectedClass);
   const labels = records.map(row => row.year);
   const bandConfig = getAssessmentBandConfig(selectedClass, iaaoStandards);
@@ -1132,7 +1151,7 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
       interaction: { mode: "index", intersect: false },
       layout: {
         padding: {
-          right: 48
+          right: isMobileChart ? 34 : 48
         }
       },
       plugins: {
@@ -1161,18 +1180,20 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
           max: 1
         },
         assessmentEndLabels: {
-          enabled: true
+          enabled: true,
+          offsetX: isMobileChart ? 5 : 9,
+          maxRightInset: isMobileChart ? 34 : 40
         }
       },
       scales: {
         y: {
-          title: { display: true, text: "Position within selected band" },
+          title: { display: !isMobileChart, text: "Position within selected band" },
           suggestedMin: Math.min(-0.25, Math.floor(minValue - 0.25)),
           suggestedMax: Math.max(1.5, Math.ceil(maxValue + 0.25)),
           ticks: {
             callback: value => {
-              if (Number(value) === 0) return "Lower edge";
-              if (Number(value) === 1) return "Upper edge";
+              if (!isMobileChart && Number(value) === 0) return "Lower edge";
+              if (!isMobileChart && Number(value) === 1) return "Upper edge";
               return Number(value).toFixed(1);
             }
           }
@@ -1298,7 +1319,7 @@ function renderEqualizationSalePriceChart(rows, study = {}, duplicateLabels = ne
         },
         y: {
           beginAtZero: true,
-          title: { display: true, text: study.yAxisTitle || "Qualified sales" },
+          title: mobileAxisTitle(study.yAxisTitle || "Qualified sales"),
           ticks: { precision: 0 }
         }
       }
@@ -2384,7 +2405,7 @@ function renderMarketPositionScatter(selected, classStats, iaaoStandards, onSele
           ticks: { callback: value => formatRatio(Number(value), 0) }
         },
         y: {
-          title: { display: true, text: "COD" },
+          title: mobileAxisTitle("COD"),
           min: 0,
           suggestedMax: bounds.yMax,
           grid: { color: visualizationTheme.neutrals.gridline },
@@ -2458,7 +2479,6 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
       ...signalContext,
       classStats
     });
-    renderMarketGroupSalesDistribution(selected, classStats);
     renderMarketNarrative(selected, countywide, classStats, medianRange, isParcelGroup);
     renderMarketPositionScatter(selected, classStats, iaaoStandards, update);
     renderMarketPriceSummary(selected, countywide);
@@ -2529,7 +2549,7 @@ function buildIndexedOverviewChart(canvasId, data, labels, valueFactor, taxFacto
       },
       scales: {
         y: {
-          title: { display: true, text: "Index" },
+          title: mobileAxisTitle("Index"),
           suggestedMin: 80,
           suggestedMax: 215
         }
@@ -2599,7 +2619,7 @@ function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palett
       },
       scales: {
         y: {
-          title: { display: true, text: "Index" },
+          title: mobileAxisTitle("Index"),
           suggestedMin: 90,
           suggestedMax: 170
         }
@@ -2644,7 +2664,7 @@ export function buildEtrChart(data) {
       },
       scales: {
         y: {
-          title: { display: true, text: "Effective tax rate" },
+          title: mobileAxisTitle("Effective tax rate"),
           ticks: { callback: value => `${value}%` },
           suggestedMin: 1.0,
           suggestedMax: 2.2
@@ -2687,7 +2707,7 @@ function buildEtrOverviewChart(canvasId, data, label, factor) {
       interaction: { mode: "index", intersect: false },
       scales: {
         y: {
-          title: { display: true, text: "Effective tax rate" },
+          title: mobileAxisTitle("Effective tax rate"),
           ticks: { callback: value => `${value}%` },
           suggestedMin: 1.0,
           suggestedMax: 2.2
@@ -2731,7 +2751,7 @@ function buildCertifiedRateChart(canvasId, rows, label, propertyRows, palette = 
       },
       scales: {
         y: {
-          title: { display: true, text: "Average tax rate" },
+          title: mobileAxisTitle("Average tax rate"),
           ticks: { callback: value => `${value}%` },
           suggestedMin: 1.0,
           suggestedMax: 2.0
@@ -2995,7 +3015,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       },
       scales: {
         y: {
-          title: { display: true, text: "Index" },
+          title: mobileAxisTitle("Index"),
           suggestedMin: 90,
           suggestedMax: 170
         }
@@ -3019,7 +3039,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       },
       scales: {
         y: {
-          title: { display: true, text: "Average tax rate" },
+          title: mobileAxisTitle("Average tax rate"),
           ticks: { callback: value => `${value}%` },
           suggestedMin: 1.0,
           suggestedMax: 2.0
@@ -3063,16 +3083,26 @@ export function buildCtlSummary(data, ctlData) {
 
   const countySummary = document.getElementById("countyCtlSummary");
   if (countySummary) {
-    countySummary.innerHTML = [
-      ["Value growth", formatChange(indexChange(countyRows, "totalValue"))],
-      ["Tax growth", formatChange(indexChange(countyRows, "taxesLevied"))],
-      ["Rate movement", `${(countyRows[0].averageTaxRate * 100).toFixed(2)}% to ${(countyRows.at(-1).averageTaxRate * 100).toFixed(2)}%`]
-    ].map(([label, value]) => `
-      <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-        <p class="mt-1 text-lg font-bold text-slate-700">${value}</p>
+    const valueGrowth = formatChange(indexChange(countyRows, "totalValue"));
+    const taxGrowth = formatChange(indexChange(countyRows, "taxesLevied"));
+    const rateMovement = `${(countyRows[0].averageTaxRate * 100).toFixed(2)}% to ${(countyRows.at(-1).averageTaxRate * 100).toFixed(2)}%`;
+
+    countySummary.innerHTML = `
+      <div class="county-growth-pair rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 md:col-span-2">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Value growth</p>
+          <p class="mt-1 text-lg font-bold text-slate-700">${valueGrowth}</p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax growth</p>
+          <p class="mt-1 text-lg font-bold text-slate-700">${taxGrowth}</p>
+        </div>
       </div>
-    `).join("");
+      <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Rate movement</p>
+        <p class="mt-1 text-lg font-bold text-slate-700">${rateMovement}</p>
+      </div>
+    `;
   }
 
   const stateSummary = document.getElementById("stateCtlSummary");

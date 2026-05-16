@@ -47,6 +47,9 @@
             </svg>
           </button>
         </div>
+        <div class="guided-context-anchor" data-guided-context-anchor aria-hidden="true">
+          <span data-guided-context-situs></span>
+        </div>
       </nav>
 
       <section id="propertyViewContext" class="hidden"></section>
@@ -152,7 +155,7 @@
       <article id="tax-district-authorities" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <p class="guided-kicker">Tax Districts</p>
         <h2 class="mt-1 text-xl font-bold text-slate-700">Which tax district applies here?</h2>
-        <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">The tax district, source year, total levy, and listed taxing bodies help confirm whether this property is assigned to the expected jurisdictions before reading the levy breakdown.</p>
+        <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">The tax district, source year, listed taxing bodies, and total levy help confirm whether this property is assigned to the expected jurisdictions before reading the levy breakdown.</p>
         <div id="taxDistrictAuthoritySummary" class="mt-4 grid gap-3 md:grid-cols-4"></div>
         <div class="ooda-inline-note">
           <p class="guided-kicker">Jurisdiction check</p>
@@ -204,8 +207,8 @@
               <p>Qualified sales tell you how much evidence is behind the group. Median ratio, COD, and PRD introduce level, uniformity, and price fairness.</p>
             </section>
             <section class="market-reading-step">
-              <h4>Sales depth is optional context</h4>
-              <p>Open the sales detail when you want to see how the selected local group compares with other groups in the same class.</p>
+              <h4>Sample depth stays local</h4>
+              <p>The qualified-sales card keeps the selected group beside the countywide sample so the size of the evidence stays visible.</p>
             </section>
             <section class="market-reading-step market-reading-rollup-desktop">
               <h4>Equalization rolls it up</h4>
@@ -214,7 +217,6 @@
           </div>
         </div>
         <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
-        <div id="marketGroupSalesDistribution" class="mt-5"></div>
         <div class="market-reading-path market-reading-rollup-mobile" aria-labelledby="marketReadingRollupTitle">
           <section class="market-reading-step">
             <h4 id="marketReadingRollupTitle">Equalization rolls it up</h4>

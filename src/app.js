@@ -163,10 +163,13 @@ function initGuidedNavigation(data) {
   const guidedPath = document.querySelector(".guided-path-nav");
   const guidedPathTrack = document.querySelector(".guided-path-track");
   const guidedPreviousButton = document.querySelector("[data-guided-previous-control]");
+  const guidedContextAnchor = document.querySelector("[data-guided-context-anchor]");
+  const guidedContextSitus = document.querySelector("[data-guided-context-situs]");
   const primarySectionIds = routeList.filter(route => !route.secondary).map(route => route.id);
   const visitedSteps = new Set();
   const unlockedSteps = new Set([primarySectionIds[0]]);
   const mobileNavQuery = window.matchMedia("(max-width: 640px)");
+  let guidedContextAnchorUpdate = null;
   let taxDistrictAuthoritiesPromise;
   let taxDistrictAuthoritiesRendered = false;
 
@@ -319,6 +322,7 @@ function initGuidedNavigation(data) {
     propertyContext?.classList.toggle("hidden", selected === "landing-primer" || selectedPanel === "your-property");
     renderViewHeader(selected, snapshotModel);
     renderGuidedResourceContent(selected);
+    guidedContextAnchorUpdate?.();
     if (selectedPanel === "your-taxes") {
       renderTaxDistrictPanelWhenNeeded();
     }
@@ -432,6 +436,14 @@ function initGuidedNavigation(data) {
     }, 0);
   }
   initGuidedPathStickiness(guidedPath);
+  guidedContextAnchorUpdate = initGuidedContextAnchor({
+    anchor: guidedContextAnchor,
+    situsTarget: guidedContextSitus,
+    guidedPath,
+    propertyContext,
+    mobileNavQuery,
+    situs: data.parcel.situsAddress
+  });
 }
 
 function guidedStepMarker(route, index) {
@@ -560,6 +572,45 @@ function initGuidedPathStickiness(guidedPath) {
   measure();
   window.addEventListener("scroll", update, { passive: true });
   window.addEventListener("resize", measure);
+}
+
+function initGuidedContextAnchor({
+  anchor,
+  situsTarget,
+  guidedPath,
+  propertyContext,
+  mobileNavQuery,
+  situs
+}) {
+  if (!anchor || !situsTarget || !guidedPath || !propertyContext) return null;
+
+  situsTarget.textContent = situs || "";
+
+  function setVisible(visible) {
+    anchor.classList.toggle("guided-context-anchor-visible", visible);
+    guidedPath.classList.toggle("guided-path-nav-context-visible", visible);
+    anchor.setAttribute("aria-hidden", String(!visible));
+  }
+
+  function update() {
+    const contextBar = propertyContext.querySelector("[data-property-context-bar]");
+    if (!mobileNavQuery.matches || propertyContext.classList.contains("hidden") || !contextBar) {
+      setVisible(false);
+      return;
+    }
+
+    const navRect = guidedPath.getBoundingClientRect();
+    const contextRect = contextBar.getBoundingClientRect();
+    const contextHasPassed = contextRect.bottom <= navRect.bottom + 2;
+    setVisible(contextHasPassed);
+  }
+
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+  mobileNavQuery.addEventListener?.("change", update);
+
+  return update;
 }
 
 function initFooterNavigation() {

@@ -15,37 +15,37 @@ export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
     levy: row.rate
   }));
   const total = authorities.reduce((sum, row) => sum + row.levy, 0);
-  const districtDescription = district?.districtDescription ?? null;
-  const districtDescriptionNote = districtDescription
-    ? `Report label: ${districtDescription}`
-    : "No district description found in the authority report.";
+  const cardPairs = [
+    [
+      {
+        label: "Tax district",
+        value: data.parcel.taxDistrict
+      },
+      {
+        label: "Source year",
+        value: taxDistrictAuthorities?.source?.taxYear ?? data.latestFinalTaxYear
+      }
+    ],
+    [
+      {
+        label: "Authorities",
+        value: authorities.length
+      },
+      {
+        label: "Total levy",
+        value: formatNullableLevy(district?.districtLevy ?? total)
+      }
+    ]
+  ];
 
-  summary.innerHTML = [
-    {
-      label: "Tax district",
-      value: data.parcel.taxDistrict,
-      note: districtDescriptionNote
-    },
-    {
-      label: "Authorities",
-      value: authorities.length,
-      note: district ? "Matched to this parcel's tax district." : "Using the most recent finalized tax breakdown."
-    },
-    {
-      label: "Total levy",
-      value: formatNullableLevy(district?.districtLevy ?? total),
-      note: "Combined rate for the listed taxing bodies."
-    },
-    {
-      label: "Source year",
-      value: taxDistrictAuthorities?.source?.taxYear ?? data.latestFinalTaxYear,
-      note: "District Authority Report."
-    }
-  ].map(card => `
-    <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(card.label)}</p>
-      <p class="mt-1 text-lg font-bold text-slate-700">${escapeHtml(card.value)}</p>
-      <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(card.note)}</p>
+  summary.innerHTML = cardPairs.map(pair => `
+    <div class="metric-pair-card rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 md:col-span-2">
+      ${pair.map(card => `
+        <div>
+          <p class="metric-pair-card-label text-xs font-semibold uppercase tracking-wide">${escapeHtml(card.label)}</p>
+          <p class="mt-1 text-lg font-bold text-slate-700">${escapeHtml(card.value)}</p>
+        </div>
+      `).join("")}
     </div>
   `).join("");
 
