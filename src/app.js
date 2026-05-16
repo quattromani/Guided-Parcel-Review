@@ -210,6 +210,12 @@ function initGuidedNavigation(data) {
     return panelId ? routeIdForPanel(panelId) : null;
   }
 
+  function stepForHashTarget(target) {
+    if (!target) return null;
+    const route = routeList.find(item => item.id === target || item.panelId === target);
+    return route?.id ?? stepForTarget(target);
+  }
+
   function unlockThrough(target) {
     const targetId = routeIdFor(target);
     if (!isPrimaryRouteId(targetId)) return;
@@ -251,7 +257,7 @@ function initGuidedNavigation(data) {
   }
 
   function selectStep(selectedRoute, options = {}) {
-    const { scrollTop = true, markVisited = true } = options;
+    const { scrollTop = true, markVisited = true, updateHash = false } = options;
     const route = resolveRoute(selectedRoute) ?? routeList[0];
     const selected = route.id;
     const selectedPanel = route.panelId;
@@ -296,6 +302,9 @@ function initGuidedNavigation(data) {
     if (selectedPanel === "your-taxes") {
       renderTaxDistrictPanelWhenNeeded();
     }
+    if (updateHash && window.location.hash !== `#${selected}`) {
+      history.pushState(null, "", `#${selected}`);
+    }
     window.dispatchEvent(new Event("resize"));
     queueActiveGuidedStepAlignment(scrollTop ? "smooth" : "auto");
 
@@ -322,7 +331,7 @@ function initGuidedNavigation(data) {
 
   tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-      selectStep(tab.dataset.guidedTab);
+      selectStep(tab.dataset.guidedTab, { updateHash: true });
     });
   });
 
@@ -333,7 +342,7 @@ function initGuidedNavigation(data) {
       const nextRoute = routeIdFor(button.dataset.guidedNext);
       if (currentRoute && isPrimaryRouteId(currentRoute)) visitedSteps.add(currentRoute);
       unlockThrough(nextRoute);
-      selectStep(nextRoute);
+      selectStep(nextRoute, { updateHash: true });
     });
   });
 
@@ -374,13 +383,22 @@ function initGuidedNavigation(data) {
     window.setTimeout(() => target.classList.remove("jump-target-active"), 1400);
   });
 
+  function selectStepFromHash() {
+    const hashStep = stepForHashTarget(window.location.hash?.slice(1));
+    if (!hashStep) return false;
+    unlockThrough(hashStep);
+    markPreviousVisited(hashStep);
+    return selectStep(hashStep, { scrollTop: true, updateHash: false });
+  }
+
   const hashTarget = window.location.hash?.slice(1);
-  const initialStep = hashTarget ? stepForTarget(hashTarget) : primarySectionIds[0];
+  const initialStep = hashTarget ? stepForHashTarget(hashTarget) : primarySectionIds[0];
   unlockThrough(initialStep || primarySectionIds[0]);
   markPreviousVisited(initialStep || primarySectionIds[0]);
   selectStep(initialStep || primarySectionIds[0], { scrollTop: false });
   mobileNavQuery.addEventListener?.("change", () => queueActiveGuidedStepAlignment("auto"));
-  if (hashTarget) {
+  window.addEventListener("hashchange", selectStepFromHash);
+  if (hashTarget && document.getElementById(hashTarget)) {
     window.setTimeout(() => {
       const target = document.getElementById(hashTarget);
       target?.scrollIntoView({ behavior: "auto", block: "start" });
@@ -521,30 +539,59 @@ function initFooterNavigation() {
   const links = document.querySelectorAll("[data-footer-target]");
   const panels = document.querySelectorAll("[data-footer-panel]");
   const footerContent = document.getElementById("footerContent");
+  const footerTargets = new Set(Array.from(panels, panel => panel.dataset.footerPanel));
 
   document.querySelectorAll("[data-fpo-link]").forEach(link => {
     link.addEventListener("click", event => event.preventDefault());
   });
 
-  links.forEach(link => link.setAttribute("aria-expanded", "false"));
+  links.forEach(link => {
+    link.setAttribute("aria-expanded", "false");
+    if (link.dataset.footerTarget) {
+      link.setAttribute("aria-controls", link.dataset.footerTarget);
+    }
+  });
+
+  function openFooterPanel(selected, options = {}) {
+    const { updateHash = false, scroll = true } = options;
+    if (!footerTargets.has(selected)) return false;
+
+    footerContent?.classList.remove("hidden");
+
+    links.forEach(item => {
+      const active = item.dataset.footerTarget === selected;
+      item.classList.toggle("footer-link-active", active);
+      item.classList.toggle("text-slate-600", !active);
+      item.setAttribute("aria-expanded", String(active));
+    });
+
+    panels.forEach(panel => {
+      panel.classList.toggle("hidden", panel.dataset.footerPanel !== selected);
+    });
+
+    if (updateHash && window.location.hash !== `#${selected}`) {
+      history.pushState(null, "", `#${selected}`);
+    }
+
+    if (scroll) {
+      footerContent?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    return true;
+  }
 
   links.forEach(link => {
-    link.addEventListener("click", () => {
-      const selected = link.dataset.footerTarget;
-      footerContent?.classList.remove("hidden");
-
-      links.forEach(item => {
-        const active = item.dataset.footerTarget === selected;
-        item.classList.toggle("footer-link-active", active);
-        item.classList.toggle("text-slate-600", !active);
-        item.setAttribute("aria-expanded", String(active));
-      });
-
-      panels.forEach(panel => {
-        panel.classList.toggle("hidden", panel.dataset.footerPanel !== selected);
-      });
-
-      footerContent?.scrollIntoView({ behavior: "smooth", block: "start" });
+    link.addEventListener("click", event => {
+      event.preventDefault();
+      openFooterPanel(link.dataset.footerTarget, { updateHash: true });
     });
   });
+
+  function openFooterPanelFromHash() {
+    const selected = window.location.hash.slice(1);
+    if (selected) openFooterPanel(selected, { scroll: true });
+  }
+
+  window.addEventListener("hashchange", openFooterPanelFromHash);
+  openFooterPanelFromHash();
 }

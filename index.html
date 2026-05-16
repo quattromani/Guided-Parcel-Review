@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="format-detection" content="telephone=no,address=no,email=no,date=no" />
-  <title>2026 Property Snapshot</title>
+  <meta name="description" content="A guided parcel review that helps taxpayers understand property records, assessed value, tax context, market context, equalization, and review items." />
+  <title>2026 Parcel Guide</title>
   <script>
     if (window.location.protocol === "file:") {
       window.location.replace(`http://localhost:4173/${window.location.search}${window.location.hash}`);
@@ -381,47 +382,49 @@
     <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
       <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property Value & Tax Snapshot</p>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Parcel Guide Resources</p>
           <h2 class="mt-1 text-xl font-bold text-slate-700">Resources and policies</h2>
           <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600">
             Need help with what you just reviewed? Find focused answers, forms, and plain-English terms.
           </p>
         </div>
         <nav aria-label="Resource menu" class="footer-resource-pills">
-          <button type="button" data-footer-target="faq" class="footer-pill-button text-slate-600">FAQs</button>
-          <button type="button" data-footer-target="forms" class="footer-pill-button text-slate-600">Forms</button>
-          <button type="button" data-footer-target="learn" class="footer-pill-button text-slate-600">Learn</button>
+          <a href="#faq" data-footer-target="faq" class="footer-pill-button text-slate-600">FAQs</a>
+          <a href="#forms" data-footer-target="forms" class="footer-pill-button text-slate-600">Forms</a>
+          <a href="#learn" data-footer-target="learn" class="footer-pill-button text-slate-600">Learn</a>
         </nav>
       </div>
 
       <div id="footerContent" class="mt-5 hidden border-t border-slate-200 pt-5">
-        <section data-footer-panel="about" class="footer-panel hidden">
+        <section id="about" data-footer-panel="about" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">About</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">What this snapshot is meant to do</h3>
+          <h3 class="mt-1 text-lg font-bold text-slate-700">About the Parcel Guide</h3>
           <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
-	            This snapshot brings property records, current value information, final tax history, where the bill goes, market context, and countywide benchmarks into one guided review. It is meant to help taxpayers understand the available information, notice what is still pending, and decide whether anything needs a closer look.
+            The Parcel Guide walks through one property in a clear order. It starts with the parcel record, then explains assessed value, tax context, market context, equalization signals, and review items. Each step is paced to build understanding before adding more detail, with source context and plain-English terms nearby.
           </p>
         </section>
 
-        <section data-footer-panel="terms" class="footer-panel hidden">
+        <section id="terms" data-footer-panel="terms" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Terms of Use</p>
-	          <h3 class="mt-1 text-lg font-bold text-slate-700">Important limits</h3>
-	          <div class="mt-2 grid gap-3 text-sm leading-6 text-slate-600 md:grid-cols-3">
-	            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">This demonstration uses sample data and is not an official county record, certified tax statement, appeal filing, or legal determination.</p>
-	            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Final tax bills depend on certified levies, budgets, credits, exemptions, and other official adjustments that may not appear in current-year assessment data.</p>
-	            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Do not use this prototype as a substitute for official county records, notices, filing requirements, or deadlines.</p>
-	          </div>
+          <h3 class="mt-1 text-lg font-bold text-slate-700">Use of this site</h3>
+          <div class="mt-2 grid gap-3 text-sm leading-6 text-slate-600 md:grid-cols-3">
+            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">This site is provided for public information and general guidance. It is not a legal notice, tax bill, valuation decision, filing system, or substitute for official records.</p>
+            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Information may be incomplete, pending, delayed, or updated after publication. Official county, state, court, or agency records control when accuracy, deadlines, rights, or obligations matter.</p>
+            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Links to outside sites are provided for convenience. Those sites have their own terms, privacy practices, forms, and instructions. Use this site lawfully and do not rely on it as professional advice.</p>
+          </div>
         </section>
 
-        <section data-footer-panel="privacy" class="footer-panel hidden">
+        <section id="privacy" data-footer-panel="privacy" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Privacy Policy</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Privacy and data handling</h3>
-          <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
-	            This demonstration uses static sample data. It does not submit forms, store typed information outside this browser, or upload files. Before any public release, the county or project sponsor should clearly explain data collection, retention, public-record treatment, form delivery, and outside service providers.
-          </p>
+          <h3 class="mt-1 text-lg font-bold text-slate-700">Privacy and public information</h3>
+          <div class="mt-2 grid gap-3 text-sm leading-6 text-slate-600 md:grid-cols-3">
+            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">A civic website may collect basic usage data, such as browser, device, page visit, and diagnostic information, to operate, secure, and improve the site.</p>
+            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">If you submit information through a form, email, or support channel, it may be used to respond to your request and may be subject to applicable public-records, retention, or disclosure laws.</p>
+            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">This site should not sell personal information. Information may be shared with service providers, official agencies, or others when needed to operate the site, respond to requests, or comply with law.</p>
+          </div>
         </section>
 
-        <section data-footer-panel="accessibility" class="footer-panel hidden">
+        <section id="accessibility" data-footer-panel="accessibility" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Accessibility</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Accessibility statement</h3>
           <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
@@ -429,25 +432,25 @@
           </p>
         </section>
 
-        <section data-footer-panel="faq" class="footer-panel hidden">
+        <section id="faq" data-footer-panel="faq" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">FAQs</p>
           <h3 id="footerFaqTitle" class="mt-1 text-lg font-bold text-slate-700">Property record FAQs</h3>
           <div id="footerFaqContent" class="mt-4 grid gap-3 lg:grid-cols-2"></div>
         </section>
 
-        <section data-footer-panel="forms" class="footer-panel hidden">
+        <section id="forms" data-footer-panel="forms" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Forms</p>
           <h3 id="footerFormsTitle" class="mt-1 text-lg font-bold text-slate-700">Property record forms</h3>
           <div id="footerFormsContent" class="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-5"></div>
         </section>
 
-        <section data-footer-panel="learn" class="footer-panel hidden">
+        <section id="learn" data-footer-panel="learn" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Learn</p>
           <h3 id="footerLearnTitle" class="mt-1 text-lg font-bold text-slate-700">Property record terms</h3>
           <div id="footerLearnContent" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
         </section>
 
-        <section data-footer-panel="contact" class="footer-panel hidden">
+        <section id="contact" data-footer-panel="contact" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Contact</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Contact and support</h3>
           <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
@@ -458,11 +461,11 @@
     </section>
 
     <nav aria-label="Site links" class="footer-site-nav">
-      <button type="button" data-footer-target="about" class="footer-site-link text-slate-600">About</button>
-      <button type="button" data-footer-target="terms" class="footer-site-link text-slate-600">Terms of Use</button>
-      <button type="button" data-footer-target="privacy" class="footer-site-link text-slate-600">Privacy Policy</button>
-      <button type="button" data-footer-target="accessibility" class="footer-site-link text-slate-600">Accessibility</button>
-      <button type="button" data-footer-target="contact" class="footer-site-link text-slate-600">Contact</button>
+      <a href="#about" data-footer-target="about" class="footer-site-link text-slate-600">About</a>
+      <a href="#terms" data-footer-target="terms" class="footer-site-link text-slate-600">Terms of Use</a>
+      <a href="#privacy" data-footer-target="privacy" class="footer-site-link text-slate-600">Privacy Policy</a>
+      <a href="#accessibility" data-footer-target="accessibility" class="footer-site-link text-slate-600">Accessibility</a>
+      <a href="#contact" data-footer-target="contact" class="footer-site-link text-slate-600">Contact</a>
       <button type="button" data-assessors-report class="footer-site-link footer-report-link text-slate-600">Assessor&rsquo;s Report</button>
     </nav>
   </footer>

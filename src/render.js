@@ -1365,7 +1365,7 @@ function recordCardSource(recordCard) {
     return disclosure("What source record is this based on?", recordCard.recordStatus || "Pending", `
       <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
         <p class="font-semibold text-slate-700">${escapeHtml(recordCard.source || "Source record pending")}</p>
-	        <p class="mt-1">${escapeHtml(recordCard.notes || "Detailed record-card fields are not available in this demonstration record.")}</p>
+	        <p class="mt-1">${escapeHtml(recordCard.notes || "Detailed record-card fields are not available in this guide.")}</p>
       </div>
     `);
   }

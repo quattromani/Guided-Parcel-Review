@@ -965,10 +965,14 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .footer-pill-button,
 .footer-site-link {
+  align-items: center;
   border-radius: 999px;
+  display: inline-flex;
   font-size: 0.875rem;
   font-weight: 700;
+  justify-content: center;
   padding: 0.4rem 0.75rem;
+  text-decoration: none;
   transition: background-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
   white-space: normal;
 }
@@ -3342,10 +3346,48 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .civic-notice-metric dt {
+  align-items: flex-start;
   color: rgb(var(--color-slate-500));
+  display: flex;
   font-size: 0.72rem;
   font-weight: 800;
+  gap: 0.5rem;
+  justify-content: space-between;
+  line-height: 1.25;
   text-transform: uppercase;
+}
+
+.civic-notice-pill {
+  align-items: center;
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 999px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.66rem;
+  font-weight: 850;
+  justify-content: center;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  padding: 0.28rem 0.48rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.civic-notice-pill-pending {
+  background: rgb(var(--color-yellow) / 0.12);
+  border-color: rgb(var(--color-yellow) / 0.35);
+  color: rgb(var(--color-yellow));
+}
+
+.civic-notice-pill-current {
+  background: rgb(var(--color-secondary) / 0.1);
+  border-color: rgb(var(--color-secondary) / 0.25);
+  color: rgb(var(--color-secondary));
+}
+
+.civic-notice-pill-prior {
+  background: rgb(var(--surface-muted));
+  color: rgb(var(--color-slate-500));
 }
 
 .civic-notice-metric dd {

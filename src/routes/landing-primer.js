@@ -29,10 +29,22 @@ function displayMoneyWithFallback(value, fallbackValue, fallbackYear, options = 
   return `<span class="pending-value">Pending</span>`;
 }
 
-function noticeMetric(label, value, note = "", layout = "pair") {
+function noticeMetric(label, value, options = {}) {
+  const normalized = typeof options === "string"
+    ? { note: options }
+    : options;
+  const {
+    note = "",
+    layout = "pair",
+    pill = null
+  } = normalized;
+
   return `
     <div class="civic-notice-metric civic-notice-metric-${layout}">
-      <dt>${escapeHtml(label)}</dt>
+      <dt>
+        <span>${escapeHtml(label)}</span>
+        ${pill ? `<span class="civic-notice-pill civic-notice-pill-${escapeHtml(pill.tone || "default")}">${escapeHtml(pill.label)}</span>` : ""}
+      </dt>
       <dd>${value}</dd>
       ${note ? `<p>${escapeHtml(note)}</p>` : ""}
     </div>
@@ -304,8 +316,17 @@ function installLandingPrimer(data) {
           ${noticeMetric("Parcel ID", escapeHtml(notice.parcelId))}
           ${noticeMetric("Property class", escapeHtml(notice.propertyClass))}
           ${noticeMetric("Tax district", escapeHtml(notice.taxDistrict))}
-          ${noticeMetric("Current assessed value", displayMoneyWithFallback(notice.currentAssessedValue, notice.latestKnownValue, notice.latestKnownValueYear), `Tax year ${notice.taxYear}`, "full")}
-          ${noticeMetric("Prior assessed value", formatNullableMoney(notice.priorAssessedValue), notice.priorAssessedValueYear ? `Latest known year ${notice.priorAssessedValueYear}` : "", "full")}
+          ${noticeMetric("Current assessed value", displayMoneyWithFallback(notice.currentAssessedValue, notice.latestKnownValue, notice.latestKnownValueYear), {
+            layout: "full",
+            pill: {
+              label: `${notice.taxYear}`,
+              tone: notice.currentAssessedValue === null || notice.currentAssessedValue === undefined ? "pending" : "current"
+            }
+          })}
+          ${noticeMetric("Prior assessed value", formatNullableMoney(notice.priorAssessedValue), {
+            layout: "full",
+            pill: notice.priorAssessedValueYear ? { label: `${notice.priorAssessedValueYear}`, tone: "prior" } : null
+          })}
           ${noticeMetric("Dollar change", formatNullableMoney(notice.dollarChange))}
           ${noticeMetric("Percent change", formatNullablePercent(notice.percentChange))}
           ${noticeMetric("Land value", displayMoneyWithFallback(notice.landValue, notice.latestKnownLandValue, notice.latestKnownValueYear, { compactLatest: true }))}
@@ -314,7 +335,7 @@ function installLandingPrimer(data) {
           ${noticeMetric(notice.reviewDeadlineLabel, escapeHtml(notice.reviewDeadline))}
         </dl>
 
-        <p class="civic-source-note">${escapeHtml(notice.statusNote)} Source: ${escapeHtml(notice.source)}. Official records and deadlines should be confirmed with the county.</p>
+        <p class="civic-source-note">Source: ${escapeHtml(notice.source)}. Official records and deadlines should be confirmed with the county.</p>
       </section>
     </article>
 
@@ -322,7 +343,6 @@ function installLandingPrimer(data) {
       <div>
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
         <h3 class="mt-1 text-lg font-bold text-slate-700">First, check whether the record describes the property correctly.</h3>
-        <p class="mt-1 text-sm text-slate-600">Assessment and tax information is easier to understand after the property facts are clear.</p>
       </div>
       <button type="button" data-guided-next="property-record" class="next-step-button">Go to Property Record</button>
     </article>

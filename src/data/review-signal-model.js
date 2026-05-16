@@ -29,7 +29,7 @@ export function buildReviewSignalModel(propertyData, recordCard) {
       "informational",
       "Current assessment year is pending",
       `${propertyData.snapshotYear} value data is not listed in the current static property history.`,
-      "Use the latest known final value for orientation, and confirm current-year values with official county records when they are published."
+      "Confirm current-year values with official county records when they are published."
     ));
   }
 

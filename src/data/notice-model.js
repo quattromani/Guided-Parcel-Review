@@ -146,9 +146,6 @@ export function buildAssessmentNoticeModel(propertyData, recordCard, calendar) {
     latestKnownTotalValue: latestKnownBreakdown.total,
     reviewDeadline: deadline.label,
     reviewDeadlineLabel: deadline.sourceLabel,
-    source: recordCard?.source?.displayCitation ?? "Property record card",
-    statusNote: currentAssessedValue === null
-      ? `The ${snapshotYear} assessed value is not listed in this demonstration record. The latest known final value is shown for orientation.`
-      : `The ${snapshotYear} assessed value is available in this demonstration record.`
+    source: recordCard?.source?.displayCitation ?? "Property record card"
   };
 }

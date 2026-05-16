@@ -269,7 +269,7 @@ The design must serve stressed users on phones first.
 Mobile strategy:
 
 - Make the NOV-like snapshot readable without horizontal scrolling.
-- Use stacked label/value rows for assessment notice data under 640px.
+- Use semantic paired label/value rows for compact assessment notice data under 640px; keep explanation-heavy value/status rows full-width.
 - Keep navigation as a compact stepper or "current step + menu" control, not a long horizontal path.
 - Keep one main question visible near the top of each view.
 - Avoid chart-first mobile pages. Present takeaway text before canvas visuals.
@@ -302,6 +302,10 @@ Disclosure rules:
 - Keep protest filing as an official outbound reference, not an in-product preparation workflow.
 - Avoid turning "more data" into a visual reward.
 - Every disclosure label should describe user value, not internal data type.
+- TODO: Consider progressive disclosure for official forms on mobile: show the top three most relevant forms first, then reveal the full official-forms list with a "Show all forms" control. Treat this as interaction refinement, not a filing workflow.
+- TODO: Explore an assessment glossary as a non-mainline reference surface for plain-English terms. Prefer a static non-nav glossary page/view with clear "return to where you were" behavior over a dense modal if the glossary grows beyond a short route-level list.
+- TODO: Refine the Learn footer on mobile with voluntary disclosure: use drawer/chevron guidance or a "See more terms" pattern so only the first few relevant definitions are visible by default, while preserving a path to the fuller glossary/reference view.
+- TODO: Define analytics before launch. Use one Google tag or Google Tag Manager path, make consent/public-sector privacy decisions explicit, and track guided route/hash changes as virtual page views or events so single-page navigation, footer policy panels, assessment-date opens, and outbound official-form clicks are measurable without double-counting.
 
 Example:
 
