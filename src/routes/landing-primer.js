@@ -36,6 +36,39 @@ function noticeMetric(label, value, note = "") {
   `;
 }
 
+function mapSearchHref(address) {
+  return `https://maps.apple.com/?q=${encodeURIComponent(address)}`;
+}
+
+function nativeMapHref(address) {
+  const query = encodeURIComponent(address);
+
+  return {
+    android: `geo:0,0?q=${query}`,
+    ios: `maps://?q=${query}`,
+    web: mapSearchHref(address)
+  };
+}
+
+function installNativeMapLinks(root) {
+  root.querySelectorAll("[data-native-map-query]").forEach(link => {
+    link.addEventListener("click", event => {
+      const query = link.dataset.nativeMapQuery;
+      if (!query) return;
+
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+        || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const href = nativeMapHref(query);
+
+      if (!isIOS && !isAndroid) return;
+
+      event.preventDefault();
+      window.location.href = isIOS ? href.ios : href.android;
+    });
+  });
+}
+
 function statusToneClass(status) {
   return `${status ?? ""}`.toLowerCase() === "pending" ? "notice-status-pill-pending" : "";
 }
@@ -233,6 +266,7 @@ function installLandingPrimer(data) {
   const mailingAddressLines = notice.displayMailingAddressLines?.length
     ? notice.displayMailingAddressLines
     : [mailingAddress];
+  const mapHref = nativeMapHref(mailingAddress);
   const firstPanel = document.querySelector('[data-guided-panel="your-property"]');
   const section = document.createElement("section");
   section.dataset.guidedPanel = "landing-primer";
@@ -243,7 +277,9 @@ function installLandingPrimer(data) {
       <div class="civic-landing-intro">
         <p class="guided-kicker">Assessment snapshot</p>
         <h2 class="civic-mailing-address">
-          ${mailingAddressLines.map(line => `<span>${escapeHtml(line)}</span>`).join("")}
+          <a class="civic-map-address" href="${escapeHtml(mapHref.web)}" target="_blank" rel="noreferrer" data-native-map-query="${escapeHtml(mailingAddress)}" aria-label="Open ${escapeHtml(mailingAddress)} in Maps">
+            ${mailingAddressLines.map(line => `<span>${escapeHtml(line)}</span>`).join("")}
+          </a>
         </h2>
         <p>Property, value, and tax records are easier to review when the basic facts come first. Begin by confirming the property and noticing which information is final, pending, or available only as context.</p>
       </div>
@@ -290,6 +326,7 @@ function installLandingPrimer(data) {
   `;
 
   firstPanel?.before(section);
+  installNativeMapLinks(section);
 }
 
 function installReviewSignalsPanel(data) {
