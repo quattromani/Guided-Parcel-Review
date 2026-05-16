@@ -1958,6 +1958,65 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   padding-top: 1rem;
 }
 
+.market-group-sales-panel {
+  background: rgb(var(--surface-muted));
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+}
+
+.market-group-sales-heading {
+  display: grid;
+  gap: 1rem;
+}
+
+.market-group-sales-heading h3 {
+  color: rgb(var(--brand-ink));
+  font-size: 1.1rem;
+  font-weight: 850;
+  line-height: 1.2;
+  margin-top: 0.2rem;
+}
+
+.market-group-sales-heading p:not(.guided-kicker) {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin-top: 0.35rem;
+  max-width: 48rem;
+}
+
+.market-group-sales-callout {
+  align-content: center;
+  background: white;
+  border-radius: 0.5rem;
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+  padding: 0.85rem 1rem;
+  box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.22);
+}
+
+.market-group-sales-callout span {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.market-group-sales-callout strong {
+  color: rgb(var(--brand-ink));
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.market-group-sales-chart {
+  margin-top: 1rem;
+  min-height: 16rem;
+  min-width: 0;
+}
+
 .related-panel-section {
   border-top: 1px solid rgb(var(--border-muted));
   margin-top: 1.25rem;
@@ -2064,6 +2123,11 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 @media (min-width: 768px) {
+  .market-group-sales-heading {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr) minmax(11rem, auto);
+  }
+
   .market-reading-steps {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

@@ -42,6 +42,7 @@ let assessmentBandCharts = [];
 let countyComparisonIndexedChart;
 let countyComparisonRateChart;
 let equalizationSalePriceChart;
+let marketGroupSalesChart;
 let marketPositionScatterChart;
 let marketSignalCharts = [];
 let taxBurdenPatternChart;
@@ -1820,6 +1821,153 @@ function renderMarketSignalCards(selected, summary, standards, context = {}) {
   renderMarketSignalCharts(cards);
 }
 
+function renderMarketGroupSalesDistribution(selected, classStats) {
+  const container = document.getElementById("marketGroupSalesDistribution");
+  if (!container || !classStats?.groups?.length) return;
+
+  const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+  const groupKind = classStats.classKey === "agricultural" ? "market area" : "valuation group";
+  const groupKindPlural = classStats.classKey === "agricultural" ? "market areas" : "valuation groups";
+  const rows = [...classStats.groups]
+    .filter(group => Number.isFinite(Number(group.count)))
+    .sort((a, b) => Number(b.count) - Number(a.count));
+  const total = Number(classStats.countywide?.count) || rows.reduce((sum, row) => sum + Number(row.count || 0), 0);
+  const selectedId = String(selected?.id ?? selected?.group ?? "");
+  const selectedRow = rows.find(row => String(row.id ?? row.group) === selectedId);
+  const selectedLabel = selectedRow?.shortLabel ?? selectedRow?.descriptiveLabel ?? selectedRow?.label ?? selected?.label ?? "Selected group";
+  const selectedShare = total ? Number(selectedRow?.count || 0) / total : 0;
+  const chartHeight = Math.max(260, rows.length * 28 + 72);
+  const sourceText = getMarketPositionSourceAnchor(classStats);
+
+  marketGroupSalesChart?.destroy();
+
+  container.innerHTML = `
+    <details class="mobile-support-disclosure market-group-sales-disclosure" ${isDesktop ? "open" : ""}>
+      <summary class="mobile-support-toggle">
+        <span>See sales by ${escapeHtml(groupKind)}</span>
+        <span class="mobile-support-chevron" aria-hidden="true"></span>
+      </summary>
+      <section class="mobile-support-content market-group-sales-panel" aria-labelledby="marketGroupSalesTitle">
+        <div class="market-group-sales-heading">
+          <div>
+            <p class="guided-kicker">Evidence depth</p>
+            <h3 id="marketGroupSalesTitle">Sales by ${escapeHtml(groupKind)}</h3>
+            <p>Qualified sales are not spread evenly across local comparison groups. This shows how much of the class study is coming from each ${escapeHtml(groupKind)}.</p>
+          </div>
+          <div class="market-group-sales-callout">
+            <span>${escapeHtml(selectedLabel)}</span>
+            <strong>${escapeHtml(integer.format(Number(selectedRow?.count || 0)))}</strong>
+            <span>${escapeHtml(formatPercentShare(selectedShare))} of class sales</span>
+          </div>
+        </div>
+        <div class="market-group-sales-chart" style="height: ${chartHeight}px">
+          <canvas id="marketGroupSalesChart"></canvas>
+        </div>
+        <p class="chart-source">${escapeHtml(sourceText)}</p>
+      </section>
+    </details>
+  `;
+
+  const canvas = document.getElementById("marketGroupSalesChart");
+  if (!canvas) return;
+
+  const selectedColor = visualizationTheme.roles.equalization;
+  const selectedBorderColor = chartColors.equalization;
+  const otherColor = colorAlpha(visualizationTheme.roles.comparison, 0.16);
+  const otherBorderColor = colorAlpha(visualizationTheme.roles.comparison, 0.72);
+
+  marketGroupSalesChart = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: rows.map(row => marketGroupSalesAxisLabel(row, classStats.classKey)),
+      datasets: [{
+        label: "Qualified sales",
+        data: rows.map(row => Number(row.count || 0)),
+        backgroundColor: rows.map(row =>
+          String(row.id ?? row.group) === selectedId ? colorAlpha(selectedColor, 0.26) : otherColor
+        ),
+        borderColor: rows.map(row =>
+          String(row.id ?? row.group) === selectedId ? selectedBorderColor : otherBorderColor
+        ),
+        borderWidth: rows.map(row => String(row.id ?? row.group) === selectedId ? 2 : 1),
+        borderRadius: 5,
+        barPercentage: 0.78,
+        categoryPercentage: 0.82
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "nearest", intersect: true },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: context => rows[context[0].dataIndex]?.descriptiveLabel
+              ?? rows[context[0].dataIndex]?.label
+              ?? "",
+            label: context => {
+              const row = rows[context.dataIndex];
+              const count = Number(row?.count || 0);
+              const share = total ? count / total : 0;
+              return `${integer.format(count)} qualified sales (${formatPercentShare(share)})`;
+            },
+            afterLabel: context => {
+              const row = rows[context.dataIndex];
+              return [
+                `Median: ${formatRatio(row?.median)}`,
+                `COD: ${formatRatio(row?.cod)}`,
+                `PRD: ${formatRatio(row?.prd)}`
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          grid: { color: colorAlpha(visualizationTheme.neutrals.border, 0.72) },
+          title: {
+            display: true,
+            text: "Qualified sales"
+          },
+          ticks: {
+            precision: 0,
+            callback: value => integer.format(Number(value))
+          }
+        },
+        y: {
+          grid: { display: false },
+          ticks: {
+            autoSkip: false
+          }
+        }
+      }
+    }
+  });
+
+  const disclosure = container.querySelector(".market-group-sales-disclosure");
+  disclosure?.addEventListener("toggle", () => {
+    if (!disclosure.open) return;
+    window.requestAnimationFrame(() => marketGroupSalesChart?.resize());
+  });
+}
+
+function marketGroupSalesAxisLabel(row, classKey = "residential") {
+  if (classKey === "agricultural") {
+    return row.label ?? row.shortLabel ?? `Area ${row.id ?? row.group}`;
+  }
+
+  return `VG ${row.id ?? row.group}`;
+}
+
+function formatPercentShare(value) {
+  return Number.isFinite(value)
+    ? `${(value * 100).toFixed(value >= 0.1 ? 0 : 1)}%`
+    : "0%";
+}
+
 function renderMarketNarrative(selected, summary, classStats, medianRange, isParcelGroup = true) {
   const narrative = document.getElementById("marketNarrative");
   if (!narrative) return;
@@ -2300,6 +2448,7 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
       ...signalContext,
       classStats
     });
+    renderMarketGroupSalesDistribution(selected, classStats);
     renderMarketNarrative(selected, countywide, classStats, medianRange, isParcelGroup);
     renderMarketPositionScatter(selected, classStats, iaaoStandards, update);
     renderMarketPriceSummary(selected, countywide);
