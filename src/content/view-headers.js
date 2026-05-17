@@ -1,8 +1,8 @@
 const viewHeaderContent = {
   start: {
     eyebrow: "Guided Parcel Review",
-    title: "Select a sample property to begin",
-    description: "Choose a residential, agricultural, or commercial sample parcel from the property switcher to start the Guided Parcel Review.",
+    title: "Start with a sample parcel",
+    description: "The property switcher includes Saline and Gage sample records for exploring the review flow.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "your-property": {

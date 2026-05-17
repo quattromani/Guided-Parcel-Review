@@ -61,17 +61,21 @@ export function renderStartPage(propertySwitcherContext = {}) {
   start.innerHTML = `
     <article class="guided-start-card" aria-labelledby="guidedStartTitle">
       <div class="guided-start-copy">
-        <p class="guided-kicker">Ready when you choose a record</p>
-        <h2 id="guidedStartTitle">Select a Sample Property to Begin</h2>
-        <p>Choose a residential, agricultural, or commercial sample parcel from the property switcher in the header to start the Guided Parcel Review.</p>
+        <p class="guided-kicker">Ready for review</p>
+        <h2 id="guidedStartTitle">Preview the review workspace</h2>
+        <p>Each sample opens a full parcel view with record details, value history, tax context, market charts, and guided review steps.</p>
       </div>
 
-      <div class="guided-start-callout" aria-label="Where to begin">
-        <p class="guided-start-callout-label">Start here</p>
-        <p>Use the property switcher above. After you select a sample parcel, this page will load the record, value history, tax context, charts, and guided review steps.</p>
+      <div class="guided-start-callout" aria-label="Sample record coverage">
+        <p class="guided-start-callout-label">Sample coverage</p>
+        <p>Residential, agricultural, and commercial examples are available, with Gage samples grouped separately from the Saline example.</p>
       </div>
 
       <div class="guided-start-grid" aria-label="What the review covers">
+        <section>
+          <h3>Parcel context</h3>
+          <p>Review parcel facts, classification, land details, valuation groups, and practical items to verify.</p>
+        </section>
         <section>
           <h3>Value and assessment history</h3>
           <p>See how the sample property's assessed value has moved and which years are still pending or finalized.</p>
@@ -79,10 +83,6 @@ export function renderStartPage(propertySwitcherContext = {}) {
         <section>
           <h3>Tax impact</h3>
           <p>Connect value movement with levy, credits, effective tax rate, and the latest available tax bill context.</p>
-        </section>
-        <section>
-          <h3>Parcel context</h3>
-          <p>Review parcel facts, classification, land details, valuation groups, and practical items to verify.</p>
         </section>
       </div>
 
@@ -602,7 +602,9 @@ function propertySwitcherMarkup(propertySwitcher, snapshotModel) {
         aria-label="Switch property record"
       >
         ${hasActiveProperty ? "" : `<option value="" selected>Choose a sample property...</option>`}
-        ${groups.map(group => `
+        ${groups.map(group => group.type === "heading" ? `
+          <option value="" disabled>${escapeHtml(group.label)}</option>
+        ` : `
           <optgroup label="${escapeHtml(group.label)}">
             ${group.options.map(option => `
               <option value="${escapeHtml(option.id)}"${option.selected ? " selected" : ""}>${escapeHtml(option.label)}</option>
@@ -629,9 +631,17 @@ function propertySwitcherOptionGroups(propertySwitcher, snapshotModel) {
     groups.get(groupLabel).push(option);
   });
 
-  return [...groups.entries()]
+  const optionGroups = [...groups.entries()]
     .map(([label, groupOptions]) => ({ label, options: groupOptions }))
     .filter(group => group.options.length);
+  const salineGroups = optionGroups.filter(group => group.label === "Saline County sample");
+  const gageGroups = optionGroups.filter(group => group.label !== "Saline County sample");
+
+  return [
+    ...salineGroups,
+    ...(gageGroups.length ? [{ type: "heading", label: "Gage sample properties", options: [] }] : []),
+    ...gageGroups
+  ];
 }
 
 function propertySwitcherOptions(propertySwitcher, snapshotModel) {
