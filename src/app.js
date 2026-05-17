@@ -47,6 +47,15 @@ import { initAssessmentDatesPanel } from "./assessment-dates.js";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 
+function propertyIdentityKey(value = {}) {
+  return `${value.parcelId
+    ?? value.propertyId
+    ?? value.id
+    ?? value.parcel?.parcelId
+    ?? value.property?.parcelId
+    ?? ""}`.trim();
+}
+
 function syncLayoutViewportWidth() {
   document.documentElement.style.setProperty("--layout-viewport-width", `${document.documentElement.clientWidth}px`);
 }
@@ -173,6 +182,7 @@ function initGuidedNavigation(data) {
   const labelsHiddenProgressQuery = window.matchMedia("(max-width: 899px)");
   const finalRouteId = primarySectionIds.at(-1);
   const finalRoutePanelId = progressRoutes.at(-1)?.panelId ?? finalRouteId;
+  let activePropertyKey = propertyIdentityKey(data.parcel);
   let taxDistrictAuthoritiesPromise;
   let taxDistrictAuthoritiesRendered = false;
   let currentGuidedRouteId = null;
@@ -333,6 +343,19 @@ function initGuidedNavigation(data) {
     window.requestAnimationFrame(completeFinalStepIfAtPageBottom);
   }
 
+  function resetGuidedReviewForProperty(property = {}) {
+    const nextPropertyKey = propertyIdentityKey(property);
+    if (nextPropertyKey && nextPropertyKey === activePropertyKey) return;
+
+    activePropertyKey = nextPropertyKey || activePropertyKey;
+    visitedSteps.clear();
+    unlockedSteps.clear();
+    if (primarySectionIds[0]) unlockedSteps.add(primarySectionIds[0]);
+    taxDistrictAuthoritiesRendered = false;
+    currentGuidedRouteId = null;
+    selectStep(primarySectionIds[0], { scrollTop: true, updateHash: true });
+  }
+
   function selectStep(selectedRoute, options = {}) {
     const { scrollTop = true, updateHash = false } = options;
     const route = resolveRoute(selectedRoute) ?? routeList[0];
@@ -459,6 +482,9 @@ function initGuidedNavigation(data) {
   window.addEventListener("scroll", queueFinalStepCompletionCheck, { passive: true });
   window.addEventListener("resize", queueFinalStepCompletionCheck);
   window.addEventListener("hashchange", selectStepFromHash);
+  window.addEventListener("property-snapshot:property-selected", event => {
+    resetGuidedReviewForProperty(event.detail?.property ?? event.detail ?? {});
+  });
   if (hashTarget && document.getElementById(hashTarget)) {
     window.setTimeout(() => {
       const target = document.getElementById(hashTarget);

@@ -166,9 +166,9 @@ function renderTaxHistoryShell() {
   const container = document.getElementById("tax-history-panel");
   if (!container) return;
 
-  container.className = "data-split-view grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(320px,2fr)]";
+  container.className = "tax-history-pair grid gap-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:grid-cols-[minmax(0,3fr)_minmax(320px,2fr)]";
   container.innerHTML = `
-    <article id="tax-history" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+    <article id="tax-history" class="tax-history-detail-panel">
       <h2 class="text-xl font-bold text-slate-700">How did levy, credits, and net taxes move?</h2>
       <p class="mt-1 text-sm text-slate-600">After equalization frames the value base, finalized statement years show how levy, credits, exemptions, and district boundaries become the final bill.</p>
       <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
@@ -190,7 +190,7 @@ function renderTaxHistoryShell() {
       <p id="taxHistorySourceNote" class="mt-2 text-xs leading-5 text-slate-500"></p>
     </article>
 
-    <article id="etr-trend" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+    <article id="etr-trend" class="tax-history-rate-panel">
 	      <h2 class="text-xl font-bold text-slate-700">How much tax was paid for each dollar of value?</h2>
 	      <p class="mt-1 text-sm text-slate-600">Effective tax rate compares the final tax bill with assessed value, making years easier to compare.</p>
       <div class="mt-4 h-64 sm:h-72">
@@ -275,7 +275,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       <h3 id="assessmentUnifiedViewTitle" class="mt-1 text-lg font-bold text-slate-700">How do the raw measures come together?</h3>
       <p class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">The table keeps the reported values by year. The chart normalizes COD, PRD, and COV to their own bands so their movement can be compared without mixing raw scales.</p>
     </section>
-    <section class="data-split-view related-panel-section grid gap-6 lg:grid-cols-5">
+    <section class="data-split-view related-panel-section equalization-unified-section grid gap-6 lg:grid-cols-5">
       <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
 	        <h3 class="text-lg font-bold text-slate-700">How do the statistical measures come together?</h3>
 	        <p id="assessmentAccuracyConvergenceNote" class="mt-1 text-sm text-slate-600">COD, PRD, and COV are normalized to their own bands so their relative movement can be read together.</p>
@@ -284,7 +284,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
           <canvas id="assessmentAccuracyChart"></canvas>
         </div>
       </article>
-      <details class="mobile-support-disclosure equalization-support-disclosure rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2" data-mobile-support${supportOpen}>
+      <details class="mobile-support-disclosure equalization-support-disclosure equalization-year-table-panel rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2" data-mobile-support${supportOpen}>
         <summary class="mobile-support-toggle">
           <span>See reported values table</span>
           <span class="mobile-support-chevron" aria-hidden="true"></span>
@@ -311,19 +311,19 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       </details>
     </section>
 
-    <details class="mobile-support-disclosure equalization-support-disclosure related-panel-section" data-mobile-support${supportOpen}>
+    <details class="mobile-support-disclosure equalization-support-disclosure equalization-local-section related-panel-section" data-mobile-support${supportOpen}>
       <summary class="mobile-support-toggle">
         <span>See local market position</span>
         <span class="mobile-support-chevron" aria-hidden="true"></span>
       </summary>
       <div class="mobile-support-content" aria-labelledby="equalizationLocalPositionTitle">
-      <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <div class="equalization-local-heading flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Local starting point</p>
           <h3 id="equalizationLocalPositionTitle" class="text-lg font-bold text-slate-700">Start with the local group</h3>
           <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Equalization reads outward from the property record into its valuation group or market area, then into the class and countywide study. Choose the local group first, then compare how it sits against the broader county pattern.</p>
         </div>
-        <label class="min-w-72 text-sm font-semibold text-slate-700">
+        <label class="equalization-area-control min-w-72 text-sm font-semibold text-slate-700">
           Want to see another area?
           <select id="equalizationMarketAreaSelect" data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
         </label>
@@ -352,7 +352,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       </div>
     </details>
 
-    <details class="mobile-support-disclosure equalization-support-disclosure related-panel-section" data-mobile-support${supportOpen}>
+    <details class="mobile-support-disclosure equalization-support-disclosure equalization-sales-section related-panel-section" data-mobile-support${supportOpen}>
       <summary class="mobile-support-toggle">
         <span>See class sales makeup</span>
         <span class="mobile-support-chevron" aria-hidden="true"></span>
@@ -472,7 +472,6 @@ export function renderViewHeader(view = "your-property", snapshotModel) {
   const section = snapshotModel?.sections?.find(item => item.id === view);
   const noticeAddress = snapshotModel?.viewModels?.notice?.displayAddress
     || snapshotModel?.viewModels?.notice?.situsAddress;
-  const showLookupPlaceholder = view === "landing-primer";
   const hasLandingAddressTitle = view === "landing-primer" && noticeAddress;
   const content = section
     ? {
@@ -509,7 +508,7 @@ export function renderViewHeader(view = "your-property", snapshotModel) {
           alt="${content.imageAlt}"
           class="hidden h-20 w-auto shrink-0 opacity-80 sm:block grayscale"
         />
-        ${showLookupPlaceholder ? disabledParcelLookupMarkup() : ""}
+        ${disabledParcelLookupMarkup()}
       </div>
     </div>
   `;

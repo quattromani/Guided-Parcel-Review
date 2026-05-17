@@ -20,9 +20,20 @@ import {
   getSelectedMarketGroup
 } from "./market-stats.js";
 import { buildReviewSignalModel } from "./data/review-signal-model.js";
-import { escapeHtml } from "./utils/html.js";
-
-const REPORT_LAYER_ID = "assessorsReportPrintLayer";
+import {
+  addReportPage,
+  createReportContext,
+  downloadPdfBytes,
+  drawKeyValueRows,
+  drawLineChart,
+  drawPanel,
+  drawRule,
+  drawSectionTitle,
+  drawTable,
+  drawText,
+  drawVerticalRule,
+  drawWrappedText
+} from "./reports/pdf-report-kit.js";
 
 export function initAssessorsReport({
   data,
@@ -48,19 +59,16 @@ export function initAssessorsReport({
         ...context,
         taxDistrictAuthorities
       });
-      const layer = renderAssessorsReport(reportModel);
 
-      await waitForReportReady(layer);
-      button.textContent = defaultLabel;
-      button.disabled = false;
-      button.setAttribute("aria-busy", "false");
-
-      window.addEventListener("afterprint", () => {
-        layer.remove();
+      const bytes = await generateAssessorsReportPdf(reportModel);
+      downloadPdfBytes(bytes, assessorsReportFilename(data));
+      button.textContent = "Report downloaded";
+      window.setTimeout(() => {
+        button.textContent = defaultLabel;
+        button.disabled = false;
+        button.setAttribute("aria-busy", "false");
         activeElement?.focus?.();
-      }, { once: true });
-
-      window.print();
+      }, 1400);
     } catch (error) {
       console.error(error);
       button.textContent = defaultLabel;
@@ -93,389 +101,523 @@ export function buildAssessorsReportModel(data, recordCard, valuationGroups, con
   };
 }
 
-function renderAssessorsReport(model) {
-  document.getElementById(REPORT_LAYER_ID)?.remove();
+export async function generateAssessorsReportPdf(model) {
+  const baseCtx = await createReportContext({
+    title: `${model.data.parcel?.situsAddress ?? "Property"} Assessor's Supplemental Report`
+  });
 
-  const layer = document.createElement("section");
-  layer.id = REPORT_LAYER_ID;
-  layer.className = "assessors-report-print-layer";
-  layer.setAttribute("aria-label", "Assessor's Supplemental Property Report");
-  layer.innerHTML = reportHtml(model);
-  document.body.append(layer);
+  drawAssessorRecordPage(addReportPage(baseCtx), model);
+  drawAssessorValuePage(addReportPage(baseCtx), model);
+  drawAssessorEqualizationPage(addReportPage(baseCtx), model);
+  drawAssessorTaxSummaryPage(addReportPage(baseCtx), model);
 
-  return layer;
+  return baseCtx.doc.save();
 }
 
-export function reportHtml(model) {
-  return `
-    <article class="assessors-report">
-      ${reportHeader(model)}
-      ${reportSection("1. Property Record Summary", propertyRecordSummaryHtml(model))}
-      ${reportSection("2. What Changed", whatChangedHtml(model))}
-      ${reportSection("3. Value Detail / Valuation Breakdown", valueDetailHtml(model))}
-      ${reportSection("4. Equalization Context", equalizationContextHtml(model))}
-      ${reportSection("5. Tax Context", taxContextHtml(model))}
-      ${reportSection("6. Review Signals", reviewSignalsHtml(model))}
-      ${reportSection("7. Summary / Working Conclusion", workingConclusionHtml(model), "assessors-report-section-summary")}
-      <footer class="assessors-report-footer">
-        Supplemental review document generated from loaded prototype parcel data. Sources: ${escapeHtml(sourceList(model))}.
-      </footer>
-    </article>
-  `;
+function assessorsReportFilename(data) {
+  return `assessors-report-${fileSafe(data?.parcel?.parcelId || data?.parcel?.situsAddress)}.pdf`;
 }
 
-function reportHeader(model) {
-  const { data, generatedAt, propertySummary, valueSummary } = model;
-  const property = data.snapshotModel?.viewModels?.property ?? {};
-  const district = data.snapshotModel?.viewModels?.district ?? {};
-  const current = valueSummary.current;
-  const prior = valueSummary.prior;
+function drawAssessorHeader(ctx, model, sectionLabel) {
+  const address = model.data.parcel?.situsAddress ?? "Subject property";
+  const identity = [
+    `Parcel ${model.data.parcel?.parcelId ?? "-"}`,
+    model.data.classification?.propertyClass,
+    model.propertySummary.valuationGroupLabel
+  ].filter(Boolean).join(" / ");
 
-  return `
-    <header class="assessors-report-header">
-      <div>
-        <p class="assessors-report-kicker">Supplemental review document</p>
-        <h1>Assessor's Supplemental Property Report</h1>
-        <p class="assessors-report-subtitle">
-          Generated from parcel snapshot data. For review and discussion; not a substitute for the official assessor's report or protest record.
-        </p>
-      </div>
-      <div class="assessors-report-generated">
-        <p>Generated</p>
-        <strong>${escapeHtml(formatDateTime(generatedAt))}</strong>
-      </div>
-    </header>
-
-    <section class="assessors-report-identity">
-      ${keyValueTable([
-        ["Parcel ID", data.parcel?.parcelId],
-        ["Situs address", data.parcel?.situsAddress],
-        ["Owner", data.parcel?.owner],
-        ["Property class / type", [data.classification?.propertyClass, data.parcel?.accountType].filter(Boolean).join(" / ")],
-        ["Assessment year", data.snapshotYear],
-        ["Latest value year", current.year],
-        ["Market area / valuation group", property.valuationGroup ?? propertySummary.valuationGroupLabel],
-        ["School / taxing district", [data.parcel?.schoolDistrict, district?.districtDescription ? `TD ${data.parcel?.taxDistrict} (${district.districtDescription})` : `TD ${data.parcel?.taxDistrict}`].filter(Boolean).join(" | ")]
-      ])}
-      ${keyValueTable([
-        ["Current assessed value", formatNullableMoney(current.total)],
-        ["Prior assessed value", formatNullableMoney(prior.total)],
-        ["Dollar change", signedMoney(valueSummary.totalChange)],
-        ["Percent change", signedPercent(valueSummary.totalPercentChange)]
-      ], "assessors-report-value-table")}
-    </section>
-  `;
+  drawText(ctx, "Assessor's Supplemental Property Report", ctx.margin, ctx.height - ctx.margin, {
+    size: 17,
+    bold: true,
+    color: ctx.palette.navy
+  });
+  drawText(ctx, sectionLabel, ctx.margin, ctx.height - ctx.margin - 15, {
+    size: 8,
+    bold: true,
+    color: ctx.palette.muted
+  });
+  drawText(ctx, `Generated ${formatDateTime(model.generatedAt)}`, ctx.width - ctx.margin - 160, ctx.height - ctx.margin - 2, {
+    size: 7.2,
+    color: ctx.palette.muted
+  });
+  drawRule(ctx, ctx.margin, ctx.height - ctx.margin - 24, ctx.width - ctx.margin, { color: ctx.palette.line });
+  drawText(ctx, address, ctx.margin, ctx.height - ctx.margin - 40, { size: 11, bold: true });
+  drawText(ctx, identity, ctx.margin + 220, ctx.height - ctx.margin - 40, { size: 7.8, color: ctx.palette.muted });
 }
 
-function propertyRecordSummaryHtml(model) {
-  const { data, recordCard, propertySummary } = model;
+function drawAssessorFooter(ctx, model, pageNumber) {
+  drawRule(ctx, ctx.margin, 24, ctx.width - ctx.margin, { thickness: 0.45, color: ctx.palette.line });
+  drawWrappedText(ctx, `Supplemental review document generated from loaded prototype parcel data. Sources: ${sourceList(model) || "loaded parcel datasets"}.`, ctx.margin, 15, ctx.contentWidth - 50, {
+    size: 6.5,
+    color: ctx.palette.muted,
+    maxLines: 1
+  });
+  drawText(ctx, `Page ${pageNumber}`, ctx.width - ctx.margin - 34, 15, { size: 6.8, color: ctx.palette.muted });
+}
+
+function drawAssessorRecordPage(ctx, model) {
+  const { data, recordCard, propertySummary, valueSummary } = model;
   const residential = data.residential ?? {};
   const classification = data.classification ?? {};
   const parcel = data.parcel ?? {};
   const location = recordCard?.locationModel ?? {};
   const residentialInfo = recordCard?.residentialInformation ?? {};
 
-  return `
-    <div class="assessors-report-grid">
-      ${subsection("Parcel Identity", keyValueTable([
-        ["Parcel ID", parcel.parcelId],
-        ["Map number", parcel.mapNumber],
-        ["State geocode", parcel.stateGeoCode],
-        ["Owner", parcel.owner],
-        ["Mailing address", parcel.mailingAddress],
-        ["Situs address", parcel.situsAddress],
-        ["Legal description", parcel.legalDescription],
-        ["Tax district", parcel.taxDistrict],
-        ["School district", parcel.schoolDistrict]
-      ]))}
-      ${subsection("Classification & Location", keyValueTable([
-        ["Status", classification.status],
-        ["Property class", classification.propertyClass],
-        ["Account type", parcel.accountType],
-        ["Location", classification.location],
-        ["Zoning", classification.zoning],
-        ["City size", classification.citySize],
-        ["County area", location.countyArea],
-        ["Neighborhood", location.neighborhood],
-        ["Location group", location.locationGroup],
-        ["Valuation group", location.valuationGroup],
-        ["Model / method", [location.model, location.method].filter(Boolean).join(" / ")]
-      ]))}
-    </div>
-    <div class="assessors-report-grid">
-      ${subsection("Dwelling Record", keyValueTable([
-        ["Residential type", residentialInfo.type],
-        ["Style", residential.style ?? residentialInfo.style],
-        ["Year built", residential.yearBuilt],
-        ["Effective age / year", effectiveAge(recordCard)],
-        ["Living area", squareFeet(residential.buildingSize)],
-        ["Basement", basementSummary(residential, residentialInfo)],
-        ["Bedrooms / bathrooms", bedroomsBathrooms(residential, residentialInfo)],
-        ["Plumbing fixtures", residential.plumbingFixtures ?? residentialInfo.fixtureRoughin],
-        ["Quality / condition", [residential.quality ?? residentialInfo.quality, residential.condition ?? residentialInfo.condition].filter(Boolean).join(" / ")],
-        ["Exterior", residential.exterior ?? residentialInfo.exteriorWall],
-        ["Heating / cooling", residential.heatingCooling ?? residentialInfo.heatingCooling]
-      ]))}
-      ${subsection("Land & Improvements", keyValueTable([
-        ["Land units / acres / lots", propertySummary.landArea],
-        ["Land model", recordCard?.landModel?.description],
-        ["Recorded land value", formatNullableMoney(recordCard?.landModel?.recordedLotValue)],
-        ["Garage details", [residential.garage1, residential.garage2].filter(Boolean).join("; ")],
-        ["Garage cost lines", countLabel(recordCard?.garageCostLines?.length, "line")],
-        ["Outbuildings", propertySummary.outbuildingSummary],
-        ["Miscellaneous improvements", propertySummary.miscImprovementSummary],
-        ["Property notes", propertySummary.noteSummary],
-        ["Review history", propertySummary.reviewHistorySummary]
-      ]))}
-    </div>
-    ${subsection("Notable Missing or Suspicious Fields", standardTable(
-      ["Field / signal", "Status", "Review note"],
-      propertySummary.dataQualityRows
-    ))}
-  `;
+  drawAssessorHeader(ctx, model, "Record card and parcel identity");
+
+  const top = ctx.height - ctx.margin - 66;
+  const gap = 14;
+  const colW = (ctx.contentWidth - gap * 2) / 3;
+  const x1 = ctx.margin;
+  const x2 = x1 + colW + gap;
+  const x3 = x2 + colW + gap;
+
+  drawSectionTitle(ctx, "Parcel identity", x1, top, colW);
+  drawKeyValueRows(ctx, [
+    ["Parcel ID", parcel.parcelId],
+    ["Map / geocode", [parcel.mapNumber, parcel.stateGeoCode].filter(Boolean).join(" / ")],
+    ["Owner", parcel.owner],
+    ["Mailing", parcel.mailingAddress],
+    ["Situs", parcel.situsAddress],
+    ["Legal", parcel.legalDescription],
+    ["Tax district", parcel.taxDistrict],
+    ["School district", parcel.schoolDistrict]
+  ], x1, top - 20, colW, { labelWidth: 76, rowGap: 13, valueLines: 2 });
+
+  drawSectionTitle(ctx, "Classification and location", x2, top, colW);
+  drawKeyValueRows(ctx, [
+    ["Status", classification.status],
+    ["Class / type", [classification.propertyClass, parcel.accountType].filter(Boolean).join(" / ")],
+    ["Location", classification.location],
+    ["Zoning", classification.zoning],
+    ["County area", location.countyArea],
+    ["Neighborhood", location.neighborhood],
+    ["Valuation group", location.valuationGroup],
+    ["Model / method", [location.model, location.method].filter(Boolean).join(" / ")]
+  ], x2, top - 20, colW, { labelWidth: 82, rowGap: 13, valueLines: 2 });
+
+  drawSectionTitle(ctx, "Dwelling record", x3, top, colW);
+  drawKeyValueRows(ctx, [
+    ["Type / style", [residentialInfo.type, residential.style ?? residentialInfo.style].filter(Boolean).join(" / ")],
+    ["Year built", residential.yearBuilt],
+    ["Effective age", effectiveAge(recordCard)],
+    ["Living area", squareFeet(residential.buildingSize)],
+    ["Basement", basementSummary(residential, residentialInfo)],
+    ["Bed / bath", bedroomsBathrooms(residential, residentialInfo)],
+    ["Quality / cond.", [residential.quality ?? residentialInfo.quality, residential.condition ?? residentialInfo.condition].filter(Boolean).join(" / ")],
+    ["Heat / exterior", [residential.heatingCooling ?? residentialInfo.heatingCooling, residential.exterior ?? residentialInfo.exteriorWall].filter(Boolean).join(" / ")]
+  ], x3, top - 20, colW, { labelWidth: 82, rowGap: 13, valueLines: 2 });
+
+  const mid = 246;
+  drawSectionTitle(ctx, "Land and improvements", x1, mid, colW);
+  drawKeyValueRows(ctx, [
+    ["Land area", propertySummary.landArea],
+    ["Land model", recordCard?.landModel?.description],
+    ["Recorded land value", formatNullableMoney(recordCard?.landModel?.recordedLotValue)],
+    ["Garage", [residential.garage1, residential.garage2].filter(Boolean).join("; ")],
+    ["Garage lines", countLabel(recordCard?.garageCostLines?.length, "line")],
+    ["Outbuildings", propertySummary.outbuildingSummary],
+    ["Misc. improvements", propertySummary.miscImprovementSummary],
+    ["Review history", propertySummary.reviewHistorySummary]
+  ], x1, mid - 20, colW, { labelWidth: 86, rowGap: 13, valueLines: 2 });
+
+  drawSectionTitle(ctx, "Current value reconciliation", x2, mid, colW);
+  drawTable(ctx, [
+    { key: "component", label: "Component", width: 1.2 },
+    { key: "prior", label: `${valueSummary.prior.year ?? "Prior"}`, width: 0.82, align: "right" },
+    { key: "current", label: `${valueSummary.current.year ?? "Current"}`, width: 0.82, align: "right" },
+    { key: "change", label: "Change", width: 0.82, align: "right" }
+  ], valueBreakdownTableRows(model), x2, mid - 20, colW, { rowHeight: 17, fontSize: 7.1 });
+
+  drawSectionTitle(ctx, "Data-quality scan", x3, mid, colW);
+  drawCompactRows(ctx, propertySummary.dataQualityRows.slice(0, 5).map(row => ({
+    title: `${row[0]} / ${row[1]}`,
+    body: row[2]
+  })), x3, mid - 20, colW, 118);
+
+  drawAssessorFooter(ctx, model, 1);
 }
 
-function whatChangedHtml(model) {
-  const { data, valueSummary, reviewSignals } = model;
-  const current = valueSummary.current;
-  const prior = valueSummary.prior;
-  const garageTotal = sumBy(model.recordCard?.garageCostLines, "rcnld");
-  const miscTotal = sumBy(model.recordCard?.miscImprovements, "value");
-  const componentRows = [
-    changeRow("Total assessed value", prior.total, current.total),
-    changeRow("Land value", prior.land, current.land),
-    changeRow("Dwelling / building value", prior.dwelling, current.dwelling),
-    changeRow("Other improvements", prior.improvement, current.improvement),
-    changeRow("Outbuildings", prior.outbuilding, current.outbuilding)
-  ];
-  const latestSignals = reviewSignals.rows
-    .filter(row => row.status === "Flagged" || row.status === "Monitor")
-    .slice(0, 4)
-    .map(row => [row.signal, row.status, row.why]);
-
-  return `
-    <div class="assessors-report-grid assessors-report-grid-wide-left">
-      ${subsection(`${prior.year ?? "Prior"} to ${current.year ?? "Current"} Value Movement`, standardTable(
-        ["Component", "Prior", "Current", "Dollar change", "Percent change"],
-        componentRows
-      ))}
-      ${subsection("Characteristic & Review Changes", standardTable(
-        ["Item", "Status", "Review note"],
-        [
-          ["Property characteristics", "Not listed", "The loaded snapshot does not include a current-year characteristic-change log."],
-          ["Garage value change", "Not isolated", `Current cost-model garage lines total ${formatNullableMoney(garageTotal)}; year-over-year garage-specific movement is not isolated in the loaded value history.`],
-          ["Miscellaneous improvement change", "Not isolated", `Current cost-model miscellaneous improvement lines total ${formatNullableMoney(miscTotal)}; year-over-year misc-specific movement is not isolated in the loaded value history.`],
-          ["Inspection / record activity", model.propertySummary.reviewHistorySummary, "Confirm whether any recent permit, inspection, or field-review changes occurred outside the loaded prototype data."],
-          ["Large increase / decrease", valueSummary.largeChangeFlag ? "Flagged" : "Not flagged", valueSummary.largeChangeFlag ? "Single-year value movement exceeds the review threshold used by this report." : "Latest loaded value movement does not exceed the report threshold."],
-          ["Dashboard review signals", latestSignals.length ? `${latestSignals.length} signal(s)` : "No flags", "Signals already generated elsewhere in the app are consolidated in the Review Signals section."]
-        ]
-      ))}
-    </div>
-    ${latestSignals.length ? subsection("Active Review Signals", standardTable(
-      ["Signal", "Status", "Why it matters"],
-      latestSignals
-    )) : ""}
-  `;
-}
-
-function valueDetailHtml(model) {
+function drawAssessorValuePage(ctx, model) {
   const { recordCard, valueSummary } = model;
-  const current = valueSummary.current;
   const cost = recordCard?.costApproach ?? {};
-  const garageTotal = sumBy(recordCard?.garageCostLines, "rcnld");
-  const miscTotal = sumBy(recordCard?.miscImprovements, "value");
-  const totalImprovementValue = nullableSubtract(current.total, current.land);
   const depreciation = cost.depreciation ?? {};
+  const current = valueSummary.current;
 
-  return `
-    <div class="assessors-report-grid">
-      ${subsection("Assessed Value Breakdown", standardTable(
-        ["Component", "Value", "Source / note"],
-        [
-          ["Land value", formatNullableMoney(current.land), "Current loaded value breakdown"],
-          ["Dwelling / building value", formatNullableMoney(current.dwelling), "Current loaded value breakdown"],
-          ["Garage value", formatNullableMoney(garageTotal), "Cost-model garage lines, where present"],
-          ["Miscellaneous improvements", formatNullableMoney(miscTotal), "Cost-model miscellaneous improvement lines, where present"],
-          ["Outbuildings", formatNullableMoney(current.outbuilding), "Current loaded outbuilding value"],
-          ["Total improvement value", formatNullableMoney(totalImprovementValue), "Total assessed value less land value"],
-          ["Total assessed value", formatNullableMoney(current.total), "Latest loaded assessed value"]
-        ]
-      ))}
-      ${subsection("Replacement-Cost / Marshall & Swift Detail", keyValueTable([
-        ["Year / effective age", cost.yearEffectiveAge],
-        ["Base cost", numberOrMoneyCents(cost.baseCost)],
-        ["Adjusted cost", decimalValue(cost.adjustedCost, 3)],
-        ["RCN", formatNullableMoney(cost.rcn)],
-        ["Total RCN", formatNullableMoney(cost.totalRcn)],
-        ["Physical depreciation", percentWhole(depreciation.physicalPercent)],
-        ["Functional depreciation", percentWhole(depreciation.functionalPercent)],
-        ["Depreciation amount", formatNullableMoney(depreciation.amount)],
-        ["RCNLD", formatNullableMoney(cost.rcnld)],
-        ["Adjusted RCNLD", formatNullableMoney(cost.adjustedRcnld)],
-        ["Cost per square foot", numberOrMoneyCents(cost.costPerSquareFoot)]
-      ]))}
-    </div>
-    <div class="assessors-report-grid">
-      ${subsection("Quality / Condition Factors", keyValueTable([
-        ["Residential quality", recordCard?.residentialInformation?.quality],
-        ["Residential condition", recordCard?.residentialInformation?.condition],
-        ["Architecture", recordCard?.residentialInformation?.architecture],
-        ["Base / total area", recordCard?.residentialInformation?.baseTotalArea],
-        ["Roof cover", recordCard?.residentialInformation?.roofCover],
-        ["Heating / cooling", recordCard?.residentialInformation?.heatingCooling]
-      ]))}
-      ${subsection("Cost Adjustments", standardTable(
-        ["Adjustment", "Value"],
-        Object.entries(cost.adjustments ?? {}).map(([label, value]) => [titleCase(label), decimalValue(value, 2)])
-      ))}
-    </div>
-  `;
+  drawAssessorHeader(ctx, model, "Value movement and cost-model evidence");
+
+  const top = ctx.height - ctx.margin - 70;
+  const leftW = 438;
+  const rightX = ctx.margin + leftW + 18;
+  const rightW = ctx.width - ctx.margin - rightX;
+
+  drawSectionTitle(ctx, `${valueSummary.prior.year ?? "Prior"} to ${valueSummary.current.year ?? "Current"} value movement`, ctx.margin, top, leftW);
+  drawValueComponentBars(ctx, model, ctx.margin, top - 182, leftW, 150);
+  drawTable(ctx, [
+    { key: "component", label: "Component", width: 1.35 },
+    { key: "prior", label: "Prior", width: 0.85, align: "right" },
+    { key: "current", label: "Current", width: 0.85, align: "right" },
+    { key: "change", label: "Change", width: 0.85, align: "right" },
+    { key: "percent", label: "%", width: 0.55, align: "right" }
+  ], valueBreakdownTableRows(model, true), ctx.margin, top - 210, leftW, { rowHeight: 16, fontSize: 7 });
+
+  drawSectionTitle(ctx, "Replacement cost detail", rightX, top, rightW);
+  drawKeyValueRows(ctx, [
+    ["Year / effective age", cost.yearEffectiveAge],
+    ["Base cost", numberOrMoneyCents(cost.baseCost)],
+    ["Adjusted cost", decimalValue(cost.adjustedCost, 3)],
+    ["RCN", formatNullableMoney(cost.rcn)],
+    ["Total RCN", formatNullableMoney(cost.totalRcn)],
+    ["Physical depreciation", percentWhole(depreciation.physicalPercent)],
+    ["Functional depreciation", percentWhole(depreciation.functionalPercent)],
+    ["Depreciation amount", formatNullableMoney(depreciation.amount)],
+    ["RCNLD", formatNullableMoney(cost.rcnld)],
+    ["Adjusted RCNLD", formatNullableMoney(cost.adjustedRcnld)],
+    ["Cost per sq. ft.", numberOrMoneyCents(cost.costPerSquareFoot)]
+  ], rightX, top - 20, rightW, { labelWidth: 118, rowGap: 13 });
+
+  const lowerTop = 198;
+  drawSectionTitle(ctx, "Quality, condition, and model inputs", ctx.margin, lowerTop, leftW);
+  drawKeyValueRows(ctx, [
+    ["Residential quality", recordCard?.residentialInformation?.quality],
+    ["Residential condition", recordCard?.residentialInformation?.condition],
+    ["Architecture", recordCard?.residentialInformation?.architecture],
+    ["Base / total area", recordCard?.residentialInformation?.baseTotalArea],
+    ["Roof cover", recordCard?.residentialInformation?.roofCover],
+    ["Heating / cooling", recordCard?.residentialInformation?.heatingCooling],
+    ["Total improvement value", formatNullableMoney(nullableSubtract(current.total, current.land))]
+  ], ctx.margin, lowerTop - 20, leftW, { labelWidth: 124, rowGap: 13, valueLines: 2 });
+
+  drawSectionTitle(ctx, "Cost adjustments", rightX, lowerTop, rightW);
+  drawTable(ctx, [
+    { key: "adjustment", label: "Adjustment", width: 1.3 },
+    { key: "value", label: "Value", width: 0.7, align: "right" }
+  ], Object.entries(cost.adjustments ?? {}).map(([label, value]) => ({
+    adjustment: titleCase(label),
+    value: decimalValue(value, 2)
+  })).slice(0, 7), rightX, lowerTop - 20, rightW, { rowHeight: 15, fontSize: 7.2 });
+
+  drawAssessorFooter(ctx, model, 2);
 }
 
-function equalizationContextHtml(model) {
+function drawAssessorEqualizationPage(ctx, model) {
   const { equalization } = model;
 
-  return `
-    <p class="assessors-report-caution">
-      Equalization indicators are context for review. Based on current prototype data, they do not by themselves prove an individual parcel value.
-    </p>
-    <div class="assessors-report-grid">
-      ${subsection("Market Area / Valuation Group Comparison", standardTable(
-        ["Metric", "Subject group", "County / class context"],
-        equalization.marketComparisonRows
-      ))}
-      ${subsection("Alignment Read", standardTable(
-        ["Indicator", "Status", "Reason"],
-        equalization.alignmentRows
-      ))}
-    </div>
-    ${subsection("County Ratio / Equalization Trend", standardTable(
-      ["Year", "Sales", "Level of value", "COD", "PRD", "COV"],
-      equalization.ratioTrendRows
-    ))}
-    ${subsection("Chart Data Included for Print", `
-      <p class="assessors-report-note">
-        Chart inputs from the equalization dashboard are included as compact tables in this print version.
-      </p>
-    `)}
-  `;
+  drawAssessorHeader(ctx, model, "Equalization and market-area evidence");
+
+  const top = ctx.height - ctx.margin - 70;
+  const gap = 18;
+  const chartW = 430;
+  const tableX = ctx.margin + chartW + gap;
+  const tableW = ctx.width - ctx.margin - tableX;
+
+  drawSectionTitle(ctx, "County ratio-study metric trend", ctx.margin, top, chartW);
+  drawMetricTrendChart(ctx, equalization.ratioChartRecords, ctx.margin, top - 192, chartW, 160);
+  drawText(ctx, "COD, PRD, and level-of-value are normalized to comparable positions so movement can be read together.", ctx.margin, top - 210, {
+    size: 7.4,
+    color: ctx.palette.muted
+  });
+
+  drawSectionTitle(ctx, "Market-area comparison", tableX, top, tableW);
+  drawTable(ctx, [
+    { key: "metric", label: "Metric", width: 1 },
+    { key: "subject", label: "Subject group", width: 1.15 },
+    { key: "county", label: "County / class", width: 1.15 }
+  ], equalization.marketComparisonRows.map(row => ({
+    metric: row[0],
+    subject: displayValue(row[1]),
+    county: displayValue(row[2])
+  })).slice(0, 8), tableX, top - 20, tableW, { rowHeight: 16, fontSize: 6.9 });
+
+  const lowerTop = 226;
+  drawSectionTitle(ctx, "Alignment read", ctx.margin, lowerTop, chartW);
+  drawCompactRows(ctx, equalization.alignmentRows.map(row => ({
+    title: `${row[0]} / ${row[1]}`,
+    body: row[2]
+  })), ctx.margin, lowerTop - 20, chartW, 145);
+
+  drawSectionTitle(ctx, "Ratio-study table", tableX, lowerTop, tableW);
+  drawTable(ctx, [
+    { key: "year", label: "Year", width: 0.45 },
+    { key: "sales", label: "Sales", width: 0.55, align: "right" },
+    { key: "lov", label: "LOV", width: 0.6, align: "right" },
+    { key: "cod", label: "COD", width: 0.52, align: "right" },
+    { key: "prd", label: "PRD", width: 0.52, align: "right" },
+    { key: "cov", label: "COV", width: 0.52, align: "right" }
+  ], equalization.ratioTrendRows.map(row => ({
+    year: row[0],
+    sales: row[1],
+    lov: row[2],
+    cod: row[3],
+    prd: row[4],
+    cov: row[5]
+  })), tableX, lowerTop - 20, tableW, { rowHeight: 16, fontSize: 7.1 });
+
+  drawAssessorFooter(ctx, model, 3);
 }
 
-function taxContextHtml(model) {
-  const { data, taxContext } = model;
+function drawAssessorTaxSummaryPage(ctx, model) {
+  const { data, taxContext, summary, reviewSignals } = model;
 
-  return `
-    <div class="assessors-report-tax-statement">
-      Assessed value determines the property's share of the tax base; levies and budgets determine the final tax bill.
-    </div>
-    <div class="assessors-report-grid">
-      ${subsection("Tax Snapshot", keyValueTable([
-        ["Latest final tax year", taxContext.latestStatement?.taxYear ?? data.latestFinalTaxYear],
-        ["Prior / current tax amount", formatNullableMoney(taxContext.latestNetTax, true)],
-        ["Gross tax amount", formatNullableMoney(taxContext.latestStatement?.grossTaxAmount, true)],
-        ["Credits", formatNullableMoney(taxContext.latestCreditAmount, true)],
-        ["Effective tax rate", formatNullablePercent(taxContext.effectiveTaxRate)],
-        ["Latest final levy", formatNullableLevy(taxContext.totalLevy)],
-        ["Tax district", taxContext.districtLabel],
-        ["School district", data.parcel?.schoolDistrict]
-      ]))}
-      ${subsection("Taxing District Summary", keyValueTable([
-        ["District description", taxContext.districtDescription],
-        ["Authority count", taxContext.authorityCount],
-        ["Largest levy share", taxContext.largestAuthority],
-        ["Levy data year", taxContext.levyYear],
-        ["Tax bill status", taxContext.taxStatus]
-      ]))}
-    </div>
-    ${subsection("Levy / Tax Distribution", standardTable(
-      ["Taxing body", "Category", "Rate", "Share", "Per $100k"],
-      taxContext.levyRows
-    ))}
-  `;
+  drawAssessorHeader(ctx, model, "Tax context, review signals, and conclusion");
+
+  const top = ctx.height - ctx.margin - 70;
+  const gap = 18;
+  const colW = (ctx.contentWidth - gap * 2) / 3;
+  const x1 = ctx.margin;
+  const x2 = x1 + colW + gap;
+  const x3 = x2 + colW + gap;
+
+  drawVerticalRule(ctx, x2 - gap / 2, top + 12, 52, { color: ctx.palette.line, thickness: 0.55 });
+  drawVerticalRule(ctx, x3 - gap / 2, top + 12, 52, { color: ctx.palette.line, thickness: 0.55 });
+
+  drawSectionTitle(ctx, "Tax history", x1, top, colW);
+  drawLineChart(ctx, taxHistoryPoints(data, "taxes"), x1, top - 120, colW, 92, {
+    valueLabel: "Net tax trend",
+    color: ctx.palette.green
+  });
+  drawKeyValueRows(ctx, [
+    ["Latest final tax", formatNullableMoney(taxContext.latestNetTax, true)],
+    ["Gross / credits", [formatNullableMoney(taxContext.latestStatement?.grossTaxAmount, true), formatNullableMoney(taxContext.latestCreditAmount, true)].filter(Boolean).join(" / ")],
+    ["Effective tax rate", formatNullablePercent(taxContext.effectiveTaxRate)],
+    ["Latest final levy", formatNullableLevy(taxContext.totalLevy)],
+    ["Tax status", taxContext.taxStatus]
+  ], x1, top - 142, colW, { labelWidth: 92, rowGap: 13, valueLines: 2 });
+
+  drawSectionTitle(ctx, "Levy share", x2, top, colW);
+  drawHorizontalShareBars(ctx, taxContext.levyChartRows, x2, top - 148, colW, 118);
+  drawTable(ctx, [
+    { key: "body", label: "Taxing body", width: 1.35 },
+    { key: "rate", label: "Rate", width: 0.55, align: "right" },
+    { key: "share", label: "Share", width: 0.45, align: "right" }
+  ], taxContext.levyRows.slice(0, 6).map(row => ({
+    body: row[0],
+    rate: row[2],
+    share: row[3]
+  })), x2, top - 174, colW, { rowHeight: 14, fontSize: 6.6 });
+
+  drawSectionTitle(ctx, "Review signals", x3, top, colW);
+  drawCompactRows(ctx, reviewSignals.rows.slice(0, 5).map(row => ({
+    title: `${row.signal} / ${row.status}`,
+    body: row.why
+  })), x3, top - 20, colW, 190);
+
+  const conclusionY = 198;
+  drawSectionTitle(ctx, "Working conclusion", x1, conclusionY, ctx.contentWidth);
+  drawPanel(ctx, x1, 58, ctx.contentWidth, 120, { fill: ctx.palette.panel });
+  drawWrappedText(ctx, summary.posture, x1 + 12, 158, ctx.contentWidth - 24, {
+    size: 9,
+    bold: true,
+    lineHeight: 12,
+    maxLines: 2
+  });
+  drawList(ctx, "Key reasons", summary.reasons, x1 + 12, 124, colW - 4);
+  drawList(ctx, "Unresolved questions", summary.questions, x2, 124, colW - 4);
+  drawList(ctx, "Needed for stronger conclusion", summary.missingData, x3, 124, colW - 4);
+
+  drawAssessorFooter(ctx, model, 4);
 }
 
-function reviewSignalsHtml(model) {
-  return standardTable(
-    ["Signal", "Status", "Why it matters", "Suggested review action"],
-    model.reviewSignals.rows.map(row => [row.signal, row.status, row.why, row.action])
-  );
+function valueBreakdownTableRows(model, includePercent = false) {
+  const { valueSummary } = model;
+  const rows = [
+    ["Total assessed value", valueSummary.prior.total, valueSummary.current.total],
+    ["Land value", valueSummary.prior.land, valueSummary.current.land],
+    ["Dwelling / building value", valueSummary.prior.dwelling, valueSummary.current.dwelling],
+    ["Other improvements", valueSummary.prior.improvement, valueSummary.current.improvement],
+    ["Outbuildings", valueSummary.prior.outbuilding, valueSummary.current.outbuilding]
+  ];
+
+  return rows.map(([component, prior, current]) => {
+    const change = nullableSubtract(current, prior);
+    const row = {
+      component,
+      prior: formatNullableMoney(prior),
+      current: formatNullableMoney(current),
+      change: signedMoney(change)
+    };
+    if (includePercent) row.percent = signedPercent(percentChange(current, prior));
+    return row;
+  });
 }
 
-function workingConclusionHtml(model) {
-  const { summary } = model;
+function drawCompactRows(ctx, rows, x, y, width, maxHeight) {
+  let cursor = y;
+  const bottom = y - maxHeight;
 
-  return `
-    <div class="assessors-report-summary-box">
-      <p class="assessors-report-summary-posture">${escapeHtml(summary.posture)}</p>
-      <div class="assessors-report-grid">
-        ${subsection("Key Reasons", unorderedList(summary.reasons))}
-        ${subsection("Unresolved Questions", unorderedList(summary.questions))}
-      </div>
-      ${subsection("Missing Data Needed for Stronger Conclusion", unorderedList(summary.missingData))}
-    </div>
-  `;
+  rows.forEach(row => {
+    if (cursor < bottom + 18) return;
+    drawText(ctx, row.title, x, cursor, {
+      size: 7.5,
+      bold: true,
+      color: ctx.palette.ink
+    });
+    cursor = drawWrappedText(ctx, row.body, x, cursor - 10, width, {
+      size: 6.9,
+      lineHeight: 8.8,
+      color: ctx.palette.muted,
+      maxLines: 3
+    }) - 5;
+  });
+
+  return cursor;
 }
 
-function reportSection(title, body, extraClass = "") {
-  return `
-    <section class="assessors-report-section ${extraClass}">
-      <h2>${escapeHtml(title)}</h2>
-      ${body}
-    </section>
-  `;
+function drawValueComponentBars(ctx, model, x, y, width, height) {
+  const rows = [
+    ["Land", model.valueSummary.current.land, ctx.palette.green],
+    ["Dwelling", model.valueSummary.current.dwelling, ctx.palette.navy],
+    ["Other", model.valueSummary.current.improvement, ctx.palette.amber],
+    ["Outbuilding", model.valueSummary.current.outbuilding, ctx.palette.faint]
+  ].filter(([, value]) => hasValue(value));
+  const max = Math.max(...rows.map(([, value]) => Math.abs(Number(value))), 1);
+
+  drawPanel(ctx, x, y, width, height, { fill: ctx.palette.white });
+  drawText(ctx, "Current component values", x + 10, y + height - 16, { size: 7.5, bold: true, color: ctx.palette.muted });
+
+  let cursor = y + height - 36;
+  rows.forEach(([label, value, color]) => {
+    const barWidth = Math.max(2, (Number(value) / max) * (width - 142));
+    drawText(ctx, label, x + 10, cursor + 1, { size: 7.2, color: ctx.palette.ink });
+    ctx.page.drawRectangle({
+      x: x + 82,
+      y: cursor - 2,
+      width: barWidth,
+      height: 8,
+      color
+    });
+    drawText(ctx, formatNullableMoney(value), x + width - 78, cursor, { size: 7.2, bold: true, color: ctx.palette.ink });
+    cursor -= 21;
+  });
+
+  drawText(ctx, `Total ${formatNullableMoney(model.valueSummary.current.total)} / ${signedPercent(model.valueSummary.totalPercentChange)} from prior`, x + 10, y + 12, {
+    size: 7.3,
+    bold: true,
+    color: ctx.palette.navy
+  });
 }
 
-function subsection(title, body) {
-  return `
-    <section class="assessors-report-subsection">
-      <h3>${escapeHtml(title)}</h3>
-      ${body}
-    </section>
-  `;
+function drawMetricTrendChart(ctx, records, x, y, width, height) {
+  const chartRecords = (records || []).filter(record => hasValue(record.cod) || hasValue(record.prd) || hasValue(record.levelOfValue));
+  if (chartRecords.length < 2) {
+    drawPanel(ctx, x, y, width, height, { fill: ctx.palette.white });
+    drawText(ctx, "Ratio-study chart unavailable", x + 10, y + height - 18, { size: 8, bold: true, color: ctx.palette.muted });
+    return;
+  }
+
+  drawPanel(ctx, x, y, width, height, { fill: ctx.palette.white });
+  const plotX = x + 34;
+  const plotY = y + 28;
+  const plotW = width - 52;
+  const plotH = height - 58;
+  const series = [
+    {
+      key: "levelOfValue",
+      label: "LOV",
+      color: ctx.palette.green,
+      normalize: value => (Number(value) - 85) / 20
+    },
+    {
+      key: "cod",
+      label: "COD",
+      color: ctx.palette.navy,
+      normalize: value => Number(value) / 35
+    },
+    {
+      key: "prd",
+      label: "PRD",
+      color: ctx.palette.amber,
+      normalize: value => (normalizePrd(value) - 0.95) / 0.18
+    }
+  ];
+
+  for (let index = 0; index <= 3; index += 1) {
+    const gy = plotY + (index / 3) * plotH;
+    drawRule(ctx, plotX, gy, plotX + plotW, { thickness: 0.3, color: ctx.palette.line });
+  }
+
+  series.forEach((item, seriesIndex) => {
+    const points = chartRecords
+      .map((record, index) => {
+        if (!hasValue(record[item.key])) return null;
+        const normalized = Math.max(0, Math.min(1, item.normalize(record[item.key])));
+        return {
+          x: plotX + (index / (chartRecords.length - 1)) * plotW,
+          y: plotY + normalized * plotH
+        };
+      })
+      .filter(Boolean);
+
+    points.forEach((point, index) => {
+      const next = points[index + 1];
+      if (next) {
+        ctx.page.drawLine({
+          start: { x: point.x, y: point.y },
+          end: { x: next.x, y: next.y },
+          thickness: 1.35,
+          color: item.color
+        });
+      }
+      ctx.page.drawCircle({ x: point.x, y: point.y, size: 2.1, color: item.color });
+    });
+
+    const legendX = plotX + seriesIndex * 48;
+    ctx.page.drawRectangle({ x: legendX, y: y + height - 20, width: 10, height: 2.5, color: item.color });
+    drawText(ctx, item.label, legendX + 14, y + height - 22, { size: 6.8, bold: true, color: ctx.palette.muted });
+  });
+
+  drawText(ctx, `${chartRecords[0]?.year ?? ""}`, plotX, y + 10, { size: 6.5, color: ctx.palette.muted });
+  drawText(ctx, `${chartRecords.at(-1)?.year ?? ""}`, plotX + plotW - 20, y + 10, { size: 6.5, color: ctx.palette.muted });
+  drawText(ctx, "Normalized position within review bands", plotX, y + height - 38, { size: 6.6, color: ctx.palette.muted });
 }
 
-function keyValueTable(rows, className = "") {
-  const visibleRows = rows.filter(([, value]) => hasDisplayValue(value));
-
-  return `
-    <table class="assessors-report-table assessors-report-key-value ${className}">
-      <tbody>
-        ${visibleRows.map(([label, value]) => `
-          <tr>
-            <th scope="row">${escapeHtml(label)}</th>
-            <td>${escapeHtml(displayValue(value))}</td>
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
+function taxHistoryPoints(data, key) {
+  return (data.taxpayerHistory || [])
+    .filter(row => hasValue(row?.[key]))
+    .slice(-7)
+    .map(row => ({
+      label: `${row.year}`,
+      value: Number(row[key])
+    }));
 }
 
-function standardTable(headers, rows) {
-  const safeRows = rows?.length ? rows : [["No data listed", "Not available"]];
+function drawHorizontalShareBars(ctx, rows, x, y, width, height) {
+  const items = (rows || []).slice(0, 5);
+  drawPanel(ctx, x, y, width, height, { fill: ctx.palette.white });
+  drawText(ctx, "Largest levy components", x + 10, y + height - 16, { size: 7.5, bold: true, color: ctx.palette.muted });
 
-  return `
-    <table class="assessors-report-table">
-      <thead>
-        <tr>${headers.map(header => `<th scope="col">${escapeHtml(header)}</th>`).join("")}</tr>
-      </thead>
-      <tbody>
-        ${safeRows.map(row => `
-          <tr>
-            ${row.map(value => `<td>${escapeHtml(displayValue(value))}</td>`).join("")}
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
+  let cursor = y + height - 36;
+  items.forEach(item => {
+    const share = Math.max(0, Math.min(1, Number(item.share) || 0));
+    drawWrappedText(ctx, item.label, x + 10, cursor + 3, 76, {
+      size: 6.5,
+      lineHeight: 7.2,
+      maxLines: 1
+    });
+    ctx.page.drawRectangle({
+      x: x + 92,
+      y: cursor,
+      width: Math.max(1.5, share * (width - 146)),
+      height: 8,
+      color: ctx.palette.navy
+    });
+    drawText(ctx, formatNullablePercent(share), x + width - 42, cursor + 1, { size: 6.8, bold: true, color: ctx.palette.ink });
+    cursor -= 18;
+  });
 }
 
-function unorderedList(items) {
-  return `
-    <ul class="assessors-report-list">
-      ${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
-    </ul>
-  `;
+function drawList(ctx, title, items, x, y, width) {
+  drawText(ctx, title, x, y, { size: 7.4, bold: true, color: ctx.palette.navy });
+  let cursor = y - 12;
+  items.slice(0, 3).forEach(item => {
+    drawText(ctx, "-", x, cursor, { size: 7, color: ctx.palette.muted });
+    cursor = drawWrappedText(ctx, item, x + 8, cursor, width - 8, {
+      size: 6.8,
+      lineHeight: 8.4,
+      color: ctx.palette.muted,
+      maxLines: 2
+    }) - 3;
+  });
 }
 
 function buildValueSummary(data, recordCard) {
@@ -647,7 +789,18 @@ function buildEqualizationContext(data, recordCard, context) {
       decimalValue(row.cod, 2),
       decimalValue(row.prd, 3),
       decimalValue(row.cov, 2)
-    ])
+    ]),
+    ratioChartRecords: ratioRecords
+      .slice(0, 8)
+      .sort((a, b) => a.year - b.year)
+      .map(row => ({
+        year: row.year,
+        sales: row.sales,
+        levelOfValue: row.levelOfValue,
+        cod: row.cod,
+        prd: row.prd,
+        cov: row.cov
+      }))
   };
 }
 
@@ -739,6 +892,14 @@ function buildTaxContext(data, taxDistrictAuthorities) {
     taxStatus: data.snapshotYear && data.latestFinalTaxYear && data.snapshotYear > data.latestFinalTaxYear
       ? `${data.snapshotYear} taxes pending; ${data.latestFinalTaxYear} is latest final statement year.`
       : "Latest loaded tax statement is final.",
+    levyChartRows: levyComponents
+      .slice()
+      .sort((a, b) => b.rate - a.rate)
+      .map(row => ({
+        label: row.description,
+        rate: row.rate,
+        share: totalLevy ? row.rate / totalLevy : null
+      })),
     levyRows: levyComponents
       .slice()
       .sort((a, b) => b.rate - a.rate)
@@ -811,7 +972,7 @@ function buildWorkingConclusion(data, valueSummary, propertySummary, equalizatio
   const missingData = [
     "Final official assessor report, protest worksheet, and BOE packet materials.",
     "Any production-valid reconciliation notes not included in the parcel snapshot feed.",
-    "Live chart image capture for final packet presentation, if visual chart exhibits are required."
+    "Any official exhibit attachments required beyond the report charts generated from loaded parcel data."
   ];
 
   return {
@@ -829,40 +990,6 @@ function buildWorkingConclusion(data, valueSummary, propertySummary, equalizatio
     questions,
     missingData
   };
-}
-
-function changeRow(label, prior, current) {
-  const change = nullableSubtract(current, prior);
-  return [
-    label,
-    formatNullableMoney(prior),
-    formatNullableMoney(current),
-    signedMoney(change),
-    signedPercent(percentChange(current, prior))
-  ];
-}
-
-function waitForReportReady(layer) {
-  const images = [...layer.querySelectorAll("img")];
-  const imagePromises = images.map(image => {
-    if (image.complete) return Promise.resolve();
-
-    return new Promise(resolve => {
-      image.addEventListener("load", resolve, { once: true });
-      image.addEventListener("error", resolve, { once: true });
-    });
-  });
-
-  return Promise.all([
-    document.fonts?.ready ?? Promise.resolve(),
-    ...imagePromises,
-    animationFrame(),
-    animationFrame()
-  ]);
-}
-
-function animationFrame() {
-  return new Promise(resolve => window.requestAnimationFrame(resolve));
 }
 
 function sourceList(model) {
@@ -929,6 +1056,13 @@ function formatDateTime(value) {
     dateStyle: "medium",
     timeStyle: "short"
   }).format(value);
+}
+
+function fileSafe(value) {
+  return `${value ?? "property"}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 function signedMoney(value) {

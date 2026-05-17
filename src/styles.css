@@ -30,8 +30,8 @@
   --border-muted: var(--color-slate-200);
   --table-header-bg: var(--color-slate-700);
   --table-header-rule: 255 255 255;
-  --table-total-bg: var(--color-slate-500);
-  --table-total-rule: 255 255 255;
+  --table-total-bg: var(--color-slate-100);
+  --table-total-rule: var(--color-slate-300);
   --brand-ink: var(--color-slate-700);
   --semantic-value: var(--color-green);
   --semantic-tax: var(--color-red);
@@ -406,20 +406,21 @@ table thead th[class] + th[class] {
 
 .property-context-bar {
   align-items: center;
-  background: transparent;
-  border-bottom: 1px solid rgb(var(--border-muted));
+  background: rgb(var(--accent-primary-dark));
+  border-bottom: 0;
   border-radius: 0;
   box-shadow: none;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 80rem;
-  padding: 0 0 0.38rem;
-  width: 100%;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  margin-top: calc(-1 * max(0.42rem, env(safe-area-inset-top)));
+  max-width: none;
+  padding: 0.42rem 1rem 0.44rem;
+  width: calc(100% + 2rem);
 }
 
 .property-context-line {
-  color: rgb(var(--color-slate-600));
+  color: rgb(var(--color-slate-100));
   font-size: 0.82rem;
   font-weight: 650;
   letter-spacing: 0;
@@ -432,12 +433,16 @@ table thead th[class] + th[class] {
 }
 
 .property-context-situs {
-  color: rgb(var(--color-slate-700));
-  font-weight: 800;
+  color: white;
+  font-weight: 850;
+}
+
+.property-context-meta {
+  color: rgb(var(--color-slate-200));
 }
 
 .property-context-separator {
-  color: rgb(var(--color-slate-400));
+  color: rgb(var(--color-slate-300));
   font-weight: 650;
   padding: 0 0.32rem;
 }
@@ -449,7 +454,9 @@ table thead th[class] + th[class] {
   }
 
   .property-context-bar {
-    padding-bottom: 0.28rem;
+    margin-top: calc(-1 * max(0.42rem, env(safe-area-inset-top)));
+    padding-bottom: 0.34rem;
+    padding-top: 0.34rem;
   }
 
   .property-context-line {
@@ -540,7 +547,7 @@ table thead th[class] + th[class] {
 
 .valuation-notice-row-total {
   background: rgb(var(--table-total-bg));
-  color: white;
+  color: rgb(var(--brand-ink));
   font-size: 0.8125rem;
   font-weight: 700;
 }
@@ -653,11 +660,12 @@ table thead th[class] + th[class] {
 
 @media (min-width: 760px) {
   .property-record-overview {
-    align-items: end;
+    align-items: center;
     grid-template-columns: minmax(18rem, 32rem) minmax(18rem, 1fr);
   }
 
   .property-record-media {
+    align-self: center;
     justify-self: stretch;
   }
 }
@@ -1181,6 +1189,11 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   padding: 0.8rem 0;
 }
 
+.quick-read-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
 .quick-read-item p {
   margin: 0;
 }
@@ -1341,10 +1354,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     justify-content: center;
     width: 100%;
   }
-}
-
-.assessors-report-print-layer {
-  display: none;
 }
 
 .form-action-button {
@@ -1749,6 +1758,16 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     margin-left: 0;
     margin-right: 0;
     padding: 0.5rem 0.75rem 0.6rem;
+  }
+
+  .property-context-bar {
+    border-radius: calc(var(--radius-container-lg) / 2) calc(var(--radius-container-lg) / 2) 0 0;
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+    margin-top: -0.5rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    width: calc(100% + 1.5rem);
   }
 
   .guided-path-nav {
@@ -2605,6 +2624,37 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   padding-top: 1.25rem;
 }
 
+.tax-history-pair > * {
+  min-width: 0;
+}
+
+.tax-history-rate-panel {
+  border-top: 1px solid rgb(var(--border-muted));
+  padding-top: 1.25rem;
+}
+
+.equalization-unified-section {
+  margin-top: 1.5rem;
+}
+
+.equalization-local-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+}
+
+.equalization-sales-section {
+  margin-top: 1.9rem;
+  padding-top: 1.75rem;
+}
+
+.equalization-local-heading {
+  gap: 1.25rem;
+}
+
+.equalization-area-control {
+  padding-top: 0.2rem;
+}
+
 .mobile-support-disclosure {
   min-width: 0;
 }
@@ -2775,6 +2825,14 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
   .mobile-support-content {
     margin-top: 0;
+  }
+
+  .equalization-local-section.mobile-support-disclosure {
+    padding-top: 1.5rem !important;
+  }
+
+  .equalization-sales-section.mobile-support-disclosure {
+    padding-top: 1.75rem !important;
   }
 }
 
@@ -3435,7 +3493,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .table-total-row,
 #marketSalePriceRows > .table-total-row {
   background: rgb(var(--table-total-bg));
-  color: white;
+  color: rgb(var(--brand-ink));
 }
 
 .table-total-row :is(td, th) {
@@ -3478,6 +3536,55 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .data-split-view > * + * {
     border-left: 1px solid rgb(var(--border-muted));
     padding-left: 1.5rem;
+  }
+
+  .equalization-unified-section {
+    column-gap: 1.75rem;
+  }
+
+  .equalization-unified-section > * + * {
+    padding-left: 1.75rem;
+  }
+
+  .equalization-unified-section > .equalization-year-table-panel {
+    padding-left: 1.75rem !important;
+  }
+
+  .equalization-local-heading {
+    align-items: flex-start;
+  }
+
+  .equalization-area-control {
+    min-width: 24rem;
+    padding-top: 0.55rem;
+  }
+
+  .county-chart-pair {
+    column-gap: 0;
+  }
+
+  .county-chart-pair > *:first-child {
+    padding-right: 1.75rem;
+  }
+
+  .county-chart-pair > * + * {
+    border-left: 1px solid rgb(var(--border-muted));
+    padding-left: 1.75rem;
+  }
+
+  .tax-history-pair {
+    column-gap: 0;
+  }
+
+  .tax-history-detail-panel {
+    padding-right: 1.75rem;
+  }
+
+  .tax-history-rate-panel {
+    border-left: 1px solid rgb(var(--border-muted));
+    border-top: 0;
+    padding-left: 1.75rem;
+    padding-top: 0;
   }
 }
 
@@ -4249,14 +4356,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .final-review-kpi-grid {
-  align-items: start;
+  align-items: stretch;
   display: grid;
   gap: 0.75rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.final-review-block + .final-review-block .final-review-kpi-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .civic-summary-grid section,
@@ -4272,7 +4375,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   display: flex;
   flex-direction: column;
   gap: 0.42rem;
-  min-height: 11rem;
 }
 
 .final-review-card-topline {
@@ -4733,222 +4835,4 @@ footer > section.rounded-2xl {
 .review-signal-card,
 .final-review-kpi-card {
   border-radius: var(--radius-container-sm);
-}
-
-@media print {
-  @page {
-    margin: 0.42in;
-    size: letter;
-  }
-
-  html,
-  body {
-    background: white !important;
-    color: #1f3347 !important;
-    min-width: 0;
-  }
-
-  body > :not(.assessors-report-print-layer) {
-    display: none !important;
-  }
-
-  .assessors-report-print-layer {
-    display: block !important;
-  }
-
-  .assessors-report {
-    color: #1f3347;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 8.8pt;
-    line-height: 1.25;
-  }
-
-  .assessors-report * {
-    box-shadow: none !important;
-  }
-
-  .assessors-report-header {
-    align-items: flex-start;
-    border-bottom: 2px solid #1f3347;
-    display: flex;
-    gap: 0.25in;
-    justify-content: space-between;
-    margin-bottom: 0.12in;
-    padding-bottom: 0.12in;
-  }
-
-  .assessors-report-kicker {
-    color: #48657f;
-    font-size: 7.5pt;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    margin: 0 0 0.03in;
-    text-transform: uppercase;
-  }
-
-  .assessors-report h1 {
-    color: #1f3347;
-    font-size: 18pt;
-    line-height: 1.05;
-    margin: 0;
-  }
-
-  .assessors-report-subtitle {
-    color: #475569;
-    font-size: 8.5pt;
-    margin: 0.05in 0 0;
-    max-width: 5.8in;
-  }
-
-  .assessors-report-generated {
-    border: 1px solid #cbd5e1;
-    min-width: 1.65in;
-    padding: 0.06in 0.08in;
-    text-align: right;
-  }
-
-  .assessors-report-generated p {
-    color: #64748b;
-    font-size: 7.3pt;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    margin: 0;
-    text-transform: uppercase;
-  }
-
-  .assessors-report-generated strong {
-    display: block;
-    font-size: 8.4pt;
-    margin-top: 0.03in;
-  }
-
-  .assessors-report-identity {
-    display: grid;
-    gap: 0.08in;
-    grid-template-columns: minmax(0, 1.45fr) minmax(1.9in, 0.55fr);
-    margin-bottom: 0.1in;
-  }
-
-  .assessors-report-section {
-    break-inside: avoid;
-    margin-top: 0.11in;
-    page-break-inside: avoid;
-  }
-
-  .assessors-report-section h2 {
-    background: #1f3347;
-    color: white;
-    font-size: 9.3pt;
-    letter-spacing: 0.015em;
-    margin: 0 0 0.055in;
-    padding: 0.045in 0.065in;
-    text-transform: uppercase;
-  }
-
-  .assessors-report-subsection {
-    break-inside: avoid;
-    margin-bottom: 0.08in;
-    page-break-inside: avoid;
-  }
-
-  .assessors-report-subsection h3 {
-    border-bottom: 1px solid #94a3b8;
-    color: #1f3347;
-    font-size: 8.7pt;
-    margin: 0 0 0.035in;
-    padding-bottom: 0.025in;
-  }
-
-  .assessors-report-grid {
-    display: grid;
-    gap: 0.08in;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .assessors-report-grid-wide-left {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  }
-
-  .assessors-report-table {
-    border-collapse: collapse;
-    page-break-inside: auto;
-    width: 100%;
-  }
-
-  .assessors-report-table th,
-  .assessors-report-table td {
-    border: 1px solid #cbd5e1;
-    padding: 0.032in 0.045in;
-    text-align: left;
-    vertical-align: top;
-  }
-
-  .assessors-report-table thead th {
-    background: #e8eef4;
-    color: #1f3347;
-    font-size: 7.4pt;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-
-  .assessors-report-key-value th {
-    background: #f8fafc;
-    color: #475569;
-    font-size: 7.3pt;
-    font-weight: 700;
-    width: 34%;
-  }
-
-  .assessors-report-key-value td {
-    font-weight: 600;
-  }
-
-  .assessors-report-value-table th {
-    width: 48%;
-  }
-
-  .assessors-report-caution,
-  .assessors-report-note,
-  .assessors-report-tax-statement {
-    border: 1px solid #cbd5e1;
-    color: #334155;
-    margin: 0 0 0.07in;
-    padding: 0.055in 0.07in;
-  }
-
-  .assessors-report-tax-statement {
-    background: #f8fafc;
-    font-weight: 700;
-  }
-
-  .assessors-report-summary-box {
-    border: 2px solid #1f3347;
-    padding: 0.08in;
-  }
-
-  .assessors-report-summary-posture {
-    background: #e8eef4;
-    color: #1f3347;
-    font-size: 10pt;
-    font-weight: 700;
-    margin: 0 0 0.08in;
-    padding: 0.06in 0.07in;
-  }
-
-  .assessors-report-list {
-    margin: 0;
-    padding-left: 0.16in;
-  }
-
-  .assessors-report-list li {
-    margin-bottom: 0.025in;
-  }
-
-  .assessors-report-footer {
-    border-top: 1px solid #cbd5e1;
-    color: #64748b;
-    font-size: 7.1pt;
-    margin-top: 0.12in;
-    padding-top: 0.05in;
-  }
 }
