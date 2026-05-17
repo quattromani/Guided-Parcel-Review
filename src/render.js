@@ -185,11 +185,11 @@ function renderValueTaxHistoryShell() {
           <div class="mobile-support-content">
             <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
             <p class="mt-1 text-sm text-slate-600">
-                Current values and prior final tax bills are kept together here so timing is clear.
-                Effective tax rate (ETR) compares final taxes paid with assessed value after levy, credits, and exemptions are reflected in the bill.
+                Compare assessed value, final taxes paid, and effective tax rate (ETR) year by year.
+                The table shows how value movement relates to tax bills and the final rate after levies, credits, and exemptions are reflected.
             </p>
             <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-              <table class="min-w-full divide-y divide-slate-200 text-sm">
+              <table class="value-tax-history-table min-w-full divide-y divide-slate-200 text-sm">
                 <thead>
                   <tr>
                     <th class="px-3 py-2 text-left font-semibold">Year</th>
@@ -2472,11 +2472,19 @@ function initJumpLinks() {
 
 function renderHistoryTable(data, recordCard) {
   const rows = sortHistoryDescending(data.taxpayerHistory);
+  const heatRanges = {
+    assessedValue: historyHeatRange(rows, row => row.assessedValue),
+    taxes: historyHeatRange(rows, row => row.taxes),
+    etr: historyHeatRange(rows, row => calculateEtr(row))
+  };
 
   document.getElementById("historyRows").innerHTML = rows.map((row, index) => {
     const etr = calculateEtr(row);
     const isCurrentNotice = row.status === "assessment_notice";
     const isPending = row.status === "pending";
+    const assessedHeat = historyHeatStyle(row.assessedValue, heatRanges.assessedValue, "--semantic-value");
+    const taxesHeat = historyHeatStyle(row.taxes, heatRanges.taxes, "--semantic-tax");
+    const etrHeat = historyHeatStyle(etr, heatRanges.etr, "--semantic-etr");
 
     return `
       <tr class="${isCurrentNotice || isPending ? "pending-data-row" : index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
@@ -2487,9 +2495,9 @@ function renderHistoryTable(data, recordCard) {
             ${isPending ? `<span class="pending-status-pill">Pending</span>` : ""}
           </div>
         </td>
-        <td class="px-3 py-2 text-right">${formatNullableMoney(row.assessedValue)}</td>
-        <td class="px-3 py-2 text-right">${row.taxes === null ? "Pending" : formatNullableMoney(row.taxes, true)}</td>
-        <td class="px-3 py-2 text-right font-medium">${etr === null ? "Pending" : formatNullablePercent(etr)}</td>
+        <td class="history-heat-cell px-3 py-2 text-right"${assessedHeat}>${formatNullableMoney(row.assessedValue)}</td>
+        <td class="history-heat-cell px-3 py-2 text-right"${taxesHeat}>${row.taxes === null ? "Pending" : formatNullableMoney(row.taxes, true)}</td>
+        <td class="history-heat-cell px-3 py-2 text-right font-medium"${etrHeat}>${etr === null ? "Pending" : formatNullablePercent(etr)}</td>
       </tr>
     `;
   }).join("");
@@ -2497,6 +2505,31 @@ function renderHistoryTable(data, recordCard) {
   document.querySelectorAll("[data-property-record-source]").forEach(element => {
     element.textContent = propertyRecordSourceText(data, recordCard);
   });
+}
+
+function historyHeatRange(rows, valueForRow) {
+  const values = rows
+    .map(valueForRow)
+    .filter(value => Number.isFinite(value));
+
+  if (values.length === 0) return null;
+
+  return {
+    min: Math.min(...values),
+    max: Math.max(...values)
+  };
+}
+
+function historyHeatStyle(value, range, colorVariable) {
+  if (!range || !Number.isFinite(value)) return "";
+
+  const spread = range.max - range.min;
+  const intensity = spread === 0 ? 0.55 : (value - range.min) / spread;
+  const bounded = Math.min(1, Math.max(0, intensity));
+  const alpha = 0.08 + (bounded * 0.28);
+  const stop = 18 + (bounded * 74);
+
+  return ` style="--history-heat-color: var(${colorVariable}); --history-heat-alpha: ${alpha.toFixed(3)}; --history-heat-stop: ${Math.round(stop)}%;"`;
 }
 
 function annualizedChange(startValue, endValue, years) {
@@ -2702,7 +2735,7 @@ function renderTaxHistoryTable(data) {
     taxHistoryDisplayLevyRow(levyByYear.get(year), statementsByYear.get(year))
   ]));
 
-  container.innerHTML = years.map(year => {
+  container.innerHTML = years.map((year, index) => {
     const levyRow = displayLevyByYear.get(year);
     const priorLevyRow = displayLevyByYear.get(year - 1);
     const statement = statementsByYear.get(year);
@@ -2710,12 +2743,10 @@ function renderTaxHistoryTable(data) {
     const effectiveTaxRate = statement && statement.assessedValue && netTaxes
       ? netTaxes / statement.assessedValue
       : statement?.derived?.netEffectiveTaxRate ?? null;
-    const heatColor = statementBurdenHeatColor(netTaxes, statements);
-    const pendingClass = levyRow?.status === "pending" ? "pending-data-row" : "";
-    const rowStyle = heatColor === "transparent" ? "" : ` style="background-color: ${heatColor};"`;
+    const rowClass = levyRow?.status === "pending" ? "pending-data-row" : index % 2 === 0 ? "bg-white" : "bg-slate-50";
 
     return `
-      <tr class="${pendingClass}"${rowStyle}>
+      <tr class="${rowClass}">
         <th scope="row" class="px-2 py-2 text-left font-semibold text-slate-700 sm:px-3">${year}</th>
         <td class="px-2 py-2 text-right font-medium sm:px-3">${taxHistoryLevyDisplay(levyRow)}</td>
         <td class="tax-history-change-column px-2 py-2 text-center sm:px-3">${levyMovementPill(levyRow, priorLevyRow)}</td>
@@ -2827,24 +2858,6 @@ function statementTotalCredits(statement) {
   }
 
   return Math.abs(Object.values(statement.credits || {}).reduce((sum, credit) => sum + (credit?.amount || 0), 0));
-}
-
-function statementBurdenHeatColor(netTaxes, statements) {
-  const values = statements
-    .map(statement => statement.netAmountDue ?? statement.totalTaxesDue)
-    .filter(value => value !== null && value !== undefined);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const range = max - min;
-
-  if (!range || netTaxes === null || netTaxes === undefined) {
-    return "transparent";
-  }
-
-  const intensity = (netTaxes - min) / range;
-  const hue = 145 - (intensity * 140);
-  const alpha = 0.04 + (intensity * 0.09);
-  return `hsla(${hue.toFixed(0)}, 62%, 42%, ${alpha.toFixed(3)})`;
 }
 
 function renderLevyTable(data) {

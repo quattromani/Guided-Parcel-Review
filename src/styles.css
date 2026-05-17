@@ -3309,6 +3309,29 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   padding: 1rem 1.25rem;
 }
 
+.guided-completion-handoff {
+  background: rgb(var(--color-green-soft));
+  border-radius: var(--radius-container-lg);
+  box-shadow: inset 0 0 0 1px rgb(var(--color-green) / 0.22);
+  padding: 1rem 1.25rem;
+}
+
+.guided-completion-handoff h2 {
+  color: rgb(var(--color-slate-700));
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-top: 0.15rem;
+}
+
+.guided-completion-handoff p:last-child {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-top: 0.35rem;
+  max-width: 58rem;
+}
+
 .property-report-download-card h2 {
   color: rgb(var(--color-slate-700));
   font-size: 1.125rem;
@@ -4402,6 +4425,36 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .tax-burden-table {
   border-collapse: separate;
   border-spacing: 0;
+}
+
+.value-tax-history-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.value-tax-history-table tbody tr:not(.pending-data-row) > td {
+  background-color: rgb(var(--color-blue-soft) / 0.30);
+}
+
+.value-tax-history-table tbody tr:not(.pending-data-row):nth-child(even) > td {
+  background-color: rgb(var(--color-blue-soft) / 0.45);
+}
+
+.value-tax-history-table .history-heat-cell {
+  --history-heat-alpha: 0;
+  --history-heat-color: var(--color-secondary);
+  --history-heat-stop: 0%;
+  background-image: linear-gradient(
+    90deg,
+    rgb(var(--history-heat-color) / var(--history-heat-alpha)) 0 var(--history-heat-stop),
+    transparent var(--history-heat-stop) 100%
+  );
+  background-repeat: no-repeat;
+  font-variant-numeric: tabular-nums;
+}
+
+.value-tax-history-table .history-heat-cell + .history-heat-cell {
+  box-shadow: inset 1px 0 0 rgb(var(--color-blue) / 0.05);
 }
 
 .tax-history-levy-value {

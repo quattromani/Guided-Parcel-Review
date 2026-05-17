@@ -401,6 +401,12 @@ function installFinalSummary(data, context = {}) {
       <p>If something appears incomplete or materially different, confirm it with the assessor or other governing office. If everything appears generally consistent, the useful outcome may simply be that the property owner understands the record, value movement, and tax context more clearly.</p>
     </article>
 
+    <aside class="guided-completion-handoff">
+      <p class="guided-kicker">Review complete</p>
+      <h2>You have reached the end of the guided review.</h2>
+      <p>The path has walked through the record, value movement, equalization context, tax context, and review signals. A property report is available below if a concise reference copy would be useful.</p>
+    </aside>
+
     <article class="property-report-download-card">
       <div>
         <p class="guided-kicker">Property report</p>
