@@ -618,7 +618,7 @@ function propertySwitcherOptionGroups(propertySwitcher, snapshotModel) {
   const groups = new Map([
     ["Residential Samples", []],
     ["Agricultural Samples", []],
-    ["Commercial Samples", []],
+    ["Commercial / Industrial Samples", []],
     ["Mixed / Special Use Samples", []]
   ]);
   const options = propertySwitcherOptions(propertySwitcher, snapshotModel);
@@ -662,7 +662,7 @@ function switcherGroupLabel(value) {
 
   if (normalized.includes("res")) return "Residential Samples";
   if (normalized.includes("ag") || normalized.includes("farm")) return "Agricultural Samples";
-  if (normalized.includes("comm")) return "Commercial Samples";
+  if (normalized.includes("comm") || normalized.includes("industrial")) return "Commercial / Industrial Samples";
 
   return "Mixed / Special Use Samples";
 }
@@ -679,6 +679,7 @@ function switcherClassLabel(value) {
 
   if (normalized.includes("ag") || normalized.includes("farm")) return "Farm/Ag";
   if (normalized.includes("comm")) return "Commercial";
+  if (normalized.includes("industrial")) return "Industrial";
   if (normalized.includes("res")) return "Residential";
 
   return value || "Property";

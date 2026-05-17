@@ -1,0 +1,1127 @@
+{
+  "source": {
+    "sourceType": "property_record",
+    "system": "GWorks Public Access",
+    "displayCitation": "Gage County Assessor GWorks property report",
+    "county": "Gage County",
+    "reportName": "Gage County Assessor property report",
+    "recordType": "GWORKS_PROPERTY_REPORT",
+    "printedAt": "2026-05-17T00:00:00Z",
+    "sourceImages": [
+      "assets/images/008716000_1.jpg",
+      "assets/images/008716000_2.jpg"
+    ],
+    "notes": "Parsed from the GWorks PDF report exported 2026-05-17, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, and levy totals added from Nebraska Taxes Online detail modals. The GWorks export includes parcel identity, current/prior value, tax levy, land row, residential datasheet, dwelling data, outbuilding data, and embedded photo/sketch images. It does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
+  },
+  "guidedSnapshot": {
+    "snapshotYear": 2025,
+    "latestFinalTaxYear": 2025,
+    "assets": {
+      "photo": "assets/images/008716000_1.jpg",
+      "sketch": "assets/images/008716000_2.jpg",
+      "additionalPhotos": []
+    },
+    "parcel": {
+      "parcelId": "008716000",
+      "mapNumber": "8716000",
+      "stateGeoCode": "4405-00-0-17015-019-0000",
+      "owner": "PARRISH, JUNIOR L & DOROTHY M",
+      "mailingAddress": "PO BOX 274, WYMORE, NE 68466",
+      "situsAddress": "00214 N 13TH",
+      "countyName": "GAGE",
+      "taxDistrict": "156",
+      "schoolDistrict": "SCHOOL 1 WYMORE, 34-0001",
+      "accountType": "Residential",
+      "legalDescription": "0 2 7 LOTS 10-12 BLK 19 ASHBY'S ADD"
+    },
+    "classification": {
+      "status": "Improved",
+      "location": "Urban",
+      "propertyClass": "Residential",
+      "citySize": "800-2,500",
+      "zoning": "Single Family",
+      "lotSize": "20,001 sq. ft. - .99 ac."
+    },
+    "residential": {
+      "style": "100% One Story",
+      "yearBuilt": 1960,
+      "buildingSize": 1008,
+      "basementSize": 1008,
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "plumbingFixtures": 8,
+      "quality": "Average",
+      "condition": "Average",
+      "exterior": "100% Frame, Siding, Wood",
+      "heatingCooling": "100% Warmed & Cooled Air",
+      "garage1": "Attached Garage (SF), 624 sq. ft.",
+      "minFinish": 0,
+      "partFinish": 0
+    },
+    "taxpayerHistory": [
+      {
+        "year": 2019,
+        "assessedValue": 49465,
+        "taxes": 1232.58,
+        "status": "tax-statement",
+        "assessmentSource": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "year": 2020,
+        "assessedValue": 54110,
+        "taxes": 1332.66,
+        "status": "tax-statement",
+        "assessmentSource": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "year": 2021,
+        "assessedValue": 54110,
+        "taxes": 1329.68,
+        "status": "tax-statement",
+        "assessmentSource": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "year": 2022,
+        "assessedValue": 59220,
+        "taxes": 1393.3,
+        "status": "tax-statement",
+        "assessmentSource": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "year": 2023,
+        "assessedValue": 68215,
+        "taxes": 1571.42,
+        "status": "tax-statement",
+        "assessmentSource": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "year": 2024,
+        "assessedValue": 68215,
+        "taxes": 1260.66,
+        "status": "tax-statement",
+        "assessmentSource": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "year": 2025,
+        "assessedValue": 80335,
+        "taxes": 1267.4,
+        "status": "partially-paid",
+        "assessmentSource": "Nebraska Taxes Online statement detail modal."
+      }
+    ],
+    "taxStatements": [
+      {
+        "taxYear": 2019,
+        "statementNumber": "9607",
+        "statementType": "REAL",
+        "totalTaxesDue": 1232.58,
+        "grossTaxAmount": 1284.1,
+        "netAmountDue": 1232.58,
+        "totalPaid": 1232.58,
+        "taxDue": 0,
+        "assessedValue": 49465,
+        "credits": {
+          "homestead": {
+            "value": 0,
+            "amount": 0
+          },
+          "nonAgTax": {
+            "value": null,
+            "amount": -51.52
+          },
+          "agLandTax": {
+            "value": null,
+            "amount": 0
+          },
+          "schoolTax": {
+            "value": null,
+            "amount": 0
+          }
+        },
+        "derived": {
+          "grossLevyRate": 0.02595984,
+          "netEffectiveTaxRate": 0.024918225007581115,
+          "totalCreditAmount": -51.52
+        },
+        "sourceNote": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "taxYear": 2020,
+        "statementNumber": "9653",
+        "statementType": "REAL",
+        "totalTaxesDue": 1332.66,
+        "grossTaxAmount": 1387.96,
+        "netAmountDue": 1332.66,
+        "totalPaid": 1332.66,
+        "taxDue": 0,
+        "assessedValue": 54110,
+        "credits": {
+          "homestead": {
+            "value": 0,
+            "amount": 0
+          },
+          "nonAgTax": {
+            "value": null,
+            "amount": -55.3
+          },
+          "agLandTax": {
+            "value": null,
+            "amount": 0
+          },
+          "schoolTax": {
+            "value": null,
+            "amount": 0
+          }
+        },
+        "derived": {
+          "grossLevyRate": 0.02565071,
+          "netEffectiveTaxRate": 0.02462871927554981,
+          "totalCreditAmount": -55.3
+        },
+        "sourceNote": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "taxYear": 2021,
+        "statementNumber": "9686",
+        "statementType": "REAL",
+        "totalTaxesDue": 1329.68,
+        "grossTaxAmount": 1387.88,
+        "netAmountDue": 1329.68,
+        "totalPaid": 1329.68,
+        "taxDue": 0,
+        "assessedValue": 54110,
+        "credits": {
+          "homestead": {
+            "value": 0,
+            "amount": 0
+          },
+          "nonAgTax": {
+            "value": null,
+            "amount": -58.2
+          },
+          "agLandTax": {
+            "value": null,
+            "amount": 0
+          },
+          "schoolTax": {
+            "value": null,
+            "amount": 0
+          }
+        },
+        "derived": {
+          "grossLevyRate": 0.025649190000000002,
+          "netEffectiveTaxRate": 0.024573646276104234,
+          "totalCreditAmount": -58.2
+        },
+        "sourceNote": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "taxYear": 2022,
+        "statementNumber": "9702",
+        "statementType": "REAL",
+        "totalTaxesDue": 1393.3,
+        "grossTaxAmount": 1456.42,
+        "netAmountDue": 1393.3,
+        "totalPaid": 1393.3,
+        "taxDue": 0,
+        "assessedValue": 59220,
+        "credits": {
+          "homestead": {
+            "value": 0,
+            "amount": 0
+          },
+          "nonAgTax": {
+            "value": null,
+            "amount": -63.12
+          },
+          "agLandTax": {
+            "value": null,
+            "amount": 0
+          },
+          "schoolTax": {
+            "value": null,
+            "amount": 0
+          }
+        },
+        "derived": {
+          "grossLevyRate": 0.02459351,
+          "netEffectiveTaxRate": 0.023527524484971293,
+          "totalCreditAmount": -63.12
+        },
+        "sourceNote": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "taxYear": 2023,
+        "statementNumber": "12094",
+        "statementType": "REAL",
+        "totalTaxesDue": 1571.42,
+        "grossTaxAmount": 1647.34,
+        "netAmountDue": 1571.42,
+        "totalPaid": 1571.42,
+        "taxDue": 0,
+        "assessedValue": 68215,
+        "credits": {
+          "homestead": {
+            "value": 0,
+            "amount": 0
+          },
+          "nonAgTax": {
+            "value": null,
+            "amount": -75.92
+          },
+          "agLandTax": {
+            "value": null,
+            "amount": 0
+          },
+          "schoolTax": {
+            "value": null,
+            "amount": 0
+          }
+        },
+        "derived": {
+          "grossLevyRate": 0.02414909,
+          "netEffectiveTaxRate": 0.02303628234259327,
+          "totalCreditAmount": -75.92
+        },
+        "sourceNote": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "taxYear": 2024,
+        "statementNumber": "12126",
+        "statementType": "REAL",
+        "totalTaxesDue": 1260.66,
+        "grossTaxAmount": 1547.3,
+        "netAmountDue": 1260.66,
+        "totalPaid": 1260.9,
+        "taxDue": 0,
+        "assessedValue": 68215,
+        "credits": {
+          "homestead": {
+            "value": 0,
+            "amount": 0
+          },
+          "nonAgTax": {
+            "value": null,
+            "amount": -81.74
+          },
+          "agLandTax": {
+            "value": null,
+            "amount": 0
+          },
+          "schoolTax": {
+            "value": null,
+            "amount": -204.9
+          }
+        },
+        "derived": {
+          "grossLevyRate": 0.02268262,
+          "netEffectiveTaxRate": 0.018480686066114492,
+          "totalCreditAmount": -286.64
+        },
+        "sourceNote": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "taxYear": 2025,
+        "statementNumber": "11079",
+        "statementType": "REAL",
+        "totalTaxesDue": 1267.4,
+        "grossTaxAmount": 1580.84,
+        "netAmountDue": 1267.4,
+        "totalPaid": 633.7,
+        "taxDue": 633.7,
+        "dueDate": "2026-09-01",
+        "assessedValue": 80335,
+        "credits": {
+          "homestead": {
+            "value": 0,
+            "amount": 0
+          },
+          "nonAgTax": {
+            "value": null,
+            "amount": -95.6
+          },
+          "agLandTax": {
+            "value": null,
+            "amount": 0
+          },
+          "schoolTax": {
+            "value": null,
+            "amount": -217.84
+          }
+        },
+        "derived": {
+          "grossLevyRate": 0.01967802,
+          "netEffectiveTaxRate": 0.01577643617352337,
+          "totalCreditAmount": -313.44
+        },
+        "sourceNote": "Nebraska Taxes Online statement detail modal."
+      }
+    ],
+    "districtLevyHistory": [
+      {
+        "year": 2025,
+        "levy": 1.967802,
+        "status": "statement-detail",
+        "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
+      },
+      {
+        "year": 2024,
+        "levy": 2.268262,
+        "status": "statement-detail",
+        "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
+      },
+      {
+        "year": 2023,
+        "levy": 2.414909,
+        "status": "statement-detail",
+        "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
+      },
+      {
+        "year": 2022,
+        "levy": 2.459351,
+        "status": "statement-detail",
+        "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
+      },
+      {
+        "year": 2021,
+        "levy": 2.564919,
+        "status": "statement-detail",
+        "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
+      },
+      {
+        "year": 2020,
+        "levy": 2.565071,
+        "status": "statement-detail",
+        "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
+      },
+      {
+        "year": 2019,
+        "levy": 2.595984,
+        "status": "statement-detail",
+        "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
+      }
+    ],
+    "assessedValueBreakdown": [
+      {
+        "year": 2025,
+        "dwelling": 75205,
+        "land": 2660,
+        "outbuilding": 2470,
+        "total": 80335,
+        "source": "Nebraska Taxes Online detail modal"
+      },
+      {
+        "year": 2024,
+        "dwelling": 65215,
+        "land": 3000,
+        "outbuilding": 0,
+        "total": 68215,
+        "source": "Nebraska Taxes Online detail modal"
+      },
+      {
+        "year": 2023,
+        "dwelling": 65215,
+        "land": 3000,
+        "outbuilding": 0,
+        "total": 68215,
+        "source": "Nebraska Taxes Online detail modal"
+      },
+      {
+        "year": 2022,
+        "dwelling": 56220,
+        "land": 3000,
+        "outbuilding": 0,
+        "total": 59220,
+        "source": "Nebraska Taxes Online detail modal"
+      },
+      {
+        "year": 2021,
+        "dwelling": 51110,
+        "land": 3000,
+        "outbuilding": 0,
+        "total": 54110,
+        "source": "Nebraska Taxes Online detail modal"
+      },
+      {
+        "year": 2020,
+        "dwelling": 51110,
+        "land": 3000,
+        "outbuilding": 0,
+        "total": 54110,
+        "source": "Nebraska Taxes Online detail modal"
+      },
+      {
+        "year": 2019,
+        "dwelling": 46465,
+        "land": 3000,
+        "outbuilding": 0,
+        "total": 49465,
+        "source": "Nebraska Taxes Online detail modal"
+      }
+    ],
+    "latestFinalLevyComponents": [
+      {
+        "description": "COUNTY GENERAL",
+        "rate": 0.234958,
+        "group": "County"
+      },
+      {
+        "description": "SCHOOL 1 WYMORE",
+        "rate": 1.012112,
+        "group": "School"
+      },
+      {
+        "description": "ESU #5",
+        "rate": 0.015,
+        "group": "Education service"
+      },
+      {
+        "description": "SCC GENERAL",
+        "rate": 0.02,
+        "group": "Community college"
+      },
+      {
+        "description": "BIG BLUE NRD",
+        "rate": 0.032155,
+        "group": "Natural resources"
+      },
+      {
+        "description": "WYMORE CITY",
+        "rate": 0.62341,
+        "group": "City"
+      },
+      {
+        "description": "BLUE SPGS/WYM TWNSHP",
+        "rate": 0.026774,
+        "group": "Township"
+      },
+      {
+        "description": "AGRICULTURE",
+        "rate": 0.002759,
+        "group": "Other"
+      },
+      {
+        "description": "HISTORICAL",
+        "rate": 0.000634,
+        "group": "Other"
+      }
+    ],
+    "dwellingData": [
+      {
+        "description": "One-story dwelling",
+        "units": "1,008 sq. ft.",
+        "yearBuilt": 1960,
+        "value": 75205
+      },
+      {
+        "description": "Knee-wall porch",
+        "units": 196,
+        "value": 12620
+      },
+      {
+        "description": "Open slab porch/step",
+        "units": 60,
+        "value": 1335
+      }
+    ],
+    "outbuildingData": [
+      {
+        "description": "Storage building",
+        "units": 288,
+        "value": 2470
+      }
+    ],
+    "landInformation": [
+      {
+        "description": "Level residential all",
+        "width": 150,
+        "depth": 140,
+        "lotSize": 1.33,
+        "value": 2660
+      }
+    ],
+    "propertyNotes": [],
+    "sourcePolicy": {
+      "canonicalRecord": "Gage County Assessor GWorks property report",
+      "note": "Assessment facts come from the GWorks export and Nebraska Taxes Online statement detail modals. Tax statement history, credits, payment, balance, assessed valuation components, and year-specific levy distributions come from Nebraska Taxes Online for the 2019-current cycle. Missing Marshall & Swift details are represented as unavailable instead of inferred."
+    },
+    "sources": [
+      {
+        "label": "GWorks property report PDF",
+        "value": "Gage County Assessor property report exported 2026-05-17"
+      },
+      {
+        "label": "Nebraska Taxes Online",
+        "value": "County/3/Property/0008716000/Type/1/TaxYear/2025 statement history and detail modals, captured 2026-05-17"
+      }
+    ]
+  },
+  "parcelIdentifiers": {
+    "parcelId": "008716000",
+    "cardFilePerm": null,
+    "cadastralId": "2-63-76",
+    "padClassCode": null,
+    "stateGeo": "4405-00-0-17015-019-0000",
+    "appraiserId": null,
+    "taxOnlineParcelId": "0008716000"
+  },
+  "locationModel": {
+    "valuationGroup": "18 - Wymore",
+    "marketArea": "Wymore",
+    "marketGroup": "Small Town",
+    "neighborhood": null,
+    "locationGroup": "Wymore",
+    "model": "Residential town lot",
+    "method": "GWorks public export"
+  },
+  "currentCardValue": {
+    "previous": {
+      "buildings": 65215,
+      "improvement": 0,
+      "landLots": 3000,
+      "total": 68215
+    },
+    "current": {
+      "buildings": 75205,
+      "improvement": 2470,
+      "landLots": 2660,
+      "total": 80335,
+      "note": "2025 assessed values from the GWorks export and Nebraska Taxes Online detail modal."
+    }
+  },
+  "propertyValuation": {
+    "buildings": 75205,
+    "improvement": 2470,
+    "landLot": 2660,
+    "total": 80335
+  },
+  "residentialInformation": {
+    "type": "Single Family",
+    "quality": "Average",
+    "condition": "Average",
+    "architecture": null,
+    "baseTotalArea": "1,008",
+    "style": "100% One Story",
+    "exteriorWall": "100% Frame, Siding, Wood",
+    "heatingCooling": "100% Warmed & Cooled Air",
+    "roofCover": null,
+    "areaOfSlab": null,
+    "areaOfCrawl": null,
+    "fixtureRoughin": "8",
+    "bedBathroom": "3 / 2.00",
+    "basementArea": "1,008"
+  },
+  "landModel": {
+    "description": "Residential land row from GWorks public export",
+    "lotSize": 21000,
+    "recordedLotValue": 2660,
+    "frontage": 150,
+    "cutoffSchedule": []
+  },
+  "garageCostLines": [
+    {
+      "description": "Attached Garage (SF)",
+      "units": 624,
+      "yearBuilt": null,
+      "cost": null
+    }
+  ],
+  "miscImprovements": [
+    {
+      "description": "Knee-wall porch",
+      "units": 196,
+      "value": 12620
+    },
+    {
+      "description": "Open slab porch/step",
+      "units": 60,
+      "value": 1335
+    },
+    {
+      "description": "Storage building",
+      "units": 288,
+      "value": 2470
+    }
+  ],
+  "valuationHistory": [
+    {
+      "year": 2025,
+      "statement": "11079",
+      "district": "156",
+      "building": 75205,
+      "other": 2470,
+      "land": 2660,
+      "total": 80335,
+      "exempt": 0,
+      "taxable": 80335,
+      "totalTax": 1267.4,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2024,
+      "statement": "12126",
+      "district": "156",
+      "building": 65215,
+      "other": 0,
+      "land": 3000,
+      "total": 68215,
+      "exempt": 0,
+      "taxable": 68215,
+      "totalTax": 1260.66,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2023,
+      "statement": "12094",
+      "district": "156",
+      "building": 65215,
+      "other": 0,
+      "land": 3000,
+      "total": 68215,
+      "exempt": 0,
+      "taxable": 68215,
+      "totalTax": 1571.42,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2022,
+      "statement": "9702",
+      "district": "156",
+      "building": 56220,
+      "other": 0,
+      "land": 3000,
+      "total": 59220,
+      "exempt": 0,
+      "taxable": 59220,
+      "totalTax": 1393.3,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2021,
+      "statement": "9686",
+      "district": "156",
+      "building": 51110,
+      "other": 0,
+      "land": 3000,
+      "total": 54110,
+      "exempt": 0,
+      "taxable": 54110,
+      "totalTax": 1329.68,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2020,
+      "statement": "9653",
+      "district": "156",
+      "building": 51110,
+      "other": 0,
+      "land": 3000,
+      "total": 54110,
+      "exempt": 0,
+      "taxable": 54110,
+      "totalTax": 1332.66,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2019,
+      "statement": "9607",
+      "district": "156",
+      "building": 46465,
+      "other": 0,
+      "land": 3000,
+      "total": 49465,
+      "exempt": 0,
+      "taxable": 49465,
+      "totalTax": 1232.58,
+      "penaltyTax": 0
+    }
+  ],
+  "valuationReconciliation": {
+    "source": "GWorks public export and Nebraska Taxes Online detail modal",
+    "initialMipsTotal": null,
+    "finalAssessedTotal": 80335,
+    "finalDwellingValue": 75205,
+    "landLot": 2660,
+    "modeledDetailSubtotal": null,
+    "cardToFinalAdjustment": null,
+    "modelToFinalReconciliation": null,
+    "note": "The GWorks export gives value rollups and visible component rows, but not the Marshall & Swift cost/depreciation bridge used by older MIPS-style cards."
+  },
+  "ownershipHistory": [],
+  "reviewHistory": [],
+  "costApproach": {
+    "available": false,
+    "yearEffectiveAge": null,
+    "baseCost": null,
+    "adjustments": null,
+    "adjustedCost": null,
+    "rcn": null,
+    "totalMiscImprovements": null,
+    "garageCost": null,
+    "totalRcn": null,
+    "depreciation": {
+      "physicalPercent": null,
+      "functionalPercent": null,
+      "amount": null
+    },
+    "depreciatedMiscImprovements": null,
+    "depreciatedGarages": null,
+    "rcnld": null,
+    "adjustedRcnld": null,
+    "costPerSquareFoot": null,
+    "note": "Marshall & Swift-level cost details are not included in this GWorks PDF export."
+  },
+  "sourceExtract": {
+    "note": "This record preserves the official GWorks rows and Nebraska Taxes Online 2019-current statement details, assessed valuation components, credits, and tax history, while leaving deeper Marshall & Swift model details unavailable.",
+    "tables": [
+      {
+        "title": "GWorks Assessed Values",
+        "summary": "Current/prior values",
+        "columns": [
+          "Year",
+          "Total",
+          "Land",
+          "Outbuilding",
+          "Dwelling"
+        ],
+        "rows": [
+          [
+            "2025",
+            "$80,335",
+            "$2,660",
+            "$2,470",
+            "$75,205"
+          ],
+          [
+            "2024",
+            "$68,215",
+            "$3,000",
+            "$0",
+            "$65,215"
+          ]
+        ]
+      },
+      {
+        "title": "Nebraska Taxes Online Statement History",
+        "summary": "7 statement records / 2019-2025",
+        "columns": [
+          "Year",
+          "Statement",
+          "Type",
+          "Gross tax",
+          "Credits",
+          "Net tax",
+          "Total paid",
+          "Tax due"
+        ],
+        "rows": [
+          [
+            "2025",
+            "11079",
+            "REAL",
+            "$1,580.84",
+            "-$313.44",
+            "$1,267.40",
+            "$633.70",
+            "$633.70"
+          ],
+          [
+            "2024",
+            "12126",
+            "REAL",
+            "$1,547.30",
+            "-$286.64",
+            "$1,260.66",
+            "$1,260.90",
+            "$0.00"
+          ],
+          [
+            "2023",
+            "12094",
+            "REAL",
+            "$1,647.34",
+            "-$75.92",
+            "$1,571.42",
+            "$1,571.42",
+            "$0.00"
+          ],
+          [
+            "2022",
+            "9702",
+            "REAL",
+            "$1,456.42",
+            "-$63.12",
+            "$1,393.30",
+            "$1,393.30",
+            "$0.00"
+          ],
+          [
+            "2021",
+            "9686",
+            "REAL",
+            "$1,387.88",
+            "-$58.20",
+            "$1,329.68",
+            "$1,329.68",
+            "$0.00"
+          ],
+          [
+            "2020",
+            "9653",
+            "REAL",
+            "$1,387.96",
+            "-$55.30",
+            "$1,332.66",
+            "$1,332.66",
+            "$0.00"
+          ],
+          [
+            "2019",
+            "9607",
+            "REAL",
+            "$1,284.10",
+            "-$51.52",
+            "$1,232.58",
+            "$1,232.58",
+            "$0.00"
+          ]
+        ]
+      },
+      {
+        "title": "Nebraska Taxes Online Assessed Valuations",
+        "summary": "Building, land, and other by year",
+        "columns": [
+          "Year",
+          "Statement",
+          "Gross value",
+          "Building",
+          "Land",
+          "Other"
+        ],
+        "rows": [
+          [
+            "2025",
+            "11079",
+            "$80,335",
+            "$75,205",
+            "$2,660",
+            "$2,470"
+          ],
+          [
+            "2024",
+            "12126",
+            "$68,215",
+            "$65,215",
+            "$3,000",
+            "$0"
+          ],
+          [
+            "2023",
+            "12094",
+            "$68,215",
+            "$65,215",
+            "$3,000",
+            "$0"
+          ],
+          [
+            "2022",
+            "9702",
+            "$59,220",
+            "$56,220",
+            "$3,000",
+            "$0"
+          ],
+          [
+            "2021",
+            "9686",
+            "$54,110",
+            "$51,110",
+            "$3,000",
+            "$0"
+          ],
+          [
+            "2020",
+            "9653",
+            "$54,110",
+            "$51,110",
+            "$3,000",
+            "$0"
+          ],
+          [
+            "2019",
+            "9607",
+            "$49,465",
+            "$46,465",
+            "$3,000",
+            "$0"
+          ]
+        ]
+      },
+      {
+        "title": "2025 Tax Levy",
+        "summary": "9 levy rows",
+        "columns": [
+          "Description",
+          "Rate"
+        ],
+        "rows": [
+          [
+            "COUNTY GENERAL",
+            "0.23495800"
+          ],
+          [
+            "SCHOOL 1 WYMORE",
+            "1.01211200"
+          ],
+          [
+            "ESU #5",
+            "0.01500000"
+          ],
+          [
+            "SCC GENERAL",
+            "0.02000000"
+          ],
+          [
+            "BIG BLUE NRD",
+            "0.03215500"
+          ],
+          [
+            "WYMORE CITY",
+            "0.62341000"
+          ],
+          [
+            "BLUE SPGS/WYM TWNSHP",
+            "0.02677400"
+          ],
+          [
+            "AGRICULTURE",
+            "0.00275900"
+          ],
+          [
+            "HISTORICAL",
+            "0.00063400"
+          ]
+        ]
+      },
+      {
+        "title": "Land Information",
+        "summary": "150 x 140 / $2,660",
+        "columns": [
+          "Width",
+          "Depth",
+          "Description",
+          "Lot size"
+        ],
+        "rows": [
+          [
+            "150.00",
+            "140.00",
+            "LEVEL RESIDENTIAL ALL",
+            "1.33"
+          ]
+        ]
+      },
+      {
+        "title": "Residential Datasheet",
+        "summary": "1960 / 1,008 sq. ft.",
+        "columns": [
+          "Field",
+          "Value"
+        ],
+        "rows": [
+          [
+            "Zoning",
+            "Single Family"
+          ],
+          [
+            "Condition",
+            "Average"
+          ],
+          [
+            "Year Built",
+            "1960"
+          ],
+          [
+            "Style",
+            "100% One Story"
+          ],
+          [
+            "Exterior",
+            "100% Frame, Siding, Wood"
+          ],
+          [
+            "Bathrooms",
+            "2.00"
+          ],
+          [
+            "Bedrooms",
+            "3"
+          ],
+          [
+            "Heating/Cooling",
+            "100% Warmed & Cooled Air"
+          ],
+          [
+            "Plumbing Fixtures",
+            "8"
+          ],
+          [
+            "Basement Size",
+            "1,008 sq. ft"
+          ],
+          [
+            "Building Size",
+            "1,008 sq. ft"
+          ],
+          [
+            "Garage 1",
+            "Attached Garage(SF), 624 sq. ft"
+          ],
+          [
+            "Quality",
+            "Average"
+          ]
+        ]
+      },
+      {
+        "title": "Dwelling Data",
+        "summary": "2 visible component rows",
+        "columns": [
+          "Description",
+          "Units",
+          "Value"
+        ],
+        "rows": [
+          [
+            "KNEE-WALL PORCH",
+            "196",
+            "$12,620"
+          ],
+          [
+            "OPEN SL PRCH/STP",
+            "60",
+            "$1,335"
+          ]
+        ]
+      },
+      {
+        "title": "Outbuilding Data",
+        "summary": "1 storage building row",
+        "columns": [
+          "Description",
+          "Units",
+          "Year Built",
+          "Cost"
+        ],
+        "rows": [
+          [
+            "STORAGE BLDG",
+            "288",
+            "",
+            "$2,470"
+          ]
+        ]
+      }
+    ]
+  }
+}

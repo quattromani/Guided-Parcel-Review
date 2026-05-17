@@ -427,7 +427,7 @@ function getDefaultAssessmentClass(data, ratioData) {
   const rawClass = `${data.classification?.propertyClass ?? data.parcel?.accountType ?? ""}`.toLowerCase();
 
   if (rawClass.includes("ag") || rawClass.includes("farm")) return "agFarm";
-  if (rawClass.includes("comm")) return "commercial";
+  if (rawClass.includes("comm") || rawClass.includes("industrial")) return "commercial";
   if (rawClass.includes("res")) return "residential";
 
   return ratioData.classes[0]?.key ?? "residential";

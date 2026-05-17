@@ -1837,6 +1837,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   margin-left: auto;
   margin-right: auto;
   max-width: 80rem;
+  position: relative;
   width: 100%;
 }
 
@@ -1847,6 +1848,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   letter-spacing: 0;
   line-height: 1.2;
   margin: 0;
+  pointer-events: none;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1878,7 +1880,9 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   overflow-x: auto;
   overflow-y: visible;
   padding: 0.1rem 0 0.18rem;
+  position: relative;
   scrollbar-width: none;
+  z-index: 1;
 }
 
 .guided-path-track::-webkit-scrollbar {
@@ -2171,10 +2175,16 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     align-self: center;
     grid-column: 1;
     grid-row: 1;
+    opacity: 0.96;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
   }
 
   .guided-path-track {
-    grid-row: 2;
+    grid-row: 1;
+    padding-top: 1.35rem;
   }
 
   .guided-step-label {
