@@ -616,6 +616,7 @@ function propertySwitcherMarkup(propertySwitcher, snapshotModel) {
 
 function propertySwitcherOptionGroups(propertySwitcher, snapshotModel) {
   const groups = new Map([
+    ["Saline County sample", []],
     ["Residential Samples", []],
     ["Agricultural Samples", []],
     ["Commercial / Industrial Samples", []],
@@ -624,7 +625,7 @@ function propertySwitcherOptionGroups(propertySwitcher, snapshotModel) {
   const options = propertySwitcherOptions(propertySwitcher, snapshotModel);
 
   options.forEach(option => {
-    const groupLabel = switcherGroupLabel(option.propertyClass);
+    const groupLabel = switcherGroupLabel(option.propertyClass, option.county);
     groups.get(groupLabel).push(option);
   });
 
@@ -650,6 +651,7 @@ function propertySwitcherOptions(propertySwitcher, snapshotModel) {
 
       return {
         id: item.property.id,
+        county: item.property.county,
         propertyClass,
         selected: item.property.id === activePropertyId,
         label: `${situsNumber} • ${valuationGroup} • ${propertyClass}`
@@ -657,7 +659,9 @@ function propertySwitcherOptions(propertySwitcher, snapshotModel) {
     });
 }
 
-function switcherGroupLabel(value) {
+function switcherGroupLabel(value, county) {
+  if (`${county ?? ""}`.trim().toLowerCase() === "saline") return "Saline County sample";
+
   const normalized = `${value ?? ""}`.trim().toLowerCase();
 
   if (normalized.includes("res")) return "Residential Samples";
@@ -2845,9 +2849,9 @@ function renderLevyTable(data) {
     return `
       <tr>
         <td class="px-3 py-2 font-medium">${row.description}</td>
-        <td class="px-3 py-2 text-right">${row.rate.toFixed(8)}</td>
-        <td class="px-3 py-2 text-right">${percent.format(share)}</td>
-        <td class="px-3 py-2 text-right">${moneyCents.format(taxPer100k)}</td>
+        <td class="whitespace-nowrap px-3 py-2 text-right">${formatNullableLevy(row.rate)}</td>
+        <td class="whitespace-nowrap px-3 py-2 text-right">${percent.format(share)}</td>
+        <td class="whitespace-nowrap px-3 py-2 text-right">${moneyCents.format(taxPer100k)}</td>
       </tr>
     `;
   }).join("");
@@ -2856,9 +2860,9 @@ function renderLevyTable(data) {
   const totalRow = `
     <tr class="table-total-row font-semibold">
       <td class="px-3 py-3">Total levy</td>
-      <td class="px-3 py-3 text-right">${total.toFixed(8)}</td>
-      <td class="px-3 py-3 text-right">100.00%</td>
-      <td class="px-3 py-3 text-right">${moneyCents.format(totalTaxPer100k)}</td>
+      <td class="whitespace-nowrap px-3 py-3 text-right">${formatNullableLevy(total)}</td>
+      <td class="whitespace-nowrap px-3 py-3 text-right">100.00%</td>
+      <td class="whitespace-nowrap px-3 py-3 text-right">${moneyCents.format(totalTaxPer100k)}</td>
     </tr>
   `;
 

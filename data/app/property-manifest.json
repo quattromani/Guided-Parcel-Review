@@ -107,6 +107,28 @@
       "taxDistrict": "157",
       "recordCardPath": "data/property-records/mips/residential-011312000-record-card.json",
       "recordCardStatus": "available"
+    },
+    {
+      "id": "residential-011261600",
+      "label": "Residential GWorks record",
+      "propertyClass": "Residential",
+      "parcelId": "011261600",
+      "situsAddress": "1409 LAKESHORE",
+      "county": "gage",
+      "taxDistrict": "157",
+      "recordCardPath": "data/property-records/mips/residential-011261600-record-card.json",
+      "recordCardStatus": "available"
+    },
+    {
+      "id": "residential-0760023247",
+      "label": "Residential Saline GWorks record",
+      "propertyClass": "Residential",
+      "parcelId": "760023247",
+      "situsAddress": "123 WEST 7TH STREET",
+      "county": "saline",
+      "taxDistrict": "10",
+      "recordCardPath": "data/property-records/mips/residential-0760023247-record-card.json",
+      "recordCardStatus": "available"
     }
   ],
   "sharedData": {
@@ -125,6 +147,17 @@
         "schoolDistrictColorsPath": "data/counties/gage/school-district-colors.json",
         "taxDistrictAuthoritiesPath": "data/counties/gage/tax-district-authorities-2025.json",
         "valuationGroupsPath": "data/counties/gage/valuation-groups.json"
+      },
+      "saline": {
+        "label": "Saline County",
+        "assessmentRatioPath": "data/counties/saline/assessment-ratio-analysis.json",
+        "countyContextPath": "data/counties/saline/county-context.json",
+        "governingOfficePath": "data/counties/saline/governing-office.json",
+        "marketPositionStatisticsPath": "data/counties/saline/market-position-statistics-2026-saline.json",
+        "padRatioStatisticsPath": "data/counties/saline/pad-ratio-statistics-2026-saline.json",
+        "schoolDistrictColorsPath": "data/counties/saline/school-district-colors.json",
+        "taxDistrictAuthoritiesPath": "data/counties/saline/tax-district-authorities-2025.json",
+        "valuationGroupsPath": "data/counties/saline/valuation-groups.json"
       }
     },
     "standards": {

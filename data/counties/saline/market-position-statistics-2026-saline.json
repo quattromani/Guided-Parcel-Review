@@ -1,0 +1,445 @@
+{
+  "source": {
+    "title": "2026 Reports and Opinions of the Property Tax Administrator - Saline County",
+    "county": "Saline",
+    "countyNumber": "76",
+    "state": "Nebraska",
+    "taxYear": 2026,
+    "reportDate": "2026-04-07",
+    "sourceUrl": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2026/76Saline.pdf",
+    "extractedFromPages": {
+      "residential": [
+        22
+      ],
+      "commercial": [
+        33
+      ],
+      "agricultural": [
+        37
+      ]
+    },
+    "notes": [
+      "Residential and commercial valuation groups are assessor-defined local comparison groups.",
+      "Agricultural data is organized by market area.",
+      "Median ratio and COD are the primary scatter dimensions.",
+      "PRD, weighted mean, mean, count, average sale price, average assessed value, min/max, and confidence intervals are supporting tooltip/context fields."
+    ]
+  },
+  "standardsReferences": {
+    "assessmentLevelStandards": {
+      "residential": "nebraska-residential-real-property",
+      "commercial": "nebraska-commercial-real-property",
+      "agricultural": "nebraska-agricultural-horticultural-special-valuation"
+    },
+    "codStandards": {
+      "residential": "residential-improved-rural",
+      "commercial": "income-producing-rural"
+    },
+    "prdStandard": "iaao-prd-98-103"
+  },
+  "standardsContext": {
+    "residential": {
+      "classLabel": "Residential Real Property",
+      "levelOfValue": 95,
+      "medianAcceptableRange": {
+        "min": 92,
+        "max": 100,
+        "center": 96
+      }
+    },
+    "commercial": {
+      "classLabel": "Commercial Real Property",
+      "levelOfValue": 95,
+      "medianAcceptableRange": {
+        "min": 92,
+        "max": 100,
+        "center": 96
+      }
+    },
+    "agricultural": {
+      "classLabel": "Agricultural Land",
+      "levelOfValue": 71,
+      "medianAcceptableRange": {
+        "min": 69,
+        "max": 75,
+        "center": 72
+      }
+    },
+    "schoolBondAgriculturalLand": {
+      "classLabel": "School Bond Value Agricultural Land",
+      "levelOfValue": 50
+    },
+    "prd": {
+      "acceptableRange": {
+        "min": 98,
+        "max": 103,
+        "center": 100
+      }
+    }
+  },
+  "classes": {
+    "residential": {
+      "countywide": {
+        "id": "ALL",
+        "label": "All Saline residential",
+        "count": 295,
+        "median": 94.76,
+        "mean": 97.07,
+        "weightedMean": 95.21,
+        "cod": 17.14,
+        "prd": 101.95,
+        "min": 25.92,
+        "max": 228.3,
+        "medianConfidenceInterval": {
+          "low": 92,
+          "high": 96.95
+        },
+        "averageAdjustedSalePrice": 225136,
+        "averageAssessedValue": 214347
+      },
+      "groups": [
+        {
+          "id": "1",
+          "label": "VG 1",
+          "count": 50,
+          "median": 94.75,
+          "mean": 97.39,
+          "weightedMean": 97.77,
+          "cod": 15.07,
+          "prd": 99.61,
+          "min": 50.49,
+          "max": 157.14,
+          "medianConfidenceInterval": {
+            "low": 90.18,
+            "high": 103.73
+          },
+          "averageAdjustedSalePrice": 237440,
+          "averageAssessedValue": 232151
+        },
+        {
+          "id": "2",
+          "label": "VG 2",
+          "count": 135,
+          "median": 95.49,
+          "mean": 96.92,
+          "weightedMean": 94.65,
+          "cod": 14.72,
+          "prd": 102.4,
+          "min": 60.76,
+          "max": 214.44,
+          "medianConfidenceInterval": {
+            "low": 90.55,
+            "high": 97.64
+          },
+          "averageAdjustedSalePrice": 250032,
+          "averageAssessedValue": 236662
+        },
+        {
+          "id": "4",
+          "label": "VG 4",
+          "count": 15,
+          "median": 93.38,
+          "mean": 94.43,
+          "weightedMean": 97.71,
+          "cod": 26.25,
+          "prd": 96.64,
+          "min": 46.51,
+          "max": 183.34,
+          "medianConfidenceInterval": {
+            "low": 65.62,
+            "high": 98.79
+          },
+          "averageAdjustedSalePrice": 146667,
+          "averageAssessedValue": 143308
+        },
+        {
+          "id": "5",
+          "label": "VG 5",
+          "count": 42,
+          "median": 95.31,
+          "mean": 94.01,
+          "weightedMean": 94.55,
+          "cod": 13.12,
+          "prd": 99.43,
+          "min": 39.46,
+          "max": 132.96,
+          "medianConfidenceInterval": {
+            "low": 86.33,
+            "high": 101.14
+          },
+          "averageAdjustedSalePrice": 190467,
+          "averageAssessedValue": 180086
+        },
+        {
+          "id": "6",
+          "label": "VG 6",
+          "count": 26,
+          "median": 95.09,
+          "mean": 102.15,
+          "weightedMean": 95.44,
+          "cod": 23.15,
+          "prd": 107.03,
+          "min": 68,
+          "max": 182.51,
+          "medianConfidenceInterval": {
+            "low": 80.42,
+            "high": 113.72
+          },
+          "averageAdjustedSalePrice": 126173,
+          "averageAssessedValue": 120423
+        },
+        {
+          "id": "9",
+          "label": "VG 9",
+          "count": 9,
+          "median": 93.4,
+          "mean": 100.43,
+          "weightedMean": 83.11,
+          "cod": 39.66,
+          "prd": 120.84,
+          "min": 25.92,
+          "max": 228.3,
+          "medianConfidenceInterval": {
+            "low": 63.29,
+            "high": 149.42
+          },
+          "averageAdjustedSalePrice": 61544,
+          "averageAssessedValue": 51147
+        },
+        {
+          "id": "11",
+          "label": "VG 11",
+          "count": 14,
+          "median": 94.26,
+          "mean": 98.09,
+          "weightedMean": 94.76,
+          "cod": 22.99,
+          "prd": 103.51,
+          "min": 58.15,
+          "max": 178.05,
+          "medianConfidenceInterval": {
+            "low": 75.17,
+            "high": 108.63
+          },
+          "averageAdjustedSalePrice": 436421,
+          "averageAssessedValue": 413573
+        },
+        {
+          "id": "12",
+          "label": "VG 12",
+          "count": 1,
+          "median": 97.53,
+          "mean": 97.53,
+          "weightedMean": 97.53,
+          "cod": 0,
+          "prd": 100,
+          "min": 97.53,
+          "max": 97.53,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 175000,
+          "averageAssessedValue": 170680
+        },
+        {
+          "id": "13",
+          "label": "VG 13",
+          "count": 3,
+          "median": 87.54,
+          "mean": 96.28,
+          "weightedMean": 87.26,
+          "cod": 22.94,
+          "prd": 110.34,
+          "min": 70.52,
+          "max": 130.77,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 156667,
+          "averageAssessedValue": 136708
+        }
+      ]
+    },
+    "commercial": {
+      "countywide": {
+        "id": "ALL",
+        "label": "All Saline commercial",
+        "count": 29,
+        "median": 94.99,
+        "mean": 89.13,
+        "weightedMean": 81.28,
+        "cod": 19.37,
+        "prd": 109.66,
+        "min": 30.75,
+        "max": 165.68,
+        "medianConfidenceInterval": {
+          "low": 84.81,
+          "high": 98.03
+        },
+        "averageAdjustedSalePrice": 227626,
+        "averageAssessedValue": 185025
+      },
+      "groups": [
+        {
+          "id": "1",
+          "label": "VG 1",
+          "count": 5,
+          "median": 88.85,
+          "mean": 84.6,
+          "weightedMean": 78.73,
+          "cod": 16.07,
+          "prd": 107.46,
+          "min": 48.43,
+          "max": 104.75,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 103704,
+          "averageAssessedValue": 81647
+        },
+        {
+          "id": "2",
+          "label": "VG 2",
+          "count": 15,
+          "median": 96.08,
+          "mean": 89.72,
+          "weightedMean": 80.68,
+          "cod": 18.74,
+          "prd": 111.2,
+          "min": 30.75,
+          "max": 165.68,
+          "medianConfidenceInterval": {
+            "low": 84.81,
+            "high": 99.95
+          },
+          "averageAdjustedSalePrice": 339709,
+          "averageAssessedValue": 274084
+        },
+        {
+          "id": "4",
+          "label": "VG 4",
+          "count": 1,
+          "median": 70.99,
+          "mean": 70.99,
+          "weightedMean": 70.99,
+          "cod": 0,
+          "prd": 100,
+          "min": 70.99,
+          "max": 70.99,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 128000,
+          "averageAssessedValue": 90870
+        },
+        {
+          "id": "5",
+          "label": "VG 5",
+          "count": 5,
+          "median": 93.14,
+          "mean": 77.44,
+          "weightedMean": 70.24,
+          "cod": 18.05,
+          "prd": 110.25,
+          "min": 46.13,
+          "max": 95.08,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 77200,
+          "averageAssessedValue": 54222
+        },
+        {
+          "id": "6",
+          "label": "VG 6",
+          "count": 2,
+          "median": 127.75,
+          "mean": 127.75,
+          "weightedMean": 105.63,
+          "cod": 23.42,
+          "prd": 120.94,
+          "min": 97.83,
+          "max": 157.67,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 11500,
+          "averageAssessedValue": 12148
+        },
+        {
+          "id": "9",
+          "label": "VG 9",
+          "count": 1,
+          "median": 102.21,
+          "mean": 102.21,
+          "weightedMean": 102.21,
+          "cod": 0,
+          "prd": 100,
+          "min": 102.21,
+          "max": 102.21,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 450000,
+          "averageAssessedValue": 459955
+        }
+      ]
+    },
+    "agricultural": {
+      "countywide": {
+        "id": "ALL",
+        "label": "All Saline agricultural",
+        "count": 23,
+        "median": 70.94,
+        "mean": 72.17,
+        "weightedMean": 71.86,
+        "cod": 12.43,
+        "prd": 100.43,
+        "min": 43.83,
+        "max": 110.79,
+        "medianConfidenceInterval": {
+          "low": 66.73,
+          "high": 74.13
+        },
+        "averageAdjustedSalePrice": 694114,
+        "averageAssessedValue": 498804
+      },
+      "groups": [
+        {
+          "id": "1",
+          "label": "Market Area 1",
+          "count": 14,
+          "median": 70.64,
+          "mean": 70.41,
+          "weightedMean": 68.05,
+          "cod": 12.92,
+          "prd": 103.47,
+          "min": 43.83,
+          "max": 97.5,
+          "medianConfidenceInterval": {
+            "low": 60.39,
+            "high": 85.26
+          },
+          "averageAdjustedSalePrice": 530179,
+          "averageAssessedValue": 360784
+        },
+        {
+          "id": "2",
+          "label": "Market Area 2",
+          "count": 4,
+          "median": 71.45,
+          "mean": 70.02,
+          "weightedMean": 70.27,
+          "cod": 7.56,
+          "prd": 99.64,
+          "min": 60.48,
+          "max": 76.7,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 986230,
+          "averageAssessedValue": 693069
+        },
+        {
+          "id": "3",
+          "label": "Market Area 3",
+          "count": 5,
+          "median": 73.51,
+          "mean": 78.84,
+          "weightedMean": 79.38,
+          "cod": 13.81,
+          "prd": 99.32,
+          "min": 66.73,
+          "max": 110.79,
+          "medianConfidenceInterval": null,
+          "averageAdjustedSalePrice": 919441,
+          "averageAssessedValue": 729849
+        }
+      ]
+    }
+  }
+}

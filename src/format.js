@@ -27,7 +27,7 @@ export function formatNullablePercent(value) {
 
 export function formatNullableLevy(value) {
   if (value === null || value === undefined) return "—";
-  return value.toFixed(6);
+  return value.toFixed(6).replace(/\.?0+$/, "");
 }
 
 export { calculateEtr, groupLevy, sumRates } from "./calculations/tax.js";
