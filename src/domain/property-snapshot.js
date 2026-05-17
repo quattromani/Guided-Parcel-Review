@@ -1,5 +1,10 @@
 import { calculateEtr, sumRates } from "../format.js";
-import { latestKnown, percentChange, previousKnown } from "../calculations/history.js";
+import {
+  latestKnown,
+  percentChange,
+  previousKnown,
+  sortHistoryAscending
+} from "../calculations/history.js";
 import { TAXPAYER_JOURNEY_ROUTES } from "../config/taxpayer-journey.js";
 import { buildAssessmentNoticeModel } from "../data/notice-model.js";
 import { buildReviewSignalModel } from "../data/review-signal-model.js";
@@ -21,7 +26,7 @@ function normalizeProperty(propertyData, recordCard) {
 
 function deriveAssessment(propertyData, recordCard) {
   const snapshot = propertyData.taxpayerHistory.find(row => row.year === propertyData.snapshotYear)
-    ?? propertyData.taxpayerHistory.at(-1);
+    ?? sortHistoryAscending(propertyData.taxpayerHistory).at(-1);
   const latestValue = latestKnown(propertyData.taxpayerHistory, "assessedValue");
   const priorValue = previousKnown(propertyData.taxpayerHistory, latestValue?.year, "assessedValue");
 

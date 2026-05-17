@@ -1,4 +1,5 @@
 import { calculateEtr, formatNullableMoney, formatNullablePercent, moneyCents } from "../format.js";
+import { sortHistoryAscending } from "../calculations/history.js";
 import {
   displayAddress,
   displayMailingAddress
@@ -133,7 +134,7 @@ function reviewSignalSummary(data) {
 function assessmentMetrics(context = {}) {
   const classStats = context.ratioData?.classes?.find(item => item.key === "residential")
     ?? context.ratioData?.classes?.[0];
-  const latest = classStats?.records?.at(-1);
+  const latest = (classStats?.records || []).slice().sort((a, b) => a.year - b.year).at(-1);
   if (!latest) return [];
 
   return [
@@ -213,7 +214,7 @@ function reportModel(data, recordCard, context = {}) {
       taxDistrict: data.parcel.taxDistrict,
       latestFinalTaxYear: data.latestFinalTaxYear
     },
-    history: (data.taxpayerHistory || [])
+    history: sortHistoryAscending(data.taxpayerHistory || [])
       .filter(row => row.assessedValue !== null || row.taxes !== null)
       .slice(-6)
   };

@@ -9,7 +9,8 @@ import {
 } from "./format.js";
 import {
   latestKnown,
-  percentChange
+  percentChange,
+  sortHistoryAscending
 } from "./calculations/history.js";
 import {
   displayAddress,
@@ -576,7 +577,7 @@ function drawMetricTrendChart(ctx, records, x, y, width, height) {
 }
 
 function taxHistoryPoints(data, key) {
-  return (data.taxpayerHistory || [])
+  return sortHistoryAscending(data.taxpayerHistory || [])
     .filter(row => hasValue(row?.[key]))
     .slice(-7)
     .map(row => ({

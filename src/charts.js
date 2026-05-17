@@ -16,6 +16,7 @@ import {
   normalizeMarketClassKey
 } from "./market-stats.js";
 import { getMetricSignal } from "./metric-signals.js";
+import { sortHistoryAscending } from "./calculations/history.js";
 
 export { initDemographicsView } from "./charts/demographics.js";
 
@@ -84,6 +85,10 @@ function escapeHtml(value) {
 
 function formattedTooltipValues(rows, key, formatter, factor = 1) {
   return rows.map(row => hasDataValue(row?.[key]) ? formatter.format(row[key] * factor) : "Pending");
+}
+
+function taxpayerTimelineRows(data) {
+  return sortHistoryAscending(data?.taxpayerHistory || []);
 }
 
 function indexedTooltipLabel(context) {
@@ -216,12 +221,13 @@ const indexedPendingColumnPlugin = {
 };
 
 export function buildIndexedChart(data) {
-  const usableValueRows = data.taxpayerHistory.filter(row => hasDataValue(row.assessedValue));
-  const usableTaxRows = data.taxpayerHistory.filter(row => hasDataValue(row.taxes));
-  const years = data.taxpayerHistory.map(row => row.year);
+  const rows = taxpayerTimelineRows(data);
+  const usableValueRows = rows.filter(row => hasDataValue(row.assessedValue));
+  const usableTaxRows = rows.filter(row => hasDataValue(row.taxes));
+  const years = rows.map(row => row.year);
   const baseValue = usableValueRows[0]?.assessedValue;
   const baseTaxes = usableTaxRows[0]?.taxes;
-  const pendingColumns = data.taxpayerHistory
+  const pendingColumns = rows
     .map((row, index) => ({
       index,
       year: row.year,
@@ -237,16 +243,16 @@ export function buildIndexedChart(data) {
 
   document.getElementById("baseYearNote").textContent = `Base year: ${usableValueRows[0]?.year ?? "—"}`;
 
-  const valueIndex = data.taxpayerHistory.map(row =>
+  const valueIndex = rows.map(row =>
     hasDataValue(row.assessedValue) && baseValue ? (row.assessedValue / baseValue) * 100 : null
   );
-  const taxIndex = data.taxpayerHistory.map(row =>
+  const taxIndex = rows.map(row =>
     hasDataValue(row.taxes) && baseTaxes ? (row.taxes / baseTaxes) * 100 : null
   );
   const datasets = [
     {
       label: "Assessed value",
-      tooltipValues: formattedTooltipValues(data.taxpayerHistory, "assessedValue", wholeMoney),
+      tooltipValues: formattedTooltipValues(rows, "assessedValue", wholeMoney),
       data: valueIndex,
       tension: 0.25,
       borderWidth: 3,
@@ -256,7 +262,7 @@ export function buildIndexedChart(data) {
     },
     {
       label: "Tax bill",
-      tooltipValues: formattedTooltipValues(data.taxpayerHistory, "taxes", moneyCents),
+      tooltipValues: formattedTooltipValues(rows, "taxes", moneyCents),
       data: taxIndex,
       tension: 0.25,
       borderWidth: 3,
@@ -867,16 +873,19 @@ const marketPositionReferencePlugin = {
 };
 
 function getAssessmentDisplayRecords(selectedClass) {
-  return selectedClass.records.filter(row => (
-    row.year >= assessmentDisplayYears.start && row.year <= assessmentDisplayYears.end
-  ));
+  return (selectedClass.records || [])
+    .filter(row => (
+      row.year >= assessmentDisplayYears.start && row.year <= assessmentDisplayYears.end
+    ))
+    .slice()
+    .sort((a, b) => a.year - b.year);
 }
 
 function renderAssessmentSummary(selectedClass, iaaoStandards) {
   const summary = document.getElementById("assessmentAccuracySummary");
   if (!summary) return;
 
-  const latest = selectedClass.records.at(-1);
+  const latest = getAssessmentDisplayRecords(selectedClass).at(-1);
   const bandConfig = getAssessmentBandConfig(selectedClass, iaaoStandards);
   const levelRange = bandConfig.levelOfValue;
   const levelRangeText = standardRangeLabel(levelRange, 0, "No class range");
@@ -1406,15 +1415,16 @@ export function initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padR
 }
 
 function indexedSeries(rows, valueFactor = 1, taxFactor = 1) {
-  const usableValueRows = rows.filter(row => hasDataValue(row.assessedValue));
-  const usableTaxRows = rows.filter(row => hasDataValue(row.taxes));
+  const orderedRows = sortHistoryAscending(rows || []);
+  const usableValueRows = orderedRows.filter(row => hasDataValue(row.assessedValue));
+  const usableTaxRows = orderedRows.filter(row => hasDataValue(row.taxes));
   const baseValue = usableValueRows[0]?.assessedValue;
   const baseTaxes = usableTaxRows[0]?.taxes;
 
   return {
-    years: rows.map(row => row.year),
-    valueIndex: rows.map(row => hasDataValue(row.assessedValue) && baseValue ? (row.assessedValue / baseValue) * 100 * valueFactor : null),
-    taxIndex: rows.map(row => hasDataValue(row.taxes) && baseTaxes ? (row.taxes / baseTaxes) * 100 * taxFactor : null)
+    years: orderedRows.map(row => row.year),
+    valueIndex: orderedRows.map(row => hasDataValue(row.assessedValue) && baseValue ? (row.assessedValue / baseValue) * 100 * valueFactor : null),
+    taxIndex: orderedRows.map(row => hasDataValue(row.taxes) && baseTaxes ? (row.taxes / baseTaxes) * 100 * taxFactor : null)
   };
 }
 
@@ -2531,8 +2541,9 @@ function buildIndexedOverviewChart(canvasId, data, labels, valueFactor, taxFacto
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
 
-  const series = indexedSeries(data.taxpayerHistory, valueFactor, taxFactor);
-  const contextualRows = data.taxpayerHistory.map(row => ({
+  const propertyRows = taxpayerTimelineRows(data);
+  const series = indexedSeries(propertyRows, valueFactor, taxFactor);
+  const contextualRows = propertyRows.map(row => ({
     ...row,
     assessedValue: hasDataValue(row.assessedValue) ? row.assessedValue * valueFactor : null,
     taxes: hasDataValue(row.taxes) ? row.taxes * taxFactor : null
@@ -2563,7 +2574,7 @@ function buildIndexedOverviewChart(canvasId, data, labels, valueFactor, taxFacto
           backgroundColor: semanticChartColors.taxBg,
           spanGaps: true
         },
-        ...propertyIndexedDatasets(data.taxpayerHistory, series.years)
+        ...propertyIndexedDatasets(propertyRows, series.years)
       ]
     },
     options: {
@@ -2599,9 +2610,10 @@ function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palett
   const canvas = document.getElementById(canvasId);
   if (!canvas || !rows?.length) return;
 
-  const baseValue = rows[0].totalValue;
-  const baseTaxes = rows[0].taxesLevied;
-  const years = rows.map(row => row.year);
+  const orderedRows = rows.slice().sort((a, b) => a.year - b.year);
+  const baseValue = orderedRows[0].totalValue;
+  const baseTaxes = orderedRows[0].taxesLevied;
+  const years = orderedRows.map(row => row.year);
   const valueColor = palette.valueColor ?? chartColors.contextValue;
   const valueBg = palette.valueBg ?? semanticChartColors.valueBg;
   const taxColor = palette.taxColor ?? chartColors.contextTax;
@@ -2609,8 +2621,8 @@ function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palett
   const datasets = [
     {
       label: labels.value,
-      tooltipValues: formattedTooltipValues(rows, "totalValue", compactMoney),
-      data: rows.map(row => (row.totalValue / baseValue) * 100),
+      tooltipValues: formattedTooltipValues(orderedRows, "totalValue", compactMoney),
+      data: orderedRows.map(row => (row.totalValue / baseValue) * 100),
       tension: 0.25,
       borderWidth: 3,
       borderColor: valueColor,
@@ -2618,8 +2630,8 @@ function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palett
     },
     {
       label: labels.tax,
-      tooltipValues: formattedTooltipValues(rows, "taxesLevied", compactMoney),
-      data: rows.map(row => (row.taxesLevied / baseTaxes) * 100),
+      tooltipValues: formattedTooltipValues(orderedRows, "taxesLevied", compactMoney),
+      data: orderedRows.map(row => (row.taxesLevied / baseTaxes) * 100),
       tension: 0.25,
       borderWidth: 3,
       borderColor: taxColor,
@@ -2666,8 +2678,9 @@ function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palett
 }
 
 export function buildEtrChart(data) {
-  const years = data.taxpayerHistory.map(row => row.year);
-  const etrValues = data.taxpayerHistory.map(row => {
+  const rows = taxpayerTimelineRows(data);
+  const years = rows.map(row => row.year);
+  const etrValues = rows.map(row => {
     const etr = calculateEtr(row);
     return etr === null ? null : etr * 100;
   });
@@ -2715,8 +2728,9 @@ function buildEtrOverviewChart(canvasId, data, label, factor) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
 
-  const years = data.taxpayerHistory.map(row => row.year);
-  const etrValues = data.taxpayerHistory.map(row => {
+  const propertyRows = taxpayerTimelineRows(data);
+  const years = propertyRows.map(row => row.year);
+  const etrValues = propertyRows.map(row => {
     const etr = calculateEtr(row);
     return etr === null ? null : etr * 100 * factor;
   });
@@ -2735,7 +2749,7 @@ function buildEtrOverviewChart(canvasId, data, label, factor) {
           backgroundColor: semanticChartColors.etrBg,
           spanGaps: true
         },
-        propertyRateDataset(data.taxpayerHistory, years)
+        propertyRateDataset(propertyRows, years)
       ]
     },
     options: {
@@ -2757,13 +2771,14 @@ function buildEtrOverviewChart(canvasId, data, label, factor) {
 function buildCertifiedRateChart(canvasId, rows, label, propertyRows, palette = {}) {
   const canvas = document.getElementById(canvasId);
   if (!canvas || !rows?.length) return;
-  const years = rows.map(row => row.year);
+  const orderedRows = rows.slice().sort((a, b) => a.year - b.year);
+  const years = orderedRows.map(row => row.year);
   const rateColor = palette.rateColor ?? chartColors.contextRate;
   const rateBg = palette.rateBg ?? semanticChartColors.etrBg;
   const datasets = [
     {
       label,
-      data: rows.map(row => row.averageTaxRate * 100),
+      data: orderedRows.map(row => row.averageTaxRate * 100),
       tension: 0.25,
       borderWidth: 3,
       borderColor: rateColor,
@@ -2801,6 +2816,7 @@ function buildCertifiedRateChart(canvasId, rows, label, propertyRows, palette = 
 export function buildOverviewCharts(data, ctlData) {
   const countyName = getPropertyCountyName(data, ctlData);
   const countyLabel = countyDisplayName(countyName);
+  const propertyRows = taxpayerTimelineRows(data);
   const countyRows = ctlData.counties
     .filter(row => row.countyName === countyName)
     .sort((a, b) => a.year - b.year);
@@ -2809,10 +2825,10 @@ export function buildOverviewCharts(data, ctlData) {
   buildIndexedOverviewChart("marketIndexedChart", data, { value: "Market area value", tax: "Market area tax bill" }, 0.96, 1.01);
   buildEtrOverviewChart("marketEtrChart", data, "Market area ETR", 0.98);
 
-  buildCertifiedIndexedChart("countyIndexedChart", countyRows, { value: `${countyLabel} value`, tax: `${countyLabel} taxes levied` }, data.taxpayerHistory);
-  buildCertifiedRateChart("countyEtrChart", countyRows, `${countyLabel} average tax rate`, data.taxpayerHistory);
+  buildCertifiedIndexedChart("countyIndexedChart", countyRows, { value: `${countyLabel} value`, tax: `${countyLabel} taxes levied` }, propertyRows);
+  buildCertifiedRateChart("countyEtrChart", countyRows, `${countyLabel} average tax rate`, propertyRows);
 
-  buildCertifiedIndexedChart("stateIndexedChart", stateRows, { value: "Statewide value", tax: "Statewide taxes levied" }, data.taxpayerHistory, {
+  buildCertifiedIndexedChart("stateIndexedChart", stateRows, { value: "Statewide value", tax: "Statewide taxes levied" }, propertyRows, {
     valueColor: semanticChartColors.value,
     valueBg: semanticChartColors.valueBg,
     taxColor: semanticChartColors.tax,
@@ -2822,7 +2838,7 @@ export function buildOverviewCharts(data, ctlData) {
     propertyTaxColor: semanticChartColors.tax,
     propertyTaxBg: semanticChartColors.taxBg
   });
-  buildCertifiedRateChart("stateEtrChart", stateRows, "Statewide average tax rate", data.taxpayerHistory, {
+  buildCertifiedRateChart("stateEtrChart", stateRows, "Statewide average tax rate", propertyRows, {
     rateColor: semanticChartColors.tax,
     rateBg: semanticChartColors.taxBg,
     propertyRateColor: semanticChartColors.etr,
@@ -2832,7 +2848,8 @@ export function buildOverviewCharts(data, ctlData) {
 
 function indexChange(rows, key) {
   if (!rows?.length) return null;
-  return (rows.at(-1)[key] / rows[0][key]) - 1;
+  const orderedRows = rows.slice().sort((a, b) => a.year - b.year);
+  return (orderedRows.at(-1)[key] / orderedRows[0][key]) - 1;
 }
 
 function formatChange(value) {
@@ -2841,7 +2858,7 @@ function formatChange(value) {
 }
 
 function latestRow(rows) {
-  return rows?.length ? rows.at(-1) : null;
+  return rows?.length ? rows.slice().sort((a, b) => a.year - b.year).at(-1) : null;
 }
 
 function pressureIndex(rows, statewideRows) {

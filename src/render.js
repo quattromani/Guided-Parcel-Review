@@ -10,7 +10,8 @@ import {
 } from "./format.js";
 import {
   getPreviousFinalValueHistory,
-  getSnapshotHistory
+  getSnapshotHistory,
+  sortHistoryDescending
 } from "./calculations/history.js";
 import {
   buildRecordCorrectionEmailPayload,
@@ -1598,7 +1599,8 @@ function ownershipHistory(recordCard) {
 function recordCardValuationHistory(recordCard) {
   if (!recordCard?.valuationHistory?.length) return "";
 
-  const rows = recordCard.valuationHistory.filter(row => row.year >= 2019 && row.year <= 2026);
+  const rows = sortHistoryDescending(recordCard.valuationHistory)
+    .filter(row => row.year >= 2019 && row.year <= 2026);
 
   return disclosure("What values and taxes appear on the record card?", `${rows.length} years`, `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
@@ -2359,7 +2361,9 @@ function initJumpLinks() {
 }
 
 function renderHistoryTable(data, recordCard) {
-  document.getElementById("historyRows").innerHTML = data.taxpayerHistory.slice().reverse().map((row, index) => {
+  const rows = sortHistoryDescending(data.taxpayerHistory);
+
+  document.getElementById("historyRows").innerHTML = rows.map((row, index) => {
     const etr = calculateEtr(row);
     const isCurrentNotice = row.status === "assessment_notice";
     const isPending = row.status === "pending";
