@@ -8,15 +8,15 @@ Path: `data/app/property-manifest.json`
 
 | Field | Meaning |
 | --- | --- |
-| `activePropertyId` | Property id loaded by the demo. |
+| `activePropertyId` | Manifest-level default/sample id used by data validation and demo inventory checks. First-run runtime selection still begins on the Start view unless a query-string or stored property id is present. |
 | `properties[]` | Demo property records available to the app. |
-| `properties[].recordCardPath` | Path to the active vendor/source property record card. |
+| `properties[].recordCardPath` | Path to a vendor/source property record card available to the property switcher. |
 | `sharedData.counties` | County-scoped datasets keyed by county slug. |
 | `sharedData.*Path` | Static app-ready reference data paths. |
 
 ## Vendor Property Record
 
-Path: `data/property-records/mips/residential-010496000-record-card.json`
+Path: `data/property-records/mips/*-record-card.json`
 
 Adapter notes: `src/adapters/mips/record-card.js` extracts the current demo `guidedSnapshot`, and `src/adapters/mips/field-map.json` groups the source fields that need a future canonical adapter.
 

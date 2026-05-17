@@ -134,7 +134,7 @@ Working systems currently present:
 - Guided path navigation and section locking in `src/app.js`.
 - Footer resource layer with FAQs, forms, and learn content in `src/app.js`.
 - Static configuration: `data/app/property-manifest.json`, `data/app/navigation.json`, `data/app/view-copy.json`.
-- MIPS record card and guided parcel context: `data/property-records/mips/residential-010496000-record-card.json`.
+- MIPS record cards and guided parcel context: `data/property-records/mips/*-record-card.json`, with demo inventory in `data/app/property-manifest.json`.
 - County/state/reference data: `data/counties/`, `data/statewide/`, `data/calendars/`, `data/standards/`.
 
 Current view inventory:
@@ -402,7 +402,7 @@ Current data sources and main uses:
 | App manifest | `data/app/property-manifest.json` | Active property and shared data paths | Keep. Extend for notice metadata and route config if needed. |
 | Navigation config | `data/app/navigation.json` | Guided path labels | Replace with new route definitions. Keep JSON-driven nav. |
 | View copy | `data/app/view-copy.json` | Section titles/descriptions | Expand into route primers, what-matters copy, next-step copy. |
-| MIPS record card and guided parcel context | `data/property-records/mips/residential-010496000-record-card.json` | Parcel, classification, residential details, history, tax statements, assets, current/prior card values, location model, ownership, garage cost lines | Keep as the active property source. Normalize through `notice-model` and `property-record` view model. |
+| MIPS record cards and guided parcel context | `data/property-records/mips/*-record-card.json` | Parcel, classification, class-specific details, history, tax statements, assets, current/prior card values, location model, ownership, garage cost lines, and guided snapshot data | Keep as sample property sources listed by the manifest. Normalize through `notice-model` and `property-record` view model. |
 | PAD calendar | `data/calendars/pad_main_calendar_2025.json` | Assessment stages and protest calendar | Keep. Surface as timeline/trust layer. |
 | Tax district authorities | `data/counties/gage/tax-district-authorities-2025.json` | Levy authority breakdown | Keep for Tax Context secondary detail. |
 | CTL statewide/county data | `data/statewide/certified-taxes-levied.json` | County/state comparisons | Move mostly to Advanced Context. |

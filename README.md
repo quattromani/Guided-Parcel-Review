@@ -1,159 +1,12 @@
 # Property Snapshot
 
-A static taxpayer-facing prototype for reviewing a property record, assessment movement, value detail, equalization, tax context, review signals, and official reference resources in a guided plain-English flow.
+Property Snapshot is a static, taxpayer-facing prototype for a guided parcel review. It helps a user choose a sample property, confirm the property record, understand assessment movement, review value and equalization context, connect value to taxes, identify neutral review signals, and download a concise reference report.
 
-The current branch, `codex/civic-orientation-refactor`, treats the app as a civic orientation tool rather than a generic data dashboard. The goal is to help someone understand what record was used, what changed, how value connects to taxes, and whether anything deserves closer review without requiring assessment-ratio expertise.
-
-## Experience Model
-
-The active guided path is defined in `src/config/taxpayer-journey.js`:
-
-1. Start
-2. Property Record
-3. What Changed
-4. Value Detail
-5. Equalization
-6. Tax Context
-7. Review Signals
-8. Summary
-
-The main path is deliberately sequential. It starts with the property identity and source record, then introduces value movement, local market context, equalization as the fairness layer, tax context, neutral review signals, and a summary. Official forms live as outbound footer references so filing materials do not become the product's endpoint.
-
-## Design Principles
-
-- Keep the language neutral: use "this property" or "the property" rather than implying ownership.
-- Lead with human-readable record facts before technical statistics.
-- Use calm civic visual language: light surfaces, restrained slate/blue color, soft status treatment, and no gamified scoring.
-- Let key numbers resolve the page, but avoid making every number feel equally important.
-- Keep tables consistent: slate headers establish context, softer gray totals resolve the table, and internal cells stay quiet.
-- Prefer scannable rows and disclosure sections over large explanatory text blocks.
-- Use technical terms only when the surrounding visual or copy gives enough context.
-
-## Data Architecture
-
-The active property is configured in `data/app/property-manifest.json`.
-
-The prototype now uses one loaded property source:
-
-- `data/property-records/mips/residential-010496000-record-card.json`
-
-That file contains the MIPS-derived property record facts and the guided snapshot context that was previously split across lighter sample-property data. The older `data/properties/residential-property-data.json` path has been removed so the app does not compete between two property-record sources.
-
-Shared runtime datasets remain separate from the property record:
-
-- `data/app/assessment-calendar-events.json`
-- `data/app/legal-references.json`
-- `data/app/navigation.json`
-- `data/app/real-property-forms.json`
-- `data/app/view-copy.json`
-- `data/counties/gage/assessment-ratio-analysis.json`
-- `data/counties/gage/county-context.json`
-- `data/counties/gage/governing-office.json`
-- `data/counties/gage/market-position-statistics-2026-gage.json`
-- `data/counties/gage/pad-ratio-statistics-2026-gage.json`
-- `data/counties/gage/school-district-colors.json`
-- `data/counties/gage/tax-district-authorities-2025.json`
-- `data/counties/gage/valuation-groups.json`
-- `data/statewide/certified-taxes-levied.json`
-- `data/statewide/statewide-ctl-summary.json`
-- `data/statewide/county-ctl-comparisons.json`
-- `data/statewide/pad-ratio-statistics-by-county.json`
-- `data/statewide/county-assessment-ranges.json`
-- `data/calendars/pad_main_calendar_2025.json`
-- `data/standards/iaao-standards.json`
-- `data/standards/iaao-glossary.json`
-
-## Source Registry And Provenance
-
-Nebraska Department of Revenue Property Assessment Division source provenance is tracked separately from the app-ready data. The frontend should consume static JSON only; it should not fetch, scrape, or parse PAD PDFs at runtime.
-
-- `data/sources/nebraska-pad-source-registry.json` records official PAD source documents, landing pages, direct document URLs, year types, jurisdiction, publisher, confidence, and manual-review flags.
-- `data/sources/nebraska-pad-metric-ledger.json` records extracted or verified metrics with page/table/row/column provenance, extraction method, confidence, verification status, and any comparison against existing project JSON.
-- `docs/source-provenance-audit.md` summarizes official source discovery, schema decisions, verification results, mismatches, extraction reliability, and remaining review items.
-
-The current source registry covers statewide CTL context, all 93 Nebraska counties for 2026 Reports and Opinions class-level ratio statistics, Gage historical R&O support, annual PAD reports, assessment calendar references, PAD forms, and official PAD index pages. Mismatches are recorded in the ledger and audit doc rather than silently applied to existing project data.
-
-## Market Area System
-
-The Market Area / Value Detail work now uses a class-aware market-position system instead of grouped bar-chart comparisons.
-
-- Residential and commercial groups use the Nebraska other-real-property ratio range of 92-100.
-- Agricultural market areas use the agricultural/horticultural range of 69-75.
-- The primary visualization is a Median Ratio vs. COD scatterplot.
-- The selected local group is highlighted; other groups remain muted; countywide context is shown as a reference.
-- The expected range appears as a shaded field, with subtle target-field geometry to help users understand clustering and drift without turning the chart into a scorecard.
-- Price context is summarized as KPI cards rather than forced into the primary chart.
-
-The market-position source data lives in:
-
-- `data/counties/gage/market-position-statistics-2026-gage.json`
-
-Reusable helpers live in:
-
-- `src/market-stats.js`
-- `src/charts.js`
-
-## Key Modules
-
-- `src/app.js` loads data, initializes the guided journey, and wires page behavior.
-- `src/data-service.js` loads the manifest, active MIPS record card, guided snapshot context, county data, standards, and shared app configuration.
-- `src/adapters/mips/` documents and extracts the current MIPS/GWorks record-card handoff shape.
-- `src/domain/` normalizes property data, derives view models, and owns source-label helpers.
-- `src/snapshot-model.js` remains as a compatibility re-export for the active snapshot model.
-- `src/render.js` renders the taxpayer-facing record, assessment, tax, review, and resource sections.
-- `src/charts.js` builds charts, market-position visuals, and county/state context displays.
-- `src/charts/` contains chart families that can be maintained separately from the main chart entrypoint.
-- `src/assessment-dates.js` renders the assessment-calendar reference panel.
-- `src/assessors-report.js` builds the supplemental assessor report print view.
-- `src/metric-signals.js` centralizes neutral signal language for assessment metrics.
-- `src/modal.js` owns reusable modal behavior for image and record-support surfaces.
-- `src/recordCorrectionRequest.js` prepares the property-record correction request PDF.
-- `src/calculations/` contains shared derived-value helpers that should stay independent of DOM rendering.
-- `src/content/` contains route copy and resource content used by the guided taxpayer journey.
-- `src/data/` contains app-ready notice and review-signal model helpers.
-- `src/routes/` contains route-specific renderers such as the landing primer.
-- `src/views/` contains view-specific renderers that do not need to live in the main render module.
-- `src/utils/` contains small shared utilities that have no domain dependency.
-- `src/config/taxpayer-journey.js` defines the current guided route labels and sequencing.
-
-## GWorks PDF Enrichment
-
-When a GWorks PDF is received, use the PDF as the canonical property-detail source and supplement only the gaps that the public export does not carry:
-
-- Use Nebraska Taxes Online, keyed by parcel ID, for tax statement history, credit breakdowns, payment/balance fields, assessed valuation components, and levy distribution. Open each year’s `View Details` modal for the 2019-current cycle.
-- Use Zillow by situs address only as a fallback for visible assessment totals when the Nebraska Taxes Online detail modal is unavailable.
-- Ignore Zillow `Property taxes` values because Zillow rounds them.
-- Keep source labels on enriched rows, and leave component fields null when the supplemental source only gives a total assessment.
-
-When a new assessment-year PDF or NOV arrives before taxes are final, keep the assessment year and tax year separate:
-
-- Set `guidedSnapshot.snapshotYear` to the new assessment year, for example `2026`.
-- Keep `guidedSnapshot.latestFinalTaxYear` on the latest finalized tax statement year, for example `2025`.
-- Add a `taxpayerHistory` row for the new assessment year with the assessed value populated, `taxes: null`, and a status such as `assessment_notice` or `pending`.
-- Add the new year to `assessedValueBreakdown` when component values are available, so land/building/other movement renders immediately.
-- Do not add a `taxStatements` row for the new year until a statement exists.
-
-## Repository Structure
-
-- `index.html` defines the static page shell and section mount points.
-- `src/` contains application logic, rendering, charts, formatting, modal behavior, and journey configuration.
-- `src/adapters/` contains vendor/source adapters and field maps.
-- `src/domain/` contains canonical app-domain assembly and source labels.
-- `data/app/` contains application configuration and the active property manifest.
-- `data/property-records/mips/` contains the active MIPS property record card and guided snapshot context.
-- `data/counties/` contains county-level reports, ratio statistics, market-position data, valuation groups, school colors, and tax district authority data.
-- `data/statewide/` contains statewide and county comparison datasets.
-- `data/sources/` contains the official-source registry and metric extraction ledger.
-- `data/calendars/` contains static assessment calendar data.
-- `data/standards/` contains static IAAO standards and glossary references.
-- `docs/` contains project planning and source-provenance audit notes.
-- `docs/data-contracts/` contains JSON Schema drafts for the manifest and vendor property record card contract.
-- `assets/images/` contains local property images and sketches used by the prototype.
-- `assets/vendor/` contains vendored browser libraries used by static flows such as PDF generation.
+The app is currently positioned as a civic orientation and handoff prototype, not an official assessment, filing, tax-payment, or parcel-lookup system. It uses real-looking static sample data so product reviewers, county staff, and vendors can inspect the assumptions without needing database credentials.
 
 ## Run Locally
 
-The app loads local JSON files, so run it through the included static server instead of opening `index.html` directly.
+The app loads local JSON files, so serve it through the included static server instead of opening `index.html` directly.
 
 ```bash
 node server.js
@@ -165,40 +18,87 @@ Then open:
 http://localhost:4173/
 ```
 
-The `PORT` environment variable can be used to serve on another port.
+Set `PORT` to use another local port:
 
-## Development Notes
+```bash
+PORT=4174 node server.js
+```
 
-- Keep new property test records real and record-card based.
-- Do not reintroduce incomplete sample agricultural or commercial property switchers.
-- Preserve the MIPS record card as the single active property source unless the manifest is intentionally expanded.
-- Keep county, state, standards, glossary, calendar, and market-statistics data separate from the property record.
-- Prefer reusable data helpers over embedding report statistics directly inside components.
-- Keep taxpayer-facing copy plain, neutral, and sequential.
-- When adding statistics, pair the number with a short human explanation or place it where the visual context can carry the meaning.
+There is no package manager setup, bundler, or npm script layer in the current prototype. Runtime dependencies are browser CDNs plus vendored static assets where needed.
 
 ## Validation
 
-Useful local checks:
+Useful local checks before handoff or branching:
 
 ```bash
-node --check src/render.js
-node --check src/charts.js
+for file in server.js scripts/*.js src/**/*.js src/*.js; do node --check "$file" || exit 1; done
 node scripts/validate-data-contracts.js
 git diff --check
-node -e "JSON.parse(require('fs').readFileSync('data/app/property-manifest.json','utf8')); console.log('manifest json ok')"
-node -e "JSON.parse(require('fs').readFileSync('data/property-records/mips/residential-010496000-record-card.json','utf8')); console.log('record card json ok')"
-node -e "for (const file of ['data/sources/nebraska-pad-source-registry.json','data/sources/nebraska-pad-metric-ledger.json','data/statewide/statewide-ctl-summary.json','data/statewide/county-ctl-comparisons.json','data/statewide/pad-ratio-statistics-by-county.json','data/statewide/county-assessment-ranges.json']) JSON.parse(require('fs').readFileSync(file,'utf8')); console.log('pad provenance json ok')"
-```
-
-After frontend changes, reload `http://localhost:4173/` and spot-check the affected step in the browser.
-
-Before handoff or push, run a quick hygiene check for local paths and merge artifacts:
-
-```bash
 rg -n "/Users/|/private/tmp|<<<<<<<|>>>>>>>|debugger" src index.html docs data scripts server.js
 ```
 
+After UI changes, run the app locally and spot-check the affected guided steps in the browser.
+
+## Experience Model
+
+The guided route sequence lives in `src/config/taxpayer-journey.js`:
+
+1. Start
+2. Property Record
+3. What Changed
+4. Value Detail
+5. Equalization
+6. Tax Context
+7. Review Signals
+8. Summary
+
+The default first-run experience is the Start view. A user selects a sample parcel from the header property switcher. The selected property is stored in local storage and reflected in the `property` query parameter, so refresh and direct links such as `/?property=residential-011312000#tax-context` are stable.
+
+## Current Data Model
+
+Sample properties are listed in `data/app/property-manifest.json`. Available records currently live under `data/property-records/mips/` and include residential, agricultural, and commercial GWorks/MIPS-derived samples. Each record card contains source-shaped property data plus a `guidedSnapshot` object used by the current app-ready view models.
+
+Shared app and reference data stays separate from the property record:
+
+- `data/app/` for navigation, copy, legal references, PAD forms, assessment calendar events, and the property manifest.
+- `data/counties/gage/` for county ratio, market-position, valuation-group, governing-office, school-color, and tax-district authority data.
+- `data/statewide/` for statewide and county comparison datasets.
+- `data/calendars/` for static PAD calendar data.
+- `data/standards/` for IAAO standards and glossary references.
+- `data/sources/` for source registry and metric ledger audit data.
+
+The frontend should consume static app-ready JSON only. It should not scrape PAD PDFs or external property websites at runtime.
+
+## Practical Architecture
+
+- `index.html` defines the static shell, guided-panel mount points, CDN scripts, and stylesheet.
+- `server.js` is a tiny local static server for JSON-backed browser testing.
+- `src/app.js` boots the app, loads shared datasets, initializes charts, guided navigation, footer resources, reports, and lazy tax-district rendering.
+- `src/data-service.js` loads the manifest, selected property record, county/state datasets, standards, forms, and calendar data.
+- `src/adapters/mips/` maps the current MIPS/GWorks record-card handoff shape into the guided snapshot model.
+- `src/domain/`, `src/data/`, and `src/calculations/` contain normalization, view-model, review-signal, history, and tax helpers that should stay independent of DOM rendering where practical.
+- `src/render.js`, `src/routes/`, and `src/views/` render the property record, guided route panels, footer resources, property switcher, correction-request surface, and view-specific sections.
+- `src/charts.js` and `src/charts/` build Chart.js visualizations, market-position views, county comparison displays, and equalization context.
+- `src/reports/` builds the downloadable property report PDF; `src/assessors-report.js` builds the supplemental assessor print view.
+- `src/config/taxpayer-journey.js` and `src/content/` own guided-route labels, sequencing, and route-specific supporting resources.
+
+## Handoff Notes
+
+- Treat `data/app/property-manifest.json` as the demo inventory and shared-data wiring point. Add new sample records there only when the referenced static JSON is complete enough to pass validation.
+- Keep property-specific facts in record cards and county/state/reference facts in their shared datasets. Avoid embedding report statistics directly in components.
+- Preserve the selected-property flow: query string first, then stored selection. The Start page is intentional for first-run demos.
+- Keep large optional datasets behind route/action boundaries. For example, full tax-district authority data loads when the Tax Context step needs it.
+- Keep taxpayer-facing copy neutral and sequential. The app should orient users, not imply ownership, predict protest outcomes, or replace official determinations.
+- PDF/report flows are demonstration outputs. Email delivery for correction requests requires a future `window.propertyCorrectionEmailService` integration.
+
+## Known Limitations
+
+- The app is static and demo-data driven; it is not connected to a live CAMA, tax, GIS, payment, or filing system.
+- Sample records combine source-shaped data and app-ready `guidedSnapshot` data. A production integration should separate raw vendor records, normalized records, and app-ready view models more clearly.
+- JSON contracts are lightweight smoke checks, not a full schema-validation pipeline.
+- Browser CDNs are used for Tailwind and Chart.js in the prototype shell.
+- Source/provenance ledgers document official PAD references, but source refresh and extraction workflows are manual.
+
 ## Deployment
 
-This is a static site and can be served by GitHub Pages or any static host. The repository includes `.nojekyll` so GitHub Pages serves the files directly.
+The project is a static site and can be served by GitHub Pages or any static host. The repository includes `.nojekyll` so GitHub Pages serves files directly.

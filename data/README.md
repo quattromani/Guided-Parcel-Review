@@ -11,7 +11,7 @@ source -> normalized -> app-ready
 The browser currently consumes:
 
 - `data/app/property-manifest.json`
-- `data/property-records/mips/residential-010496000-record-card.json`
+- available sample records listed in `data/property-records/mips/`
 - `data/counties/gage/*.json`
 - `data/statewide/*.json`
 - `data/calendars/*.json`

@@ -10,11 +10,14 @@ A vendor should be able to provide a canonical property record, county/state ref
 raw vendor record -> canonical property record -> derived metrics -> route view models -> guided UI
 ```
 
-That boundary is the most important handoff contract in the repo. The current demo uses one GWorks MIPS-derived property record at:
+That boundary is the most important handoff contract in the repo. The current demo uses a small set of GWorks/MIPS-derived sample property records listed in:
 
 ```text
-data/property-records/mips/residential-010496000-record-card.json
+data/app/property-manifest.json
+data/property-records/mips/
 ```
+
+The first-run experience intentionally starts on a sample-property selection screen. Once selected, the property id is stored in the URL query string and local storage so refreshes and shared demo links are stable.
 
 ## What A Vendor Must Provide
 

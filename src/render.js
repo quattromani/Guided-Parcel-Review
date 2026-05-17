@@ -185,8 +185,8 @@ function renderValueTaxHistoryShell() {
           <div class="mobile-support-content">
             <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
             <p class="mt-1 text-sm text-slate-600">
-	              Current values and prior final tax bills are kept together here so timing is clear.
-	              Effective tax rate (ETR) compares final taxes paid with assessed value after levy, credits, and exemptions are reflected in the bill.
+                Current values and prior final tax bills are kept together here so timing is clear.
+                Effective tax rate (ETR) compares final taxes paid with assessed value after levy, credits, and exemptions are reflected in the bill.
             </p>
             <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
               <table class="min-w-full divide-y divide-slate-200 text-sm">
@@ -209,7 +209,7 @@ function renderValueTaxHistoryShell() {
         <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 class="text-xl font-bold text-slate-700">How are this property’s value and taxes moving together?</h2>
-	            <p class="text-sm text-slate-600">Assessed value and taxes begin from the same baseline so their changes can be compared side by side. Tax bills are included only after they are finalized.</p>
+              <p class="text-sm text-slate-600">Assessed value and taxes begin from the same baseline so their changes can be compared side by side. Tax bills are included only after they are finalized.</p>
           </div>
           <p id="baseYearNote" class="text-xs font-medium text-slate-500"></p>
         </div>
@@ -254,8 +254,8 @@ function renderTaxHistoryShell() {
     </article>
 
     <article id="etr-trend" class="tax-history-rate-panel">
-	      <h2 class="text-xl font-bold text-slate-700">How much tax was paid for each dollar of value?</h2>
-	      <p class="mt-1 text-sm text-slate-600">Effective tax rate compares the final tax bill with assessed value, making years easier to compare.</p>
+        <h2 class="text-xl font-bold text-slate-700">How much tax was paid for each dollar of value?</h2>
+        <p class="mt-1 text-sm text-slate-600">Effective tax rate compares the final tax bill with assessed value, making years easier to compare.</p>
       <div class="mt-4 h-64 sm:h-72">
         <canvas id="etrChart"></canvas>
       </div>
@@ -273,7 +273,7 @@ function renderTaxDistributionShell(data) {
     <div class="data-split-view grid gap-6 lg:grid-cols-5">
       <article class="lg:col-span-3">
         <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
-	        <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. Dollar amounts allocate the latest net bill by each group’s levy share.</p>
+          <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. Dollar amounts allocate the latest net bill by each group’s levy share.</p>
         <div class="tax-distribution-visual-grid mt-4 grid gap-4 md:items-center">
           <div id="distributionNotes" class="space-y-2 text-sm text-slate-700"></div>
           <div class="distribution-chart-shell h-72 sm:h-80">
@@ -289,8 +289,8 @@ function renderTaxDistributionShell(data) {
             <span class="mobile-support-chevron" aria-hidden="true"></span>
           </summary>
           <div class="mobile-support-content">
-	          <h2 class="text-xl font-bold text-slate-700">Which taxing bodies are included?</h2>
-	          <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill depends on finalized budgets, levies, credits, and exemptions.</p>
+            <h2 class="text-xl font-bold text-slate-700">Which taxing bodies are included?</h2>
+            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill depends on finalized budgets, levies, credits, and exemptions.</p>
             <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
               <table class="min-w-full divide-y divide-slate-200 text-sm">
                 <thead>
@@ -340,8 +340,8 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
     </section>
     <section class="data-split-view related-panel-section equalization-unified-section grid gap-6 lg:grid-cols-5">
       <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
-	        <h3 class="text-lg font-bold text-slate-700">How do the statistical measures come together?</h3>
-	        <p id="assessmentAccuracyConvergenceNote" class="mt-1 text-sm text-slate-600">COD, PRD, and COV are normalized to their own bands so their relative movement can be read together.</p>
+          <h3 class="text-lg font-bold text-slate-700">How do the statistical measures come together?</h3>
+          <p id="assessmentAccuracyConvergenceNote" class="mt-1 text-sm text-slate-600">COD, PRD, and COV are normalized to their own bands so their relative movement can be read together.</p>
         <div id="assessmentAccuracyLegend" class="assessment-line-legend mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600"></div>
         <div class="mt-4 h-80">
           <canvas id="assessmentAccuracyChart"></canvas>
@@ -354,7 +354,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
         </summary>
         <div class="mobile-support-content">
           <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
-	        <p class="mt-1 text-sm text-slate-600">Latest years appear first so recent county sales-study results are easy to compare with prior years.</p>
+          <p class="mt-1 text-sm text-slate-600">Latest years appear first so recent county sales-study results are easy to compare with prior years.</p>
           <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
             <table class="min-w-full divide-y divide-slate-200 text-sm equalization-support-table">
               <thead class="sticky top-0">
@@ -1290,7 +1290,7 @@ function renderDiscrepancyForm(data, recordCard) {
       </section>
 
       <section id="discrepancyDeliveryNotice" class="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900 ring-1 ring-amber-200">
-	        This demonstration prepares a printable correction request and keeps your draft in this browser. It does not send email to the Assessor's Office.
+          This demonstration prepares a printable correction request and keeps your draft in this browser. It does not send email to the Assessor's Office.
       </section>
 
       <div class="flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
@@ -1482,25 +1482,14 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
       const emailPayload = buildRecordCorrectionEmailPayload(submission, pdfBytes);
       const delivery = await deliverRecordCorrectionEmail(emailPayload, pdfBytes);
 
-      console.info("Property record correction request ready for delivery", {
-        emailDeliveryConfigured: delivery.delivered,
-        developmentMode: delivery.developmentMode,
-        submission,
-        emailPayload,
-        pdf: {
-          generated: true,
-          byteLength: pdfBytes.length,
-          fileName: emailPayload.attachment.fileName
-        }
-      });
-
       if (submitStatus) {
         if (delivery.delivered) {
           submitStatus.textContent = "The property record correction request has been sent to the Assessor's Office. A copy has also been sent to the email provided.";
           submitStatus.className = "text-sm font-semibold text-emerald-700";
           localStorage.removeItem(draftKey);
         } else {
-	          submitStatus.textContent = `Correction-request PDF prepared for ${emailPayload.to}. This demonstration does not send email, so no message was sent and your draft remains available in this browser.`;
+          downloadGeneratedPdf(pdfBytes, emailPayload.attachment.fileName);
+          submitStatus.textContent = `Correction-request PDF downloaded for review. This demonstration does not send email to ${emailPayload.to}, so your draft remains available in this browser.`;
           submitStatus.className = "text-sm font-semibold text-amber-800";
         }
       }
@@ -1512,6 +1501,19 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
       }
     }
   });
+}
+
+function downloadGeneratedPdf(bytes, fileName) {
+  const blob = new Blob([bytes], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = fileName;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }
 
 async function deliverRecordCorrectionEmail(emailPayload, pdfBytes) {
@@ -1594,7 +1596,7 @@ function recordCardSource(recordCard) {
     return disclosure("What source record is this based on?", recordCard.recordStatus || "Pending", `
       <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
         <p class="font-semibold text-slate-700">${escapeHtml(recordCard.source || "Source record pending")}</p>
-	        <p class="mt-1">${escapeHtml(recordCard.notes || "Detailed record-card fields are not available in this guide.")}</p>
+          <p class="mt-1">${escapeHtml(recordCard.notes || "Detailed record-card fields are not available in this guide.")}</p>
       </div>
     `);
   }
@@ -1646,7 +1648,7 @@ function recordCardSource(recordCard) {
           ["Printed", printed],
           ["Card / perm", recordCard.parcelIdentifiers.cardFilePerm],
           ["Cadastral ID", recordCard.parcelIdentifiers.cadastralId],
-	          ["State property class code", recordCard.parcelIdentifiers.padClassCode],
+            ["State property class code", recordCard.parcelIdentifiers.padClassCode],
           ["Appraiser ID", recordCard.parcelIdentifiers.appraiserId]
         ].map(([label, value], index) => `
           <tr>
@@ -1657,7 +1659,7 @@ function recordCardSource(recordCard) {
         `).join("")}
       </tbody>
     </table>
-	    <p class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">This summary is based on the property data available in this prototype. Official county records should be used to confirm parcel details, values, filing requirements, and deadlines.</p>
+      <p class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">This summary is based on the property data available in this prototype. Official county records should be used to confirm parcel details, values, filing requirements, and deadlines.</p>
     ${reviewRows}
   `);
 }

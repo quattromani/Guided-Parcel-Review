@@ -63,15 +63,15 @@ function validateManifest() {
   return { manifest, active };
 }
 
-function validateRecordCard(recordCard, active) {
+function validateRecordCard(recordCard, manifestEntry) {
   assert(recordCard.source?.system, "Record card must identify a source system.");
   assert(recordCard.guidedSnapshot, "Record card must include guidedSnapshot for the current prototype.");
   assert(recordCard.parcelIdentifiers?.parcelId, "Record card must include parcelIdentifiers.parcelId.");
 
   const snapshot = recordCard.guidedSnapshot;
   assert(snapshot.parcel?.parcelId, "guidedSnapshot.parcel.parcelId is required.");
-  assert(snapshot.parcel.parcelId === active.parcelId, "Manifest parcelId and record-card parcelId must match.");
-  assert(snapshot.parcel.taxDistrict === active.taxDistrict, "Manifest taxDistrict and record-card taxDistrict must match.");
+  assert(snapshot.parcel.parcelId === manifestEntry.parcelId, `Manifest parcelId and record-card parcelId must match for '${manifestEntry.id}'.`);
+  assert(snapshot.parcel.taxDistrict === manifestEntry.taxDistrict, `Manifest taxDistrict and record-card taxDistrict must match for '${manifestEntry.id}'.`);
   assert(Array.isArray(snapshot.taxpayerHistory), "guidedSnapshot.taxpayerHistory must be an array.");
   assert(snapshot.taxpayerHistory.some(row => row.year === snapshot.snapshotYear), "taxpayerHistory must include snapshotYear.");
   assert(Array.isArray(snapshot.latestFinalLevyComponents), "latestFinalLevyComponents must be an array.");
@@ -94,8 +94,10 @@ function validateRecordCard(recordCard, active) {
 
 function main() {
   validateSchemasParse();
-  const { active } = validateManifest();
-  validateRecordCard(readJson(active.recordCardPath), active);
+  const { manifest } = validateManifest();
+  manifest.properties
+    .filter(property => property.recordCardStatus === "available")
+    .forEach(property => validateRecordCard(readJson(property.recordCardPath), property));
   console.log("data contracts ok");
 }
 
