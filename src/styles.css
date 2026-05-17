@@ -2910,10 +2910,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   padding-top: 1rem;
 }
 
-.market-reading-rollup-mobile {
-  display: none;
-}
-
 .market-group-sales-panel {
   background: rgb(var(--surface-muted));
   border-radius: 0.5rem;
@@ -3236,16 +3232,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .market-reading-step + .market-reading-step {
     border-left: 1px solid rgb(var(--border-muted));
     padding-left: 1rem;
-  }
-}
-
-@media (max-width: 767px) {
-  .market-reading-rollup-desktop {
-    display: none;
-  }
-
-  .market-reading-rollup-mobile {
-    display: block;
   }
 }
 

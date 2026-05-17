@@ -48,6 +48,7 @@ export function initFirstVisitOrientation() {
 
       <div id="orientationDescription" class="orientation-modal-body">
         <p>The Guided Parcel Review is a step-by-step way to understand how a property&rsquo;s assessed value, tax history, and parcel details fit together.</p>
+        <p>For this prototype, start by choosing one of the pre-loaded sample parcels from the property switcher in the page header.</p>
         <p>It is designed to help answer the bigger question many property owners have: &ldquo;How am I really being affected by changes in value and property taxes?&rdquo;</p>
         <p>You can use this tool to review a sample property, understand a recent notice of value, research how property information is organized, or see how assessment and tax data can be explained more clearly.</p>
         <p>This site is an independent informational and visualization tool. It is not an official county record, government website, or final valuation source. Sample records have been pre-loaded to demonstrate, stress test, and smoke test the product while it is in active development.</p>
@@ -63,7 +64,7 @@ export function initFirstVisitOrientation() {
 
       <div class="orientation-actions">
         <button type="button" class="orientation-primary-button" disabled>
-          Begin Guided Review
+          Choose a Sample Property
         </button>
       </div>
     </section>

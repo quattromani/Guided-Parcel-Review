@@ -171,7 +171,7 @@ main().catch(error => {
   document.body.innerHTML = `
     <main class="mx-auto max-w-2xl p-6">
       <section class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-red-200">
-        <h1 class="text-xl font-bold text-red-700">Property snapshot could not load</h1>
+        <h1 class="text-xl font-bold text-red-700">Guided Parcel Review could not load</h1>
         <p class="mt-2 text-sm text-slate-700">${error.message}</p>
       </section>
     </main>

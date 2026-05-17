@@ -282,7 +282,7 @@ function installLandingPrimer(data) {
   section.innerHTML = `
     <article class="civic-landing-shell">
       <div class="civic-landing-intro">
-        <p class="guided-kicker">Assessment snapshot</p>
+        <p class="guided-kicker">Guided Parcel Review</p>
         <p>Property, value, and tax records are easier to review when the basic facts come first. Begin by confirming the property and noticing which information is final, pending, or available only as context.</p>
       </div>
 
@@ -290,7 +290,7 @@ function installLandingPrimer(data) {
         <div class="civic-notice-heading">
           <div>
             <p class="guided-kicker">Property record</p>
-            <h3 id="assessmentSnapshotTitle">Property snapshot</h3>
+            <h3 id="assessmentSnapshotTitle">Property review starting point</h3>
           </div>
           <div class="notice-status-group" aria-label="${escapeHtml(`${notice.assessmentLabel} status ${notice.valueStatusLabel}`)}">
             <span>${escapeHtml(notice.assessmentLabel)}:</span>
