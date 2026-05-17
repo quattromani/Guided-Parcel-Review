@@ -162,7 +162,7 @@ function initGuidedNavigation(data) {
   const tabs = document.querySelectorAll("[data-guided-tab]");
   const panels = document.querySelectorAll("[data-guided-panel]");
   const propertyContext = document.getElementById("propertyViewContext");
-  const guidedPath = document.querySelector(".guided-path-nav");
+  const guidedPath = document.querySelector(".guide-review-header");
   const guidedPathTrack = document.querySelector(".guided-path-track");
   const guidedProgressStatus = document.querySelector("[data-guided-progress-status]");
   const guidedProgressNext = document.querySelector("[data-guided-progress-next]");
@@ -324,7 +324,7 @@ function initGuidedNavigation(data) {
       panel.classList.toggle("hidden", panel.dataset.guidedPanel !== selectedPanel);
     });
 
-    propertyContext?.classList.toggle("hidden", selected === "landing-primer" || selectedPanel === "your-property");
+    propertyContext?.classList.toggle("hidden", selected === "landing-primer");
     renderViewHeader(selected, snapshotModel);
     renderGuidedResourceContent(selected);
     if (selectedPanel === "your-taxes") {

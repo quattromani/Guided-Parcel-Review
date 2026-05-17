@@ -424,16 +424,16 @@ export function renderPropertyViewContext(data, recordCard, valuationGroups) {
   const propertyClass = data.classification.propertyClass || data.parcel.accountType;
 
   context.innerHTML = `
-    <div class="property-context-bar mb-4" data-property-context-bar>
-      <div class="property-context-identity">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Subject Property</p>
-        <p class="property-context-situs">${data.parcel.situsAddress}</p>
-      </div>
-      <div class="property-context-tags" aria-label="Property context">
-        <span>${propertyClass}</span>
-        <span>${marketArea}</span>
-        <span class="property-context-location">${data.classification.location}</span>
-      </div>
+    <div class="property-context-bar" data-property-context-bar aria-label="Subject property">
+      <p class="property-context-line">
+        <span class="property-context-situs">${data.parcel.situsAddress}</span>
+        <span class="property-context-separator property-context-desktop" aria-hidden="true">·</span>
+        <span class="property-context-meta property-context-desktop">${propertyClass}</span>
+        <span class="property-context-separator property-context-desktop" aria-hidden="true">·</span>
+        <span class="property-context-meta property-context-desktop">${data.classification.location}</span>
+        <span class="property-context-separator" aria-hidden="true">·</span>
+        <span class="property-context-meta">${marketArea}</span>
+      </p>
     </div>
   `;
 }
@@ -457,38 +457,8 @@ function propertyMarketAreaLabel(data, recordCard, valuationGroups) {
   return "Market area not listed";
 }
 
-function propertyMarketAreaHeaderLabel(data, recordCard, valuationGroups) {
-  const valuationGroupId = `${recordCard?.locationModel?.valuationGroup ?? ""}`.match(/\d+/)?.[0];
-  const propertyClass = data.classification.propertyClass;
-  const match = (valuationGroups?.valuationGroups || []).find(group =>
-    String(group.valuationGroup) === String(valuationGroupId)
-    && group.class === propertyClass
-  );
-
-  if (recordCard?.locationModel?.valuationGroup) {
-    return stripValuationGroupPrefix(recordCard.locationModel.valuationGroup);
-  }
-
-  if (match?.description) {
-    return match.description;
-  }
-
-  return "Market area not listed";
-}
-
-function normalizeValuationGroupLabel(value, { full = false } = {}) {
-  const label = `${value ?? ""}`.trim();
-  const prefix = full ? "Valuation Group" : "VG";
-  return /^\d/.test(label) ? `${prefix} ${label}` : label;
-}
-
 function stripValuationGroupPrefix(value) {
   return `${value ?? ""}`.trim().replace(/^\d+\s*[-–]\s*/, "") || "Market area not listed";
-}
-
-function formatSchoolDistrictLabel(value) {
-  const districtNumber = `${value ?? ""}`.match(/\bSCH\s*(\d+)\b/i)?.[1];
-  return districtNumber ? `School District ${districtNumber}` : "School district not listed";
 }
 
 function landingPrimerTitleHtml(noticeAddress) {
@@ -605,27 +575,13 @@ function initDisabledParcelLookup(root) {
 
 function renderHeader(data, imageModal, recordCard, valuationGroups) {
   const header = document.getElementById("pageHeader");
-  const marketArea = propertyMarketAreaHeaderLabel(data, recordCard, valuationGroups);
 
   header.innerHTML = `
-    <div class="property-hero-header">
-      <div class="property-hero-identity">
-        <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">${data.snapshotYear} Property Snapshot</p>
-        <h2 class="mt-1 text-3xl font-bold tracking-tight text-slate-700">${data.parcel.situsAddress}</h2>
-        <div class="property-hero-meta">
-          <p class="property-hero-meta-primary">
-            ${data.parcel.accountType} Property
-          </p>
-          <p class="property-hero-market">${marketArea}</p>
-          <p class="property-hero-school">${formatSchoolDistrictLabel(data.parcel.schoolDistrict)}</p>
-        </div>
-      </div>
-
-      <div class="property-hero-notice">
+    <div class="property-record-overview">
+      <div class="property-record-value-table" aria-label="Prior and current value breakdown">
         ${valuationNoticeSummary(data, recordCard)}
       </div>
-
-      <div class="property-hero-media">
+      <div class="property-record-media" aria-label="Property images">
         ${imageButton(data.assets.photo, "Property Photos", "Photos")}
         ${imageButton(data.assets.sketch, "Property Sketch", "Sketch")}
       </div>

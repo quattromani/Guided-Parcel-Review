@@ -13,32 +13,34 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="src/styles.css" />
+  <link rel="stylesheet" href="src/styles.css?v=sticky-review" />
 </head>
 <body class="bg-slate-100 text-slate-700">
   <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
     <section id="pageTitle" class="mb-4 px-1"></section>
 
     <div class="mobile-review-canvas">
-      <nav aria-label="Guided property snapshot path" class="guided-path-nav mb-5 overflow-x-auto rounded-2xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-200">
-        <div class="guided-progress-shell">
-          <p class="guided-progress-status" data-guided-progress-status>You're reviewing step 1 of 7</p>
-          <div class="guided-path-track">
-            <div id="guidedPathTabs" class="relative z-10 flex min-w-max gap-4">
-              <button type="button" data-guided-tab="property-record" class="guided-step" aria-selected="false"><span>1</span>Property Record</button>
-              <button type="button" data-guided-tab="what-changed" class="guided-step" aria-selected="false"><span>2</span>What Changed</button>
-              <button type="button" data-guided-tab="valuation-detail" class="guided-step" aria-selected="false"><span>3</span>Value Detail</button>
-              <button type="button" data-guided-tab="equalization" class="guided-step" aria-selected="false"><span>4</span>Equalization</button>
-              <button type="button" data-guided-tab="tax-context" class="guided-step" aria-selected="false"><span>5</span>Tax Context</button>
-              <button type="button" data-guided-tab="review-signals" class="guided-step" aria-selected="false"><span>6</span>Review Signals</button>
-              <button type="button" data-guided-tab="final-summary" class="guided-step" aria-selected="false"><span>7</span>Summary</button>
-            </div>
-          </div>
-          <p class="guided-progress-next" data-guided-progress-next></p>
-        </div>
-      </nav>
+      <div class="guide-review-header">
+        <section id="propertyViewContext" class="hidden"></section>
 
-      <section id="propertyViewContext" class="hidden"></section>
+        <nav aria-label="Guided property snapshot path" class="guided-path-nav overflow-x-auto rounded-2xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-200">
+          <div class="guided-progress-shell">
+            <p class="guided-progress-status" data-guided-progress-status>You're reviewing step 1 of 7</p>
+            <div class="guided-path-track">
+              <div id="guidedPathTabs" class="relative z-10 flex min-w-max gap-4">
+                <button type="button" data-guided-tab="property-record" class="guided-step" aria-selected="false"><span>1</span>Property Record</button>
+                <button type="button" data-guided-tab="what-changed" class="guided-step" aria-selected="false"><span>2</span>What Changed</button>
+                <button type="button" data-guided-tab="valuation-detail" class="guided-step" aria-selected="false"><span>3</span>Value Detail</button>
+                <button type="button" data-guided-tab="equalization" class="guided-step" aria-selected="false"><span>4</span>Equalization</button>
+                <button type="button" data-guided-tab="tax-context" class="guided-step" aria-selected="false"><span>5</span>Tax Context</button>
+                <button type="button" data-guided-tab="review-signals" class="guided-step" aria-selected="false"><span>6</span>Review Signals</button>
+                <button type="button" data-guided-tab="final-summary" class="guided-step" aria-selected="false"><span>7</span>Summary</button>
+              </div>
+            </div>
+            <p class="guided-progress-next" data-guided-progress-next></p>
+          </div>
+        </nav>
+      </div>
 
     <section data-guided-panel="your-property" class="space-y-6">
       <header id="pageHeader" class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"></header>
