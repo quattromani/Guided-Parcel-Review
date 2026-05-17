@@ -25,7 +25,8 @@ import {
   loadTaxDistrictAuthorities,
   loadValuationGroups,
   loadIaaoStandards,
-  loadAssessmentDateEvents
+  loadAssessmentDateEvents,
+  PROPERTY_SELECTION_STORAGE_KEY
 } from "./data-service.js";
 import { applyChartDefaults, applyVisualizationPalette } from "./config/visualization-palettes.js";
 import { initImageModal } from "./modal.js";
@@ -46,7 +47,7 @@ import { renderTaxDistrictAuthorities } from "./views/tax-district-authorities.j
 import { escapeHtml } from "./utils/html.js";
 import { initAssessorsReport } from "./assessors-report.js";
 import { initAssessmentDatesPanel } from "./assessment-dates.js";
-import { initFirstVisitOrientation } from "./orientation.js";
+import { initFirstVisitOrientation, ORIENTATION_STORAGE_KEY } from "./orientation.js";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 
@@ -647,6 +648,7 @@ function initFooterNavigation() {
   const panels = document.querySelectorAll("[data-footer-panel]");
   const footerContent = document.getElementById("footerContent");
   const footerTargets = new Set(Array.from(panels, panel => panel.dataset.footerPanel));
+  const resetButton = document.querySelector("[data-reset-property-manifest]");
 
   document.querySelectorAll("[data-fpo-link]").forEach(link => {
     link.addEventListener("click", event => event.preventDefault());
@@ -701,4 +703,24 @@ function initFooterNavigation() {
 
   window.addEventListener("hashchange", openFooterPanelFromHash);
   openFooterPanelFromHash();
+
+  resetButton?.addEventListener("click", () => {
+    try {
+      window.localStorage?.removeItem(PROPERTY_SELECTION_STORAGE_KEY);
+      window.localStorage?.removeItem(ORIENTATION_STORAGE_KEY);
+    } catch {
+      // Reloading without a property selection still returns to the start flow.
+    }
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete("property");
+    url.searchParams.delete("orientation");
+    url.hash = "";
+
+    if (url.toString() === window.location.href) {
+      window.location.reload();
+    } else {
+      window.location.assign(url.toString());
+    }
+  });
 }
