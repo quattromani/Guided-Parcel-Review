@@ -576,8 +576,25 @@ function bandStatus(value, approximate = false) {
 
 function metricSignalToneFromBandTone(tone) {
   if (tone === "inside") return "green";
+  if (tone === "caution") return "orange";
   if (tone === "outside") return "red";
   return "neutral";
+}
+
+const OUTSIDE_BAND_ALARM_DISTANCE_POINTS = 1.2;
+
+function bandDistancePoints(value, range) {
+  if (value === null || value === undefined || !range) return 0;
+
+  const numericValue = Number(value);
+  const min = Number(range.min);
+  const max = Number(range.max);
+  if (!Number.isFinite(numericValue) || !Number.isFinite(min) || !Number.isFinite(max)) return 0;
+
+  const distance = numericValue < min ? min - numericValue : numericValue > max ? numericValue - max : 0;
+  const usesRatioScale = Math.max(Math.abs(numericValue), Math.abs(min), Math.abs(max)) <= 2;
+
+  return usesRatioScale ? distance * 100 : distance;
 }
 
 function rawBandStatus(value, range, { approximate = false } = {}) {
@@ -587,8 +604,12 @@ function rawBandStatus(value, range, { approximate = false } = {}) {
     return { label: "No direct band", tone: "unknown" };
   }
 
-  if (value < range.min) return { label: `Below ${bandLabel}`, tone: "outside" };
-  if (value > range.max) return { label: `Above ${bandLabel}`, tone: "outside" };
+  const outsideTone = bandDistancePoints(value, range) >= OUTSIDE_BAND_ALARM_DISTANCE_POINTS
+    ? "outside"
+    : "caution";
+
+  if (value < range.min) return { label: `Below ${bandLabel}`, tone: outsideTone };
+  if (value > range.max) return { label: `Above ${bandLabel}`, tone: outsideTone };
 
   return { label: `Inside ${bandLabel}`, tone: "inside" };
 }
@@ -598,8 +619,12 @@ function assessmentLevelStatus(value, range) {
     return { label: "No target status", tone: "unknown" };
   }
 
-  if (value < range.min) return { label: "Below class range", tone: "outside" };
-  if (value > range.max) return { label: "Above class range", tone: "outside" };
+  const outsideTone = bandDistancePoints(value, range) >= OUTSIDE_BAND_ALARM_DISTANCE_POINTS
+    ? "outside"
+    : "caution";
+
+  if (value < range.min) return { label: "Below class range", tone: outsideTone };
+  if (value > range.max) return { label: "Above class range", tone: outsideTone };
   return { label: "Inside class range", tone: "inside" };
 }
 

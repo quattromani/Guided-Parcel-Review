@@ -30,6 +30,8 @@ const COMMERCIAL_CONTEXT_TERMS = [
   "apartments"
 ];
 
+const OUTSIDE_BAND_ALARM_DISTANCE_POINTS = 1.2;
+
 function numericValue(value) {
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
@@ -166,6 +168,10 @@ function signalResult({
   };
 }
 
+function outsideBandTone(distancePoints) {
+  return distancePoints >= OUTSIDE_BAND_ALARM_DISTANCE_POINTS ? "red" : "orange";
+}
+
 function thresholdMatches(threshold, value, share) {
   return (threshold.min === undefined || value >= threshold.min)
     && (threshold.max === undefined || value <= threshold.max)
@@ -208,20 +214,20 @@ function medianRatioSignal({ value, standards, context }) {
   const min = Number(range.min);
   const max = Number(range.max);
   const ideal = Number(standard.idealValue ?? (min + max) / 2);
-  const tolerance = Number(standard.tolerance ?? 2);
   const standardUsed = standard.sourceLabel ?? `${standard.label} ${formatRange(range)}%`;
 
   if (normalizedValue < min || normalizedValue > max) {
     const distance = normalizedValue < min ? min - normalizedValue : normalizedValue - max;
+    const tone = outsideBandTone(distance);
     return signalResult({
-      tone: distance > tolerance ? "red" : "orange",
-      severity: distance > tolerance ? "alarm" : "caution",
-      label: distance > tolerance ? "Outside expected range" : "Just outside range",
-      explanation: distance > tolerance
+      tone,
+      severity: tone === "red" ? "alarm" : "caution",
+      label: tone === "red" ? "Outside expected range" : "Just outside range",
+      explanation: tone === "red"
         ? "This value is outside the expected range for the applicable property class."
         : "This value is outside the expected range, but close enough to read with context.",
-      trigger: distance > tolerance
-        ? "median ratio outside applicable class range beyond defined tolerance"
+      trigger: tone === "red"
+        ? "median ratio outside applicable class range by at least 1.2 points"
         : "median ratio just outside applicable class range",
       normalizedValue,
       standardUsed
@@ -261,7 +267,6 @@ function codSignal({ value, standards, context }) {
   const max = Number(range.max);
   const softIdeal = Math.min(10, max);
   const preferredMax = Math.min(15, max);
-  const tolerance = Math.max(2, max * 0.2);
   const standardUsed = `IAAO COD ${formatRange(range, 1)} for ${standard.jurisdictionProfile}`;
 
   if (normalizedValue <= softIdeal) {
@@ -301,15 +306,16 @@ function codSignal({ value, standards, context }) {
   }
 
   const distance = normalizedValue - max;
+  const tone = outsideBandTone(distance);
   return signalResult({
-    tone: distance > tolerance ? "red" : "orange",
-    severity: distance > tolerance ? "alarm" : "caution",
-    label: distance > tolerance ? "Outside range" : "Above range",
-    explanation: distance > tolerance
+    tone,
+    severity: tone === "red" ? "alarm" : "caution",
+    label: tone === "red" ? "Outside range" : "Above range",
+    explanation: tone === "red"
       ? "This COD is materially above the selected range, which may indicate less uniform assessment ratios."
       : "This COD is above the selected range and should be read with caution.",
-    trigger: distance > tolerance
-      ? "COD above selected range beyond defined tolerance"
+    trigger: tone === "red"
+      ? "COD above selected range by at least 1.2 points"
       : "COD above selected range",
     normalizedValue,
     standardUsed
@@ -342,20 +348,20 @@ function prdSignal({ value, standards }) {
   }
 
   const ideal = 100;
-  const tolerance = 1;
   const standardUsed = `IAAO PRD ${formatRange(range, 0)}`;
 
   if (normalizedValue < range.min || normalizedValue > range.max) {
     const distance = normalizedValue < range.min ? range.min - normalizedValue : normalizedValue - range.max;
+    const tone = outsideBandTone(distance);
     return signalResult({
-      tone: distance > tolerance ? "red" : "orange",
-      severity: distance > tolerance ? "alarm" : "caution",
-      label: distance > tolerance ? "Outside expected range" : "Just outside range",
-      explanation: distance > tolerance
-        ? "This PRD is outside the expected range beyond the defined tolerance."
+      tone,
+      severity: tone === "red" ? "alarm" : "caution",
+      label: tone === "red" ? "Outside expected range" : "Just outside range",
+      explanation: tone === "red"
+        ? "This PRD is outside the expected range by at least 1.2 points."
         : "This PRD is outside the expected range, but close enough to read with context.",
-      trigger: distance > tolerance
-        ? "PRD outside expected range beyond defined tolerance"
+      trigger: tone === "red"
+        ? "PRD outside expected range by at least 1.2 points"
         : "PRD just outside expected range",
       normalizedValue,
       standardUsed
