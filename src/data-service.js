@@ -18,7 +18,7 @@ const DATA_PATHS = {
 let manifestPromise;
 let activeRecordCardPromise;
 let activePropertyDataPromise;
-const PROPERTY_SELECTION_STORAGE_KEY = "propertySnapshot.activePropertyId";
+export const PROPERTY_SELECTION_STORAGE_KEY = "propertySnapshot.selectedPropertyId.v1";
 
 export function loadPropertyManifest() {
   manifestPromise ??= loadJson(DATA_PATHS.manifest, "property manifest");
@@ -32,7 +32,7 @@ export function getActivePropertyId(manifest) {
 
   if (requestedProperty) return requestedProperty.id;
 
-  return manifest.activePropertyId;
+  return null;
 }
 
 function getRequestedPropertyId() {

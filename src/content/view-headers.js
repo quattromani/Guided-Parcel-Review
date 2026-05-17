@@ -1,4 +1,10 @@
 const viewHeaderContent = {
+  start: {
+    eyebrow: "Guided Parcel Review",
+    title: "Select a sample property to begin",
+    description: "Choose a residential, agricultural, or commercial sample parcel from the property switcher to start the Guided Parcel Review.",
+    imageAlt: "Map of Nebraska highlighting Gage County"
+  },
   "your-property": {
     eyebrow: "Guided Property Snapshot",
     title: "This property, step by step",

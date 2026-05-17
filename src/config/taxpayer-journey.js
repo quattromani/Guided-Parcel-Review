@@ -45,6 +45,17 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     description: "Equalization does not stop market values from moving or set the levy. It checks whether assessed values are at the required level and reasonably uniform before levies are applied."
   },
   {
+    id: "state-context",
+    panelId: "state-context",
+    eyebrow: "Deeper equalization context",
+    label: "State Context",
+    question: "How does the county compare statewide?",
+    title: "Keep the statewide comparison inside the equalization step",
+    description: "Statewide CTL baselines provide a broader equalization reference before the guide moves from value context into tax context.",
+    secondary: true,
+    primaryRouteId: "equalization"
+  },
+  {
     id: "tax-context",
     panelId: "your-taxes",
     eyebrow: "Understand",

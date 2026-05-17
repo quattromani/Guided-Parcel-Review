@@ -31,6 +31,7 @@ import { applyChartDefaults, applyVisualizationPalette } from "./config/visualiz
 import { initImageModal } from "./modal.js";
 import {
   renderPage,
+  renderStartPage,
   renderViewHeader
 } from "./render.js";
 import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.js";
@@ -45,6 +46,7 @@ import { renderTaxDistrictAuthorities } from "./views/tax-district-authorities.j
 import { escapeHtml } from "./utils/html.js";
 import { initAssessorsReport } from "./assessors-report.js";
 import { initAssessmentDatesPanel } from "./assessment-dates.js";
+import { initFirstVisitOrientation } from "./orientation.js";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 
@@ -67,10 +69,27 @@ window.addEventListener("resize", syncLayoutViewportWidth, { passive: true });
 async function main() {
   applyVisualizationPalette();
   applyChartDefaults();
-  const [propertyData, recordCard, propertySwitcher, calendar, legalReferences, realPropertyForms, ctlData, ratioData, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, valuationGroups, iaaoStandards, assessmentDateEvents] = await Promise.all([
+  const propertySwitcher = await loadPropertySwitcherRecords();
+
+  if (!propertySwitcher.activePropertyId) {
+    const [realPropertyForms, assessmentDateEvents] = await Promise.all([
+      loadRealPropertyForms(),
+      loadAssessmentDateEvents()
+    ]);
+
+    officialRealPropertyForms = realPropertyForms;
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    renderStartPage(propertySwitcher);
+    renderGuidedResourceContent("your-property");
+    initAssessmentDatesPanel(assessmentDateEvents);
+    initFooterNavigation();
+    initFirstVisitOrientation();
+    return;
+  }
+
+  const [propertyData, recordCard, calendar, legalReferences, realPropertyForms, ctlData, ratioData, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, valuationGroups, iaaoStandards, assessmentDateEvents] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
-    loadPropertySwitcherRecords(),
     loadAssessmentCalendar(),
     loadLegalReferences(),
     loadRealPropertyForms(),
@@ -224,6 +243,10 @@ function initGuidedNavigation(data, options = {}) {
     return primarySectionIds.includes(id);
   }
 
+  function progressRouteIdFor(route) {
+    return route?.primaryRouteId ?? route?.id ?? null;
+  }
+
   function stepForTarget(target) {
     const panelId = document.getElementById(target)?.closest("[data-guided-panel]")?.dataset.guidedPanel;
     return panelId ? routeIdForPanel(panelId) : null;
@@ -366,13 +389,16 @@ function initGuidedNavigation(data, options = {}) {
     const route = resolveRoute(selectedRoute) ?? routeList[0];
     const selected = route.id;
     const selectedPanel = route.panelId;
+    const progressRouteId = progressRouteIdFor(route);
     const primaryRoute = isPrimaryRouteId(selected);
 
     if (primaryRoute && !unlockedSteps.has(selected)) {
       return false;
     }
 
-    renderGuidedTabs(selected);
+    if (route.secondary && progressRouteId) unlockThrough(progressRouteId);
+
+    renderGuidedTabs(progressRouteId || selected);
 
     panels.forEach(panel => {
       panel.classList.toggle("hidden", panel.dataset.guidedPanel !== selectedPanel);
@@ -387,7 +413,7 @@ function initGuidedNavigation(data, options = {}) {
     if (updateHash && window.location.hash !== `#${selected}`) {
       history.pushState(null, "", `#${selected}`);
     }
-    updateGuidedProgressStatus(selected);
+    updateGuidedProgressStatus(progressRouteId || selected);
     window.dispatchEvent(new Event("resize"));
     queueActiveGuidedStepAlignment(scrollTop ? "smooth" : "auto");
     queueFinalStepCompletionCheck();
@@ -423,11 +449,12 @@ function initGuidedNavigation(data, options = {}) {
     button.addEventListener("click", () => {
       const currentPanel = button.closest("[data-guided-panel]")?.dataset.guidedPanel;
       const currentRoute = routeIdForPanel(currentPanel);
+      const currentProgressRoute = progressRouteIdFor(resolveRoute(currentRoute));
       const nextRoute = routeIdFor(button.dataset.guidedNext);
-      if (currentRoute && isPrimaryRouteId(currentRoute)) visitedSteps.add(currentRoute);
+      if (currentProgressRoute && isPrimaryRouteId(currentProgressRoute)) visitedSteps.add(currentProgressRoute);
       unlockThrough(nextRoute);
       if (selectStep(nextRoute, { updateHash: true })) {
-        animateGuidedStep(currentRoute);
+        animateGuidedStep(currentProgressRoute);
         animateGuidedStep(nextRoute);
       }
     });

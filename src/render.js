@@ -19,6 +19,7 @@ import {
   generateRecordCorrectionPdf
 } from "./recordCorrectionRequest.js";
 import { viewHeaderContent } from "./content/view-headers.js";
+import { PROPERTY_SELECTION_STORAGE_KEY } from "./data-service.js";
 import { propertyRecordSourceText } from "./domain/source-labels.js";
 import {
   getClassMarketStats,
@@ -36,6 +37,59 @@ const discrepancyChoices = [
   ["other", "Other"]
 ];
 const discrepancyChoiceLabels = Object.fromEntries(discrepancyChoices);
+
+export function renderStartPage(propertySwitcherContext = {}) {
+  renderViewHeader("start", null, propertySwitcherContext);
+
+  document.getElementById("propertyViewContext")?.classList.add("hidden");
+  document.querySelector(".guide-review-header")?.classList.add("hidden");
+  document.querySelectorAll("[data-guided-panel]").forEach(panel => {
+    panel.classList.add("hidden");
+  });
+
+  const canvas = document.querySelector(".mobile-review-canvas");
+  if (!canvas) return;
+
+  let start = document.getElementById("guidedStartState");
+  if (!start) {
+    start = document.createElement("section");
+    start.id = "guidedStartState";
+    canvas.prepend(start);
+  }
+
+  start.className = "guided-start-state";
+  start.innerHTML = `
+    <article class="guided-start-card" aria-labelledby="guidedStartTitle">
+      <div class="guided-start-copy">
+        <p class="guided-kicker">Ready when you choose a record</p>
+        <h2 id="guidedStartTitle">Select a Sample Property to Begin</h2>
+        <p>Choose a residential, agricultural, or commercial sample parcel from the property switcher in the header to start the Guided Parcel Review.</p>
+      </div>
+
+      <div class="guided-start-callout" aria-label="Where to begin">
+        <p class="guided-start-callout-label">Start here</p>
+        <p>Use the property switcher above. After you select a sample parcel, this page will load the record, value history, tax context, charts, and guided review steps.</p>
+      </div>
+
+      <div class="guided-start-grid" aria-label="What the review covers">
+        <section>
+          <h3>Value and assessment history</h3>
+          <p>See how the sample property's assessed value has moved and which years are still pending or finalized.</p>
+        </section>
+        <section>
+          <h3>Tax impact</h3>
+          <p>Connect value movement with levy, credits, effective tax rate, and the latest available tax bill context.</p>
+        </section>
+        <section>
+          <h3>Parcel context</h3>
+          <p>Review parcel facts, classification, land details, valuation groups, and practical items to verify.</p>
+        </section>
+      </div>
+
+      <p class="guided-start-disclaimer">This prototype uses pre-loaded sample records for demonstration, stress testing, and smoke testing. Official records, valuations, and tax determinations remain with the appropriate county offices.</p>
+    </article>
+  `;
+}
 
 function legalReferenceById(legalReferences, id) {
   return (legalReferences?.references || []).find(reference => reference.id === id) ?? null;
@@ -82,6 +136,8 @@ function legalAuthorityListHtml(authorities, legalReferences) {
 }
 
 export function renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, summaryContext = {}) {
+  document.getElementById("guidedStartState")?.classList.add("hidden");
+  document.querySelector(".guide-review-header")?.classList.remove("hidden");
   renderViewHeader("your-property", data.snapshotModel, summaryContext.propertySwitcher);
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard, valuationGroups);
@@ -530,25 +586,51 @@ export function renderViewHeader(view = "your-property", snapshotModel, property
 }
 
 function propertySwitcherMarkup(propertySwitcher, snapshotModel) {
-  const options = propertySwitcherOptions(propertySwitcher, snapshotModel);
+  const groups = propertySwitcherOptionGroups(propertySwitcher, snapshotModel);
+  const hasOptions = groups.some(group => group.options.length);
+  const hasActiveProperty = Boolean(propertySwitcher?.activePropertyId);
 
-  if (!options.length) return disabledParcelLookupMarkup();
+  if (!hasOptions) return disabledParcelLookupMarkup();
 
   return `
-    <div class="parcel-lookup-placeholder" data-property-switcher-shell>
-      <label class="parcel-lookup-label" for="propertySwitcher">Looking for another property?</label>
+    <div class="parcel-lookup-placeholder ${hasActiveProperty ? "" : "property-switcher-empty"}" data-property-switcher-shell>
+      <label class="parcel-lookup-label" for="propertySwitcher">${hasActiveProperty ? "Looking for another property?" : "Select a sample property"}</label>
       <select
         id="propertySwitcher"
         class="parcel-lookup-shell property-switcher-select"
         data-property-switcher
         aria-label="Switch property record"
       >
-        ${options.map(option => `
-          <option value="${escapeHtml(option.id)}"${option.selected ? " selected" : ""}>${escapeHtml(option.label)}</option>
+        ${hasActiveProperty ? "" : `<option value="" selected>Choose a sample property...</option>`}
+        ${groups.map(group => `
+          <optgroup label="${escapeHtml(group.label)}">
+            ${group.options.map(option => `
+              <option value="${escapeHtml(option.id)}"${option.selected ? " selected" : ""}>${escapeHtml(option.label)}</option>
+            `).join("")}
+          </optgroup>
         `).join("")}
       </select>
     </div>
   `;
+}
+
+function propertySwitcherOptionGroups(propertySwitcher, snapshotModel) {
+  const groups = new Map([
+    ["Residential Samples", []],
+    ["Agricultural Samples", []],
+    ["Commercial Samples", []],
+    ["Mixed / Special Use Samples", []]
+  ]);
+  const options = propertySwitcherOptions(propertySwitcher, snapshotModel);
+
+  options.forEach(option => {
+    const groupLabel = switcherGroupLabel(option.propertyClass);
+    groups.get(groupLabel).push(option);
+  });
+
+  return [...groups.entries()]
+    .map(([label, groupOptions]) => ({ label, options: groupOptions }))
+    .filter(group => group.options.length);
 }
 
 function propertySwitcherOptions(propertySwitcher, snapshotModel) {
@@ -568,10 +650,21 @@ function propertySwitcherOptions(propertySwitcher, snapshotModel) {
 
       return {
         id: item.property.id,
+        propertyClass,
         selected: item.property.id === activePropertyId,
         label: `${situsNumber} • ${valuationGroup} • ${propertyClass}`
       };
     });
+}
+
+function switcherGroupLabel(value) {
+  const normalized = `${value ?? ""}`.trim().toLowerCase();
+
+  if (normalized.includes("res")) return "Residential Samples";
+  if (normalized.includes("ag") || normalized.includes("farm")) return "Agricultural Samples";
+  if (normalized.includes("comm")) return "Commercial Samples";
+
+  return "Mixed / Special Use Samples";
 }
 
 function firstSitusNumber(value) {
@@ -659,7 +752,7 @@ function switchPropertyRecord(propertyId) {
   if (!propertyId) return;
 
   try {
-    window.localStorage?.setItem("propertySnapshot.activePropertyId", propertyId);
+    window.localStorage?.setItem(PROPERTY_SELECTION_STORAGE_KEY, propertyId);
   } catch {
     // The query string remains the source of truth if storage is unavailable.
   }
