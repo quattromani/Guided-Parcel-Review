@@ -2,7 +2,7 @@
 
 Branch: `codex/civic-orientation-refactor`
 
-Purpose: evolve the current working Property Snapshot prototype into a taxpayer-first civic orientation and comprehension system. This is a refactor of existing systems, not a disconnected rebuild.
+Purpose: evolve the current working Guided Parcel Review prototype into a taxpayer-first civic orientation and comprehension system. This is a refactor of existing systems, not a disconnected rebuild.
 
 ## Product Principle
 

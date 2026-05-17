@@ -1,6 +1,6 @@
-# Property Snapshot
+# Guided Parcel Review
 
-Property Snapshot is a static, taxpayer-facing prototype for a guided parcel review. It helps a user choose a sample property, confirm the property record, understand assessment movement, review value and equalization context, connect value to taxes, identify neutral review signals, and download a concise reference report.
+Guided Parcel Review is a static, taxpayer-facing prototype for a guided parcel review. It helps a user choose a sample property, confirm the property record, understand assessment movement, review value and equalization context, connect value to taxes, identify neutral review signals, and download a concise reference report.
 
 The app is currently positioned as a civic orientation and handoff prototype, not an official assessment, filing, tax-payment, or parcel-lookup system. It uses real-looking static sample data so product reviewers, county staff, and vendors can inspect the assumptions without needing database credentials.
 

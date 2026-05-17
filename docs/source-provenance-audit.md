@@ -1,7 +1,7 @@
 # Nebraska PAD Source Provenance Audit
 
 Generated: 2026-05-14  
-Scope: Nebraska Department of Revenue Property Assessment Division source registry, metric extraction ledger, and app-ready static JSON for Property Snapshot.
+Scope: Nebraska Department of Revenue Property Assessment Division source registry, metric extraction ledger, and app-ready static JSON for Guided Parcel Review.
 
 ## Source Discovery Report
 

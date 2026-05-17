@@ -6,7 +6,7 @@ const viewHeaderContent = {
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "your-property": {
-    eyebrow: "Guided Property Snapshot",
+    eyebrow: "Guided Parcel Review",
     title: "This property, step by step",
     description: "Start with the record, then move through assessment, taxes, districts, market context, county equalization, and review action.",
     imageAlt: "Map of Nebraska highlighting Gage County"
