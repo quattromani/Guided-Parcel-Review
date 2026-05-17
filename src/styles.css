@@ -684,6 +684,7 @@ table thead th[class] + th[class] {
 .final-review-kpi-card,
 .ooda-decision-card,
 .ooda-inline-note,
+.guided-transition,
 .next-step-card,
 .advanced-context-card {
   max-width: 100%;
@@ -2922,6 +2923,33 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   text-transform: uppercase;
 }
 
+.guided-transition {
+  color: rgb(var(--brand-ink));
+  margin: clamp(1.65rem, 3vw, 2.5rem) auto;
+  max-width: 54rem;
+  padding: 0.15rem clamp(0.25rem, 1.8vw, 1rem);
+  position: relative;
+}
+
+.guided-transition::before {
+  background: rgb(var(--color-secondary) / 0.36);
+  border-radius: 999px;
+  content: "";
+  display: block;
+  height: 2px;
+  margin-bottom: clamp(0.85rem, 1.8vw, 1.15rem);
+  width: min(7rem, 28vw);
+}
+
+.guided-transition p {
+  color: rgb(var(--color-slate-700));
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1.48;
+  max-width: 50rem;
+}
+
 .next-step-card {
   align-items: center;
   background: rgb(var(--surface-muted));
@@ -4587,6 +4615,22 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 @media (max-width: 640px) {
+  .guided-transition {
+    margin: 1.25rem auto;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  .guided-transition::before {
+    margin-bottom: 0.75rem;
+    width: 4.5rem;
+  }
+
+  .guided-transition p {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
   .mobile-review-canvas > [data-guided-panel] > .rounded-2xl,
   .mobile-review-canvas > [data-guided-panel] > .next-step-card,
   .mobile-review-canvas > [data-guided-panel] > .advanced-context-card,
