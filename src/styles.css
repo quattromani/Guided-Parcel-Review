@@ -2872,6 +2872,49 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   justify-content: space-between;
 }
 
+.property-report-download-card {
+  align-items: center;
+  background: white;
+  border-radius: var(--radius-container-lg);
+  box-shadow: 0 1px 2px rgb(var(--brand-ink) / 0.06), inset 0 0 0 1px rgb(var(--border-muted));
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+}
+
+.property-report-download-card h2 {
+  color: rgb(var(--color-slate-700));
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-top: 0.15rem;
+}
+
+.property-report-download-card p:last-child {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.875rem;
+  line-height: 1.45;
+  margin-top: 0.18rem;
+}
+
+.next-step-button.property-report-download-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.next-step-button.property-report-download-button {
+  background: rgb(var(--color-green));
+}
+
+.next-step-button.property-report-download-button:hover {
+  background: rgb(var(--color-green-dark));
+}
+
+.next-step-button.property-report-download-button:focus-visible {
+  box-shadow: 0 0 0 3px rgb(var(--color-green) / 0.30);
+}
+
 .advanced-context-card {
   align-items: center;
   background: rgb(var(--color-secondary-soft));
@@ -3350,6 +3393,11 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   }
 
   .next-step-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .property-report-download-card {
     align-items: stretch;
     flex-direction: column;
   }

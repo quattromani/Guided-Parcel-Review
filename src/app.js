@@ -171,6 +171,8 @@ function initGuidedNavigation(data) {
   const unlockedSteps = new Set([primarySectionIds[0]]);
   const railScrollQuery = window.matchMedia("(max-width: 1299px)");
   const labelsHiddenProgressQuery = window.matchMedia("(max-width: 899px)");
+  const finalRouteId = primarySectionIds.at(-1);
+  const finalRoutePanelId = progressRoutes.at(-1)?.panelId ?? finalRouteId;
   let taxDistrictAuthoritiesPromise;
   let taxDistrictAuthoritiesRendered = false;
   let currentGuidedRouteId = null;
@@ -289,22 +291,13 @@ function initGuidedNavigation(data) {
     }
   }
 
-  function selectStep(selectedRoute, options = {}) {
-    const { scrollTop = true, updateHash = false } = options;
-    const route = resolveRoute(selectedRoute) ?? routeList[0];
-    const selected = route.id;
-    const selectedPanel = route.panelId;
-    const primaryRoute = isPrimaryRouteId(selected);
-
-    if (primaryRoute && !unlockedSteps.has(selected)) {
-      return false;
-    }
-
-    tabs.forEach((item, index) => {
+  function renderGuidedTabs(selected) {
+    tabs.forEach(item => {
       const active = item.dataset.guidedTab === selected;
       const tabIsPrimary = isPrimaryRouteId(item.dataset.guidedTab);
       const unlocked = tabIsPrimary ? unlockedSteps.has(item.dataset.guidedTab) : true;
-      const complete = tabIsPrimary && unlocked && visitedSteps.has(item.dataset.guidedTab) && !active;
+      const terminalComplete = active && item.dataset.guidedTab === finalRouteId && visitedSteps.has(finalRouteId);
+      const complete = tabIsPrimary && unlocked && visitedSteps.has(item.dataset.guidedTab) && (!active || terminalComplete);
       const future = tabIsPrimary && !unlocked;
       const marker = item.querySelector(".guided-step-marker");
 
@@ -319,6 +312,39 @@ function initGuidedNavigation(data) {
         marker.textContent = complete ? "✓" : String(primaryIndex + 1);
       }
     });
+  }
+
+  function completeFinalStepIfAtPageBottom() {
+    if (!finalRouteId || currentGuidedRouteId !== finalRouteId || visitedSteps.has(finalRouteId)) return;
+
+    const panel = document.querySelector(`[data-guided-panel="${finalRoutePanelId}"]`);
+    if (!panel || panel.classList.contains("hidden")) return;
+
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    const reachedPanelBottom = panel.getBoundingClientRect().bottom <= viewportHeight + 24;
+    if (!reachedPanelBottom) return;
+
+    visitedSteps.add(finalRouteId);
+    renderGuidedTabs(finalRouteId);
+    animateGuidedStep(finalRouteId);
+  }
+
+  function queueFinalStepCompletionCheck() {
+    window.requestAnimationFrame(completeFinalStepIfAtPageBottom);
+  }
+
+  function selectStep(selectedRoute, options = {}) {
+    const { scrollTop = true, updateHash = false } = options;
+    const route = resolveRoute(selectedRoute) ?? routeList[0];
+    const selected = route.id;
+    const selectedPanel = route.panelId;
+    const primaryRoute = isPrimaryRouteId(selected);
+
+    if (primaryRoute && !unlockedSteps.has(selected)) {
+      return false;
+    }
+
+    renderGuidedTabs(selected);
 
     panels.forEach(panel => {
       panel.classList.toggle("hidden", panel.dataset.guidedPanel !== selectedPanel);
@@ -336,6 +362,7 @@ function initGuidedNavigation(data) {
     updateGuidedProgressStatus(selected);
     window.dispatchEvent(new Event("resize"));
     queueActiveGuidedStepAlignment(scrollTop ? "smooth" : "auto");
+    queueFinalStepCompletionCheck();
 
     if (scrollTop) {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -429,6 +456,8 @@ function initGuidedNavigation(data) {
     queueActiveGuidedStepAlignment("auto");
   });
   labelsHiddenProgressQuery.addEventListener?.("change", () => updateGuidedProgressStatus(currentGuidedRouteId));
+  window.addEventListener("scroll", queueFinalStepCompletionCheck, { passive: true });
+  window.addEventListener("resize", queueFinalStepCompletionCheck);
   window.addEventListener("hashchange", selectStepFromHash);
   if (hashTarget && document.getElementById(hashTarget)) {
     window.setTimeout(() => {

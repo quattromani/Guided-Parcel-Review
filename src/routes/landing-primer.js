@@ -6,6 +6,7 @@ import {
   moneyCents
 } from "../format.js";
 import { hasValue, latestKnown, percentChange, previousKnown } from "../calculations/history.js";
+import { initPropertyReportExport } from "../reports/property-report.js";
 
 const integer = new Intl.NumberFormat("en-US");
 
@@ -426,9 +427,19 @@ function installFinalSummary(data, context = {}) {
       <h2>Rely on official records for decisions and filings.</h2>
       <p>If something appears incomplete or materially different, confirm it with the assessor or other governing office. If everything appears generally consistent, the useful outcome may simply be that the property owner understands the record, value movement, and tax context more clearly.</p>
     </article>
+
+    <article class="property-report-download-card">
+      <div>
+        <p class="guided-kicker">Property report</p>
+        <h2>Save a concise reference copy.</h2>
+        <p>Download a two-page landscape PDF with the property record card and a curated review summary.</p>
+      </div>
+      <button type="button" class="next-step-button property-report-download-button" data-property-report-download>Download Property Report</button>
+    </article>
   `;
 
   reviewPanel?.after(section);
+  initPropertyReportExport({ data, recordCard: context.recordCard, context });
 }
 
 function alignPrimaryJourneyNextSteps() {
