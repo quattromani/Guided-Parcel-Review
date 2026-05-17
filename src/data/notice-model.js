@@ -1,4 +1,9 @@
 import { latestKnown, percentChange, previousKnown } from "../calculations/history.js";
+import {
+  displayAddress,
+  displayMailingAddress,
+  displayMailingAddressLines
+} from "../utils/address.js";
 
 function monthName(month) {
   return new Date(2000, month - 1, 1).toLocaleString("en-US", { month: "long" });
@@ -19,34 +24,6 @@ function calendarDateRangeLabel(start, end) {
 
 function assessmentDateLabel(year) {
   return year ? `January 1, ${year}` : "Not listed";
-}
-
-function displayAddress(value) {
-  return `${value ?? ""}`
-    .split(/\s+/)
-    .filter(Boolean)
-    .map(part => {
-      const ordinal = part.match(/^(\d+)(ST|ND|RD|TH)$/i);
-      if (ordinal) return `${ordinal[1]}${ordinal[2].toLowerCase()}`;
-      if (part.length <= 2) return part.toUpperCase();
-      return `${part.charAt(0).toUpperCase()}${part.slice(1).toLowerCase()}`;
-    })
-    .join(" ");
-}
-
-function displayMailingAddress(value) {
-  return displayMailingAddressLines(value).join(", ");
-}
-
-function displayMailingAddressLines(value) {
-  return `${value ?? ""}`
-    .split(",")
-    .map(part => displayAddress(part.trim()))
-    .filter(Boolean)
-    .reduce((lines, part, index) => {
-      if (index === 0) return [part];
-      return [lines[0], [...lines.slice(1), part].filter(Boolean).join(", ")];
-    }, []);
 }
 
 function statusLabel(value) {

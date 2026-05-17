@@ -12,6 +12,10 @@ import {
   percentChange
 } from "./calculations/history.js";
 import {
+  displayAddress,
+  displayMailingAddress
+} from "./utils/address.js";
+import {
   getClassMarketStats,
   getCodInterpretationRange,
   getCountywideMarketPoint,
@@ -103,7 +107,7 @@ export function buildAssessorsReportModel(data, recordCard, valuationGroups, con
 
 export async function generateAssessorsReportPdf(model) {
   const baseCtx = await createReportContext({
-    title: `${model.data.parcel?.situsAddress ?? "Property"} Assessor's Supplemental Report`
+    title: `${displayAddress(model.data.parcel?.situsAddress) || "Property"} Assessor's Supplemental Report`
   });
 
   drawAssessorRecordPage(addReportPage(baseCtx), model);
@@ -119,7 +123,7 @@ function assessorsReportFilename(data) {
 }
 
 function drawAssessorHeader(ctx, model, sectionLabel) {
-  const address = model.data.parcel?.situsAddress ?? "Subject property";
+  const address = displayAddress(model.data.parcel?.situsAddress) || "Subject property";
   const identity = [
     `Parcel ${model.data.parcel?.parcelId ?? "-"}`,
     model.data.classification?.propertyClass,
@@ -177,8 +181,8 @@ function drawAssessorRecordPage(ctx, model) {
     ["Parcel ID", parcel.parcelId],
     ["Map / geocode", [parcel.mapNumber, parcel.stateGeoCode].filter(Boolean).join(" / ")],
     ["Owner", parcel.owner],
-    ["Mailing", parcel.mailingAddress],
-    ["Situs", parcel.situsAddress],
+    ["Mailing", displayMailingAddress(parcel.mailingAddress)],
+    ["Situs", displayAddress(parcel.situsAddress)],
     ["Legal", parcel.legalDescription],
     ["Tax district", parcel.taxDistrict],
     ["School district", parcel.schoolDistrict]

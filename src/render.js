@@ -19,6 +19,12 @@ import {
 } from "./recordCorrectionRequest.js";
 import { viewHeaderContent } from "./content/view-headers.js";
 import { propertyRecordSourceText } from "./domain/source-labels.js";
+import {
+  getClassMarketStats,
+  getParcelMarketClass,
+  getParcelMarketGroupId
+} from "./market-stats.js";
+import { displayAddress } from "./utils/address.js";
 import { escapeHtml } from "./utils/html.js";
 
 const discrepancyChoices = [
@@ -422,11 +428,12 @@ export function renderPropertyViewContext(data, recordCard, valuationGroups) {
   if (!context) return;
   const valuationGroup = propertyValuationGroupLabel(data, recordCard, valuationGroups);
   const propertyClass = data.classification.propertyClass || data.parcel.accountType;
+  const situsAddress = displayAddress(data.parcel.situsAddress);
 
   context.innerHTML = `
     <div class="property-context-bar" data-property-context-bar aria-label="Subject property">
       <p class="property-context-line">
-        <span class="property-context-situs">${data.parcel.situsAddress}</span>
+        <span class="property-context-situs">${escapeHtml(situsAddress)}</span>
         <span class="property-context-separator property-context-desktop" aria-hidden="true">·</span>
         <span class="property-context-meta property-context-desktop">${propertyClass}</span>
         <span class="property-context-separator property-context-desktop" aria-hidden="true">·</span>
@@ -813,11 +820,12 @@ function imageButton(src, caption, label) {
 }
 
 function renderPropertyDetails(data, recordCard) {
+  const situsAddress = displayAddress(data.parcel.situsAddress);
   const identityDetails = [
     ["Parcel ID", data.parcel.parcelId],
     ["Tax district", data.parcel.taxDistrict],
     ["Owner", data.parcel.owner],
-    ["Situs address", data.parcel.situsAddress],
+    ["Situs address", situsAddress],
     ["Mailing address", mailingAddressHtml(data.parcel.mailingAddress)],
     ["Legal description", data.parcel.legalDescription],
     {
@@ -890,7 +898,7 @@ function renderPropertyDetails(data, recordCard) {
 function mailingAddressHtml(value) {
   const parts = `${value ?? ""}`
     .split(",")
-    .map(line => line.trim())
+    .map(line => displayAddress(line.trim()))
     .filter(Boolean);
 
   const lines = parts.length > 1
@@ -991,7 +999,7 @@ function discrepancyRows(data, recordCard) {
   const rows = [
     ["Parcel ID", data.parcel.parcelId, "Property facts"],
     ["Owner", data.parcel.owner, "Property facts"],
-    ["Situs address", data.parcel.situsAddress, "Property facts"],
+    ["Situs address", displayAddress(data.parcel.situsAddress), "Property facts"],
     ["Tax district", data.parcel.taxDistrict, "Property facts"],
     ["Legal description", data.parcel.legalDescription, "Property facts"],
     ["Status", data.classification.status, "Property facts"],
@@ -1093,10 +1101,10 @@ function renderDiscrepancyForm(data, recordCard) {
       <section class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         ${[
           ["Parcel ID", data.parcel.parcelId],
-          ["Situs address", data.parcel.situsAddress],
+          ["Situs address", displayAddress(data.parcel.situsAddress)],
           ["Owner", data.parcel.owner],
           ["Tax district", data.parcel.taxDistrict],
-          ["Mailing address", data.parcel.mailingAddress],
+          ["Mailing address", displayAddress(data.parcel.mailingAddress)],
           ["Legal description", data.parcel.legalDescription],
           ["Property class", data.classification.propertyClass],
           ["County", `${data.parcel.countyName} County`]
@@ -2203,50 +2211,86 @@ function outbuildingData(data) {
   `);
 }
 
-function extractSummaryValuationGroupId(recordCard) {
-  return `${recordCard?.locationModel?.valuationGroup ?? ""}`.match(/\d+/)?.[0] ?? null;
-}
-
 function formatRatioPercent(value) {
   if (value === null || value === undefined) return "—";
   return `${Number(value).toFixed(2)}%`;
 }
 
-function localMarketQuickReadLine(selectedMarket) {
+function marketClassNoun(classKey) {
+  if (classKey === "commercial") return "commercial";
+  if (classKey === "agricultural") return "agricultural";
+  return "residential";
+}
+
+function marketGroupKind(classKey) {
+  return classKey === "agricultural" ? "market area" : "valuation group";
+}
+
+function selectedSummaryMarket(data, recordCard, summaryContext = {}) {
+  const classKey = getParcelMarketClass(data);
+  const classStats = getClassMarketStats(summaryContext.marketPositionData, classKey);
+  const groupId = getParcelMarketGroupId(recordCard, classStats?.classKey ?? classKey);
+  const selectedMarket = classStats?.groups?.find(group => String(group.id) === String(groupId));
+
+  if (selectedMarket) {
+    return {
+      classKey: classStats.classKey,
+      selectedMarket
+    };
+  }
+
+  if (classKey === "residential") {
+    const selectedLegacyMarket = summaryContext.padRatioData?.valuationGroups?.find(group => String(group.group) === String(groupId));
+
+    if (selectedLegacyMarket) {
+      return {
+        classKey,
+        selectedMarket: selectedLegacyMarket
+      };
+    }
+  }
+
+  return null;
+}
+
+function localMarketQuickReadLine(selectedMarket, context = {}) {
   const count = Number(selectedMarket?.count) || 0;
   const saleNoun = count === 1 ? "sale" : "sales";
   const ratio = formatRatioPercent(selectedMarket?.median);
+  const classNoun = marketClassNoun(context.classKey);
+  const groupKind = marketGroupKind(context.classKey);
+  const studyLabel = `this ${classNoun} ${groupKind}`;
 
   if (count === 1) {
     return `
-      There was <strong>1 qualified sale</strong> in the local study.
+      There was <strong>1 qualified ${classNoun} sale</strong> in ${studyLabel}.
       That sale was assessed at <strong>${ratio}</strong> of sale price, so it is a context clue rather than a broad market pattern.
     `;
   }
 
   if (count < 5) {
     return `
-      There were <strong>${count.toLocaleString()} qualified ${saleNoun}</strong> in the local study.
+      There were <strong>${count.toLocaleString()} qualified ${classNoun} ${saleNoun}</strong> in ${studyLabel}.
       The median result was <strong>${ratio}</strong> of sale price, but a sample this small can move a lot from one sale to the next.
     `;
   }
 
   if (count < 10) {
     return `
-      There were <strong>${count.toLocaleString()} qualified sales</strong> in the local study.
+      There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.
       The middle sale was assessed at <strong>${ratio}</strong> of sale price, so this should be read as limited context.
     `;
   }
 
   if (count < 25) {
     return `
-      There were <strong>${count.toLocaleString()} qualified sales</strong> in the local study.
+      There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.
       The middle sale was assessed at <strong>${ratio}</strong> of sale price, based on a modest local sample.
     `;
   }
 
   return `
-    There were <strong>${count.toLocaleString()} qualified sales</strong> in the local study.
+    There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.
     The middle sale was assessed at <strong>${ratio}</strong> of sale price, based on a strong local sample.
   `;
 }
@@ -2257,9 +2301,7 @@ function renderSummary(data, recordCard, summaryContext = {}) {
   const valueChangeFromPrior = previousValue?.assessedValue && snapshot.assessedValue
     ? (snapshot.assessedValue - previousValue.assessedValue) / previousValue.assessedValue
     : null;
-  const { padRatioData } = summaryContext;
-  const marketGroupId = extractSummaryValuationGroupId(recordCard);
-  const selectedMarket = padRatioData?.valuationGroups?.find(group => String(group.group) === String(marketGroupId));
+  const marketSummary = selectedSummaryMarket(data, recordCard, summaryContext);
   const currentValueLine = snapshot.assessedValue === null || snapshot.assessedValue === undefined
     ? `
       For <strong>${snapshot.year}</strong>, the assessed value has <strong>not been published yet</strong>.
@@ -2274,7 +2316,7 @@ function renderSummary(data, recordCard, summaryContext = {}) {
     The <strong>${snapshot.year}</strong> tax bill is <strong>not final</strong>. Later budgets, certified levies,
     credits, and exemptions still have to be applied.
   `;
-  const marketLine = selectedMarket ? localMarketQuickReadLine(selectedMarket) : `
+  const marketLine = marketSummary ? localMarketQuickReadLine(marketSummary.selectedMarket, marketSummary) : `
     Local market context is available later in the guide, after the property facts and tax district are confirmed.
   `;
   const recordCheckLine = `

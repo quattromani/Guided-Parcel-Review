@@ -6,6 +6,11 @@ import {
   moneyCents
 } from "../format.js";
 import { hasValue, latestKnown, percentChange, previousKnown } from "../calculations/history.js";
+import {
+  getClassMarketStats,
+  getParcelMarketClass,
+  getParcelMarketGroupId
+} from "../market-stats.js";
 import { initPropertyReportExport } from "../reports/property-report.js";
 
 const integer = new Intl.NumberFormat("en-US");
@@ -88,20 +93,31 @@ function compactParts(parts) {
   return parts.filter(Boolean).join("; ");
 }
 
-function extractValuationGroupId(recordCard) {
-  return `${recordCard?.locationModel?.valuationGroup ?? ""}`.match(/\d+/)?.[0] ?? null;
+function selectedMarketArea(data, recordCard, context = {}) {
+  const classKey = getParcelMarketClass(data);
+  const classStats = getClassMarketStats(context.marketPositionData, classKey);
+  const valuationGroupId = getParcelMarketGroupId(recordCard, classStats?.classKey ?? classKey);
+  if (!valuationGroupId) return { marketArea: null, classKey };
+
+  const classMarketArea = classStats?.groups?.find(group => String(group.id) === String(valuationGroupId));
+  if (classMarketArea) return { marketArea: classMarketArea, classKey: classStats.classKey };
+
+  if (classKey === "residential") {
+    const legacyMarketArea = context.padRatioData?.valuationGroups?.find(group =>
+      String(group.group ?? group.valuationGroup) === String(valuationGroupId)
+    );
+
+    if (legacyMarketArea) return { marketArea: legacyMarketArea, classKey };
+  }
+
+  return { marketArea: null, classKey };
 }
 
-function selectedMarketArea(recordCard, padRatioData) {
-  const valuationGroupId = extractValuationGroupId(recordCard);
-  if (!valuationGroupId) return null;
+function marketAreaName(recordCard, marketArea, classKey = "residential") {
+  if (classKey !== "agricultural" && recordCard?.locationModel?.valuationGroup) {
+    return recordCard.locationModel.valuationGroup.replace(/^(\d+)/, "VG $1");
+  }
 
-  return padRatioData?.valuationGroups?.find(group =>
-    String(group.group ?? group.valuationGroup) === String(valuationGroupId)
-  ) ?? null;
-}
-
-function marketAreaName(recordCard, marketArea) {
   if (marketArea?.label) {
     return marketArea.label.replace(/^Valuation Group\s+/i, "VG ");
   }
@@ -166,7 +182,8 @@ function buildFinalReviewModel(data, context = {}) {
   const currentYearPending = !hasValue(currentYearRow?.assessedValue);
   const latestValueMovement = percentChange(latestValue?.assessedValue, previousValue?.assessedValue);
   const latestEtr = calculateEtr(latestTax);
-  const marketArea = selectedMarketArea(context.recordCard, context.padRatioData);
+  const marketAreaSummary = selectedMarketArea(data, context.recordCard, context);
+  const marketArea = marketAreaSummary.marketArea;
   const propertyDetails = compactParts([
     formatSquareFeet(residential.buildingSize),
     [residential.quality, residential.condition].filter(Boolean).join(" / ") || null,
@@ -174,7 +191,7 @@ function buildFinalReviewModel(data, context = {}) {
   ]);
 
   return {
-    heading: `Review of the main assessment story for ${notice.situsAddress}`,
+    heading: `Review of the main assessment story for ${notice.displayAddress || notice.situsAddress}`,
     intro: "The main takeaways from the property record, value movement, market context, equalization, taxes, and review signals are gathered here for orientation. This is not a filing recommendation.",
     blocks: [
       {
@@ -209,7 +226,7 @@ function buildFinalReviewModel(data, context = {}) {
           {
             step: "Step 3 · Value Detail",
             route: "valuation-detail",
-            value: marketAreaName(context.recordCard, marketArea),
+            value: marketAreaName(context.recordCard, marketArea, marketAreaSummary.classKey),
             meta: marketArea?.count ? itemCountLabel(marketArea.count, "qualified sale") : "Market-area context",
             note: marketArea
               ? `Median ratio ${formatRatio(marketArea.median)}, COD ${formatRatio(marketArea.cod)}, PRD ${formatRatio(marketArea.prd)}.`

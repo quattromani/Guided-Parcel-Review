@@ -1,5 +1,9 @@
 import { calculateEtr, formatNullableMoney, formatNullablePercent, moneyCents } from "../format.js";
 import {
+  displayAddress,
+  displayMailingAddress
+} from "../utils/address.js";
+import {
   addReportPage,
   createReportContext,
   downloadPdfBytes,
@@ -155,10 +159,10 @@ function reportModel(data, recordCard, context = {}) {
     generatedAt: new Date(),
     identity: {
       title: "Property Report",
-      address: data.parcel.situsAddress,
+      address: displayAddress(data.parcel.situsAddress),
       parcelId: data.parcel.parcelId,
       owner: data.parcel.owner,
-      mailingAddress: data.parcel.mailingAddress,
+      mailingAddress: displayMailingAddress(data.parcel.mailingAddress),
       legalDescription: data.parcel.legalDescription,
       county: data.parcel.countyName,
       taxDistrict: data.parcel.taxDistrict,
