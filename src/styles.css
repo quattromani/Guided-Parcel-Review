@@ -980,6 +980,34 @@ table thead th[class] + th[class] {
   min-width: 0;
 }
 
+.property-media-placeholder {
+  align-items: center;
+  aspect-ratio: 16 / 10;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 1rem;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.property-media-placeholder p {
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.property-media-placeholder span {
+  font-size: 0.7rem;
+  line-height: 1.1;
+  margin-top: 0.25rem;
+}
+
 .property-record-media img {
   aspect-ratio: 16 / 10;
   height: auto;

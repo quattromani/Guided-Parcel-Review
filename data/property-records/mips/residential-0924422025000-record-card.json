@@ -1,0 +1,730 @@
+{
+  "source": {
+    "sourceType": "property_record",
+    "system": "Lancaster County Orion Public Access",
+    "displayCitation": "Lancaster County Orion appraisal card and Treasurer property tax history",
+    "county": "Lancaster County",
+    "reportName": "Lancaster County appraisal card",
+    "recordType": "ORION_APPRAISAL_CARD",
+    "printedAt": "2026-05-17T17:47:20-05:00",
+    "sourceUrl": "https://orion.lancaster.ne.gov/Property-Detail/PropertyQuickRefID/R25513/PartyQuickRefID/O0182879",
+    "sourcePdf": "/private/tmp/lancaster-rno/AppraisalCard-25513-2026-147568.pdf",
+    "sourceImages": [
+      "assets/images/0924422025000_1.jpg"
+    ],
+    "notes": "Parsed from the Lancaster County Orion public property detail, the public appraisal-card PDF exported 2026-05-17, and the Lancaster County Treasurer property-tax history page. The public appraisal card exposes 2021-2026 assessed value detail; 2019-2020 assessed totals and 2019-2025 net tax amounts come from the Treasurer history table. Detailed credit and per-authority levy components were not available from the public history table. Lancaster County Lincoln Levy Rates PDFs provide 2019-2025 Tax District 1 levy totals and 2025 component rates."
+  },
+  "guidedSnapshot": {
+    "snapshotYear": 2026,
+    "latestFinalTaxYear": 2025,
+    "assets": {
+      "photo": "assets/images/0924422025000_1.jpg",
+      "sketch": null,
+      "additionalPhotos": []
+    },
+    "parcel": {
+      "parcelId": "09-24-422-025-000",
+      "mapNumber": "0924422025000",
+      "stateGeoCode": null,
+      "owner": "NIEDERKLEIN FAMILY TRUST",
+      "mailingAddress": "2223 BRENNEN VIEW CT, LINCOLN, NE 68512",
+      "situsAddress": "2223 BRENNEN VIEW CT",
+      "countyName": "LANCASTER",
+      "taxDistrict": "0001",
+      "schoolDistrict": "LINCOLN PUBLIC SCHOOLS 1, 55-0001",
+      "accountType": "Residential",
+      "legalDescription": "STONE RIDGE ESTATES 2ND ADDITION, BLOCK 4, LOT 25"
+    },
+    "classification": {
+      "status": "Improved",
+      "location": "Urban",
+      "propertyClass": "Residential",
+      "citySize": "Lincoln",
+      "zoning": "R3 - R3-Residential District",
+      "lotSize": "10,145 sq. ft. / 0.23 ac."
+    },
+    "residential": {
+      "style": "2 Story",
+      "yearBuilt": 2004,
+      "buildingSize": 2288,
+      "basementSize": 1078,
+      "bedrooms": 4,
+      "bathrooms": 4,
+      "plumbingFixtures": 14,
+      "quality": "Average",
+      "condition": "Typical",
+      "exterior": "80% Frame, Siding; 10% Veneer, Masonry; 10% EIFS",
+      "heatingCooling": "100% Warmed & Cooled Air",
+      "garage1": "Built-in Garage, 744 sq. ft. / Three Car",
+      "garage2": null,
+      "minFinish": 0,
+      "partFinish": 950
+    },
+    "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 474600,
+        "taxes": null,
+        "status": "preliminary",
+        "assessmentSource": "Lancaster County Orion appraisal card"
+      },
+      {
+        "year": 2025,
+        "assessedValue": 469600,
+        "taxes": 6034.08,
+        "status": "partially-paid",
+        "assessmentSource": "Lancaster County Treasurer property tax history"
+      },
+      {
+        "year": 2024,
+        "assessedValue": 425700,
+        "taxes": 5883.46,
+        "status": "tax-statement",
+        "assessmentSource": "Lancaster County Treasurer property tax history"
+      },
+      {
+        "year": 2023,
+        "assessedValue": 425700,
+        "taxes": 7134.74,
+        "status": "tax-statement",
+        "assessmentSource": "Lancaster County Treasurer property tax history"
+      },
+      {
+        "year": 2022,
+        "assessedValue": 368300,
+        "taxes": 6931.32,
+        "status": "tax-statement",
+        "assessmentSource": "Lancaster County Treasurer property tax history"
+      },
+      {
+        "year": 2021,
+        "assessedValue": 368300,
+        "taxes": 6944.16,
+        "status": "tax-statement",
+        "assessmentSource": "Lancaster County Treasurer property tax history"
+      },
+      {
+        "year": 2020,
+        "assessedValue": 331800,
+        "taxes": 6339.96,
+        "status": "tax-statement",
+        "assessmentSource": "Lancaster County Treasurer property tax history"
+      },
+      {
+        "year": 2019,
+        "assessedValue": 331800,
+        "taxes": 6340.58,
+        "status": "tax-statement",
+        "assessmentSource": "Lancaster County Treasurer property tax history"
+      }
+    ],
+    "taxStatements": [
+      {
+        "taxYear": 2025,
+        "statementNumber": null,
+        "statementType": "REAL",
+        "totalTaxesDue": 6034.08,
+        "dueDate": null,
+        "assessedValue": 469600,
+        "grossTaxAmount": 7824.87,
+        "credits": {
+          "propertyTaxCreditsAndAdjustments": {
+            "value": null,
+            "amount": -1790.79
+          }
+        },
+        "netAmountDue": 6034.08,
+        "totalPaid": 3017.04,
+        "taxDue": 3017.04,
+        "derived": {
+          "grossLevyRate": 0.01666284,
+          "netEffectiveTaxRate": 0.012849403747870528,
+          "totalCreditAmount": -1790.79
+        },
+        "sourceNote": "Lancaster County Treasurer property tax history page for net taxes; gross tax derived from the 2025 Tax District 1 levy in Lancaster County Lincoln Levy Rates PDF (Archive item 932)."
+      },
+      {
+        "taxYear": 2024,
+        "statementNumber": null,
+        "statementType": "REAL",
+        "totalTaxesDue": 5883.46,
+        "dueDate": null,
+        "assessedValue": 425700,
+        "grossTaxAmount": 7519.77,
+        "credits": {
+          "propertyTaxCreditsAndAdjustments": {
+            "value": null,
+            "amount": -1636.31
+          }
+        },
+        "netAmountDue": 5883.46,
+        "totalPaid": 5883.46,
+        "taxDue": 0,
+        "derived": {
+          "grossLevyRate": 0.01766448,
+          "netEffectiveTaxRate": 0.013820671834625323,
+          "totalCreditAmount": -1636.31
+        },
+        "sourceNote": "Lancaster County Treasurer property tax history page for net taxes; gross tax derived from the 2024 Tax District 1 levy in Lancaster County Lincoln Levy Rates PDF (Archive item 887)."
+      },
+      {
+        "taxYear": 2023,
+        "statementNumber": null,
+        "statementType": "REAL",
+        "totalTaxesDue": 7134.74,
+        "dueDate": null,
+        "assessedValue": 425700,
+        "grossTaxAmount": 7608.54,
+        "credits": {
+          "propertyTaxCreditsAndAdjustments": {
+            "value": null,
+            "amount": -473.8
+          }
+        },
+        "netAmountDue": 7134.74,
+        "totalPaid": 7134.74,
+        "taxDue": 0,
+        "derived": {
+          "grossLevyRate": 0.017873,
+          "netEffectiveTaxRate": 0.016760018792576933,
+          "totalCreditAmount": -473.8
+        },
+        "sourceNote": "Lancaster County Treasurer property tax history page for net taxes; gross tax derived from the 2023 Tax District 1 levy in Lancaster County Lincoln Levy Rates PDF (Archive item 867)."
+      },
+      {
+        "taxYear": 2022,
+        "statementNumber": null,
+        "statementType": "REAL",
+        "totalTaxesDue": 6931.32,
+        "dueDate": null,
+        "assessedValue": 368300,
+        "grossTaxAmount": 7323.9,
+        "credits": {
+          "propertyTaxCreditsAndAdjustments": {
+            "value": null,
+            "amount": -392.58
+          }
+        },
+        "netAmountDue": 6931.32,
+        "totalPaid": 6931.32,
+        "taxDue": 0,
+        "derived": {
+          "grossLevyRate": 0.0198857,
+          "netEffectiveTaxRate": 0.018819766494705403,
+          "totalCreditAmount": -392.58
+        },
+        "sourceNote": "Lancaster County Treasurer property tax history page for net taxes; gross tax derived from the 2022 Tax District 1 levy in Lancaster County Lincoln Levy Rates PDF (Archive item 851)."
+      },
+      {
+        "taxYear": 2021,
+        "statementNumber": null,
+        "statementType": "REAL",
+        "totalTaxesDue": 6944.16,
+        "dueDate": null,
+        "assessedValue": 368300,
+        "grossTaxAmount": 7340.28,
+        "credits": {
+          "propertyTaxCreditsAndAdjustments": {
+            "value": null,
+            "amount": -396.12
+          }
+        },
+        "netAmountDue": 6944.16,
+        "totalPaid": 6944.16,
+        "taxDue": 0,
+        "derived": {
+          "grossLevyRate": 0.01993016,
+          "netEffectiveTaxRate": 0.018854629378224273,
+          "totalCreditAmount": -396.12
+        },
+        "sourceNote": "Lancaster County Treasurer property tax history page for net taxes; gross tax derived from the 2021 Tax District 1 levy in Lancaster County Lincoln Levy Rates PDF (Archive item 827)."
+      },
+      {
+        "taxYear": 2020,
+        "statementNumber": null,
+        "statementType": "REAL",
+        "totalTaxesDue": 6339.96,
+        "dueDate": null,
+        "assessedValue": 331800,
+        "grossTaxAmount": 6679.09,
+        "credits": {
+          "propertyTaxCreditsAndAdjustments": {
+            "value": null,
+            "amount": -339.13
+          }
+        },
+        "netAmountDue": 6339.96,
+        "totalPaid": 6339.96,
+        "taxDue": 0,
+        "derived": {
+          "grossLevyRate": 0.020129860000000003,
+          "netEffectiveTaxRate": 0.019107775768535264,
+          "totalCreditAmount": -339.13
+        },
+        "sourceNote": "Lancaster County Treasurer property tax history page for net taxes; gross tax derived from the 2020 Tax District 1 levy in Lancaster County Lincoln Levy Rates PDF (Archive item 799)."
+      },
+      {
+        "taxYear": 2019,
+        "statementNumber": null,
+        "statementType": "REAL",
+        "totalTaxesDue": 6340.58,
+        "dueDate": null,
+        "assessedValue": 331800,
+        "grossTaxAmount": 6686.15,
+        "credits": {
+          "propertyTaxCreditsAndAdjustments": {
+            "value": null,
+            "amount": -345.57
+          }
+        },
+        "netAmountDue": 6340.58,
+        "totalPaid": 6340.58,
+        "taxDue": 0,
+        "derived": {
+          "grossLevyRate": 0.020151150000000003,
+          "netEffectiveTaxRate": 0.019109644364074745,
+          "totalCreditAmount": -345.57
+        },
+        "sourceNote": "Lancaster County Treasurer property tax history page for net taxes; gross tax derived from the 2019 Tax District 1 levy in Lancaster County Lincoln Levy Rates PDF (Archive item 710)."
+      }
+    ],
+    "districtLevyHistory": [
+      {
+        "year": 2019,
+        "levy": 2.015115,
+        "status": "lincoln-levy-rates",
+        "note": "Tax District 1 total from Lancaster County 2019 Lincoln Levy Rates PDF."
+      },
+      {
+        "year": 2020,
+        "levy": 2.012986,
+        "status": "lincoln-levy-rates",
+        "note": "Tax District 1 total from Lancaster County 2020 Lincoln Levy Rates PDF."
+      },
+      {
+        "year": 2021,
+        "levy": 1.993016,
+        "status": "lincoln-levy-rates",
+        "note": "Tax District 1 total from Lancaster County 2021 Lincoln Levy Rates PDF."
+      },
+      {
+        "year": 2022,
+        "levy": 1.98857,
+        "status": "lincoln-levy-rates",
+        "note": "Tax District 1 total from Lancaster County 2022 Lincoln Levy Rates PDF."
+      },
+      {
+        "year": 2023,
+        "levy": 1.7873,
+        "status": "lincoln-levy-rates",
+        "note": "Tax District 1 total from Lancaster County 2023 Lincoln Levy Rates PDF."
+      },
+      {
+        "year": 2024,
+        "levy": 1.766448,
+        "status": "lincoln-levy-rates",
+        "note": "Tax District 1 total from Lancaster County 2024 Lincoln Levy Rates PDF."
+      },
+      {
+        "year": 2025,
+        "levy": 1.666284,
+        "status": "lincoln-levy-rates",
+        "note": "Tax District 1 total from Lancaster County 2025 Lincoln Levy Rates PDF."
+      }
+    ],
+    "assessedValueBreakdown": [
+      {
+        "year": 2026,
+        "land": 90000,
+        "dwelling": 384600,
+        "outbuilding": 0,
+        "total": 474600,
+        "source": "Lancaster County Orion appraisal card"
+      },
+      {
+        "year": 2025,
+        "land": 80000,
+        "dwelling": 389600,
+        "outbuilding": 0,
+        "total": 469600,
+        "source": "Lancaster County Orion appraisal card and Treasurer property tax history"
+      },
+      {
+        "year": 2024,
+        "land": 80000,
+        "dwelling": 345700,
+        "outbuilding": 0,
+        "total": 425700,
+        "source": "Lancaster County Orion appraisal card and Treasurer property tax history"
+      },
+      {
+        "year": 2023,
+        "land": 80000,
+        "dwelling": 345700,
+        "outbuilding": 0,
+        "total": 425700,
+        "source": "Lancaster County Orion appraisal card and Treasurer property tax history"
+      },
+      {
+        "year": 2022,
+        "land": 60000,
+        "dwelling": 308300,
+        "outbuilding": 0,
+        "total": 368300,
+        "source": "Lancaster County Orion appraisal card and Treasurer property tax history"
+      },
+      {
+        "year": 2021,
+        "land": 60000,
+        "dwelling": 308300,
+        "outbuilding": 0,
+        "total": 368300,
+        "source": "Lancaster County Orion appraisal card and Treasurer property tax history"
+      },
+      {
+        "year": 2020,
+        "land": null,
+        "dwelling": null,
+        "outbuilding": null,
+        "total": 331800,
+        "source": "Lancaster County Treasurer property tax history"
+      },
+      {
+        "year": 2019,
+        "land": null,
+        "dwelling": null,
+        "outbuilding": null,
+        "total": 331800,
+        "source": "Lancaster County Treasurer property tax history"
+      }
+    ],
+    "latestFinalLevyComponents": [
+      {
+        "description": "LANCASTER COUNTY",
+        "rate": 0.214482,
+        "group": "County"
+      },
+      {
+        "description": "PUBLIC BUILDING COMMISSION",
+        "rate": 0.014875,
+        "group": "Public building commission"
+      },
+      {
+        "description": "LINCOLN AIRPORT AUTHORITY",
+        "rate": 0.029289,
+        "group": "Airport authority"
+      },
+      {
+        "description": "LINCOLN",
+        "rate": 0.297319,
+        "group": "City"
+      },
+      {
+        "description": "LPS 1 GENERAL AND BONDS",
+        "rate": 1.021258,
+        "group": "School"
+      },
+      {
+        "description": "ESU #18",
+        "rate": 0.015,
+        "group": "Education service"
+      },
+      {
+        "description": "LOWER PLATTE SOUTH NRD",
+        "rate": 0.022999,
+        "group": "Natural resources"
+      },
+      {
+        "description": "RAILROAD TRANSPORTATION SAFETY DISTRICT",
+        "rate": 0.015275,
+        "group": "Transportation"
+      },
+      {
+        "description": "SOUTHEAST COMMUNITY COLLEGE",
+        "rate": 0.02,
+        "group": "Community college"
+      },
+      {
+        "description": "AGRICULTURAL SOCIETY",
+        "rate": 0.003766,
+        "group": "Agriculture"
+      },
+      {
+        "description": "COUNTY FAIRGR-JPA",
+        "rate": 0.001462,
+        "group": "Joint public agency"
+      },
+      {
+        "description": "CORR FAC JPA COUNTY",
+        "rate": 0.004244,
+        "group": "Joint public agency"
+      },
+      {
+        "description": "CORR FAC JPA CITY",
+        "rate": 0.006315,
+        "group": "Joint public agency"
+      }
+    ],
+    "dwellingData": [
+      {
+        "description": "Built-in Garage",
+        "units": 744,
+        "value": null
+      },
+      {
+        "description": "Slab Porch with Roof",
+        "units": 182,
+        "value": null
+      },
+      {
+        "description": "Total Basement Area",
+        "units": 1078,
+        "value": null
+      },
+      {
+        "description": "Partition Finish Area",
+        "units": 950,
+        "value": null
+      },
+      {
+        "description": "Single 1-Story Fireplace",
+        "units": 1,
+        "value": null
+      }
+    ],
+    "outbuildingData": [],
+    "propertyNotes": [],
+    "landInformation": [
+      {
+        "description": "RPC-Primary Corner Lot",
+        "widthFeet": null,
+        "depthFeet": null,
+        "squareFeet": 10145,
+        "acres": 0.23,
+        "value": 90000
+      }
+    ],
+    "sources": [
+      {
+        "label": "Lancaster County Orion",
+        "value": "PropertyQuickRefID R25513 / appraisal card PDF exported 2026-05-17"
+      },
+      {
+        "label": "Lancaster County Treasurer",
+        "value": "Property tax history page for parcel 09-24-422-025-000, captured 2026-05-17"
+      },
+      {
+        "label": "2026 Lancaster County R&O",
+        "value": "Residential valuation group statistics from the Nebraska Department of Revenue PAD Reports and Opinions"
+      },
+      {
+        "label": "Lancaster County Lincoln Levy Rates",
+        "value": "Archive items 710, 799, 827, 851, 867, 887, and 932 for Tax District 1 levy totals and 2025 component rates."
+      }
+    ],
+    "sourcePolicy": "Public Orion appraisal card fields are used directly. Treasurer history provides net tax and assessed total history. Lancaster County Lincoln Levy Rates PDFs provide Tax District 1 levy totals for 2019-2025 and 2025 component rates; credits are derived as gross tax less net tax."
+  },
+  "parcelIdentifiers": {
+    "parcelId": "09-24-422-025-000",
+    "cardFilePerm": "R25513",
+    "cadastralId": null,
+    "padClassCode": "R1",
+    "stateGeo": null,
+    "appraiserId": null,
+    "taxOnlineParcelId": "09-24-422-025-000"
+  },
+  "locationModel": {
+    "valuationGroup": "7 - Stone Ridge Estates",
+    "marketArea": "Stone Ridge Estates",
+    "marketGroup": "Lincoln neighborhood",
+    "note": "The Orion appraisal card lists neighborhood code 7MST810 - Stone Ridge Estates. The 2026 Lancaster R&O publishes residential statistical measures for Valuation Group 7 without enumerating all Lincoln neighborhood names."
+  },
+  "landModel": {
+    "description": "Site method residential corner-lot model from Lancaster Orion",
+    "lotSize": 10145,
+    "recordedLotValue": 90000,
+    "frontage": null,
+    "depth": null,
+    "cutoffSchedule": []
+  },
+  "currentCardValue": {
+    "previous": {
+      "buildings": 389600,
+      "improvement": 0,
+      "landLots": 80000,
+      "total": 469600
+    },
+    "current": {
+      "buildings": 384600,
+      "improvement": 0,
+      "landLots": 90000,
+      "total": 474600,
+      "note": "2026 preliminary assessed values from the Lancaster County Orion appraisal card."
+    }
+  },
+  "ownershipHistory": [
+    {
+      "date": "2023-03-17",
+      "seller": "NIEDERKLEIN, DERRICK & KRISTI",
+      "buyer": "NIEDERKLEIN FAMILY TRUST",
+      "instrument": "2023007174",
+      "salePrice": 0,
+      "validity": "Disqualified"
+    },
+    {
+      "date": "2012-11-09",
+      "seller": "HENNIG, WILLIAM R II & THERESA L",
+      "buyer": "NIEDERKLEIN, DERRICK & KRISTI",
+      "instrument": "2012059500",
+      "salePrice": 244800,
+      "validity": "Valid Sale"
+    },
+    {
+      "date": "2005-05-26",
+      "seller": "TALLICHET DEVELOPMENT GROUP",
+      "buyer": "HENNIG, WILLIAM R II & THERESA L",
+      "instrument": "2005029121",
+      "salePrice": 264400,
+      "validity": "Valid Sale"
+    },
+    {
+      "date": "2004-05-15",
+      "seller": "SOUTHVIEW INC & RIDGE DEV CO",
+      "buyer": "TALLICHET DEVELOPMENT GROUP",
+      "instrument": "2004030281",
+      "salePrice": 44000,
+      "validity": "Changed Sale"
+    }
+  ],
+  "valuationHistory": [
+    {
+      "year": 2025,
+      "statement": null,
+      "district": "0001",
+      "building": 389600,
+      "other": 0,
+      "land": 80000,
+      "total": 469600,
+      "exempt": 0,
+      "taxable": 469600,
+      "totalTax": 6034.08,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2024,
+      "statement": null,
+      "district": "0001",
+      "building": 345700,
+      "other": 0,
+      "land": 80000,
+      "total": 425700,
+      "exempt": 0,
+      "taxable": 425700,
+      "totalTax": 5883.46,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2023,
+      "statement": null,
+      "district": "0001",
+      "building": 345700,
+      "other": 0,
+      "land": 80000,
+      "total": 425700,
+      "exempt": 0,
+      "taxable": 425700,
+      "totalTax": 7134.74,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2022,
+      "statement": null,
+      "district": "0001",
+      "building": 308300,
+      "other": 0,
+      "land": 60000,
+      "total": 368300,
+      "exempt": 0,
+      "taxable": 368300,
+      "totalTax": 6931.32,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2021,
+      "statement": null,
+      "district": "0001",
+      "building": 308300,
+      "other": 0,
+      "land": 60000,
+      "total": 368300,
+      "exempt": 0,
+      "taxable": 368300,
+      "totalTax": 6944.16,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2020,
+      "statement": null,
+      "district": "0001",
+      "building": null,
+      "other": null,
+      "land": null,
+      "total": 331800,
+      "exempt": 0,
+      "taxable": 331800,
+      "totalTax": 6339.96,
+      "penaltyTax": 0
+    },
+    {
+      "year": 2019,
+      "statement": null,
+      "district": "0001",
+      "building": null,
+      "other": null,
+      "land": null,
+      "total": 331800,
+      "exempt": 0,
+      "taxable": 331800,
+      "totalTax": 6340.58,
+      "penaltyTax": 0
+    }
+  ],
+  "residentialInformation": {
+    "type": "Single-Family Residence",
+    "style": "2 Story",
+    "quality": "3.00-Average",
+    "condition": "4 - Typical",
+    "yearBuilt": 2004,
+    "totalLivingArea": 2288,
+    "bedBathroom": "4 / 4",
+    "basementArea": 1078,
+    "heatingCooling": "Warmed & Cooled Air",
+    "exteriorWall": "Frame, Siding / Veneer, Masonry / EIFS"
+  },
+  "costModel": {
+    "replacementCostNew": 448546,
+    "depreciationPercent": 16,
+    "replacementCostNewLessDepreciation": 376016,
+    "costPerSquareFoot": 164.34,
+    "totalMarket": 500800,
+    "totalMra": 474900,
+    "marketAdjustment": 0.95,
+    "finalValue": 474600
+  },
+  "permits": [
+    {
+      "number": "B1401092",
+      "issueDate": "2014-04-22",
+      "amount": 1500,
+      "status": "Closed",
+      "description": "PERGOLA ON BACK OF CONCRETE SLAB"
+    },
+    {
+      "number": "B0401094",
+      "issueDate": "2004-04-15",
+      "amount": 171000,
+      "status": "Closed",
+      "description": "SFR/G LT2005"
+    }
+  ]
+}

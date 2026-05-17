@@ -29,7 +29,7 @@ export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
     [
       {
         label: "Authorities",
-        value: authorities.length
+        value: district?.authorityCount ?? authorities.length
       },
       {
         label: "Total levy",

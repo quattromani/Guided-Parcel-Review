@@ -886,6 +886,7 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
   if (!summary) return;
 
   const latest = getAssessmentDisplayRecords(selectedClass).at(-1);
+  const classSummary = assessmentClassSummary(selectedClass);
   const bandConfig = getAssessmentBandConfig(selectedClass, iaaoStandards);
   const levelRange = bandConfig.levelOfValue;
   const levelRangeText = standardRangeLabel(levelRange, 0, "No class range");
@@ -898,7 +899,7 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
     {
       label: "COD",
       value: latest.cod.toFixed(2),
-      note: `${formatSignedChange(selectedClass.summary.codChangeSince2025)} from 2025`,
+      note: `${formatSignedChange(classSummary.codChangeSince2025)} from 2025`,
       color: chartColors.cod,
       status: rawBandStatus(latest.cod, bandConfig.cod),
       help: "Coefficient of Dispersion shows how tightly assessment ratios cluster around the median. Lower values generally indicate more uniform assessments."
@@ -906,7 +907,7 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
     {
       label: "PRD",
       value: latest.prd.toFixed(3),
-      note: `${formatSignedChange(selectedClass.summary.prdDistanceChangeSince2025, 3)} from 2025`,
+      note: `${formatSignedChange(classSummary.prdDistanceChangeSince2025, 3)} from 2025`,
       color: chartColors.prd,
       status: rawBandStatus(latest.prd, bandConfig.prd),
       help: "Price-Related Differential checks whether lower- and higher-priced properties are assessed evenly. Values close to 1.00 are preferred."
@@ -914,7 +915,7 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
     {
       label: "COV",
       value: latest.cov.toFixed(2),
-      note: `${formatSignedChange(selectedClass.summary.covChangeSince2025)} from 2025`,
+      note: `${formatSignedChange(classSummary.covChangeSince2025)} from 2025`,
       color: chartColors.cov,
       status: rawBandStatus(latest.cov, bandConfig.cov, { approximate: true }),
       help: "Coefficient of Variation shows how spread out assessment ratios are around their mean. The displayed band is approximate context, not a direct COD substitute."
@@ -981,6 +982,33 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
   }).join("");
 
   renderAssessmentBandCharts(selectedClass, iaaoStandards);
+}
+
+function assessmentClassSummary(selectedClass) {
+  if (selectedClass.summary) return selectedClass.summary;
+
+  const records = getAssessmentDisplayRecords(selectedClass);
+  const latest = records.at(-1) ?? {};
+  const baseline = records.find(row => row.year === 2025) ?? records.at(-2) ?? {};
+  const prdDistance = row => row.prdDistance ?? (row.prd !== null && row.prd !== undefined ? row.prd - 1 : null);
+
+  return {
+    latestYear: latest.year,
+    latestSales: latest.sales,
+    latestLevelOfValue: latest.levelOfValue,
+    latestCod: latest.cod,
+    latestPrd: latest.prd,
+    latestCov: latest.cov,
+    codChangeSince2025: numberDifference(latest.cod, baseline.cod),
+    prdDistanceChangeSince2025: numberDifference(prdDistance(latest), prdDistance(baseline)),
+    covChangeSince2025: numberDifference(latest.cov, baseline.cov)
+  };
+}
+
+function numberDifference(current, previous) {
+  if (current === null || current === undefined || previous === null || previous === undefined) return null;
+
+  return current - previous;
 }
 
 function renderAssessmentRows(selectedClass) {
@@ -2572,8 +2600,11 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
   const sourceNote = document.getElementById("marketSourceNote");
   if (sourceNote) {
     const defaultListing = getSelectedMarketGroup(recordCard, classStats, defaultGroup);
-    const groupName = defaultListing?.description || defaultListing?.label || recordCard.locationModel.valuationGroup;
-    const groupNumber = defaultListing?.id ?? getParcelMarketGroupId(recordCard, classStats.classKey);
+    const parcelGroupNumber = getParcelMarketGroupId(recordCard, classStats.classKey);
+    const groupNumber = defaultListing?.id ?? parcelGroupNumber;
+    const groupName = String(defaultListing?.id) === String(parcelGroupNumber) && recordCard.locationModel?.marketArea
+      ? recordCard.locationModel.marketArea
+      : defaultListing?.description || defaultListing?.label || recordCard.locationModel.valuationGroup;
     const groupText = classStats.classKey === "agricultural"
       ? `This property is reviewed against ${groupName}.`
       : groupNumber

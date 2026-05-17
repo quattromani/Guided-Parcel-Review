@@ -1011,6 +1011,8 @@ function statementTotalCredits(statement) {
     return Math.abs(statement.derived.totalCreditAmount);
   }
 
+  if (!statement?.credits) return null;
+
   return Math.abs(Object.values(statement?.credits || {}).reduce((sum, credit) => sum + (credit?.amount || 0), 0));
 }
 

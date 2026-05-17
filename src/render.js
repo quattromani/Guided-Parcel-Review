@@ -636,17 +636,18 @@ function propertySwitcherOptionGroups(propertySwitcher, snapshotModel) {
 
   options.forEach(option => {
     const groupLabel = switcherGroupLabel(option.propertyClass, option.county);
+    if (!groups.has(groupLabel)) groups.set(groupLabel, []);
     groups.get(groupLabel).push(option);
   });
 
   const optionGroups = [...groups.entries()]
     .map(([label, groupOptions]) => ({ label, options: groupOptions }))
     .filter(group => group.options.length);
-  const salineGroups = optionGroups.filter(group => group.label === "Saline County sample");
-  const gageGroups = optionGroups.filter(group => group.label !== "Saline County sample");
+  const countySampleGroups = optionGroups.filter(group => group.label.endsWith("County sample"));
+  const gageGroups = optionGroups.filter(group => !group.label.endsWith("County sample"));
 
   return [
-    ...salineGroups,
+    ...countySampleGroups,
     ...(gageGroups.length ? [{ type: "heading", label: "Gage sample properties", options: [] }] : []),
     ...gageGroups
   ];
@@ -678,7 +679,9 @@ function propertySwitcherOptions(propertySwitcher, snapshotModel) {
 }
 
 function switcherGroupLabel(value, county) {
-  if (`${county ?? ""}`.trim().toLowerCase() === "saline") return "Saline County sample";
+  const normalizedCounty = `${county ?? ""}`.trim().toLowerCase();
+  if (normalizedCounty === "saline") return "Saline County sample";
+  if (normalizedCounty === "lancaster") return "Lancaster County sample";
 
   const normalized = `${value ?? ""}`.trim().toLowerCase();
 
@@ -926,6 +929,15 @@ function valuationNoticeRow(label, priorValue, currentValue, emphasized = false)
 }
 
 function imageButton(src, caption, label) {
+  if (!src) {
+    return `
+      <div class="property-media-placeholder" aria-label="${caption} not available">
+        <p>${label}</p>
+        <span>Not available</span>
+      </div>
+    `;
+  }
+
   return `
     <button type="button" data-image-src="${src}" data-image-caption="${caption}" class="group relative overflow-hidden rounded-2xl bg-slate-100 ring-1 ring-slate-200 transition hover:ring-slate-300">
       <img src="${src}" alt="${caption}" class="h-28 w-44 object-cover transition duration-200 group-hover:scale-105" />
@@ -2822,6 +2834,8 @@ function taxHistoryDisplayLevyRow(levyRow, statement) {
   const grossFromDistrictLevy = statement.assessedValue
     ? statement.assessedValue * (levyRow.levy / 100)
     : null;
+  if (statement.grossTaxAmount === null || statement.grossTaxAmount === undefined) return levyRow;
+
   const reconcilesToStatement = grossFromDistrictLevy !== null
     && Math.abs(grossFromDistrictLevy - statement.grossTaxAmount) <= 0.05;
 
@@ -2864,6 +2878,8 @@ function statementTotalCredits(statement) {
   if (statement.derived?.totalCreditAmount !== null && statement.derived?.totalCreditAmount !== undefined) {
     return Math.abs(statement.derived.totalCreditAmount);
   }
+
+  if (!statement.credits) return null;
 
   return Math.abs(Object.values(statement.credits || {}).reduce((sum, credit) => sum + (credit?.amount || 0), 0));
 }

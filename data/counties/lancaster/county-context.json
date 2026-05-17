@@ -1,0 +1,105 @@
+{
+  "source": {
+    "name": "Lancaster County R&O and assessment context extraction",
+    "sourceType": "R&O",
+    "displayCitation": "2026 Lancaster County PAD Reports and Opinions; 2019-2026 Lancaster County PAD Reports and Opinions for historical ratio context",
+    "sourceDocuments": [
+      {
+        "year": 2019,
+        "title": "2019 Reports and Opinions of the Property Tax Administrator - Lancaster County",
+        "document": "2019-55Lancaster.pdf",
+        "url": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2019/55Lancaster.pdf"
+      },
+      {
+        "year": 2020,
+        "title": "2020 Reports and Opinions of the Property Tax Administrator - Lancaster County",
+        "document": "2020-55Lancaster.pdf",
+        "url": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2020/55Lancaster.pdf"
+      },
+      {
+        "year": 2021,
+        "title": "2021 Reports and Opinions of the Property Tax Administrator - Lancaster County",
+        "document": "2021-55Lancaster.pdf",
+        "url": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2021/55Lancaster.pdf"
+      },
+      {
+        "year": 2022,
+        "title": "2022 Reports and Opinions of the Property Tax Administrator - Lancaster County",
+        "document": "2022-55Lancaster.pdf",
+        "url": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2022/55Lancaster.pdf"
+      },
+      {
+        "year": 2023,
+        "title": "2023 Reports and Opinions of the Property Tax Administrator - Lancaster County",
+        "document": "2023-55Lancaster.pdf",
+        "url": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2023/55Lancaster.pdf"
+      },
+      {
+        "year": 2024,
+        "title": "2024 Reports and Opinions of the Property Tax Administrator - Lancaster County",
+        "document": "2024-55Lancaster.pdf",
+        "url": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2024/55Lancaster.pdf"
+      },
+      {
+        "year": 2025,
+        "title": "2025 Reports and Opinions of the Property Tax Administrator - Lancaster County",
+        "document": "2025-55Lancaster.pdf",
+        "url": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2025/55Lancaster.pdf"
+      },
+      {
+        "year": 2026,
+        "title": "2026 Reports and Opinions of the Property Tax Administrator - Lancaster County",
+        "document": "2026-55Lancaster.pdf",
+        "url": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2026/55Lancaster.pdf"
+      }
+    ],
+    "notes": "County-level context prepared for Lancaster Orion parcel samples. Historical ratio context is compiled in the assessment-ratio file; 2026 market grouping and assessor-process notes come from the 2026 R&O."
+  },
+  "county": {
+    "name": "Lancaster County",
+    "state": "Nebraska",
+    "countyNumber": "55",
+    "assessor": "Dan Nolte",
+    "camaSystem": "Orion",
+    "orionUrl": "https://orion.lancaster.ne.gov",
+    "rnoReportDate": "2026-04-07"
+  },
+  "opinion2026": {
+    "residential": {
+      "levelOfValue": 97,
+      "qualityOfAssessment": "Meets generally accepted mass appraisal techniques.",
+      "nonBindingRecommendation": "No recommendation."
+    },
+    "commercial": {
+      "levelOfValue": 97,
+      "qualityOfAssessment": "Meets generally accepted mass appraisal techniques.",
+      "nonBindingRecommendation": "No recommendation."
+    },
+    "agricultural": {
+      "levelOfValue": 72,
+      "qualityOfAssessment": "Meets generally accepted mass appraisal techniques.",
+      "nonBindingRecommendation": "No recommendation."
+    },
+    "schoolBondAgriculturalLand": {
+      "levelOfValue": 50,
+      "qualityOfAssessment": "Meets generally accepted mass appraisal techniques.",
+      "nonBindingRecommendation": "No recommendation."
+    }
+  },
+  "assessmentPractices": {
+    "residential": [
+      "Residential valuation groups 1-17 are Lincoln neighborhoods; groups 18-22 are rural residential groups; groups 23-24 are small-village groups.",
+      "The Lancaster County Assessor is in compliance with the six-year inspection and review cycle.",
+      "The 2026 R&O reports 8,360 qualified residential sales with a countywide median ratio of 97.00 and COD of 4.97."
+    ],
+    "commercial": [
+      "Commercial valuation groups 42-46 are based on occupancy codes.",
+      "The 2026 R&O reports 358 qualified commercial sales with a countywide median ratio of 97.40 and COD of 9.44."
+    ],
+    "agricultural": [
+      "All Lancaster agricultural land is subject to non-agricultural influence.",
+      "The agricultural statistical sample uses comparable, uninfluenced areas outside Lancaster County.",
+      "The 2026 R&O reports special valuation level of value at 72% and school bond agricultural land value at 50%."
+    ]
+  }
+}

@@ -129,6 +129,17 @@
       "taxDistrict": "10",
       "recordCardPath": "data/property-records/mips/residential-0760023247-record-card.json",
       "recordCardStatus": "available"
+    },
+    {
+      "id": "residential-0924422025000",
+      "label": "Residential Lancaster County Orion record",
+      "propertyClass": "Residential",
+      "parcelId": "09-24-422-025-000",
+      "situsAddress": "2223 BRENNEN VIEW CT",
+      "county": "lancaster",
+      "taxDistrict": "0001",
+      "recordCardPath": "data/property-records/mips/residential-0924422025000-record-card.json",
+      "recordCardStatus": "available"
     }
   ],
   "sharedData": {
@@ -158,6 +169,17 @@
         "schoolDistrictColorsPath": "data/counties/saline/school-district-colors.json",
         "taxDistrictAuthoritiesPath": "data/counties/saline/tax-district-authorities-2025.json",
         "valuationGroupsPath": "data/counties/saline/valuation-groups.json"
+      },
+      "lancaster": {
+        "label": "Lancaster County",
+        "assessmentRatioPath": "data/counties/lancaster/assessment-ratio-analysis.json",
+        "countyContextPath": "data/counties/lancaster/county-context.json",
+        "governingOfficePath": "data/counties/lancaster/governing-office.json",
+        "marketPositionStatisticsPath": "data/counties/lancaster/market-position-statistics-2026-lancaster.json",
+        "padRatioStatisticsPath": "data/counties/lancaster/pad-ratio-statistics-2026-lancaster.json",
+        "schoolDistrictColorsPath": "data/counties/lancaster/school-district-colors.json",
+        "taxDistrictAuthoritiesPath": "data/counties/lancaster/tax-district-authorities-2025.json",
+        "valuationGroupsPath": "data/counties/lancaster/valuation-groups.json"
       }
     },
     "standards": {
