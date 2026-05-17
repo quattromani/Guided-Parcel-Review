@@ -1115,6 +1115,54 @@ table thead th[class] + th[class] {
   display: none;
 }
 
+.equalization-sales-table {
+  table-layout: fixed;
+}
+
+.equalization-sales-label-col {
+  width: 42%;
+}
+
+.equalization-sales-count-col {
+  width: 8%;
+}
+
+.equalization-sales-ratio-col {
+  width: 10%;
+}
+
+.equalization-sales-money-col {
+  width: 20%;
+}
+
+.equalization-sales-table :is(th, td) {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.equalization-sales-table :is(th, td):not(:first-child) {
+  padding-left: 0.45rem;
+  padding-right: 0.45rem;
+  white-space: nowrap;
+}
+
+.equalization-sales-label-cell {
+  min-width: 0;
+}
+
+.equalization-sales-label-text {
+  display: -webkit-box;
+  line-height: 1.2;
+  max-height: 2.4em;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.sales-range-label-compact.equalization-sales-label-text {
+  display: none;
+}
+
 .assessment-rollup-summary {
   border-top: 1px solid rgb(var(--border-muted));
   display: grid;
@@ -4231,7 +4279,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   }
 
   .equalization-sales-table .sales-range-label-compact {
-    display: inline;
+    display: -webkit-box;
   }
 
   .adjustment-card-label {

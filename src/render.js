@@ -426,6 +426,14 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       <div class="data-split-view mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
         <div class="overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
           <table class="min-w-full divide-y divide-slate-200 text-xs equalization-support-table equalization-sales-table">
+            <colgroup>
+              <col class="equalization-sales-label-col" />
+              <col class="equalization-sales-count-col" />
+              <col class="equalization-sales-ratio-col" />
+              <col class="equalization-sales-ratio-col" />
+              <col class="equalization-sales-ratio-col" />
+              <col class="equalization-sales-money-col" />
+            </colgroup>
             <thead>
               <tr>
                 <th id="equalizationSalePriceRangeHeader" class="px-2 py-2 text-left font-semibold">

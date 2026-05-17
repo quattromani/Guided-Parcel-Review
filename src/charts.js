@@ -1237,11 +1237,17 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
   });
 }
 
-function renderEqualizationSalePriceRows(padRatioData, classKey = "residential", marketPositionData = null) {
+function renderEqualizationSalePriceRows(
+  padRatioData,
+  classKey = "residential",
+  marketPositionData = null,
+  valuationGroups = null
+) {
   const table = document.getElementById("equalizationSalePriceRows");
-  if (!table || !padRatioData) return;
+  if (!table) return;
 
-  const study = priceBandStudyForClass(padRatioData, classKey, marketPositionData);
+  const study = priceBandStudyForClass(padRatioData, classKey, marketPositionData, valuationGroups);
+  if (!study) return;
   const rows = study.rows || [];
   const totalRow = study.totalRow;
   const title = document.getElementById("equalizationSalePriceTitle");
@@ -1263,13 +1269,16 @@ function renderEqualizationSalePriceRows(padRatioData, classKey = "residential",
   if (rangeHeader) {
     rangeHeader.querySelector(".sales-range-label-full").textContent = study.rangeHeader || "Sale price range";
   }
-  if (source) source.textContent = `${getPadRoSourceAnchor(padRatioData)}${getPadRoRefreshWatch(padRatioData)}`;
+  if (source) {
+    source.textContent = study.sourceText
+      ?? (padRatioData ? `${getPadRoSourceAnchor(padRatioData)}${getPadRoRefreshWatch(padRatioData)}` : "");
+  }
 
   const dataRows = rows.map(row => `
     <tr>
-      <td class="px-2 py-2 font-medium text-slate-700">
-        <span class="sales-range-label-full">${priceBandDisplayLabel(row, duplicateLabels)}</span>
-        <span class="sales-range-label-compact">${compactPriceBandDisplayLabel(row, duplicateLabels)}</span>
+      <td class="equalization-sales-label-cell px-2 py-2 font-medium text-slate-700" title="${priceBandDisplayLabel(row, duplicateLabels)}">
+        <span class="sales-range-label-full equalization-sales-label-text">${priceBandDisplayLabel(row, duplicateLabels)}</span>
+        <span class="sales-range-label-compact equalization-sales-label-text">${compactPriceBandDisplayLabel(row, duplicateLabels)}</span>
       </td>
       <td class="px-2 py-2 text-right">${formatCountValue(row.count)}</td>
       <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.median) : "—"}</td>
@@ -1327,7 +1336,7 @@ function renderEqualizationSalePriceChart(rows, study = {}, duplicateLabels = ne
   equalizationSalePriceChart?.destroy();
   equalizationSalePriceChart = new Chart(canvas, {
     data: {
-      labels: rows.map(row => shortPriceBandLabel(priceBandDisplayLabel(row, duplicateLabels))),
+      labels: rows.map(row => row.chartLabel || shortPriceBandLabel(priceBandDisplayLabel(row, duplicateLabels))),
       datasets
     },
     options: {
@@ -1366,17 +1375,30 @@ function renderEqualizationSalePriceChart(rows, study = {}, duplicateLabels = ne
   });
 }
 
-function renderAssessmentClass(selectedClass, iaaoStandards, padRatioData = null, marketPositionData = null) {
+function renderAssessmentClass(
+  selectedClass,
+  iaaoStandards,
+  padRatioData = null,
+  marketPositionData = null,
+  valuationGroups = null
+) {
   renderAssessmentSummary(selectedClass, iaaoStandards);
   renderAssessmentRows(selectedClass);
   renderAssessmentAccuracyChart(selectedClass, iaaoStandards);
-  renderEqualizationSalePriceRows(padRatioData, selectedClass.key, marketPositionData);
+  renderEqualizationSalePriceRows(padRatioData, selectedClass.key, marketPositionData, valuationGroups);
   window.dispatchEvent(new CustomEvent("assessment-class-change", {
     detail: { key: selectedClass.key, label: selectedClass.label }
   }));
 }
 
-export function initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padRatioData = null, marketPositionData = null) {
+export function initAssessmentRatioAnalysis(
+  data,
+  ratioData,
+  iaaoStandards,
+  padRatioData = null,
+  marketPositionData = null,
+  valuationGroups = null
+) {
   const filter = document.getElementById("assessmentClassFilter");
   if (!filter) return;
 
@@ -1404,7 +1426,7 @@ export function initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padR
       button.classList.toggle("hover:bg-white", !active);
       button.setAttribute("aria-pressed", String(active));
     });
-    renderAssessmentClass(selectedClass, iaaoStandards, padRatioData, marketPositionData);
+    renderAssessmentClass(selectedClass, iaaoStandards, padRatioData, marketPositionData, valuationGroups);
   };
 
   buttons.forEach(button => {
@@ -2062,8 +2084,57 @@ function countywideTotalForClass(marketPositionData, classKey = "residential") {
   };
 }
 
-function priceBandStudyForClass(padRatioData, classKey = "residential", marketPositionData = null) {
+function localGroupStudyForClass(marketPositionData, classKey = "residential", valuationGroups = null) {
+  const classStats = getClassMarketStats(marketPositionData, classKey);
+  if (!classStats?.groups?.length) return null;
+
+  const normalizedClassKey = classStats.classKey;
+  const isAgricultural = normalizedClassKey === "agricultural";
+  const groups = enrichedMarketGroups(classStats.groups, valuationGroups, normalizedClassKey);
+  const groupKind = isAgricultural ? "market area" : "valuation group";
+  const groupKindPlural = isAgricultural ? "market areas" : "valuation groups";
+  const classLabel = propertyClassLabelForStudy(normalizedClassKey);
+  const className = classLabel.replace(/\s+real property/i, "").toLowerCase();
+  const rangeHeader = isAgricultural ? "Market area" : "Valuation group";
+  const sourceText = `${getMarketPositionSourceAnchor({ ...classStats, groups })}`;
+
+  return {
+    key: normalizedClassKey,
+    label: `${classLabel} ${groupKindPlural}`,
+    propertyClassLabel: className,
+    description: `${rangeHeader}s show where qualified ${className} sales are concentrated and how each local comparison group sits against the countywide sales study.`,
+    chartTitle: `Sales by ${groupKind}`,
+    chartNote: `Qualified sales by ${groupKind}.`,
+    rangeHeader,
+    countLabel: "Sales",
+    lineLabel: "Distribution curve",
+    yAxisTitle: "Qualified sales",
+    sourceText,
+    rows: groups.map(group => {
+      const id = group.id ?? group.group;
+      return {
+        ...group,
+        section: groupKindPlural,
+        range: group.label || group.descriptiveLabel || `${rangeHeader} ${id}`,
+        compactLabel: group.label,
+        chartLabel: isAgricultural ? group.label : `VG ${id}`
+      };
+    }),
+    totalRow: classStats.countywide
+  };
+}
+
+function priceBandStudyForClass(
+  padRatioData,
+  classKey = "residential",
+  marketPositionData = null,
+  valuationGroups = null
+) {
   const studyKey = priceBandStudyKeyForClass(classKey);
+  const localGroupStudy = localGroupStudyForClass(marketPositionData, classKey, valuationGroups);
+  if (localGroupStudy) return localGroupStudy;
+
+  if (!padRatioData) return null;
 
   if (studyKey === "residential" || !padRatioData.priceBandStudies?.[studyKey]) {
     return {
@@ -2096,7 +2167,7 @@ function priceBandStudyForClass(padRatioData, classKey = "residential", marketPo
 
 function propertyClassLabelForStudy(classKey = "residential", study = {}) {
   if (study.propertyClassLabel) return study.propertyClassLabel;
-  if (classKey === "agFarm") return "agricultural";
+  if (classKey === "agFarm" || classKey === "agricultural") return "agricultural";
   if (classKey === "commercial") return "commercial";
   return "residential";
 }
@@ -2143,6 +2214,8 @@ function priceBandDisplayLabel(row, duplicateLabels) {
 }
 
 function compactPriceBandDisplayLabel(row, duplicateLabels) {
+  if (row.compactLabel) return row.compactLabel;
+
   const label = shortPriceBandLabel(row.range);
   return duplicateLabels.has(row.range) && row.section
     ? `${row.section} · ${label}`

@@ -6,45 +6,55 @@
     "countyName": "Saline",
     "displayCitation": "2026 Saline County PAD Reports and Opinions",
     "sourceUrl": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2026/76Saline.pdf",
-    "notes": "Valuation group descriptions were compiled from the Residential Correlation narrative and the assessor Three-Year Plan market grouping descriptions. Specific number-to-place mappings were not fully enumerated in the R&O, so descriptions are conservative."
+    "supportingSources": [
+      {
+        "displayCitation": "2022 Saline County PAD Reports and Opinions, residential and commercial valuation-group mappings",
+        "sourceUrl": "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2022/76Saline.pdf",
+        "sourcePages": [
+          10,
+          13
+        ]
+      }
+    ],
+    "notes": "Current 2026 valuation group statistics were extracted from the 2026 Saline County R&O. Residential number-to-place labels use the stable Saline R&O mapping that identifies VG 1 as Wilber, VG 2 as Crete, VG 4 as Dorchester, VG 5 as Friend, VG 6 as small towns, VG 9 as cabins/recreational parcels, and VGs 11-13 as rural residential areas."
   },
   "valuationGroups": [
     {
       "class": "Residential",
       "valuationGroup": 1,
-      "description": "Large city group; Saline R&O states groups 1, 2, 4, and 5 represent larger cities.",
+      "description": "Wilber",
       "marketGroup": "City",
-      "notes": "Exact place name not enumerated in the R&O text.",
+      "notes": "2026 R&O groups 1, 2, 4, and 5 as larger cities; prior Saline R&O number-to-place mapping identifies VG 1 as Wilber.",
       "key": "Residential-1"
     },
     {
       "class": "Residential",
       "valuationGroup": 2,
-      "description": "Large city group; Saline R&O states groups 1, 2, 4, and 5 represent larger cities.",
+      "description": "Crete",
       "marketGroup": "City",
-      "notes": "Exact place name not enumerated in the R&O text.",
+      "notes": "2026 R&O groups 1, 2, 4, and 5 as larger cities; prior Saline R&O number-to-place mapping identifies VG 2 as Crete.",
       "key": "Residential-2"
     },
     {
       "class": "Residential",
       "valuationGroup": 4,
-      "description": "Large city group; Saline R&O states groups 1, 2, 4, and 5 represent larger cities.",
+      "description": "Dorchester",
       "marketGroup": "City",
-      "notes": "High COD noted in 2026 R&O; oldest inspection dates scheduled for review during 2027.",
+      "notes": "2026 R&O notes a high COD for VG 4 and states the group contains the oldest inspection dates; prior Saline R&O number-to-place mapping identifies VG 4 as Dorchester.",
       "key": "Residential-4"
     },
     {
       "class": "Residential",
       "valuationGroup": 5,
-      "description": "Large city group; Saline R&O states groups 1, 2, 4, and 5 represent larger cities.",
+      "description": "Friend",
       "marketGroup": "City",
-      "notes": "Exact place name not enumerated in the R&O text.",
+      "notes": "2026 R&O groups 1, 2, 4, and 5 as larger cities; prior Saline R&O number-to-place mapping identifies VG 5 as Friend.",
       "key": "Residential-5"
     },
     {
       "class": "Residential",
       "valuationGroup": 6,
-      "description": "Smaller villages",
+      "description": "Small towns: DeWitt, Swanton, Tobias, Western",
       "marketGroup": "Village",
       "notes": "R&O notes high COD/PRD influenced by outliers.",
       "key": "Residential-6"
@@ -52,7 +62,7 @@
     {
       "class": "Residential",
       "valuationGroup": 9,
-      "description": "Recreational parcels / cabin areas",
+      "description": "Cabins: Blue River Lodge, Y-Cabin",
       "marketGroup": "Recreational",
       "notes": "R&O notes small sample and possible regressivity; monitor for future adjustments.",
       "key": "Residential-9"
@@ -60,31 +70,31 @@
     {
       "class": "Residential",
       "valuationGroup": 11,
-      "description": "Rural residential parcels",
+      "description": "Rural Residential: 4500, Area 3",
       "marketGroup": "Rural residential",
-      "notes": "R&O groups 11, 12, and 13 as rural residential parcels.",
+      "notes": "2026 R&O groups 11, 12, and 13 as rural residential parcels; prior Saline R&O mapping identifies this as 4500, Area 3.",
       "key": "Residential-11"
     },
     {
       "class": "Residential",
       "valuationGroup": 12,
-      "description": "Rural residential parcels",
+      "description": "Rural Residential: 4505, Area 2",
       "marketGroup": "Rural residential",
-      "notes": "R&O groups 11, 12, and 13 as rural residential parcels.",
+      "notes": "2026 R&O groups 11, 12, and 13 as rural residential parcels; prior Saline R&O mapping identifies this as 4505, Area 2.",
       "key": "Residential-12"
     },
     {
       "class": "Residential",
       "valuationGroup": 13,
-      "description": "Rural residential parcels",
+      "description": "Rural Residential: 4510, Area 1",
       "marketGroup": "Rural residential",
-      "notes": "R&O groups 11, 12, and 13 as rural residential parcels.",
+      "notes": "2026 R&O groups 11, 12, and 13 as rural residential parcels; prior Saline R&O mapping identifies this as 4510, Area 1.",
       "key": "Residential-13"
     },
     {
       "class": "Commercial",
       "valuationGroup": 1,
-      "description": "Individual town commercial group",
+      "description": "Wilber",
       "marketGroup": "Town",
       "notes": "R&O states commercial groups 1, 2, 4, and 5 are individual towns.",
       "key": "Commercial-1"
@@ -92,7 +102,7 @@
     {
       "class": "Commercial",
       "valuationGroup": 2,
-      "description": "Individual town commercial group",
+      "description": "Crete",
       "marketGroup": "Town",
       "notes": "Only commercial valuation group with sufficient sales for statistical analysis in 2026 R&O.",
       "key": "Commercial-2"
@@ -100,7 +110,7 @@
     {
       "class": "Commercial",
       "valuationGroup": 4,
-      "description": "Individual town commercial group",
+      "description": "Dorchester",
       "marketGroup": "Town",
       "notes": "R&O states commercial groups 1, 2, 4, and 5 are individual towns.",
       "key": "Commercial-4"
@@ -108,7 +118,7 @@
     {
       "class": "Commercial",
       "valuationGroup": 5,
-      "description": "Individual town commercial group",
+      "description": "Friend",
       "marketGroup": "Town",
       "notes": "R&O states commercial groups 1, 2, 4, and 5 are individual towns.",
       "key": "Commercial-5"
@@ -116,7 +126,7 @@
     {
       "class": "Commercial",
       "valuationGroup": 6,
-      "description": "Small-village commercial group",
+      "description": "Small villages: DeWitt, Swanton, Tobias, Western",
       "marketGroup": "Village",
       "notes": "R&O states this group combines four small villages.",
       "key": "Commercial-6"

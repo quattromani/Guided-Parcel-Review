@@ -146,7 +146,7 @@ async function main() {
   initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards, marketPositionData);
   buildCtlSummary(data, ctlData);
   initCountyComparison(data, ctlData, recordCard);
-  initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padRatioData, marketPositionData);
+  initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padRatioData, marketPositionData, valuationGroups);
   initGuidedNavigation(data, { propertySwitcher: propertySwitcherContext });
   initAssessmentDatesPanel(assessmentDateEvents);
   initFooterNavigation();
