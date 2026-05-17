@@ -116,6 +116,23 @@ Reusable helpers live in:
 - `src/utils/` contains small shared utilities that have no domain dependency.
 - `src/config/taxpayer-journey.js` defines the current guided route labels and sequencing.
 
+## GWorks PDF Enrichment
+
+When a GWorks PDF is received, use the PDF as the canonical property-detail source and supplement only the gaps that the public export does not carry:
+
+- Use Nebraska Taxes Online, keyed by parcel ID, for tax statement history, credit breakdowns, payment/balance fields, assessed valuation components, and levy distribution. Open each year’s `View Details` modal for the 2019-current cycle.
+- Use Zillow by situs address only as a fallback for visible assessment totals when the Nebraska Taxes Online detail modal is unavailable.
+- Ignore Zillow `Property taxes` values because Zillow rounds them.
+- Keep source labels on enriched rows, and leave component fields null when the supplemental source only gives a total assessment.
+
+When a new assessment-year PDF or NOV arrives before taxes are final, keep the assessment year and tax year separate:
+
+- Set `guidedSnapshot.snapshotYear` to the new assessment year, for example `2026`.
+- Keep `guidedSnapshot.latestFinalTaxYear` on the latest finalized tax statement year, for example `2025`.
+- Add a `taxpayerHistory` row for the new assessment year with the assessed value populated, `taxes: null`, and a status such as `assessment_notice` or `pending`.
+- Add the new year to `assessedValueBreakdown` when component values are available, so land/building/other movement renders immediately.
+- Do not add a `taxStatements` row for the new year until a statement exists.
+
 ## Repository Structure
 
 - `index.html` defines the static page shell and section mount points.

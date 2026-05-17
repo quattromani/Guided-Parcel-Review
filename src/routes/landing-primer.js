@@ -52,39 +52,6 @@ function noticeMetric(label, value, options = {}) {
   `;
 }
 
-function mapSearchHref(address) {
-  return `https://maps.apple.com/?q=${encodeURIComponent(address)}`;
-}
-
-function nativeMapHref(address) {
-  const query = encodeURIComponent(address);
-
-  return {
-    android: `geo:0,0?q=${query}`,
-    ios: `maps://?q=${query}`,
-    web: mapSearchHref(address)
-  };
-}
-
-function installNativeMapLinks(root) {
-  root.querySelectorAll("[data-native-map-query]").forEach(link => {
-    link.addEventListener("click", event => {
-      const query = link.dataset.nativeMapQuery;
-      if (!query) return;
-
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-        || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-      const isAndroid = /Android/i.test(navigator.userAgent);
-      const href = nativeMapHref(query);
-
-      if (!isIOS && !isAndroid) return;
-
-      event.preventDefault();
-      window.location.href = isIOS ? href.ios : href.android;
-    });
-  });
-}
-
 function statusToneClass(status) {
   return `${status ?? ""}`.toLowerCase() === "pending" ? "notice-status-pill-pending" : "";
 }
@@ -139,7 +106,7 @@ function marketAreaName(recordCard, marketArea) {
     return marketArea.label.replace(/^Valuation Group\s+/i, "VG ");
   }
 
-  return recordCard?.locationModel?.valuationGroup || "Market area listed";
+  return recordCard?.locationModel?.valuationGroup || "Valuation group listed";
 }
 
 function signalMeta(signals) {
@@ -290,11 +257,6 @@ function installLandingPrimer(data) {
 
   const notice = data.snapshotModel.viewModels.notice;
   const address = notice.displayAddress || notice.situsAddress;
-  const mailingAddress = notice.displayMailingAddress || address;
-  const mailingAddressLines = notice.displayMailingAddressLines?.length
-    ? notice.displayMailingAddressLines
-    : [mailingAddress];
-  const mapHref = nativeMapHref(mailingAddress);
   const firstPanel = document.querySelector('[data-guided-panel="your-property"]');
   const section = document.createElement("section");
   section.dataset.guidedPanel = "landing-primer";
@@ -304,11 +266,6 @@ function installLandingPrimer(data) {
     <article class="civic-landing-shell">
       <div class="civic-landing-intro">
         <p class="guided-kicker">Assessment snapshot</p>
-        <h2 class="civic-mailing-address">
-          <a class="civic-map-address" href="${escapeHtml(mapHref.web)}" target="_blank" rel="noreferrer" data-native-map-query="${escapeHtml(mailingAddress)}" aria-label="Open ${escapeHtml(mailingAddress)} in Maps">
-            ${mailingAddressLines.map(line => `<span>${escapeHtml(line)}</span>`).join("")}
-          </a>
-        </h2>
         <p>Property, value, and tax records are easier to review when the basic facts come first. Begin by confirming the property and noticing which information is final, pending, or available only as context.</p>
       </div>
 
@@ -362,7 +319,6 @@ function installLandingPrimer(data) {
   `;
 
   firstPanel?.before(section);
-  installNativeMapLinks(section);
 }
 
 function installReviewSignalsPanel(data) {

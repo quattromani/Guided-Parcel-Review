@@ -146,6 +146,19 @@ canvas {
   width: 100%;
 }
 
+.parcel-lookup-placeholder:has(.property-switcher-select)::after {
+  border-bottom: 2px solid rgb(var(--color-slate-500));
+  border-right: 2px solid rgb(var(--color-slate-500));
+  content: "";
+  height: 0.48rem;
+  pointer-events: none;
+  position: absolute;
+  right: 1rem;
+  top: calc(50% + 0.16rem);
+  transform: rotate(45deg);
+  width: 0.48rem;
+}
+
 .parcel-lookup-label {
   color: rgb(var(--color-slate-500));
   font-size: 0.72rem;
@@ -162,7 +175,7 @@ canvas {
   background: rgb(var(--color-slate-50));
   border-radius: 0.5rem;
   color: rgb(var(--color-slate-500));
-  cursor: help;
+  cursor: pointer;
   display: flex;
   font-size: 0.82rem;
   gap: 0.5rem;
@@ -172,6 +185,19 @@ canvas {
   text-align: left;
   width: 100%;
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+}
+
+.property-switcher-select {
+  appearance: none;
+  -webkit-appearance: none;
+  color: rgb(var(--brand-ink));
+  display: block;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow: hidden;
+  padding: 0.35rem 2.85rem 0.35rem 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .parcel-lookup-shell:focus-visible {
@@ -4178,29 +4204,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   font-size: clamp(1.5rem, 3vw, 2.25rem);
   font-weight: 800;
   line-height: 1.12;
-}
-
-.civic-landing-intro h2.civic-mailing-address {
-  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
-  line-height: 1.22;
-}
-
-.civic-mailing-address span {
-  display: block;
-}
-
-.civic-map-address {
-  color: inherit;
-  text-decoration-color: rgb(var(--brand-ink) / 0.34);
-  text-decoration-line: underline;
-  text-decoration-style: dotted;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
-}
-
-.civic-map-address:hover,
-.civic-map-address:focus-visible {
-  text-decoration-color: currentColor;
 }
 
 .civic-landing-intro p:not(.guided-kicker),

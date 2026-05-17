@@ -18,6 +18,7 @@ const DATA_PATHS = {
 let manifestPromise;
 let activeRecordCardPromise;
 let activePropertyDataPromise;
+const PROPERTY_SELECTION_STORAGE_KEY = "propertySnapshot.activePropertyId";
 
 export function loadPropertyManifest() {
   manifestPromise ??= loadJson(DATA_PATHS.manifest, "property manifest");
@@ -26,7 +27,25 @@ export function loadPropertyManifest() {
 }
 
 export function getActivePropertyId(manifest) {
+  const requestedPropertyId = getRequestedPropertyId();
+  const requestedProperty = manifest.properties.find(item => item.id === requestedPropertyId);
+
+  if (requestedProperty) return requestedProperty.id;
+
   return manifest.activePropertyId;
+}
+
+function getRequestedPropertyId() {
+  if (typeof window === "undefined") return null;
+
+  const queryPropertyId = new URLSearchParams(window.location.search).get("property");
+  if (queryPropertyId) return queryPropertyId;
+
+  try {
+    return window.localStorage?.getItem(PROPERTY_SELECTION_STORAGE_KEY) ?? null;
+  } catch {
+    return null;
+  }
 }
 
 async function getActivePropertyEntry() {
@@ -57,6 +76,27 @@ export function loadPropertyRecordCard() {
     .then(({ property }) => loadJson(property.recordCardPath, "property record card"));
 
   return activeRecordCardPromise;
+}
+
+export function loadPropertySwitcherRecords() {
+  return loadPropertyManifest().then(async manifest => {
+    const records = await Promise.all((manifest.properties || []).map(async property => {
+      if (property.recordCardStatus !== "available" || !property.recordCardPath) {
+        return { property, recordCard: null };
+      }
+
+      return {
+        property,
+        recordCard: await loadJson(property.recordCardPath, `property switcher record ${property.id}`).catch(() => null)
+      };
+    }));
+
+    return {
+      activePropertyId: getActivePropertyId(manifest),
+      manifest,
+      records
+    };
+  });
 }
 
 export function loadPropertyData() {

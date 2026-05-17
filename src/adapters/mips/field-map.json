@@ -36,6 +36,38 @@
       "guidedSnapshot.landInformation"
     ]
   },
+  "supplementalSources": {
+    "assessmentHistory": {
+      "preferredSource": "GWorks PDF",
+      "supplementalSource": "Nebraska Taxes Online statement detail modal",
+      "fallbackSource": "Zillow public tax history",
+      "lookupKey": "parcel id",
+      "cycleWindow": "2019-current",
+      "fields": [
+        "gross value",
+        "building",
+        "land",
+        "other"
+      ],
+      "excludedFields": [
+        "Zillow property taxes"
+      ],
+      "notes": [
+        "When a GWorks PDF only includes current/prior assessed values, open Nebraska Taxes Online by parcel and use each year’s View Details modal to capture assessed valuation components for the 2019-current cycle.",
+        "Use Zillow by situs address only as a fallback for visible assessment totals when the Nebraska Taxes Online detail modal is unavailable.",
+        "Do not use Zillow tax amounts; Zillow rounds those values. Use Nebraska Taxes Online or county tax statements for tax-history amounts."
+      ]
+    },
+    "taxHistory": {
+      "preferredSource": "Nebraska Taxes Online",
+      "lookupKey": "parcel id",
+      "cycleWindow": "2019-current",
+      "notes": [
+        "Click each year’s View Details modal to capture gross tax, credit breakdown, net tax, assessed valuations, payment ledger totals, and levy distribution.",
+        "Trim parcel/tax history older than 2019 in the taxpayer-facing record to keep the six-year-cycle view readable."
+      ]
+    }
+  },
   "notes": [
     "The current demo record still includes guidedSnapshot as app-ready data.",
     "A production adapter should map raw MIPS fields into a canonical property record, then generate the guided snapshot from domain logic."

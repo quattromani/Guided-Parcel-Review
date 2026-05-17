@@ -7,17 +7,50 @@
       "notes": "Manifest paths and shared-data wiring are authored for the guided Property Snapshot prototype."
     }
   },
-  "activePropertyId": "residential-010496000",
+  "activePropertyId": "commercial-013223000",
   "properties": [
     {
       "id": "residential-010496000",
-      "label": "Residential MIPS record",
+      "label": "Residential GWorks record",
       "propertyClass": "Residential",
       "parcelId": "010496000",
       "situsAddress": "1301 S 5TH",
       "county": "gage",
       "taxDistrict": "157",
       "recordCardPath": "data/property-records/mips/residential-010496000-record-card.json",
+      "recordCardStatus": "available"
+    },
+    {
+      "id": "agricultural-002038000",
+      "label": "Agricultural GWorks record",
+      "propertyClass": "Agricultural",
+      "parcelId": "002038000",
+      "situsAddress": "08867 SW 86 RD",
+      "county": "gage",
+      "taxDistrict": "33",
+      "recordCardPath": "data/property-records/mips/agricultural-002038000-record-card.json",
+      "recordCardStatus": "available"
+    },
+    {
+      "id": "residential-013203000",
+      "label": "Residential GWorks record",
+      "propertyClass": "Residential",
+      "parcelId": "013203000",
+      "situsAddress": "688 W COURT",
+      "county": "gage",
+      "taxDistrict": "157",
+      "recordCardPath": "data/property-records/mips/residential-013203000-record-card.json",
+      "recordCardStatus": "available"
+    },
+    {
+      "id": "commercial-013223000",
+      "label": "Commercial GWorks record",
+      "propertyClass": "Commercial",
+      "parcelId": "013223000",
+      "situsAddress": "806 W COURT",
+      "county": "gage",
+      "taxDistrict": "157",
+      "recordCardPath": "data/property-records/mips/commercial-013223000-record-card.json",
       "recordCardStatus": "available"
     }
   ],

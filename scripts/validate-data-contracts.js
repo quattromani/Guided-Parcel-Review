@@ -86,7 +86,9 @@ function validateRecordCard(recordCard, active) {
   for (const statement of snapshot.taxStatements || []) {
     assert(Number.isInteger(statement.taxYear), "taxStatements rows need integer taxYear.");
     assert(typeof statement.netAmountDue === "number", `taxStatement ${statement.taxYear} needs netAmountDue.`);
-    assert(statement.derived?.grossLevyRate !== undefined, `taxStatement ${statement.taxYear} needs derived.grossLevyRate until calculations fully move to code.`);
+    if (statement.assessedValue !== null && statement.assessedValue !== undefined) {
+      assert(statement.derived?.grossLevyRate !== undefined, `taxStatement ${statement.taxYear} needs derived.grossLevyRate until calculations fully move to code.`);
+    }
   }
 }
 

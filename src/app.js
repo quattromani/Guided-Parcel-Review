@@ -18,6 +18,7 @@ import {
   loadMarketPositionStatistics,
   loadPropertyData,
   loadPropertyRecordCard,
+  loadPropertySwitcherRecords,
   loadPadRatioStatistics,
   loadRealPropertyForms,
   loadSchoolDistrictColors,
@@ -66,9 +67,10 @@ window.addEventListener("resize", syncLayoutViewportWidth, { passive: true });
 async function main() {
   applyVisualizationPalette();
   applyChartDefaults();
-  const [propertyData, recordCard, calendar, legalReferences, realPropertyForms, ctlData, ratioData, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, valuationGroups, iaaoStandards, assessmentDateEvents] = await Promise.all([
+  const [propertyData, recordCard, propertySwitcher, calendar, legalReferences, realPropertyForms, ctlData, ratioData, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, valuationGroups, iaaoStandards, assessmentDateEvents] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
+    loadPropertySwitcherRecords(),
     loadAssessmentCalendar(),
     loadLegalReferences(),
     loadRealPropertyForms(),
@@ -83,6 +85,8 @@ async function main() {
     loadAssessmentDateEvents()
   ]);
   officialRealPropertyForms = realPropertyForms;
+  const propertySwitcherContext = { ...propertySwitcher, valuationGroups };
+  window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcherContext;
   const snapshotModel = buildPropertySnapshotModel({
     propertyData,
     recordCard,
@@ -103,7 +107,8 @@ async function main() {
     legalReferences,
     padRatioData,
     marketPositionData,
-    iaaoStandards
+    iaaoStandards,
+    propertySwitcher: propertySwitcherContext
   });
   installCivicJourneyPanels(data, {
     recordCard,
@@ -122,7 +127,7 @@ async function main() {
   buildCtlSummary(data, ctlData);
   initCountyComparison(data, ctlData, recordCard);
   initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padRatioData, marketPositionData);
-  initGuidedNavigation(data);
+  initGuidedNavigation(data, { propertySwitcher: propertySwitcherContext });
   initAssessmentDatesPanel(assessmentDateEvents);
   initFooterNavigation();
   initAssessorsReport({
@@ -153,7 +158,7 @@ main().catch(error => {
   `;
 });
 
-function initGuidedNavigation(data) {
+function initGuidedNavigation(data, options = {}) {
   const snapshotModel = data.snapshotModel;
   const routeList = snapshotModel?.sections?.length ? snapshotModel.sections : TAXPAYER_JOURNEY_ROUTES;
   const progressRoutes = routeList.filter(route => !route.secondary && route.id !== "landing-primer");
@@ -374,7 +379,7 @@ function initGuidedNavigation(data) {
     });
 
     propertyContext?.classList.toggle("hidden", selected === "landing-primer");
-    renderViewHeader(selected, snapshotModel);
+    renderViewHeader(selected, snapshotModel, options.propertySwitcher);
     renderGuidedResourceContent(selected);
     if (selectedPanel === "your-taxes") {
       renderTaxDistrictPanelWhenNeeded();

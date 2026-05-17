@@ -639,7 +639,7 @@ function currentValueBreakdown(data, recordCard) {
   if (recordCard?.currentCardValue?.current) {
     const current = recordCard.currentCardValue.current;
     return {
-      year: data.latestFinalTaxYear ?? latestKnown(data.taxpayerHistory, "assessedValue")?.year,
+      year: data.snapshotYear ?? latestKnown(data.taxpayerHistory, "assessedValue")?.year,
       land: current.landLots,
       dwelling: current.buildings,
       improvement: current.improvement,

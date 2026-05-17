@@ -75,7 +75,7 @@ function legalAuthorityListHtml(authorities, legalReferences) {
 }
 
 export function renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, summaryContext = {}) {
-  renderViewHeader("your-property", data.snapshotModel);
+  renderViewHeader("your-property", data.snapshotModel, summaryContext.propertySwitcher);
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard, valuationGroups);
   renderAssessmentNoticeSummary(data, recordCard);
@@ -420,7 +420,7 @@ function initMobileSupportDisclosureCharts(root = document) {
 export function renderPropertyViewContext(data, recordCard, valuationGroups) {
   const context = document.getElementById("propertyViewContext");
   if (!context) return;
-  const marketArea = propertyMarketAreaLabel(data, recordCard, valuationGroups);
+  const valuationGroup = propertyValuationGroupLabel(data, recordCard, valuationGroups);
   const propertyClass = data.classification.propertyClass || data.parcel.accountType;
 
   context.innerHTML = `
@@ -432,13 +432,13 @@ export function renderPropertyViewContext(data, recordCard, valuationGroups) {
         <span class="property-context-separator property-context-desktop" aria-hidden="true">·</span>
         <span class="property-context-meta property-context-desktop">${data.classification.location}</span>
         <span class="property-context-separator" aria-hidden="true">·</span>
-        <span class="property-context-meta">${marketArea}</span>
+        <span class="property-context-meta">${valuationGroup}</span>
       </p>
     </div>
   `;
 }
 
-function propertyMarketAreaLabel(data, recordCard, valuationGroups) {
+function propertyValuationGroupLabel(data, recordCard, valuationGroups) {
   const valuationGroupId = `${recordCard?.locationModel?.valuationGroup ?? ""}`.match(/\d+/)?.[0];
   const propertyClass = data.classification.propertyClass;
   const match = (valuationGroups?.valuationGroups || []).find(group =>
@@ -447,18 +447,22 @@ function propertyMarketAreaLabel(data, recordCard, valuationGroups) {
   );
 
   if (recordCard?.locationModel?.valuationGroup) {
-    return stripValuationGroupPrefix(recordCard.locationModel.valuationGroup);
+    return formatValuationGroupLabel(recordCard.locationModel.valuationGroup);
   }
 
   if (match?.description) {
-    return match.description;
+    return `VG ${match.valuationGroup} - ${match.description}`;
   }
 
-  return "Market area not listed";
+  return "Valuation group not listed";
 }
 
-function stripValuationGroupPrefix(value) {
-  return `${value ?? ""}`.trim().replace(/^\d+\s*[-–]\s*/, "") || "Market area not listed";
+function formatValuationGroupLabel(value) {
+  const label = `${value ?? ""}`.trim();
+  if (!label) return "Valuation group not listed";
+  if (/^(?:vg|valuation group|market area)\b/i.test(label)) return label;
+
+  return label.replace(/^(\d+)\s*[-–]\s*/, "VG $1 - ");
 }
 
 function landingPrimerTitleHtml(noticeAddress) {
@@ -468,7 +472,8 @@ function landingPrimerTitleHtml(noticeAddress) {
   `;
 }
 
-export function renderViewHeader(view = "your-property", snapshotModel) {
+export function renderViewHeader(view = "your-property", snapshotModel, propertySwitcher = null) {
+  const switcherContext = propertySwitcher ?? window.__PROPERTY_SWITCHER_CONTEXT__ ?? null;
   const section = snapshotModel?.sections?.find(item => item.id === view);
   const noticeAddress = snapshotModel?.viewModels?.notice?.displayAddress
     || snapshotModel?.viewModels?.notice?.situsAddress;
@@ -508,12 +513,74 @@ export function renderViewHeader(view = "your-property", snapshotModel) {
           alt="${content.imageAlt}"
           class="hidden h-20 w-auto shrink-0 opacity-80 sm:block grayscale"
         />
-        ${disabledParcelLookupMarkup()}
+        ${propertySwitcherMarkup(switcherContext, snapshotModel)}
       </div>
     </div>
   `;
 
-  initDisabledParcelLookup(title);
+  initPropertySwitcher(title);
+}
+
+function propertySwitcherMarkup(propertySwitcher, snapshotModel) {
+  const options = propertySwitcherOptions(propertySwitcher, snapshotModel);
+
+  if (!options.length) return disabledParcelLookupMarkup();
+
+  return `
+    <div class="parcel-lookup-placeholder" data-property-switcher-shell>
+      <label class="parcel-lookup-label" for="propertySwitcher">Looking for another property?</label>
+      <select
+        id="propertySwitcher"
+        class="parcel-lookup-shell property-switcher-select"
+        data-property-switcher
+        aria-label="Switch property record"
+      >
+        ${options.map(option => `
+          <option value="${escapeHtml(option.id)}"${option.selected ? " selected" : ""}>${escapeHtml(option.label)}</option>
+        `).join("")}
+      </select>
+    </div>
+  `;
+}
+
+function propertySwitcherOptions(propertySwitcher, snapshotModel) {
+  const records = propertySwitcher?.records || [];
+  const activePropertyId = propertySwitcher?.activePropertyId;
+  const valuationGroups = snapshotModel?.valuationGroups ?? propertySwitcher?.valuationGroups;
+
+  return records
+    .filter(item => item.property?.id && item.recordCard)
+    .map(item => {
+      const recordCard = item.recordCard;
+      const data = recordCard.guidedSnapshot || {};
+      const situs = item.property.situsAddress || data.parcel?.situsAddress || "";
+      const situsNumber = firstSitusNumber(situs) || situs || item.property.parcelId;
+      const propertyClass = switcherClassLabel(item.property.propertyClass || data.classification?.propertyClass || data.parcel?.accountType);
+      const valuationGroup = propertyValuationGroupLabel(data, recordCard, valuationGroups);
+
+      return {
+        id: item.property.id,
+        selected: item.property.id === activePropertyId,
+        label: `${situsNumber} • ${valuationGroup} • ${propertyClass}`
+      };
+    });
+}
+
+function firstSitusNumber(value) {
+  const token = `${value ?? ""}`.match(/\d+/)?.[0] ?? "";
+  const stripped = token.replace(/^0+(?=\d)/, "");
+
+  return stripped || token;
+}
+
+function switcherClassLabel(value) {
+  const normalized = `${value ?? ""}`.trim().toLowerCase();
+
+  if (normalized.includes("ag") || normalized.includes("farm")) return "Farm/Ag";
+  if (normalized.includes("comm")) return "Commercial";
+  if (normalized.includes("res")) return "Residential";
+
+  return value || "Property";
 }
 
 function disabledParcelLookupMarkup() {
@@ -539,7 +606,15 @@ function disabledParcelLookupMarkup() {
   `;
 }
 
-function initDisabledParcelLookup(root) {
+function initPropertySwitcher(root) {
+  const switcher = root.querySelector("[data-property-switcher]");
+  if (switcher) {
+    switcher.addEventListener("change", () => {
+      switchPropertyRecord(switcher.value);
+    });
+    return;
+  }
+
   const lookup = root.querySelector("[data-parcel-lookup]");
   const trigger = root.querySelector("[data-parcel-lookup-trigger]");
   const popover = root.querySelector("[data-parcel-lookup-popover]");
@@ -570,6 +645,21 @@ function initDisabledParcelLookup(root) {
     }
   });
 
+}
+
+function switchPropertyRecord(propertyId) {
+  if (!propertyId) return;
+
+  try {
+    window.localStorage?.setItem("propertySnapshot.activePropertyId", propertyId);
+  } catch {
+    // The query string remains the source of truth if storage is unavailable.
+  }
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("property", propertyId);
+  url.hash = "";
+  window.location.assign(url.toString());
 }
 
 function renderHeader(data, imageModal, recordCard, valuationGroups) {
@@ -658,7 +748,7 @@ function valuationNoticeValues(data, recordCard) {
   }
 
   if (recordCard?.currentCardValue?.previous && recordCard?.currentCardValue?.current) {
-    const noticeYear = data.latestFinalTaxYear ?? data.snapshotYear;
+    const noticeYear = data.snapshotYear ?? data.latestFinalTaxYear;
 
     return {
       prior: {
@@ -786,6 +876,7 @@ function renderPropertyDetails(data, recordCard) {
     renderCards(identityDetails),
     renderCards(physicalDetails),
     technicalCostModel(recordCard, data),
+    sourceExtractDetails(recordCard),
     classificationDetails(data),
     landInformation(data, recordCard),
     propertyNotes(data),
@@ -835,7 +926,7 @@ function formatSquareFeet(value) {
 }
 
 function hasDetailedRecordCard(recordCard) {
-  return Boolean(recordCard?.parcelIdentifiers && recordCard?.locationModel);
+  return Boolean(recordCard?.parcelIdentifiers);
 }
 
 function physicalDetailsForProperty(data) {
@@ -893,7 +984,9 @@ function discrepancyRows(data, recordCard) {
   const landDimensions = row => [
     row.widthFeet !== null && row.widthFeet !== undefined ? `Width: ${row.widthFeet} ft.` : null,
     row.depthFeet !== null && row.depthFeet !== undefined ? `Depth: ${row.depthFeet} ft.` : null,
-    row.squareFeet !== null && row.squareFeet !== undefined ? `Area: ${Number(row.squareFeet).toLocaleString()} sq. ft.` : null
+    row.squareFeet !== null && row.squareFeet !== undefined ? `Area: ${Number(row.squareFeet).toLocaleString()} sq. ft.` : null,
+    row.acres !== null && row.acres !== undefined ? `Area: ${Number(row.acres).toLocaleString()} ac.` : null,
+    row.value !== null && row.value !== undefined ? `Value: ${formatNullableMoney(row.value)}` : null
   ].filter(Boolean).join(" • ");
   const rows = [
     ["Parcel ID", data.parcel.parcelId, "Property facts"],
@@ -945,7 +1038,7 @@ function discrepancyRows(data, recordCard) {
       : [["Outbuilding records", "No outbuilding records listed for this property.", "Detailed valuation components"]]),
     ["Location", data.classification.location, "Classification"],
     ["Property class", data.classification.propertyClass, "Classification"],
-    ...(detailedRecordCard ? [
+    ...(detailedRecordCard && recordCard?.locationModel ? [
       ["Neighborhood", recordCard.locationModel.neighborhood, "Classification"],
       ["Location group", recordCard.locationModel.locationGroup, "Classification"],
       ["Valuation group", recordCard.locationModel.valuationGroup, "Classification"]
@@ -1528,21 +1621,45 @@ function recordCardValuationHistory(recordCard) {
 }
 
 function propertyValueTaxHistory(data, recordCard) {
-  const valueRows = (data.assessedValueBreakdown || [])
-    .slice()
-    .filter(row => row.year >= 2019 && row.year <= 2026)
-    .sort((a, b) => b.year - a.year);
-
-  if (!valueRows.length) return "";
-
+  const valueByYear = new Map((data.assessedValueBreakdown || []).map(row => [row.year, row]));
   const taxByYear = new Map((data.taxpayerHistory || []).map(row => [row.year, row]));
+  const statementByYear = new Map(finalizedTaxStatements(data).map(statement => [statement.taxYear, statement]));
   const recordByYear = new Map((recordCard?.valuationHistory || []).map(row => [row.year, row]));
-  const latestKnownRow = valueRows.find(row => row.total !== null && row.total !== undefined);
-  const rowLabel = valueRows.length === 1 ? "year" : "years";
+  const years = [...new Set([
+    ...valueByYear.keys(),
+    ...taxByYear.keys(),
+    ...statementByYear.keys(),
+    ...recordByYear.keys()
+  ])].sort((a, b) => b - a);
+
+  if (!years.length) return "";
+
+  const rows = years.map(year => {
+    const valueRow = valueByYear.get(year);
+    const taxRow = taxByYear.get(year);
+    const statement = statementByYear.get(year);
+    const recordRow = recordByYear.get(year);
+    const totalAssessed = valueRow?.total ?? taxRow?.assessedValue ?? statement?.assessedValue ?? recordRow?.total ?? null;
+
+    return {
+      year,
+      totalAssessed,
+      land: valueRow?.land ?? recordRow?.land ?? null,
+      dwelling: valueRow?.dwelling ?? recordRow?.building ?? null,
+      outbuilding: valueRow?.outbuilding ?? recordRow?.other ?? null,
+      taxableValue: statement?.assessedValue ?? recordRow?.taxable ?? totalAssessed,
+      netTax: statement?.netAmountDue ?? statement?.totalTaxesDue ?? taxRow?.taxes ?? recordRow?.totalTax ?? null,
+      totalPaid: statement?.totalPaid ?? null,
+      taxDue: statement?.taxDue ?? null
+    };
+  });
+  const latestKnownRow = rows.find(row => row.totalAssessed !== null && row.totalAssessed !== undefined);
+  const taxRowCount = rows.filter(row => row.netTax !== null && row.netTax !== undefined).length;
+  const rowLabel = taxRowCount === 1 ? "tax year" : "tax years";
 
   return disclosure(
     "What is the property’s value and tax history?",
-    `${valueRows.length} ${rowLabel} · latest known ${formatNullableMoney(latestKnownRow?.total)}`,
+    `${taxRowCount} ${rowLabel} · latest known ${formatNullableMoney(latestKnownRow?.totalAssessed)}`,
     `
       <table class="min-w-full divide-y divide-slate-200 text-sm">
         <thead class="bg-slate-50">
@@ -1553,33 +1670,30 @@ function propertyValueTaxHistory(data, recordCard) {
             <th class="px-3 py-2 text-right font-semibold">Dwelling / improvements</th>
             <th class="px-3 py-2 text-right font-semibold">Outbuilding</th>
             <th class="px-3 py-2 text-right font-semibold">Taxable value</th>
-            <th class="px-3 py-2 text-right font-semibold">Taxes paid</th>
+            <th class="px-3 py-2 text-right font-semibold">Net tax</th>
+            <th class="px-3 py-2 text-right font-semibold">Paid</th>
+            <th class="px-3 py-2 text-right font-semibold">Balance</th>
           </tr>
         </thead>
 
         <tbody class="divide-y divide-slate-200 bg-white">
-          ${valueRows.map((row, index) => {
-            const recordRow = recordByYear.get(row.year);
-            const taxRow = taxByYear.get(row.year);
-            const taxableValue = row.total === null || row.total === undefined ? null : recordRow?.taxable ?? row.total;
-            const taxesPaid = taxRow?.taxes ?? recordRow?.totalTax;
-
-            return `
+          ${rows.map((row, index) => `
               <tr class="${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
                 <td class="px-3 py-2 font-medium">${row.year}</td>
-                <td class="px-3 py-2 text-right font-semibold">${formatNullableMoney(row.total)}</td>
+                <td class="px-3 py-2 text-right font-semibold">${formatNullableMoney(row.totalAssessed)}</td>
                 <td class="px-3 py-2 text-right">${formatNullableMoney(row.land)}</td>
                 <td class="px-3 py-2 text-right">${formatNullableMoney(row.dwelling)}</td>
                 <td class="px-3 py-2 text-right">${formatNullableMoney(row.outbuilding)}</td>
-                <td class="px-3 py-2 text-right">${formatNullableMoney(taxableValue)}</td>
-                <td class="px-3 py-2 text-right">${taxesPaid === null || taxesPaid === undefined ? "Pending" : formatNullableMoney(taxesPaid, true)}</td>
+                <td class="px-3 py-2 text-right">${formatNullableMoney(row.taxableValue)}</td>
+                <td class="px-3 py-2 text-right">${formatNullableMoney(row.netTax, true)}</td>
+                <td class="px-3 py-2 text-right">${formatNullableMoney(row.totalPaid, true)}</td>
+                <td class="px-3 py-2 text-right">${formatNullableMoney(row.taxDue, true)}</td>
               </tr>
-            `;
-          }).join("")}
+          `).join("")}
         </tbody>
       </table>
       <p class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">
-        Value components come from the assessment model. Taxable value and taxes use the record-card history where available, with finalized tax history filling the current guided view.
+        Value components come from the assessment source where available. Net tax, payment, and balance columns come from tax statements where available, so older tax-only years intentionally leave assessor-value detail blank.
       </p>
     `
   );
@@ -1632,12 +1746,23 @@ function landInformation(data, recordCard) {
   const landModel = recordCard?.landModel;
   const locationModel = recordCard?.locationModel;
 
+  const rowSquareFeet = row => {
+    if (row.squareFeet !== null && row.squareFeet !== undefined) return Number(row.squareFeet) || 0;
+    if (row.acres !== null && row.acres !== undefined) return (Number(row.acres) || 0) * 43560;
+    return 0;
+  };
+
   const totalSquareFeet = rows.reduce(
-    (sum, row) => sum + (Number(row.squareFeet) || 0),
+    (sum, row) => sum + rowSquareFeet(row),
     0
   );
 
   const totalAcres = totalSquareFeet / 43560;
+  const areaLabel = row => {
+    if (row.acres !== null && row.acres !== undefined) return `${Number(row.acres).toLocaleString()} ac.`;
+    if (row.squareFeet !== null && row.squareFeet !== undefined) return `${Number(row.squareFeet).toLocaleString()} sq. ft.`;
+    return "Area not listed";
+  };
 
   return disclosure("How is the land described?", meta, `
     ${landModel && locationModel ? `
@@ -1647,7 +1772,7 @@ function landInformation(data, recordCard) {
           ["Valuation group", locationModel.valuationGroup],
           ["Model / method", `${locationModel.model} / ${locationModel.method}`],
           ["Land model", landModel.description],
-          ["Model lot size", `${Number(landModel.lotSize).toLocaleString()} sq. ft.`],
+          ["Model lot size", landModel.lotSize ? `${Number(landModel.lotSize).toLocaleString()} sq. ft.` : null],
           ["Recorded lot value", formatNullableMoney(landModel.recordedLotValue)]
         ].map(([label, value]) => `
           <div>
@@ -1671,9 +1796,9 @@ function landInformation(data, recordCard) {
         ${rows.map(row => `
           <tr>
             <td class="px-3 py-2 font-medium">${row.description}</td>
-            <td class="px-3 py-2 text-right">${row.widthFeet} ft.</td>
-            <td class="px-3 py-2 text-right">${row.depthFeet} ft.</td>
-            <td class="px-3 py-2 text-right">${Number(row.squareFeet).toLocaleString()} sq. ft.</td>
+            <td class="px-3 py-2 text-right">${row.widthFeet !== null && row.widthFeet !== undefined ? `${row.widthFeet} ft.` : "—"}</td>
+            <td class="px-3 py-2 text-right">${row.depthFeet !== null && row.depthFeet !== undefined ? `${row.depthFeet} ft.` : "—"}</td>
+            <td class="px-3 py-2 text-right">${areaLabel(row)}</td>
           </tr>
         `).join("")}
 
@@ -1703,8 +1828,56 @@ function landInformation(data, recordCard) {
   `);
 }
 
+function hasMarshallSwiftCostDetail(cost) {
+  return Boolean(
+    cost
+    && cost.available !== false
+    && cost.adjustments
+    && cost.adjustedCost !== null
+    && cost.adjustedCost !== undefined
+    && cost.rcnld !== null
+    && cost.rcnld !== undefined
+  );
+}
+
+function sourceExtractDetails(recordCard) {
+  const sections = recordCard?.sourceExtract?.sections || [];
+  if (!sections.length) return "";
+
+  const meta = sections.length === 1 ? "1 source table" : `${sections.length} source tables`;
+  const cellValue = value => value === null || value === undefined || value === "" ? "—" : escapeHtml(value);
+
+  return disclosure("What details were available from the source export?", meta, `
+    <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+      ${escapeHtml(recordCard.sourceExtract.note || "These are the structured facts visible in the source export. Fields not included by the source are left unavailable rather than inferred.")}
+    </div>
+    <div class="grid gap-4 border-t border-slate-200 p-3">
+      ${sections.map(section => `
+        <section>
+          <div class="mb-2 flex items-center justify-between gap-3">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(section.title)}</p>
+            ${section.summary ? `<p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">${escapeHtml(section.summary)}</p>` : ""}
+          </div>
+          <div class="table-clip ring-1 ring-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+              <thead class="bg-slate-50">
+                <tr>${section.columns.map(column => `<th class="px-3 py-2 text-left font-semibold">${escapeHtml(column)}</th>`).join("")}</tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
+                ${section.rows.map(row => `
+                  <tr>${row.map(value => `<td class="px-3 py-2">${cellValue(value)}</td>`).join("")}</tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      `).join("")}
+    </div>
+  `);
+}
+
 function technicalCostModel(recordCard, data) {
-  if (!recordCard?.costApproach) return "";
+  if (!hasMarshallSwiftCostDetail(recordCard?.costApproach)) return "";
 
   const cost = recordCard.costApproach;
   const noticeValues = valuationNoticeValues(data, recordCard).current;
@@ -2404,7 +2577,7 @@ function renderTaxHistoryTable(data) {
   const sourceNote = document.getElementById("taxHistorySourceNote");
   if (sourceNote) {
     const notes = [
-      "Source: finalized Gage County property tax statements and MIPS record-card tax history; the tax-bill pattern chart uses the same statement years."
+      "Source: loaded property tax statements and record-card tax history; the tax-bill pattern chart uses the same statement years."
     ];
 
     if (inferredRows.length) {

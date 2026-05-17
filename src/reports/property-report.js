@@ -87,7 +87,7 @@ function improvementRows(recordCard) {
 function valueRows(data, recordCard) {
   const previous = recordCard?.currentCardValue?.previous;
   const current = recordCard?.currentCardValue?.current ?? recordCard?.propertyValuation;
-  const currentYear = data.latestFinalTaxYear ?? data.snapshotYear;
+  const currentYear = data.snapshotYear ?? data.latestFinalTaxYear;
   const previousYear = currentYear - 1;
 
   return [
