@@ -186,6 +186,7 @@ function renderValueTaxHistoryShell() {
             <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
             <p class="mt-1 text-sm text-slate-600">
                 Compare assessed value, net tax, and effective tax rate (ETR) year by year.
+                A straight value-by-levy calculation is gross tax; credits reduce that to net tax, and ETR divides the net tax back against assessed value.
                 The table keeps tax statement amounts separate from any payment balance shown in the source statement.
             </p>
             <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
