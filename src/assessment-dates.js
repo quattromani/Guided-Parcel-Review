@@ -65,6 +65,11 @@ const MAJOR_PROCESS_TYPES = new Set([
   "treasurer"
 ]);
 
+function closestElement(target, selector) {
+  if (target instanceof Element) return target.closest(selector);
+  return target?.parentElement?.closest(selector) ?? null;
+}
+
 export function initAssessmentDatesPanel(calendarData = {}) {
   const modal = document.getElementById("assessmentDatesPanel");
   const content = document.getElementById("assessmentDatesContent");
@@ -130,7 +135,7 @@ export function initAssessmentDatesPanel(calendarData = {}) {
   });
 
   document.addEventListener("click", event => {
-    const trigger = event.target.closest?.("[data-assessment-dates-open]");
+    const trigger = closestElement(event.target, "[data-assessment-dates-open]");
     if (!trigger) return;
 
     event.preventDefault();

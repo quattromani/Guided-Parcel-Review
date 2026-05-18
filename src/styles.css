@@ -499,12 +499,18 @@ body.property-switcher-guidance-active .property-switcher-empty .property-switch
 .app-modal-backdrop,
 .image-modal-backdrop {
   align-items: center;
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   inset: 0;
   justify-content: center;
   padding: 1rem;
   position: fixed;
   z-index: 50;
+}
+
+.app-modal-backdrop:not(.hidden),
+.image-modal-backdrop:not(.hidden) {
+  display: flex;
 }
 
 .app-modal-backdrop {
