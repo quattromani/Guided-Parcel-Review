@@ -3061,6 +3061,23 @@ function latestRow(rows) {
   return rows?.length ? rows.slice().sort((a, b) => a.year - b.year).at(-1) : null;
 }
 
+function yearRangeLabel(rows) {
+  const years = [...new Set((rows || [])
+    .map(row => Number(row?.year))
+    .filter(year => Number.isFinite(year)))]
+    .sort((a, b) => a - b);
+
+  if (!years.length) return "available years";
+  if (years.length === 1) return `${years[0]}`;
+
+  return `${years[0]} - ${years.at(-1)}`;
+}
+
+function setText(id, text) {
+  const element = document.getElementById(id);
+  if (element) element.textContent = text;
+}
+
 function pressureIndex(rows, statewideRows) {
   const row = latestRow(rows);
   const stateRow = latestRow(statewideRows);
@@ -3240,9 +3257,11 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
   const hasRateLegend = renderCustomLegend("countyComparisonRateChartLegend", rateDatasets);
   const indexedPendingColumns = pendingColumnsForChartDatasets(years, indexedDatasets);
   const ratePendingColumns = pendingColumnsForChartDatasets(years, rateDatasets);
+  const comparisonRange = yearRangeLabel(primaryRows);
 
-  document.getElementById("countyComparisonIndexedNote").textContent = `${primaryLabel} is compared with ${comparisonLabel}, indexed to ${years[0]}.`;
-  document.getElementById("countyComparisonRateNote").textContent = `${primaryLabel} and ${comparisonLabel} average CTL tax rates.`;
+  setText("countyComparisonRangeIntro", `This comparison covers the ${comparisonRange} assessment-year range shown in the charts below. It starts with a simple rate baseline: Nebraska equals 100. A county above 100 has a higher average tax rate than the statewide average; below 100 is lower. Certified values, taxes levied, and average tax rate give the rest of the context.`);
+  setText("countyComparisonIndexedNote", `${primaryLabel} is compared with ${comparisonLabel}, indexed to ${years[0]}.`);
+  setText("countyComparisonRateNote", `${primaryLabel} and ${comparisonLabel} average CTL tax rates.`);
   renderCountyComparisonSummary(primaryRows, comparisonRows, statewideRows, primaryLabel, comparisonLabel);
 
   countyComparisonIndexedChart?.destroy();
@@ -3337,6 +3356,10 @@ export function buildCtlSummary(data, ctlData) {
   const stateRows = ctlData.statewide.slice().sort((a, b) => a.year - b.year);
 
   const countySummary = document.getElementById("countyCtlSummary");
+  const countyRange = yearRangeLabel(countyRows);
+  setText("countyCtlSummaryIntro", `Certified values and taxes levied from ${countyRange} show the broader value base and the public obligations distributed across it before the parcel-level tax step.`);
+  setText("countyIndexedRangeNote", `The chart and table below cover ${countyRange}. Values and taxes are indexed to the same starting point so their movement can be compared over time.`);
+
   if (countySummary) {
     const valueGrowth = formatChange(indexChange(countyRows, "totalValue"));
     const taxGrowth = formatChange(indexChange(countyRows, "taxesLevied"));

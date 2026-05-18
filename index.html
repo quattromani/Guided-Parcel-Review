@@ -261,12 +261,12 @@
       <article id="county-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <p class="guided-kicker">County Summary</p>
         <h2 class="mt-1 text-xl font-bold text-slate-700">What is the countywide baseline?</h2>
-        <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.</p>
+        <p id="countyCtlSummaryIntro" class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.</p>
         <div id="countyCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
         <section class="county-chart-pair related-panel-section grid gap-6 lg:grid-cols-5" aria-label="County value and tax charts">
           <section id="county-indexed" class="lg:col-span-3">
             <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
-            <p class="mt-1 text-sm text-slate-600">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>
+            <p id="countyIndexedRangeNote" class="mt-1 text-sm text-slate-600">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>
             <div id="countyIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
             <div class="mt-4 h-72">
               <canvas id="countyIndexedChart"></canvas>
@@ -316,8 +316,8 @@
           <div>
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County Comparison</p>
             <h2 id="countyComparisonTitle" class="mt-1 text-2xl font-bold text-slate-700">How does this county compare?</h2>
-            <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-              This comparison covers the 2019-2026 assessment-year range shown in the charts below. It starts with a simple rate baseline: Nebraska equals 100. A county above 100 has a higher average tax rate than the statewide average; below 100 is lower. Certified values, taxes levied, and average tax rate give the rest of the context.
+            <p id="countyComparisonRangeIntro" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              This comparison uses the assessment-year range shown in the charts below. It starts with a simple rate baseline: Nebraska equals 100. A county above 100 has a higher average tax rate than the statewide average; below 100 is lower. Certified values, taxes levied, and average tax rate give the rest of the context.
             </p>
           </div>
           <div class="grid gap-2 text-sm sm:min-w-80">
