@@ -710,6 +710,16 @@ table thead th[class] + th[class] {
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
 }
 
+.details-card dt {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.details-card dd {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
 .details-card-address-line {
   display: block;
 }
@@ -729,6 +739,30 @@ table thead th[class] + th[class] {
 
   #propertyDetails .details-card-full {
     grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1023px) {
+  #propertyDetails .metric-pair-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 340px) {
+  #propertyDetails .metric-pair-card {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.65rem;
+  }
+
+  #propertyDetails .metric-pair-card > div:first-child {
+    padding-right: 0;
+  }
+
+  #propertyDetails .metric-pair-card > div + div {
+    border-left: 0;
+    border-top: 1px solid rgb(var(--border-muted));
+    padding-left: 0;
+    padding-top: 0.65rem;
   }
 }
 
@@ -2150,6 +2184,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .guided-step {
     gap: 0.22rem;
     min-height: 2.45rem;
+    width: 100%;
   }
 
   .guided-step-marker {
@@ -2157,12 +2192,20 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   }
 
   .guided-path-track {
+    overflow-x: clip;
     padding-bottom: 0.1rem;
   }
 
+  .guided-step::after {
+    width: calc(100% - var(--guided-step-size) - 0.44rem);
+  }
+
   #guidedPathTabs {
-    margin-left: auto;
-    margin-right: auto;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    margin-left: 0;
+    margin-right: 0;
+    min-width: 0 !important;
+    width: 100%;
   }
 
   .guided-progress-next {
@@ -3778,7 +3821,15 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .assessment-line-legend {
   align-items: center;
+  display: grid !important;
+  gap: 0.5rem 1.35rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.75rem), max-content));
+  justify-content: center;
+  justify-items: start;
+  margin-left: auto;
+  margin-right: auto;
   min-width: 0;
+  text-align: left;
 }
 
 .assessment-line-legend-item {
@@ -3787,7 +3838,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   gap: 0.45rem;
   font-weight: 700;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
 }
 
 .assessment-line-legend-swatch {
@@ -4057,14 +4108,25 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .chart-disc-legend {
   align-items: center;
+  display: grid !important;
+  gap: 0.5rem 1.35rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), max-content));
+  justify-content: center;
+  justify-items: start;
+  margin-left: auto;
+  margin-right: auto;
   max-width: 100%;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  text-align: left;
 }
 
 .chart-disc-legend > * {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.5rem;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
 }
 
 .chart-legend-dot {
@@ -4080,6 +4142,24 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .distribution-chart-shell {
   min-width: 0;
+}
+
+.distribution-chart-panel {
+  align-content: start;
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.distribution-chart-title {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .distribution-note-card {
@@ -4113,11 +4193,11 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   white-space: nowrap;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .tax-distribution-visual-grid {
     align-items: start;
     gap: 0.75rem;
-    grid-template-columns: minmax(0, 0.98fr) minmax(8.5rem, 1.02fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   #distributionNotes {
@@ -4164,9 +4244,20 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     margin-top: 0.12rem;
   }
 
+  .distribution-chart-panel {
+    margin-top: 0.45rem;
+  }
+
   .distribution-chart-shell {
-    height: min(52vw, 13rem) !important;
-    justify-self: stretch;
+    height: clamp(13rem, 54vw, 18rem) !important;
+    justify-self: center;
+    width: min(100%, 24rem);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  #distributionNotes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -4178,6 +4269,16 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .distribution-chart-shell {
     justify-self: end;
     width: min(100%, 24rem);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tax-distribution-visual-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .distribution-chart-shell {
+    justify-self: center;
   }
 }
 
@@ -4227,6 +4328,18 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     padding-left: 1rem;
     padding-right: 1rem;
     padding-bottom: 1rem;
+  }
+
+  .mobile-review-canvas .guided-transition {
+    color: white;
+  }
+
+  .mobile-review-canvas .guided-transition::before {
+    background: rgb(255 255 255 / 0.42);
+  }
+
+  .mobile-review-canvas .guided-transition p {
+    color: white;
   }
 
   .page-title-nowrap {
@@ -4503,6 +4616,20 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   border-spacing: 0;
 }
 
+.tax-burden-table :is(th, td) {
+  overflow-wrap: normal;
+  white-space: nowrap;
+}
+
+.tax-burden-table :is(th, td):first-child {
+  min-width: 3.4rem;
+  white-space: normal;
+}
+
+.tax-burden-table :is(th, td):last-child {
+  min-width: 3.6rem;
+}
+
 .value-tax-history-table {
   border-collapse: separate;
   border-spacing: 0;
@@ -4531,6 +4658,27 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .value-tax-history-table .history-heat-cell + .history-heat-cell {
   box-shadow: inset 1px 0 0 rgb(var(--color-blue) / 0.05);
+}
+
+@media (max-width: 640px) {
+  .tax-history-detail-panel > .overflow-x-auto:has(.tax-burden-table) {
+    border-left: 0;
+    border-radius: 0;
+    border-right: 0;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    max-width: none;
+    width: calc(100% + 2rem);
+  }
+
+  .tax-burden-table {
+    min-width: 34rem !important;
+  }
+
+  .tax-burden-table :is(th, td) {
+    padding-left: 0.6rem !important;
+    padding-right: 0.6rem !important;
+  }
 }
 
 .tax-history-levy-value {

@@ -278,8 +278,11 @@ function renderTaxDistributionShell(data) {
           <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. Dollar amounts allocate the latest net bill by each group’s levy share.</p>
         <div class="tax-distribution-visual-grid mt-4 grid gap-4 md:items-center">
           <div id="distributionNotes" class="space-y-2 text-sm text-slate-700"></div>
-          <div class="distribution-chart-shell h-72 sm:h-80">
-            <canvas id="distributionChart"></canvas>
+          <div class="distribution-chart-panel" aria-labelledby="distributionChartTitle">
+            <p id="distributionChartTitle" class="distribution-chart-title">Latest levy share</p>
+            <div class="distribution-chart-shell h-72 sm:h-80">
+              <canvas id="distributionChart"></canvas>
+            </div>
           </div>
         </div>
       </article>

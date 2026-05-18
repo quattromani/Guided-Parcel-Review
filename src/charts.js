@@ -106,6 +106,42 @@ function isMobileChartViewport() {
   return window.matchMedia?.("(max-width: 640px)")?.matches ?? false;
 }
 
+function pendingColumnsForRows(rows, isPending) {
+  return (rows || [])
+    .map((row, index) => ({
+      index,
+      year: row?.year,
+      pending: Boolean(isPending(row, index))
+    }))
+    .filter(row => row.pending);
+}
+
+function pendingColumnsForDataRows(rows, keys) {
+  return pendingColumnsForRows(rows, row =>
+    keys.some(key => !hasDataValue(row?.[key]))
+  );
+}
+
+function pendingColumnsForChartDatasets(labels, datasets) {
+  return (labels || [])
+    .map((label, index) => ({
+      index,
+      year: label,
+      pending: datasets.some(dataset => {
+        const value = dataset?.data?.[index];
+        return value === null || value === undefined || Number.isNaN(Number(value));
+      })
+    }))
+    .filter(row => row.pending);
+}
+
+function pendingColumnOptions(columns) {
+  return {
+    columns,
+    showLabel: () => !isMobileChartViewport()
+  };
+}
+
 function mobileAxisTitle(text, display = true) {
   return { display, text };
 }
@@ -187,7 +223,8 @@ const indexedPendingColumnPlugin = {
   afterDatasetsDraw(chart, args, options = {}) {
     const { ctx, chartArea, scales } = chart;
     const columns = options.columns ?? [];
-    if (!chartArea || !scales.x || !columns.length || options.showLabel === false) return;
+    const showLabel = typeof options.showLabel === "function" ? options.showLabel() : options.showLabel;
+    if (!chartArea || !scales.x || !columns.length || showLabel === false) return;
 
     const labelCount = chart.data.labels?.length ?? 0;
     const label = options.label ?? "Pending";
@@ -227,18 +264,12 @@ export function buildIndexedChart(data) {
   const years = rows.map(row => row.year);
   const baseValue = usableValueRows[0]?.assessedValue;
   const baseTaxes = usableTaxRows[0]?.taxes;
-  const pendingColumns = rows
-    .map((row, index) => ({
-      index,
-      year: row.year,
-      pending: !hasDataValue(row.assessedValue) || !hasDataValue(row.taxes)
-    }))
-    .filter(row => row.pending);
+  const pendingColumns = pendingColumnsForDataRows(rows, ["assessedValue", "taxes"]);
   const isMobileChart = isMobileChartViewport();
   const indexedPendingBadge = document.getElementById("indexedPendingBadge");
 
   if (indexedPendingBadge) {
-    indexedPendingBadge.classList.toggle("hidden", !isMobileChart || pendingColumns.length === 0);
+    indexedPendingBadge.classList.add("hidden");
   }
 
   document.getElementById("baseYearNote").textContent = `Base year: ${usableValueRows[0]?.year ?? "—"}`;
@@ -285,10 +316,7 @@ export function buildIndexedChart(data) {
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
-        indexedPendingColumn: {
-          columns: pendingColumns,
-          showLabel: !isMobileChart
-        },
+        indexedPendingColumn: pendingColumnOptions(pendingColumns),
         legend: { display: !hasCustomLegend },
         tooltip: {
           callbacks: {
@@ -689,6 +717,7 @@ const assessmentEndLabelPlugin = {
   id: "assessmentEndLabels",
   afterDatasetsDraw(chart, args, options = {}) {
     if (!options.enabled) return;
+    if (isMobileChartViewport()) return;
 
     const { ctx, chartArea } = chart;
     if (!chartArea) return;
@@ -1212,7 +1241,7 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
       interaction: { mode: "index", intersect: false },
       layout: {
         padding: {
-          right: isMobileChart ? 34 : 48
+          right: isMobileChart ? 8 : 48
         }
       },
       plugins: {
@@ -1242,8 +1271,8 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
         },
         assessmentEndLabels: {
           enabled: true,
-          offsetX: isMobileChart ? 5 : 9,
-          maxRightInset: isMobileChart ? 34 : 40
+          offsetX: 9,
+          maxRightInset: 40
         }
       },
       scales: {
@@ -2710,40 +2739,44 @@ function buildIndexedOverviewChart(canvasId, data, labels, valueFactor, taxFacto
     assessedValue: hasDataValue(row.assessedValue) ? row.assessedValue * valueFactor : null,
     taxes: hasDataValue(row.taxes) ? row.taxes * taxFactor : null
   }));
+  const datasets = [
+    {
+      label: labels.value,
+      tooltipValues: formattedTooltipValues(contextualRows, "assessedValue", wholeMoney),
+      data: series.valueIndex,
+      tension: 0.25,
+      borderWidth: 3,
+      borderColor: chartColors.contextValue,
+      backgroundColor: semanticChartColors.valueBg,
+      spanGaps: true
+    },
+    {
+      label: labels.tax,
+      tooltipValues: formattedTooltipValues(contextualRows, "taxes", moneyCents),
+      data: series.taxIndex,
+      tension: 0.25,
+      borderWidth: 3,
+      borderColor: chartColors.contextTax,
+      backgroundColor: semanticChartColors.taxBg,
+      spanGaps: true
+    },
+    ...propertyIndexedDatasets(propertyRows, series.years)
+  ];
+  const pendingColumns = pendingColumnsForDataRows(contextualRows, ["assessedValue", "taxes"]);
 
   new Chart(canvas, {
     type: "line",
+    plugins: [indexedPendingColumnPlugin],
     data: {
       labels: series.years,
-      datasets: [
-        {
-          label: labels.value,
-          tooltipValues: formattedTooltipValues(contextualRows, "assessedValue", wholeMoney),
-          data: series.valueIndex,
-          tension: 0.25,
-          borderWidth: 3,
-          borderColor: chartColors.contextValue,
-          backgroundColor: semanticChartColors.valueBg,
-          spanGaps: true
-        },
-        {
-          label: labels.tax,
-          tooltipValues: formattedTooltipValues(contextualRows, "taxes", moneyCents),
-          data: series.taxIndex,
-          tension: 0.25,
-          borderWidth: 3,
-          borderColor: chartColors.contextTax,
-          backgroundColor: semanticChartColors.taxBg,
-          spanGaps: true
-        },
-        ...propertyIndexedDatasets(propertyRows, series.years)
-      ]
+      datasets
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
+        indexedPendingColumn: pendingColumnOptions(pendingColumns),
         legend: {
           labels: {
             boxWidth: 34,
@@ -2801,10 +2834,12 @@ function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palett
     },
     ...propertyIndexedDatasets(propertyRows, years, palette)
   ];
+  const pendingColumns = pendingColumnsForChartDatasets(years, datasets);
   const hasCustomLegend = renderCustomLegend(`${canvasId}Legend`, datasets);
 
   new Chart(canvas, {
     type: "line",
+    plugins: [indexedPendingColumnPlugin],
     data: {
       labels: years,
       datasets
@@ -2814,6 +2849,7 @@ function buildCertifiedIndexedChart(canvasId, rows, labels, propertyRows, palett
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
+        indexedPendingColumn: pendingColumnOptions(pendingColumns),
         legend: {
           display: !hasCustomLegend,
           labels: {
@@ -2846,9 +2882,11 @@ export function buildEtrChart(data) {
     const etr = calculateEtr(row);
     return etr === null ? null : etr * 100;
   });
+  const pendingColumns = pendingColumnsForRows(rows, row => calculateEtr(row) === null);
 
   new Chart(document.getElementById("etrChart"), {
     type: "line",
+    plugins: [indexedPendingColumnPlugin],
     data: {
       labels: years,
       datasets: [
@@ -2868,6 +2906,7 @@ export function buildEtrChart(data) {
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
+        indexedPendingColumn: pendingColumnOptions(pendingColumns),
         tooltip: {
           callbacks: {
             label: context => context.parsed.y === null ? "ETR: Pending" : `ETR: ${formatApproximateRatePercent(context.parsed.y)}`
@@ -2896,9 +2935,11 @@ function buildEtrOverviewChart(canvasId, data, label, factor) {
     const etr = calculateEtr(row);
     return etr === null ? null : etr * 100 * factor;
   });
+  const pendingColumns = pendingColumnsForRows(propertyRows, row => calculateEtr(row) === null);
 
   new Chart(canvas, {
     type: "line",
+    plugins: [indexedPendingColumnPlugin],
     data: {
       labels: years,
       datasets: [
@@ -2918,6 +2959,9 @@ function buildEtrOverviewChart(canvasId, data, label, factor) {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
+      plugins: {
+        indexedPendingColumn: pendingColumnOptions(pendingColumns)
+      },
       scales: {
         y: {
           title: mobileAxisTitle("Effective tax rate"),
@@ -2948,10 +2992,12 @@ function buildCertifiedRateChart(canvasId, rows, label, propertyRows, palette = 
     },
     propertyRateDataset(propertyRows, years, palette)
   ];
+  const pendingColumns = pendingColumnsForChartDatasets(years, datasets);
   const hasCustomLegend = renderCustomLegend(`${canvasId}Legend`, datasets);
 
   new Chart(canvas, {
     type: "line",
+    plugins: [indexedPendingColumnPlugin],
     data: {
       labels: years,
       datasets
@@ -2961,6 +3007,7 @@ function buildCertifiedRateChart(canvasId, rows, label, propertyRows, palette = 
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
+        indexedPendingColumn: pendingColumnOptions(pendingColumns),
         legend: { display: !hasCustomLegend }
       },
       scales: {
@@ -3210,6 +3257,8 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
   ];
   const hasIndexedLegend = renderCustomLegend("countyComparisonIndexedChartLegend", indexedDatasets);
   const hasRateLegend = renderCustomLegend("countyComparisonRateChartLegend", rateDatasets);
+  const indexedPendingColumns = pendingColumnsForChartDatasets(years, indexedDatasets);
+  const ratePendingColumns = pendingColumnsForChartDatasets(years, rateDatasets);
 
   document.getElementById("countyComparisonIndexedNote").textContent = `${primaryLabel} is compared with ${comparisonLabel}, indexed to ${years[0]}.`;
   document.getElementById("countyComparisonRateNote").textContent = `${primaryLabel} and ${comparisonLabel} average CTL tax rates.`;
@@ -3218,6 +3267,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
   countyComparisonIndexedChart?.destroy();
   countyComparisonIndexedChart = new Chart(document.getElementById("countyComparisonIndexedChart"), {
     type: "line",
+    plugins: [indexedPendingColumnPlugin],
     data: {
       labels: years,
       datasets: indexedDatasets
@@ -3227,6 +3277,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
+        indexedPendingColumn: pendingColumnOptions(indexedPendingColumns),
         legend: { display: !hasIndexedLegend },
         tooltip: {
           callbacks: {
@@ -3247,6 +3298,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
   countyComparisonRateChart?.destroy();
   countyComparisonRateChart = new Chart(document.getElementById("countyComparisonRateChart"), {
     type: "line",
+    plugins: [indexedPendingColumnPlugin],
     data: {
       labels: years,
       datasets: rateDatasets
@@ -3256,6 +3308,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
+        indexedPendingColumn: pendingColumnOptions(ratePendingColumns),
         legend: { display: !hasRateLegend }
       },
       scales: {
