@@ -12,17 +12,10 @@ import {
   getParcelMarketGroupId
 } from "../market-stats.js";
 import { initPropertyReportExport } from "../reports/property-report.js";
+import { compactParts, formatSquareFeet } from "../utils/display.js";
+import { escapeHtml } from "../utils/html.js";
 
 const integer = new Intl.NumberFormat("en-US");
-
-function escapeHtml(value) {
-  return `${value ?? ""}`
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
 
 function displayMoneyWithFallback(value, fallbackValue, fallbackYear, options = {}) {
   if (value !== null && value !== undefined) return money.format(value);
@@ -77,20 +70,12 @@ function renderSignal(signal) {
   `;
 }
 
-function formatSquareFeet(value) {
-  return hasValue(value) ? `${integer.format(value)} sq. ft.` : null;
-}
-
 function formatRatio(value) {
   return hasValue(value) ? `${Number(value).toFixed(2)}%` : "not listed";
 }
 
 function itemCountLabel(count, singular, plural = `${singular}s`) {
   return `${integer.format(count)} ${count === 1 ? singular : plural}`;
-}
-
-function compactParts(parts) {
-  return parts.filter(Boolean).join("; ");
 }
 
 function selectedMarketArea(data, recordCard, context = {}) {
@@ -185,7 +170,7 @@ function buildFinalReviewModel(data, context = {}) {
   const marketAreaSummary = selectedMarketArea(data, context.recordCard, context);
   const marketArea = marketAreaSummary.marketArea;
   const propertyDetails = compactParts([
-    formatSquareFeet(residential.buildingSize),
+    formatSquareFeet(residential.buildingSize, { fallback: null }),
     [residential.quality, residential.condition].filter(Boolean).join(" / ") || null,
     notice.taxDistrict ? `tax district ${notice.taxDistrict}` : null
   ]);

@@ -1,9 +1,10 @@
 import { calculateEtr, formatNullableMoney, formatNullablePercent, moneyCents } from "../format.js";
-import { sortHistoryAscending } from "../calculations/history.js";
+import { latestKnown, percentChange, previousKnown, sortHistoryAscending } from "../calculations/history.js";
 import {
   displayAddress,
   displayMailingAddress
 } from "../utils/address.js";
+import { compactParts, displayValue, fileSafe, formatSquareFeet } from "../utils/display.js";
 import {
   addReportPage,
   createReportContext,
@@ -20,46 +21,6 @@ import {
 } from "./pdf-report-kit.js";
 
 const integer = new Intl.NumberFormat("en-US");
-
-function displayValue(value) {
-  if (value === null || value === undefined || value === "") return "Not listed";
-  return value;
-}
-
-function formatSquareFeet(value) {
-  if (value === null || value === undefined || value === "") return "Not listed";
-  return `${integer.format(Number(value))} sq. ft.`;
-}
-
-function compactParts(parts, separator = " \u00b7 ") {
-  return parts.filter(Boolean).join(separator);
-}
-
-function fileSafe(value) {
-  return `${value ?? "property"}`
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
-
-function latestKnown(rows, key) {
-  return (rows || [])
-    .filter(row => row?.[key] !== null && row?.[key] !== undefined)
-    .slice()
-    .sort((a, b) => b.year - a.year)[0] ?? null;
-}
-
-function previousKnown(rows, latestYear, key) {
-  return (rows || [])
-    .filter(row => row.year < latestYear && row?.[key] !== null && row?.[key] !== undefined)
-    .slice()
-    .sort((a, b) => b.year - a.year)[0] ?? null;
-}
-
-function percentChange(current, previous) {
-  if (!current || !previous) return null;
-  return (current - previous) / previous;
-}
 
 function valuationGroupLabel(recordCard) {
   return `${recordCard?.locationModel?.valuationGroup ?? ""}`.trim().replace(/^\d+\s*(?:-|\u2013)\s*/, "") || "Not listed";
@@ -268,7 +229,7 @@ function drawRecordPage(ctx, model) {
     model.identity.propertyClass,
     model.identity.location,
     model.identity.valuationGroup
-  ]), ctx.margin + 12, top - 36, { size: 9, color: ctx.palette.muted });
+  ], " \u00b7 "), ctx.margin + 12, top - 36, { size: 9, color: ctx.palette.muted });
   drawWrappedText(ctx, model.identity.owner, ctx.width - ctx.margin - 242, top - 18, 230, {
     size: 8.6,
     bold: true,

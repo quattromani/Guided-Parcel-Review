@@ -8,6 +8,7 @@ import {
   sumRates
 } from "./format.js";
 import {
+  hasValue,
   latestKnown,
   percentChange,
   sortHistoryAscending
@@ -39,6 +40,7 @@ import {
   drawVerticalRule,
   drawWrappedText
 } from "./reports/pdf-report-kit.js";
+import { displayValue, fileSafe, hasDisplayValue } from "./utils/display.js";
 
 export function initAssessorsReport({
   data,
@@ -330,8 +332,8 @@ function drawAssessorEqualizationPage(ctx, model) {
     { key: "county", label: "County / class", width: 1.15 }
   ], equalization.marketComparisonRows.map(row => ({
     metric: row[0],
-    subject: displayValue(row[1]),
-    county: displayValue(row[2])
+    subject: displayValue(row[1], { fallback: "-" }),
+    county: displayValue(row[2], { fallback: "-" })
   })).slice(0, 8), tableX, top - 20, tableW, { rowHeight: 16, fontSize: 6.9 });
 
   const lowerTop = 226;
@@ -1059,13 +1061,6 @@ function formatDateTime(value) {
   }).format(value);
 }
 
-function fileSafe(value) {
-  return `${value ?? "property"}`
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
-
 function signedMoney(value) {
   if (!hasValue(value)) return "-";
   if (Number(value) === 0) return formatNullableMoney(0);
@@ -1123,22 +1118,6 @@ function titleCase(value) {
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, character => character.toUpperCase())
     .trim();
-}
-
-function hasValue(value) {
-  return value !== null && value !== undefined && value !== "";
-}
-
-function hasDisplayValue(value) {
-  if (Array.isArray(value)) return value.length > 0;
-  return hasValue(value);
-}
-
-function displayValue(value) {
-  if (!hasDisplayValue(value)) return "-";
-  if (typeof value === "number") return Number.isInteger(value) ? value.toLocaleString() : String(value);
-
-  return String(value);
 }
 
 // TODO: Capture rendered Chart.js canvases as print-safe image snapshots when the report needs visual chart parity with the dashboard.

@@ -17,6 +17,7 @@ import {
 } from "./market-stats.js";
 import { getMetricSignal } from "./metric-signals.js";
 import { sortHistoryAscending } from "./calculations/history.js";
+import { escapeHtml } from "./utils/html.js";
 
 export { initDemographicsView } from "./charts/demographics.js";
 
@@ -72,15 +73,6 @@ const moneyCents = new Intl.NumberFormat("en-US", {
 
 function hasDataValue(value) {
   return value !== null && value !== undefined;
-}
-
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }
 
 function formattedTooltipValues(rows, key, formatter, factor = 1) {
@@ -3082,13 +3074,6 @@ function formatPressureIndex(value) {
   return integer.format(value);
 }
 
-function pressureTone(value) {
-  if (value === null || value === undefined) return "neutral";
-  if (value >= 105) return "high";
-  if (value <= 95) return "low";
-  return "neutral";
-}
-
 function pressureNote(value) {
   if (value === null || value === undefined) return "Nebraska's average tax rate is indexed to 100.";
   const delta = value - 100;
@@ -3151,8 +3136,7 @@ function renderCountyComparisonSummary(primaryRows, comparisonRows, statewideRow
       key: "state-pressure",
       label: `${comparisonLabel} average rate comparison`,
       value: formatPressureIndex(comparisonPressure),
-      note: comparisonLabel === "Statewide" ? "Nebraska's average tax rate is indexed to 100." : pressureNote(comparisonPressure),
-      tone: comparisonLabel === "Statewide" ? "neutral" : pressureTone(comparisonPressure)
+      note: comparisonLabel === "Statewide" ? "Nebraska's average tax rate is indexed to 100." : pressureNote(comparisonPressure)
     },
     {
       key: "county-growth",
@@ -3164,13 +3148,12 @@ function renderCountyComparisonSummary(primaryRows, comparisonRows, statewideRow
       key: "county-pressure",
       label: `${primaryLabel} average rate comparison`,
       value: formatPressureIndex(primaryPressure),
-      note: pressureNote(primaryPressure),
-      tone: pressureTone(primaryPressure)
+      note: pressureNote(primaryPressure)
     }
   ];
 
   container.innerHTML = cards.map(card => `
-    <div class="pressure-card pressure-card-${card.tone ?? "neutral"} county-comparison-card county-comparison-card-${card.key}">
+    <div class="pressure-card county-comparison-card county-comparison-card-${card.key}">
       <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${card.label}</p>
       <p class="mt-1 text-lg font-bold text-slate-700">${card.value}</p>
       <p class="mt-1 text-xs leading-5 text-slate-600">${card.note}</p>

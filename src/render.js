@@ -27,6 +27,7 @@ import {
   getParcelMarketGroupId
 } from "./market-stats.js";
 import { displayAddress } from "./utils/address.js";
+import { displayValue, formatSquareFeet } from "./utils/display.js";
 import { escapeHtml } from "./utils/html.js";
 
 const recordReviewStatuses = [
@@ -1097,15 +1098,6 @@ function reportErrorLink(data, recordCard) {
 
 function formSafeId(value) {
   return `${value}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-}
-
-function displayValue(value) {
-  if (value === null || value === undefined || value === "") return "Not listed";
-  return value;
-}
-
-function formatSquareFeet(value) {
-  return value === null || value === undefined ? "Not listed" : `${Number(value).toLocaleString()} sq. ft.`;
 }
 
 function hasDetailedRecordCard(recordCard) {

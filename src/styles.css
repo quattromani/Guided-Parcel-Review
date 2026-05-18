@@ -496,6 +496,154 @@ body.property-switcher-guidance-active .property-switcher-empty .property-switch
   outline-offset: 3px;
 }
 
+.app-modal-backdrop,
+.image-modal-backdrop {
+  align-items: center;
+  backdrop-filter: blur(4px);
+  inset: 0;
+  justify-content: center;
+  padding: 1rem;
+  position: fixed;
+  z-index: 50;
+}
+
+.app-modal-backdrop {
+  background: rgb(var(--color-slate-700) / 0.70);
+}
+
+.image-modal-backdrop {
+  background: rgb(0 0 0 / 0.80);
+  padding: 1.5rem;
+}
+
+.app-modal-dialog {
+  background: white;
+  border-radius: var(--radius-container-lg);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25), inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-700));
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+  max-width: 72rem;
+  overflow: hidden;
+  width: 100%;
+}
+
+.app-modal-header {
+  align-items: flex-start;
+  border-bottom: 1px solid rgb(var(--border-muted));
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1.25rem;
+}
+
+.app-modal-close {
+  align-items: center;
+  border-radius: 999px;
+  color: rgb(var(--color-slate-500));
+  display: flex;
+  flex: 0 0 auto;
+  font-size: 1.25rem;
+  font-weight: 700;
+  height: 2.25rem;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  width: 2.25rem;
+}
+
+.app-modal-close:hover {
+  background: rgb(var(--color-slate-100));
+  color: rgb(var(--color-slate-700));
+}
+
+.app-modal-close:focus-visible,
+.image-modal-close:focus-visible,
+.image-modal-nav:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(var(--color-secondary) / 0.26);
+}
+
+.image-modal-shell {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  max-height: 95vh;
+  max-width: 95vw;
+  position: relative;
+}
+
+.image-modal-close,
+.image-modal-nav {
+  align-items: center;
+  border-radius: 999px;
+  color: rgb(var(--color-slate-700));
+  display: flex;
+  height: 2.5rem;
+  justify-content: center;
+  position: absolute;
+  transition: background-color 0.15s ease;
+  width: 2.5rem;
+  z-index: 10;
+}
+
+.image-modal-close {
+  background: white;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.18), 0 4px 6px -4px rgb(0 0 0 / 0.18);
+  font-size: 1.25rem;
+  font-weight: 700;
+  right: -0.75rem;
+  top: -0.75rem;
+}
+
+.image-modal-close:hover {
+  background: rgb(var(--color-slate-100));
+}
+
+.image-modal-stage {
+  position: relative;
+}
+
+.image-modal-nav {
+  background: rgb(255 255 255 / 0.90);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.18), 0 4px 6px -4px rgb(0 0 0 / 0.18);
+  font-size: 1.5rem;
+  font-weight: 650;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.image-modal-nav:hover {
+  background: white;
+}
+
+.image-modal-nav-previous {
+  left: 0.75rem;
+}
+
+.image-modal-nav-next {
+  right: 0.75rem;
+}
+
+.image-modal-image {
+  background: white;
+  border-radius: var(--radius-container-lg);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  max-height: 78vh;
+  max-width: 90vw;
+}
+
+.image-modal-filmstrip {
+  background: rgb(0 0 0 / 0.30);
+  border-radius: var(--radius-container-lg);
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  max-width: 90vw;
+  overflow-x: auto;
+  padding: 0.5rem;
+}
+
 @media (max-width: 720px) {
   .guided-start-grid {
     grid-template-columns: 1fr;
@@ -507,6 +655,12 @@ body.property-switcher-guidance-active .property-switcher-empty .property-switch
 
   .orientation-modal {
     max-height: calc(100vh - 2rem);
+  }
+}
+
+@media (min-width: 640px) {
+  .app-modal-backdrop {
+    padding: 1.5rem;
   }
 }
 
@@ -1135,27 +1289,25 @@ table thead th[class] + th[class] {
   }
 }
 
-.table-shell {
+.table-shell,
+.table-clip,
+.overflow-x-auto.rounded-xl:has(> table) {
   background: white;
-  border-radius: 0 0 0.75rem 0.75rem;
-  max-width: 100%;
+  contain: paint;
   overflow-x: auto;
   overflow-y: hidden;
-  contain: paint;
   overscroll-behavior-inline: contain;
+  max-width: 100%;
   -webkit-overflow-scrolling: touch;
+}
+
+.table-shell {
+  border-radius: 0 0 0.75rem 0.75rem;
 }
 
 .table-clip,
 .overflow-x-auto.rounded-xl:has(> table) {
-  background: white;
   border-radius: 0.75rem;
-  max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  contain: paint;
-  overscroll-behavior-inline: contain;
-  -webkit-overflow-scrolling: touch;
 }
 
 .table-shell table,
@@ -3743,7 +3895,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .assessment-metric-status {
   align-self: flex-start;
+  background: rgb(var(--surface-muted));
   border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
   display: inline-flex;
   font-size: 0.6875rem;
   font-weight: 800;
@@ -3754,21 +3909,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   text-transform: uppercase;
 }
 
-.assessment-metric-status-inside {
-  background: rgb(var(--surface-muted));
-  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
-  color: rgb(var(--color-slate-600));
-}
-
-.assessment-metric-status-outside {
-  background: rgb(var(--surface-muted));
-  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
-  color: rgb(var(--color-slate-600));
-}
-
 .assessment-metric-status-unknown {
-  background: rgb(var(--color-slate-50));
-  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   color: rgb(var(--color-slate-500));
 }
 
@@ -4397,6 +4538,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 @media (min-width: 1024px) and (max-width: 1180px) and (orientation: portrait) {
+  /* iPad Pro portrait reads better as stacked story sections, not compressed desktop columns. */
   #assessmentAccuracySummary {
     gap: 0.75rem;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -4434,32 +4576,26 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     padding-top: 0.55rem;
   }
 
-  .equalization-unified-section {
-    display: block !important;
-  }
-
-  .equalization-unified-section > * + * {
-    border-left: 0;
-    border-top: 1px solid rgb(var(--border-muted));
-    margin-top: 1.5rem;
-    padding-left: 0 !important;
-    padding-top: 1.5rem;
-  }
-
-  .equalization-unified-section > .equalization-year-table-panel {
-    padding-left: 0 !important;
-  }
-
+  .equalization-unified-section,
   .tax-distribution-split-view {
     display: block !important;
   }
 
+  .equalization-unified-section > * + *,
   .tax-distribution-split-view > * + * {
     border-left: 0;
     border-top: 1px solid rgb(var(--border-muted));
     margin-top: 1.5rem;
-    padding-left: 0;
     padding-top: 1.5rem;
+  }
+
+  .equalization-unified-section > * + *,
+  .equalization-unified-section > .equalization-year-table-panel {
+    padding-left: 0 !important;
+  }
+
+  .tax-distribution-split-view > * + * {
+    padding-left: 0;
   }
 }
 
@@ -4774,35 +4910,25 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
 }
 
-.pressure-card-high {
-  background: rgb(var(--surface-muted));
-  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
-}
-
-.pressure-card-low {
-  background: rgb(var(--surface-muted));
-  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
-}
-
-.pressure-card-neutral {
-  background: rgb(var(--surface-muted));
-}
-
 @media (min-width: 768px) and (max-width: 1279px) {
+  .county-comparison-card {
+    order: var(--county-comparison-tablet-order, 0);
+  }
+
   .county-comparison-card-state-growth {
-    order: 1;
+    --county-comparison-tablet-order: 1;
   }
 
   .county-comparison-card-county-growth {
-    order: 2;
+    --county-comparison-tablet-order: 2;
   }
 
   .county-comparison-card-state-pressure {
-    order: 3;
+    --county-comparison-tablet-order: 3;
   }
 
   .county-comparison-card-county-pressure {
-    order: 4;
+    --county-comparison-tablet-order: 4;
   }
 }
 
