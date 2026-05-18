@@ -28,12 +28,13 @@ function loadPdfLib() {
   return pdfLibPromise;
 }
 
-export function buildRecordCorrectionSubmission({ data, rows, formValues, selectedItems, governingOffice }) {
+export function buildRecordCorrectionSubmission({ data, formValues, selectedCategories, governingOffice }) {
   const office = governingOffice?.office ?? {};
   const contact = office.contact ?? {};
   const address = office.address ?? {};
   const hours = office.office_hours ?? {};
   const senderName = formValues.senderName || data.parcel.owner || "Not provided";
+  const categories = selectedCategories || [];
 
   return {
     title: "Property Record Correction Request",
@@ -56,8 +57,9 @@ export function buildRecordCorrectionSubmission({ data, rows, formValues, select
       phone: formValues.phone,
       preferredContactMethod: formValues.contactMethod
     },
-    selectedItems,
-    availableItemCount: rows.length,
+    selectedCategories: categories,
+    reviewCategoryCount: categories.filter(category => category.status === "may-need-review").length,
+    availableCategoryCount: 6,
     narrative: formValues.comments,
     acknowledgment: "I understand this request is for factual property record review and is not a formal valuation protest.",
     office: {
@@ -191,41 +193,34 @@ export async function generateRecordCorrectionPdf(submission) {
     });
   }
 
-  function selectedItemTable(items) {
-    if (!items.length) {
-      wrapped("No checklist rows selected; narrative provided.", MARGIN, CONTENT_WIDTH, { size: 10 });
+  function selectedCategorySummary(categories) {
+    if (!categories.length) {
+      wrapped("No review categories selected; comments provided.", MARGIN, CONTENT_WIDTH, { size: 10 });
       return;
     }
 
-    const columns = [
-      { label: "Category", x: MARGIN, width: 110 },
-      { label: "Item", x: MARGIN + 116, width: 120 },
-      { label: "Current record value", x: MARGIN + 242, width: 190 },
-      { label: "Issue", x: MARGIN + 438, width: 80 }
-    ];
-    ensureSpace(28);
-    y -= 18;
-    columns.forEach(column => text(column.label, column.x, y, { size: 8.5, bold: true, color: palette.muted }));
-    y -= 8;
-    page.drawLine({ start: { x: MARGIN, y }, end: { x: PAGE_WIDTH - MARGIN, y }, thickness: 1, color: palette.line });
+    categories.forEach(category => {
+      const exampleText = Array.isArray(category.examples) && category.examples.length
+        ? `Examples: ${category.examples.join(", ")}`
+        : "";
+      const status = category.statusLabel || "Selected";
+      const descriptionLines = lines(category.description || "", CONTENT_WIDTH - 20, 9.5, regular);
+      const exampleLines = exampleText ? lines(exampleText, CONTENT_WIDTH - 20, 8.5, regular) : [];
+      const rowHeight = 33 + descriptionLines.length * 12 + exampleLines.length * 11;
 
-    items.forEach(item => {
-      const cellLines = columns.map(column => {
-        const value = column.label === "Category" ? item.section
-          : column.label === "Item" ? item.label
-            : column.label === "Issue" ? item.issueLabel
-              : item.value;
-        return lines(value || "Not available", column.width, 8.5, regular);
-      });
-      const rowHeight = Math.max(...cellLines.map(itemLines => itemLines.length)) * 12 + 8;
       ensureSpace(rowHeight);
-      y -= 14;
-      cellLines.forEach((itemLines, cellIndex) => {
-        itemLines.forEach((line, lineIndex) => {
-          text(line, columns[cellIndex].x, y - lineIndex * 11, { size: 8.5 });
-        });
+      y -= 18;
+      text(category.title, MARGIN, y, { size: 10, bold: true, color: palette.ink });
+      text(status, PAGE_WIDTH - MARGIN - bold.widthOfTextAtSize(status, 9), y, { size: 9, bold: true, color: palette.muted });
+      y -= 13;
+      descriptionLines.forEach((line, index) => {
+        text(line, MARGIN + 10, y - index * 12, { size: 9.5, color: palette.ink });
       });
-      y -= rowHeight - 14;
+      y -= descriptionLines.length * 12;
+      exampleLines.forEach((line, index) => {
+        text(line, MARGIN + 10, y - index * 11, { size: 8.5, color: palette.muted });
+      });
+      y -= Math.max(8, exampleLines.length * 11);
       page.drawLine({ start: { x: MARGIN, y }, end: { x: PAGE_WIDTH - MARGIN, y }, thickness: 0.5, color: palette.line });
     });
   }
@@ -262,8 +257,8 @@ export async function generateRecordCorrectionPdf(submission) {
     ["Lot size", submission.parcel.lotSize]
   ]);
 
-  section("3. Requested Record Review Items");
-  selectedItemTable(submission.selectedItems);
+  section("3. Requested Record Review Categories");
+  selectedCategorySummary(submission.selectedCategories || []);
 
   section("4. Correction Narrative");
   wrapped(submission.narrative || "No additional narrative provided.", MARGIN, CONTENT_WIDTH, { size: 10, lineHeight: 14 });

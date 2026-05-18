@@ -29,14 +29,58 @@ import {
 import { displayAddress } from "./utils/address.js";
 import { escapeHtml } from "./utils/html.js";
 
-const discrepancyChoices = [
-  ["incorrect", "Incorrect"],
-  ["missing", "Missing"],
-  ["misclassified", "Misclassified"],
-  ["needs-review", "Needs review"],
-  ["other", "Other"]
+const recordReviewStatuses = [
+  ["looks-correct", "Looks correct"],
+  ["may-need-review", "May need review"]
 ];
-const discrepancyChoiceLabels = Object.fromEntries(discrepancyChoices);
+const recordReviewStatusLabels = Object.fromEntries(recordReviewStatuses);
+const recordReviewCategories = [
+  {
+    id: "ownership-mailing-details",
+    title: "Ownership & mailing details",
+    description: "Names, addresses, parcel identifiers, and other administrative details tied to the property record.",
+    examples: ["Owner name", "Mailing address", "Situs address", "Parcel ID", "Legal description", "Tax district"]
+  },
+  {
+    id: "land-site-details",
+    title: "Land & site details",
+    description: "Land size, site characteristics, zoning, and classification details that describe the parcel itself.",
+    examples: ["Acreage", "Lot or site size", "Zoning", "Land classification", "Valuation group", "Location group"]
+  },
+  {
+    id: "dwelling-main-structure",
+    title: "Dwelling / main structure",
+    description: "The main building details shown on the record, including size, age, layout, quality, and major systems.",
+    examples: ["Year built", "Style", "Square footage", "Basement", "Bedrooms and bathrooms", "Heating/cooling"]
+  },
+  {
+    id: "garages-attached-improvements",
+    title: "Garages & attached improvements",
+    description: "Attached or closely related improvements that may be listed separately from the main structure.",
+    examples: ["Garages", "Carports", "Porches", "Patios", "Attached additions"]
+  },
+  {
+    id: "outbuildings-farm-ag-structures",
+    title: "Outbuildings & farm/ag structures",
+    description: "Detached buildings and agricultural structures that may appear as separate improvement records.",
+    examples: ["Sheds", "Barns", "Bins", "Utility buildings", "Detached structures", "Farm improvements"]
+  },
+  {
+    id: "other-record-details",
+    title: "Other record details",
+    description: "Anything unusual or important that does not fit neatly into the other review areas.",
+    examples: ["Miscellaneous notes", "Unusual details", "Classification concerns", "Other record questions"]
+  }
+];
+
+const legacyRecordReviewCategorySlugPatterns = [
+  ["ownership-mailing-details", /^(parcel-id|owner|situs-address|tax-district|legal-description)$/],
+  ["land-site-details", /^(status|zoning|lot-size|location|property-class|neighborhood|location-group|valuation-group|land-\d+-description|land-\d+-dimensions)$/],
+  ["dwelling-main-structure", /^(year-built|style|building-size|basement-size|bedrooms-bathrooms|quality-condition|exterior|heating-cooling|plumbing-fixtures|minimum-finish|part-finish)$/],
+  ["garages-attached-improvements", /^(garage|garage-\d+|additional-feature-\d+)$/],
+  ["outbuildings-farm-ag-structures", /^(outbuilding-records|outbuilding-\d+)$/],
+  ["other-record-details", /^(property-note-\d+-date|property-note-\d+|property-notes)$/]
+];
 
 export function renderStartPage(propertySwitcherContext = {}) {
   renderViewHeader("start", null, propertySwitcherContext);
@@ -1119,120 +1163,58 @@ function physicalDetailsForProperty(data) {
   ];
 }
 
-function discrepancyRows(data, recordCard) {
-  const detailedRecordCard = hasDetailedRecordCard(recordCard);
-  const residential = data.residential || {};
-  const landRows = data.landInformation || [];
-  const additionalFeatureRows = data.dwellingData || [];
-  const outbuildingRows = data.outbuildingData || [];
-  const noteRows = data.propertyNotes || [];
-  const garageLines = recordCard?.garageCostLines || [];
-  const landDimensions = row => [
-    row.widthFeet !== null && row.widthFeet !== undefined ? `Width: ${row.widthFeet} ft.` : null,
-    row.depthFeet !== null && row.depthFeet !== undefined ? `Depth: ${row.depthFeet} ft.` : null,
-    row.squareFeet !== null && row.squareFeet !== undefined ? `Area: ${Number(row.squareFeet).toLocaleString()} sq. ft.` : null,
-    row.acres !== null && row.acres !== undefined ? `Area: ${Number(row.acres).toLocaleString()} ac.` : null,
-    row.value !== null && row.value !== undefined ? `Value: ${formatNullableMoney(row.value)}` : null
-  ].filter(Boolean).join(" • ");
-  const rows = [
-    ["Parcel ID", data.parcel.parcelId, "Property facts"],
-    ["Owner", data.parcel.owner, "Property facts"],
-    ["Situs address", displayAddress(data.parcel.situsAddress), "Property facts"],
-    ["Tax district", data.parcel.taxDistrict, "Property facts"],
-    ["Legal description", data.parcel.legalDescription, "Property facts"],
-    ["Status", data.classification.status, "Property facts"],
-    ["Zoning", data.classification.zoning, "Property facts"],
-    ["Lot size", data.classification.lotSize, "Property facts"],
-    ["Year built", residential.yearBuilt, "Dwelling facts"],
-    ["Style", residential.style, "Dwelling facts"],
-    ["Building size", formatSquareFeet(residential.buildingSize), "Dwelling facts"],
-    ["Basement size", formatSquareFeet(residential.basementSize), "Dwelling facts"],
-    ["Bedrooms / bathrooms", [residential.bedrooms, residential.bathrooms].every(value => value !== null && value !== undefined) ? `${residential.bedrooms} / ${residential.bathrooms}` : null, "Dwelling facts"],
-    ["Quality / condition", [residential.quality, residential.condition].filter(Boolean).join(" / "), "Dwelling facts"],
-    ["Garage", [residential.garage1, residential.garage2].filter(Boolean).join("; "), "Dwelling facts"],
-    ["Exterior", residential.exterior, "Dwelling facts"],
-    ["Heating / cooling", residential.heatingCooling, "Dwelling facts"],
-    ["Plumbing fixtures", residential.plumbingFixtures, "Dwelling facts"],
-    ["Minimum finish", formatSquareFeet(residential.minFinish), "Dwelling facts"],
-    ["Part finish", formatSquareFeet(residential.partFinish), "Dwelling facts"],
-    ...garageLines.map((row, index) => [
-      `Garage ${index + 1}`,
-      [
-        row.description,
-        row.units
-      ].filter(Boolean).join(" • "),
-      "Detailed valuation components"
-    ]),
-    ...additionalFeatureRows.map((row, index) => [
-      `Additional feature ${index + 1}`,
-      [
-        row.description,
-        row.units !== null && row.units !== undefined ? `Units: ${row.units}` : null
-      ].filter(Boolean).join(" • "),
-      "Detailed valuation components"
-    ]),
-    ...(outbuildingRows.length
-      ? outbuildingRows.map((row, index) => [
-        `Outbuilding ${index + 1}`,
-        [
-          row.description,
-          row.units,
-          row.yearBuilt ? `Built: ${row.yearBuilt}` : null
-        ].filter(Boolean).join(" • "),
-        "Detailed valuation components"
-      ])
-      : [["Outbuilding records", "No outbuilding records listed for this property.", "Detailed valuation components"]]),
-    ["Location", data.classification.location, "Classification"],
-    ["Property class", data.classification.propertyClass, "Classification"],
-    ...(detailedRecordCard && recordCard?.locationModel ? [
-      ["Neighborhood", recordCard.locationModel.neighborhood, "Classification"],
-      ["Location group", recordCard.locationModel.locationGroup, "Classification"],
-      ["Valuation group", recordCard.locationModel.valuationGroup, "Classification"]
-    ] : []),
-    ...landRows.flatMap((row, index) => [
-      [`Land ${index + 1} description`, row.description, "Land information"],
-      [`Land ${index + 1} dimensions`, landDimensions(row), "Land information"]
-    ]),
-    ...(noteRows.length
-      ? noteRows.flatMap((row, index) => [
-        [`Property note ${index + 1} date`, row.date, "Property notes"],
-        [`Property note ${index + 1}`, row.note, "Property notes"]
-      ])
-      : [["Property notes", "No public property notes listed.", "Property notes"]])
-  ];
-
-  return rows.map(([label, value, section], index) => ({
-    id: `item-${index}-${formSafeId(label)}`,
-    label,
-    value: displayValue(value),
-    section
-  }));
-}
-
-function discrepancyChoiceCells(row) {
-  return discrepancyChoices.map(([value, label]) => {
-    const inputId = `${row.id}-${value}`;
+function reviewCategoryCards() {
+  return recordReviewCategories.map(category => {
+    const groupName = `category-${category.id}`;
+    const examplesId = `${groupName}-examples`;
 
     return `
-      <td class="px-2 py-2 text-center">
-        <input
-          id="${inputId}"
-          name="${row.id}"
-          type="radio"
-          value="${value}"
-          class="h-4 w-4 border-slate-300 text-slate-700 focus:ring-slate-500"
-          aria-label="${escapeHtml(`${row.label}: ${label}`)}"
-        />
-      </td>
+      <fieldset class="rounded-xl bg-white p-4 ring-1 ring-slate-200">
+        <legend class="text-base font-bold text-slate-700">${escapeHtml(category.title)}</legend>
+        <p class="mt-2 text-sm leading-6 text-slate-600">${escapeHtml(category.description)}</p>
+        <p id="${examplesId}" class="mt-2 text-xs leading-5 text-slate-500">
+          ${category.examples.map(example => escapeHtml(example)).join(", ")}
+        </p>
+        <div class="mt-4 grid gap-2 sm:grid-cols-2" role="presentation">
+          ${recordReviewStatuses.map(([value, label]) => {
+            const inputId = `${groupName}-${value}`;
+            return `
+              <label
+                data-category-choice
+                class="flex min-h-12 cursor-pointer items-center gap-3 rounded-xl bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-white hover:ring-slate-300 focus-within:ring-2 focus-within:ring-slate-400"
+                for="${inputId}"
+              >
+                <input
+                  id="${inputId}"
+                  name="${groupName}"
+                  type="radio"
+                  value="${value}"
+                  class="sr-only"
+                  aria-describedby="${examplesId}"
+                />
+                <span data-choice-indicator class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-white" aria-hidden="true">
+                  <span class="h-2.5 w-2.5 rounded-full bg-transparent"></span>
+                </span>
+                <span>${escapeHtml(label)}</span>
+              </label>
+            `;
+          }).join("")}
+        </div>
+      </fieldset>
     `;
   }).join("");
+}
+
+function legacyCategoryIdFromDraftKey(key) {
+  const slug = String(key).replace(/^item-\d+-/, "");
+  const match = legacyRecordReviewCategorySlugPatterns.find(([, pattern]) => pattern.test(slug));
+
+  return match?.[0] || null;
 }
 
 function renderDiscrepancyForm(data, recordCard) {
   const container = document.getElementById("reportErrorFormContent");
   if (!container) return;
-
-  const rows = discrepancyRows(data, recordCard);
 
   container.innerHTML = `
     <form id="propertyDiscrepancyForm" class="space-y-5">
@@ -1259,35 +1241,14 @@ function renderDiscrepancyForm(data, recordCard) {
           <div>
             <h3 class="text-lg font-bold text-slate-700">Review property record details</h3>
             <p class="mt-1 text-sm leading-6 text-slate-600">
-              Mark only the items that appear inaccurate, incomplete, misclassified, or in need of factual review.
+              You do not need to verify every technical field. Review the major areas below and mark anything that may deserve a closer look.
             </p>
           </div>
           <p id="discrepancyDraftStatus" class="text-xs font-medium text-slate-500" aria-live="polite"></p>
         </div>
 
-        <div class="mt-3 max-h-[42vh] overflow-auto rounded-xl ring-1 ring-slate-200">
-          <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="sticky top-0 z-10 bg-slate-50">
-              <tr>
-                <th class="w-44 px-3 py-2 text-left font-semibold">Section</th>
-                <th class="px-3 py-2 text-left font-semibold">Record item</th>
-                <th class="px-3 py-2 text-left font-semibold">Current record</th>
-                ${discrepancyChoices.map(([, label]) => `
-                  <th class="w-24 px-2 py-2 text-center font-semibold">${escapeHtml(label)}</th>
-                `).join("")}
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-200 bg-white">
-              ${rows.map((row, index) => `
-                <tr class="${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
-                  <td class="px-3 py-2 align-top text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(row.section)}</td>
-                  <td class="px-3 py-2 align-top font-medium text-slate-700">${escapeHtml(row.label)}</td>
-                  <td class="px-3 py-2 align-top text-slate-700">${escapeHtml(row.value)}</td>
-                  ${discrepancyChoiceCells(row)}
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
+        <div class="mt-3 grid gap-3" aria-label="Property record review categories">
+          ${reviewCategoryCards()}
         </div>
       </section>
 
@@ -1296,7 +1257,7 @@ function renderDiscrepancyForm(data, recordCard) {
       <section class="grid items-start gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2">
           <label for="discrepancyComments" class="text-sm font-semibold text-slate-700">Comments or correction narrative</label>
-          <textarea id="discrepancyComments" name="comments" rows="5" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Describe what appears incorrect and what the record should show."></textarea>
+          <textarea id="discrepancyComments" name="comments" rows="5" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Add any specific details you want the Assessor's Office to review."></textarea>
         </div>
 
         <div class="space-y-3">
@@ -1339,14 +1300,14 @@ function renderDiscrepancyForm(data, recordCard) {
 
       <div class="flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
         <p id="discrepancySubmitStatus" class="text-sm font-medium text-slate-600" aria-live="polite"></p>
-        <div class="flex justify-end gap-2">
-          <button type="button" data-clear-discrepancy-draft class="rounded-full px-4 py-2 text-sm font-semibold text-slate-500 ring-1 ring-slate-200 transition hover:bg-slate-50">
+        <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
+          <button type="button" data-clear-discrepancy-draft class="w-full rounded-full px-4 py-2 text-sm font-semibold text-slate-500 ring-1 ring-slate-200 transition hover:bg-slate-50 sm:w-auto">
             Clear draft
           </button>
-          <button type="button" data-close-report-error class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50">
+          <button type="button" data-close-report-error class="w-full rounded-full px-4 py-2 text-sm font-semibold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 sm:w-auto">
             Save draft and close
           </button>
-          <button type="submit" class="rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">
+          <button type="submit" class="w-full rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 sm:w-auto">
             Prepare correction request PDF
           </button>
         </div>
@@ -1364,10 +1325,9 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
   if (!form) return;
 
   const draftKey = `property-discrepancy-draft:${data.parcel.parcelId}`;
-  const rows = discrepancyRows(data, recordCard);
 
   function collectDraft() {
-    const draft = {};
+    const draft = { draftVersion: "category-review-v1" };
     const formData = new FormData(form);
     formData.forEach((value, key) => {
       draft[key] = value;
@@ -1387,23 +1347,46 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
     };
   }
 
-  function selectedItems() {
+  function selectedCategories() {
     const formData = new FormData(form);
 
-    return rows
-      .map(row => {
-        const issueType = formData.get(row.id);
-        if (!issueType) return null;
+    return recordReviewCategories
+      .map(category => {
+        const status = formData.get(`category-${category.id}`);
+        if (!status) return null;
 
         return {
-          section: row.section,
-          label: row.label,
-          value: row.value,
-          issueType,
-          issueLabel: discrepancyChoiceLabels[issueType] || String(issueType)
+          id: category.id,
+          title: category.title,
+          description: category.description,
+          examples: category.examples,
+          status,
+          statusLabel: recordReviewStatusLabels[status] || String(status)
         };
       })
       .filter(Boolean);
+  }
+
+  function reviewCategories(categories) {
+    return categories.filter(category => category.status === "may-need-review");
+  }
+
+  function updateCategoryOptionStates() {
+    form.querySelectorAll("[data-category-choice]").forEach(label => {
+      const input = label.querySelector("input[type='radio']");
+      const dot = label.querySelector("[data-choice-indicator] span");
+      const selected = Boolean(input?.checked);
+
+      label.classList.toggle("bg-white", selected);
+      label.classList.toggle("ring-slate-500", selected);
+      label.classList.toggle("shadow-sm", selected);
+      label.classList.toggle("text-slate-900", selected);
+      label.classList.toggle("bg-slate-50", !selected);
+      if (dot) {
+        dot.classList.toggle("bg-slate-700", selected);
+        dot.classList.toggle("bg-transparent", !selected);
+      }
+    });
   }
 
   function setValidationMessages(messages) {
@@ -1426,11 +1409,11 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
     validationErrors.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  function validate(values, items) {
+  function validate(values, categoriesNeedingReview) {
     const messages = [];
 
-    if (!items.length && !values.comments) {
-      messages.push("Select at least one record item for review or describe the correction in the narrative.");
+    if (!categoriesNeedingReview.length && !values.comments) {
+      messages.push("Mark at least one category as May need review or describe the request in the comments.");
     }
 
     if (!values.contactMethod) {
@@ -1461,9 +1444,20 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
 
     try {
       const draft = JSON.parse(rawDraft);
+      let migratedLegacySelections = false;
       Object.entries(draft).forEach(([key, value]) => {
         const field = form.elements[key];
-        if (!field) return;
+        if (!field) {
+          const categoryId = legacyCategoryIdFromDraftKey(key);
+          if (categoryId && value) {
+            const migratedField = form.elements[`category-${categoryId}`];
+            if (migratedField instanceof RadioNodeList && !migratedField.value) {
+              migratedField.value = "may-need-review";
+              migratedLegacySelections = true;
+            }
+          }
+          return;
+        }
 
         if (field instanceof RadioNodeList) {
           field.value = value;
@@ -1471,6 +1465,12 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
           field.value = value;
         }
       });
+      updateCategoryOptionStates();
+      if (migratedLegacySelections) {
+        saveDraft();
+        if (status) status.textContent = "Draft restored in the new category format";
+        return;
+      }
       if (status) status.textContent = "Draft restored";
     } catch {
       localStorage.removeItem(draftKey);
@@ -1478,12 +1478,17 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
   }
 
   restoreDraft();
+  updateCategoryOptionStates();
 
   form.addEventListener("input", saveDraft);
-  form.addEventListener("change", saveDraft);
+  form.addEventListener("change", () => {
+    updateCategoryOptionStates();
+    saveDraft();
+  });
   clearButton?.addEventListener("click", () => {
     localStorage.removeItem(draftKey);
     form.reset();
+    updateCategoryOptionStates();
     if (status) status.textContent = "Draft cleared";
     if (submitStatus) {
       submitStatus.textContent = "";
@@ -1497,8 +1502,9 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
     setValidationMessages([]);
 
     const values = collectFormValues();
-    const items = selectedItems();
-    const messages = validate(values, items);
+    const categories = selectedCategories();
+    const categoriesNeedingReview = reviewCategories(categories);
+    const messages = validate(values, categoriesNeedingReview);
 
     if (messages.length) {
       setValidationMessages(messages);
@@ -1517,9 +1523,8 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
     try {
       const submission = buildRecordCorrectionSubmission({
         data,
-        rows,
         formValues: values,
-        selectedItems: items,
+        selectedCategories: categories,
         governingOffice
       });
       const pdfBytes = await generateRecordCorrectionPdf(submission);
