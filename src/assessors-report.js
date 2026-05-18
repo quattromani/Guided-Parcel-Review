@@ -79,7 +79,7 @@ export function initAssessorsReport({
       button.textContent = defaultLabel;
       button.disabled = false;
       button.setAttribute("aria-busy", "false");
-      alert("The Assessor's Report could not be prepared from the current parcel data.");
+      alert("The supplemental review report could not be prepared from the current parcel data.");
     }
   });
 }
@@ -108,7 +108,7 @@ export function buildAssessorsReportModel(data, recordCard, valuationGroups, con
 
 export async function generateAssessorsReportPdf(model) {
   const baseCtx = await createReportContext({
-    title: `${displayAddress(model.data.parcel?.situsAddress) || "Property"} Assessor's Supplemental Report`
+    title: `${displayAddress(model.data.parcel?.situsAddress) || "Property"} Supplemental Review Report`
   });
 
   drawAssessorRecordPage(addReportPage(baseCtx), model);
@@ -120,7 +120,7 @@ export async function generateAssessorsReportPdf(model) {
 }
 
 function assessorsReportFilename(data) {
-  return `assessors-report-${fileSafe(data?.parcel?.parcelId || data?.parcel?.situsAddress)}.pdf`;
+  return `supplemental-review-report-${fileSafe(data?.parcel?.parcelId || data?.parcel?.situsAddress)}.pdf`;
 }
 
 function drawAssessorHeader(ctx, model, sectionLabel) {
@@ -131,7 +131,7 @@ function drawAssessorHeader(ctx, model, sectionLabel) {
     model.propertySummary.valuationGroupLabel
   ].filter(Boolean).join(" / ");
 
-  drawText(ctx, "Assessor's Supplemental Property Report", ctx.margin, ctx.height - ctx.margin, {
+  drawText(ctx, "Supplemental Property Review Report", ctx.margin, ctx.height - ctx.margin, {
     size: 17,
     bold: true,
     color: ctx.palette.navy
@@ -818,12 +818,12 @@ function buildAlignmentRows(selectedMarket, latestRatioRecord, medianRange, codR
       "Local group median appears within the available level-of-value range.",
       "Local group median appears outside the available level-of-value range."
     ),
-    maximumAlignmentRow(
+    rangeAlignmentRow(
       "Local COD",
       selectedMarket?.cod,
-      codRange?.max,
+      codRange,
       "Local uniformity measure appears within the available COD reference range.",
-      "Local uniformity measure is above the available COD reference range."
+      "Local uniformity measure appears outside the available COD reference range."
     ),
     rangeAlignmentRow(
       "Local PRD",
@@ -839,12 +839,12 @@ function buildAlignmentRows(selectedMarket, latestRatioRecord, medianRange, codR
       "County class level appears within the available level-of-value range.",
       "County class level appears outside the available level-of-value range."
     ),
-    maximumAlignmentRow(
+    rangeAlignmentRow(
       "County class COD",
       latestRatioRecord?.cod,
-      codRange?.max,
+      codRange,
       "County class COD appears within the available COD reference range.",
-      "County class COD is above the available COD reference range."
+      "County class COD appears outside the available COD reference range."
     )
   ];
 }
@@ -852,12 +852,6 @@ function buildAlignmentRows(selectedMarket, latestRatioRecord, medianRange, codR
 function rangeAlignmentRow(label, value, range, alignedReason, reviewReason) {
   if (!hasValue(value) || !range) return [label, "Not available", "Available data does not support a report status."];
   const aligned = Number(value) >= Number(range.min) && Number(value) <= Number(range.max);
-  return [label, aligned ? "Appears aligned" : "May warrant review", aligned ? alignedReason : reviewReason];
-}
-
-function maximumAlignmentRow(label, value, max, alignedReason, reviewReason) {
-  if (!hasValue(value) || !hasValue(max)) return [label, "Not available", "Available data does not support a report status."];
-  const aligned = Number(value) <= Number(max);
   return [label, aligned ? "Appears aligned" : "May warrant review", aligned ? alignedReason : reviewReason];
 }
 
@@ -938,8 +932,8 @@ function buildReportReviewSignals(data, recordCard, valueSummary, equalization) 
       ? "One or more available local or class equalization indicators appears outside the reference range."
       : "Available local and class equalization indicators appear generally aligned with the reference ranges used by this report.",
     action: equalization.flagged
-      ? "Review local sale group, class ratio study, and parcel valuation inputs before final protest response."
-      : "Document the supporting market-area and county-class indicators if a protest response needs equalization context."
+      ? "Review local sale group, class ratio study, and parcel valuation inputs before any official review or response."
+      : "Document the supporting market-area and county-class indicators if an official review or response needs equalization context."
   });
 
   rows.push({
@@ -965,7 +959,7 @@ function buildWorkingConclusion(data, valueSummary, propertySummary, equalizatio
   const prior = valueSummary.prior;
   const valueMovement = `${formatNullableMoney(prior.total)} to ${formatNullableMoney(current.total)} (${signedPercent(valueSummary.totalPercentChange)})`;
   const posture = flagged.length
-    ? "Based on available data, this property shows review signals that may warrant closer inspection before final protest response."
+    ? "Based on available data, this property shows review signals that may warrant closer inspection before any official review or response."
     : "Based on available parcel, valuation, market-area, and tax-context data, this property appears generally aligned with the available equalization indicators.";
   const questions = [
     data.taxpayerHistory?.some(row => row.year === data.snapshotYear && !hasValue(row.assessedValue))

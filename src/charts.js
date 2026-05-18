@@ -508,11 +508,11 @@ const assessmentMeasureDefinitions = [
     digits: 2,
     borderDash: [],
     pointStyle: "circle",
-    definition: "Uniformity is measured by COD. It shows how tightly individual assessment ratios cluster around the median ratio."
+    definition: "Uniformity is measured by COD. It shows how tightly individual assessment ratios cluster around the median ratio, with very low readings still requiring sample context."
   },
   {
     key: "prd",
-    label: "Price level fairness",
+    label: "Price-related balance",
     shortLabel: "PRD",
     category: "Statistical measure",
     color: chartColors.prd,
@@ -522,7 +522,7 @@ const assessmentMeasureDefinitions = [
     digits: 3,
     borderDash: [7, 5],
     pointStyle: "rectRot",
-    definition: "Price level fairness is measured by PRD. It shows whether lower- and higher-priced properties are being treated evenly."
+    definition: "Price-related balance is measured by PRD. It shows whether lower- and higher-priced properties are being treated evenly."
   },
   {
     key: "cov",
@@ -605,13 +605,6 @@ function bandStatus(value, approximate = false) {
   if (value > 1) return `above ${bandLabel}`;
 
   return `inside ${bandLabel}`;
-}
-
-function metricSignalToneFromBandTone(tone) {
-  if (tone === "inside") return "green";
-  if (tone === "caution") return "orange";
-  if (tone === "outside") return "red";
-  return "neutral";
 }
 
 const OUTSIDE_BAND_ALARM_DISTANCE_POINTS = 1.2;
@@ -930,7 +923,7 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
       note: `${formatSignedChange(classSummary.codChangeSince2025)} from 2025`,
       color: chartColors.cod,
       status: rawBandStatus(latest.cod, bandConfig.cod),
-      help: "Coefficient of Dispersion shows how tightly assessment ratios cluster around the median. Lower values generally indicate more uniform assessments."
+      help: "Coefficient of Dispersion shows how tightly assessment ratios cluster around the median. Lower values generally indicate more uniform assessments, but very low COD readings should still be read with sample context."
     },
     {
       label: "PRD",
@@ -972,10 +965,9 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
   summary.innerHTML = assessmentBandDefinitions.map(definition => {
     const card = cardByKey.get(definition.key);
     const range = bandConfig[definition.key];
-    const signalTone = metricSignalToneFromBandTone(card.status.tone);
 
     return `
-    <article class="assessment-metric-card assessment-band-card metric-signal-card metric-signal-card-${signalTone} rounded-xl p-4" style="--metric-color: ${card.color}; --metric-bg: ${colorAlpha(card.color, 0.045)}; --metric-border: ${colorAlpha(card.color, 0.24)}; --measure-color: ${definition.color}; --measure-bg: ${colorAlpha(definition.color, 0.045)}; --measure-border: ${colorAlpha(definition.color, 0.25)};">
+    <article class="assessment-metric-card assessment-band-card metric-signal-card metric-signal-card-neutral rounded-xl p-4" style="--metric-color: ${card.color}; --metric-bg: ${colorAlpha(card.color, 0.045)}; --metric-border: ${colorAlpha(card.color, 0.24)}; --measure-color: ${definition.color}; --measure-bg: ${colorAlpha(definition.color, 0.045)}; --measure-border: ${colorAlpha(definition.color, 0.25)};">
       <div class="assessment-metric-topline">
         <div class="min-w-0">
           <p class="assessment-metric-label assessment-metric-heading text-xs font-semibold uppercase tracking-wide">
@@ -1176,7 +1168,7 @@ function renderAssessmentConvergenceNote(records, datasets) {
 
   const latest = spreads.at(-1);
   if (!latest) {
-    note.textContent = "COD, PRD, and COV are normalized to their own bands so their relative movement can be read together.";
+    note.textContent = "COD, PRD, COV, and level of value are normalized to their own bands so their relative movement can be read together.";
     return;
   }
 
@@ -1185,11 +1177,11 @@ function renderAssessmentConvergenceNote(records, datasets) {
   const yearWindow = firstYear ? `${firstYear}-${latest.year}` : "the displayed";
 
   if (latest.spread <= tightest.spread + 0.05) {
-    note.textContent = `${latest.year} is one of the tightest convergences in the ${yearWindow} window: COD, PRD, and COV are ${latest.spread.toFixed(2)} normalized band-widths apart. They remain different statistics, but their latest readings land in a similar position relative to their own ranges.`;
+    note.textContent = `${latest.year} is one of the tightest convergences in the ${yearWindow} window: COD, PRD, COV, and level of value are ${latest.spread.toFixed(2)} normalized band-widths apart. They remain different measures, but their latest readings land in a similar position relative to their own ranges.`;
     return;
   }
 
-  note.textContent = `${latest.year} places COD, PRD, and COV ${latest.spread.toFixed(2)} normalized band-widths apart. The combined view keeps their raw scales separate while showing how each measure sits relative to its own range.`;
+  note.textContent = `${latest.year} places COD, PRD, COV, and level of value ${latest.spread.toFixed(2)} normalized band-widths apart. The combined view keeps their raw scales separate while showing how each measure sits relative to its own range.`;
 }
 
 function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
@@ -1200,7 +1192,7 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
   const records = getAssessmentDisplayRecords(selectedClass);
   const labels = records.map(row => row.year);
   const bandConfig = getAssessmentBandConfig(selectedClass, iaaoStandards);
-  const datasets = assessmentMeasureDefinitions.map(definition => ({
+  const datasets = assessmentBandDefinitions.map(definition => ({
     label: definition.label,
     measureKey: definition.key,
     digits: definition.digits,
@@ -1223,7 +1215,7 @@ function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
   const chartValues = datasets.flatMap(dataset => dataset.data.filter(value => value !== null && value !== undefined));
   const minValue = Math.min(0, ...chartValues);
   const maxValue = Math.max(1, ...chartValues);
-  const hasApproximateBand = assessmentMeasureDefinitions.some(definition =>
+  const hasApproximateBand = assessmentBandDefinitions.some(definition =>
     definition.approximateBand && bandConfig[definition.key]
   );
   const hasLineLegend = renderLineLegend("assessmentAccuracyLegend", datasets);
@@ -1852,13 +1844,13 @@ function marketSignalDefinitions(selected, summary, classStats, standards) {
       color: chartColors.cod,
       range: codRange,
       formatter: value => formatRatio(value),
-      definition: "COD shows how tightly this local group's sales ratios cluster around the median ratio."
+      definition: "COD shows how tightly this local group's sales ratios cluster around the median ratio, with very low readings still requiring sample context."
     },
     {
       metricKey: "prd",
       label: "PRD",
       shortLabel: "PRD",
-      category: "Price fairness",
+      category: "Price-related balance",
       rawValue: selected.prd,
       comparisonValue: summary.prd,
       value: formatRatio(selected.prd),
@@ -1996,7 +1988,7 @@ function renderMarketSignalCards(selected, summary, standards, context = {}) {
 
     return `
     <article
-      class="metric-signal-card metric-signal-card-${signal.tone} rounded-xl p-4"
+      class="metric-signal-card metric-signal-card-neutral market-signal-card rounded-xl p-4"
       role="group"
       aria-label="${escapeHtml(ariaLabel)}"
       style="--measure-color: ${card.color}; --measure-border: ${colorAlpha(card.color, 0.26)};"
@@ -2453,8 +2445,10 @@ function centralMarketPoint(point, medianRange, codRange, countywide) {
     ? Math.max(6, (medianRange.max - medianRange.min) * 1.5)
     : 10;
   const codLimit = codRange?.max ?? (countywide ? countywide.cod * 1.6 : 25);
+  const codFloor = codRange?.min ?? 0;
 
   return Math.abs(point.median - medianCenter) <= medianPadding
+    && point.cod >= codFloor
     && point.cod <= codLimit + 3;
 }
 

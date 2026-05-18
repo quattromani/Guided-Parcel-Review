@@ -40,8 +40,8 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     panelId: "county-equalization",
     eyebrow: "Check",
     label: "Equalization",
-    question: "Is the value base being checked for fairness?",
-    title: "Use equalization as the fairness layer between value and tax",
+    question: "How is the value base checked for level and uniformity?",
+    title: "Use equalization as the check between value and tax",
     description: "Equalization does not stop market values from moving or set the levy. It checks whether assessed values are at the required level and reasonably uniform before levies are applied."
   },
   {

@@ -1224,6 +1224,12 @@ table thead th[class] + th[class] {
   min-width: 0;
 }
 
+@media (min-width: 1024px) {
+  .equalization-sales-split-view {
+    grid-template-columns: minmax(0, 1.06fr) minmax(340px, 0.94fr) !important;
+  }
+}
+
 .equalization-sales-label-text {
   display: -webkit-box;
   line-height: 1.2;
@@ -5217,6 +5223,53 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   --metric-signal-accent: var(--color-slate-500);
 }
 
+#marketSignalCards .market-signal-card {
+  background: rgb(var(--color-secondary-soft));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.18);
+}
+
+#marketSignalCards .market-signal-card .metric-signal-text {
+  color: rgb(var(--color-slate-600));
+}
+
+#marketSignalCards .market-signal-card .metric-signal-text::before {
+  background: rgb(var(--color-slate-500));
+}
+
+.assessment-band-card.metric-signal-card {
+  --metric-signal-accent: var(--color-slate-600);
+  background: rgb(var(--surface-card));
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+}
+
+.assessment-band-card::before {
+  background: var(--measure-color);
+  border-radius: 999px;
+  content: "";
+  height: 0.22rem;
+  left: 1rem;
+  position: absolute;
+  right: 1rem;
+  top: 0;
+  transform: translateY(-1px);
+}
+
+.assessment-band-card .assessment-metric-label {
+  color: var(--measure-color);
+}
+
+.assessment-band-card .metric-signal-text {
+  background: rgb(var(--color-slate-50));
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
+  font-size: 0.6875rem;
+  letter-spacing: 0.025em;
+  padding: 0.28rem 0.55rem;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
 .metric-signal-text {
   align-items: center;
   color: rgb(var(--metric-signal-accent));
@@ -5268,6 +5321,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .assessment-metric-card .assessment-metric-label {
   color: rgb(var(--color-slate-500));
+}
+
+.assessment-band-card.assessment-metric-card .assessment-metric-label {
+  color: var(--measure-color);
 }
 
 @media (max-width: 960px) {

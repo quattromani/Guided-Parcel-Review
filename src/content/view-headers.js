@@ -31,8 +31,8 @@ const viewHeaderContent = {
   },
   "county-equalization": {
     eyebrow: "Step 4 · Equalization",
-    title: "Is the value base being checked for fairness?",
-    description: "Equalization is the fairness check between value and tax. It does not stop market values from moving or set the levy; it checks required level and reasonable uniformity before levies are applied.",
+    title: "How is the value base checked for level and uniformity?",
+    description: "Equalization is the check between value and tax. It does not stop market values from moving or set the levy; it checks required level and reasonable uniformity before levies are applied.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "state-context": {

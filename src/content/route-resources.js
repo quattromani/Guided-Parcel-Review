@@ -55,7 +55,7 @@ const resourcesByView = {
     formTitle: "Tax and exemption forms",
     learnTitle: "Tax terms",
     faqs: [
-      ["Why does tax context come after equalization?", "Equalization is the fairness check on the value base. Tax context then shows how levies, credits, exemptions, and boundaries turn that value base into a bill."],
+      ["Why does tax context come after equalization?", "Equalization checks the value base for required level and reasonable uniformity. Tax context then shows how levies, credits, exemptions, and boundaries turn that value base into a bill."],
       ["What is the difference between gross tax and net tax?", "Gross tax starts from value and levy. Net tax reflects applicable credits and adjustments before payment status is applied."],
       ["Why do value and taxes not always move together?", "Taxes also depend on budgets, levies, exemptions, credits, and tax district changes."],
       ["What does effective tax rate show?", "It divides statement net tax by assessed value so different years can be compared more clearly."],
@@ -96,7 +96,7 @@ const resourcesByView = {
       ["Can countywide measures prove the parcel value is wrong?", "Not by themselves. They are context; parcel facts and market evidence still matter."]
     ],
     learn: [
-      ["Equalization", "The fairness check that reviews assessment level and uniformity before levies are applied."],
+      ["Equalization", "The check that reviews assessment level and uniformity before levies are applied."],
       ["COD", "Coefficient of dispersion, a measure of assessment uniformity."],
       ["PRD", "Price-related differential, a measure used to review value-related assessment patterns."],
       ["Level of value", "How assessed values compare with market value overall."]

@@ -221,7 +221,7 @@ function buildFinalReviewModel(data, context = {}) {
         ]
       },
       {
-        narrative: "The later steps move from market context to equalization, then to taxes. Equalization is the fairness check before levies are applied; tax context shows how that value base helps determine this property's share of the bill.",
+        narrative: "The later steps move from market context to equalization, then to taxes. Equalization checks level and uniformity before levies are applied; tax context shows how that value base helps determine this property's share of the bill.",
         cards: [
           {
             step: "Step 3 · Value Detail",
@@ -235,7 +235,7 @@ function buildFinalReviewModel(data, context = {}) {
           {
             step: "Step 4 · Equalization",
             route: "equalization",
-            value: "Fairness check",
+            value: "Equalization check",
             meta: "Required level and uniformity",
             note: "Equalization does not stop market movement or set the levy. It checks whether assessments are at the required level and reasonably uniform."
           },
@@ -424,7 +424,7 @@ function installFinalSummary(data, context = {}) {
 function alignPrimaryJourneyNextSteps() {
   updateNextStep("your-property", "what-changed", "Now review what changed.", "Go to What Changed");
   updateNextStep("your-assessment", "valuation-detail", "Now review what may be driving the value.", "Go to Value Detail");
-  updateNextStep("market-area", "equalization", "Now check the fairness layer.", "Go to Equalization");
+  updateNextStep("market-area", "equalization", "Now check the equalization layer.", "Go to Equalization");
   updateNextStep("county-equalization", "tax-context", "Now connect the value base to taxes.", "Go to Tax Context");
   updateNextStep("your-taxes", "review-signals", "Now review neutral signals.", "Go to Review Signals");
   appendFinalSummaryStep();

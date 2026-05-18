@@ -344,12 +344,12 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
     <section class="mt-5 border-t border-slate-200 pt-5" aria-labelledby="assessmentUnifiedViewTitle">
       <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Reported values and unified view</p>
       <h3 id="assessmentUnifiedViewTitle" class="mt-1 text-lg font-bold text-slate-700">How do the raw measures come together?</h3>
-      <p class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">The table keeps the reported values by year. The chart normalizes COD, PRD, and COV to their own bands so their movement can be compared without mixing raw scales.</p>
+      <p class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">The table keeps the reported values by year. The chart normalizes COD, PRD, COV, and level of value to their own bands so their movement can be compared without mixing raw scales.</p>
     </section>
     <section class="data-split-view related-panel-section equalization-unified-section grid gap-6 lg:grid-cols-5">
       <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
-          <h3 class="text-lg font-bold text-slate-700">How do the statistical measures come together?</h3>
-          <p id="assessmentAccuracyConvergenceNote" class="mt-1 text-sm text-slate-600">COD, PRD, and COV are normalized to their own bands so their relative movement can be read together.</p>
+          <h3 class="text-lg font-bold text-slate-700">How do the assessment measures come together?</h3>
+          <p id="assessmentAccuracyConvergenceNote" class="mt-1 text-sm text-slate-600">COD, PRD, COV, and level of value are normalized to their own bands so their relative movement can be read together.</p>
         <div id="assessmentAccuracyLegend" class="assessment-line-legend mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600"></div>
         <div class="mt-4 h-80">
           <canvas id="assessmentAccuracyChart"></canvas>
@@ -431,7 +431,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       <div class="mobile-support-content" aria-labelledby="equalizationSalePriceTitle">
       <h3 id="equalizationSalePriceTitle" class="text-lg font-bold text-slate-700">What makes up the class sales data?</h3>
       <p id="equalizationSalePriceDescription" class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">Sale-price ranges show where qualified sales are concentrated and whether the class study is based mostly on lower-, middle-, or higher-priced properties.</p>
-      <div class="data-split-view mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
+      <div class="data-split-view equalization-sales-split-view mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
         <div class="overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
           <table class="min-w-full divide-y divide-slate-200 text-xs equalization-support-table equalization-sales-table">
             <colgroup>
@@ -1347,7 +1347,7 @@ function renderDiscrepancyForm(data, recordCard) {
             Save draft and close
           </button>
           <button type="submit" class="rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">
-            Submit correction request
+            Prepare correction request PDF
           </button>
         </div>
       </div>
@@ -1510,7 +1510,7 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
     }
 
     if (submitStatus) {
-      submitStatus.textContent = "Preparing correction request PDF and email payload...";
+      submitStatus.textContent = "Preparing correction request PDF...";
       submitStatus.className = "text-sm font-semibold text-slate-600";
     }
 

@@ -263,10 +263,28 @@ function codSignal({ value, standards, context }) {
     return signalResult({ normalizedValue });
   }
 
+  const min = Number(range.min);
   const max = Number(range.max);
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    return signalResult({ normalizedValue });
+  }
+
+  const standardUsed = `IAAO COD ${formatRange(range, 1)} for ${standard.jurisdictionProfile}`;
+
+  if (normalizedValue < min) {
+    return signalResult({
+      tone: "yellow",
+      severity: "context",
+      label: "Below reference range",
+      explanation: "A very low COD can indicate an unusually homogeneous or limited sample, so it should be read with sample context.",
+      trigger: "COD below selected range",
+      normalizedValue,
+      standardUsed
+    });
+  }
+
   const softIdeal = Math.min(10, max);
   const preferredMax = Math.min(15, max);
-  const standardUsed = `IAAO COD ${formatRange(range, 1)} for ${standard.jurisdictionProfile}`;
 
   if (normalizedValue <= softIdeal) {
     return signalResult({

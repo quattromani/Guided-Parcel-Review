@@ -53,7 +53,7 @@ export function initFirstVisitOrientation() {
         <p>You can use this tool to review a sample property, understand a recent notice of value, research how property information is organized, or see how assessment and tax data can be explained more clearly.</p>
         <p>This site is an independent informational and visualization tool. It is not an official county record, government website, or final valuation source. Sample records have been pre-loaded to demonstrate, stress test, and smoke test the product while it is in active development.</p>
         <p>Official property records, valuations, and tax determinations remain with the appropriate county offices.</p>
-        <p>Tip: To start fresh later, use the small recycle button at the end of the footer, next to Assessor&rsquo;s Report, to clear the current sample and return to this welcome screen.</p>
+        <p>Tip: To start fresh later, use the small recycle button at the end of the footer, next to Supplemental Review Report, to clear the current sample and return to this welcome screen.</p>
         <p>The goal is simple: clearer information, better understanding, and fewer surprises.</p>
       </div>
 
