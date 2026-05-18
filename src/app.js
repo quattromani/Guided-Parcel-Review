@@ -287,6 +287,14 @@ function initGuidedNavigation(data, options = {}) {
     primarySectionIds.slice(0, targetIndex + 1).forEach(id => unlockedSteps.add(id));
   }
 
+  function rememberCompletedBefore(target) {
+    const targetId = routeIdFor(target);
+    if (!isPrimaryRouteId(targetId)) return;
+
+    const targetIndex = primarySectionIds.indexOf(targetId);
+    primarySectionIds.slice(0, targetIndex).forEach(id => visitedSteps.add(id));
+  }
+
   function alignActiveGuidedStep({ behavior = "smooth" } = {}) {
     const scrollContainer = guidedPathTrack || guidedPath;
 
@@ -359,8 +367,10 @@ function initGuidedNavigation(data, options = {}) {
       const primaryIndex = primarySectionIds.indexOf(item.dataset.guidedTab);
       const unlocked = tabIsPrimary ? unlockedSteps.has(item.dataset.guidedTab) : true;
       const terminalComplete = active && item.dataset.guidedTab === finalRouteId && visitedSteps.has(finalRouteId);
-      const complete = (tabIsPrimary && selectedIndex !== -1 && primaryIndex < selectedIndex) || terminalComplete;
-      const future = tabIsPrimary && selectedIndex !== -1 && primaryIndex > selectedIndex;
+      const completedBefore = tabIsPrimary && (visitedSteps.has(item.dataset.guidedTab)
+        || (selectedIndex !== -1 && primaryIndex < selectedIndex));
+      const complete = (!active && completedBefore) || terminalComplete;
+      const future = tabIsPrimary && selectedIndex !== -1 && primaryIndex > selectedIndex && !complete;
       const marker = item.querySelector(".guided-step-marker");
 
       item.classList.toggle("guided-step-active", active);
@@ -414,12 +424,17 @@ function initGuidedNavigation(data, options = {}) {
     const selectedPanel = route.panelId;
     const progressRouteId = progressRouteIdFor(route);
     const primaryRoute = isPrimaryRouteId(selected);
+    const previousProgressRouteId = currentGuidedRouteId;
 
     if (primaryRoute && !unlockedSteps.has(selected)) {
       return false;
     }
 
     if (route.secondary && progressRouteId) unlockThrough(progressRouteId);
+    rememberCompletedBefore(progressRouteId);
+    if (previousProgressRouteId && previousProgressRouteId !== progressRouteId && isPrimaryRouteId(previousProgressRouteId)) {
+      visitedSteps.add(previousProgressRouteId);
+    }
 
     renderGuidedTabs(progressRouteId || selected);
 
