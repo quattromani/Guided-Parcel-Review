@@ -216,17 +216,11 @@ function renderAssessmentSnapshotSource(data, recordCard) {
 function renderValueTaxHistoryShell() {
   const container = document.getElementById("value-tax-history-panel");
   if (!container) return;
-  const historyOpen = mobileSupportOpenAttribute();
 
   container.innerHTML = `
     <div class="data-split-view grid gap-6 lg:grid-cols-5">
       <article id="value-history" class="lg:col-span-2">
-        <details class="mobile-support-disclosure" data-mobile-support${historyOpen}>
-          <summary class="mobile-support-toggle">
-            <span>See yearly values and taxes</span>
-            <span class="mobile-support-chevron" aria-hidden="true"></span>
-          </summary>
-          <div class="mobile-support-content">
+        <div class="mobile-support-content value-history-content">
             <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
             <p class="mt-1 text-sm text-slate-600">
                 Compare assessed value, net tax, and effective tax rate (ETR) year by year.
@@ -247,8 +241,7 @@ function renderValueTaxHistoryShell() {
               </table>
             </div>
             <p id="historyFootnote" class="mt-2 hidden text-xs leading-5 text-slate-500"></p>
-          </div>
-        </details>
+        </div>
       </article>
 
       <article id="indexed-trends" class="lg:col-span-3">
