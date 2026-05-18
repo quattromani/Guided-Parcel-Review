@@ -23,6 +23,7 @@ import {
   loadRealPropertyForms,
   loadSchoolDistrictColors,
   loadTaxDistrictAuthorities,
+  loadTaxpayerActionDates,
   loadValuationGroups,
   loadIaaoStandards,
   loadAssessmentDateEvents,
@@ -50,6 +51,7 @@ import { initAssessmentDatesPanel } from "./assessment-dates.js";
 import { initFirstVisitOrientation, ORIENTATION_STORAGE_KEY } from "./orientation.js";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
+let importantCalendarDates = { dates: [], metadata: {} };
 
 function propertyIdentityKey(value = {}) {
   return `${value.parcelId
@@ -73,12 +75,14 @@ async function main() {
   const propertySwitcher = await loadPropertySwitcherRecords();
 
   if (!propertySwitcher.activePropertyId) {
-    const [realPropertyForms, assessmentDateEvents] = await Promise.all([
+    const [realPropertyForms, assessmentDateEvents, taxpayerActionDates] = await Promise.all([
       loadRealPropertyForms(),
-      loadAssessmentDateEvents()
+      loadAssessmentDateEvents(),
+      loadTaxpayerActionDates()
     ]);
 
     officialRealPropertyForms = realPropertyForms;
+    importantCalendarDates = taxpayerActionDates;
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
     renderStartPage(propertySwitcher);
     renderGuidedResourceContent("your-property");
@@ -88,7 +92,7 @@ async function main() {
     return;
   }
 
-  const [propertyData, recordCard, calendar, legalReferences, realPropertyForms, ctlData, ratioData, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, valuationGroups, iaaoStandards, assessmentDateEvents] = await Promise.all([
+  const [propertyData, recordCard, calendar, legalReferences, realPropertyForms, ctlData, ratioData, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, valuationGroups, iaaoStandards, assessmentDateEvents, taxpayerActionDates] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
     loadAssessmentCalendar(),
@@ -102,9 +106,11 @@ async function main() {
     loadSchoolDistrictColors(),
     loadValuationGroups(),
     loadIaaoStandards(),
-    loadAssessmentDateEvents()
+    loadAssessmentDateEvents(),
+    loadTaxpayerActionDates()
   ]);
   officialRealPropertyForms = realPropertyForms;
+  importantCalendarDates = taxpayerActionDates;
   const propertySwitcherContext = { ...propertySwitcher, valuationGroups };
   window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcherContext;
   const snapshotModel = buildPropertySnapshotModel({
@@ -536,6 +542,7 @@ function guidedStepMarker(index) {
 function renderGuidedResourceContent(viewKey) {
   const resourceKey = resourceAliases[viewKey] ?? viewKey;
   const resources = resourcesByView[resourceKey] ?? resourcesByView["your-property"];
+  const datesContent = document.getElementById("importantCalendarDates");
   const faqTitle = document.getElementById("footerFaqTitle");
   const formsTitle = document.getElementById("footerFormsTitle");
   const learnTitle = document.getElementById("footerLearnTitle");
@@ -543,6 +550,7 @@ function renderGuidedResourceContent(viewKey) {
   const formsContent = document.getElementById("footerFormsContent");
   const learnContent = document.getElementById("footerLearnContent");
 
+  if (datesContent) datesContent.innerHTML = renderImportantCalendarDates(resourceKey);
   if (faqTitle) faqTitle.textContent = resources.faqTitle;
   if (formsTitle) formsTitle.textContent = officialRealPropertyForms.metadata?.title ?? "Official real property forms";
   if (learnTitle) learnTitle.textContent = resources.learnTitle;
@@ -568,6 +576,67 @@ function renderGuidedResourceContent(viewKey) {
       </div>
     `).join("");
   }
+}
+
+function importantDatesForView(viewKey) {
+  return (importantCalendarDates.dates || [])
+    .map(date => ({
+      ...date,
+      priority: Number(date.routePriority?.[viewKey])
+    }))
+    .filter(date => Number.isFinite(date.priority))
+    .sort((a, b) => a.priority - b.priority)
+    .slice(0, 4);
+}
+
+function renderImportantCalendarDates(viewKey) {
+  const dates = importantDatesForView(viewKey);
+  const title = importantCalendarDates.metadata?.title ?? "Important Calendar Dates";
+  const disclaimer = importantCalendarDates.metadata?.disclaimer
+    ?? "Selected dates are shown for orientation only. Official county and state instructions control.";
+
+  if (!dates.length) {
+    return `
+      <div class="important-calendar-header">
+        <div>
+          <p class="guided-kicker">Calendar reference</p>
+          <h3 id="importantCalendarDatesTitle">${escapeHtml(title)}</h3>
+        </div>
+        <button type="button" class="important-calendar-action" data-assessment-dates-open aria-controls="assessmentDatesPanel">
+          See Full Calendar
+        </button>
+      </div>
+      <p class="important-calendar-empty">No selected dates are mapped to this step yet.</p>
+    `;
+  }
+
+  return `
+    <div class="important-calendar-header">
+      <div>
+        <p class="guided-kicker">Calendar reference</p>
+        <h3 id="importantCalendarDatesTitle">${escapeHtml(title)}</h3>
+        <p>${escapeHtml(disclaimer)}</p>
+      </div>
+      <button type="button" class="important-calendar-action" data-assessment-dates-open aria-controls="assessmentDatesPanel">
+        See Full Calendar
+      </button>
+    </div>
+    <div class="important-calendar-list" role="list" aria-labelledby="importantCalendarDatesTitle">
+      ${dates.map(renderImportantCalendarDate).join("")}
+    </div>
+  `;
+}
+
+function renderImportantCalendarDate(date) {
+  return `
+    <article class="important-calendar-item" role="listitem">
+      <div>
+        <p class="important-calendar-date">${escapeHtml(date.dateLabel)}</p>
+        <h4>${escapeHtml(date.title)}</h4>
+      </div>
+      <p>${escapeHtml(date.taxpayerAction)}</p>
+    </article>
+  `;
 }
 
 function renderOfficialForms() {

@@ -221,7 +221,7 @@ function buildFinalReviewModel(data, context = {}) {
         ]
       },
       {
-        narrative: "The later steps move from market context to equalization, then to taxes. Equalization is the fairness check before levies are applied; tax context shows how that value base becomes a bill.",
+        narrative: "The later steps move from market context to equalization, then to taxes. Equalization is the fairness check before levies are applied; tax context shows how that value base helps determine this property's share of the bill.",
         cards: [
           {
             step: "Step 3 · Value Detail",
@@ -358,7 +358,7 @@ function installReviewSignalsPanel(data) {
       <div>
         <p class="guided-kicker">Review signals</p>
         <h2 id="reviewSignalsTitle">Items worth verifying, if any</h2>
-        <p>Review signals collect facts or patterns from the record, value, equalization, and tax steps. They are neutral prompts for review, not findings or filing recommendations.</p>
+        <p>Review signals collect facts or patterns from the record, value, equalization, relative context, and tax steps. They are neutral prompts for review, not findings or filing recommendations.</p>
       </div>
       <div class="civic-review-signal-grid">
         ${cards}

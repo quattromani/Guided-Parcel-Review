@@ -1,0 +1,160 @@
+{
+  "version": "0.1",
+  "metadata": {
+    "title": "Important Calendar Dates",
+    "assessmentYear": 2026,
+    "source": {
+      "sourceType": "internal-curated",
+      "displayCitation": "Nebraska taxpayer-facing assessment calendar dates",
+      "notes": "Curated route-specific subset of taxpayer-facing Nebraska assessment, review, exemption, budget, and tax-bill dates. Source event IDs refer to data/app/assessment-calendar-events.json."
+    },
+    "disclaimer": "Selected dates are shown for orientation only. Confirm official filing requirements, deadlines, and instructions with the appropriate county or state office."
+  },
+  "dates": [
+    {
+      "id": "assessment-date",
+      "title": "Assessment Date",
+      "dateLabel": "January 1, 2026",
+      "category": "record",
+      "taxpayerAction": "Use this as the value-date anchor when reviewing property facts and current-year assessment context.",
+      "whyItMatters": "Property is generally valued as of this date before notices, protests, levies, and tax bills follow later.",
+      "sourceEventIds": ["assessment-date"],
+      "routePriority": {
+        "landing-primer": 1,
+        "your-property": 1,
+        "your-assessment": 2,
+        "market-area": 3
+      }
+    },
+    {
+      "id": "homestead-filing-window",
+      "title": "Homestead Exemption Filing Window",
+      "dateLabel": "February 2-June 30, 2026",
+      "category": "exemption",
+      "taxpayerAction": "Eligible homeowners may file a Nebraska Homestead Exemption application with the county assessor.",
+      "whyItMatters": "For eligible taxpayers, the exemption can reduce property tax after values and levies are applied.",
+      "sourceEventIds": ["homestead-filing-window"],
+      "routePriority": {
+        "landing-primer": 4,
+        "your-property": 4,
+        "your-assessment": 4,
+        "your-taxes": 3,
+        "review-checklist": 4
+      }
+    },
+    {
+      "id": "valuation-notice-timing",
+      "title": "Valuation Notice Timing",
+      "dateLabel": "Around June 1, 2026",
+      "category": "valuation",
+      "taxpayerAction": "Watch for a valuation-change notice if the assessed value increased or decreased.",
+      "whyItMatters": "A notice is the prompt to review the record, value movement, and formal protest timing.",
+      "sourceEventIds": ["valuation-notice-timing"],
+      "routePriority": {
+        "landing-primer": 2,
+        "your-property": 2,
+        "your-assessment": 1,
+        "market-area": 1,
+        "county-equalization": 3,
+        "review-checklist": 2
+      }
+    },
+    {
+      "id": "property-valuation-protest-window",
+      "title": "Property Valuation Protest Window",
+      "dateLabel": "June 1-June 30, 2026",
+      "category": "protest",
+      "taxpayerAction": "Taxpayers may file a property valuation protest with the County Board of Equalization during this window.",
+      "whyItMatters": "This is the main annual window to ask for formal review of a real property valuation.",
+      "sourceEventIds": ["property-valuation-protest-window"],
+      "routePriority": {
+        "landing-primer": 3,
+        "your-property": 3,
+        "your-assessment": 3,
+        "market-area": 2,
+        "county-equalization": 1,
+        "review-checklist": 1
+      }
+    },
+    {
+      "id": "boe-protest-hearing-period",
+      "title": "County Board Protest Review",
+      "dateLabel": "June 1-July 25, 2026",
+      "category": "protest",
+      "taxpayerAction": "Filed valuation protests move into County Board of Equalization review, hearing, and decision timing.",
+      "whyItMatters": "This is when formal local review moves from filing to the board process.",
+      "sourceEventIds": ["boe-protest-hearing-period"],
+      "routePriority": {
+        "county-equalization": 2,
+        "review-checklist": 3
+      }
+    },
+    {
+      "id": "damaged-property-report-deadline",
+      "title": "Destroyed or Damaged Property Report Deadline",
+      "dateLabel": "July 15, 2026",
+      "category": "record",
+      "taxpayerAction": "Owners of significantly damaged real property may need to file a damaged real property report with the county clerk.",
+      "whyItMatters": "This separate process can matter when significant damage occurred before July.",
+      "sourceEventIds": ["damaged-property-eligibility-date", "damaged-property-report-deadline"],
+      "routePriority": {
+        "your-property": 5,
+        "review-checklist": 5
+      }
+    },
+    {
+      "id": "terc-appeal-deadline",
+      "title": "Appeal Deadline After County Board Action",
+      "dateLabel": "August 24, 2026",
+      "category": "appeal",
+      "taxpayerAction": "A taxpayer may have a later deadline to appeal final County Board action to the Tax Equalization and Review Commission.",
+      "whyItMatters": "This is a later review path after the county board has acted, and timing can depend on the county and action taken.",
+      "sourceEventIds": ["terc-appeal-deadline"],
+      "routePriority": {
+        "county-equalization": 4,
+        "review-checklist": 2
+      }
+    },
+    {
+      "id": "budget-hearing-setup",
+      "title": "Budget and Public Hearing Period",
+      "dateLabel": "September 4-September 30, 2026",
+      "category": "budget",
+      "taxpayerAction": "Review public budget and hearing information from the taxing bodies that affect the property.",
+      "whyItMatters": "This is where certified values begin connecting to public budgets and the levy side of the bill.",
+      "sourceEventIds": ["budget-hearing-setup"],
+      "routePriority": {
+        "your-taxes": 1,
+        "state-context": 3,
+        "review-checklist": 6
+      }
+    },
+    {
+      "id": "levy-setting-window",
+      "title": "Levy Setting and Tax Request Actions",
+      "dateLabel": "October 9-October 20, 2026",
+      "category": "levy",
+      "taxpayerAction": "Use this as the timing reference for when adopted budgets and tax requests move into final levy actions.",
+      "whyItMatters": "This is where the final tax-rate side of the bill comes together after assessment values are already set.",
+      "sourceEventIds": ["levy-setting-window"],
+      "routePriority": {
+        "your-taxes": 2,
+        "state-context": 2
+      }
+    },
+    {
+      "id": "taxes-due-lien-date",
+      "title": "Real and Personal Property Taxes Due",
+      "dateLabel": "December 31, 2026",
+      "category": "tax-bill",
+      "taxpayerAction": "Use the official county treasurer statement for payment amount, payment status, and delinquency details.",
+      "whyItMatters": "Tax bills follow the assessment, equalization, budget, levy, credit, and tax-list steps from earlier in the year.",
+      "sourceEventIds": ["taxes-due-lien-date"],
+      "routePriority": {
+        "your-taxes": 4,
+        "state-context": 4,
+        "review-checklist": 7
+      }
+    }
+  ]
+}

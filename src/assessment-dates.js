@@ -68,10 +68,9 @@ const MAJOR_PROCESS_TYPES = new Set([
 export function initAssessmentDatesPanel(calendarData = {}) {
   const modal = document.getElementById("assessmentDatesPanel");
   const content = document.getElementById("assessmentDatesContent");
-  const openButtons = document.querySelectorAll("[data-assessment-dates-open]");
   const closeButtons = document.querySelectorAll("[data-close-assessment-dates]");
 
-  if (!modal || !content || !openButtons.length) return null;
+  if (!modal || !content) return null;
 
   const events = normalizeEvents(calendarData.events || []);
   const assessmentYear = calendarData.assessmentYear || new Date().getFullYear();
@@ -112,7 +111,7 @@ export function initAssessmentDatesPanel(calendarData = {}) {
     modal.classList.remove("hidden");
     modal.classList.add("flex");
     modal.setAttribute("aria-hidden", "false");
-    openButtons.forEach(button => button.setAttribute("aria-expanded", "true"));
+    document.querySelectorAll("[data-assessment-dates-open]").forEach(button => button.setAttribute("aria-expanded", "true"));
     document.body.classList.add("overflow-hidden");
     modal.querySelector("[data-close-assessment-dates]")?.focus();
   }
@@ -121,14 +120,24 @@ export function initAssessmentDatesPanel(calendarData = {}) {
     modal.classList.add("hidden");
     modal.classList.remove("flex");
     modal.setAttribute("aria-hidden", "true");
-    openButtons.forEach(button => button.setAttribute("aria-expanded", "false"));
+    document.querySelectorAll("[data-assessment-dates-open]").forEach(button => button.setAttribute("aria-expanded", "false"));
     document.body.classList.remove("overflow-hidden");
     returnFocusTo?.focus?.();
   }
 
-  openButtons.forEach(button => {
+  document.querySelectorAll("[data-assessment-dates-open]").forEach(button => {
     button.setAttribute("aria-expanded", "false");
-    button.addEventListener("click", open);
+  });
+
+  document.addEventListener("click", event => {
+    const trigger = event.target.closest?.("[data-assessment-dates-open]");
+    if (!trigger) return;
+
+    event.preventDefault();
+    if (!trigger.hasAttribute("aria-expanded")) {
+      trigger.setAttribute("aria-expanded", "false");
+    }
+    open({ currentTarget: trigger });
   });
 
   closeButtons.forEach(button => button.addEventListener("click", close));

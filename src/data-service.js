@@ -12,6 +12,7 @@ async function loadJson(path, label) {
 
 const DATA_PATHS = {
   assessmentDateEvents: "data/app/assessment-calendar-events.json",
+  taxpayerActionDates: "data/app/nebraska-taxpayer-action-dates.json",
   manifest: "data/app/property-manifest.json"
 };
 
@@ -113,6 +114,10 @@ export function loadAssessmentCalendar() {
 
 export function loadAssessmentDateEvents() {
   return loadJson(DATA_PATHS.assessmentDateEvents, "assessment date events");
+}
+
+export function loadTaxpayerActionDates() {
+  return loadJson(DATA_PATHS.taxpayerActionDates, "taxpayer action dates");
 }
 
 export function loadLegalReferences() {

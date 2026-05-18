@@ -33,7 +33,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Value Detail",
     question: "What may be driving the value?",
     title: "Connect the value to the record and market context",
-    description: "Review the main value drivers in plain language before opening deeper market or method detail. Local sales-study data helps place the parcel record in context."
+    description: "Review the main value drivers in plain language before opening deeper market or method detail. Local sales-study data helps place the parcel record in relative context."
   },
   {
     id: "equalization",
@@ -62,7 +62,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Tax Context",
     question: "How do values connect to taxes?",
     title: "Separate value, levy, credits, and final tax bills",
-    description: "Once the value base is set, taxes show how levies, credits, exemptions, and district boundaries turn assessed value into the final bill."
+    description: "Once the value base is set, taxes show how levies, credits, exemptions, and district boundaries help determine this property's final bill."
   },
   {
     id: "review-signals",

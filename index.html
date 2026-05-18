@@ -53,7 +53,7 @@
 
         <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-8">
           <h2 class="text-xl font-bold text-slate-700">Property details</h2>
-          <p class="mt-1 text-sm text-slate-600">These are the property details the county uses when reviewing value and taxes. Confirming them first makes the later numbers easier to understand.</p>
+          <p class="mt-1 text-sm text-slate-600">These are the property details used to place the parcel in later value and tax views. Confirming them first makes the later numbers easier to understand.</p>
           <dl id="propertyDetails" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2"></dl>
         </article>
       </section>
@@ -72,7 +72,7 @@
       <article class="next-step-card">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Now review the assessment value.</h3>
+          <h3 class="mt-1 text-lg font-bold text-slate-700">Now review where the assessed value stands.</h3>
           <p class="mt-1 text-sm text-slate-600">The next step separates assessment value status from tax statement finality, payment balance, and the review window.</p>
         </div>
         <button type="button" data-guided-next="your-assessment" class="next-step-button">Go to Assessment</button>
@@ -165,7 +165,7 @@
       <article class="ooda-decision-card">
         <p class="guided-kicker">Decision check</p>
         <h2>What kind of tax question is this?</h2>
-        <p>Once the value base is set, a tax bill can change because of levies, budgets, exemptions, credits, or district boundaries. Review valuation if the assessed value seems unsupported. Review official tax statements if the question is about where the bill goes, credits, or payment.</p>
+        <p>Once the value base is set, a tax bill can change because of levies, budgets, exemptions, credits, or district boundaries. Review valuation if the assessed value seems unsupported or out of proportion with the record and comparison context. Review official tax statements if the question is about where the bill goes, credits, or payment.</p>
       </article>
 
       <aside class="guided-transition">
@@ -184,7 +184,7 @@
 
     <section data-guided-panel="market-area" class="hidden space-y-6">
       <aside class="guided-transition">
-        <p>Now that you have seen how the value moved, the next question is what may be behind it. Start with the local comparison group before moving into the countywide checks.</p>
+        <p>Now that you have seen how the value moved, the next question is what may be shaping its position. Start with the local comparison group before moving into the countywide checks.</p>
       </aside>
 
       <article id="market-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -209,7 +209,7 @@
           <div class="market-reading-steps">
             <section class="market-reading-step">
               <h4>The cards introduce the measures</h4>
-              <p>Qualified sales tell you how much evidence is behind the group. Median ratio, COD, and PRD introduce level, uniformity, and price fairness.</p>
+              <p>Qualified sales tell you how much evidence is behind the group. Median ratio, COD, and PRD introduce level, uniformity, and price-related balance.</p>
             </section>
             <section class="market-reading-step">
               <h4>Sample depth stays local</h4>
@@ -241,7 +241,7 @@
               <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Equalization Context</p>
               <h2 class="mt-1 text-2xl font-bold text-slate-700">Is the value base being checked for fairness?</h2>
               <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-                Equalization reads from the property record into the valuation group or market area, then into the class and countywide study. It does not stop market values from moving or set the tax levy. It asks whether properties are being assessed at the required level and with reasonable uniformity, so the tax base is not tilted before levies are applied.
+                Equalization reads from the property record into the valuation group or market area, then into the class and countywide study. It does not stop market values from moving or set the tax levy. It asks whether properties are being assessed at the required level and with reasonable uniformity, so properties are not over- or under-positioned in the tax base before levies are applied.
               </p>
           </div>
         </div>
@@ -261,7 +261,7 @@
       <article id="county-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <p class="guided-kicker">County Summary</p>
         <h2 class="mt-1 text-xl font-bold text-slate-700">What is the countywide baseline?</h2>
-        <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Certified values and taxes levied provide background for the countywide value base before the parcel-level tax step.</p>
+        <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.</p>
         <div id="countyCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
         <section class="county-chart-pair related-panel-section grid gap-6 lg:grid-cols-5" aria-label="County value and tax charts">
           <section id="county-indexed" class="lg:col-span-3">
@@ -293,11 +293,18 @@
         <button type="button" data-guided-next="state-context" class="advanced-context-button">Compare Counties</button>
       </aside>
 
+      <article class="conceptual-interstitial" aria-labelledby="assessmentPlacementTitle">
+        <p class="guided-kicker">How the pieces connect</p>
+        <h2 id="assessmentPlacementTitle">Assessment places the property in the shared value base.</h2>
+        <p>An assessed value is not only a number attached to one property. It also helps place that property among the other taxable properties in the county.</p>
+        <p>Once public budgets and levies are set, the tax base has to carry those obligations proportionately. If one property or group is positioned too low, more of the load shifts elsewhere. Equalization is the check that helps keep that base level before taxes are calculated.</p>
+      </article>
+
       <article class="next-step-card">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Now connect the value base to taxes.</h3>
-          <p class="mt-1 text-sm text-slate-600">Once that value base is set, taxes show how levies, credits, exemptions, and district boundaries turn assessed value into the final bill.</p>
+          <p class="mt-1 text-sm text-slate-600">Once that value base is set, taxes show how levies, credits, exemptions, and district boundaries help determine this property&rsquo;s final bill.</p>
         </div>
         <button type="button" data-guided-next="tax-context" class="next-step-button">Go to Tax Context</button>
       </article>
@@ -384,7 +391,7 @@
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Now connect this context to taxes.</h3>
-          <p class="mt-1 text-sm text-slate-600">Keep this statewide comparison as deeper equalization context, then move to how values, levies, credits, and districts become the tax bill.</p>
+          <p class="mt-1 text-sm text-slate-600">Keep this statewide comparison as deeper equalization context, then move to how values, levies, credits, and districts help determine the tax bill.</p>
         </div>
         <button type="button" data-guided-next="tax-context" class="next-step-button">Go to Tax Context</button>
       </article>
@@ -406,19 +413,13 @@
           </p>
         </div>
         <nav aria-label="Resource menu" class="footer-resource-pills">
-          <button type="button" data-assessment-dates-open class="assessment-dates-resource-button" aria-controls="assessmentDatesPanel" aria-label="Assessment Dates" title="Assessment Dates">
-            <svg class="assessment-dates-resource-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M8 2.75v3.5"></path>
-              <path d="M16 2.75v3.5"></path>
-              <path d="M3.75 9.25h16.5"></path>
-              <path d="M5.75 4.75h12.5a2 2 0 0 1 2 2v11.5a2 2 0 0 1-2 2H5.75a2 2 0 0 1-2-2V6.75a2 2 0 0 1 2-2Z"></path>
-            </svg>
-          </button>
           <a href="#faq" data-footer-target="faq" class="footer-pill-button text-slate-600">FAQs</a>
           <a href="#forms" data-footer-target="forms" class="footer-pill-button text-slate-600">Forms</a>
           <a href="#learn" data-footer-target="learn" class="footer-pill-button text-slate-600">Learn</a>
         </nav>
       </div>
+
+      <section id="importantCalendarDates" class="important-calendar-dates" aria-labelledby="importantCalendarDatesTitle"></section>
 
       <div id="footerContent" class="mt-5 hidden border-t border-slate-200 pt-5">
         <section id="about" data-footer-panel="about" class="footer-panel hidden">

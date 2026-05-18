@@ -234,7 +234,7 @@ function renderTaxHistoryShell() {
   container.innerHTML = `
     <article id="tax-history" class="tax-history-detail-panel">
       <h2 class="text-xl font-bold text-slate-700">How did levy, credits, and net taxes move?</h2>
-      <p class="mt-1 text-sm text-slate-600">After equalization frames the value base, finalized statement years show how levy, credits, exemptions, and district boundaries become the final bill.</p>
+      <p class="mt-1 text-sm text-slate-600">After equalization frames the value base, finalized statement years show how levy, credits, exemptions, and district boundaries translate that base into this property&rsquo;s final bill.</p>
       <p id="taxContextTakeaway" class="mt-3 rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200"></p>
       <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
         <table class="tax-burden-table min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
@@ -257,7 +257,7 @@ function renderTaxHistoryShell() {
 
     <article id="etr-trend" class="tax-history-rate-panel">
         <h2 class="text-xl font-bold text-slate-700">How much net tax was billed for each dollar of value?</h2>
-        <p class="mt-1 text-sm text-slate-600">Effective tax rate compares the final net tax with assessed value, making years easier to compare.</p>
+        <p class="mt-1 text-sm text-slate-600">Effective tax rate compares the final net tax with assessed value, making each year&rsquo;s tax load easier to compare.</p>
       <div class="mt-4 h-64 sm:h-72">
         <canvas id="etrChart"></canvas>
       </div>
@@ -275,7 +275,7 @@ function renderTaxDistributionShell(data) {
     <div class="data-split-view grid gap-6 lg:grid-cols-5">
       <article class="lg:col-span-3">
         <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
-          <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. Dollar amounts allocate the latest net bill by each group’s levy share.</p>
+          <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. Dollar amounts allocate the latest net bill within this parcel by each group&rsquo;s levy share.</p>
         <div class="tax-distribution-visual-grid mt-4 grid gap-4 md:items-center">
           <div id="distributionNotes" class="space-y-2 text-sm text-slate-700"></div>
           <div class="distribution-chart-panel" aria-labelledby="distributionChartTitle">

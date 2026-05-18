@@ -1710,7 +1710,43 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   color: rgb(var(--accent-primary)) !important;
 }
 
-.assessment-dates-resource-button {
+.footer-resource-card {
+  background: rgb(var(--surface-muted));
+  border-radius: var(--radius-container-md);
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  padding: 1rem;
+}
+
+.important-calendar-dates {
+  border-top: 1px solid rgb(var(--border-muted));
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+}
+
+.important-calendar-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.important-calendar-header h3 {
+  color: rgb(var(--color-slate-700));
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-top: 0.15rem;
+}
+
+.important-calendar-header p:not(.guided-kicker) {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.82rem;
+  line-height: 1.5;
+  margin-top: 0.3rem;
+  max-width: 55rem;
+}
+
+.important-calendar-action {
   align-items: center;
   background: rgb(var(--color-secondary-soft));
   border-radius: 9999px;
@@ -1718,43 +1754,78 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   color: rgb(var(--color-secondary));
   display: inline-flex;
   flex: 0 0 auto;
-  height: 2.1rem;
+  font-size: 0.85rem;
+  font-weight: 800;
   justify-content: center;
-  padding: 0;
+  min-height: 2.1rem;
+  padding: 0.45rem 0.85rem;
   transition: background-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
-  width: 2.1rem;
+  white-space: nowrap;
 }
 
-.assessment-dates-resource-icon {
-  height: 1rem;
-  width: 1rem;
-}
-
-.assessment-dates-resource-icon path {
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
-}
-
-.assessment-dates-resource-button:hover,
-.assessment-dates-resource-button[aria-expanded="true"] {
+.important-calendar-action:hover,
+.important-calendar-action[aria-expanded="true"] {
   background: rgb(var(--accent-primary-soft));
   box-shadow: inset 0 0 0 1px rgb(var(--accent-primary) / 0.24);
   color: rgb(var(--accent-primary));
 }
 
-.assessment-dates-resource-button:focus-visible {
+.important-calendar-action:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px rgb(var(--color-secondary) / 0.22), inset 0 0 0 1px rgb(var(--accent-primary) / 0.3);
 }
 
-.footer-resource-card {
-  background: rgb(var(--surface-muted));
-  border-radius: var(--radius-container-md);
-  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
-  padding: 1rem;
+.important-calendar-list {
+  border-top: 1px solid rgb(var(--border-muted));
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 0.85rem;
+}
+
+.important-calendar-item {
+  border-right: 1px solid rgb(var(--border-muted));
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.85rem 1rem;
+}
+
+.important-calendar-item:first-child {
+  padding-left: 0;
+}
+
+.important-calendar-item:last-child {
+  border-right: 0;
+  padding-right: 0;
+}
+
+.important-calendar-date {
+  color: rgb(var(--color-secondary));
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.important-calendar-item h4 {
+  color: rgb(var(--color-slate-700));
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-top: 0.12rem;
+}
+
+.important-calendar-item p:not(.important-calendar-date) {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.important-calendar-empty {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.875rem;
+  margin-top: 0.7rem;
 }
 
 .footer-pill-button,
@@ -3522,6 +3593,31 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   max-width: 48rem;
 }
 
+.conceptual-interstitial {
+  background: rgb(var(--surface-card));
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--color-secondary) / 0.18),
+    0 1px 2px rgb(var(--brand-ink) / 0.05);
+  padding: 1rem 1.15rem;
+}
+
+.conceptual-interstitial h2 {
+  color: rgb(var(--color-slate-700));
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.28;
+  margin-top: 0.25rem;
+  max-width: 52rem;
+}
+
+.conceptual-interstitial p:not(.guided-kicker) {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.92rem;
+  line-height: 1.62;
+  margin-top: 0.5rem;
+  max-width: 58rem;
+}
+
 .advanced-context-button {
   align-items: center;
   background: white;
@@ -5190,9 +5286,58 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     border-right: 0;
   }
 
+  .important-calendar-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .important-calendar-item {
+    border-bottom: 1px solid rgb(var(--border-muted));
+  }
+
+  .important-calendar-item:nth-child(2n) {
+    border-right: 0;
+    padding-right: 0;
+  }
+
+  .important-calendar-item:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+
+  .important-calendar-item:nth-child(2n + 1) {
+    padding-left: 0;
+  }
+
 }
 
 @media (max-width: 640px) {
+  .important-calendar-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .important-calendar-action {
+    width: 100%;
+  }
+
+  .important-calendar-list {
+    grid-template-columns: 1fr;
+  }
+
+  .important-calendar-item,
+  .important-calendar-item:first-child,
+  .important-calendar-item:last-child,
+  .important-calendar-item:nth-child(2n),
+  .important-calendar-item:nth-child(2n + 1) {
+    border-bottom: 1px solid rgb(var(--border-muted));
+    border-right: 0;
+    padding: 0.8rem 0;
+  }
+
+  .important-calendar-item:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
   .guided-transition {
     margin: 1.25rem auto;
     padding-left: 0.25rem;
@@ -5212,6 +5357,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .mobile-review-canvas > [data-guided-panel] > .rounded-2xl,
   .mobile-review-canvas > [data-guided-panel] > .next-step-card,
   .mobile-review-canvas > [data-guided-panel] > .advanced-context-card,
+  .mobile-review-canvas > [data-guided-panel] > .conceptual-interstitial,
   .mobile-review-canvas > [data-guided-panel] > .ooda-decision-card,
   .mobile-review-canvas > [data-guided-panel] > .civic-summary-shell,
   .mobile-review-canvas > [data-guided-panel] > .civic-review-signals,
@@ -5419,6 +5565,7 @@ footer > section.rounded-2xl {
 
 .next-step-card,
 .advanced-context-card,
+.conceptual-interstitial,
 .ooda-decision-card {
   border-radius: var(--radius-container-lg);
 }
