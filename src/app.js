@@ -331,23 +331,25 @@ function initGuidedNavigation(data, options = {}) {
   }
 
   function renderGuidedTabs(selected) {
+    const selectedIndex = primarySectionIds.indexOf(selected);
+
     tabs.forEach(item => {
       const active = item.dataset.guidedTab === selected;
       const tabIsPrimary = isPrimaryRouteId(item.dataset.guidedTab);
+      const primaryIndex = primarySectionIds.indexOf(item.dataset.guidedTab);
       const unlocked = tabIsPrimary ? unlockedSteps.has(item.dataset.guidedTab) : true;
       const terminalComplete = active && item.dataset.guidedTab === finalRouteId && visitedSteps.has(finalRouteId);
-      const complete = tabIsPrimary && unlocked && visitedSteps.has(item.dataset.guidedTab) && (!active || terminalComplete);
-      const future = tabIsPrimary && !unlocked;
+      const complete = (tabIsPrimary && selectedIndex !== -1 && primaryIndex < selectedIndex) || terminalComplete;
+      const future = tabIsPrimary && selectedIndex !== -1 && primaryIndex > selectedIndex;
       const marker = item.querySelector(".guided-step-marker");
 
       item.classList.toggle("guided-step-active", active);
       item.classList.toggle("guided-step-complete", complete);
       item.classList.toggle("guided-step-future", future);
-      item.disabled = future;
+      item.disabled = tabIsPrimary && !unlocked;
       item.setAttribute("aria-selected", String(active));
-      item.setAttribute("aria-disabled", String(future));
+      item.setAttribute("aria-disabled", String(tabIsPrimary && !unlocked));
       if (marker) {
-        const primaryIndex = primarySectionIds.indexOf(item.dataset.guidedTab);
         marker.textContent = complete ? "✓" : String(primaryIndex + 1);
       }
     });

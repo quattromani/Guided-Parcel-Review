@@ -374,7 +374,7 @@ function drawSummaryPage(ctx, model) {
   });
   let cursor = yTop - 132;
   cursor = drawKeyValueRows(ctx, [
-    ["Latest final value", model.review.latestValue ? `${formatNullableMoney(model.review.latestValue.assessedValue)} (${model.review.latestValue.year})` : "Not listed"],
+    ["Latest listed value", model.review.latestValue ? `${formatNullableMoney(model.review.latestValue.assessedValue)} (${model.review.latestValue.year})` : "Not listed"],
     ["Recent movement", formatNullablePercent(model.review.valueMovement)],
     ["Valuation group", model.identity.valuationGroup]
   ], x1, cursor, colW, { rowGap: 13 });
@@ -385,15 +385,15 @@ function drawSummaryPage(ctx, model) {
     label: `${row.year}`,
     value: row.taxes
   })).filter(point => point.value !== null && point.value !== undefined), x2, yTop - 112, colW, 86, {
-    valueLabel: "Final tax trend",
+    valueLabel: "Net tax trend",
     color: ctx.palette.green
   });
   drawKeyValueRows(ctx, [
-    ["Latest final tax", model.review.latestTax ? `${moneyCents.format(model.review.latestTax.taxes)} (${model.review.latestTax.year})` : "Not listed"],
+    ["Latest net tax", model.review.latestTax ? `${moneyCents.format(model.review.latestTax.taxes)} (${model.review.latestTax.year})` : "Not listed"],
     ["Tax movement", formatNullablePercent(model.review.taxMovement)],
     ["Effective tax rate", model.review.latestEtr === null ? "Not listed" : formatNullablePercent(model.review.latestEtr)],
     ["Tax district", model.review.taxDistrict],
-    ["Timing", `${model.review.latestFinalTaxYear} is the latest finalized tax year in this report.`]
+    ["Timing", `${model.review.latestFinalTaxYear} is the latest tax statement year in this report.`]
   ], x2, yTop - 132, colW, { rowGap: 14, valueLines: 2 });
 
   drawSectionTitle(ctx, "Review signals / follow-up", x3, yTop, colW);

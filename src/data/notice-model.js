@@ -26,9 +26,84 @@ function assessmentDateLabel(year) {
   return year ? `January 1, ${year}` : "Not listed";
 }
 
-function statusLabel(value) {
+function titleCaseStatus(value) {
   if (!value) return "Unknown";
-  return `${value}`.charAt(0).toUpperCase() + `${value}`.slice(1).toLowerCase();
+  return `${value}`
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, character => character.toUpperCase());
+}
+
+function hasValue(value) {
+  return value !== null && value !== undefined;
+}
+
+function assessmentValueStatus(row) {
+  if (!row || !hasValue(row.assessedValue)) {
+    return {
+      status: "unavailable",
+      label: "Assessment value unavailable"
+    };
+  }
+
+  if (row.status === "pending") {
+    return {
+      status: "pending",
+      label: "Assessment value pending"
+    };
+  }
+
+  if (row.status === "assessment_notice") {
+    return {
+      status: "assessment-notice",
+      label: "Assessment notice value"
+    };
+  }
+
+  return {
+    status: "value-listed",
+    label: "Assessment value listed"
+  };
+}
+
+function taxStatementStatus(propertyData, year) {
+  const statement = propertyData.taxStatements?.find(row => row.taxYear === year);
+
+  if (!statement) {
+    return {
+      status: "not-loaded",
+      label: "Tax statement not loaded",
+      finalityLabel: "Tax statement not loaded",
+      paymentLabel: "Payment status unavailable",
+      balanceDue: null,
+      statement: null
+    };
+  }
+
+  const balanceDue = hasValue(statement.taxDue) ? Number(statement.taxDue) : null;
+  const totalPaid = hasValue(statement.totalPaid) ? Number(statement.totalPaid) : null;
+  const netTax = hasValue(statement.netAmountDue) ? Number(statement.netAmountDue) : Number(statement.totalTaxesDue);
+  let paymentLabel = "Payment status unavailable";
+
+  if (balanceDue !== null && balanceDue <= 0) {
+    paymentLabel = "Paid in full";
+  } else if (totalPaid > 0 && balanceDue > 0) {
+    paymentLabel = "Partially paid";
+  } else if (balanceDue > 0) {
+    paymentLabel = "Balance due";
+  }
+
+  return {
+    status: "statement-loaded",
+    label: "Tax statement loaded",
+    finalityLabel: "Tax statement loaded",
+    paymentLabel,
+    balanceDue,
+    netTax: Number.isFinite(netTax) ? netTax : null,
+    totalPaid,
+    statement
+  };
 }
 
 function protestWindow(calendar) {
@@ -87,6 +162,9 @@ export function buildAssessmentNoticeModel(propertyData, recordCard, calendar) {
     ? (currentBreakdown.dwelling ?? 0) + (currentBreakdown.outbuilding ?? 0)
     : null;
   const deadline = protestWindow(calendar);
+  const assessmentStatus = assessmentValueStatus(currentYearRow);
+  const statementStatus = taxStatementStatus(propertyData, snapshotYear);
+
   return {
     situsAddress: propertyData.parcel.situsAddress,
     displayAddress: displayAddress(propertyData.parcel.situsAddress),
@@ -99,10 +177,16 @@ export function buildAssessmentNoticeModel(propertyData, recordCard, calendar) {
     assessmentDateLabel: "Assessment Date",
     assessmentDate: assessmentDateLabel(snapshotYear),
     taxYear: snapshotYear,
-    valueStatus: currentYearRow?.status ?? "unknown",
-    valueStatusLabel: statusLabel(currentYearRow?.status),
+    valueStatus: assessmentStatus.status,
+    valueStatusLabel: assessmentStatus.label,
     assessmentLabel: `${snapshotYear} Assessment`,
-    assessmentStatusLabel: `${snapshotYear} Assessment: ${statusLabel(currentYearRow?.status)}`,
+    assessmentStatusLabel: `${snapshotYear} Assessment: ${assessmentStatus.label}`,
+    sourceStatusLabel: titleCaseStatus(currentYearRow?.status),
+    taxStatementStatusLabel: statementStatus.finalityLabel,
+    paymentStatusLabel: statementStatus.paymentLabel,
+    paymentBalanceDue: statementStatus.balanceDue,
+    latestStatementNetTax: statementStatus.netTax,
+    latestStatementTotalPaid: statementStatus.totalPaid,
     currentAssessedValue,
     priorAssessedValue: latestValueRow?.year === snapshotYear
       ? previousValueRow?.assessedValue ?? null

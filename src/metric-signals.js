@@ -221,10 +221,10 @@ function medianRatioSignal({ value, standards, context }) {
     return signalResult({
       tone,
       severity: tone === "red" ? "alarm" : "caution",
-      label: tone === "red" ? "Outside expected range" : "Just outside range",
+      label: tone === "red" ? "Outside reference range" : "Near edge of range",
       explanation: tone === "red"
-        ? "This value is outside the expected range for the applicable property class."
-        : "This value is outside the expected range, but close enough to read with context.",
+        ? "This value is outside the reference range for the applicable property class."
+        : "This value is near the edge of the reference range and is worth reviewing in context.",
       trigger: tone === "red"
         ? "median ratio outside applicable class range by at least 1.2 points"
         : "median ratio just outside applicable class range",
@@ -246,8 +246,8 @@ function medianRatioSignal({ value, standards, context }) {
   return signalResult({
     tone,
     severity: tone === "yellowGreen" ? "context" : "within",
-    label: tone === "strongGreen" ? "Near center" : tone === "green" ? "Within expected range" : "Near edge of range",
-    explanation: "This median ratio is within the expected range for the applicable property class.",
+    label: tone === "yellowGreen" ? "Near edge of range" : "Within expected range",
+    explanation: "This median ratio is inside the expected range for the applicable property class.",
     trigger: "median ratio inside applicable class range",
     normalizedValue,
     standardUsed
@@ -272,8 +272,8 @@ function codSignal({ value, standards, context }) {
     return signalResult({
       tone: "strongGreen",
       severity: "within",
-      label: "Tight cluster",
-      explanation: "Lower COD means the sales ratios are more tightly grouped around the median.",
+      label: "Inside reference range",
+      explanation: "Lower COD means the sales ratios are more tightly grouped around the median. This result is inside the selected reference range.",
       trigger: "COD within the strongest part of the selected range",
       normalizedValue,
       standardUsed
@@ -284,8 +284,8 @@ function codSignal({ value, standards, context }) {
     return signalResult({
       tone: "green",
       severity: "within",
-      label: "Within range",
-      explanation: "Lower COD means more uniform assessment ratios. This result is within the selected range.",
+      label: "Inside reference range",
+      explanation: "Lower COD means more uniform assessment ratios. This result is inside the selected reference range.",
       trigger: "COD within selected range",
       normalizedValue,
       standardUsed
@@ -296,8 +296,8 @@ function codSignal({ value, standards, context }) {
     return signalResult({
       tone: "yellowGreen",
       severity: "context",
-      label: "Useful with context",
-      explanation: "Lower COD means more uniform assessment ratios. This result is near the caution area, but still within the selected rural or small-jurisdiction range.",
+      label: "Near upper edge",
+      explanation: "Lower COD means more uniform assessment ratios. This result is near the upper edge but still inside the selected reference range.",
       trigger: "COD near upper part of selected range",
       normalizedValue,
       standardUsed
@@ -309,10 +309,10 @@ function codSignal({ value, standards, context }) {
   return signalResult({
     tone,
     severity: tone === "red" ? "alarm" : "caution",
-    label: tone === "red" ? "Outside range" : "Above range",
+    label: tone === "red" ? "Outside reference range" : "Near upper edge",
     explanation: tone === "red"
-      ? "This COD is materially above the selected range, which may indicate less uniform assessment ratios."
-      : "This COD is above the selected range and should be read with caution.",
+      ? "This COD is above the selected reference range."
+      : "This COD is near or just above the selected reference range and should be read with context.",
     trigger: tone === "red"
       ? "COD above selected range by at least 1.2 points"
       : "COD above selected range",
@@ -355,10 +355,10 @@ function prdSignal({ value, standards }) {
     return signalResult({
       tone,
       severity: tone === "red" ? "alarm" : "caution",
-      label: tone === "red" ? "Outside expected range" : "Just outside range",
+      label: tone === "red" ? "Outside reference range" : "Near edge of range",
       explanation: tone === "red"
-        ? "This PRD is outside the expected range by at least 1.2 points."
-        : "This PRD is outside the expected range, but close enough to read with context.",
+        ? "This PRD is outside the reference range by at least 1.2 points."
+        : "This PRD is near the edge of the reference range and is worth reviewing in context.",
       trigger: tone === "red"
         ? "PRD outside expected range by at least 1.2 points"
         : "PRD just outside expected range",
@@ -381,7 +381,7 @@ function prdSignal({ value, standards }) {
     tone,
     severity: tone === "yellowGreen" ? "context" : "within",
     label: tone === "yellowGreen" ? "Near upper edge" : "Within expected range",
-    explanation: "This PRD is within the expected range. Values above the upper range may suggest regressivity; values below the lower range may suggest progressivity.",
+    explanation: "This PRD is inside the expected range. Values above the upper range can be a broader equalization signal, not a parcel-specific finding.",
     trigger: "PRD inside expected range",
     normalizedValue,
     standardUsed

@@ -56,9 +56,9 @@ const resourcesByView = {
     learnTitle: "Tax terms",
     faqs: [
       ["Why does tax context come after equalization?", "Equalization is the fairness check on the value base. Tax context then shows how levies, credits, exemptions, and boundaries turn that value base into a bill."],
-      ["What is the difference between gross tax and net taxes paid?", "Gross tax starts from value and levy. Net taxes paid reflects applicable credits and adjustments."],
+      ["What is the difference between gross tax and net tax?", "Gross tax starts from value and levy. Net tax reflects applicable credits and adjustments before payment status is applied."],
       ["Why do value and taxes not always move together?", "Taxes also depend on budgets, levies, exemptions, credits, and tax district changes."],
-      ["What does effective tax rate show?", "It divides final taxes by assessed value so different years can be compared more clearly."],
+      ["What does effective tax rate show?", "It divides statement net tax by assessed value so different years can be compared more clearly."],
       ["Where do credits fit?", "Credits reduce the final amount due after the tax calculation is applied."]
     ],
     learn: [

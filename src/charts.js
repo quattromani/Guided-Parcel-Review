@@ -366,7 +366,7 @@ export function buildTaxBurdenPattern(data) {
       labels,
       datasets: [
         {
-          label: "Net taxes paid",
+          label: "Net taxes",
           data: netTaxes,
           tension: 0.35,
           borderWidth: 3,
@@ -410,7 +410,7 @@ export function buildTaxBurdenPattern(data) {
       },
       scales: {
         y: {
-          title: mobileAxisTitle("Net taxes paid"),
+          title: mobileAxisTitle("Net taxes"),
           ticks: { callback: value => wholeMoney.format(value) },
           suggestedMin: Math.floor((Math.min(...netTaxes) - 150) / 250) * 250,
           suggestedMax: Math.ceil((Math.max(...netTaxes) + 150) / 250) * 250
@@ -1638,36 +1638,95 @@ function normalizedPrdRange(range) {
   return max <= 2 ? { min: min * 100, max: max * 100 } : { min, max };
 }
 
-function marketAreaSignal(selected, summary, classStats, medianRange = null, isParcelGroup = true) {
-  const medianDelta = selected.median - summary.median;
-  const codDelta = selected.cod - summary.cod;
+function finiteMetric(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function rangePositionText(value, range, { rangeLabel = "reference range", edgeShare = 0.14 } = {}) {
+  const number = finiteMetric(value);
+  const min = finiteMetric(range?.min);
+  const max = finiteMetric(range?.max);
+
+  if (number === null || min === null || max === null) return `shown without a ${rangeLabel}`;
+
+  const edgeDistance = Math.max(max - min, 1) * edgeShare;
+  if (number < min) return `outside the ${rangeLabel}, below the lower edge`;
+  if (number > max) return `outside the ${rangeLabel}, above the upper edge`;
+  if (number - min <= edgeDistance) return `near the lower edge of the ${rangeLabel}`;
+  if (max - number <= edgeDistance) return `near the upper edge of the ${rangeLabel}`;
+  return `inside the ${rangeLabel}`;
+}
+
+function salesSampleText(count, className) {
+  if (!Number.isFinite(count) || count <= 0) {
+    return `qualified ${className} sales are not available for the selected local group`;
+  }
+
+  const saleLabel = count === 1 ? "sale" : "sales";
+  const base = `${integer.format(count)} qualified ${className} ${saleLabel}`;
+
+  if (count < 5) return `${base}; this is a limited sample, so there are not enough sales to support a strong local reading`;
+  if (count < 25) return `${base}; this is a limited sample and should be interpreted with caution`;
+
+  return base;
+}
+
+function marketAreaSignal(selected, summary, classStats, medianRange = null, standards = null, isParcelGroup = true) {
+  if (!selected || !summary) {
+    return "Local equalization data is unavailable for the selected group. Use countywide measures as broader context and verify source coverage before drawing conclusions.";
+  }
+
+  const median = finiteMetric(selected.median);
+  const cod = finiteMetric(selected.cod);
+  const prd = finiteMetric(selected.prd);
+  const countyMedian = finiteMetric(summary.median);
+  const countyCod = finiteMetric(summary.cod);
   const classLabel = classStats?.classLabel ?? "selected property class";
   const className = classLabel.replace(/\s+real property/i, "").toLowerCase();
   const groupKind = classStats?.classKey === "agricultural" ? "market area" : "valuation group";
-  const rangeText = medianRange
-    ? selected.median >= medianRange.min && selected.median <= medianRange.max
-      ? "inside the expected range"
-      : "outside the expected range"
-    : "shown for context";
-  const medianText = Math.abs(medianDelta) < 1
-    ? `close to the county ${className} median`
-    : medianDelta > 0
-      ? `${Math.abs(medianDelta).toFixed(2)} points above the county ${className} median`
-      : `${Math.abs(medianDelta).toFixed(2)} points below the county ${className} median`;
-  const codText = Math.abs(codDelta) < 1
-    ? "close to the countywide pattern"
-    : codDelta < 0
-      ? `less dispersed than the county overall by ${Math.abs(codDelta).toFixed(2)} COD points`
-      : `more dispersed than the county overall by ${Math.abs(codDelta).toFixed(2)} COD points`;
-  const sampleText = selected.count < 10
-    ? " Because this is a small sample, its position can move more from sale to sale."
-    : "";
+  const prdRange = normalizedPrdRange(standards?.prdStandards?.acceptableRange);
+  const codRange = getCodInterpretationRange(classStats, standards);
+  const count = finiteMetric(selected.count);
+  const salesText = salesSampleText(count, className);
+  const medianPosition = median !== null
+    ? rangePositionText(median, medianRange, { rangeLabel: "expected range" })
+    : "not available in the selected local group";
+  const medianComparison = median !== null && countyMedian !== null
+    ? Math.abs(median - countyMedian) < 1
+      ? `close to the county ${className} median`
+      : median > countyMedian
+        ? `${Math.abs(median - countyMedian).toFixed(2)} points above the county ${className} median`
+        : `${Math.abs(median - countyMedian).toFixed(2)} points below the county ${className} median`
+    : "shown without a county comparison";
+  const codPosition = cod !== null
+    ? rangePositionText(cod, codRange, { rangeLabel: "COD reference range" })
+    : "not available in the selected local group";
+  const codComparison = cod !== null && countyCod !== null
+    ? Math.abs(cod - countyCod) < 1
+      ? "close to the countywide COD pattern"
+      : cod < countyCod
+        ? `less dispersed than county ${className} overall by ${Math.abs(cod - countyCod).toFixed(2)} COD points`
+        : `more dispersed than county ${className} overall by ${Math.abs(cod - countyCod).toFixed(2)} COD points`
+    : "shown without a county COD comparison";
+  const prdPosition = prd !== null
+    ? rangePositionText(prd, prdRange, { rangeLabel: "PRD reference range", edgeShare: 0.18 })
+    : "not available in the selected local group";
 
   const groupIntro = isParcelGroup
     ? `${selected.label} is this property’s local ${groupKind}`
     : `${selected.label} is the selected ${groupKind}`;
+  const medianSentence = median !== null
+    ? `The median ratio is ${formatRatio(median)}, ${medianPosition}, and ${medianComparison}.`
+    : `The median ratio is ${medianPosition}.`;
+  const codSentence = cod !== null
+    ? `The local COD is ${formatRatio(cod)}, ${codPosition}, and ${codComparison}.`
+    : `The local COD is ${codPosition}.`;
+  const prdSentence = prd !== null
+    ? `PRD is ${formatRatio(prd)}, ${prdPosition}.`
+    : `PRD is ${prdPosition}.`;
 
-  return `${groupIntro}. It includes ${integer.format(selected.count)} qualified ${className} sales. Its median ratio is ${formatRatio(selected.median)}, ${medianText} and ${rangeText}. Its COD is ${formatRatio(selected.cod)}, ${codText}.${sampleText}`;
+  return `${groupIntro}. It includes ${salesText}. ${medianSentence} ${codSentence} ${prdSentence} These are equalization signals for context, not parcel-specific findings or recommendations by themselves.`;
 }
 
 function valuationGroupLookup(valuationGroups, propertyClass = "residential") {
@@ -2088,10 +2147,10 @@ function formatPercentShare(value) {
     : "0%";
 }
 
-function renderMarketNarrative(selected, summary, classStats, medianRange, isParcelGroup = true) {
+function renderMarketNarrative(selected, summary, classStats, medianRange, standards, isParcelGroup = true) {
   const narrative = document.getElementById("marketNarrative");
   if (!narrative) return;
-  narrative.textContent = marketAreaSignal(selected, summary, classStats, medianRange, isParcelGroup);
+  narrative.textContent = marketAreaSignal(selected, summary, classStats, medianRange, standards, isParcelGroup);
 }
 
 function countywideTotalForClass(marketPositionData, classKey = "residential") {
@@ -2629,7 +2688,7 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
       ...signalContext,
       classStats
     });
-    renderMarketNarrative(selected, countywide, classStats, medianRange, isParcelGroup);
+    renderMarketNarrative(selected, countywide, classStats, medianRange, iaaoStandards, isParcelGroup);
     renderMarketPositionScatter(selected, classStats, iaaoStandards, update);
     renderMarketPriceSummary(selected, countywide);
   };

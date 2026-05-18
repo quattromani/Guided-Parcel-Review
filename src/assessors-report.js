@@ -382,7 +382,7 @@ function drawAssessorTaxSummaryPage(ctx, model) {
     color: ctx.palette.green
   });
   drawKeyValueRows(ctx, [
-    ["Latest final tax", formatNullableMoney(taxContext.latestNetTax, true)],
+    ["Latest net tax", formatNullableMoney(taxContext.latestNetTax, true)],
     ["Gross / credits", [formatNullableMoney(taxContext.latestStatement?.grossTaxAmount, true), formatNullableMoney(taxContext.latestCreditAmount, true)].filter(Boolean).join(" / ")],
     ["Effective tax rate", formatNullablePercent(taxContext.effectiveTaxRate)],
     ["Latest final levy", formatNullableLevy(taxContext.totalLevy)],

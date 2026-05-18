@@ -185,8 +185,8 @@ function renderValueTaxHistoryShell() {
           <div class="mobile-support-content">
             <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
             <p class="mt-1 text-sm text-slate-600">
-                Compare assessed value, final taxes paid, and effective tax rate (ETR) year by year.
-                The table shows how value movement relates to tax bills and the final rate after levies, credits, and exemptions are reflected.
+                Compare assessed value, net tax, and effective tax rate (ETR) year by year.
+                The table keeps tax statement amounts separate from any payment balance shown in the source statement.
             </p>
             <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
               <table class="value-tax-history-table min-w-full divide-y divide-slate-200 text-sm">
@@ -194,7 +194,7 @@ function renderValueTaxHistoryShell() {
                   <tr>
                     <th class="px-3 py-2 text-left font-semibold">Year</th>
                     <th class="px-3 py-2 text-right font-semibold">Assessed Value</th>
-                    <th class="px-3 py-2 text-right font-semibold">Taxes Paid</th>
+                    <th class="px-3 py-2 text-right font-semibold">Net Tax</th>
                     <th class="px-3 py-2 text-right font-semibold">ETR</th>
                   </tr>
                 </thead>
@@ -210,7 +210,7 @@ function renderValueTaxHistoryShell() {
         <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 class="text-xl font-bold text-slate-700">How are this property’s value and taxes moving together?</h2>
-              <p class="text-sm text-slate-600">Assessed value and taxes begin from the same baseline so their changes can be compared side by side. Tax bills are included only after they are finalized.</p>
+              <p class="text-sm text-slate-600">Assessed value and net taxes begin from the same baseline so their changes can be compared side by side. Tax statement years are included when a net bill is available.</p>
           </div>
           <p id="baseYearNote" class="text-xs font-medium text-slate-500"></p>
         </div>
@@ -235,6 +235,7 @@ function renderTaxHistoryShell() {
     <article id="tax-history" class="tax-history-detail-panel">
       <h2 class="text-xl font-bold text-slate-700">How did levy, credits, and net taxes move?</h2>
       <p class="mt-1 text-sm text-slate-600">After equalization frames the value base, finalized statement years show how levy, credits, exemptions, and district boundaries become the final bill.</p>
+      <p id="taxContextTakeaway" class="mt-3 rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200"></p>
       <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
         <table class="tax-burden-table min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
           <thead class="tax-burden-table-head">
@@ -255,8 +256,8 @@ function renderTaxHistoryShell() {
     </article>
 
     <article id="etr-trend" class="tax-history-rate-panel">
-        <h2 class="text-xl font-bold text-slate-700">How much tax was paid for each dollar of value?</h2>
-        <p class="mt-1 text-sm text-slate-600">Effective tax rate compares the final tax bill with assessed value, making years easier to compare.</p>
+        <h2 class="text-xl font-bold text-slate-700">How much net tax was billed for each dollar of value?</h2>
+        <p class="mt-1 text-sm text-slate-600">Effective tax rate compares the final net tax with assessed value, making years easier to compare.</p>
       <div class="mt-4 h-64 sm:h-72">
         <canvas id="etrChart"></canvas>
       </div>
@@ -331,7 +332,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       </div>
       <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
-        <p class="max-w-2xl text-sm leading-6 text-slate-600">COD, PRD, and COV are ratio-study statistics. Level of value is the class median ratio range. Current status stays first, with each measure's band history carried inside the same card.</p>
+        <p class="max-w-2xl text-sm leading-6 text-slate-600">COD, PRD, and COV are ratio-study statistics. Level of value is the class median ratio range. Countywide warnings are broader equalization context, not parcel-specific findings.</p>
       </div>
       <div id="assessmentAccuracySummary" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
     </section>
@@ -605,7 +606,7 @@ function propertySwitcherMarkup(propertySwitcher, snapshotModel) {
 
   return `
     <div class="parcel-lookup-placeholder ${hasActiveProperty ? "" : "property-switcher-empty"}" data-property-switcher-shell>
-      <label class="parcel-lookup-label" for="propertySwitcher">${hasActiveProperty ? "Looking for another property?" : "Select a sample property"}</label>
+      <label class="parcel-lookup-label" for="propertySwitcher">${hasActiveProperty ? "Switch sample property" : "Select a sample property"}</label>
       <select
         id="propertySwitcher"
         class="parcel-lookup-shell property-switcher-select"
@@ -716,7 +717,7 @@ function switcherClassLabel(value) {
 function disabledParcelLookupMarkup() {
   return `
     <div class="parcel-lookup-placeholder" data-parcel-lookup>
-      <p class="parcel-lookup-label">Looking for another property?</p>
+      <p class="parcel-lookup-label">Sample property selector</p>
       <button
         type="button"
         class="parcel-lookup-shell"
@@ -724,13 +725,13 @@ function disabledParcelLookupMarkup() {
         aria-disabled="true"
         aria-expanded="false"
         aria-controls="parcelLookupPopover"
-        aria-label="Looking for another property? Search by address, parcel ID, or owner name"
+        aria-label="Sample property inventory is not connected to live parcel search"
       >
-        <span class="parcel-lookup-input" title="Address, parcel ID, or owner name">Address, parcel ID, or owner name</span>
-        <span class="parcel-lookup-action" aria-hidden="true">Search</span>
+        <span class="parcel-lookup-input" title="Sample inventory only">Sample inventory only</span>
+        <span class="parcel-lookup-action" aria-hidden="true">Demo</span>
       </button>
       <div id="parcelLookupPopover" class="parcel-lookup-popover" data-parcel-lookup-popover hidden>
-        Property lookup will be available when this site is connected to a parcel API or assessment database.
+        This prototype uses pre-loaded sample records. Live parcel lookup will be available only after a parcel API or assessment database is connected.
       </div>
     </div>
   `;
@@ -1015,6 +1016,7 @@ function renderPropertyDetails(data, recordCard) {
   document.getElementById("propertyDetails").innerHTML = [
     renderCards(identityDetails),
     renderCards(physicalDetails),
+    costSourceLimitation(recordCard),
     technicalCostModel(recordCard, data),
     sourceExtractDetails(recordCard),
     classificationDetails(data),
@@ -1674,7 +1676,12 @@ function recordCardSource(recordCard) {
         </table>
       </section>
     `
-    : "";
+    : `
+      <section class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-sm leading-6 text-slate-600">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Record review history</p>
+        <p class="mt-1">No review-history rows were available in the loaded source export.</p>
+      </section>
+    `;
 
   return disclosure("What source record is this based on?", recordCard.source.system, `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
@@ -1703,7 +1710,13 @@ function recordCardSource(recordCard) {
 }
 
 function ownershipHistory(recordCard) {
-  if (!recordCard?.ownershipHistory?.length) return "";
+  if (!recordCard?.ownershipHistory?.length) {
+    return disclosure("What sale and ownership history is on record?", "Unavailable", `
+      <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+        Sale and ownership-history rows were not available in the loaded source export. This means the sample record has no history rows to display; it is not treated as a data-load error.
+      </div>
+    `);
+  }
 
   return disclosure("What sale and ownership history is on record?", `${recordCard.ownershipHistory.length} transfers`, `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
@@ -1979,6 +1992,16 @@ function hasMarshallSwiftCostDetail(cost) {
     && cost.rcnld !== null
     && cost.rcnld !== undefined
   );
+}
+
+function costSourceLimitation(recordCard) {
+  if (hasMarshallSwiftCostDetail(recordCard?.costApproach)) return "";
+
+  return disclosure("What value-model details are unavailable?", "Cost bridge unavailable", `
+    <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+      The loaded GWorks export lists record facts and assessed value components, but it does not include the Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD bridge needed to reconstruct the assessor's full cost model. Those fields are shown as unavailable rather than inferred.
+    </div>
+  `);
 }
 
 function sourceExtractDetails(recordCard) {
@@ -2428,6 +2451,48 @@ function localMarketQuickReadLine(selectedMarket, context = {}) {
   `;
 }
 
+function statementForYear(data, year) {
+  return (data.taxStatements || []).find(statement => statement.taxYear === year) ?? null;
+}
+
+function paymentStatusForStatement(statement) {
+  if (!statement) return "Payment status unavailable.";
+
+  const balance = statement.taxDue !== null && statement.taxDue !== undefined ? Number(statement.taxDue) : null;
+  const paid = statement.totalPaid !== null && statement.totalPaid !== undefined ? Number(statement.totalPaid) : null;
+
+  if (balance !== null && balance <= 0) {
+    return `Payment status: paid in full; balance due ${formatNullableMoney(balance, true)}.`;
+  }
+
+  if (paid > 0 && balance > 0) {
+    return `Payment status: partially paid; balance due ${formatNullableMoney(balance, true)}.`;
+  }
+
+  if (balance > 0) {
+    return `Payment status: balance due ${formatNullableMoney(balance, true)}.`;
+  }
+
+  return "Payment status is not available in the loaded statement fields.";
+}
+
+function taxTimingLineForSnapshot(data, snapshot) {
+  const statement = statementForYear(data, snapshot.year);
+  const netTax = statement?.netAmountDue ?? statement?.totalTaxesDue ?? null;
+
+  if (statement && netTax !== null && netTax !== undefined) {
+    return `
+      The <strong>${snapshot.year}</strong> tax statement is loaded with net tax of <strong>${formatNullableMoney(netTax, true)}</strong>.
+      ${paymentStatusForStatement(statement)} Statement finality, payment status, and any review window are separate from the assessed value.
+    `;
+  }
+
+  return `
+    The <strong>${snapshot.year}</strong> tax statement is not loaded in this sample.
+    Later budgets, certified levies, credits, and exemptions may still affect the bill; keep that timing separate from the assessed value.
+  `;
+}
+
 function renderSummary(data, recordCard, summaryContext = {}) {
   const snapshot = getSnapshotHistory(data);
   const previousValue = getPreviousFinalValueHistory(data);
@@ -2445,10 +2510,7 @@ function renderSummary(data, recordCard, summaryContext = {}) {
       For <strong>${snapshot.year}</strong>, the assessed value is <strong>${formatNullableMoney(snapshot.assessedValue)}</strong>,
       <strong>${formatNullablePercent(valueChangeFromPrior)}</strong> from the prior finalized value.
     `;
-  const taxTimingLine = `
-    The <strong>${snapshot.year}</strong> tax bill is <strong>not final</strong>. Later budgets, certified levies,
-    credits, and exemptions still have to be applied.
-  `;
+  const taxTimingLine = taxTimingLineForSnapshot(data, snapshot);
   const marketLine = marketSummary ? localMarketQuickReadLine(marketSummary.selectedMarket, marketSummary) : `
     Local market context is available later in the guide, after the property facts and tax district are confirmed.
   `;
@@ -2640,7 +2702,7 @@ function renderPropertyMovementSummary(data) {
       previousValue && lastValue ? `${previousValue.year}-${lastValue.year}` : "Recent available years"
     ],
     [
-      "Taxes paid",
+      "Net taxes",
       signedPercent(percentChangeBetween(previousTax?.taxes, lastTax?.taxes)),
       `${formatNullableMoney(previousTax?.taxes, true)} to ${formatNullableMoney(lastTax?.taxes, true)}`,
       previousTax && lastTax ? `${previousTax.year}-${lastTax.year} finalized` : "Recent finalized years"
@@ -2802,6 +2864,56 @@ function renderTaxHistoryTable(data) {
 
     sourceNote.textContent = notes.join(" ");
   }
+
+  renderTaxContextTakeaway(data, displayLevyByYear);
+}
+
+function renderTaxContextTakeaway(data, displayLevyByYear) {
+  const container = document.getElementById("taxContextTakeaway");
+  if (!container) return;
+
+  const valueRows = (data.taxpayerHistory || [])
+    .filter(row => row.assessedValue !== null && row.assessedValue !== undefined)
+    .slice()
+    .sort((a, b) => a.year - b.year);
+  const taxRows = finalizedTaxStatements(data)
+    .slice()
+    .sort((a, b) => a.taxYear - b.taxYear)
+    .map(statement => ({
+      year: statement.taxYear,
+      netTax: statement.netAmountDue ?? statement.totalTaxesDue ?? null,
+      credits: statementTotalCredits(statement)
+    }))
+    .filter(row => row.netTax !== null && row.netTax !== undefined);
+  const firstValue = valueRows[0];
+  const lastValue = valueRows.at(-1);
+  const firstTax = taxRows[0];
+  const lastTax = taxRows.at(-1);
+
+  if (!firstValue || !lastValue || !firstTax || !lastTax) {
+    container.textContent = "Assessment value, levy, credits, and net tax are shown separately so each source field can be reviewed without treating one field as the whole tax story.";
+    return;
+  }
+
+  const valueChange = percentChangeBetween(firstValue.assessedValue, lastValue.assessedValue);
+  const taxChange = percentChangeBetween(firstTax.netTax, lastTax.netTax);
+  const firstLevy = displayLevyByYear?.get(firstTax.year)?.levy ?? null;
+  const lastLevy = displayLevyByYear?.get(lastTax.year)?.levy ?? null;
+  const levyPhrase = firstLevy !== null && lastLevy !== null && firstLevy !== undefined && lastLevy !== undefined
+    ? Number(lastLevy) < Number(firstLevy)
+      ? ` The levy declined from ${formatNullableLevy(firstLevy)} to ${formatNullableLevy(lastLevy)}.`
+      : Number(lastLevy) > Number(firstLevy)
+        ? ` The levy increased from ${formatNullableLevy(firstLevy)} to ${formatNullableLevy(lastLevy)}.`
+        : ` The levy was unchanged at ${formatNullableLevy(lastLevy)}.`
+    : "";
+  const creditPhrase = lastTax.credits
+    ? ` Credits are reflected in the ${lastTax.year} net tax amount.`
+    : "";
+  const taxMovementPhrase = Math.abs(taxChange ?? 0) < 0.05
+    ? `net taxes stayed nearly flat (${signedPercent(taxChange)})`
+    : `net taxes changed ${signedPercent(taxChange)}`;
+
+  container.textContent = `From ${firstValue.year} to ${lastValue.year}, assessed value changed ${signedPercent(valueChange)} while ${taxMovementPhrase} from ${firstTax.year} to ${lastTax.year}.${levyPhrase}${creditPhrase} These fields help explain why value growth does not always translate into parallel tax growth.`;
 }
 
 function taxHistoryLevyDisplay(row) {

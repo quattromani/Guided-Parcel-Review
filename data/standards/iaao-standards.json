@@ -93,16 +93,16 @@
           "severity": "useful",
           "label": "Broad sample",
           "trigger": "large share of countywide qualified sales",
-          "explanation": "The sales sample is broad enough to provide useful context for this comparison."
+          "explanation": "The sales sample provides broad context for this comparison."
         },
         {
           "min": 100,
           "minShare": 0.25,
           "tone": "yellowGreen",
           "severity": "context",
-          "label": "Usable sample",
+          "label": "Available sample",
           "trigger": "usable share of countywide qualified sales",
-          "explanation": "Enough qualified sales are available to provide useful context for this comparison."
+          "explanation": "Qualified sales are available for context in this comparison."
         },
         {
           "min": 50,
@@ -110,23 +110,23 @@
           "severity": "context",
           "label": "Limited sample",
           "trigger": "modest number of qualified sales",
-          "explanation": "The sales sample can help with context, but it should be read carefully."
+          "explanation": "The sales sample is limited and should be interpreted with caution."
         },
         {
           "min": 10,
           "tone": "orange",
           "severity": "caution",
-          "label": "Thin sample",
+          "label": "Limited sample",
           "trigger": "small number of qualified sales",
-          "explanation": "The sales sample is thin, so this comparison may be less reliable."
+          "explanation": "The sales sample is limited, so interpret this comparison with caution."
         },
         {
           "max": 9,
           "tone": "red",
           "severity": "alarm",
-          "label": "Very thin sample",
+          "label": "Limited sample",
           "trigger": "fewer than 10 qualified sales",
-          "explanation": "The sales sample is too thin to support a confident comparison by itself."
+          "explanation": "There are not enough sales to support a strong local reading by itself."
         }
       ]
     }

@@ -195,7 +195,7 @@ function buildFinalReviewModel(data, context = {}) {
     intro: "The main takeaways from the property record, value movement, market context, equalization, taxes, and review signals are gathered here for orientation. This is not a filing recommendation.",
     blocks: [
       {
-        narrative: "The first part of the review anchors the parcel facts, then separates current value status from finalized value history. That keeps the property description and value movement clear before adding market or tax context.",
+        narrative: "The first part of the review anchors the parcel facts, then separates assessment value status from tax statement and payment status. That keeps the property description and value movement clear before adding market or tax context.",
         cards: [
           {
             step: "Step 1 · Property Record",
@@ -212,11 +212,11 @@ function buildFinalReviewModel(data, context = {}) {
             value: currentYearPending ? `${notice.taxYear} pending` : formatNullableMoney(notice.currentAssessedValue),
             tone: currentYearPending ? "pending" : "",
             meta: latestValue
-              ? `Latest final value: ${formatNullableMoney(latestValue.assessedValue)} (${latestValue.year})`
-              : "No final assessed value listed",
+              ? `Latest listed value: ${formatNullableMoney(latestValue.assessedValue)} (${latestValue.year})`
+              : "No assessed value listed",
             note: latestValueMovement !== null && previousValue
-              ? `Latest known final value movement is ${formatNullablePercent(latestValueMovement)} from ${previousValue.year} to ${latestValue.year}.`
-              : "Value movement depends on available finalized assessment years."
+              ? `Latest listed value movement is ${formatNullablePercent(latestValueMovement)} from ${previousValue.year} to ${latestValue.year}.`
+              : "Value movement depends on available assessment years."
           }
         ]
       },
@@ -243,8 +243,8 @@ function buildFinalReviewModel(data, context = {}) {
             step: "Step 5 · Tax Context",
             route: "tax-context",
             value: latestEtr !== null ? `ETR ${formatNullablePercent(latestEtr)}` : "ETR pending",
-            meta: latestTax ? `Net taxes ${moneyCents.format(latestTax.taxes)} (${latestTax.year})` : "No final tax bill listed",
-            note: "Effective tax rate compares finalized taxes paid with assessed value after levy, credits, and exemptions are reflected in the final bill."
+            meta: latestTax ? `Net tax ${moneyCents.format(latestTax.taxes)} (${latestTax.year})` : "No tax statement listed",
+            note: "Effective tax rate compares statement net tax with assessed value after levy, credits, and exemptions are reflected."
           },
           {
             step: "Step 6 · Review Signals",
