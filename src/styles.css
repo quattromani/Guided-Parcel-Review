@@ -3755,15 +3755,15 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .assessment-metric-status-inside {
-  background: rgb(var(--color-green-soft));
-  box-shadow: inset 0 0 0 1px rgb(var(--color-green) / 0.32);
-  color: rgb(var(--color-green-dark));
+  background: rgb(var(--surface-muted));
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
 }
 
 .assessment-metric-status-outside {
-  background: rgb(var(--color-red-soft));
-  box-shadow: inset 0 0 0 1px rgb(var(--color-red) / 0.30);
-  color: rgb(var(--color-red));
+  background: rgb(var(--surface-muted));
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
 }
 
 .assessment-metric-status-unknown {
@@ -4396,6 +4396,73 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   }
 }
 
+@media (min-width: 1024px) and (max-width: 1180px) and (orientation: portrait) {
+  #assessmentAccuracySummary {
+    gap: 0.75rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  #assessmentAccuracySummary .assessment-band-card {
+    padding: 0.85rem !important;
+  }
+
+  #assessmentAccuracySummary .assessment-band-card::before {
+    left: 0.85rem;
+    right: 0.85rem;
+  }
+
+  #assessmentAccuracySummary .assessment-metric-value {
+    font-size: 1.1rem;
+  }
+
+  #assessmentAccuracySummary .assessment-band-chart {
+    height: 6rem !important;
+    min-height: 6rem;
+  }
+
+  #assessmentAccuracySummary .assessment-band-copy {
+    display: -webkit-box;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  #assessmentAccuracySummary .assessment-band-footer {
+    font-size: 0.64rem;
+    padding-top: 0.55rem;
+  }
+
+  .equalization-unified-section {
+    display: block !important;
+  }
+
+  .equalization-unified-section > * + * {
+    border-left: 0;
+    border-top: 1px solid rgb(var(--border-muted));
+    margin-top: 1.5rem;
+    padding-left: 0 !important;
+    padding-top: 1.5rem;
+  }
+
+  .equalization-unified-section > .equalization-year-table-panel {
+    padding-left: 0 !important;
+  }
+
+  .tax-distribution-split-view {
+    display: block !important;
+  }
+
+  .tax-distribution-split-view > * + * {
+    border-left: 0;
+    border-top: 1px solid rgb(var(--border-muted));
+    margin-top: 1.5rem;
+    padding-left: 0;
+    padding-top: 1.5rem;
+  }
+}
+
 .indexed-trends-chart {
   height: 20rem;
   position: relative;
@@ -4708,17 +4775,35 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .pressure-card-high {
-  background: rgb(var(--color-red-soft));
-  box-shadow: inset 0 0 0 1px rgb(var(--color-red) / 0.20);
+  background: rgb(var(--surface-muted));
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
 }
 
 .pressure-card-low {
-  background: rgb(var(--color-green-soft));
-  box-shadow: inset 0 0 0 1px rgb(var(--color-green) / 0.24);
+  background: rgb(var(--surface-muted));
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
 }
 
 .pressure-card-neutral {
   background: rgb(var(--surface-muted));
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .county-comparison-card-state-growth {
+    order: 1;
+  }
+
+  .county-comparison-card-county-growth {
+    order: 2;
+  }
+
+  .county-comparison-card-state-pressure {
+    order: 3;
+  }
+
+  .county-comparison-card-county-pressure {
+    order: 4;
+  }
 }
 
 .tax-burden-table {

@@ -3142,31 +3142,35 @@ function renderCountyComparisonSummary(primaryRows, comparisonRows, statewideRow
   const comparisonPressure = pressureIndex(comparisonRows, statewideRows);
   const cards = [
     {
-      label: `${primaryLabel} average rate comparison`,
-      value: formatPressureIndex(primaryPressure),
-      note: pressureNote(primaryPressure),
-      tone: pressureTone(primaryPressure)
+      key: "state-growth",
+      label: `${comparisonLabel} growth`,
+      value: `${formatChange(indexChange(comparisonRows, "totalValue"))} value`,
+      note: `${formatChange(indexChange(comparisonRows, "taxesLevied"))} taxes levied.`
     },
     {
+      key: "state-pressure",
       label: `${comparisonLabel} average rate comparison`,
       value: formatPressureIndex(comparisonPressure),
       note: comparisonLabel === "Statewide" ? "Nebraska's average tax rate is indexed to 100." : pressureNote(comparisonPressure),
       tone: comparisonLabel === "Statewide" ? "neutral" : pressureTone(comparisonPressure)
     },
     {
+      key: "county-growth",
       label: `${primaryLabel} growth`,
       value: `${formatChange(indexChange(primaryRows, "totalValue"))} value`,
       note: `${formatChange(indexChange(primaryRows, "taxesLevied"))} taxes levied.`
     },
     {
-      label: `${comparisonLabel} growth`,
-      value: `${formatChange(indexChange(comparisonRows, "totalValue"))} value`,
-      note: `${formatChange(indexChange(comparisonRows, "taxesLevied"))} taxes levied.`
+      key: "county-pressure",
+      label: `${primaryLabel} average rate comparison`,
+      value: formatPressureIndex(primaryPressure),
+      note: pressureNote(primaryPressure),
+      tone: pressureTone(primaryPressure)
     }
   ];
 
   container.innerHTML = cards.map(card => `
-    <div class="pressure-card pressure-card-${card.tone ?? "neutral"}">
+    <div class="pressure-card pressure-card-${card.tone ?? "neutral"} county-comparison-card county-comparison-card-${card.key}">
       <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${card.label}</p>
       <p class="mt-1 text-lg font-bold text-slate-700">${card.value}</p>
       <p class="mt-1 text-xs leading-5 text-slate-600">${card.note}</p>
@@ -3380,30 +3384,24 @@ export function buildCtlSummary(data, ctlData) {
         label: "Statewide value growth",
         value: formatChange(indexChange(stateRows, "totalValue")),
         note: "Total certified value growth since 2019.",
-        color: semanticChartColors.value,
-        bg: semanticChartColors.valueSoft,
-        ring: semanticChartColors.valueRing
+        color: semanticChartColors.value
       },
       {
         label: "Statewide tax growth",
         value: formatChange(indexChange(stateRows, "taxesLevied")),
         note: "Total taxes levied growth since 2019.",
-        color: semanticChartColors.tax,
-        bg: semanticChartColors.taxSoft,
-        ring: semanticChartColors.taxRing
+        color: semanticChartColors.tax
       },
       {
         label: "Statewide average tax rate",
         value: `${formatApproximateRatePercent(stateRows[0].averageTaxRate * 100)} to ${formatApproximateRatePercent(stateRows.at(-1).averageTaxRate * 100)}`,
         note: "Average CTL tax-rate movement over the same period.",
-        color: semanticChartColors.tax,
-        bg: semanticChartColors.taxSoft,
-        ring: semanticChartColors.taxRing
+        color: semanticChartColors.tax
       }
     ];
 
     stateSummary.innerHTML = stateCards.map(card => `
-      <div class="rounded-xl p-4" style="background-color: ${card.bg}; box-shadow: inset 0 0 0 1px ${card.ring};">
+      <div class="rounded-xl bg-white p-4 ring-1 ring-slate-200">
         <div class="flex items-center gap-2">
           <span class="chart-legend-dot inline-block" style="background-color: ${card.color};"></span>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-700">${card.label}</p>

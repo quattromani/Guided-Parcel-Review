@@ -310,7 +310,7 @@ function renderTaxDistributionShell(data) {
   const levyTableOpen = mobileSupportOpenAttribute();
 
   container.innerHTML = `
-    <div class="data-split-view grid gap-6 lg:grid-cols-5">
+    <div class="data-split-view tax-distribution-split-view grid gap-6 lg:grid-cols-5">
       <article class="lg:col-span-3">
         <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
           <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. Dollar amounts allocate the latest net bill within this parcel by each group&rsquo;s levy share.</p>
