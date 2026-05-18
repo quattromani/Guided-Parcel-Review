@@ -39,6 +39,8 @@ The app should not require the vendor to provide UI copy, chart-ready arrays, or
 - Calculations exist in shared helpers and view modules; they should continue moving into `src/calculations/`.
 - Some secondary panels remain in the app shell even when they are not primary guided steps.
 
+For non-vendor teams, see `docs/team-handoff.md`. It maps the current prototype to likely backend, database, data/ETL, frontend, QA, design, accessibility, policy, DevOps, security, and support handoff needs.
+
 ## Recommended Adapter Boundary
 
 ```text

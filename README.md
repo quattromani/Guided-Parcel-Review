@@ -84,6 +84,7 @@ The frontend should consume static app-ready JSON only. It should not scrape PAD
 
 ## Handoff Notes
 
+- `docs/team-handoff.md` maps the current repo shape to likely backend, database, data/ETL, frontend, QA, design, accessibility, policy, DevOps, security, and support handoff needs.
 - Treat `data/app/property-manifest.json` as the demo inventory and shared-data wiring point. Add new sample records there only when the referenced static JSON is complete enough to pass validation.
 - Keep property-specific facts in record cards and county/state/reference facts in their shared datasets. Avoid embedding report statistics directly in components.
 - Preserve the selected-property flow: query string first, then stored selection. The Start page is intentional for first-run demos.
