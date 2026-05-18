@@ -201,6 +201,7 @@ function renderValueTaxHistoryShell() {
                 <tbody id="historyRows" class="divide-y divide-slate-200 bg-white"></tbody>
               </table>
             </div>
+            <p id="historyFootnote" class="mt-2 hidden text-xs leading-5 text-slate-500"></p>
           </div>
         </details>
       </article>
@@ -322,14 +323,16 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
 
   container.innerHTML = `
     <section class="mt-5 border-t border-slate-200 pt-5" aria-labelledby="assessmentBandCardsTitle">
-      <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+      <div>
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Class band checks</p>
           <h3 id="assessmentBandCardsTitle" class="text-lg font-bold text-slate-700">Where does each measure stand now?</h3>
         </div>
+      </div>
+      <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
         <p class="max-w-2xl text-sm leading-6 text-slate-600">COD, PRD, and COV are ratio-study statistics. Level of value is the class median ratio range. Current status stays first, with each measure's band history carried inside the same card.</p>
       </div>
-      <div id="assessmentClassFilter" class="mt-4 inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
       <div id="assessmentAccuracySummary" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
     </section>
 
@@ -1805,9 +1808,8 @@ function propertyValueTaxHistory(data, recordCard) {
         <thead class="bg-slate-50">
           <tr>
             <th class="px-3 py-2 text-left font-semibold">Year</th>
-            <th class="px-3 py-2 text-right font-semibold">Total assessed</th>
             <th class="px-3 py-2 text-right font-semibold">Land</th>
-            <th class="px-3 py-2 text-right font-semibold">Dwelling / improvements</th>
+            <th class="px-3 py-2 text-right font-semibold">Dwelling</th>
             <th class="px-3 py-2 text-right font-semibold">Outbuilding</th>
             <th class="px-3 py-2 text-right font-semibold">Taxable value</th>
             <th class="px-3 py-2 text-right font-semibold">Net tax</th>
@@ -1820,7 +1822,6 @@ function propertyValueTaxHistory(data, recordCard) {
           ${rows.map((row, index) => `
               <tr class="${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
                 <td class="px-3 py-2 font-medium">${row.year}</td>
-                <td class="px-3 py-2 text-right font-semibold">${formatNullableMoney(row.totalAssessed)}</td>
                 <td class="px-3 py-2 text-right">${formatNullableMoney(row.land)}</td>
                 <td class="px-3 py-2 text-right">${formatNullableMoney(row.dwelling)}</td>
                 <td class="px-3 py-2 text-right">${formatNullableMoney(row.outbuilding)}</td>
@@ -2505,12 +2506,13 @@ function renderHistoryTable(data, recordCard) {
     const assessedHeat = historyHeatStyle(row.assessedValue, heatRanges.assessedValue, "--semantic-value");
     const taxesHeat = historyHeatStyle(row.taxes, heatRanges.taxes, "--semantic-tax");
     const etrHeat = historyHeatStyle(etr, heatRanges.etr, "--semantic-etr");
+    const note = `${row.note ?? ""}`.trim();
 
     return `
       <tr class="${isCurrentNotice || isPending ? "pending-data-row" : index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
         <td class="px-3 py-2 font-medium">
           <div class="flex items-center gap-2">
-            <span>${row.year}</span>
+            <span>${row.year}${note ? `<sup class="history-note-marker" title="${escapeHtml(note)}" aria-label="${escapeHtml(`Note: ${note}`)}">*</sup>` : ""}</span>
             ${isCurrentNotice ? `<span class="notice-status-pill">Notice</span>` : ""}
             ${isPending ? `<span class="pending-status-pill">Pending</span>` : ""}
           </div>
@@ -2521,6 +2523,13 @@ function renderHistoryTable(data, recordCard) {
       </tr>
     `;
   }).join("");
+
+  const footnote = document.getElementById("historyFootnote");
+  if (footnote) {
+    const notes = [...new Set(rows.map(row => `${row.note ?? ""}`.trim()).filter(Boolean))];
+    footnote.classList.toggle("hidden", !notes.length);
+    footnote.textContent = notes.length ? `* ${notes.join(" ")}` : "";
+  }
 
   document.querySelectorAll("[data-property-record-source]").forEach(element => {
     element.textContent = propertyRecordSourceText(data, recordCard);

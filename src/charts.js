@@ -457,6 +457,7 @@ function colorAlpha(hex, alpha) {
 
 const assessmentStandardKeys = {
   residential: "residential-improved-rural",
+  agFarm: "agricultural-rural",
   commercial: "income-producing-rural"
 };
 
@@ -538,8 +539,6 @@ function getAssessmentStandardByKey(collection, key) {
 }
 
 function getCodAssessmentStandard(selectedClass, iaaoStandards) {
-  if (selectedClass.key === "agFarm") return null;
-
   const standardKey = assessmentStandardKeys[selectedClass.key] ?? assessmentStandardKeys.residential;
 
   return getAssessmentStandardByKey(iaaoStandards?.codStandards, standardKey);
@@ -2812,14 +2811,14 @@ export function buildEtrChart(data) {
       plugins: {
         tooltip: {
           callbacks: {
-            label: context => context.parsed.y === null ? "ETR: Pending" : `ETR: ${context.parsed.y.toFixed(2)}%`
+            label: context => context.parsed.y === null ? "ETR: Pending" : `ETR: ${formatApproximateRatePercent(context.parsed.y)}`
           }
         }
       },
       scales: {
         y: {
           title: mobileAxisTitle("Effective tax rate"),
-          ticks: { callback: value => `${value}%` },
+          ticks: { callback: value => formatApproximateRatePercent(value) },
           suggestedMin: 1.0,
           suggestedMax: 2.2
         }
@@ -2863,7 +2862,7 @@ function buildEtrOverviewChart(canvasId, data, label, factor) {
       scales: {
         y: {
           title: mobileAxisTitle("Effective tax rate"),
-          ticks: { callback: value => `${value}%` },
+          ticks: { callback: value => formatApproximateRatePercent(value) },
           suggestedMin: 1.0,
           suggestedMax: 2.2
         }
@@ -2908,7 +2907,7 @@ function buildCertifiedRateChart(canvasId, rows, label, propertyRows, palette = 
       scales: {
         y: {
           title: mobileAxisTitle("Average tax rate"),
-          ticks: { callback: value => `${value}%` },
+          ticks: { callback: value => formatApproximateRatePercent(value) },
           suggestedMin: 1.0,
           suggestedMax: 2.0
         }
@@ -2959,6 +2958,11 @@ function indexChange(rows, key) {
 function formatChange(value) {
   if (value === null || value === undefined) return "—";
   return percent.format(value);
+}
+
+function formatApproximateRatePercent(value) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return "—";
+  return `${Number(value).toFixed(1)}%`;
 }
 
 function latestRow(rows) {
@@ -3198,7 +3202,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
       scales: {
         y: {
           title: mobileAxisTitle("Average tax rate"),
-          ticks: { callback: value => `${value}%` },
+          ticks: { callback: value => formatApproximateRatePercent(value) },
           suggestedMin: 1.0,
           suggestedMax: 2.0
         }
@@ -3243,7 +3247,7 @@ export function buildCtlSummary(data, ctlData) {
   if (countySummary) {
     const valueGrowth = formatChange(indexChange(countyRows, "totalValue"));
     const taxGrowth = formatChange(indexChange(countyRows, "taxesLevied"));
-    const rateMovement = `${(countyRows[0].averageTaxRate * 100).toFixed(2)}% to ${(countyRows.at(-1).averageTaxRate * 100).toFixed(2)}%`;
+    const rateMovement = `${formatApproximateRatePercent(countyRows[0].averageTaxRate * 100)} to ${formatApproximateRatePercent(countyRows.at(-1).averageTaxRate * 100)}`;
 
     countySummary.innerHTML = `
       <div class="county-growth-pair rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 md:col-span-2">
@@ -3284,7 +3288,7 @@ export function buildCtlSummary(data, ctlData) {
       },
       {
         label: "Statewide average tax rate",
-        value: `${(stateRows[0].averageTaxRate * 100).toFixed(2)}% to ${(stateRows.at(-1).averageTaxRate * 100).toFixed(2)}%`,
+        value: `${formatApproximateRatePercent(stateRows[0].averageTaxRate * 100)} to ${formatApproximateRatePercent(stateRows.at(-1).averageTaxRate * 100)}`,
         note: "Average CTL tax-rate movement over the same period.",
         color: semanticChartColors.tax,
         bg: semanticChartColors.taxSoft,

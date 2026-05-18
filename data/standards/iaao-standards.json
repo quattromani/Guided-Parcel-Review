@@ -332,6 +332,28 @@
       "key": "residential-vacant-rural"
     },
     {
+      "propertyClass": "Agricultural and horticultural land",
+      "subtypes": [
+        "agricultural land",
+        "horticultural land",
+        "farm land",
+        "special valuation"
+      ],
+      "jurisdictionProfile": "Rural or small jurisdictions / agricultural land markets",
+      "marketType": "Less active",
+      "density": "Rural or small",
+      "developmentPattern": "Agricultural land",
+      "codRange": {
+        "min": 5.0,
+        "max": 30.0
+      },
+      "estimatedCovRange": {
+        "min": 6.25,
+        "max": 37.5
+      },
+      "key": "agricultural-rural"
+    },
+    {
       "propertyClass": "Other (non-agricultural) vacant land",
       "subtypes": [],
       "jurisdictionProfile": "Very large jurisdictions / rapid development / active markets",

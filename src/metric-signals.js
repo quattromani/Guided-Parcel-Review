@@ -63,6 +63,9 @@ function standardText(standard = {}) {
   return [
     standard.key,
     standard.label,
+    standard.propertyClass,
+    standard.subtypes,
+    standard.jurisdictionProfile,
     standard.propertyClasses,
     standard.assessmentClasses
   ].map(normalizeText).join(" ");
@@ -105,16 +108,12 @@ function findCodStandard(standards, context = {}) {
   if (!entries.length) return null;
 
   const text = contextText(context);
-  if (isAgriculturalContext(context) && !isResidentialContext(context) && !isCommercialContext(context)) {
-    return null;
-  }
-
   const classCandidates = isResidentialContext(context)
     ? entries.filter(standard => normalizeText(standard.propertyClass).includes("residential improved"))
     : isCommercialContext(context)
       ? entries.filter(standard => normalizeText(standard.propertyClass).includes("income-producing"))
       : isAgriculturalContext(context)
-        ? []
+        ? entries.filter(standard => textIncludesAny(standardText(standard), AGRICULTURAL_CONTEXT_TERMS))
         : entries;
   const candidates = classCandidates.length ? classCandidates : entries;
 
