@@ -1163,14 +1163,26 @@ table thead th[class] + th[class] {
 .overflow-x-auto.rounded-xl:has(> table) > table {
   border-collapse: separate;
   border-spacing: 0;
-  width: 100%;
+  min-width: 100%;
+  width: max-content;
 }
 
 .table-shell :is(th, td),
 .table-clip :is(th, td),
 .overflow-x-auto.rounded-xl:has(> table) :is(th, td) {
-  max-width: min(18rem, 72vw);
-  overflow-wrap: anywhere;
+  max-width: none;
+  overflow-wrap: normal;
+  white-space: nowrap;
+  word-break: normal;
+}
+
+@media (max-width: 640px) {
+  .table-shell :is(th, td),
+  .table-clip :is(th, td),
+  .overflow-x-auto.rounded-xl:has(> table) :is(th, td) {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
 }
 
 .sales-range-label-compact {
@@ -4616,20 +4628,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   border-spacing: 0;
 }
 
-.tax-burden-table :is(th, td) {
-  overflow-wrap: normal;
-  white-space: nowrap;
-}
-
-.tax-burden-table :is(th, td):first-child {
-  min-width: 3.4rem;
-  white-space: normal;
-}
-
-.tax-burden-table :is(th, td):last-child {
-  min-width: 3.6rem;
-}
-
 .value-tax-history-table {
   border-collapse: separate;
   border-spacing: 0;
@@ -4658,27 +4656,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .value-tax-history-table .history-heat-cell + .history-heat-cell {
   box-shadow: inset 1px 0 0 rgb(var(--color-blue) / 0.05);
-}
-
-@media (max-width: 640px) {
-  .tax-history-detail-panel > .overflow-x-auto:has(.tax-burden-table) {
-    border-left: 0;
-    border-radius: 0;
-    border-right: 0;
-    margin-left: -1rem;
-    margin-right: -1rem;
-    max-width: none;
-    width: calc(100% + 2rem);
-  }
-
-  .tax-burden-table {
-    min-width: 34rem !important;
-  }
-
-  .tax-burden-table :is(th, td) {
-    padding-left: 0.6rem !important;
-    padding-right: 0.6rem !important;
-  }
 }
 
 .tax-history-levy-value {
