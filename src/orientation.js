@@ -1,7 +1,7 @@
 export const ORIENTATION_STORAGE_KEY = "propertySnapshot.guidedParcelReview.orientation.v1";
 
-function hasAcknowledgedOrientation() {
-  if (shouldForceOrientation()) return false;
+function hasAcknowledgedOrientation(force = false) {
+  if (force || shouldForceOrientation()) return false;
 
   try {
     return window.localStorage?.getItem(ORIENTATION_STORAGE_KEY) === "acknowledged";
@@ -34,8 +34,14 @@ function focusPropertySwitcher() {
   }, 3600);
 }
 
-export function initFirstVisitOrientation() {
-  if (hasAcknowledgedOrientation()) return false;
+export function initFirstVisitOrientation(options = {}) {
+  const {
+    force = false,
+    primaryButtonLabel = "Choose a Sample Property",
+    onAccepted
+  } = options;
+
+  if (hasAcknowledgedOrientation(force)) return false;
 
   const modal = document.createElement("div");
   modal.className = "orientation-modal-backdrop";
@@ -64,7 +70,7 @@ export function initFirstVisitOrientation() {
 
       <div class="orientation-actions">
         <button type="button" class="orientation-primary-button" disabled>
-          Choose a Sample Property
+          ${primaryButtonLabel}
         </button>
       </div>
     </section>
@@ -78,7 +84,11 @@ export function initFirstVisitOrientation() {
     markOrientationAcknowledged();
     modal.remove();
     document.body.classList.remove("orientation-modal-open");
-    focusPropertySwitcher();
+    if (typeof onAccepted === "function") {
+      onAccepted();
+    } else {
+      focusPropertySwitcher();
+    }
   }
 
   acknowledgment.addEventListener("change", () => {

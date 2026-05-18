@@ -1,4 +1,5 @@
 import { guidedSnapshotFromMipsRecordCard } from "./adapters/mips/record-card.js";
+import { developmentFeatureSampleStartPropertyId } from "./development-feature.js";
 
 async function loadJson(path, label) {
   const response = await fetch(path);
@@ -28,6 +29,8 @@ export function loadPropertyManifest() {
 }
 
 export function getActivePropertyId(manifest) {
+  if (developmentFeatureSampleStartPropertyId(manifest)) return null;
+
   const requestedPropertyId = getRequestedPropertyId();
   const requestedProperty = manifest.properties.find(item => item.id === requestedPropertyId);
 

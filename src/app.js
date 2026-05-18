@@ -49,6 +49,10 @@ import { escapeHtml } from "./utils/html.js";
 import { initAssessorsReport } from "./assessors-report.js";
 import { initAssessmentDatesPanel } from "./assessment-dates.js";
 import { initFirstVisitOrientation, ORIENTATION_STORAGE_KEY } from "./orientation.js";
+import {
+  continueDevelopmentFeatureSampleStart,
+  developmentFeatureSampleStartPropertyId
+} from "./development-feature.js";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 let importantCalendarDates = { dates: [], metadata: {} };
@@ -73,6 +77,7 @@ async function main() {
   applyVisualizationPalette();
   applyChartDefaults();
   const propertySwitcher = await loadPropertySwitcherRecords();
+  const developmentFeaturePropertyId = developmentFeatureSampleStartPropertyId(propertySwitcher.manifest);
 
   if (!propertySwitcher.activePropertyId) {
     const [realPropertyForms, assessmentDateEvents, taxpayerActionDates] = await Promise.all([
@@ -88,7 +93,16 @@ async function main() {
     renderGuidedResourceContent("your-property");
     initAssessmentDatesPanel(assessmentDateEvents);
     initFooterNavigation();
-    initFirstVisitOrientation();
+    initFirstVisitOrientation(developmentFeaturePropertyId
+      ? {
+        force: true,
+        primaryButtonLabel: "Start Sample Review",
+        onAccepted: () => continueDevelopmentFeatureSampleStart(
+          developmentFeaturePropertyId,
+          PROPERTY_SELECTION_STORAGE_KEY
+        )
+      }
+      : {});
     return;
   }
 
@@ -786,6 +800,7 @@ function initFooterNavigation() {
     const url = new URL(window.location.href);
     url.searchParams.delete("property");
     url.searchParams.delete("orientation");
+    url.searchParams.delete("developmentFeature");
     url.hash = "";
 
     if (url.toString() === window.location.href) {
