@@ -261,7 +261,7 @@ function installLandingPrimer(data) {
   const firstPanel = document.querySelector('[data-guided-panel="your-property"]');
   const section = document.createElement("section");
   section.dataset.guidedPanel = "landing-primer";
-  section.className = "space-y-6";
+  section.className = "hidden space-y-6";
 
   section.innerHTML = `
     <article class="civic-landing-shell">
