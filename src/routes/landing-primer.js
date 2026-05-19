@@ -309,6 +309,10 @@ function installLandingPrimer(data) {
         <p class="civic-source-note">Source: ${escapeHtml(notice.source)}.</p>
       </section>
     </article>
+
+    <nav class="guided-next-action" aria-label="Continue review">
+      <button type="button" data-guided-next="property-record" class="next-step-button">Go to Property Record</button>
+    </nav>
   `;
 
   firstPanel?.before(section);
@@ -345,6 +349,10 @@ function installReviewSignalsPanel(data) {
       <h2>Do the source facts line up?</h2>
       <p>Compare the listed facts, value movement, equalization context, and tax context. If they line up, continue to the summary.</p>
     </article>
+
+    <nav class="guided-next-action" aria-label="Continue review">
+      <button type="button" data-guided-next="final-summary" class="next-step-button">Go to Summary</button>
+    </nav>
   `;
 }
 

@@ -4222,6 +4222,17 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   outline-offset: 2px;
 }
 
+.guided-next-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: clamp(0.25rem, 1vw, 0.75rem);
+  max-width: 100%;
+}
+
+.guided-next-action .next-step-button {
+  min-width: min(18rem, 100%);
+}
+
 .next-step-button {
   align-items: center;
   background: rgb(var(--color-green));
@@ -4656,6 +4667,10 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .property-report-download-card {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .guided-next-action {
+    justify-content: stretch;
   }
 
   .guided-panel-assessment > .ooda-decision-card {
