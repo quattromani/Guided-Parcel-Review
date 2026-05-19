@@ -1208,9 +1208,9 @@ table thead th[class] + th[class] {
 }
 
 .valuation-anatomy {
-  background: rgb(var(--color-slate-50));
-  border-top: 1px solid rgb(var(--border-muted));
-  padding: 0.85rem;
+  background: transparent;
+  border-top: 0;
+  padding: 0 0.15rem;
 }
 
 .valuation-anatomy-label {
@@ -1222,47 +1222,171 @@ table thead th[class] + th[class] {
 }
 
 .valuation-anatomy-equation {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
+  flex-wrap: nowrap;
+  gap: clamp(0.22rem, 0.85vw, 0.45rem);
+  justify-content: center;
   margin-top: 0.55rem;
+  min-width: 0;
 }
 
-.valuation-anatomy-equation > span:not(.formula-chip) {
+.formula-side {
+  display: contents;
+}
+
+.formula-operator {
   color: rgb(var(--color-slate-500));
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 900;
+  line-height: 1;
+  padding-top: 1rem;
 }
 
 .formula-chip {
-  background: rgb(var(--surface-card));
-  border-radius: var(--radius-container-sm);
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
   display: grid;
+  flex: 0 1 auto;
   gap: 0.1rem;
-  min-width: 5.8rem;
-  padding: 0.5rem 0.6rem;
-  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  min-width: 0;
+  padding: 0;
+  text-align: center;
 }
 
 .formula-chip small {
   color: rgb(var(--color-slate-500));
-  font-size: 0.66rem;
+  font-size: clamp(0.54rem, 1.45vw, 0.64rem);
   font-weight: 850;
   line-height: 1.15;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .formula-chip strong {
   color: rgb(var(--brand-ink));
-  font-size: 0.86rem;
+  font-size: clamp(0.78rem, 2.55vw, 0.92rem);
   font-weight: 850;
   line-height: 1.2;
+  white-space: nowrap;
 }
 
 .formula-chip-total {
-  background: rgb(var(--color-green-soft));
-  box-shadow: inset 0 0 0 1px rgb(var(--color-green) / 0.32);
+  background: transparent;
+  box-shadow: none;
+}
+
+.property-value-formula,
+.assessment-value-formula {
+  margin-top: 0.85rem !important;
+  width: 100%;
+}
+
+.property-value-formula:empty,
+.assessment-value-formula:empty {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .valuation-anatomy {
+    padding: 0 0.25rem;
+  }
+
+  .valuation-anatomy-equation {
+    align-items: center;
+    display: grid;
+    gap: 0.45rem;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, auto);
+    justify-content: stretch;
+  }
+
+  .formula-side {
+    align-items: center;
+    display: flex;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .formula-side-inputs {
+    justify-content: start;
+  }
+
+  .formula-side-result {
+    justify-content: end;
+  }
+
+  .formula-operator {
+    font-size: 1rem;
+    padding-top: 0;
+  }
+
+  .formula-chip {
+    background: rgb(var(--surface-card));
+    border-radius: var(--radius-container-sm);
+    box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+    flex: 1 1 0;
+    min-width: clamp(4.65rem, 8vw, 5.8rem);
+    padding: 0.5rem 0.6rem;
+    text-align: left;
+  }
+
+  .formula-chip small {
+    font-size: 0.66rem;
+  }
+
+  .formula-chip strong {
+    font-size: 0.86rem;
+  }
+
+  .formula-chip-total {
+    background: rgb(var(--color-green-soft));
+    box-shadow: inset 0 0 0 1px rgb(var(--color-green) / 0.32);
+  }
+}
+
+@media (max-width: 640px) {
+  .property-value-formula .valuation-anatomy,
+  .assessment-value-formula .valuation-anatomy {
+    color: white;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .property-value-formula .valuation-anatomy-label,
+  .assessment-value-formula .valuation-anatomy-label,
+  .property-value-formula .formula-chip small,
+  .assessment-value-formula .formula-chip small {
+    color: rgb(255 255 255 / 0.76);
+  }
+
+  .property-value-formula .formula-chip strong,
+  .assessment-value-formula .formula-chip strong {
+    color: white;
+  }
+
+  .property-value-formula .formula-operator,
+  .assessment-value-formula .formula-operator {
+    color: rgb(255 255 255 / 0.82);
+  }
+}
+
+@media (max-width: 360px) {
+  .valuation-anatomy-equation {
+    gap: 0.18rem;
+  }
+
+  .formula-operator {
+    font-size: 0.82rem;
+  }
+
+  .formula-chip small {
+    font-size: 0.5rem;
+  }
+
+  .formula-chip strong {
+    font-size: 0.74rem;
+  }
 }
 
 .property-hero-header {
@@ -1383,7 +1507,7 @@ table thead th[class] + th[class] {
   width: 100%;
 }
 
-@media (min-width: 760px) {
+@media (min-width: 1024px) {
   .property-record-overview {
     align-items: center;
     grid-template-columns: minmax(18rem, 32rem) minmax(18rem, 1fr);
@@ -5245,11 +5369,16 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
   .valuation-notice-row {
     font-size: 0.8125rem;
-    grid-template-columns: minmax(5rem, 1fr) minmax(6.35rem, 6.35rem) minmax(6.35rem, 6.35rem);
+    grid-template-columns: minmax(7.1rem, 1fr) minmax(5.6rem, 5.6rem) minmax(5.6rem, 5.6rem);
   }
 
   .valuation-notice-row > p {
     padding: 0.55rem 0.5rem;
+  }
+
+  .valuation-notice-row > p:first-child {
+    overflow-wrap: normal;
+    word-break: normal;
   }
 
   .valuation-notice-row > p:not(:first-child) {

@@ -13,7 +13,7 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="src/styles.css?v=neutral-band-cards" />
+  <link rel="stylesheet" href="src/styles.css?v=value-formula-layout" />
 </head>
 <body class="bg-slate-100 text-slate-700">
   <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
@@ -44,6 +44,7 @@
 
     <section data-guided-panel="your-property" class="space-y-6">
       <header id="pageHeader" class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"></header>
+      <section id="propertyValueFormula" class="property-value-formula" aria-label="Assessed value shorthand"></section>
 
       <section class="grid gap-6 lg:grid-cols-12">
         <article class="self-start rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-4">
@@ -95,6 +96,8 @@
           <div id="propertyMovementSummary" class="mt-4 space-y-4"></div>
         </article>
       </section>
+
+      <section id="assessmentValueFormula" class="assessment-value-formula" aria-label="Assessed value shorthand"></section>
 
       <article class="ooda-decision-card">
         <p class="guided-kicker">Decision check</p>

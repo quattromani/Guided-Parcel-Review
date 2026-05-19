@@ -883,6 +883,7 @@ function renderHeader(data, imageModal, recordCard, valuationGroups) {
       </div>
     </div>
   `;
+  renderValueFormula("propertyValueFormula", data, recordCard);
 
   header.querySelectorAll("[data-image-src]").forEach(button => {
     button.addEventListener("click", () => {
@@ -896,6 +897,7 @@ function renderAssessmentNoticeSummary(data, recordCard) {
   if (!container) return;
 
   container.innerHTML = valuationNoticeSummary(data, recordCard);
+  renderValueFormula("assessmentValueFormula", data, recordCard);
 }
 
 function valuationNoticeSummary(data, recordCard) {
@@ -914,9 +916,15 @@ function valuationNoticeSummary(data, recordCard) {
         ${valuationNoticeRow("Other improvements", values.prior.improvement, values.current.improvement)}
         ${valuationNoticeRow("Total value", values.prior.total, values.current.total, true)}
       </div>
-      ${valuationAnatomyFormula(values, recordCard)}
     </div>
   `;
+}
+
+function renderValueFormula(elementId, data, recordCard) {
+  const container = document.getElementById(elementId);
+  if (!container) return;
+
+  container.innerHTML = valuationAnatomyFormula(valuationNoticeValues(data, recordCard), recordCard);
 }
 
 function valuationAnatomyFormula(values, recordCard) {
@@ -931,13 +939,17 @@ function valuationAnatomyFormula(values, recordCard) {
       <div class="valuation-anatomy" aria-label="Cost approach valuation model">
         <p class="valuation-anatomy-label">Model shorthand</p>
         <div class="valuation-anatomy-equation">
-          ${formulaChip("RCN", formatNullableMoney(rcn))}
-          <span>-</span>
-          ${formulaChip("Depreciation", formatNullableMoney(depreciation))}
-          <span>+</span>
-          ${formulaChip("Land", formatNullableMoney(current.land))}
-          <span>=</span>
-          ${formulaChip("Assessed", formatNullableMoney(current.total), true)}
+          <div class="formula-side formula-side-inputs">
+            ${formulaChip("RCN", formatNullableMoney(rcn))}
+            ${formulaOperator("-")}
+            ${formulaChip("Depreciation", formatNullableMoney(depreciation))}
+            ${formulaOperator("+")}
+            ${formulaChip("Land", formatNullableMoney(current.land))}
+          </div>
+          ${formulaOperator("=", "formula-equals")}
+          <div class="formula-side formula-side-result">
+            ${formulaChip("Assessed", formatNullableMoney(current.total), true)}
+          </div>
         </div>
       </div>
     `;
@@ -947,16 +959,24 @@ function valuationAnatomyFormula(values, recordCard) {
     <div class="valuation-anatomy" aria-label="Assessed value component model">
       <p class="valuation-anatomy-label">Value shorthand</p>
       <div class="valuation-anatomy-equation">
-        ${formulaChip("Land", formatNullableMoney(current.land))}
-        <span>+</span>
-        ${formulaChip("Building", formatNullableMoney(current.building))}
-        <span>+</span>
-        ${formulaChip("Other", formatNullableMoney(current.improvement))}
-        <span>=</span>
-        ${formulaChip("Assessed", formatNullableMoney(current.total), true)}
+        <div class="formula-side formula-side-inputs">
+          ${formulaChip("Land", formatNullableMoney(current.land))}
+          ${formulaOperator("+")}
+          ${formulaChip("Building", formatNullableMoney(current.building))}
+          ${formulaOperator("+")}
+          ${formulaChip("Other", formatNullableMoney(current.improvement))}
+        </div>
+        ${formulaOperator("=", "formula-equals")}
+        <div class="formula-side formula-side-result">
+          ${formulaChip("Assessed", formatNullableMoney(current.total), true)}
+        </div>
       </div>
     </div>
   `;
+}
+
+function formulaOperator(value, className = "") {
+  return `<span class="formula-operator ${className}">${escapeHtml(value)}</span>`;
 }
 
 function formulaChip(label, value, emphasized = false) {
