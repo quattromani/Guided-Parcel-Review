@@ -70,6 +70,34 @@ function renderSignal(signal) {
   `;
 }
 
+function taxpayerActionCards() {
+  const actions = [
+    ["Factual record review", "Owner, address, land, building facts, condition, photos, sketch, or classification."],
+    ["Valuation review", "Assessed value, land/building split, market evidence, or equalization context."],
+    ["Budget / levy awareness", "Public budget hearing or levy-setting context after the value base is established."],
+    ["Appeal timing", "County Board action or state appeal deadlines when an official decision has been issued."],
+    ["Tax statement / payment", "Gross tax, credits, net tax, payments, or balance due."]
+  ];
+
+  return `
+    <section class="taxpayer-action-layer" aria-labelledby="taxpayerActionLayerTitle">
+      <div>
+        <p class="guided-kicker">Action type</p>
+        <h2 id="taxpayerActionLayerTitle">Sort the question before choosing a next step.</h2>
+        <p>Different questions use different official paths. This guide keeps those paths separate so a tax-bill question is not automatically treated as a valuation protest.</p>
+      </div>
+      <div class="taxpayer-action-grid">
+        ${actions.map(([title, text]) => `
+          <article>
+            <h3>${escapeHtml(title)}</h3>
+            <p>${escapeHtml(text)}</p>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
 function formatRatio(value) {
   return hasValue(value) ? `${Number(value).toFixed(2)}%` : "not listed";
 }
@@ -349,6 +377,8 @@ function installReviewSignalsPanel(data) {
         ${cards}
       </div>
     </section>
+
+    ${taxpayerActionCards()}
 
     <article class="ooda-decision-card">
       <p class="guided-kicker">Decision check</p>

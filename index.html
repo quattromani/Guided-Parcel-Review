@@ -58,6 +58,8 @@
         </article>
       </section>
 
+      <section id="processRoleMap" class="process-role-map" aria-label="Who handles each kind of property tax question"></section>
+
       <article class="ooda-decision-card">
         <div class="ooda-decision-header">
           <div>
@@ -103,6 +105,18 @@
       <aside class="guided-transition">
         <p>Now that the current value movement is clear, step back and compare it with prior years. The history view keeps assessment values and completed tax bills in the same timeline.</p>
       </aside>
+
+      <section class="assessment-year-rail" aria-label="Assessment year roadmap">
+        <div class="assessment-year-rail-track" aria-hidden="true"></div>
+        <ol>
+          <li><span>Jan 1</span><strong>Value date</strong></li>
+          <li><span>June</span><strong>Notice / review</strong></li>
+          <li><span>June-July</span><strong>BOE review</strong></li>
+          <li><span>Sept</span><strong>Budgets</strong></li>
+          <li><span>Oct-Nov</span><strong>Levies set</strong></li>
+          <li><span>Dec</span><strong>Tax statements</strong></li>
+        </ol>
+      </section>
 
       <section id="value-tax-history-panel" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></section>
 
@@ -165,7 +179,7 @@
       <article class="ooda-decision-card">
         <p class="guided-kicker">Decision check</p>
         <h2>What kind of tax question is this?</h2>
-        <p>Once the value base is set, a tax bill can change because of levies, budgets, exemptions, credits, or district boundaries. Review valuation if the assessed value needs additional support from the record and comparison context. Review official tax statements if the question is about where the bill goes, credits, or payment.</p>
+        <p>Once the value base is set, a tax bill can change because of levies, budgets, exemptions, credits, or tax-district assignment. Review valuation if the assessed value needs additional support from the record and comparison context. Review official tax statements if the question is about where the bill goes, credits, or payment.</p>
       </article>
 
       <aside class="guided-transition">
@@ -221,6 +235,7 @@
             </section>
           </div>
         </div>
+        <div id="marketConceptStrip" class="market-concept-strip" aria-label="How to read market evidence"></div>
         <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
       </article>
 
@@ -304,7 +319,7 @@
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Now connect the value base to taxes.</h3>
-          <p class="mt-1 text-sm text-slate-600">Once that value base is set, taxes show how levies, credits, exemptions, and district boundaries help determine this property&rsquo;s final bill.</p>
+          <p class="mt-1 text-sm text-slate-600">Once that value base is set, taxes show how levies, credits, exemptions, and tax-district assignment help determine this property&rsquo;s final bill.</p>
         </div>
         <button type="button" data-guided-next="tax-context" class="next-step-button">Go to Tax Context</button>
       </article>

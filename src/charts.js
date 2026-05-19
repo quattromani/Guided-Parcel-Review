@@ -2013,6 +2013,40 @@ function renderMarketSignalCards(selected, summary, standards, context = {}) {
   renderMarketSignalCharts(cards);
 }
 
+function renderMarketConceptStrip(selected, classStats) {
+  const container = document.getElementById("marketConceptStrip");
+  if (!container) return;
+
+  const count = Number(selected?.count || 0);
+  const isAgricultural = classStats?.classKey === "agricultural";
+  const groupName = isAgricultural ? "market area" : "valuation group";
+  const evidenceTone = count > 1 ? "Pattern sample" : "Single-sale context";
+  const patternText = count > 1
+    ? `${integer.format(count)} qualified sales build the local pattern.`
+    : "One qualified sale is context, not a full market pattern.";
+  const agText = isAgricultural
+    ? "Agricultural review reads land use and productivity groups before the countywide study."
+    : "The local group compares similar property records before countywide equalization.";
+
+  container.innerHTML = `
+    <section>
+      <p>Pattern before conclusion</p>
+      <strong>${escapeHtml(evidenceTone)}</strong>
+      <span>${escapeHtml(patternText)}</span>
+    </section>
+    <section>
+      <p>Local comparison</p>
+      <strong>${escapeHtml(groupName)}</strong>
+      <span>${escapeHtml(agText)}</span>
+    </section>
+    <section>
+      <p>Signal checks</p>
+      <strong>Median · COD · PRD</strong>
+      <span>Level, uniformity, and value-related balance are read together.</span>
+    </section>
+  `;
+}
+
 function renderMarketGroupSalesDistribution(selected, classStats) {
   const container = document.getElementById("marketGroupSalesDistribution");
   if (!container || !classStats?.groups?.length) return;
@@ -2703,6 +2737,7 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
       ...signalContext,
       classStats
     });
+    renderMarketConceptStrip(selected, classStats);
     renderMarketNarrative(selected, countywide, classStats, medianRange, iaaoStandards, isParcelGroup);
     renderMarketPositionScatter(selected, classStats, iaaoStandards, update);
     renderMarketPriceSummary(selected, countywide);
@@ -3528,4 +3563,14 @@ export function buildDistributionChart(data, schoolDistrictColors) {
       <p class="mt-0.5 text-xs leading-4 text-slate-600">${percent.format(row.share)} of levy</p>
     </div>
   `).join("");
+
+  const driver = sorted[0];
+  const driverCallout = document.getElementById("levyDriverCallout");
+  if (driverCallout) {
+    driverCallout.innerHTML = driver ? `
+      <p>Largest levy component</p>
+      <strong>${escapeHtml(driver.label)}</strong>
+      <span>${percent.format(driver.share)} of the latest levy${hasDataValue(driver.paidAmount) ? ` · approx. ${moneyCents.format(driver.paidAmount)} of this statement` : ""}</span>
+    ` : "";
+  }
 }

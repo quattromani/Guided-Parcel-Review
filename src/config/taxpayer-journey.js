@@ -62,7 +62,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Tax Context",
     question: "How do values connect to taxes?",
     title: "Separate value, levy, credits, and final tax bills",
-    description: "Once the value base is set, taxes show how levies, credits, exemptions, and district boundaries help determine this property's final bill."
+    description: "Once the value base is set, taxes show how levies, credits, exemptions, and tax-district assignment help determine this property's final bill."
   },
   {
     id: "review-signals",

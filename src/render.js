@@ -186,6 +186,7 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderViewHeader("your-property", data.snapshotModel, summaryContext.propertySwitcher);
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard, valuationGroups);
+  renderProcessRoleMap();
   renderAssessmentNoticeSummary(data, recordCard);
   renderComparisonShells(data, recordCard, summaryContext);
   renderPropertyDetails(data, recordCard);
@@ -265,6 +266,35 @@ function renderValueTaxHistoryShell() {
   initMobileSupportDisclosureCharts(container);
 }
 
+function renderProcessRoleMap() {
+  const container = document.getElementById("processRoleMap");
+  if (!container) return;
+
+  const roles = [
+    ["Assessor", "Property facts and valuation", "Record details, land, buildings, condition, class, assessed value"],
+    ["Taxpayer", "Verification", "Confirm the record, organize questions, file formal materials when applicable"],
+    ["County Board / Budget", "Review and levy setting", "Protest decisions, public budgets, certified tax requests"],
+    ["State / TERC", "Oversight and appeal", "Statewide equalization context and appeal path"],
+    ["Treasurer", "Billing and payment", "Tax statements, payment ledger, balance due"]
+  ];
+
+  container.innerHTML = `
+    <div class="process-role-map-heading">
+      <p class="guided-kicker">Question routing</p>
+      <h2>Match the question to the relevant part of the system.</h2>
+    </div>
+    <div class="process-role-map-grid">
+      ${roles.map(([role, focus, scope]) => `
+        <section class="process-role-map-item">
+          <p>${escapeHtml(role)}</p>
+          <h3>${escapeHtml(focus)}</h3>
+          <span>${escapeHtml(scope)}</span>
+        </section>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderTaxHistoryShell() {
   const container = document.getElementById("tax-history-panel");
   if (!container) return;
@@ -273,8 +303,9 @@ function renderTaxHistoryShell() {
   container.innerHTML = `
     <article id="tax-history" class="tax-history-detail-panel">
       <h2 class="text-xl font-bold text-slate-700">How did levy, credits, and net taxes move?</h2>
-      <p class="mt-1 text-sm text-slate-600">After equalization frames the value base, finalized statement years show how levy, credits, exemptions, and district boundaries translate that base into this property&rsquo;s final bill.</p>
+      <p class="mt-1 text-sm text-slate-600">After equalization frames the value base, finalized statement years show how levy, credits, exemptions, and tax-district assignment translate that base into this property&rsquo;s final bill.</p>
       <p id="taxContextTakeaway" class="mt-3 rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200"></p>
+      <div id="taxEquationWaterfall" class="tax-equation-waterfall" aria-label="Tax statement calculation"></div>
       <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
         <table class="tax-burden-table min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
           <thead class="tax-burden-table-head">
@@ -316,7 +347,10 @@ function renderTaxDistributionShell(data) {
         <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
           <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. Dollar amounts allocate the latest net bill within this parcel by each group&rsquo;s levy share.</p>
         <div class="tax-distribution-visual-grid mt-4 grid gap-4 md:items-center">
-          <div id="distributionNotes" class="space-y-2 text-sm text-slate-700"></div>
+          <div>
+            <div id="levyDriverCallout" class="levy-driver-callout"></div>
+            <div id="distributionNotes" class="mt-3 space-y-2 text-sm text-slate-700"></div>
+          </div>
           <div class="distribution-chart-panel" aria-labelledby="distributionChartTitle">
             <p id="distributionChartTitle" class="distribution-chart-title">Latest levy share</p>
             <div class="distribution-chart-shell h-72 sm:h-80">
@@ -880,7 +914,57 @@ function valuationNoticeSummary(data, recordCard) {
         ${valuationNoticeRow("Other improvements", values.prior.improvement, values.current.improvement)}
         ${valuationNoticeRow("Total value", values.prior.total, values.current.total, true)}
       </div>
+      ${valuationAnatomyFormula(values, recordCard)}
     </div>
+  `;
+}
+
+function valuationAnatomyFormula(values, recordCard) {
+  const current = values.current || {};
+  const hasCostBridge = hasMarshallSwiftCostDetail(recordCard?.costApproach);
+  const cost = recordCard?.costApproach || {};
+  const depreciation = cost.depreciation?.amount;
+  const rcn = cost.rcn ?? cost.adjustedCost ?? null;
+
+  if (hasCostBridge && rcn !== null && rcn !== undefined) {
+    return `
+      <div class="valuation-anatomy" aria-label="Cost approach valuation model">
+        <p class="valuation-anatomy-label">Model shorthand</p>
+        <div class="valuation-anatomy-equation">
+          ${formulaChip("RCN", formatNullableMoney(rcn))}
+          <span>-</span>
+          ${formulaChip("Depreciation", formatNullableMoney(depreciation))}
+          <span>+</span>
+          ${formulaChip("Land", formatNullableMoney(current.land))}
+          <span>=</span>
+          ${formulaChip("Assessed", formatNullableMoney(current.total), true)}
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="valuation-anatomy" aria-label="Assessed value component model">
+      <p class="valuation-anatomy-label">Value shorthand</p>
+      <div class="valuation-anatomy-equation">
+        ${formulaChip("Land", formatNullableMoney(current.land))}
+        <span>+</span>
+        ${formulaChip("Building", formatNullableMoney(current.building))}
+        <span>+</span>
+        ${formulaChip("Other", formatNullableMoney(current.improvement))}
+        <span>=</span>
+        ${formulaChip("Assessed", formatNullableMoney(current.total), true)}
+      </div>
+    </div>
+  `;
+}
+
+function formulaChip(label, value, emphasized = false) {
+  return `
+    <span class="formula-chip ${emphasized ? "formula-chip-total" : ""}">
+      <small>${escapeHtml(label)}</small>
+      <strong>${escapeHtml(value)}</strong>
+    </span>
   `;
 }
 
@@ -1058,6 +1142,7 @@ function renderPropertyDetails(data, recordCard) {
   document.getElementById("propertyDetails").innerHTML = [
     renderCards(identityDetails),
     renderCards(physicalDetails),
+    conditionScaleCard(data),
     costSourceLimitation(recordCard),
     technicalCostModel(recordCard, data),
     sourceExtractDetails(recordCard),
@@ -1069,6 +1154,31 @@ function renderPropertyDetails(data, recordCard) {
     recordCardSource(recordCard),
     reportErrorLink(data, recordCard)
   ].join("");
+}
+
+function conditionScaleCard(data) {
+  const quality = data.commercial?.quality ?? data.residential?.quality;
+  const condition = data.commercial?.condition ?? data.residential?.condition;
+  if (!quality && !condition) return "";
+
+  const labels = ["Poor", "Fair", "Average", "Good", "Very Good"];
+  const matchedIndex = condition
+    ? labels.findIndex(label => String(condition).toLowerCase().includes(label.toLowerCase()))
+    : -1;
+  const activeIndex = matchedIndex >= 0 ? matchedIndex : -1;
+
+  return `
+    <div class="details-card details-card-full condition-scale-card">
+      <p class="condition-scale-kicker">Quality / condition</p>
+      <h3>${escapeHtml([quality, condition].filter(Boolean).join(" / "))}</h3>
+      <div class="condition-scale" aria-label="Condition scale">
+        ${labels.map((label, index) => `
+          <span class="${index === activeIndex ? "is-active" : ""}">${escapeHtml(label)}</span>
+        `).join("")}
+      </div>
+      <p>Condition and quality are model inputs. Lower condition typically means more depreciation; stronger condition generally preserves more improvement value.</p>
+    </div>
+  `;
 }
 
 function mailingAddressHtml(value) {
@@ -1913,6 +2023,7 @@ function landInformation(data, recordCard) {
   };
 
   return disclosure("How is the land described?", meta, `
+    ${agriculturalProductivityModel(data, rows, recordCard)}
     ${landModel && locationModel ? `
       <div class="grid gap-3 border-b border-slate-200 bg-slate-50 p-3 text-sm md:grid-cols-3">
         ${[
@@ -1974,6 +2085,54 @@ function landInformation(data, recordCard) {
       </div>
     ` : ""}
   `);
+}
+
+function agriculturalProductivityModel(data, rows, recordCard) {
+  if (data.classification?.propertyClass !== "Agricultural") return "";
+
+  const categoryForRow = row => {
+    const description = String(row.description || "").toUpperCase();
+    if (description.includes("IRR")) return "Irrigated";
+    if (description.includes("DRY")) return "Dryland";
+    if (description.includes("GRAS")) return "Grassland";
+    if (description.includes("WASTE")) return "Waste";
+    if (description.includes("HOME") || description.includes("HMSI")) return "Home site";
+    if (description.includes("BLDG")) return "Building site";
+    if (description.includes("ROAD")) return "Road";
+    return "Other";
+  };
+  const grouped = rows.reduce((acc, row) => {
+    const key = categoryForRow(row);
+    const value = Number(row.value || 0);
+    const acres = Number(row.acres || 0);
+    if (!acc[key]) acc[key] = { acres: 0, value: 0, count: 0 };
+    acc[key].acres += acres;
+    acc[key].value += value;
+    acc[key].count += 1;
+    return acc;
+  }, {});
+  const entries = Object.entries(grouped).filter(([, row]) => row.count);
+  const totalValue = entries.reduce((sum, [, row]) => sum + row.value, 0);
+
+  return `
+    <div class="ag-productivity-model">
+      <div>
+        <p class="guided-kicker">Agricultural productivity model</p>
+        <h3>Land rows are read by use and productivity class.</h3>
+        <p>For agricultural parcels, the land table is a central valuation input: row descriptions identify use or capability group, acres, and the value assigned to that productivity category. Nebraska agricultural land is generally assessed at 75% of its agricultural or horticultural value basis.</p>
+      </div>
+      <div class="ag-productivity-grid">
+        ${entries.map(([label, row]) => `
+          <section>
+            <p>${escapeHtml(label)}</p>
+            <strong>${formatNullableMoney(row.value)}</strong>
+            <span>${row.acres.toFixed(row.acres >= 10 ? 1 : 2)} ac.${totalValue ? ` · ${percent.format(row.value / totalValue)} of land value` : ""}</span>
+          </section>
+        `).join("")}
+      </div>
+      <p class="ag-productivity-source">Source values: ${escapeHtml(recordCard?.source?.displayCitation || "loaded property record")}.</p>
+    </div>
+  `;
 }
 
 function hasMarshallSwiftCostDetail(cost) {
@@ -2860,6 +3019,7 @@ function renderTaxHistoryTable(data) {
   }
 
   renderTaxContextTakeaway(data, displayLevyByYear);
+  renderTaxEquationWaterfall(data, displayLevyByYear);
 }
 
 function renderTaxContextTakeaway(data, displayLevyByYear) {
@@ -2908,6 +3068,49 @@ function renderTaxContextTakeaway(data, displayLevyByYear) {
     : `net taxes changed ${signedPercent(taxChange)}`;
 
   container.textContent = `From ${firstValue.year} to ${lastValue.year}, assessed value changed ${signedPercent(valueChange)} while ${taxMovementPhrase} from ${firstTax.year} to ${lastTax.year}.${levyPhrase}${creditPhrase} These fields help explain why value growth does not always translate into parallel tax growth.`;
+}
+
+function renderTaxEquationWaterfall(data, displayLevyByYear) {
+  const container = document.getElementById("taxEquationWaterfall");
+  if (!container) return;
+
+  const statement = finalizedTaxStatements(data)[0];
+  if (!statement) {
+    container.innerHTML = "";
+    return;
+  }
+
+  const levy = displayLevyByYear?.get(statement.taxYear)?.levy ?? statementGrossLevy(statement);
+  const gross = statement.grossTaxAmount ?? (statement.assessedValue && levy ? statement.assessedValue * (levy / 100) : null);
+  const credits = statementTotalCredits(statement);
+  const net = statement.netAmountDue ?? statement.totalTaxesDue ?? null;
+  const paid = statement.totalPaid ?? null;
+  const balance = statement.taxDue ?? null;
+  const steps = [
+    ["Assessed value", formatNullableMoney(statement.assessedValue), statement.taxYear],
+    ["x Levy", formatNullableLevy(levy), "gross rate"],
+    ["= Gross tax", formatNullableMoney(gross, true), "before credits"],
+    ["- Credits", credits !== null ? formatNullableMoney(credits, true) : "—", "reductions"],
+    ["= Net tax", formatNullableMoney(net, true), "statement amount"],
+    ["- Paid", formatNullableMoney(paid, true), "payment ledger"],
+    ["= Balance", formatNullableMoney(balance, true), "source balance"]
+  ];
+
+  container.innerHTML = `
+    <div class="tax-equation-heading">
+      <p class="guided-kicker">Tax equation</p>
+      <h3>${statement.taxYear} statement shorthand</h3>
+    </div>
+    <div class="tax-equation-steps">
+      ${steps.map(([label, value, note], index) => `
+        <section class="${index === steps.length - 1 ? "tax-equation-step-total" : ""}">
+          <p>${escapeHtml(label)}</p>
+          <strong>${escapeHtml(value)}</strong>
+          <span>${escapeHtml(String(note))}</span>
+        </section>
+      `).join("")}
+    </div>
+  `;
 }
 
 function taxHistoryLevyDisplay(row) {

@@ -55,7 +55,7 @@ const resourcesByView = {
     formTitle: "Tax and exemption forms",
     learnTitle: "Tax terms",
     faqs: [
-      ["Why does tax context come after equalization?", "Equalization checks the value base for required level and reasonable uniformity. Tax context then shows how levies, credits, exemptions, and boundaries turn that value base into a bill."],
+      ["Why does tax context come after equalization?", "Equalization checks the value base for required level and reasonable uniformity. Tax context then shows how levies, credits, exemptions, and tax-district assignment turn that value base into a bill."],
       ["What is the difference between gross tax and net tax?", "Gross tax starts from value and levy. Net tax reflects applicable credits and adjustments before payment status is applied."],
       ["Why do value and taxes not always move together?", "Taxes also depend on budgets, levies, exemptions, credits, and tax district changes."],
       ["What does effective tax rate show?", "It divides statement net tax by assessed value so different years can be compared more clearly."],

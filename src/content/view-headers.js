@@ -20,7 +20,7 @@ const viewHeaderContent = {
   "your-taxes": {
     eyebrow: "Step 5 · Tax context",
     title: "What does this mean for taxes?",
-    description: "Once the value base is set, taxes show how levies, credits, exemptions, and district boundaries help determine this property's final bill.",
+    description: "Once the value base is set, taxes show how levies, credits, exemptions, and tax-district assignment help determine this property's final bill.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "market-area": {
