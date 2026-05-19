@@ -273,7 +273,7 @@ function renderProcessRoleMap() {
   const roles = [
     ["Assessor", "Property facts and valuation", "Record details, land, buildings, condition, class, assessed value"],
     ["Taxpayer", "Verification", "Confirm the record, organize questions, file formal materials when applicable"],
-    ["County Board / Budget", "Review and levy setting", "Protest decisions, public budgets, certified tax requests"],
+    ["County Board / Budget", "Review and levy setting", "Board decisions, public budgets, certified tax requests"],
     ["State / TERC", "Oversight and appeal", "Statewide equalization context and appeal path"],
     ["Treasurer", "Billing and payment", "Tax statements, payment ledger, balance due"]
   ];
@@ -1286,7 +1286,7 @@ function renderDiscrepancyForm(data, recordCard) {
           <div>
             <h3 class="text-lg font-bold text-slate-700">Review property record details</h3>
             <p class="mt-1 text-sm leading-6 text-slate-600">
-              You do not need to verify every technical field. Review the major areas below and mark anything that may deserve a closer look.
+              You do not need to verify every technical field. Start with the major areas below.
             </p>
           </div>
           <p id="discrepancyDraftStatus" class="text-xs font-medium text-slate-500" aria-live="polite"></p>
@@ -1758,7 +1758,7 @@ function recordCardSource(recordCard) {
         `).join("")}
       </tbody>
     </table>
-      <p class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">This summary is based on the property data available in this prototype. Official county records should be used to confirm parcel details, values, filing requirements, and deadlines.</p>
+      <p class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">This summary is based on the property data available in this prototype. Official county records should be used to confirm parcel details and values.</p>
     ${reviewRows}
   `);
 }

@@ -243,23 +243,19 @@ function normalizePadCalendar(padCalendar) {
       timing: "Jan 1 - May 31",
       start: { month: 1, day: 1 },
       end: { month: 5, day: 31 },
-      description: "Assessment-roll work establishes and supports property values before valuation notices and protest rights open.",
+      description: "Assessment-roll work establishes and supports property values before valuation notices and local review timing.",
       phases: ["assessment_roll"],
       maxEvents: 4
     },
     {
-      id: "protest",
-      label: "Protest",
+      id: "review-window",
+      label: "Review",
       timing: "Jun 1 - Jun 30",
       start: { month: 6, day: 1 },
       end: { month: 6, day: 30 },
-      description: "Property owners may file valuation protests during the June protest window.",
-      phases: ["protest_and_equalization"],
-      match: event => /assessment roll|file a property valuation protest|valuation protest/i.test(event.duty),
-      link: {
-        label: "Form 422 Property Valuation Protest",
-        url: "https://revenue.nebraska.gov/sites/default/files/doc/pad/forms/422_Property_Valuation_Protest.pdf"
-      }
+      description: "June is the main local valuation review window.",
+      phases: ["review_and_equalization"],
+      match: event => /assessment roll|file a property valuation protest|valuation protest/i.test(event.duty)
     },
     {
       id: "review",
@@ -267,8 +263,8 @@ function normalizePadCalendar(padCalendar) {
       timing: "Jun 1 - Jul 25",
       start: { month: 6, day: 1 },
       end: { month: 7, day: 25 },
-      description: "County Board of Equalization hearings and decisions happen after protests are filed.",
-      phases: ["protest_and_equalization"],
+      description: "County Board of Equalization review and decisions happen during the local review period.",
+      phases: ["review_and_equalization"],
       match: event => /holds hearings|finalize decisions|county board of equalization/i.test(event.duty)
     },
     {

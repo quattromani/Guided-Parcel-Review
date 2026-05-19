@@ -55,7 +55,7 @@ function statusToneClass(status) {
 }
 
 function signalToneLabel(tone) {
-  if (tone === "review") return "May warrant review";
+  if (tone === "review") return "Check source";
   if (tone === "steady") return "Generally consistent";
   return "Informational";
 }
@@ -67,34 +67,6 @@ function renderSignal(signal) {
       <h3>${escapeHtml(signal.title)}</h3>
       <p>${escapeHtml(signal.summary)}</p>
     </article>
-  `;
-}
-
-function taxpayerActionCards() {
-  const actions = [
-    ["Factual record review", "Owner, address, land, building facts, condition, photos, sketch, or classification."],
-    ["Valuation review", "Assessed value, land/building split, market evidence, or equalization context."],
-    ["Budget / levy awareness", "Public budget hearing or levy-setting context after the value base is established."],
-    ["Appeal timing", "County Board action or state appeal deadlines when an official decision has been issued."],
-    ["Tax statement / payment", "Gross tax, credits, net tax, payments, or balance due."]
-  ];
-
-  return `
-    <section class="taxpayer-action-layer" aria-labelledby="taxpayerActionLayerTitle">
-      <div>
-        <p class="guided-kicker">Action type</p>
-        <h2 id="taxpayerActionLayerTitle">Sort the question before choosing a next step.</h2>
-        <p>Different questions use different official paths. This guide keeps those paths separate so a tax-bill question is not automatically treated as a valuation protest.</p>
-      </div>
-      <div class="taxpayer-action-grid">
-        ${actions.map(([title, text]) => `
-          <article>
-            <h3>${escapeHtml(title)}</h3>
-            <p>${escapeHtml(text)}</p>
-          </article>
-        `).join("")}
-      </div>
-    </section>
   `;
 }
 
@@ -205,10 +177,10 @@ function buildFinalReviewModel(data, context = {}) {
 
   return {
     heading: `Review of the main assessment story for ${notice.displayAddress || notice.situsAddress}`,
-    intro: "The main takeaways from the property record, value movement, market context, equalization, taxes, and review signals are gathered here for orientation. This is not a filing recommendation.",
+    intro: "The main takeaways from the record, value movement, equalization, taxes, and review signals are gathered here.",
     blocks: [
       {
-        narrative: "The first part of the review anchors the parcel facts, then separates assessment value status from tax statement and payment status. That keeps the property description and value movement clear before adding market or tax context.",
+        narrative: "The first part anchors the parcel facts, then separates value status from tax statement and payment status.",
         cards: [
           {
             step: "Step 1 · Property Record",
@@ -234,7 +206,7 @@ function buildFinalReviewModel(data, context = {}) {
         ]
       },
       {
-        narrative: "The later steps move from market context to equalization, then to taxes. Equalization checks level and uniformity before levies are applied; tax context shows how that value base helps determine this property's share of the bill.",
+        narrative: "The later steps move from market context to equalization, then to taxes.",
         cards: [
           {
             step: "Step 3 · Value Detail",
@@ -265,8 +237,8 @@ function buildFinalReviewModel(data, context = {}) {
             value: reviewSignals.length ? itemCountLabel(reviewSignals.length, "item") : "No items surfaced",
             meta: signalMeta(reviewSignals),
             note: reviewSignals.some(signal => signal.tone === "review")
-              ? "Review signals identify items to verify more closely; they are not conclusions."
-              : "Loaded records did not surface an obvious record discrepancy; pending current-year data remains informational."
+              ? "Review signals identify source items to verify; they are not conclusions."
+              : "Loaded records did not surface an obvious record mismatch."
           }
         ]
       }
@@ -278,7 +250,6 @@ export function installCivicJourneyPanels(data, context = {}) {
   installLandingPrimer(data);
   installReviewSignalsPanel(data);
   installFinalSummary(data, context);
-  alignPrimaryJourneyNextSteps();
 }
 
 function installLandingPrimer(data) {
@@ -296,7 +267,7 @@ function installLandingPrimer(data) {
     <article class="civic-landing-shell">
       <div class="civic-landing-intro">
         <p class="guided-kicker">Guided Parcel Review</p>
-        <p>Property, value, and tax records are easier to review when the basic facts come first. Begin by confirming the property and noticing which information is final, pending, or available only as context.</p>
+        <p>Start with the property facts, then read value, equalization, and tax context in order.</p>
       </div>
 
       <section class="civic-notice-summary" aria-labelledby="assessmentSnapshotTitle">
@@ -335,16 +306,8 @@ function installLandingPrimer(data) {
           ${noticeMetric(notice.reviewDeadlineLabel, escapeHtml(notice.reviewDeadline))}
         </dl>
 
-        <p class="civic-source-note">Source: ${escapeHtml(notice.source)}. Official records and deadlines should be confirmed with the county.</p>
+        <p class="civic-source-note">Source: ${escapeHtml(notice.source)}.</p>
       </section>
-    </article>
-
-    <article class="next-step-card">
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
-        <h3 class="mt-1 text-lg font-bold text-slate-700">First, check whether the record describes the property correctly.</h3>
-      </div>
-      <button type="button" data-guided-next="property-record" class="next-step-button">Go to Property Record</button>
     </article>
   `;
 
@@ -371,19 +334,16 @@ function installReviewSignalsPanel(data) {
       <div>
         <p class="guided-kicker">Review signals</p>
         <h2 id="reviewSignalsTitle">Items worth verifying, if any</h2>
-        <p>Review signals collect facts or patterns from the record, value, equalization, relative context, and tax steps. They are neutral prompts for review, not findings or filing recommendations.</p>
+        <p>Review signals collect source facts and patterns from the steps above. They are not findings.</p>
       </div>
       <div class="civic-review-signal-grid">
         ${cards}
       </div>
     </section>
-
-    ${taxpayerActionCards()}
-
     <article class="ooda-decision-card">
       <p class="guided-kicker">Decision check</p>
-      <h2>Does anything need a closer look?</h2>
-      <p>If something appears incomplete or materially different from what you know about the property, use official records or the assessor’s office to verify it. If the record appears generally consistent, continue to the summary.</p>
+      <h2>Do the source facts line up?</h2>
+      <p>Compare the listed facts, value movement, equalization context, and tax context. If they line up, continue to the summary.</p>
     </article>
   `;
 }
@@ -411,22 +371,22 @@ function installFinalSummary(data, context = {}) {
     </article>
 
     <article class="ooda-decision-card">
-      <p class="guided-kicker">Optional next steps</p>
-      <h2>Rely on official records for decisions and filings.</h2>
-      <p>If something appears incomplete or materially different, confirm it with the assessor or other governing office. If everything appears generally consistent, the useful outcome may simply be that the property owner understands the record, value movement, and tax context more clearly.</p>
+      <p class="guided-kicker">Source check</p>
+      <h2>Keep official records as the source of truth.</h2>
+      <p>If something appears incomplete or materially different, compare it with the source record. If the records align, the review has done its job.</p>
     </article>
 
     <aside class="guided-completion-handoff">
       <p class="guided-kicker">Review complete</p>
       <h2>You have reached the end of the guided review.</h2>
-      <p>The path has walked through the record, value movement, equalization context, tax context, and review signals. A guided review summary is available below if a concise reference copy would be useful.</p>
+      <p>The path covered the record, value movement, equalization context, tax context, and review signals.</p>
     </aside>
 
     <article class="property-report-download-card">
       <div>
         <p class="guided-kicker">Guided review summary</p>
         <h2>Save a concise reference copy.</h2>
-        <p>Download a two-page landscape PDF with the property record card and a curated review summary.</p>
+        <p>Download a two-page PDF with the property record card and review summary.</p>
       </div>
       <button type="button" class="next-step-button property-report-download-button" data-property-report-download>Download Guided Review Summary</button>
     </article>
@@ -434,41 +394,4 @@ function installFinalSummary(data, context = {}) {
 
   reviewPanel?.after(section);
   initPropertyReportExport({ data, recordCard: context.recordCard, context });
-}
-
-function alignPrimaryJourneyNextSteps() {
-  updateNextStep("your-property", "what-changed", "Now review what changed.", "Go to What Changed");
-  updateNextStep("your-assessment", "valuation-detail", "Now review what may be driving the value.", "Go to Value Detail");
-  updateNextStep("market-area", "equalization", "Now check the equalization layer.", "Go to Equalization");
-  updateNextStep("county-equalization", "tax-context", "Now connect the value base to taxes.", "Go to Tax Context");
-  updateNextStep("your-taxes", "review-signals", "Now review neutral signals.", "Go to Review Signals");
-  appendFinalSummaryStep();
-}
-
-function updateNextStep(panelId, nextRoute, heading, buttonLabel) {
-  const panel = document.querySelector(`[data-guided-panel="${panelId}"]`);
-  const button = panel?.querySelector(".next-step-card [data-guided-next]");
-  const headingNode = button?.closest(".next-step-card")?.querySelector("h3");
-
-  if (!button) return;
-  button.dataset.guidedNext = nextRoute;
-  button.textContent = buttonLabel;
-  if (headingNode) headingNode.textContent = heading;
-}
-
-function appendFinalSummaryStep() {
-  const panel = document.querySelector('[data-guided-panel="review-checklist"]');
-  if (!panel || panel.querySelector('[data-guided-next="final-summary"]')) return;
-
-  const next = document.createElement("article");
-  next.className = "next-step-card";
-  next.innerHTML = `
-    <div>
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Final step</p>
-      <h3 class="mt-1 text-lg font-bold text-slate-700">Finish with a summary.</h3>
-      <p class="mt-1 text-sm text-slate-600">Review what you learned and any optional next steps without treating a filing as the expected outcome.</p>
-    </div>
-    <button type="button" data-guided-next="final-summary" class="next-step-button">Go to Summary</button>
-  `;
-  panel.append(next);
 }

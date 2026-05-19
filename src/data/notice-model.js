@@ -106,12 +106,12 @@ function taxStatementStatus(propertyData, year) {
   };
 }
 
-function protestWindow(calendar) {
-  const protestStage = calendar?.stages?.find(stage => stage.id === "protest");
+function reviewWindow(calendar) {
+  const reviewStage = calendar?.stages?.find(stage => stage.id === "review-window" || stage.id === "review");
 
   return {
-    label: calendarDateRangeLabel(protestStage?.start, protestStage?.end) ?? "Not listed",
-    sourceLabel: "Protest Window"
+    label: calendarDateRangeLabel(reviewStage?.start, reviewStage?.end) ?? "Not listed",
+    sourceLabel: "Review Window"
   };
 }
 
@@ -161,7 +161,7 @@ export function buildAssessmentNoticeModel(propertyData, recordCard, calendar) {
   const currentImprovementValue = currentBreakdown?.dwelling !== null && currentBreakdown?.dwelling !== undefined
     ? (currentBreakdown.dwelling ?? 0) + (currentBreakdown.outbuilding ?? 0)
     : null;
-  const deadline = protestWindow(calendar);
+  const deadline = reviewWindow(calendar);
   const assessmentStatus = assessmentValueStatus(currentYearRow);
   const statementStatus = taxStatementStatus(propertyData, snapshotYear);
 

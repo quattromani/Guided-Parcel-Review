@@ -17,7 +17,7 @@
       "dateLabel": "January 1, 2026",
       "category": "record",
       "taxpayerAction": "Use this as the value-date anchor when reviewing property facts and current-year assessment context.",
-      "whyItMatters": "Property is generally valued as of this date before notices, protests, levies, and tax bills follow later.",
+      "whyItMatters": "Property is generally valued as of this date before notices, levies, and tax bills follow later.",
       "sourceEventIds": ["assessment-date"],
       "routePriority": {
         "landing-primer": 1,
@@ -48,7 +48,7 @@
       "dateLabel": "Around June 1, 2026",
       "category": "valuation",
       "taxpayerAction": "Watch for a valuation-change notice if the assessed value increased or decreased.",
-      "whyItMatters": "A notice is the prompt to review the record, value movement, and formal protest timing.",
+      "whyItMatters": "A notice is the prompt to review the record, value movement, and local review timing.",
       "sourceEventIds": ["valuation-notice-timing"],
       "routePriority": {
         "landing-primer": 2,
@@ -60,13 +60,13 @@
       }
     },
     {
-      "id": "property-valuation-protest-window",
-      "title": "Property Valuation Protest Window",
+      "id": "local-valuation-review-window",
+      "title": "Local Valuation Review Window",
       "dateLabel": "June 1-June 30, 2026",
-      "category": "protest",
-      "taxpayerAction": "Taxpayers may file a property valuation protest with the County Board of Equalization during this window.",
-      "whyItMatters": "This is the main annual window to ask for formal review of a real property valuation.",
-      "sourceEventIds": ["property-valuation-protest-window"],
+      "category": "review",
+      "taxpayerAction": "This is the main annual local review window for real property valuation questions.",
+      "whyItMatters": "This timing belongs with the County Board of Equalization calendar.",
+      "sourceEventIds": ["local-valuation-review-window"],
       "routePriority": {
         "landing-primer": 3,
         "your-property": 3,
@@ -77,13 +77,13 @@
       }
     },
     {
-      "id": "boe-protest-hearing-period",
-      "title": "County Board Protest Review",
+      "id": "boe-review-period",
+      "title": "County Board Review",
       "dateLabel": "June 1-July 25, 2026",
-      "category": "protest",
-      "taxpayerAction": "Filed valuation protests move into County Board of Equalization review, hearing, and decision timing.",
-      "whyItMatters": "This is when formal local review moves from filing to the board process.",
-      "sourceEventIds": ["boe-protest-hearing-period"],
+      "category": "review",
+      "taxpayerAction": "County Board of Equalization review, hearing, and decision timing occurs in this period.",
+      "whyItMatters": "This is when local review moves through the board process.",
+      "sourceEventIds": ["boe-review-period"],
       "routePriority": {
         "county-equalization": 2,
         "review-checklist": 3

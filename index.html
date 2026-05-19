@@ -13,7 +13,7 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="src/styles.css?v=remove-value-formulas" />
+  <link rel="stylesheet" href="src/styles.css?v=trim-guided-path-copy" />
 </head>
 <body class="bg-slate-100 text-slate-700">
   <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
@@ -71,14 +71,6 @@
         <p>Review these facts against what you know about the property. Follow up if the owner, address, land size, class, condition, rooms, garage, improvements, or sketch appears inaccurate or incomplete. If the record details match what you know, continue to assessment.</p>
       </article>
 
-      <article class="next-step-card">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Now review where the assessed value stands.</h3>
-          <p class="mt-1 text-sm text-slate-600">The next step separates assessment value status from tax statement finality, payment balance, and the review window.</p>
-        </div>
-        <button type="button" data-guided-next="your-assessment" class="next-step-button">Go to Assessment</button>
-      </article>
     </section>
 
     <section data-guided-panel="your-assessment" class="guided-panel-assessment hidden space-y-6">
@@ -98,12 +90,12 @@
 
       <article class="ooda-decision-card">
         <p class="guided-kicker">Decision check</p>
-        <h2>Is the value movement worth a closer look?</h2>
-        <p>This value change is worth reviewing if the factual record is wrong, if the change is much larger than the property story explains, or if the land and building split appears unusual. If the record looks right, use the tax and market sections for added context.</p>
+        <h2>Does the movement match the record?</h2>
+        <p>Compare the change with the property facts, land/building split, and longer pattern. If those pieces fit, continue with context.</p>
       </article>
 
       <aside class="guided-transition">
-        <p>Now that the current value movement is clear, step back and compare it with prior years. The history view keeps assessment values and completed tax bills in the same timeline.</p>
+        <p>Now compare the current change with prior years.</p>
       </aside>
 
       <section class="assessment-year-rail" aria-label="Assessment year roadmap">
@@ -120,14 +112,6 @@
 
       <section id="value-tax-history-panel" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></section>
 
-      <article class="next-step-card">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Now review what may be driving the value.</h3>
-            <p class="mt-1 text-sm text-slate-600">Next, connect value movement to the property record and local market context.</p>
-        </div>
-        <button type="button" data-guided-next="valuation-detail" class="next-step-button">Go to Value Detail</button>
-      </article>
     </section>
 
     <section data-guided-panel="your-taxes" class="hidden space-y-6">
@@ -159,7 +143,7 @@
       </article>
 
       <aside class="guided-transition">
-        <p>Your tax bill is more than one number. The next view shows which overlapping districts are part of this property's levy.</p>
+        <p>The tax bill reflects value, levy, credits, and district assignment.</p>
       </aside>
 
       <article id="tax-district-authorities" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -173,32 +157,23 @@
 
       <article class="ooda-inline-note">
         <p class="guided-kicker">Jurisdiction check</p>
-        <p>Follow up if the school district, city, county, NRD, ESU, college, or other listed body does not match where the property is located. The levy breakdown explains where the bill goes, but it does not decide the property’s assessed value.</p>
+        <p>Check whether the listed school district, city, county, NRD, ESU, college, and other bodies match the property location.</p>
       </article>
 
       <article class="ooda-decision-card">
         <p class="guided-kicker">Decision check</p>
         <h2>What kind of tax question is this?</h2>
-        <p>Once the value base is set, a tax bill can change because of levies, budgets, exemptions, credits, or tax-district assignment. Review valuation if the assessed value needs additional support from the record and comparison context. Review official tax statements if the question is about where the bill goes, credits, or payment.</p>
+        <p>Separate value questions from levy, credit, district, and payment questions. Each belongs to a different source record.</p>
       </article>
 
       <aside class="guided-transition">
-        <p>You have gathered the main context now: record facts, value movement, equalization, and taxes. The next step pulls those pieces into neutral items to verify.</p>
+        <p>The main record, value, equalization, and tax context is now in view.</p>
       </aside>
-
-      <article class="next-step-card">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
-            <h3 class="mt-1 text-lg font-bold text-slate-700">Now review neutral signals.</h3>
-            <p class="mt-1 text-sm text-slate-600">The next step synthesizes the record, value, equalization, and tax context into items to verify.</p>
-        </div>
-        <button type="button" data-guided-next="review-signals" class="next-step-button">Go to Review Signals</button>
-      </article>
     </section>
 
     <section data-guided-panel="market-area" class="hidden space-y-6">
       <aside class="guided-transition">
-        <p>Now that you have seen how the value moved, the next question is what may be shaping its position. Start with the local comparison group before moving into the countywide checks.</p>
+        <p>Now place the property in its local comparison group.</p>
       </aside>
 
       <article id="market-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -207,7 +182,7 @@
           <div>
             <h2 class="text-2xl font-bold text-slate-700">How does this property’s market area measure up?</h2>
             <p id="marketSourceNote" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-                Local sales-study measures show how this property’s comparison group looks before those patterns roll into the countywide equalization check.
+                Local sales-study measures show the comparison group behind the countywide check.
             </p>
           </div>
           <label class="min-w-72 text-sm font-semibold text-slate-700">
@@ -220,33 +195,12 @@
             <p class="guided-kicker">Reading path</p>
             <h3 id="marketReadingTitle">Start local. Then roll up.</h3>
           </div>
-          <div class="market-reading-steps">
-            <section class="market-reading-step">
-              <h4>The cards introduce the measures</h4>
-              <p>Qualified sales tell you how much evidence is behind the group. Median ratio, COD, and PRD introduce level, uniformity, and price-related balance.</p>
-            </section>
-            <section class="market-reading-step">
-              <h4>Sample depth stays local</h4>
-              <p>The qualified-sales card keeps the selected group beside the countywide sample so the size of the evidence stays visible.</p>
-            </section>
-            <section class="market-reading-step">
-              <h4>Equalization rolls it up</h4>
-              <p>The next step places this group within the broader class and county pattern before reading the countywide measures together.</p>
-            </section>
-          </div>
+          <p class="market-reading-line">Read qualified sales for sample depth, then median ratio, COD, and PRD for level and uniformity context.</p>
         </div>
         <div id="marketConceptStrip" class="market-concept-strip" aria-label="How to read market evidence"></div>
         <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
       </article>
 
-      <article class="next-step-card">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Now check the equalization layer.</h3>
-            <p class="mt-1 text-sm text-slate-600">Equalization asks whether assessed values are at the required level and reasonably uniform before levies are applied.</p>
-        </div>
-        <button type="button" data-guided-next="equalization" class="next-step-button">Go to Equalization</button>
-      </article>
     </section>
 
     <section data-guided-panel="county-equalization" class="hidden space-y-6">
@@ -256,7 +210,7 @@
               <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Equalization Context</p>
               <h2 class="mt-1 text-2xl font-bold text-slate-700">How is the value base checked for level and uniformity?</h2>
               <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-                Equalization reads from the property record into the valuation group or market area, then into the class and countywide study. It does not stop market values from moving or set the tax levy. It asks whether properties are being assessed at the required level and with reasonable uniformity, so properties are not over- or under-positioned in the tax base before levies are applied.
+                Equalization checks whether assessed values are at the required level and reasonably uniform before levies are applied.
               </p>
           </div>
         </div>
@@ -265,12 +219,12 @@
 
       <article class="ooda-decision-card">
         <p class="guided-kicker">Decision check</p>
-        <h2>What can equalization tell you?</h2>
-          <p>Equalization can explain whether the assessment system is generally level and uniform. It does not prove an individual parcel outcome by itself, and it does not control tax levies.</p>
+        <h2>What does the equalization layer show?</h2>
+          <p>Use it as a broader level and uniformity check before reading taxes.</p>
       </article>
 
       <aside class="guided-transition">
-        <p>After the parcel-level value check, the view widens to the county baseline. This helps show the larger value and tax setting before returning to this property's bill.</p>
+        <p>Now widen from the parcel to the county baseline.</p>
       </aside>
 
       <article id="county-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -312,16 +266,7 @@
         <p class="guided-kicker">How the pieces connect</p>
         <h2 id="assessmentPlacementTitle">Assessment places the property in the shared value base.</h2>
         <p>An assessed value is not only a number attached to one property. It also helps place that property among the other taxable properties in the county.</p>
-        <p>Once public budgets and levies are set, the tax base has to carry those obligations proportionately. Across the tax base, uneven positioning can affect how obligations are distributed. Equalization is the check that helps keep that base level before taxes are calculated.</p>
-      </article>
-
-      <article class="next-step-card">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Now connect the value base to taxes.</h3>
-          <p class="mt-1 text-sm text-slate-600">Once that value base is set, taxes show how levies, credits, exemptions, and tax-district assignment help determine this property&rsquo;s final bill.</p>
-        </div>
-        <button type="button" data-guided-next="tax-context" class="next-step-button">Go to Tax Context</button>
+        <p>Equalization keeps that shared base in view before taxes are calculated.</p>
       </article>
     </section>
 
@@ -344,7 +289,7 @@
         <div class="ooda-inline-note">
           <p class="guided-kicker">Decision check</p>
           <h3>Does the county stand out?</h3>
-            <p>The Nebraska = 100 comparison, value growth, tax growth, and average rate movement help show whether the local pattern is unusual or broadly typical. This does not decide the parcel question, but it helps set expectations before final review.</p>
+            <p>The Nebraska = 100 comparison, value growth, tax growth, and average rate movement show whether the local pattern is unusual or broadly typical.</p>
         </div>
         <section class="mt-5 grid gap-6 lg:grid-cols-5">
           <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
@@ -368,7 +313,7 @@
       </article>
 
       <aside class="guided-transition">
-        <p>After comparing counties, one more step sets the statewide background. Use it as context, then return to the main review path.</p>
+        <p>The statewide baseline is supporting context.</p>
       </aside>
 
       <article id="statewide-ctl-context" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -402,14 +347,6 @@
         <p class="chart-source">Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL).</p>
       </article>
 
-      <article class="next-step-card">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Now connect this context to taxes.</h3>
-          <p class="mt-1 text-sm text-slate-600">Keep this statewide comparison as deeper equalization context, then move to how values, levies, credits, and districts help determine the tax bill.</p>
-        </div>
-        <button type="button" data-guided-next="tax-context" class="next-step-button">Go to Tax Context</button>
-      </article>
     </section>
 
       <section data-guided-panel="review-checklist" class="hidden space-y-6"></section>
@@ -441,7 +378,7 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">About</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">About Guided Parcel Review</h3>
           <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
-            Guided Parcel Review walks through one property in a clear order. It starts with the parcel record, then explains assessed value, tax context, market context, equalization signals, and review items. Each step is paced to build understanding before adding more detail, with source context and plain-English terms nearby.
+            Guided Parcel Review walks through one property in a clear order: record, value, market context, equalization, taxes, and review signals.
           </p>
         </section>
 
@@ -449,7 +386,7 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Terms of Use</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Use of this site</h3>
           <div class="mt-2 grid gap-3 text-sm leading-6 text-slate-600 md:grid-cols-3">
-            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">This site is provided for public information and general guidance. It is not a legal notice, tax bill, valuation decision, filing system, or substitute for official records.</p>
+            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">This site is provided for public information and general guidance. It is not a legal notice, tax bill, valuation decision, or substitute for official records.</p>
             <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Information may be incomplete, pending, delayed, or updated after publication. Official county, state, court, or agency records control when accuracy, deadlines, rights, or obligations matter.</p>
             <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Links to outside sites are provided for convenience. Those sites have their own terms, privacy practices, forms, and instructions. Use this site lawfully and do not rely on it as professional advice.</p>
           </div>
@@ -495,7 +432,7 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Contact</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Contact and support</h3>
           <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
-              For questions about official records, valuation, exemptions, levies, payment, or filing deadlines, contact the appropriate county or state office. This demonstration does not replace official guidance.
+              For questions about official records, valuation, exemptions, levies, or payment, contact the appropriate county or state office. This demonstration does not replace official guidance.
           </p>
         </section>
       </div>
@@ -544,7 +481,7 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property record correction request</p>
           <h2 id="reportErrorTitle" class="mt-1 text-2xl font-bold text-slate-700">Report a property record discrepancy</h2>
           <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">
-            This is not a protest form and may be submitted at any time during the year. It requests a factual record review when something about the parcel, land, dwelling, improvements, or other property details appears inaccurate, incomplete, or misclassified. Submissions help alert the Assessor's Office to potential source-record issues.
+            Use this to request factual record review when parcel, land, dwelling, improvement, or other property details appear inaccurate, incomplete, or misclassified.
           </p>
         </div>
         <button type="button" data-close-report-error class="app-modal-close" aria-label="Close property record correction form">

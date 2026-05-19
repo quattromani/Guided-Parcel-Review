@@ -5,7 +5,6 @@ const resourcesByView = {
     learnTitle: "Assessment basics",
     faqs: [
       ["What should I do first?", "Confirm that you are looking at the right property, then review the record before interpreting values or taxes."],
-      ["Is this telling me to protest?", "No. The primary goal is orientation and understanding. Official filing materials remain outbound references."],
       ["Why are some current-year values pending?", "Assessment-year information can appear before final tax bills or complete current-year values are available."],
       ["What if the question is only about the tax bill?", "Use Tax Context after the property, value, and equalization steps frame the value base."]
     ],
@@ -13,7 +12,7 @@ const resourcesByView = {
       ["Assessment year", "The year for which the property value is being reviewed."],
       ["Assessed value", "The value used as the basis for property taxation."],
       ["Prior value", "The most recent earlier value available for comparison."],
-      ["Review deadline", "A procedural date that should be confirmed with official sources before any filing."]
+      ["Review date", "A procedural date that should be confirmed with official sources."]
     ]
   },
   "your-property": {
@@ -23,8 +22,7 @@ const resourcesByView = {
     faqs: [
       ["What should I check first?", "Start with ownership, situs address, legal description, dwelling facts, improvements, condition, and photos. Factual record issues can affect later value review."],
       ["Do bedrooms, bathrooms, condition, and square footage matter?", "Yes. Those characteristics help describe the property and can influence the assessment model."],
-      ["What if a photo or property characteristic looks outdated?", "Use the record review request to describe what appears inaccurate, incomplete, or misclassified."],
-      ["Is a record concern the same as a valuation protest?", "No. A record concern asks for factual review. A formal valuation protest is a separate filing process."]
+      ["What if a photo or property characteristic looks outdated?", "Use the record review request to describe what appears inaccurate, incomplete, or misclassified."]
     ],
     learn: [
       ["Parcel", "A specific piece of property identified for assessment and tax administration."],
@@ -127,13 +125,11 @@ const resourcesByView = {
       ["What should I review first?", "Start with the property record: square footage, year built, basement, garage, outbuildings, condition, lot size, property class, value history, and tax history."],
       ["What should I do with an unresolved question?", "Keep notes, verify official source documents, and contact the appropriate county or state office if the issue depends on official records or deadlines."],
       ["What steps feed these signals?", "They synthesize the property record, value movement, equalization context, tax context, and source documents."],
-      ["Where are filing forms kept?", "The Forms footer links to official state sources. This site does not prepare, prefill, submit, or store filing forms."],
-      ["Does this summary decide an outcome?", "No. It is a review aid that separates property facts, value movement, taxes, and context from any official filing decision."]
+      ["Does this summary decide an outcome?", "No. It is a review aid that separates property facts, value movement, taxes, and context."]
     ],
     learn: [
       ["Record concern", "A factual review request about property record details."],
       ["Official form", "A form published by the Nebraska Department of Revenue or another official public office."],
-      ["Protest window", "The formal period for filing a valuation protest."],
       ["Source document", "An official record, report, tax statement, or form used to verify a claim."]
     ]
   }

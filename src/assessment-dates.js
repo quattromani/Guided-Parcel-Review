@@ -35,7 +35,7 @@ const MONTH_COMPACT_LABELS = MONTHS.map(month => month.slice(0, 1));
 const PHASES = [
   "Early Year: Exemptions & Reporting",
   "Valuation Notice Season",
-  "Protest & Equalization",
+  "Review & Equalization",
   "Certification & Budgets",
   "Levy Setting & Tax Bills",
   "Year-End / Carryover"

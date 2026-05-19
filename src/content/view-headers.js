@@ -2,49 +2,49 @@ const viewHeaderContent = {
   start: {
     eyebrow: "Guided Parcel Review",
     title: "Start with a sample parcel",
-    description: "The property switcher includes Saline and Gage sample records for exploring the review flow.",
+    description: "Choose a sample parcel and begin the review path.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "your-property": {
     eyebrow: "Guided Parcel Review",
     title: "This property, step by step",
-    description: "Start with the record, then move through assessment, taxes, districts, market context, county equalization, and review action.",
+    description: "Start with the record, then move through value, equalization, taxes, and review signals.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "your-assessment": {
     eyebrow: "Step 2 · Assessment",
     title: "What changed about the assessed value?",
-    description: "Review the assessed value before interpreting the tax bill. Current-year values and finalized tax years are intentionally separated.",
+    description: "Separate current value movement from finalized tax years.",
     imageAlt: "Map of Nebraska highlighting the local market area"
   },
   "your-taxes": {
     eyebrow: "Step 5 · Tax context",
     title: "What does this mean for taxes?",
-    description: "Once the value base is set, taxes show how levies, credits, exemptions, and tax-district assignment help determine this property's final bill.",
+    description: "Read levy, credits, districts, and net tax separately.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "market-area": {
     eyebrow: "Step 3 · Value detail",
     title: "How does this compare nearby?",
-    description: "The property's local comparison group and state assessment reports provide relative market context.",
+    description: "Start with the property's local comparison group.",
     imageAlt: "Map of Nebraska highlighting the local market area"
   },
   "county-equalization": {
     eyebrow: "Step 4 · Equalization",
     title: "How is the value base checked for level and uniformity?",
-    description: "Equalization is the check between value and tax. It does not stop market values from moving or set the levy; it checks required level and reasonable uniformity before levies are applied.",
+    description: "Equalization checks level and uniformity before levies are applied.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "state-context": {
     eyebrow: "State baseline",
     title: "How does the county compare statewide?",
-    description: "Statewide CTL baselines provide a broader frame for local value growth, taxes levied, and average tax rates.",
+    description: "Use statewide CTL data as broader context.",
     imageAlt: "Map of Nebraska"
   },
   "review-checklist": {
     eyebrow: "Step 6 · Review",
     title: "Need to review anything?",
-    description: "Synthesize the record, value movement, equalization context, and tax history into neutral items to verify.",
+    description: "Check whether the source facts line up.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   }
 };

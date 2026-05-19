@@ -6,7 +6,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Start",
     question: "You are looking at this property.",
     title: "Start with a calm snapshot of the property",
-    description: "Confirm that this is the property you meant to review. The opening snapshot brings the parcel, status, key values, and source context into one place."
+    description: "Confirm the parcel, status, and key values."
   },
   {
     id: "property-record",
@@ -15,7 +15,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Property Record",
     question: "Does the county record describe this property correctly?",
     title: "Review the property record before value or taxes",
-    description: "Start with the factual record: identity, land, dwelling facts, quality, condition, photos, and source notes. These details establish the property description used in later value and tax views."
+    description: "Start with identity, land, building facts, photos, and source notes."
   },
   {
     id: "what-changed",
@@ -24,7 +24,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "What Changed",
     question: "What changed?",
     title: "Look at the value movement",
-    description: "Separate current assessment-year status from finalized tax years, then compare recent movement with the longer pattern. Use the history to see whether the change is isolated or part of a broader trend."
+    description: "Compare recent value movement with the longer pattern."
   },
   {
     id: "valuation-detail",
@@ -33,7 +33,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Value Detail",
     question: "What may be driving the value?",
     title: "Connect the value to the record and market context",
-    description: "Review the main value drivers in plain language before opening deeper market or method detail. Local sales-study data helps place the parcel record in relative context."
+    description: "Read the property record beside local sales-study context."
   },
   {
     id: "equalization",
@@ -42,7 +42,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Equalization",
     question: "How is the value base checked for level and uniformity?",
     title: "Use equalization as the check between value and tax",
-    description: "Equalization does not stop market values from moving or set the levy. It checks whether assessed values are at the required level and reasonably uniform before levies are applied."
+    description: "Equalization checks level and uniformity before levies are applied."
   },
   {
     id: "state-context",
@@ -51,7 +51,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "State Context",
     question: "How does the county compare statewide?",
     title: "Keep the statewide comparison inside the equalization step",
-    description: "Statewide CTL baselines provide a broader equalization reference before the guide moves from value context into tax context.",
+    description: "Use statewide CTL data as broader context.",
     secondary: true,
     primaryRouteId: "equalization"
   },
@@ -62,7 +62,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Tax Context",
     question: "How do values connect to taxes?",
     title: "Separate value, levy, credits, and final tax bills",
-    description: "Once the value base is set, taxes show how levies, credits, exemptions, and tax-district assignment help determine this property's final bill."
+    description: "Read value, levy, credits, districts, and net tax separately."
   },
   {
     id: "review-signals",
@@ -71,7 +71,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Review Signals",
     question: "Is there anything worth reviewing more closely?",
     title: "Review neutral signals and organize questions",
-    description: "Review signals synthesize the property record, value movement, equalization context, tax history, and source documents without deciding an outcome."
+    description: "Check whether the source facts line up."
   },
   {
     id: "final-summary",
@@ -80,7 +80,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Summary",
     question: "What was reviewed?",
     title: "Leave with orientation and optional next steps",
-    description: "Summarize the property record, value movement, equalization context, tax context, and any neutral review signals. The summary keeps what has been covered separate from any optional next steps."
+    description: "Summarize the record, value, equalization, taxes, and review signals."
   }
 ];
 

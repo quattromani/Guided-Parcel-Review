@@ -3941,27 +3941,12 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   margin-top: 0.2rem;
 }
 
-.market-reading-steps {
-  display: grid;
-  gap: 0.85rem;
-  margin-top: 0.9rem;
-}
-
-.market-reading-step h4 {
-  color: rgb(var(--brand-ink));
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.055em;
-  line-height: 1.25;
-  margin: 0;
-  text-transform: uppercase;
-}
-
-.market-reading-step p {
+.market-reading-line {
   color: rgb(var(--color-slate-600));
   font-size: 0.875rem;
-  line-height: 1.6;
+  line-height: 1.55;
   margin-top: 0.35rem;
+  max-width: 44rem;
 }
 
 @media (min-width: 768px) {
@@ -3970,18 +3955,9 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     grid-template-columns: minmax(0, 1fr) minmax(11rem, auto);
   }
 
-  .market-reading-steps {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .market-concept-strip,
   .tax-equation-steps {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .market-reading-step + .market-reading-step {
-    border-left: 1px solid rgb(var(--border-muted));
-    padding-left: 1rem;
   }
 }
 

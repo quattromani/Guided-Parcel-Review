@@ -61,7 +61,7 @@ export function buildRecordCorrectionSubmission({ data, formValues, selectedCate
     reviewCategoryCount: categories.filter(category => category.status === "may-need-review").length,
     availableCategoryCount: 6,
     narrative: formValues.comments,
-    acknowledgment: "I understand this request is for factual property record review and is not a formal valuation protest.",
+    acknowledgment: "I understand this request is for factual property record review.",
     office: {
       assessorName: office.assessor_name,
       title: office.office_title,
@@ -228,7 +228,7 @@ export async function generateRecordCorrectionPdf(submission) {
   text("Property Record Correction Request", MARGIN, y, { size: 20, bold: true, color: palette.navy });
   y -= 22;
   wrapped(
-    "This is not a protest form and does not replace or extend any formal protest deadline. It may be submitted at any time during the year to request factual review of parcel, land, dwelling, improvement, or other property record details.",
+    "Use this request for factual review of parcel, land, dwelling, improvement, or other property record details.",
     MARGIN,
     CONTENT_WIDTH,
     { size: 10, color: palette.ink, lineHeight: 14 }
