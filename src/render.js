@@ -299,7 +299,7 @@ function renderTaxHistoryShell() {
   const container = document.getElementById("tax-history-panel");
   if (!container) return;
 
-  container.className = "tax-history-pair grid gap-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:grid-cols-[minmax(0,3fr)_minmax(320px,2fr)]";
+  container.className = "tax-history-pair grid gap-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:grid-cols-[minmax(0,3fr)_minmax(260px,1fr)]";
   container.innerHTML = `
     <article id="tax-history" class="tax-history-detail-panel">
       <h2 class="text-xl font-bold text-slate-700">How did levy, credits, and net taxes move?</h2>
@@ -883,7 +883,6 @@ function renderHeader(data, imageModal, recordCard, valuationGroups) {
       </div>
     </div>
   `;
-  renderValueFormula("propertyValueFormula", data, recordCard);
 
   header.querySelectorAll("[data-image-src]").forEach(button => {
     button.addEventListener("click", () => {
@@ -897,7 +896,6 @@ function renderAssessmentNoticeSummary(data, recordCard) {
   if (!container) return;
 
   container.innerHTML = valuationNoticeSummary(data, recordCard);
-  renderValueFormula("assessmentValueFormula", data, recordCard);
 }
 
 function valuationNoticeSummary(data, recordCard) {
@@ -917,74 +915,6 @@ function valuationNoticeSummary(data, recordCard) {
         ${valuationNoticeRow("Total value", values.prior.total, values.current.total, true)}
       </div>
     </div>
-  `;
-}
-
-function renderValueFormula(elementId, data, recordCard) {
-  const container = document.getElementById(elementId);
-  if (!container) return;
-
-  container.innerHTML = valuationAnatomyFormula(valuationNoticeValues(data, recordCard), recordCard);
-}
-
-function valuationAnatomyFormula(values, recordCard) {
-  const current = values.current || {};
-  const hasCostBridge = hasMarshallSwiftCostDetail(recordCard?.costApproach);
-  const cost = recordCard?.costApproach || {};
-  const depreciation = cost.depreciation?.amount;
-  const rcn = cost.rcn ?? cost.adjustedCost ?? null;
-
-  if (hasCostBridge && rcn !== null && rcn !== undefined) {
-    return `
-      <div class="valuation-anatomy" aria-label="Cost approach valuation model">
-        <p class="valuation-anatomy-label">Model shorthand</p>
-        <div class="valuation-anatomy-equation">
-          <div class="formula-side formula-side-inputs">
-            ${formulaChip("RCN", formatNullableMoney(rcn))}
-            ${formulaOperator("-")}
-            ${formulaChip("Depreciation", formatNullableMoney(depreciation))}
-            ${formulaOperator("+")}
-            ${formulaChip("Land", formatNullableMoney(current.land))}
-          </div>
-          ${formulaOperator("=", "formula-equals")}
-          <div class="formula-side formula-side-result">
-            ${formulaChip("Assessed", formatNullableMoney(current.total), true)}
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  return `
-    <div class="valuation-anatomy" aria-label="Assessed value component model">
-      <p class="valuation-anatomy-label">Value shorthand</p>
-      <div class="valuation-anatomy-equation">
-        <div class="formula-side formula-side-inputs">
-          ${formulaChip("Land", formatNullableMoney(current.land))}
-          ${formulaOperator("+")}
-          ${formulaChip("Building", formatNullableMoney(current.building))}
-          ${formulaOperator("+")}
-          ${formulaChip("Other", formatNullableMoney(current.improvement))}
-        </div>
-        ${formulaOperator("=", "formula-equals")}
-        <div class="formula-side formula-side-result">
-          ${formulaChip("Assessed", formatNullableMoney(current.total), true)}
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function formulaOperator(value, className = "") {
-  return `<span class="formula-operator ${className}">${escapeHtml(value)}</span>`;
-}
-
-function formulaChip(label, value, emphasized = false) {
-  return `
-    <span class="formula-chip ${emphasized ? "formula-chip-total" : ""}">
-      <small>${escapeHtml(label)}</small>
-      <strong>${escapeHtml(value)}</strong>
-    </span>
   `;
 }
 
