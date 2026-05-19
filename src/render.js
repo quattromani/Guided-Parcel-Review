@@ -304,7 +304,6 @@ function renderTaxHistoryShell() {
     <article id="tax-history" class="tax-history-detail-panel">
       <h2 class="text-xl font-bold text-slate-700">How did levy, credits, and net taxes move?</h2>
       <p class="mt-1 text-sm text-slate-600">After equalization frames the value base, finalized statement years show how levy, credits, exemptions, and tax-district assignment translate that base into this property&rsquo;s final bill.</p>
-      <p id="taxContextTakeaway" class="mt-3 rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200"></p>
       <div id="taxEquationWaterfall" class="tax-equation-waterfall" aria-label="Tax statement calculation"></div>
       <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
         <table class="tax-burden-table min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
@@ -322,6 +321,7 @@ function renderTaxHistoryShell() {
           <tbody id="taxHistoryRows" class="divide-y divide-slate-200"></tbody>
         </table>
       </div>
+      <p id="taxContextTakeaway" class="mt-3 rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200"></p>
       <p id="taxHistorySourceNote" class="mt-2 text-xs leading-5 text-slate-500"></p>
     </article>
 

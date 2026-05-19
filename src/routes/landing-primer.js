@@ -384,19 +384,13 @@ function installFinalSummary(data, context = {}) {
     </article>
 
     <aside class="guided-completion-handoff">
-      <p class="guided-kicker">Review complete</p>
-      <h2>You have reached the end of the guided review.</h2>
-      <p>The path covered the record, value movement, equalization context, tax context, and review signals.</p>
-    </aside>
-
-    <article class="property-report-download-card">
       <div>
-        <p class="guided-kicker">Guided review summary</p>
-        <h2>Save a concise reference copy.</h2>
-        <p>Download a two-page PDF with the property record card and review summary.</p>
+        <p class="guided-kicker">Review complete</p>
+        <h2>You have reached the end of the guided review.</h2>
+        <p>The path covered the record, value movement, equalization context, tax context, and review signals.</p>
       </div>
       <button type="button" class="next-step-button property-report-download-button" data-property-report-download>Download Guided Review Summary</button>
-    </article>
+    </aside>
   `;
 
   reviewPanel?.after(section);

@@ -4060,21 +4060,14 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   justify-content: space-between;
 }
 
-.property-report-download-card {
-  align-items: center;
-  background: white;
-  border-radius: var(--radius-container-lg);
-  box-shadow: 0 1px 2px rgb(var(--brand-ink) / 0.06), inset 0 0 0 1px rgb(var(--border-muted));
-  display: flex;
-  gap: 1rem;
-  justify-content: space-between;
-  padding: 1rem 1.25rem;
-}
-
 .guided-completion-handoff {
+  align-items: center;
   background: rgb(var(--brand-ink));
   border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), 0 14px 30px rgb(var(--brand-ink) / 0.18);
+  display: flex;
+  gap: 1.25rem;
+  justify-content: space-between;
   padding: 1rem 1.25rem;
   position: relative;
 }
@@ -4101,7 +4094,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   margin-top: 0.15rem;
 }
 
-.guided-completion-handoff p:last-child {
+.guided-completion-handoff div > p:last-child {
   color: rgb(255 255 255 / 0.84);
   font-size: 0.875rem;
   line-height: 1.5;
@@ -4109,19 +4102,8 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   max-width: 58rem;
 }
 
-.property-report-download-card h2 {
-  color: rgb(var(--color-slate-700));
-  font-size: 1.125rem;
-  font-weight: 800;
-  line-height: 1.25;
-  margin-top: 0.15rem;
-}
-
-.property-report-download-card p:last-child {
-  color: rgb(var(--color-slate-600));
-  font-size: 0.875rem;
-  line-height: 1.45;
-  margin-top: 0.18rem;
+.guided-completion-handoff .next-step-button {
+  flex: 0 0 auto;
 }
 
 .next-step-button.property-report-download-button:disabled {
@@ -4664,13 +4646,13 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     flex-direction: column;
   }
 
-  .property-report-download-card {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
   .guided-next-action {
     justify-content: stretch;
+  }
+
+  .guided-completion-handoff {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .civic-notice-footer {
