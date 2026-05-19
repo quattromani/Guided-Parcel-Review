@@ -38,7 +38,8 @@ export function initFirstVisitOrientation(options = {}) {
   const {
     force = false,
     primaryButtonLabel = "Choose a Sample Property",
-    onAccepted
+    onAccepted,
+    propertySelectionCopy = "For this prototype, start by choosing one of the pre-loaded sample parcels from the property switcher in the page header."
   } = options;
 
   if (hasAcknowledgedOrientation(force)) return false;
@@ -54,12 +55,12 @@ export function initFirstVisitOrientation(options = {}) {
 
       <div id="orientationDescription" class="orientation-modal-body">
         <p>The Guided Parcel Review is a step-by-step way to understand how a property&rsquo;s assessed value, tax history, and parcel details fit together.</p>
-        <p>For this prototype, start by choosing one of the pre-loaded sample parcels from the property switcher in the page header.</p>
+        <p>${propertySelectionCopy}</p>
         <p>It is designed to help answer the bigger question many property owners have: &ldquo;How am I really being affected by changes in value and property taxes?&rdquo;</p>
         <p>You can use this tool to review a sample property, understand a recent notice of value, research how property information is organized, or see how assessment and tax data can be explained more clearly.</p>
         <p>This site is an independent informational and visualization tool. It is not an official county record, government website, or final valuation source. Sample records have been pre-loaded to demonstrate, stress test, and smoke test the product while it is in active development.</p>
         <p>Official property records, valuations, and tax determinations remain with the appropriate county offices.</p>
-        <p>Tip: To start fresh later, use the small recycle button at the end of the footer, next to Supplemental Review Report, to clear the current sample and return to this welcome screen.</p>
+        <p>Tip: To start fresh later, use the small recycle button at the end of the footer to clear the current sample and return to this welcome screen.</p>
         <p>The goal is simple: clearer information, better understanding, and fewer surprises.</p>
       </div>
 

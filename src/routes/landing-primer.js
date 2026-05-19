@@ -11,6 +11,7 @@ import {
   getParcelMarketClass,
   getParcelMarketGroupId
 } from "../market-stats.js";
+import { quickReadSummaryMarkup } from "../render.js";
 import { initPropertyReportExport } from "../reports/property-report.js";
 import { compactParts, formatSquareFeet } from "../utils/display.js";
 import { escapeHtml } from "../utils/html.js";
@@ -47,6 +48,63 @@ function noticeMetric(label, value, options = {}) {
       <dd>${value}</dd>
       ${note ? `<p>${escapeHtml(note)}</p>` : ""}
     </div>
+  `;
+}
+
+function propertySnapshotSummary(notice, options = {}) {
+  const {
+    kicker = "Property record",
+    title = "Property review starting point",
+    showStatus = true,
+    showAction = true
+  } = options;
+  const address = notice.displayAddress || notice.situsAddress;
+  const statusLabel = `${notice.assessmentLabel} status ${notice.valueStatusLabel}`;
+
+  return `
+    <section class="civic-notice-summary" aria-labelledby="assessmentSnapshotTitle">
+      <div class="civic-notice-heading">
+        <div>
+          <p class="guided-kicker">${escapeHtml(kicker)}</p>
+          <h3 id="assessmentSnapshotTitle">${escapeHtml(title)}</h3>
+        </div>
+        ${showStatus ? `
+          <div class="notice-status-group" aria-label="${escapeHtml(statusLabel)}">
+            <span>${escapeHtml(notice.assessmentLabel)}:</span>
+            <span class="notice-status-pill ${statusToneClass(notice.valueStatusLabel)}">${escapeHtml(notice.valueStatusLabel)}</span>
+          </div>
+        ` : ""}
+      </div>
+
+      <dl class="civic-notice-grid">
+        ${noticeMetric("Situs address", escapeHtml(address))}
+        ${noticeMetric("Parcel ID", escapeHtml(notice.parcelId))}
+        ${noticeMetric("Property class", escapeHtml(notice.propertyClass))}
+        ${noticeMetric("Tax district", escapeHtml(notice.taxDistrict))}
+        ${noticeMetric("Current assessed value", displayMoneyWithFallback(notice.currentAssessedValue, notice.latestKnownValue, notice.latestKnownValueYear), {
+          layout: "full",
+          pill: {
+            label: `${notice.taxYear}`,
+            tone: notice.currentAssessedValue === null || notice.currentAssessedValue === undefined ? "pending" : "current"
+          }
+        })}
+        ${noticeMetric("Prior assessed value", formatNullableMoney(notice.priorAssessedValue), {
+          layout: "full",
+          pill: notice.priorAssessedValueYear ? { label: `${notice.priorAssessedValueYear}`, tone: "prior" } : null
+        })}
+        ${noticeMetric("Dollar change", formatNullableMoney(notice.dollarChange))}
+        ${noticeMetric("Percent change", formatNullablePercent(notice.percentChange))}
+        ${noticeMetric("Land value", displayMoneyWithFallback(notice.landValue, notice.latestKnownLandValue, notice.latestKnownValueYear, { compactLatest: true }))}
+        ${noticeMetric("Improvement value", displayMoneyWithFallback(notice.improvementValue, notice.latestKnownImprovementValue, notice.latestKnownValueYear, { compactLatest: true }))}
+        ${noticeMetric(notice.assessmentDateLabel ?? "Assessment Date", escapeHtml(notice.assessmentDate))}
+        ${noticeMetric(notice.reviewDeadlineLabel, escapeHtml(notice.reviewDeadline))}
+      </dl>
+
+      <div class="civic-notice-footer ${showAction ? "" : "civic-notice-footer-source-only"}">
+        <p class="civic-source-note">Source: ${escapeHtml(notice.source)}.</p>
+        ${showAction ? `<button type="button" data-guided-next="property-record" class="next-step-button">Go to Property Record</button>` : ""}
+      </div>
+    </section>
   `;
 }
 
@@ -247,74 +305,8 @@ function buildFinalReviewModel(data, context = {}) {
 }
 
 export function installCivicJourneyPanels(data, context = {}) {
-  installLandingPrimer(data);
   installReviewSignalsPanel(data);
   installFinalSummary(data, context);
-}
-
-function installLandingPrimer(data) {
-  const existing = document.querySelector('[data-guided-panel="landing-primer"]');
-  existing?.remove();
-
-  const notice = data.snapshotModel.viewModels.notice;
-  const address = notice.displayAddress || notice.situsAddress;
-  const firstPanel = document.querySelector('[data-guided-panel="your-property"]');
-  const section = document.createElement("section");
-  section.dataset.guidedPanel = "landing-primer";
-  section.className = "hidden space-y-6";
-
-  section.innerHTML = `
-    <article class="civic-landing-shell">
-      <div class="civic-landing-intro">
-        <p class="guided-kicker">Guided Parcel Review</p>
-        <p>Start with the property facts, then read value, equalization, and tax context in order.</p>
-      </div>
-
-      <section class="civic-notice-summary" aria-labelledby="assessmentSnapshotTitle">
-        <div class="civic-notice-heading">
-          <div>
-            <p class="guided-kicker">Property record</p>
-            <h3 id="assessmentSnapshotTitle">Property review starting point</h3>
-          </div>
-          <div class="notice-status-group" aria-label="${escapeHtml(`${notice.assessmentLabel} status ${notice.valueStatusLabel}`)}">
-            <span>${escapeHtml(notice.assessmentLabel)}:</span>
-            <span class="notice-status-pill ${statusToneClass(notice.valueStatusLabel)}">${escapeHtml(notice.valueStatusLabel)}</span>
-          </div>
-        </div>
-
-        <dl class="civic-notice-grid">
-          ${noticeMetric("Situs address", escapeHtml(address))}
-          ${noticeMetric("Parcel ID", escapeHtml(notice.parcelId))}
-          ${noticeMetric("Property class", escapeHtml(notice.propertyClass))}
-          ${noticeMetric("Tax district", escapeHtml(notice.taxDistrict))}
-          ${noticeMetric("Current assessed value", displayMoneyWithFallback(notice.currentAssessedValue, notice.latestKnownValue, notice.latestKnownValueYear), {
-            layout: "full",
-            pill: {
-              label: `${notice.taxYear}`,
-              tone: notice.currentAssessedValue === null || notice.currentAssessedValue === undefined ? "pending" : "current"
-            }
-          })}
-          ${noticeMetric("Prior assessed value", formatNullableMoney(notice.priorAssessedValue), {
-            layout: "full",
-            pill: notice.priorAssessedValueYear ? { label: `${notice.priorAssessedValueYear}`, tone: "prior" } : null
-          })}
-          ${noticeMetric("Dollar change", formatNullableMoney(notice.dollarChange))}
-          ${noticeMetric("Percent change", formatNullablePercent(notice.percentChange))}
-          ${noticeMetric("Land value", displayMoneyWithFallback(notice.landValue, notice.latestKnownLandValue, notice.latestKnownValueYear, { compactLatest: true }))}
-          ${noticeMetric("Improvement value", displayMoneyWithFallback(notice.improvementValue, notice.latestKnownImprovementValue, notice.latestKnownValueYear, { compactLatest: true }))}
-          ${noticeMetric(notice.assessmentDateLabel ?? "Assessment Date", escapeHtml(notice.assessmentDate))}
-          ${noticeMetric(notice.reviewDeadlineLabel, escapeHtml(notice.reviewDeadline))}
-        </dl>
-
-        <div class="civic-notice-footer">
-          <p class="civic-source-note">Source: ${escapeHtml(notice.source)}.</p>
-          <button type="button" data-guided-next="property-record" class="next-step-button">Go to Property Record</button>
-        </div>
-      </section>
-    </article>
-  `;
-
-  firstPanel?.before(section);
 }
 
 function installReviewSignalsPanel(data) {
@@ -333,6 +325,10 @@ function installReviewSignalsPanel(data) {
     `;
 
   panel.innerHTML = `
+    <aside class="guided-transition">
+      <p>Use this page as a final scan. The signals collect source facts and patterns from the steps above without turning them into findings.</p>
+    </aside>
+
     <section class="civic-review-signals" aria-labelledby="reviewSignalsTitle">
       <div>
         <p class="guided-kicker">Review signals</p>
@@ -343,11 +339,9 @@ function installReviewSignalsPanel(data) {
         ${cards}
       </div>
     </section>
-    <article class="ooda-decision-card">
-      <p class="guided-kicker">Decision check</p>
-      <h2>Do the source facts line up?</h2>
-      <p>Compare the listed facts, value movement, equalization context, and tax context. If they line up, continue to the summary.</p>
-    </article>
+    <aside class="guided-transition">
+      <p>With the listed facts, value movement, equalization context, and tax context scanned, finish with a compact summary of the review.</p>
+    </aside>
 
     <nav class="guided-next-action" aria-label="Continue review">
       <button type="button" data-guided-next="final-summary" class="next-step-button">Go to Summary</button>
@@ -367,6 +361,27 @@ function installFinalSummary(data, context = {}) {
   section.className = "hidden space-y-6";
 
   section.innerHTML = `
+    <aside class="guided-transition">
+      <p>Start with the property snapshot, then use the summary cards as a concise record of what the path covered.</p>
+    </aside>
+
+    <article class="civic-summary-shell civic-summary-snapshot">
+      ${propertySnapshotSummary(notice, {
+        kicker: "Property snapshot",
+        title: "Record values at a glance",
+        showStatus: false,
+        showAction: false
+      })}
+    </article>
+
+    <article class="civic-summary-shell civic-summary-quick-read" aria-labelledby="summaryQuickReadTitle">
+      <div>
+        <p class="guided-kicker">Plain-language wrap-up</p>
+        <h2 id="summaryQuickReadTitle">Quick read for this property</h2>
+      </div>
+      ${quickReadSummaryMarkup(data, context.recordCard, context)}
+    </article>
+
     <article class="civic-summary-shell civic-final-review">
       <div>
         <p class="guided-kicker">Final review</p>
@@ -383,14 +398,12 @@ function installFinalSummary(data, context = {}) {
       <p>If something appears incomplete or materially different, compare it with the source record. If the records align, the review has done its job.</p>
     </article>
 
-    <aside class="guided-completion-handoff">
-      <div>
-        <p class="guided-kicker">Review complete</p>
-        <h2>You have reached the end of the guided review.</h2>
-        <p>The path covered the record, value movement, equalization context, tax context, and review signals.</p>
-      </div>
-      <button type="button" class="next-step-button property-report-download-button" data-property-report-download>Download Guided Review Summary</button>
+    <aside class="guided-transition">
+      <p>You have reached the end of the guided review. The path covered the record, value movement, equalization context, tax context, and review signals.</p>
     </aside>
+    <nav class="guided-next-action" aria-label="Download guided review summary">
+      <button type="button" class="next-step-button property-report-download-button" data-property-report-download>Download Guided Review Summary</button>
+    </nav>
   `;
 
   reviewPanel?.after(section);

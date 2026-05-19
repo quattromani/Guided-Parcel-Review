@@ -6,6 +6,7 @@
   <meta name="format-detection" content="telephone=no,address=no,email=no,date=no" />
   <meta name="description" content="A guided parcel review that helps taxpayers understand property records, assessed value, tax context, market context, equalization, and review items." />
   <title>2026 Guided Parcel Review</title>
+  <link rel="icon" href="data:," />
   <script>
     if (window.location.protocol === "file:") {
       window.location.replace(`http://localhost:4173/${window.location.search}${window.location.hash}`);
@@ -45,20 +46,17 @@
     <section data-guided-panel="your-property" class="hidden space-y-6">
       <header id="pageHeader" class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"></header>
 
-      <section class="grid gap-6 lg:grid-cols-12">
-        <article class="self-start rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-4">
-          <h2 class="text-xl font-bold text-slate-700">Quick read for this property</h2>
-          <div id="summaryText" class="mt-3 text-sm leading-6 text-slate-700"></div>
-        </article>
+      <aside class="guided-transition">
+        <p>Start with the record facts. These details anchor the value, market, equalization, and tax views that follow.</p>
+      </aside>
 
-        <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-8">
+      <section class="grid gap-6 lg:grid-cols-12">
+        <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-12">
           <h2 class="text-xl font-bold text-slate-700">Property details</h2>
           <p class="mt-1 text-sm text-slate-600">These are the property details used to place the parcel in later value and tax views. Confirming them first makes the later numbers easier to understand.</p>
-          <dl id="propertyDetails" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2"></dl>
+          <dl id="propertyDetails" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"></dl>
         </article>
       </section>
-
-      <section id="processRoleMap" class="process-role-map" aria-label="Who handles each kind of property tax question"></section>
 
       <article class="ooda-decision-card">
         <div class="ooda-decision-header">
@@ -71,6 +69,10 @@
         <p>Review these facts against what you know about the property. Follow up if the owner, address, land size, class, condition, rooms, garage, improvements, or sketch appears inaccurate or incomplete. If the record details match what you know, continue to assessment.</p>
       </article>
 
+      <aside class="guided-transition">
+        <p>Once the record facts are familiar, move to the assessed value change.</p>
+      </aside>
+
       <nav class="guided-next-action" aria-label="Continue review">
         <button type="button" data-guided-next="what-changed" class="next-step-button">Go to What Changed</button>
       </nav>
@@ -78,6 +80,10 @@
     </section>
 
     <section data-guided-panel="your-assessment" class="guided-panel-assessment hidden space-y-6">
+      <aside class="guided-transition">
+        <p>Start with the current assessment and the most recent movement. Then compare it with the longer value and tax history.</p>
+      </aside>
+
       <section id="assessment-notice" class="grid gap-6 lg:grid-cols-5">
         <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
           <h2 class="text-xl font-bold text-slate-700">Prior & Current Assessments</h2>
@@ -102,19 +108,11 @@
         <p>Now compare the current change with prior years.</p>
       </aside>
 
-      <section class="assessment-year-rail" aria-label="Assessment year roadmap">
-        <div class="assessment-year-rail-track" aria-hidden="true"></div>
-        <ol>
-          <li><span>Jan 1</span><strong>Value date</strong></li>
-          <li><span>June</span><strong>Notice / review</strong></li>
-          <li><span>June-July</span><strong>BOE review</strong></li>
-          <li><span>Sept</span><strong>Budgets</strong></li>
-          <li><span>Oct-Nov</span><strong>Levies set</strong></li>
-          <li><span>Dec</span><strong>Tax statements</strong></li>
-        </ol>
-      </section>
-
       <section id="value-tax-history-panel" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></section>
+
+      <aside class="guided-transition">
+        <p>With the change and history in view, place the property in its local market context.</p>
+      </aside>
 
       <nav class="guided-next-action" aria-label="Continue review">
         <button type="button" data-guided-next="valuation-detail" class="next-step-button">Go to Value Detail</button>
@@ -123,21 +121,30 @@
     </section>
 
     <section data-guided-panel="your-taxes" class="hidden space-y-6">
+      <aside class="guided-transition">
+        <p>Start with the tax district and levy mix. The chart shows where the latest bill is allocated along with the year-by-year tax history.</p>
+      </aside>
+
+      <article id="tax-district-authorities" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <h2 class="sr-only">Tax district and levy distribution</h2>
+        <div id="taxDistrictAuthoritySummary" class="grid gap-6 lg:grid-cols-2"></div>
+        <section id="tax-distribution" class="mt-4"></section>
+        <p id="taxDistrictAuthoritySource" class="chart-source"></p>
+      </article>
+
+      <aside class="guided-transition">
+        <p>Next, read how levy, credits, net tax, and effective tax rate moved across completed statement years.</p>
+      </aside>
+
       <section id="tax-history-panel"></section>
 
+      <aside class="guided-transition">
+        <p>Now isolate the net-bill pattern. This view shows where the bill peaked and how the latest statement compares with the period average.</p>
+      </aside>
+
       <article id="equalization-pressure" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <h2 class="sr-only">Tax bill pattern</h2>
         <div class="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]">
-          <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax Bill Pattern</p>
-              <h2 class="mt-1 text-xl font-bold text-slate-700">Where did the tax bill peak?</h2>
-              <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Statement years show how the net tax changed over time, separate from payment status.</p>
-          </div>
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Key figures</p>
-            <h3 class="mt-1 text-xl font-bold text-slate-700">Useful numbers to know</h3>
-          </div>
-        </div>
-        <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]">
           <div>
             <div class="h-80 rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
               <canvas id="taxBurdenPatternChart"></canvas>
@@ -151,98 +158,14 @@
       </article>
 
       <aside class="guided-transition">
-        <p>The tax bill reflects value, levy, credits, and district assignment.</p>
-      </aside>
-
-      <article id="tax-district-authorities" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <p class="guided-kicker">Tax Districts</p>
-        <h2 class="mt-1 text-xl font-bold text-slate-700">Which tax district applies here?</h2>
-        <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">The tax district, source year, listed taxing bodies, and total levy help confirm whether this property is assigned to the expected jurisdictions before reading the levy breakdown.</p>
-        <div id="taxDistrictAuthoritySummary" class="mt-4 grid gap-3 md:grid-cols-4"></div>
-        <section id="tax-distribution" class="related-panel-section"></section>
-        <p id="taxDistrictAuthoritySource" class="chart-source"></p>
-      </article>
-
-      <article class="ooda-inline-note">
-        <p class="guided-kicker">Jurisdiction check</p>
-        <p>Check whether the listed school district, city, county, NRD, ESU, college, and other bodies match the property location.</p>
-      </article>
-
-      <aside class="guided-transition">
-        <p>The main record, value, equalization, and tax context is now in view.</p>
-      </aside>
-
-      <nav class="guided-next-action" aria-label="Continue review">
-        <button type="button" data-guided-next="review-signals" class="next-step-button">Go to Review Signals</button>
-      </nav>
-    </section>
-
-    <section data-guided-panel="market-area" class="hidden space-y-6">
-      <aside class="guided-transition">
-        <p>Now place the property in its local comparison group.</p>
-      </aside>
-
-      <article id="market-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Market Area</p>
-        <div class="mt-1 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <h2 class="text-2xl font-bold text-slate-700">How does this property’s market area measure up?</h2>
-            <p id="marketSourceNote" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-                Local sales-study measures show the comparison group behind the countywide check.
-            </p>
-          </div>
-          <label class="min-w-72 text-sm font-semibold text-slate-700">
-            Want to see another area?
-            <select id="marketAreaSelect" data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
-          </label>
-        </div>
-        <div class="market-reading-path" aria-labelledby="marketReadingTitle">
-          <div class="market-reading-intro">
-            <p class="guided-kicker">Reading path</p>
-            <h3 id="marketReadingTitle">Start local. Then roll up.</h3>
-          </div>
-          <p class="market-reading-line">Read qualified sales for sample depth, then median ratio, COD, and PRD for level and uniformity context.</p>
-        </div>
-        <div id="marketConceptStrip" class="market-concept-strip" aria-label="How to read market evidence"></div>
-        <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
-      </article>
-
-      <nav class="guided-next-action" aria-label="Continue review">
-        <button type="button" data-guided-next="equalization" class="next-step-button">Go to Equalization</button>
-      </nav>
-
-    </section>
-
-    <section data-guided-panel="county-equalization" class="hidden space-y-6">
-      <article id="assessment-accuracy" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <div>
-          <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Equalization Context</p>
-              <h2 class="mt-1 text-2xl font-bold text-slate-700">How is the value base checked for level and uniformity?</h2>
-              <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-                Equalization checks whether assessed values are at the required level and reasonably uniform before levies are applied.
-              </p>
-          </div>
-        </div>
-        <div id="assessment-accuracy-body"></div>
-      </article>
-
-      <article class="ooda-decision-card">
-        <p class="guided-kicker">Decision check</p>
-        <h2>What does the equalization layer show?</h2>
-          <p>Use it as a broader level and uniformity check before reading taxes.</p>
-      </article>
-
-      <aside class="guided-transition">
-        <p>Now widen from the parcel to the county baseline.</p>
+        <p>Step back to the county baseline. Countywide value, tax, and rate movement show the broader tax context before the optional statewide comparison.</p>
       </aside>
 
       <article id="county-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <p class="guided-kicker">County Summary</p>
-        <h2 class="mt-1 text-xl font-bold text-slate-700">What is the countywide baseline?</h2>
-        <p id="countyCtlSummaryIntro" class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.</p>
-        <div id="countyCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
-        <section class="county-chart-pair related-panel-section grid gap-6 lg:grid-cols-5" aria-label="County value and tax charts">
+        <h2 class="sr-only">Countywide baseline</h2>
+        <p id="countyCtlSummaryIntro" class="sr-only">Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.</p>
+        <div id="countyCtlSummary" class="grid gap-3 md:grid-cols-3 lg:grid-cols-5"></div>
+        <section class="county-chart-pair mt-4 grid gap-6 lg:grid-cols-5" aria-label="County value and tax charts">
           <section id="county-indexed" class="lg:col-span-3">
             <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
             <p id="countyIndexedRangeNote" class="mt-1 text-sm text-slate-600">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>
@@ -265,19 +188,90 @@
 
       <aside class="advanced-context-card" aria-labelledby="stateContextPromptTitle">
         <div>
-          <p class="guided-kicker">Statewide County View</p>
-          <h3 id="stateContextPromptTitle">Need the broader county comparison?</h3>
-          <p>Compare this county with statewide CTL patterns and other Nebraska counties without leaving the main review path.</p>
+          <h3 id="stateContextPromptTitle">Want a broader comparison?</h3>
+          <p>View this county with statewide CTL patterns and other Nebraska counties without leaving the main review path.</p>
         </div>
         <button type="button" data-guided-next="state-context" class="advanced-context-button">Compare Counties</button>
       </aside>
 
+      <aside class="guided-transition">
+        <p>The main record, value, equalization, and tax context is now in view.</p>
+      </aside>
+
+      <nav class="guided-next-action" aria-label="Continue review">
+        <button type="button" data-guided-next="review-signals" class="next-step-button">Go to Review Signals</button>
+      </nav>
+    </section>
+
+    <section data-guided-panel="market-area" class="hidden space-y-6">
+      <aside class="guided-transition">
+        <p>Start with the qualified sales behind this class. The count and distribution give the measures below their context.</p>
+      </aside>
+
+      <article id="market-sales-makeup" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></article>
+
+      <article id="market-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Market Area</p>
+        <div class="mt-1 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-700">How does this property’s market area measure up?</h2>
+            <p id="marketSourceNote" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+                Local sales-study measures show the comparison group behind the countywide check.
+            </p>
+          </div>
+          <label class="min-w-72 text-sm font-semibold text-slate-700">
+            Want to see another area?
+            <select id="marketAreaSelect" data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
+          </label>
+        </div>
+        <section id="market-price-context">
+          <h3 class="text-xl font-bold text-slate-700">What prices are represented?</h3>
+          <p class="mt-1 text-sm text-slate-600">Average sale price and assessed value show the price context behind the highlighted group.</p>
+          <div id="marketPriceSummary" class="mt-4 grid gap-3 text-sm md:grid-cols-3"></div>
+        </section>
+        <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
+      </article>
+
+      <aside class="guided-transition">
+        <p>With the sales base in view, anchor the value in its local group. The scatterplot shows how that group sits next to nearby groups.</p>
+      </aside>
+
+      <article id="market-local-position" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></article>
+
+      <aside class="guided-transition">
+        <p>With the sales base and local group in view, move to the countywide equalization layer.</p>
+      </aside>
+
+      <nav class="guided-next-action" aria-label="Continue review">
+        <button type="button" data-guided-next="equalization" class="next-step-button">Go to Equalization</button>
+      </nav>
+
+    </section>
+
+    <section data-guided-panel="county-equalization" class="hidden space-y-6">
+      <aside class="guided-transition">
+        <p>Qualified sales from the sales-study period test assessed values against market evidence. Those sales produce the statistical measures below.</p>
+      </aside>
+
+      <article id="assessment-accuracy-measures" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <div id="assessment-accuracy-body"></div>
+      </article>
+
+      <aside class="guided-transition">
+        <p>Next, put the measures on one scale. The chart shows whether COD, PRD, COV, and level of value are moving together or apart.</p>
+      </aside>
+
+      <article id="assessment-accuracy-unified" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></article>
+
       <article class="conceptual-interstitial" aria-labelledby="assessmentPlacementTitle">
         <p class="guided-kicker">How the pieces connect</p>
-        <h2 id="assessmentPlacementTitle">Assessment places the property in the shared value base.</h2>
-        <p>An assessed value is not only a number attached to one property. It also helps place that property among the other taxable properties in the county.</p>
-        <p>Equalization keeps that shared base in view before taxes are calculated.</p>
+        <p id="assessmentPlacementTitle" class="conceptual-definition-line"><strong>Assessment</strong> places the property in the shared value base.</p>
+        <p class="conceptual-definition-line"><strong>Equalization</strong> keeps that shared base in view before levies and taxes are applied.</p>
       </article>
+
+      <aside class="guided-transition">
+        <p>Now carry that shared value base into tax context, where levies and credits turn assessed value into the bill.</p>
+      </aside>
 
       <nav class="guided-next-action" aria-label="Continue review">
         <button type="button" data-guided-next="tax-context" class="next-step-button">Go to Tax Context</button>
@@ -373,23 +367,21 @@
   </main>
 
   <footer class="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8" aria-label="Site footer">
-    <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-      <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200" data-footer-resource-shell>
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between" data-step-footer-resources>
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Guided Parcel Review resources</p>
-          <h2 class="mt-1 text-xl font-bold text-slate-700">Resources and policies</h2>
+          <h2 class="text-xl font-bold text-slate-700">Resources and policies</h2>
           <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600">
-            Need help with what you just reviewed? Find focused answers, forms, and plain-English terms.
+            Need help with what you just reviewed? Find focused answers and forms.
           </p>
         </div>
         <nav aria-label="Resource menu" class="footer-resource-pills">
           <a href="#faq" data-footer-target="faq" class="footer-pill-button text-slate-600">FAQs</a>
           <a href="#forms" data-footer-target="forms" class="footer-pill-button text-slate-600">Forms</a>
-          <a href="#learn" data-footer-target="learn" class="footer-pill-button text-slate-600">Learn</a>
         </nav>
       </div>
 
-      <section id="importantCalendarDates" class="important-calendar-dates" aria-labelledby="importantCalendarDatesTitle"></section>
+      <section id="importantCalendarDates" class="important-calendar-dates" aria-labelledby="importantCalendarDatesTitle" data-step-footer-resources></section>
 
       <div id="footerContent" class="mt-5 hidden border-t border-slate-200 pt-5">
         <section id="about" data-footer-panel="about" class="footer-panel hidden">
@@ -440,12 +432,6 @@
           <div id="footerFormsContent" class="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-5"></div>
         </section>
 
-        <section id="learn" data-footer-panel="learn" class="footer-panel hidden">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Learn</p>
-          <h3 id="footerLearnTitle" class="mt-1 text-lg font-bold text-slate-700">Property record terms</h3>
-          <div id="footerLearnContent" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
-        </section>
-
         <section id="contact" data-footer-panel="contact" class="footer-panel hidden">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Contact</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Contact and support</h3>
@@ -462,7 +448,6 @@
       <a href="#privacy" data-footer-target="privacy" class="footer-site-link text-slate-600">Privacy Policy</a>
       <a href="#accessibility" data-footer-target="accessibility" class="footer-site-link text-slate-600">Accessibility</a>
       <a href="#contact" data-footer-target="contact" class="footer-site-link text-slate-600">Contact</a>
-      <button type="button" data-assessors-report class="footer-site-link footer-report-link text-slate-600">Supplemental Review Report</button>
       <button type="button" data-reset-property-manifest class="footer-site-link footer-reset-button text-slate-600" aria-label="Reset property selection" title="Reset property selection">
         <svg class="footer-reset-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M7 19H4.82a1.82 1.82 0 0 1-1.57-.89 1.78 1.78 0 0 1-.01-1.78L7.2 9.5"></path>

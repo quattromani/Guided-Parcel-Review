@@ -113,7 +113,7 @@ export function renderStartPage(propertySwitcherContext = {}) {
 
       <div class="guided-start-callout" aria-label="Sample record coverage">
         <p class="guided-start-callout-label">Sample coverage</p>
-        <p>Residential, agricultural, and commercial examples are available, with Gage samples grouped separately from the Saline example.</p>
+        <p>Residential, agricultural, and commercial samples are available.</p>
       </div>
 
       <div class="guided-start-grid" aria-label="What the review covers">
@@ -186,13 +186,11 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderViewHeader("your-property", data.snapshotModel, summaryContext.propertySwitcher);
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard, valuationGroups);
-  renderProcessRoleMap();
   renderAssessmentNoticeSummary(data, recordCard);
   renderComparisonShells(data, recordCard, summaryContext);
   renderPropertyDetails(data, recordCard);
   renderDiscrepancyForm(data, recordCard);
   initReportErrorModal(data, recordCard, governingOffice);
-  renderSummary(data, recordCard, summaryContext);
   renderHistoryTable(data, recordCard);
   renderPropertyMovementSummary(data);
   renderTaxHistoryTable(data);
@@ -266,46 +264,17 @@ function renderValueTaxHistoryShell() {
   initMobileSupportDisclosureCharts(container);
 }
 
-function renderProcessRoleMap() {
-  const container = document.getElementById("processRoleMap");
-  if (!container) return;
-
-  const roles = [
-    ["Assessor", "Property facts and valuation", "Record details, land, buildings, condition, class, assessed value"],
-    ["Taxpayer", "Verification", "Confirm the record, organize questions, file formal materials when applicable"],
-    ["County Board / Budget", "Review and levy setting", "Board decisions, public budgets, certified tax requests"],
-    ["State / TERC", "Oversight and appeal", "Statewide equalization context and appeal path"],
-    ["Treasurer", "Billing and payment", "Tax statements, payment ledger, balance due"]
-  ];
-
-  container.innerHTML = `
-    <div class="process-role-map-heading">
-      <p class="guided-kicker">Question routing</p>
-      <h2>Match the question to the relevant part of the system.</h2>
-    </div>
-    <div class="process-role-map-grid">
-      ${roles.map(([role, focus, scope]) => `
-        <section class="process-role-map-item">
-          <p>${escapeHtml(role)}</p>
-          <h3>${escapeHtml(focus)}</h3>
-          <span>${escapeHtml(scope)}</span>
-        </section>
-      `).join("")}
-    </div>
-  `;
-}
-
 function renderTaxHistoryShell() {
   const container = document.getElementById("tax-history-panel");
   if (!container) return;
 
-  container.className = "tax-history-pair grid gap-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:grid-cols-[minmax(0,3fr)_minmax(260px,1fr)]";
+  container.className = "tax-history-pair grid gap-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:grid-cols-[minmax(0,1.85fr)_minmax(320px,1fr)]";
   container.innerHTML = `
+    <div id="taxEquationWaterfall" class="tax-equation-waterfall lg:col-span-2" aria-label="Tax statement calculation"></div>
+
     <article id="tax-history" class="tax-history-detail-panel">
-      <h2 class="text-xl font-bold text-slate-700">How did levy, credits, and net taxes move?</h2>
-      <p class="mt-1 text-sm text-slate-600">After equalization frames the value base, finalized statement years show how levy, credits, exemptions, and tax-district assignment translate that base into this property&rsquo;s final bill.</p>
-      <div id="taxEquationWaterfall" class="tax-equation-waterfall" aria-label="Tax statement calculation"></div>
-      <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
+      <h2 class="sr-only">Levy, credits, and net tax history</h2>
+      <div class="overflow-x-auto rounded-xl ring-1 ring-slate-200">
         <table class="tax-burden-table min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
           <thead class="tax-burden-table-head">
             <tr>
@@ -321,14 +290,12 @@ function renderTaxHistoryShell() {
           <tbody id="taxHistoryRows" class="divide-y divide-slate-200"></tbody>
         </table>
       </div>
-      <p id="taxContextTakeaway" class="mt-3 rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200"></p>
       <p id="taxHistorySourceNote" class="mt-2 text-xs leading-5 text-slate-500"></p>
     </article>
 
     <article id="etr-trend" class="tax-history-rate-panel">
-        <h2 class="text-xl font-bold text-slate-700">How much net tax was billed for each dollar of value?</h2>
-        <p class="mt-1 text-sm text-slate-600">Effective tax rate compares the final net tax with assessed value, making each year&rsquo;s tax load easier to compare.</p>
-      <div class="mt-4 h-64 sm:h-72">
+      <h2 class="sr-only">Effective tax rate trend</h2>
+      <div class="h-64 sm:h-72">
         <canvas id="etrChart"></canvas>
       </div>
     </article>
@@ -342,25 +309,19 @@ function renderTaxDistributionShell(data) {
   const levyTableOpen = mobileSupportOpenAttribute();
 
   container.innerHTML = `
-    <div class="data-split-view tax-distribution-split-view grid gap-6 lg:grid-cols-5">
-      <article class="lg:col-span-3">
-        <h2 class="text-xl font-bold text-slate-700">Where does the tax bill go?</h2>
-          <p class="mt-1 text-sm text-slate-600">The most recent finalized tax breakdown shows the taxing bodies listed for this property. Dollar amounts allocate the latest net bill within this parcel by each group&rsquo;s levy share.</p>
-        <div class="tax-distribution-visual-grid mt-4 grid gap-4 md:items-center">
-          <div>
-            <div id="levyDriverCallout" class="levy-driver-callout"></div>
-            <div id="distributionNotes" class="mt-3 space-y-2 text-sm text-slate-700"></div>
+    <div class="data-split-view tax-distribution-split-view grid gap-6 lg:grid-cols-2">
+      <article>
+        <div class="levy-treemap-panel" aria-labelledby="distributionChartTitle">
+          <div class="levy-treemap-heading">
+            <h2 id="distributionChartTitle" class="text-xl font-bold text-slate-700">How is the tax bill distributed?</h2>
+            <p class="mt-1 text-sm text-slate-600">The chart shows each taxing body’s share of the latest levy. Select a section to focus on that levy group.</p>
           </div>
-          <div class="distribution-chart-panel" aria-labelledby="distributionChartTitle">
-            <p id="distributionChartTitle" class="distribution-chart-title">Latest levy share</p>
-            <div class="distribution-chart-shell h-72 sm:h-80">
-              <canvas id="distributionChart"></canvas>
-            </div>
-          </div>
+          <div id="distributionTreemap" class="levy-treemap-shell"></div>
+          <p id="distributionTreemapSummary" class="levy-treemap-summary"></p>
         </div>
       </article>
 
-      <article class="lg:col-span-2">
+      <article class="tax-levy-table-panel">
         <details class="mobile-support-disclosure" data-mobile-support${levyTableOpen}>
           <summary class="mobile-support-toggle">
             <span>See full levy table</span>
@@ -398,155 +359,152 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
   const rangeAuthority = legalReferenceHtml(summaryContext.legalReferences, "neb-rev-stat-77-5023", "§ 77-5023");
   const reportsAuthority = legalReferenceHtml(summaryContext.legalReferences, "neb-rev-stat-77-5027", "§ 77-5027");
 
-  container.innerHTML = `
-    <section class="mt-5 border-t border-slate-200 pt-5" aria-labelledby="assessmentBandCardsTitle">
-      <div>
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Class band checks</p>
-          <h3 id="assessmentBandCardsTitle" class="text-lg font-bold text-slate-700">Where does each measure stand now?</h3>
+  const salesMakeup = `
+    <h3 id="equalizationSalePriceTitle" class="text-lg font-bold text-slate-700">What makes up the class sales data?</h3>
+    <p id="equalizationSalePriceDescription" class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">Sale-price ranges show where qualified sales are concentrated and whether the class study is based mostly on lower-, middle-, or higher-priced properties.</p>
+    <div class="data-split-view equalization-sales-split-view mt-4 grid gap-4 lg:grid-cols-2">
+      <div class="equalization-sales-table-scroll overflow-auto rounded-xl bg-white ring-1 ring-slate-200">
+        <table class="min-w-full divide-y divide-slate-200 text-xs equalization-support-table equalization-sales-table">
+          <colgroup>
+            <col class="equalization-sales-label-col" />
+            <col class="equalization-sales-count-col" />
+            <col class="equalization-sales-ratio-col" />
+            <col class="equalization-sales-ratio-col" />
+            <col class="equalization-sales-ratio-col" />
+            <col class="equalization-sales-money-col" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th id="equalizationSalePriceRangeHeader" class="px-2 py-2 text-left font-semibold">
+                <span class="sales-range-label-full">Sale price range</span>
+                <span class="sales-range-label-compact">Price band</span>
+              </th>
+              <th class="px-2 py-2 text-right font-semibold">Sales</th>
+              <th class="px-2 py-2 text-right font-semibold">Median</th>
+              <th class="px-2 py-2 text-right font-semibold">COD</th>
+              <th class="px-2 py-2 text-right font-semibold">PRD</th>
+              <th class="px-2 py-2 text-right font-semibold">Avg. sale</th>
+            </tr>
+          </thead>
+          <tbody id="equalizationSalePriceRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+        </table>
+      </div>
+      <div class="equalization-sales-chart-panel rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+        <p id="equalizationSalePriceChartTitle" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sales distribution</p>
+        <p id="equalizationSalePriceChartNote" class="mt-1 text-sm leading-5 text-slate-600">Qualified sales by price band, including empty upper bands.</p>
+        <div id="equalizationSalePriceChartLegend" class="chart-disc-legend mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+        <div class="equalization-sales-chart-frame mt-3">
+          <canvas id="equalizationSalePriceChart"></canvas>
         </div>
       </div>
-      <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
-        <p class="max-w-2xl text-sm leading-6 text-slate-600">COD, PRD, and COV are ratio-study statistics. Level of value is the class median ratio range. Countywide warnings are broader equalization context, not parcel-specific findings.</p>
-      </div>
-      <div id="assessmentAccuracySummary" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
-    </section>
-
-    <section class="mt-5 border-t border-slate-200 pt-5" aria-labelledby="assessmentUnifiedViewTitle">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Reported values and unified view</p>
-      <h3 id="assessmentUnifiedViewTitle" class="mt-1 text-lg font-bold text-slate-700">How do the raw measures come together?</h3>
-      <p class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">The table keeps the reported values by year. The chart normalizes COD, PRD, COV, and level of value to their own bands so their movement can be compared without mixing raw scales.</p>
-    </section>
-    <section class="data-split-view related-panel-section equalization-unified-section grid gap-6 lg:grid-cols-5">
-      <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
-          <h3 class="text-lg font-bold text-slate-700">How do the assessment measures come together?</h3>
-          <p id="assessmentAccuracyConvergenceNote" class="mt-1 text-sm text-slate-600">COD, PRD, COV, and level of value are normalized to their own bands so their relative movement can be read together.</p>
-        <div id="assessmentAccuracyLegend" class="assessment-line-legend mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600"></div>
-        <div class="mt-4 h-80">
-          <canvas id="assessmentAccuracyChart"></canvas>
-        </div>
-      </article>
-      <details class="mobile-support-disclosure equalization-support-disclosure equalization-year-table-panel rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2" data-mobile-support${supportOpen}>
-        <summary class="mobile-support-toggle">
-          <span>See reported values table</span>
-          <span class="mobile-support-chevron" aria-hidden="true"></span>
-        </summary>
-        <div class="mobile-support-content">
-          <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
-          <p class="mt-1 text-sm text-slate-600">Latest years appear first so recent county sales-study results are easy to compare with prior years.</p>
-          <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
-            <table class="min-w-full divide-y divide-slate-200 text-sm equalization-support-table">
-              <thead class="sticky top-0">
-                <tr>
-                  <th class="px-3 py-2 text-left font-semibold">Year</th>
-                  <th class="px-3 py-2 text-right font-semibold">Sales</th>
-                  <th class="px-3 py-2 text-right font-semibold">COD</th>
-                  <th class="px-3 py-2 text-right font-semibold">PRD</th>
-                  <th class="px-3 py-2 text-right font-semibold">COV</th>
-                  <th class="px-3 py-2 text-right font-semibold">LOV</th>
-                </tr>
-              </thead>
-              <tbody id="assessmentMeasureRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-            </table>
+    </div>
+    <p id="equalizationSalePriceSource" class="chart-source"></p>
+  `;
+  const localPosition = `
+    <section class="market-local-split grid gap-6 lg:grid-cols-5">
+      <div class="market-position-support lg:col-span-3">
+        <article id="market-position-panel" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+          <div class="market-position-heading">
+            <h4 class="text-xl font-bold text-slate-700">Compare it with nearby groups</h4>
+            <span id="marketAreaContextPill" class="equalization-context-pill" aria-live="polite"></span>
           </div>
-        </div>
-      </details>
-    </section>
-
-    <details class="mobile-support-disclosure equalization-support-disclosure equalization-local-section related-panel-section" data-mobile-support${supportOpen}>
-      <summary class="mobile-support-toggle">
-        <span>See local market position</span>
-        <span class="mobile-support-chevron" aria-hidden="true"></span>
-      </summary>
-      <div class="mobile-support-content" aria-labelledby="equalizationLocalPositionTitle">
-      <div class="equalization-local-heading flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Local starting point</p>
-          <h3 id="equalizationLocalPositionTitle" class="text-lg font-bold text-slate-700">Start with the local group</h3>
-          <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Equalization reads outward from the property record into its valuation group or market area, then into the class and countywide study. Choose the local group first, then compare how it sits against the broader county pattern.</p>
-        </div>
-        <label class="equalization-area-control min-w-72 text-sm font-semibold text-slate-700">
-          Want to see another area?
-          <select id="equalizationMarketAreaSelect" data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
-        </label>
-      </div>
-      <section class="related-panel-section grid gap-6 lg:grid-cols-5">
-        <section id="market-position-panel" class="lg:col-span-3">
-          <h4 class="text-xl font-bold text-slate-700">Compare it with nearby groups</h4>
-          <p id="marketPositionHelper" class="mt-1 text-sm text-slate-600">Each dot represents a valuation group or market area. The selected dot shows the local group you chose; the shaded center shows the expected range and broader county pattern.</p>
           <div id="marketPositionLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
           <div class="mt-4 h-80">
             <canvas id="marketPositionScatter" role="img" tabindex="0" aria-describedby="marketScatterSummary"></canvas>
           </div>
-          <div class="mt-4 border-t border-slate-200 pt-4">
-            <p class="guided-kicker">Market area summary</p>
-            <p id="marketNarrative" class="mt-1 text-sm leading-6 text-slate-700"></p>
+        </article>
+        <p id="marketNarrative" class="mt-3 text-sm leading-6 text-slate-700"></p>
+        <p id="marketScatterSummary" class="sr-only"></p>
+      </div>
+      <section class="market-reading-context lg:col-span-2">
+        <div class="market-reading-path" aria-labelledby="marketReadingTitle">
+          <div class="market-reading-intro">
+            <p class="guided-kicker">Reading path</p>
+            <h4 id="marketReadingTitle">Start local. Then roll up.</h4>
           </div>
-          <p id="marketScatterSummary" class="mt-4 text-sm leading-6 text-slate-600"></p>
-        </section>
-        <section id="market-price-context" class="lg:col-span-2">
-          <h4 class="text-xl font-bold text-slate-700">What prices are represented?</h4>
-          <p class="mt-1 text-sm text-slate-600">Average sale price and assessed value show the price context behind the highlighted group.</p>
-          <div id="marketPriceSummary" class="mt-4 grid gap-3 text-sm"></div>
-        </section>
+          <p class="market-reading-line">Read sales depth first, then value level, consistency, and price-related balance.</p>
+        </div>
+        <div id="marketConceptStrip" class="market-concept-strip" aria-label="How to read market evidence"></div>
       </section>
-      <p id="marketPositionSource" class="chart-source"></p>
-      </div>
-    </details>
-
-    <details class="mobile-support-disclosure equalization-support-disclosure equalization-sales-section related-panel-section" data-mobile-support${supportOpen}>
-      <summary class="mobile-support-toggle">
-        <span>See class sales makeup</span>
-        <span class="mobile-support-chevron" aria-hidden="true"></span>
-      </summary>
-      <div class="mobile-support-content" aria-labelledby="equalizationSalePriceTitle">
-      <h3 id="equalizationSalePriceTitle" class="text-lg font-bold text-slate-700">What makes up the class sales data?</h3>
-      <p id="equalizationSalePriceDescription" class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">Sale-price ranges show where qualified sales are concentrated and whether the class study is based mostly on lower-, middle-, or higher-priced properties.</p>
-      <div class="data-split-view equalization-sales-split-view mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
-        <div class="overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
-          <table class="min-w-full divide-y divide-slate-200 text-xs equalization-support-table equalization-sales-table">
-            <colgroup>
-              <col class="equalization-sales-label-col" />
-              <col class="equalization-sales-count-col" />
-              <col class="equalization-sales-ratio-col" />
-              <col class="equalization-sales-ratio-col" />
-              <col class="equalization-sales-ratio-col" />
-              <col class="equalization-sales-money-col" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th id="equalizationSalePriceRangeHeader" class="px-2 py-2 text-left font-semibold">
-                  <span class="sales-range-label-full">Sale price range</span>
-                  <span class="sales-range-label-compact">Price band</span>
-                </th>
-                <th class="px-2 py-2 text-right font-semibold">Sales</th>
-                <th class="px-2 py-2 text-right font-semibold">Median</th>
-                <th class="px-2 py-2 text-right font-semibold">COD</th>
-                <th class="px-2 py-2 text-right font-semibold">PRD</th>
-                <th class="px-2 py-2 text-right font-semibold">Avg. sale</th>
-              </tr>
-            </thead>
-            <tbody id="equalizationSalePriceRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-          </table>
-        </div>
-        <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
-          <p id="equalizationSalePriceChartTitle" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sales distribution</p>
-          <p id="equalizationSalePriceChartNote" class="mt-1 text-sm leading-5 text-slate-600">Qualified sales by price band, including empty upper bands.</p>
-          <div id="equalizationSalePriceChartLegend" class="chart-disc-legend mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-          <div class="mt-3 h-64">
-            <canvas id="equalizationSalePriceChart"></canvas>
+    </section>
+    <p id="marketPositionSource" class="chart-source"></p>
+  `;
+  const unifiedView = `
+    <section class="data-split-view equalization-unified-section grid gap-6 lg:grid-cols-5">
+      <div class="equalization-chart-support lg:col-span-3">
+        <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+          <div class="equalization-chart-heading">
+            <h3 class="text-lg font-bold text-slate-700">How do the assessment measures come together?</h3>
+            <span id="assessmentClassContextPill" class="equalization-context-pill" aria-live="polite"></span>
           </div>
-        </div>
+          <div id="assessmentAccuracyLegend" class="assessment-line-legend mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600"></div>
+          <div class="mt-4 h-80">
+            <canvas id="assessmentAccuracyChart"></canvas>
+          </div>
+        </article>
+        <p id="assessmentAccuracyConvergenceNote" class="equalization-unified-note mt-3 text-sm text-slate-600">COD, PRD, COV, and level of value are normalized to their own bands so their relative movement can be read together.</p>
       </div>
-      <p id="equalizationSalePriceSource" class="chart-source"></p>
-      </div>
-    </details>
+      <article class="equalization-year-table-panel rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
+        <details class="mobile-support-disclosure equalization-support-disclosure" data-mobile-support${supportOpen}>
+          <summary class="mobile-support-toggle">
+            <span>See reported values table</span>
+            <span class="mobile-support-chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="mobile-support-content">
+            <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
+            <p class="mt-1 text-sm text-slate-600">Latest years appear first so recent county sales-study results are easy to compare with prior years.</p>
+            <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
+              <table class="min-w-full divide-y divide-slate-200 text-sm equalization-support-table">
+                <thead class="sticky top-0">
+                  <tr>
+                    <th class="px-3 py-2 text-left font-semibold">Year</th>
+                    <th class="px-3 py-2 text-right font-semibold">Sales</th>
+                    <th class="px-3 py-2 text-right font-semibold">COD</th>
+                    <th class="px-3 py-2 text-right font-semibold">PRD</th>
+                    <th class="px-3 py-2 text-right font-semibold">COV</th>
+                    <th class="px-3 py-2 text-right font-semibold">LOV</th>
+                  </tr>
+                </thead>
+                <tbody id="assessmentMeasureRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </article>
+    </section>
     <p id="assessmentAccuracySourceNote" class="chart-source">
       Source: ${escapeHtml(ratioCitation)}; ${escapeHtml(iaaoCitation)}. Authority context: ${rangeAuthority}, ${reportsAuthority}.
     </p>
   `;
+
+  container.innerHTML = `
+    <section aria-labelledby="assessmentBandCardsTitle">
+      <div class="assessment-band-header">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Class band checks</p>
+          <h3 id="assessmentBandCardsTitle" class="text-lg font-bold text-slate-700">Where does each measure stand now?</h3>
+        </div>
+        <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
+      </div>
+      <div id="assessmentAccuracySummary" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
+    </section>
+  `;
+  const assessmentUnified = document.getElementById("assessment-accuracy-unified");
+  if (assessmentUnified) {
+    assessmentUnified.innerHTML = unifiedView;
+  }
+  const marketLocalPosition = document.getElementById("market-local-position");
+  if (marketLocalPosition) {
+    marketLocalPosition.innerHTML = localPosition;
+  }
+  const marketSalesMakeup = document.getElementById("market-sales-makeup");
+  if (marketSalesMakeup) {
+    marketSalesMakeup.innerHTML = salesMakeup;
+  }
   initMobileSupportDisclosureCharts(container);
+  if (assessmentUnified) initMobileSupportDisclosureCharts(assessmentUnified);
+  if (marketLocalPosition) initMobileSupportDisclosureCharts(marketLocalPosition);
+  if (marketSalesMakeup) initMobileSupportDisclosureCharts(marketSalesMakeup);
 }
 
 function mobileSupportOpenAttribute() {
@@ -617,31 +575,19 @@ function formatValuationGroupLabel(value) {
   return label.replace(/^(\d+)\s*[-–]\s*/, "VG $1 - ");
 }
 
-function landingPrimerTitleHtml(noticeAddress) {
-  return `
-    <span class="page-title-nowrap">You are looking at</span>
-    <span class="page-title-situs">${escapeHtml(noticeAddress)}.</span>
-  `;
-}
-
 export function renderViewHeader(view = "your-property", snapshotModel, propertySwitcher = null) {
   const switcherContext = propertySwitcher ?? window.__PROPERTY_SWITCHER_CONTEXT__ ?? null;
   const section = snapshotModel?.sections?.find(item => item.id === view);
-  const noticeAddress = snapshotModel?.viewModels?.notice?.displayAddress
-    || snapshotModel?.viewModels?.notice?.situsAddress;
-  const hasLandingAddressTitle = view === "landing-primer" && noticeAddress;
   const content = section
     ? {
       eyebrow: section.eyebrow,
-      title: hasLandingAddressTitle
-        ? `You are looking at ${noticeAddress}.`
-        : section.question,
+      title: section.question,
       description: section.description,
       imageAlt: viewHeaderContent[view]?.imageAlt ?? "Map of Nebraska"
     }
     : viewHeaderContent[view] || viewHeaderContent["your-property"];
   const title = document.getElementById("pageTitle");
-  const titleHtml = hasLandingAddressTitle ? landingPrimerTitleHtml(noticeAddress) : escapeHtml(content.title);
+  const titleHtml = escapeHtml(content.title);
 
   title.innerHTML = `
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -1037,14 +983,8 @@ function renderPropertyDetails(data, recordCard) {
     ["Situs address", situsAddress],
     ["Mailing address", mailingAddressHtml(data.parcel.mailingAddress)],
     ["Legal description", data.parcel.legalDescription],
-    {
-      layout: "pair",
-      className: "details-card-compact",
-      items: [
-        ["Status", data.classification.status],
-        ["Zoning", data.classification.zoning]
-      ]
-    },
+    ["Status", data.classification.status],
+    ["Zoning", data.classification.zoning],
     ["Lot size", data.classification.lotSize]
   ];
   const physicalDetails = physicalDetailsForProperty(data);
@@ -1119,8 +1059,10 @@ function conditionScaleCard(data) {
 
   return `
     <div class="details-card details-card-full condition-scale-card">
-      <p class="condition-scale-kicker">Quality / condition</p>
-      <h3>${escapeHtml([quality, condition].filter(Boolean).join(" / "))}</h3>
+      <div class="condition-scale-header">
+        <p class="condition-scale-kicker">Quality / condition</p>
+        <h3>${escapeHtml([quality, condition].filter(Boolean).join(" / "))}</h3>
+      </div>
       <div class="condition-scale" aria-label="Condition scale">
         ${labels.map((label, index) => `
           <span class="${index === activeIndex ? "is-active" : ""}">${escapeHtml(label)}</span>
@@ -1168,14 +1110,8 @@ function physicalDetailsForProperty(data) {
   if (data.commercial?.buildingDatasheet?.length || data.classification.propertyClass === "Commercial") {
     return [
       ["Primary occupancy", data.commercial?.primaryOccupancy],
-      {
-        layout: "pair",
-        className: "details-card-compact",
-        items: [
-          ["Year built", data.commercial?.yearBuilt],
-          ["Construction", data.commercial?.constructionType]
-        ]
-      },
+      ["Year built", data.commercial?.yearBuilt],
+      ["Construction", data.commercial?.constructionType],
       ["Building size", formatSquareFeet(data.commercial?.buildingSize)],
       ["Perimeter", data.commercial?.perimeter ? `${data.commercial.perimeter} ft.` : null],
       ["Land use", data.commercial?.landUse],
@@ -1185,22 +1121,10 @@ function physicalDetailsForProperty(data) {
   }
 
   return [
-    {
-      layout: "pair",
-      className: "details-card-compact",
-      items: [
-        ["Year built", data.residential?.yearBuilt],
-        ["Style", data.residential?.style]
-      ]
-    },
-    {
-      layout: "pair",
-      className: "details-card-compact",
-      items: [
-        ["Building size", formatSquareFeet(data.residential?.buildingSize)],
-        ["Basement size", formatSquareFeet(data.residential?.basementSize)]
-      ]
-    },
+    ["Year built", data.residential?.yearBuilt],
+    ["Style", data.residential?.style],
+    ["Building size", formatSquareFeet(data.residential?.buildingSize)],
+    ["Basement size", formatSquareFeet(data.residential?.basementSize)],
     ["Bedrooms / bathrooms", [data.residential?.bedrooms, data.residential?.bathrooms].every(value => value !== null && value !== undefined) ? `${data.residential.bedrooms} / ${data.residential.bathrooms}` : null],
     ["Quality / condition", [data.residential?.quality, data.residential?.condition].filter(Boolean).join(" / ")],
     ["Garage", [data.residential?.garage1, data.residential?.garage2].filter(Boolean).join("; ")],
@@ -1764,13 +1688,7 @@ function recordCardSource(recordCard) {
 }
 
 function ownershipHistory(recordCard) {
-  if (!recordCard?.ownershipHistory?.length) {
-    return disclosure("What sale and ownership history is on record?", "Unavailable", `
-      <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
-        Sale and ownership-history rows were not available in the loaded source export. This means the sample record has no history rows to display; it is not treated as a data-load error.
-      </div>
-    `);
-  }
+  if (!recordCard?.ownershipHistory?.length) return "";
 
   return disclosure("What sale and ownership history is on record?", `${recordCard.ownershipHistory.length} transfers`, `
     <table class="min-w-full divide-y divide-slate-200 text-sm">
@@ -1935,9 +1853,9 @@ function classificationDetails(data) {
 }
 
 function propertyNotes(data) {
-  const rows = data.propertyNotes.length
-    ? data.propertyNotes.map(row => `<tr><td class="px-3 py-2">${row.date}</td><td class="px-3 py-2">${row.note}</td></tr>`).join("")
-    : `<tr><td class="px-3 py-3 text-slate-500" colspan="2">No public property notes listed.</td></tr>`;
+  if (!data.propertyNotes.length) return "";
+
+  const rows = data.propertyNotes.map(row => `<tr><td class="px-3 py-2">${row.date}</td><td class="px-3 py-2">${row.note}</td></tr>`).join("");
   const meta = data.propertyNotes.length === 1 ? "1 note" : `${data.propertyNotes.length} notes`;
 
   return disclosure("Are there notes or special conditions?", meta, `
@@ -2099,12 +2017,7 @@ function hasMarshallSwiftCostDetail(cost) {
 
 function costSourceLimitation(recordCard) {
   if (hasMarshallSwiftCostDetail(recordCard?.costApproach)) return "";
-
-  return disclosure("What value-model details are unavailable?", "Cost bridge unavailable", `
-    <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
-      The loaded GWorks export lists record facts and assessed value components, but it does not include the Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD bridge needed to reconstruct the assessor's full cost model. Those fields are shown as unavailable rather than inferred.
-    </div>
-  `);
+  return "";
 }
 
 function sourceExtractDetails(recordCard) {
@@ -2596,7 +2509,7 @@ function taxTimingLineForSnapshot(data, snapshot) {
   `;
 }
 
-function renderSummary(data, recordCard, summaryContext = {}) {
+export function quickReadSummaryMarkup(data, recordCard, summaryContext = {}) {
   const snapshot = getSnapshotHistory(data);
   const previousValue = getPreviousFinalValueHistory(data);
   const valueChangeFromPrior = previousValue?.assessedValue && snapshot.assessedValue
@@ -2628,11 +2541,10 @@ function renderSummary(data, recordCard, summaryContext = {}) {
     ["First check", recordCheckLine]
   ];
 
-  document.getElementById("summaryText").innerHTML = `
-    <p class="quick-read-intro">Detailed history, taxes, and county context come in the next steps.</p>
-    <div class="quick-read-list" role="list">
+  return `
+    <div class="summary-quick-read-list" role="list">
       ${summaryRows.map(([label, body]) => `
-        <div class="quick-read-item" role="listitem">
+        <div class="quick-read-item summary-quick-read-item" role="listitem">
           <p class="quick-read-label">${escapeHtml(label)}</p>
           <p>${body}</p>
         </div>
@@ -2840,24 +2752,26 @@ function renderPropertyMovementSummary(data) {
   ];
 
   container.innerHTML = `
-    <section>
-      <div class="movement-section-heading">
-        <p>Recent movement</p>
-        <p>${previousValue?.year && lastValue?.year ? `${previousValue.year}-${lastValue.year}` : "Recent available years"}</p>
-      </div>
-      <div class="mt-2 grid gap-3 2xl:grid-cols-3">
-        ${recentCards.map(movementCard).join("")}
-      </div>
-    </section>
-    <section class="border-t border-slate-200 pt-4">
-      <div class="movement-section-heading">
-        <p>Property history</p>
-        <p>${firstValue.year}-${lastValue.year}</p>
-      </div>
-      <div class="mt-2 grid gap-3 2xl:grid-cols-3">
-        ${historicalCards.map(movementCard).join("")}
-      </div>
-    </section>
+    <div class="movement-summary-grid">
+      <section class="movement-summary-section">
+        <div class="movement-section-heading">
+          <p>Recent movement</p>
+          <p>${previousValue?.year && lastValue?.year ? `${previousValue.year}-${lastValue.year}` : "Recent available years"}</p>
+        </div>
+        <div class="mt-2 grid gap-3">
+          ${recentCards.map(movementCard).join("")}
+        </div>
+      </section>
+      <section class="movement-summary-section">
+        <div class="movement-section-heading">
+          <p>Movement history</p>
+          <p>${firstValue.year}-${lastValue.year}</p>
+        </div>
+        <div class="mt-2 grid gap-3">
+          ${historicalCards.map(movementCard).join("")}
+        </div>
+      </section>
+    </div>
   `;
 }
 
@@ -2968,56 +2882,7 @@ function renderTaxHistoryTable(data) {
     sourceNote.textContent = notes.join(" ");
   }
 
-  renderTaxContextTakeaway(data, displayLevyByYear);
   renderTaxEquationWaterfall(data, displayLevyByYear);
-}
-
-function renderTaxContextTakeaway(data, displayLevyByYear) {
-  const container = document.getElementById("taxContextTakeaway");
-  if (!container) return;
-
-  const valueRows = (data.taxpayerHistory || [])
-    .filter(row => row.assessedValue !== null && row.assessedValue !== undefined)
-    .slice()
-    .sort((a, b) => a.year - b.year);
-  const taxRows = finalizedTaxStatements(data)
-    .slice()
-    .sort((a, b) => a.taxYear - b.taxYear)
-    .map(statement => ({
-      year: statement.taxYear,
-      netTax: statement.netAmountDue ?? statement.totalTaxesDue ?? null,
-      credits: statementTotalCredits(statement)
-    }))
-    .filter(row => row.netTax !== null && row.netTax !== undefined);
-  const firstValue = valueRows[0];
-  const lastValue = valueRows.at(-1);
-  const firstTax = taxRows[0];
-  const lastTax = taxRows.at(-1);
-
-  if (!firstValue || !lastValue || !firstTax || !lastTax) {
-    container.textContent = "Assessment value, levy, credits, and net tax are shown separately so each source field can be reviewed without treating one field as the whole tax story.";
-    return;
-  }
-
-  const valueChange = percentChangeBetween(firstValue.assessedValue, lastValue.assessedValue);
-  const taxChange = percentChangeBetween(firstTax.netTax, lastTax.netTax);
-  const firstLevy = displayLevyByYear?.get(firstTax.year)?.levy ?? null;
-  const lastLevy = displayLevyByYear?.get(lastTax.year)?.levy ?? null;
-  const levyPhrase = firstLevy !== null && lastLevy !== null && firstLevy !== undefined && lastLevy !== undefined
-    ? Number(lastLevy) < Number(firstLevy)
-      ? ` The levy declined from ${formatNullableLevy(firstLevy)} to ${formatNullableLevy(lastLevy)}.`
-      : Number(lastLevy) > Number(firstLevy)
-        ? ` The levy increased from ${formatNullableLevy(firstLevy)} to ${formatNullableLevy(lastLevy)}.`
-        : ` The levy was unchanged at ${formatNullableLevy(lastLevy)}.`
-    : "";
-  const creditPhrase = lastTax.credits
-    ? ` Credits are reflected in the ${lastTax.year} net tax amount.`
-    : "";
-  const taxMovementPhrase = Math.abs(taxChange ?? 0) < 0.05
-    ? `net taxes stayed nearly flat (${signedPercent(taxChange)})`
-    : `net taxes changed ${signedPercent(taxChange)}`;
-
-  container.textContent = `From ${firstValue.year} to ${lastValue.year}, assessed value changed ${signedPercent(valueChange)} while ${taxMovementPhrase} from ${firstTax.year} to ${lastTax.year}.${levyPhrase}${creditPhrase} These fields help explain why value growth does not always translate into parallel tax growth.`;
 }
 
 function renderTaxEquationWaterfall(data, displayLevyByYear) {
@@ -3036,19 +2901,20 @@ function renderTaxEquationWaterfall(data, displayLevyByYear) {
   const net = statement.netAmountDue ?? statement.totalTaxesDue ?? null;
   const steps = [
     ["Assessed value", formatNullableMoney(statement.assessedValue), statement.taxYear],
-    ["x Levy", formatNullableLevy(levy), "gross rate"],
-    ["= Gross tax", formatNullableMoney(gross, true), "before credits"],
-    ["- Credits", credits !== null ? formatNullableMoney(credits, true) : "—", "reductions"],
-    ["= Net tax", formatNullableMoney(net, true), "statement amount"]
+    ["Levy", formatNullableLevy(levy), "gross rate"],
+    ["Gross tax", formatNullableMoney(gross, true), "before credits"],
+    ["Credits", credits !== null ? formatNullableMoney(credits, true) : "—", "reductions"],
+    ["Net tax", formatNullableMoney(net, true), "statement amount"]
   ];
+  const operators = ["×", "=", "−", "="];
 
   container.innerHTML = `
     <div class="tax-equation-heading">
-      <p class="guided-kicker">Tax equation</p>
-      <h3>${statement.taxYear} statement shorthand</h3>
+      <h3>${statement.taxYear} tax statement shorthand</h3>
     </div>
     <div class="tax-equation-steps">
       ${steps.map(([label, value, note], index) => `
+        ${index > 0 ? `<span class="tax-equation-operator" aria-hidden="true">${operators[index - 1]}</span>` : ""}
         <section class="${index === steps.length - 1 ? "tax-equation-step-total" : ""}">
           <p>${escapeHtml(label)}</p>
           <strong>${escapeHtml(value)}</strong>

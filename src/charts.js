@@ -1,4 +1,4 @@
-import { calculateEtr, groupLevy, percent } from "./format.js";
+import { calculateEtr, percent } from "./format.js";
 import {
   chartColors,
   semanticChartColors,
@@ -17,6 +17,7 @@ import {
 } from "./market-stats.js";
 import { getMetricSignal } from "./metric-signals.js";
 import { sortHistoryAscending } from "./calculations/history.js";
+import { renderGroupedTreemap } from "./charts/treemap.js";
 import { escapeHtml } from "./utils/html.js";
 
 export { initDemographicsView } from "./charts/demographics.js";
@@ -349,32 +350,28 @@ export function buildTaxBurdenPattern(data) {
     {
       label: "Highest net bill",
       value: moneyCents.format(peak.netAmountDue),
-      pill: peak.taxYear,
-      support: "statement year"
+      pill: peak.taxYear
     },
     {
       label: "Period average",
       value: moneyCents.format(average),
-      pill: `${rows[0].taxYear}-${rows.at(-1).taxYear}`,
-      support: "statement years"
+      pill: `${rows[0].taxYear}-${rows.at(-1).taxYear}`
     },
     {
       label: "Latest net bill",
       value: moneyCents.format(latest.netAmountDue),
-      pill: `${latestVsAverage < 0 ? "-" : "+"}${moneyCents.format(Math.abs(latestVsAverage))}`,
-      support: latestVsAverage < 0 ? "below average" : "above average"
+      pill: `${latestVsAverage < 0 ? "-" : "+"}${moneyCents.format(Math.abs(latestVsAverage))}`
     }
   ];
 
   cards.innerHTML = cardItems.map(item => `
-    <div class="tax-pattern-card grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+    <div class="tax-pattern-card grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
       <div class="min-w-0">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${item.label}</p>
         <p class="mt-1 text-2xl font-bold text-slate-700">${item.value}</p>
       </div>
       <div class="tax-pattern-context">
         <span class="tax-pattern-pill">${item.pill}</span>
-        <span class="tax-pattern-support">${item.support}</span>
       </div>
     </div>
   `).join("");
@@ -500,7 +497,7 @@ const assessmentMeasureDefinitions = [
     digits: 2,
     borderDash: [],
     pointStyle: "circle",
-    definition: "Uniformity is measured by COD. It shows how tightly individual assessment ratios cluster around the median ratio, with very low readings still requiring sample context."
+    definition: "COD measures uniformity by showing how tightly assessment ratios cluster around the median."
   },
   {
     key: "prd",
@@ -514,7 +511,7 @@ const assessmentMeasureDefinitions = [
     digits: 3,
     borderDash: [7, 5],
     pointStyle: "rectRot",
-    definition: "Price-related balance is measured by PRD. It shows whether lower- and higher-priced properties are being treated evenly."
+    definition: "PRD shows whether lower- and higher-priced properties are treated evenly."
   },
   {
     key: "cov",
@@ -529,7 +526,7 @@ const assessmentMeasureDefinitions = [
     borderDash: [2, 5],
     pointStyle: "triangle",
     approximateBand: true,
-    definition: "COV measures relative variation around the mean ratio. When a comparison band is available, it is approximate context derived from the selected COD guidance."
+    definition: "COV shows relative variation around the mean ratio, with its band used as approximate context."
   }
 ];
 
@@ -546,7 +543,7 @@ const assessmentLevelDefinition = {
   valueSuffix: "%",
   borderDash: [],
   pointStyle: "rect",
-  definition: "Level of value uses the median ratio to show whether the class is within the applicable assessment level range."
+  definition: "Level of value uses the median ratio to show whether the class is within its assessment range."
 };
 
 const assessmentBandDefinitions = [
@@ -1164,16 +1161,7 @@ function renderAssessmentConvergenceNote(records, datasets) {
     return;
   }
 
-  const tightest = spreads.reduce((best, item) => item.spread < best.spread ? item : best, spreads[0]);
-  const firstYear = records[0]?.year;
-  const yearWindow = firstYear ? `${firstYear}-${latest.year}` : "the displayed";
-
-  if (latest.spread <= tightest.spread + 0.05) {
-    note.textContent = `${latest.year} is one of the tightest convergences in the ${yearWindow} window: COD, PRD, COV, and level of value are ${latest.spread.toFixed(2)} normalized band-widths apart. They remain different measures, but their latest readings land in a similar position relative to their own ranges.`;
-    return;
-  }
-
-  note.textContent = `${latest.year} places COD, PRD, COV, and level of value ${latest.spread.toFixed(2)} normalized band-widths apart. The combined view keeps their raw scales separate while showing how each measure sits relative to its own range.`;
+  note.textContent = `${latest.year}: COD, PRD, COV, and level of value sit ${latest.spread.toFixed(2)} normalized band-widths apart. Closer spacing is easier to read together; wider spacing needs more context, especially with smaller sales samples.`;
 }
 
 function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
@@ -1281,7 +1269,8 @@ function renderEqualizationSalePriceRows(
   padRatioData,
   classKey = "residential",
   marketPositionData = null,
-  valuationGroups = null
+  valuationGroups = null,
+  selectedGroupId = null
 ) {
   const table = document.getElementById("equalizationSalePriceRows");
   if (!table) return;
@@ -1314,8 +1303,11 @@ function renderEqualizationSalePriceRows(
       ?? (padRatioData ? `${getPadRoSourceAnchor(padRatioData)}${getPadRoRefreshWatch(padRatioData)}` : "");
   }
 
-  const dataRows = rows.map(row => `
-    <tr>
+  const dataRows = rows.map(row => {
+    const isSelected = selectedGroupId !== null && selectedGroupId !== undefined
+      && String(row.id ?? row.group ?? row.range) === String(selectedGroupId);
+    return `
+    <tr${isSelected ? ` class="market-sales-current-row" data-current-market-row="true"` : ""}>
       <td class="equalization-sales-label-cell px-2 py-2 font-medium text-slate-700" title="${priceBandDisplayLabel(row, duplicateLabels)}">
         <span class="sales-range-label-full equalization-sales-label-text">${priceBandDisplayLabel(row, duplicateLabels)}</span>
         <span class="sales-range-label-compact equalization-sales-label-text">${compactPriceBandDisplayLabel(row, duplicateLabels)}</span>
@@ -1326,7 +1318,8 @@ function renderEqualizationSalePriceRows(
       <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.prd) : "—"}</td>
       <td class="px-2 py-2 text-right">${row.count ? formatMoneyValue(row.averageAdjustedSalePrice) : "—"}</td>
     </tr>
-  `).join("");
+  `;
+  }).join("");
   const footerRow = totalRow ? `
     <tr class="table-total-row font-semibold">
       <td class="px-2 py-2">Countywide total</td>
@@ -1339,21 +1332,37 @@ function renderEqualizationSalePriceRows(
   ` : "";
 
   table.innerHTML = dataRows + footerRow;
-  renderEqualizationSalePriceChart(rows, study, duplicateLabels);
+  scrollCurrentMarketSalesRow(table);
+  renderEqualizationSalePriceChart(rows, study, duplicateLabels, selectedGroupId);
 }
 
-function renderEqualizationSalePriceChart(rows, study = {}, duplicateLabels = new Set()) {
+function scrollCurrentMarketSalesRow(table) {
+  const row = table.querySelector("[data-current-market-row]");
+  const scrollParent = table.closest(".equalization-sales-table-scroll");
+  if (!row || !scrollParent) return;
+
+  window.requestAnimationFrame(() => {
+    const nextTop = row.offsetTop - (scrollParent.clientHeight / 2) + (row.offsetHeight / 2);
+    scrollParent.scrollTop = Math.max(0, nextTop);
+  });
+}
+
+function renderEqualizationSalePriceChart(rows, study = {}, duplicateLabels = new Set(), selectedGroupId = null) {
   const canvas = document.getElementById("equalizationSalePriceChart");
   if (!canvas) return;
 
+  const selectedColor = visualizationTheme.roles.equalization;
+  const selectedFill = colorAlpha(selectedColor, 0.26);
+  const isSelectedRow = row => selectedGroupId !== null && selectedGroupId !== undefined
+    && String(row.id ?? row.group ?? row.range) === String(selectedGroupId);
   const datasets = [
     {
       type: "bar",
       label: study.countLabel || "Sales",
       data: rows.map(row => row.count),
-      backgroundColor: semanticChartColors.equalizationBg,
-      borderColor: chartColors.equalization,
-      borderWidth: 2,
+      backgroundColor: rows.map(row => isSelectedRow(row) ? selectedFill : semanticChartColors.equalizationBg),
+      borderColor: rows.map(row => isSelectedRow(row) ? selectedColor : chartColors.equalization),
+      borderWidth: rows.map(row => isSelectedRow(row) ? 3 : 2),
       borderRadius: 6,
       order: 2
     },
@@ -1365,13 +1374,29 @@ function renderEqualizationSalePriceChart(rows, study = {}, duplicateLabels = ne
       borderWidth: 3,
       borderColor: semanticChartColors.comparison,
       backgroundColor: semanticChartColors.comparisonBg,
-      pointBackgroundColor: semanticChartColors.comparison,
-      pointRadius: 3,
+      pointBackgroundColor: rows.map(row => isSelectedRow(row) ? selectedColor : semanticChartColors.comparison),
+      pointBorderColor: rows.map(row => isSelectedRow(row) ? selectedColor : semanticChartColors.comparison),
+      pointRadius: rows.map(row => isSelectedRow(row) ? 5 : 3),
       fill: true,
       order: 1
     }
   ];
-  const hasCustomLegend = renderCustomLegend("equalizationSalePriceChartLegend", datasets);
+  const legendDatasets = [
+    {
+      label: study.countLabel || "Sales",
+      borderColor: chartColors.equalization
+    },
+    {
+      label: study.lineLabel || "Distribution curve",
+      borderColor: semanticChartColors.comparison
+    },
+    ...(selectedGroupId === null || selectedGroupId === undefined ? [] : [{
+      label: "Current view",
+      borderColor: selectedColor,
+      backgroundColor: selectedFill
+    }])
+  ];
+  const hasCustomLegend = renderCustomLegend("equalizationSalePriceChartLegend", legendDatasets);
 
   equalizationSalePriceChart?.destroy();
   equalizationSalePriceChart = new Chart(canvas, {
@@ -1401,6 +1426,10 @@ function renderEqualizationSalePriceChart(rows, study = {}, duplicateLabels = ne
       scales: {
         x: {
           ticks: {
+            color: context => isSelectedRow(rows[context.index]) ? selectedColor : undefined,
+            font: context => ({
+              weight: isSelectedRow(rows[context.index]) ? 800 : 500
+            }),
             maxRotation: 45,
             minRotation: 45
           }
@@ -1422,13 +1451,23 @@ function renderAssessmentClass(
   marketPositionData = null,
   valuationGroups = null
 ) {
+  const contextPill = document.getElementById("assessmentClassContextPill");
+  if (contextPill) {
+    contextPill.textContent = assessmentClassContextLabel(selectedClass);
+  }
+
   renderAssessmentSummary(selectedClass, iaaoStandards);
   renderAssessmentRows(selectedClass);
   renderAssessmentAccuracyChart(selectedClass, iaaoStandards);
-  renderEqualizationSalePriceRows(padRatioData, selectedClass.key, marketPositionData, valuationGroups);
   window.dispatchEvent(new CustomEvent("assessment-class-change", {
     detail: { key: selectedClass.key, label: selectedClass.label }
   }));
+}
+
+function assessmentClassContextLabel(selectedClass) {
+  if (selectedClass?.key === "agFarm") return "Ag/Farm";
+  if (selectedClass?.key === "commercial") return "Commercial";
+  return "Residential";
 }
 
 export function initAssessmentRatioAnalysis(
@@ -1451,7 +1490,8 @@ export function initAssessmentRatioAnalysis(
       class="rounded-lg px-3 py-1.5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
       aria-pressed="${item.key === defaultKey}"
     >
-      ${item.label}
+      <span class="assessment-class-label-full">${escapeHtml(item.label)}</span>
+      <span class="assessment-class-label-short" aria-hidden="true">${escapeHtml(item.key === "commercial" ? "Comm." : item.label)}</span>
     </button>
   `).join("");
 
@@ -2685,7 +2725,7 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
   if (!marketAreaSelects.length && legacySelect) marketAreaSelects.push(legacySelect);
   const classKey = getParcelMarketClass(data);
   const baseClassStats = getClassMarketStats(marketPositionData, classKey);
-  if (!marketAreaSelects.length || !baseClassStats?.groups?.length) return;
+  if (!baseClassStats?.groups?.length) return;
 
   const groups = enrichedMarketGroups(baseClassStats.groups, valuationGroups, baseClassStats.classKey);
   const classStats = {
@@ -2730,6 +2770,10 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
   const update = groupId => {
     const selected = getSelectedMarketGroup(recordCard, classStats, groupId) ?? groups[0];
     const isParcelGroup = String(selected.id) === String(defaultGroup);
+    const contextPill = document.getElementById("marketAreaContextPill");
+    if (contextPill) {
+      contextPill.textContent = selected.optionLabel ?? selected.label ?? `Area ${selected.id}`;
+    }
     marketAreaSelects.forEach(select => {
       select.value = selected.id;
     });
@@ -2739,6 +2783,7 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
     });
     renderMarketConceptStrip(selected, classStats);
     renderMarketNarrative(selected, countywide, classStats, medianRange, iaaoStandards, isParcelGroup);
+    renderEqualizationSalePriceRows(padRatioData, classStats.classKey, marketPositionData, valuationGroups, selected.id);
     renderMarketPositionScatter(selected, classStats, iaaoStandards, update);
     renderMarketPriceSummary(selected, countywide);
   };
@@ -3401,7 +3446,7 @@ export function buildCtlSummary(data, ctlData) {
     const rateMovement = `${formatApproximateRatePercent(countyRows[0].averageTaxRate * 100)} to ${formatApproximateRatePercent(countyRows.at(-1).averageTaxRate * 100)}`;
 
     countySummary.innerHTML = `
-      <div class="county-growth-pair rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 md:col-span-2">
+      <div class="county-growth-pair rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 md:col-span-2 lg:col-span-3">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Value growth</p>
           <p class="mt-1 text-lg font-bold text-slate-700">${valueGrowth}</p>
@@ -3411,7 +3456,7 @@ export function buildCtlSummary(data, ctlData) {
           <p class="mt-1 text-lg font-bold text-slate-700">${taxGrowth}</p>
         </div>
       </div>
-      <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+      <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Rate movement</p>
         <p class="mt-1 text-lg font-bold text-slate-700">${rateMovement}</p>
       </div>
@@ -3475,6 +3520,11 @@ function getSchoolLevyDescription(data) {
   return data.latestFinalLevyComponents?.find(row => row.group === "School")?.description ?? "";
 }
 
+function levyGroupLabel(label) {
+  if (label === "Fire") return "Fire district";
+  return label || "Other";
+}
+
 function findSchoolDistrictColor(data, schoolDistrictColors) {
   const districts = schoolDistrictColors?.districts || [];
   if (!districts.length) return null;
@@ -3493,9 +3543,11 @@ function findSchoolDistrictColor(data, schoolDistrictColors) {
 }
 
 function levyColorForGroup(label, schoolColor) {
-  return label === "School" && schoolColor
+  const groupLabel = levyGroupLabel(label);
+
+  return groupLabel === "School" && schoolColor
     ? schoolColor
-    : levyGroupColors[label] ?? levyGroupColors.Other;
+    : levyGroupColors[groupLabel] ?? levyGroupColors.Other;
 }
 
 function latestFinalTaxAmount(data) {
@@ -3510,67 +3562,47 @@ function latestFinalTaxAmount(data) {
 }
 
 export function buildDistributionChart(data, schoolDistrictColors) {
-  const grouped = groupLevy(data.latestFinalLevyComponents);
-  const total = Object.values(grouped).reduce((sum, value) => sum + value, 0);
+  const rows = (data.latestFinalLevyComponents || []).filter(row => hasDataValue(row.rate) && row.rate > 0);
+  const total = rows.reduce((sum, row) => sum + row.rate, 0);
   const latestTaxesPaid = latestFinalTaxAmount(data);
   const schoolDistrictColor = findSchoolDistrictColor(data, schoolDistrictColors)?.map_color;
-  const sorted = Object.entries(grouped)
-    .map(([label, rate]) => ({
-      label,
-      rate,
-      share: rate / total,
-      paidAmount: hasDataValue(latestTaxesPaid) ? (rate / total) * latestTaxesPaid : null
-    }))
-    .sort((a, b) => b.rate - a.rate);
-  const labels = sorted.map(row => row.label);
-  const values = sorted.map(row => row.rate);
-  const colors = sorted.map(row => levyColorForGroup(row.label, schoolDistrictColor));
+  const items = rows
+    .map((row, index) => {
+      const group = levyGroupLabel(row.group);
+      const paidAmount = total && hasDataValue(latestTaxesPaid)
+        ? (row.rate / total) * latestTaxesPaid
+        : null;
 
-  new Chart(document.getElementById("distributionChart"), {
-    type: "pie",
-    data: {
-      labels,
-      datasets: [{
-        data: values,
-        backgroundColor: colors,
-        borderColor: palette.white,
-        borderWidth: 2
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: context => `${context.label}: ${percent.format(context.parsed / total)}`
-          }
-        }
-      }
+      return {
+        id: `${group}-${index}`,
+        group,
+        label: row.description || group,
+        value: row.rate,
+        amount: paidAmount,
+        color: levyColorForGroup(group, schoolDistrictColor)
+      };
+    })
+    .sort((a, b) => b.value - a.value);
+
+  const summary = document.getElementById("distributionTreemapSummary");
+
+  renderGroupedTreemap({
+    container: document.getElementById("distributionTreemap"),
+    controls: document.getElementById("distributionTreemapControls"),
+    items,
+    colorAlpha,
+    formatAmount: value => hasDataValue(value) ? moneyCents.format(value) : "",
+    formatShare: value => percent.format(value),
+    layout: "priority-stack",
+    onGroupChange: (activeGroup, activeNodes) => {
+      if (!summary) return;
+      const activeShare = activeNodes.reduce((sum, node) => sum + (node.value || 0), 0) / (total || 1);
+      const groupText = activeGroup === "all" ? "All levy groups" : activeGroup;
+      const countText = activeGroup === "all"
+        ? `${items.length} taxing bodies`
+        : `${activeNodes.length} taxing ${activeNodes.length === 1 ? "body" : "bodies"}`;
+
+      summary.textContent = `${groupText}: ${countText}${activeGroup === "all" ? "" : ` · ${percent.format(activeShare)} of the latest levy`}.`;
     }
   });
-
-  document.getElementById("distributionNotes").innerHTML = sorted.map(row => `
-    <div class="distribution-note-card">
-      <div class="distribution-note-heading">
-        <span class="distribution-note-label">
-          <span class="h-2.5 w-2.5 rounded-full" style="background-color: ${levyColorForGroup(row.label, schoolDistrictColor)}"></span>
-          <span class="font-semibold leading-5 text-slate-700">${row.label}</span>
-        </span>
-        <span class="distribution-note-amount">${hasDataValue(row.paidAmount) ? moneyCents.format(row.paidAmount) : "—"}</span>
-      </div>
-      <p class="mt-0.5 text-xs leading-4 text-slate-600">${percent.format(row.share)} of levy</p>
-    </div>
-  `).join("");
-
-  const driver = sorted[0];
-  const driverCallout = document.getElementById("levyDriverCallout");
-  if (driverCallout) {
-    driverCallout.innerHTML = driver ? `
-      <p>Largest levy component</p>
-      <strong>${escapeHtml(driver.label)}</strong>
-      <span>${percent.format(driver.share)} of the latest levy${hasDataValue(driver.paidAmount) ? ` · approx. ${moneyCents.format(driver.paidAmount)} of this statement` : ""}</span>
-    ` : "";
-  }
 }

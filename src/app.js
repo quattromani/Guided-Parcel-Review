@@ -90,6 +90,7 @@ async function main() {
     importantCalendarDates = taxpayerActionDates;
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
     renderStartPage(propertySwitcher);
+    setFooterResourcesVisible(false);
     renderGuidedResourceContent("your-property");
     initAssessmentDatesPanel(assessmentDateEvents);
     initFooterNavigation();
@@ -125,6 +126,7 @@ async function main() {
   ]);
   officialRealPropertyForms = realPropertyForms;
   importantCalendarDates = taxpayerActionDates;
+  setFooterResourcesVisible(true);
   const propertySwitcherContext = { ...propertySwitcher, valuationGroups };
   window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcherContext;
   const snapshotModel = buildPropertySnapshotModel({
@@ -184,6 +186,11 @@ async function main() {
     },
     loadTaxDistrictAuthorities
   });
+  initFirstVisitOrientation({
+    primaryButtonLabel: "Continue to Property Record",
+    propertySelectionCopy: "A sample parcel is already loaded. Continue to the Property Record, then move through the guided steps.",
+    onAccepted: () => {}
+  });
 }
 
 main().catch(error => {
@@ -201,7 +208,7 @@ main().catch(error => {
 function initGuidedNavigation(data, options = {}) {
   const snapshotModel = data.snapshotModel;
   const routeList = snapshotModel?.sections?.length ? snapshotModel.sections : TAXPAYER_JOURNEY_ROUTES;
-  const progressRoutes = routeList.filter(route => !route.secondary && route.id !== "landing-primer");
+  const progressRoutes = routeList.filter(route => !route.secondary);
   const tabsContainer = document.getElementById("guidedPathTabs");
 
   if (tabsContainer) {
@@ -275,7 +282,7 @@ function initGuidedNavigation(data, options = {}) {
 
   function stepForHashTarget(target) {
     if (!target) return null;
-    if (target === "start") return "landing-primer";
+    if (target === "start") return primarySectionIds[0];
 
     const route = routeList.find(item => item.id === target || item.panelId === target);
     return route?.id ?? stepForTarget(target);
@@ -444,7 +451,7 @@ function initGuidedNavigation(data, options = {}) {
       panel.classList.toggle("hidden", panel.dataset.guidedPanel !== selectedPanel);
     });
 
-    propertyContext?.classList.toggle("hidden", selected === "landing-primer");
+    propertyContext?.classList.remove("hidden");
     renderViewHeader(selected, snapshotModel, options.propertySwitcher);
     renderGuidedResourceContent(selected);
     if (selectedPanel === "your-taxes") {
@@ -576,15 +583,12 @@ function renderGuidedResourceContent(viewKey) {
   const datesContent = document.getElementById("importantCalendarDates");
   const faqTitle = document.getElementById("footerFaqTitle");
   const formsTitle = document.getElementById("footerFormsTitle");
-  const learnTitle = document.getElementById("footerLearnTitle");
   const faqContent = document.getElementById("footerFaqContent");
   const formsContent = document.getElementById("footerFormsContent");
-  const learnContent = document.getElementById("footerLearnContent");
 
   if (datesContent) datesContent.innerHTML = renderImportantCalendarDates(resourceKey);
   if (faqTitle) faqTitle.textContent = resources.faqTitle;
   if (formsTitle) formsTitle.textContent = officialRealPropertyForms.metadata?.title ?? "Official real property forms";
-  if (learnTitle) learnTitle.textContent = resources.learnTitle;
 
   if (faqContent) {
     faqContent.innerHTML = resources.faqs.map(([question, answer]) => `
@@ -597,15 +601,6 @@ function renderGuidedResourceContent(viewKey) {
 
   if (formsContent) {
     formsContent.innerHTML = renderOfficialForms();
-  }
-
-  if (learnContent) {
-    learnContent.innerHTML = resources.learn.map(([term, definition]) => `
-      <div class="footer-resource-card">
-        <p class="font-semibold text-slate-700">${escapeHtml(term)}</p>
-        <p class="mt-1 text-sm leading-6 text-slate-600">${escapeHtml(definition)}</p>
-      </div>
-    `).join("");
   }
 }
 
@@ -710,6 +705,17 @@ function renderOfficialFormsSource() {
   `;
 }
 
+function setFooterResourcesVisible(visible) {
+  const shell = document.querySelector("[data-footer-resource-shell]");
+  if (!shell) return;
+
+  shell.classList.toggle("hidden", !visible);
+  shell.classList.toggle("footer-resource-shell-nav-only", !visible);
+  shell.querySelectorAll("[data-step-footer-resources]").forEach(element => {
+    element.classList.toggle("hidden", !visible);
+  });
+}
+
 function formatSourceDate(value) {
   const match = `${value ?? ""}`.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!match) return value || "";
@@ -749,6 +755,7 @@ function initFooterNavigation() {
   const links = document.querySelectorAll("[data-footer-target]");
   const panels = document.querySelectorAll("[data-footer-panel]");
   const footerContent = document.getElementById("footerContent");
+  const footerResourceShell = document.querySelector("[data-footer-resource-shell]");
   const footerTargets = new Set(Array.from(panels, panel => panel.dataset.footerPanel));
   const resetButton = document.querySelector("[data-reset-property-manifest]");
 
@@ -767,6 +774,7 @@ function initFooterNavigation() {
     const { updateHash = false, scroll = true } = options;
     if (!footerTargets.has(selected)) return false;
 
+    footerResourceShell?.classList.remove("hidden");
     footerContent?.classList.remove("hidden");
 
     links.forEach(item => {

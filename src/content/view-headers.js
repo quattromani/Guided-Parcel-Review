@@ -31,8 +31,8 @@ const viewHeaderContent = {
   },
   "county-equalization": {
     eyebrow: "Step 4 · Equalization",
-    title: "How is the value base checked for level and uniformity?",
-    description: "Equalization checks level and uniformity before levies are applied.",
+    title: "How is the base checked for uniformity and proportionality?",
+    description: "Equalization checks value level and price-related fairness before levies are applied.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "state-context": {

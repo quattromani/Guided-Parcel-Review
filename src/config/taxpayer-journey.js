@@ -1,14 +1,5 @@
 export const TAXPAYER_JOURNEY_ROUTES = [
   {
-    id: "landing-primer",
-    panelId: "landing-primer",
-    eyebrow: "Begin here",
-    label: "Start",
-    question: "You are looking at this property.",
-    title: "Start with a calm snapshot of the property",
-    description: "Confirm the parcel, status, and key values."
-  },
-  {
     id: "property-record",
     panelId: "your-property",
     eyebrow: "Observe",
@@ -40,9 +31,9 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     panelId: "county-equalization",
     eyebrow: "Check",
     label: "Equalization",
-    question: "How is the value base checked for level and uniformity?",
+    question: "How is the base checked for uniformity and proportionality?",
     title: "Use equalization as the check between value and tax",
-    description: "Equalization checks level and uniformity before levies are applied."
+    description: "Equalization checks value level and price-related fairness before levies are applied."
   },
   {
     id: "state-context",
@@ -50,10 +41,10 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     eyebrow: "Deeper equalization context",
     label: "State Context",
     question: "How does the county compare statewide?",
-    title: "Keep the statewide comparison inside the equalization step",
+    title: "Keep the statewide comparison inside the tax context step",
     description: "Use statewide CTL data as broader context.",
     secondary: true,
-    primaryRouteId: "equalization"
+    primaryRouteId: "tax-context"
   },
   {
     id: "tax-context",
