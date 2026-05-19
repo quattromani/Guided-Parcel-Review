@@ -275,6 +275,8 @@ function initGuidedNavigation(data, options = {}) {
 
   function stepForHashTarget(target) {
     if (!target) return null;
+    if (target === "start") return "landing-primer";
+
     const route = routeList.find(item => item.id === target || item.panelId === target);
     return route?.id ?? stepForTarget(target);
   }

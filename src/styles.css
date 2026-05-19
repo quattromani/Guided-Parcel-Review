@@ -4673,6 +4673,11 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     justify-content: stretch;
   }
 
+  .civic-notice-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
   .guided-panel-assessment > .ooda-decision-card {
     margin-top: 1rem !important;
   }
@@ -5767,11 +5772,27 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   margin-top: 0.3rem;
 }
 
+.civic-notice-footer {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.875rem 1rem;
+}
+
+.civic-notice-footer .next-step-button {
+  min-width: min(18rem, 100%);
+}
+
 .civic-source-note {
   color: rgb(var(--color-slate-500));
   font-size: 0.82rem;
   line-height: 1.55;
   padding: 0.875rem 1rem;
+}
+
+.civic-notice-footer .civic-source-note {
+  padding: 0;
 }
 
 .civic-summary-grid h3,

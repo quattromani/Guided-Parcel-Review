@@ -306,13 +306,12 @@ function installLandingPrimer(data) {
           ${noticeMetric(notice.reviewDeadlineLabel, escapeHtml(notice.reviewDeadline))}
         </dl>
 
-        <p class="civic-source-note">Source: ${escapeHtml(notice.source)}.</p>
+        <div class="civic-notice-footer">
+          <p class="civic-source-note">Source: ${escapeHtml(notice.source)}.</p>
+          <button type="button" data-guided-next="property-record" class="next-step-button">Go to Property Record</button>
+        </div>
       </section>
     </article>
-
-    <nav class="guided-next-action" aria-label="Continue review">
-      <button type="button" data-guided-next="property-record" class="next-step-button">Go to Property Record</button>
-    </nav>
   `;
 
   firstPanel?.before(section);
