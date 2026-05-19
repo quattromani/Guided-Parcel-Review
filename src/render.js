@@ -3034,16 +3034,12 @@ function renderTaxEquationWaterfall(data, displayLevyByYear) {
   const gross = statement.grossTaxAmount ?? (statement.assessedValue && levy ? statement.assessedValue * (levy / 100) : null);
   const credits = statementTotalCredits(statement);
   const net = statement.netAmountDue ?? statement.totalTaxesDue ?? null;
-  const paid = statement.totalPaid ?? null;
-  const balance = statement.taxDue ?? null;
   const steps = [
     ["Assessed value", formatNullableMoney(statement.assessedValue), statement.taxYear],
     ["x Levy", formatNullableLevy(levy), "gross rate"],
     ["= Gross tax", formatNullableMoney(gross, true), "before credits"],
     ["- Credits", credits !== null ? formatNullableMoney(credits, true) : "—", "reductions"],
-    ["= Net tax", formatNullableMoney(net, true), "statement amount"],
-    ["- Paid", formatNullableMoney(paid, true), "payment ledger"],
-    ["= Balance", formatNullableMoney(balance, true), "source balance"]
+    ["= Net tax", formatNullableMoney(net, true), "statement amount"]
   ];
 
   container.innerHTML = `
