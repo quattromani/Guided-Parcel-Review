@@ -6,7 +6,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Property Record",
     question: "Does the county record describe this property correctly?",
     title: "Review the property record before value or taxes",
-    description: "Start with identity, land, building facts, photos, and source notes."
+    description: "Start with identity, land, building facts, and photos."
   },
   {
     id: "what-changed",

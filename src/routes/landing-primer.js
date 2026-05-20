@@ -112,22 +112,6 @@ function statusToneClass(status) {
   return `${status ?? ""}`.toLowerCase() === "pending" ? "notice-status-pill-pending" : "";
 }
 
-function signalToneLabel(tone) {
-  if (tone === "review") return "Check source";
-  if (tone === "steady") return "Generally consistent";
-  return "Informational";
-}
-
-function renderSignal(signal) {
-  return `
-    <article class="review-signal-card review-signal-card-${signal.tone}">
-      <p>${signalToneLabel(signal.tone)}</p>
-      <h3>${escapeHtml(signal.title)}</h3>
-      <p>${escapeHtml(signal.summary)}</p>
-    </article>
-  `;
-}
-
 function formatRatio(value) {
   return hasValue(value) ? `${Number(value).toFixed(2)}%` : "not listed";
 }
@@ -305,40 +289,31 @@ function buildFinalReviewModel(data, context = {}) {
 }
 
 export function installCivicJourneyPanels(data, context = {}) {
-  installReviewSignalsPanel(data);
+  installReviewSignalsPanel(data, context);
   installFinalSummary(data, context);
 }
 
-function installReviewSignalsPanel(data) {
+function installReviewSignalsPanel(data, context = {}) {
   const panel = document.querySelector('[data-guided-panel="review-checklist"]');
   if (!panel) return;
 
-  const reviewSignals = data.snapshotModel.viewModels.reviewSignals?.signals ?? [];
-  const cards = reviewSignals.length
-    ? reviewSignals.map(renderSignal).join("")
-    : `
-      <article class="review-signal-card review-signal-card-steady">
-        <p>Generally consistent</p>
-        <h3>No review signals generated</h3>
-        <p>The loaded records did not surface a specific item for closer review.</p>
-      </article>
-    `;
+  const finalReview = buildFinalReviewModel(data, context);
 
   panel.innerHTML = `
     <aside class="guided-transition">
       <p>Use this page as a final scan. The signals collect source facts and patterns from the steps above without turning them into findings.</p>
     </aside>
 
-    <section class="civic-review-signals" aria-labelledby="reviewSignalsTitle">
+    <article class="civic-summary-shell civic-final-review">
       <div>
-        <p class="guided-kicker">Review signals</p>
-        <h2 id="reviewSignalsTitle">Items worth verifying, if any</h2>
-        <p>Review signals collect source facts and patterns from the steps above. They are not findings.</p>
+        <p class="guided-kicker">Final review</p>
+        <h2>${escapeHtml(finalReview.heading)}.</h2>
+        <p>${escapeHtml(finalReview.intro)}</p>
       </div>
-      <div class="civic-review-signal-grid">
-        ${cards}
-      </div>
-    </section>
+
+      ${finalReview.blocks.map(finalReviewBlock).join("")}
+    </article>
+
     <aside class="guided-transition">
       <p>With the listed facts, value movement, equalization context, and tax context scanned, finish with a compact summary of the review.</p>
     </aside>
@@ -354,7 +329,6 @@ function installFinalSummary(data, context = {}) {
   existing?.remove();
 
   const notice = data.snapshotModel.viewModels.notice;
-  const finalReview = buildFinalReviewModel(data, context);
   const reviewPanel = document.querySelector('[data-guided-panel="review-checklist"]');
   const section = document.createElement("section");
   section.dataset.guidedPanel = "final-summary";
@@ -380,22 +354,6 @@ function installFinalSummary(data, context = {}) {
         <h2 id="summaryQuickReadTitle">Quick read for this property</h2>
       </div>
       ${quickReadSummaryMarkup(data, context.recordCard, context)}
-    </article>
-
-    <article class="civic-summary-shell civic-final-review">
-      <div>
-        <p class="guided-kicker">Final review</p>
-        <h2>${escapeHtml(finalReview.heading)}.</h2>
-        <p>${escapeHtml(finalReview.intro)}</p>
-      </div>
-
-      ${finalReview.blocks.map(finalReviewBlock).join("")}
-    </article>
-
-    <article class="ooda-decision-card">
-      <p class="guided-kicker">Source check</p>
-      <h2>Keep official records as the source of truth.</h2>
-      <p>If something appears incomplete or materially different, compare it with the source record. If the records align, the review has done its job.</p>
     </article>
 
     <aside class="guided-transition">

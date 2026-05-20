@@ -10,5 +10,5 @@ export function propertyRecordSourceText(data, recordCard) {
   const sourceName = recordCard?.source?.displayCitation || "MIPS Property Record Card";
   const yearPrefix = sourceYear ? `${sourceYear} ` : "";
 
-  return `Source: ${yearPrefix}${sourceName}, Parcel ID ${data.parcel.parcelId}.`;
+  return `Source: ${yearPrefix}${sourceName}, ID ${data.parcel.parcelId}.`;
 }

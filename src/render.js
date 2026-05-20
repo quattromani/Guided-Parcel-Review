@@ -218,8 +218,8 @@ function renderValueTaxHistoryShell() {
   if (!container) return;
 
   container.innerHTML = `
-    <div class="data-split-view grid gap-6 lg:grid-cols-5">
-      <article id="value-history" class="lg:col-span-2">
+    <div class="value-tax-history-split grid gap-4 lg:grid-cols-2">
+      <article id="value-history" class="value-tax-history-card">
         <div class="mobile-support-content value-history-content">
             <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
             <p class="mt-1 text-sm text-slate-600">
@@ -244,7 +244,7 @@ function renderValueTaxHistoryShell() {
         </div>
       </article>
 
-      <article id="indexed-trends" class="lg:col-span-3">
+      <article id="indexed-trends" class="value-tax-history-card">
         <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 class="text-xl font-bold text-slate-700">How are this property’s value and taxes moving together?</h2>
@@ -252,11 +252,11 @@ function renderValueTaxHistoryShell() {
           </div>
           <p id="baseYearNote" class="text-xs font-medium text-slate-500"></p>
         </div>
-        <div id="indexedChartLegend" class="chart-disc-legend mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-600"></div>
         <div class="indexed-trends-chart mt-4">
           <span id="indexedPendingBadge" class="indexed-pending-badge hidden">Pending</span>
           <canvas id="indexedChart"></canvas>
         </div>
+        <div id="indexedChartLegend" class="chart-disc-legend mt-3 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-600"></div>
       </article>
     </div>
     <p data-property-record-source class="chart-source"></p>
@@ -314,10 +314,9 @@ function renderTaxDistributionShell(data) {
         <div class="levy-treemap-panel" aria-labelledby="distributionChartTitle">
           <div class="levy-treemap-heading">
             <h2 id="distributionChartTitle" class="text-xl font-bold text-slate-700">How is the tax bill distributed?</h2>
-            <p class="mt-1 text-sm text-slate-600">The chart shows each taxing body’s share of the latest levy. Select a section to focus on that levy group.</p>
+            <p class="mt-1 text-sm text-slate-600">The chart shows each taxing body’s share of the latest levy.</p>
           </div>
           <div id="distributionTreemap" class="levy-treemap-shell"></div>
-          <p id="distributionTreemapSummary" class="levy-treemap-summary"></p>
         </div>
       </article>
 
@@ -358,6 +357,13 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
   const iaaoCitation = summaryContext.iaaoStandards?.metadata?.source?.displayCitation || "IAAO Standard on Ratio Studies";
   const rangeAuthority = legalReferenceHtml(summaryContext.legalReferences, "neb-rev-stat-77-5023", "§ 77-5023");
   const reportsAuthority = legalReferenceHtml(summaryContext.legalReferences, "neb-rev-stat-77-5027", "§ 77-5027");
+  const latestRatioYear = summaryContext.ratioData?.source?.yearRange?.end
+    ?? Math.max(...(summaryContext.ratioData?.classes || [])
+      .flatMap(item => (item.records || []).map(row => row.year))
+      .filter(Boolean));
+  const assessmentBandTitle = Number.isFinite(latestRatioYear)
+    ? `Where does each measure stand in ${latestRatioYear}?`
+    : "Where does each measure stand?";
 
   const salesMakeup = `
     <h3 id="equalizationSalePriceTitle" class="text-lg font-bold text-slate-700">What makes up the class sales data?</h3>
@@ -413,18 +419,13 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
             <canvas id="marketPositionScatter" role="img" tabindex="0" aria-describedby="marketScatterSummary"></canvas>
           </div>
         </article>
-        <p id="marketNarrative" class="mt-3 text-sm leading-6 text-slate-700"></p>
         <p id="marketScatterSummary" class="sr-only"></p>
       </div>
       <section class="market-reading-context lg:col-span-2">
-        <div class="market-reading-path" aria-labelledby="marketReadingTitle">
-          <div class="market-reading-intro">
-            <p class="guided-kicker">Reading path</p>
-            <h4 id="marketReadingTitle">Start local. Then roll up.</h4>
-          </div>
-          <p class="market-reading-line">Read sales depth first, then value level, consistency, and price-related balance.</p>
-        </div>
-        <div id="marketConceptStrip" class="market-concept-strip" aria-label="How to read market evidence"></div>
+        <article class="market-compare-summary" aria-labelledby="marketCompareSummaryTitle">
+          <h4 id="marketCompareSummaryTitle">Compare summary</h4>
+          <ul id="marketNarrative" class="market-compare-list"></ul>
+        </article>
       </section>
     </section>
     <p id="marketPositionSource" class="chart-source"></p>
@@ -482,7 +483,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       <div class="assessment-band-header">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Class band checks</p>
-          <h3 id="assessmentBandCardsTitle" class="text-lg font-bold text-slate-700">Where does each measure stand now?</h3>
+          <h3 id="assessmentBandCardsTitle" class="text-lg font-bold text-slate-700">${assessmentBandTitle}</h3>
         </div>
         <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
       </div>
@@ -1029,10 +1030,12 @@ function renderPropertyDetails(data, recordCard) {
 
   const renderCards = details => details.map(renderDetailCard).join("");
 
-  document.getElementById("propertyDetails").innerHTML = [
+  const detailCards = [
     renderCards(identityDetails),
-    renderCards(physicalDetails),
-    conditionScaleCard(data),
+    renderCards(physicalDetails)
+  ].join("");
+
+  const drawers = [
     costSourceLimitation(recordCard),
     technicalCostModel(recordCard, data),
     sourceExtractDetails(recordCard),
@@ -1043,33 +1046,13 @@ function renderPropertyDetails(data, recordCard) {
     ownershipHistory(recordCard),
     recordCardSource(recordCard),
     reportErrorLink(data, recordCard)
-  ].join("");
-}
+  ].filter(Boolean).join("");
 
-function conditionScaleCard(data) {
-  const quality = data.commercial?.quality ?? data.residential?.quality;
-  const condition = data.commercial?.condition ?? data.residential?.condition;
-  if (!quality && !condition) return "";
-
-  const labels = ["Poor", "Fair", "Average", "Good", "Very Good"];
-  const matchedIndex = condition
-    ? labels.findIndex(label => String(condition).toLowerCase().includes(label.toLowerCase()))
-    : -1;
-  const activeIndex = matchedIndex >= 0 ? matchedIndex : -1;
-
-  return `
-    <div class="details-card details-card-full condition-scale-card">
-      <div class="condition-scale-header">
-        <p class="condition-scale-kicker">Quality / condition</p>
-        <h3>${escapeHtml([quality, condition].filter(Boolean).join(" / "))}</h3>
-      </div>
-      <div class="condition-scale" aria-label="Condition scale">
-        ${labels.map((label, index) => `
-          <span class="${index === activeIndex ? "is-active" : ""}">${escapeHtml(label)}</span>
-        `).join("")}
-      </div>
-      <p>Condition and quality are model inputs. Lower condition typically means more depreciation; stronger condition generally preserves more improvement value.</p>
+  document.getElementById("propertyDetails").innerHTML = `
+    <div class="property-details-card-grid">
+      ${detailCards}
     </div>
+    ${drawers ? `<div class="property-details-drawer-stack">${drawers}</div>` : ""}
   `;
 }
 
@@ -1092,7 +1075,7 @@ function mailingAddressHtml(value) {
 
 function reportErrorLink(data, recordCard) {
   return `
-    <div class="sm:col-span-2 px-1 pt-1 text-xs text-slate-500">
+    <div class="px-1 pt-1 text-xs text-slate-500">
       <p>${escapeHtml(propertyRecordSourceText(data, recordCard))}</p>
     </div>
   `;
@@ -1590,7 +1573,7 @@ function initReportErrorModal(data, recordCard, governingOffice) {
 
 function disclosure(title, meta, content) {
   return `
-    <details class="record-disclosure sm:col-span-2 rounded-xl">
+    <details class="record-disclosure rounded-xl">
       <summary class="record-disclosure-toggle cursor-pointer list-none rounded-xl px-4 py-3 font-semibold">
         <div class="record-disclosure-summary">
           <span class="record-disclosure-summary-copy">
@@ -2398,6 +2381,15 @@ function marketGroupKind(classKey) {
   return classKey === "agricultural" ? "market area" : "valuation group";
 }
 
+function ratioClassKeyForParcel(data, ratioData) {
+  const classKey = getParcelMarketClass(data);
+  const ratioKey = classKey === "agricultural" ? "agFarm" : classKey;
+
+  if (ratioData?.classes?.some(item => item.key === ratioKey)) return ratioKey;
+
+  return ratioData?.classes?.[0]?.key ?? ratioKey;
+}
+
 function selectedSummaryMarket(data, recordCard, summaryContext = {}) {
   const classKey = getParcelMarketClass(data);
   const classStats = getClassMarketStats(summaryContext.marketPositionData, classKey);
@@ -2467,45 +2459,55 @@ function localMarketQuickReadLine(selectedMarket, context = {}) {
   `;
 }
 
-function statementForYear(data, year) {
-  return (data.taxStatements || []).find(statement => statement.taxYear === year) ?? null;
+function taxesQuickReadLine(data) {
+  const taxRows = (data.taxpayerHistory || [])
+    .filter(row => row.taxes !== null && row.taxes !== undefined)
+    .sort((a, b) => a.year - b.year);
+
+  if (taxRows.length < 2) {
+    return "Loaded tax history is limited for this sample.";
+  }
+
+  const firstTax = taxRows[0];
+  const previousTax = taxRows.at(-2);
+  const latestTax = taxRows.at(-1);
+  const etrRows = taxRows
+    .map(row => ({ ...row, etr: calculateEtr(row) }))
+    .filter(row => row.etr !== null && row.etr !== undefined);
+  const firstEtr = etrRows[0];
+  const latestEtr = etrRows.at(-1);
+  const recentTaxChange = percentChangeBetween(previousTax?.taxes, latestTax?.taxes);
+  const historyTaxChange = percentChangeBetween(firstTax?.taxes, latestTax?.taxes);
+  const etrLine = firstEtr && latestEtr
+    ? ` ETR moved from <strong>${formatNullablePercent(firstEtr.etr)}</strong> to <strong>${formatNullablePercent(latestEtr.etr)}</strong>.`
+    : "";
+
+  return `
+    <strong>Recent movement:</strong> net tax moved <strong>${signedPercent(recentTaxChange)}</strong>
+    from <strong>${formatNullableMoney(previousTax?.taxes, true)}</strong> to <strong>${formatNullableMoney(latestTax?.taxes, true)}</strong>.
+    <strong>Movement history:</strong> net tax changed <strong>${signedPercent(historyTaxChange)}</strong>
+    from <strong>${firstTax.year}</strong> to <strong>${latestTax.year}</strong>.${etrLine}
+  `;
 }
 
-function paymentStatusForStatement(statement) {
-  if (!statement) return "Payment status unavailable.";
+function countyQuickReadLine(data, summaryContext = {}) {
+  const ratioData = summaryContext.ratioData;
+  const ratioKey = ratioClassKeyForParcel(data, ratioData);
+  const selectedClass = ratioData?.classes?.find(item => item.key === ratioKey);
+  const latest = (selectedClass?.records || [])
+    .filter(row => row.levelOfValue !== null && row.levelOfValue !== undefined)
+    .sort((a, b) => a.year - b.year)
+    .at(-1);
 
-  const balance = statement.taxDue !== null && statement.taxDue !== undefined ? Number(statement.taxDue) : null;
-  const paid = statement.totalPaid !== null && statement.totalPaid !== undefined ? Number(statement.totalPaid) : null;
-
-  if (balance !== null && balance <= 0) {
-    return `Payment status: paid in full; balance due ${formatNullableMoney(balance, true)}.`;
-  }
-
-  if (paid > 0 && balance > 0) {
-    return `Payment status: partially paid; balance due ${formatNullableMoney(balance, true)}.`;
-  }
-
-  if (balance > 0) {
-    return `Payment status: balance due ${formatNullableMoney(balance, true)}.`;
-  }
-
-  return "Payment status is not available in the loaded statement fields.";
-}
-
-function taxTimingLineForSnapshot(data, snapshot) {
-  const statement = statementForYear(data, snapshot.year);
-  const netTax = statement?.netAmountDue ?? statement?.totalTaxesDue ?? null;
-
-  if (statement && netTax !== null && netTax !== undefined) {
-    return `
-      The <strong>${snapshot.year}</strong> tax statement is loaded with net tax of <strong>${formatNullableMoney(netTax, true)}</strong>.
-      ${paymentStatusForStatement(statement)} Statement finality, payment status, and any review window are separate from the assessed value.
-    `;
+  if (!selectedClass || !latest) {
+    return "County equalization context is unavailable for this sample.";
   }
 
   return `
-    The <strong>${snapshot.year}</strong> tax statement is not loaded in this sample.
-    Later budgets, certified levies, credits, and exemptions may still affect the bill; keep that timing separate from the assessed value.
+    <strong>${latest.year} ${selectedClass.label}</strong> county study:
+    LOV <strong>${formatRatioPercent(latest.levelOfValue)}</strong>,
+    COD <strong>${Number(latest.cod).toFixed(2)}</strong>,
+    PRD <strong>${Number(latest.prd).toFixed(3)}</strong>.
   `;
 }
 
@@ -2524,21 +2526,18 @@ export function quickReadSummaryMarkup(data, recordCard, summaryContext = {}) {
     `
     : `
       For <strong>${snapshot.year}</strong>, the assessed value is <strong>${formatNullableMoney(snapshot.assessedValue)}</strong>,
-      <strong>${formatNullablePercent(valueChangeFromPrior)}</strong> from the prior finalized value.
+      <strong>${signedPercent(valueChangeFromPrior)}</strong> from the prior finalized value.
     `;
-  const taxTimingLine = taxTimingLineForSnapshot(data, snapshot);
+  const taxesLine = taxesQuickReadLine(data);
+  const countyLine = countyQuickReadLine(data, summaryContext);
   const marketLine = marketSummary ? localMarketQuickReadLine(marketSummary.selectedMarket, marketSummary) : `
     Local market context is available later in the guide, after the property facts and tax district are confirmed.
   `;
-  const recordCheckLine = `
-    Check the property record: owner, address, land, building size, class, condition, rooms, garage,
-    improvements, and notes.
-  `;
   const summaryRows = [
     ["Current value", currentValueLine],
-    ["Tax timing", taxTimingLine],
     ["Local market", marketLine],
-    ["First check", recordCheckLine]
+    ["Taxes", taxesLine],
+    ["County", countyLine]
   ];
 
   return `

@@ -54,7 +54,7 @@
         <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-12">
           <h2 class="text-xl font-bold text-slate-700">Property details</h2>
           <p class="mt-1 text-sm text-slate-600">These are the property details used to place the parcel in later value and tax views. Confirming them first makes the later numbers easier to understand.</p>
-          <dl id="propertyDetails" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"></dl>
+          <dl id="propertyDetails" class="property-details-layout mt-4"></dl>
         </article>
       </section>
 
@@ -92,17 +92,9 @@
           <p data-assessment-snapshot-source class="chart-source"></p>
         </article>
         <article id="property-movement-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
-          <h2 class="text-xl font-bold text-slate-700">How much has this property changed?</h2>
-          <p class="mt-1 text-sm text-slate-600">Start with the most recent available movement, then compare it with the longer historical pattern.</p>
-          <div id="propertyMovementSummary" class="mt-4 space-y-4"></div>
+          <div id="propertyMovementSummary"></div>
         </article>
       </section>
-
-      <article class="ooda-decision-card">
-        <p class="guided-kicker">Decision check</p>
-        <h2>Does the movement match the record?</h2>
-        <p>Compare the change with the property facts, land/building split, and longer pattern. If those pieces fit, continue with context.</p>
-      </article>
 
       <aside class="guided-transition">
         <p>Now compare the current change with prior years.</p>
@@ -133,7 +125,7 @@
       </article>
 
       <aside class="guided-transition">
-        <p>Next, read how levy, credits, net tax, and effective tax rate moved across completed statement years.</p>
+        <p>Next, read how levy, net tax, credits, and effective tax rate moved across completed statement years.</p>
       </aside>
 
       <section id="tax-history-panel"></section>
@@ -166,7 +158,7 @@
         <p id="countyCtlSummaryIntro" class="sr-only">Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.</p>
         <div id="countyCtlSummary" class="grid gap-3 md:grid-cols-3 lg:grid-cols-5"></div>
         <section class="county-chart-pair mt-4 grid gap-6 lg:grid-cols-5" aria-label="County value and tax charts">
-          <section id="county-indexed" class="lg:col-span-3">
+          <section id="county-indexed" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
             <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
             <p id="countyIndexedRangeNote" class="mt-1 text-sm text-slate-600">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>
             <div id="countyIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
@@ -174,7 +166,7 @@
               <canvas id="countyIndexedChart"></canvas>
             </div>
           </section>
-          <section id="county-etr" class="lg:col-span-2">
+          <section id="county-etr" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
             <h2 class="text-xl font-bold text-slate-700">How do county taxes compare with value?</h2>
             <p class="mt-1 text-sm text-slate-600">The countywide effective tax rate divides taxes levied by certified value, giving a broad tax-rate baseline.</p>
             <div id="countyEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
@@ -210,23 +202,22 @@
 
       <article id="market-sales-makeup" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"></article>
 
+      <aside class="guided-transition">
+        <p id="marketSourceNote">Next, place the property in its local comparison group. These local sales-study measures introduce the countywide equalization check.</p>
+      </aside>
+
       <article id="market-overview" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Market Area</p>
-        <div class="mt-1 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <h2 class="text-2xl font-bold text-slate-700">How does this property’s market area measure up?</h2>
-            <p id="marketSourceNote" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-                Local sales-study measures show the comparison group behind the countywide check.
-            </p>
-          </div>
-          <label class="min-w-72 text-sm font-semibold text-slate-700">
-            Want to see another area?
-            <select id="marketAreaSelect" data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
-          </label>
-        </div>
         <section id="market-price-context">
-          <h3 class="text-xl font-bold text-slate-700">What prices are represented?</h3>
-          <p class="mt-1 text-sm text-slate-600">Average sale price and assessed value show the price context behind the highlighted group.</p>
+          <div class="market-price-context-header">
+            <div>
+              <h3 class="text-xl font-bold text-slate-700">What prices are represented?</h3>
+              <p id="marketPriceContextNote" class="mt-1 text-sm leading-6 text-slate-600">Average sale price, average assessed value, and level of value show price context for the selected group.</p>
+            </div>
+            <label class="min-w-72 text-sm font-semibold text-slate-700">
+              Want to see another area?
+              <select id="marketAreaSelect" data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
+            </label>
+          </div>
           <div id="marketPriceSummary" class="mt-4 grid gap-3 text-sm md:grid-cols-3"></div>
         </section>
         <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
