@@ -336,7 +336,7 @@ function installFinalSummary(data, context = {}) {
 
   section.innerHTML = `
     <aside class="guided-transition">
-      <p>Start with the property snapshot, then use the summary cards as a concise record of what the path covered.</p>
+      <p>Start with the property snapshot, then read the quick summary of value, market, taxes, and county context.</p>
     </aside>
 
     <article class="civic-summary-shell civic-summary-snapshot">
@@ -350,7 +350,6 @@ function installFinalSummary(data, context = {}) {
 
     <article class="civic-summary-shell civic-summary-quick-read" aria-labelledby="summaryQuickReadTitle">
       <div>
-        <p class="guided-kicker">Plain-language wrap-up</p>
         <h2 id="summaryQuickReadTitle">Quick read for this property</h2>
       </div>
       ${quickReadSummaryMarkup(data, context.recordCard, context)}

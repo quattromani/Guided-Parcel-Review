@@ -12,3 +12,7 @@ export function propertyRecordSourceText(data, recordCard) {
 
   return `Source: ${yearPrefix}${sourceName}, ID ${data.parcel.parcelId}.`;
 }
+
+export function taxHistorySourceText(data) {
+  return `Source: Nebraska Taxes Online statement history, ID ${data.parcel.parcelId}.`;
+}

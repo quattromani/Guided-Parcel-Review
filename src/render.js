@@ -20,7 +20,7 @@ import {
 } from "./recordCorrectionRequest.js";
 import { viewHeaderContent } from "./content/view-headers.js";
 import { PROPERTY_SELECTION_STORAGE_KEY } from "./data-service.js";
-import { propertyRecordSourceText } from "./domain/source-labels.js";
+import { propertyRecordSourceText, taxHistorySourceText } from "./domain/source-labels.js";
 import {
   getClassMarketStats,
   getParcelMarketClass,
@@ -191,7 +191,7 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderPropertyDetails(data, recordCard);
   renderDiscrepancyForm(data, recordCard);
   initReportErrorModal(data, recordCard, governingOffice);
-  renderHistoryTable(data, recordCard);
+  renderHistoryTable(data);
   renderPropertyMovementSummary(data);
   renderTaxHistoryTable(data);
   renderLevyTable(data);
@@ -245,12 +245,11 @@ function renderValueTaxHistoryShell() {
       </article>
 
       <article id="indexed-trends" class="value-tax-history-card">
-        <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
           <div>
             <h2 class="text-xl font-bold text-slate-700">How are this property’s value and taxes moving together?</h2>
-              <p class="text-sm text-slate-600">Assessed value and net taxes begin from the same baseline so their changes can be compared side by side. Tax statement years are included when a net bill is available.</p>
+              <p id="indexedTrendsIntro" class="text-sm text-slate-600">Compare the relative relationship between value and net taxes after levy adjustments and credits are factored in.</p>
           </div>
-          <p id="baseYearNote" class="text-xs font-medium text-slate-500"></p>
         </div>
         <div class="indexed-trends-chart mt-4">
           <span id="indexedPendingBadge" class="indexed-pending-badge hidden">Pending</span>
@@ -259,7 +258,7 @@ function renderValueTaxHistoryShell() {
         <div id="indexedChartLegend" class="chart-disc-legend mt-3 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-600"></div>
       </article>
     </div>
-    <p data-property-record-source class="chart-source"></p>
+    <p data-tax-history-source class="chart-source"></p>
   `;
   initMobileSupportDisclosureCharts(container);
 }
@@ -2427,35 +2426,35 @@ function localMarketQuickReadLine(selectedMarket, context = {}) {
 
   if (count === 1) {
     return `
-      There was <strong>1 qualified ${classNoun} sale</strong> in ${studyLabel}.
-      That sale was assessed at <strong>${ratio}</strong> of sale price, so it is a context clue rather than a broad market pattern.
+      <span class="summary-tax-line">There was <strong>1 qualified ${classNoun} sale</strong> in ${studyLabel}.</span>
+      <span class="summary-tax-line">That sale was assessed at <strong>${ratio}</strong> of sale price, so it is a context clue rather than a broad market pattern.</span>
     `;
   }
 
   if (count < 5) {
     return `
-      There were <strong>${count.toLocaleString()} qualified ${classNoun} ${saleNoun}</strong> in ${studyLabel}.
-      The median result was <strong>${ratio}</strong> of sale price, but a sample this small can move a lot from one sale to the next.
+      <span class="summary-tax-line">There were <strong>${count.toLocaleString()} qualified ${classNoun} ${saleNoun}</strong> in ${studyLabel}.</span>
+      <span class="summary-tax-line">The median result was <strong>${ratio}</strong> of sale price, but a sample this small can move a lot from one sale to the next.</span>
     `;
   }
 
   if (count < 10) {
     return `
-      There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.
-      The middle sale was assessed at <strong>${ratio}</strong> of sale price, so this should be read as limited context.
+      <span class="summary-tax-line">There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.</span>
+      <span class="summary-tax-line">The middle sale was assessed at <strong>${ratio}</strong> of sale price, so this should be read as limited context.</span>
     `;
   }
 
   if (count < 25) {
     return `
-      There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.
-      The middle sale was assessed at <strong>${ratio}</strong> of sale price, based on a modest local sample.
+      <span class="summary-tax-line">There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.</span>
+      <span class="summary-tax-line">The middle sale was assessed at <strong>${ratio}</strong> of sale price, based on a modest local sample.</span>
     `;
   }
 
   return `
-    There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.
-    The middle sale was assessed at <strong>${ratio}</strong> of sale price, based on a strong local sample.
+    <span class="summary-tax-line">There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.</span>
+    <span class="summary-tax-line">The middle sale was assessed at <strong>${ratio}</strong> of sale price, based on a strong local sample.</span>
   `;
 }
 
@@ -2479,14 +2478,15 @@ function taxesQuickReadLine(data) {
   const recentTaxChange = percentChangeBetween(previousTax?.taxes, latestTax?.taxes);
   const historyTaxChange = percentChangeBetween(firstTax?.taxes, latestTax?.taxes);
   const etrLine = firstEtr && latestEtr
-    ? ` ETR moved from <strong>${formatNullablePercent(firstEtr.etr)}</strong> to <strong>${formatNullablePercent(latestEtr.etr)}</strong>.`
+    ? `<span class="summary-tax-line"><strong>ETR:</strong> moved from <strong>${formatNullablePercent(firstEtr.etr)}</strong> to <strong>${formatNullablePercent(latestEtr.etr)}</strong>.</span>`
     : "";
 
   return `
-    <strong>Recent movement:</strong> net tax moved <strong>${signedPercent(recentTaxChange)}</strong>
-    from <strong>${formatNullableMoney(previousTax?.taxes, true)}</strong> to <strong>${formatNullableMoney(latestTax?.taxes, true)}</strong>.
-    <strong>Movement history:</strong> net tax changed <strong>${signedPercent(historyTaxChange)}</strong>
-    from <strong>${firstTax.year}</strong> to <strong>${latestTax.year}</strong>.${etrLine}
+    <span class="summary-tax-line"><strong>Recent movement:</strong> net tax moved <strong>${signedPercent(recentTaxChange)}</strong>
+    from <strong>${formatNullableMoney(previousTax?.taxes, true)}</strong> to <strong>${formatNullableMoney(latestTax?.taxes, true)}</strong>.</span>
+    <span class="summary-tax-line"><strong>Movement history:</strong> net tax changed <strong>${signedPercent(historyTaxChange)}</strong>
+    from <strong>${firstTax.year}</strong> to <strong>${latestTax.year}</strong>.</span>
+    ${etrLine}
   `;
 }
 
@@ -2504,10 +2504,10 @@ function countyQuickReadLine(data, summaryContext = {}) {
   }
 
   return `
-    <strong>${latest.year} ${selectedClass.label}</strong> county study:
-    LOV <strong>${formatRatioPercent(latest.levelOfValue)}</strong>,
-    COD <strong>${Number(latest.cod).toFixed(2)}</strong>,
-    PRD <strong>${Number(latest.prd).toFixed(3)}</strong>.
+    <span class="summary-tax-line"><strong>${latest.year} ${selectedClass.label}</strong> county study:</span>
+    <span class="summary-tax-line">LOV <strong>${formatRatioPercent(latest.levelOfValue)}</strong></span>
+    <span class="summary-tax-line">COD <strong>${Number(latest.cod).toFixed(2)}</strong></span>
+    <span class="summary-tax-line">PRD <strong>${Number(latest.prd).toFixed(3)}</strong></span>
   `;
 }
 
@@ -2567,7 +2567,7 @@ function initJumpLinks() {
   });
 }
 
-function renderHistoryTable(data, recordCard) {
+function renderHistoryTable(data) {
   const rows = sortHistoryDescending(data.taxpayerHistory);
   const heatRanges = {
     assessedValue: historyHeatRange(rows, row => row.assessedValue),
@@ -2607,8 +2607,8 @@ function renderHistoryTable(data, recordCard) {
     footnote.textContent = notes.length ? `* ${notes.join(" ")}` : "";
   }
 
-  document.querySelectorAll("[data-property-record-source]").forEach(element => {
-    element.textContent = propertyRecordSourceText(data, recordCard);
+  document.querySelectorAll("[data-tax-history-source]").forEach(element => {
+    element.textContent = taxHistorySourceText(data);
   });
 }
 

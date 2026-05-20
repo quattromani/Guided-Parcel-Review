@@ -71,7 +71,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Summary",
     question: "What was reviewed?",
     title: "Leave with orientation and optional next steps",
-    description: "Summarize the record, value, equalization, taxes, and review signals."
+    description: "Everything in one place: the record, value, equalization, taxes, and review signals."
   }
 ];
 

@@ -354,12 +354,9 @@ function initGuidedNavigation(data, options = {}) {
 
     const routeLabel = progressRoutes[currentIndex]?.label || `Step ${currentIndex + 1}`;
     const compactRouteLabel = routeLabel === "What Changed" ? "What Changed?" : routeLabel;
-    const statusLabel = labelsHiddenProgressQuery.matches
-      ? `${compactRouteLabel} - Step ${currentIndex + 1} of ${primarySectionIds.length}`
-      : `step ${currentIndex + 1} of ${primarySectionIds.length}`;
     const nextRouteLabel = progressRoutes[currentIndex + 1]?.label || "";
 
-    guidedProgressStatus.innerHTML = `You're reviewing <strong>${escapeHtml(statusLabel)}</strong>`;
+    guidedProgressStatus.innerHTML = `You're reviewing <strong>${escapeHtml(compactRouteLabel)}</strong>`;
     if (guidedProgressNext) {
       guidedProgressNext.textContent = labelsHiddenProgressQuery.matches && nextRouteLabel
         ? `Next: ${nextRouteLabel}`

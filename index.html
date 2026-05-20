@@ -26,7 +26,7 @@
 
         <nav aria-label="Guided parcel review path" class="guided-path-nav overflow-x-auto rounded-2xl bg-white px-3 py-3 shadow-sm ring-1 ring-slate-200">
           <div class="guided-progress-shell">
-            <p class="guided-progress-status" data-guided-progress-status>You're reviewing step 1 of 7</p>
+            <p class="guided-progress-status" data-guided-progress-status>You're reviewing <strong>Property Record</strong></p>
             <div class="guided-path-track">
               <div id="guidedPathTabs" class="relative z-10 flex min-w-max gap-4">
                 <button type="button" data-guided-tab="property-record" class="guided-step" aria-selected="false"><span>1</span>Property Record</button>
@@ -141,7 +141,7 @@
             <div class="h-80 rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
               <canvas id="taxBurdenPatternChart"></canvas>
             </div>
-            <p class="mt-2 text-xs leading-5 text-slate-500">The dashed line is the average net bill across the available statement years. Each point uses statement net tax after credits.</p>
+            <p class="mt-2 text-xs leading-5 text-slate-500">Dashed line: period average. Points use statement net tax after credits.</p>
           </div>
           <div>
             <div id="taxBurdenPatternCards" class="grid gap-3"></div>
@@ -156,8 +156,8 @@
       <article id="county-summary" class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <h2 class="sr-only">Countywide baseline</h2>
         <p id="countyCtlSummaryIntro" class="sr-only">Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.</p>
-        <div id="countyCtlSummary" class="grid gap-3 md:grid-cols-3 lg:grid-cols-5"></div>
-        <section class="county-chart-pair mt-4 grid gap-6 lg:grid-cols-5" aria-label="County value and tax charts">
+        <div id="countyCtlSummary" class="grid gap-4 md:grid-cols-3 lg:grid-cols-5"></div>
+        <section class="county-chart-pair mt-4 grid gap-4 lg:grid-cols-5" aria-label="County value and tax charts">
           <section id="county-indexed" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
             <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
             <p id="countyIndexedRangeNote" class="mt-1 text-sm text-slate-600">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>

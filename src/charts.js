@@ -265,7 +265,13 @@ export function buildIndexedChart(data) {
     indexedPendingBadge.classList.add("hidden");
   }
 
-  document.getElementById("baseYearNote").textContent = `Base year: ${usableValueRows[0]?.year ?? "—"}`;
+  const indexedTrendsIntro = document.getElementById("indexedTrendsIntro");
+  if (indexedTrendsIntro) {
+    const baseYear = usableValueRows[0]?.year ?? usableTaxRows[0]?.year;
+    indexedTrendsIntro.textContent = baseYear
+      ? `Using ${baseYear} as the baseline, compare the relative relationship between value and net taxes after levy adjustments and credits are factored in.`
+      : "Compare the relative relationship between value and net taxes after levy adjustments and credits are factored in.";
+  }
 
   const valueIndex = rows.map(row =>
     hasDataValue(row.assessedValue) && baseValue ? (row.assessedValue / baseValue) * 100 : null
