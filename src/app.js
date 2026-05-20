@@ -163,7 +163,7 @@ async function main() {
   buildIndexedChart(data);
   buildTaxBurdenPattern(data);
   buildEtrChart(data);
-  buildDistributionChart(data, schoolDistrictColors);
+  buildDistributionChart(data, schoolDistrictColors, recordCard);
   buildOverviewCharts(data, ctlData);
   initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards, marketPositionData);
   buildCtlSummary(data, ctlData);
@@ -197,7 +197,7 @@ main().catch(error => {
   console.error(error);
   document.body.innerHTML = `
     <main class="mx-auto max-w-2xl p-6">
-      <section class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-red-200">
+      <section class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-red-200">
         <h1 class="text-xl font-bold text-red-700">Guided Parcel Review could not load</h1>
         <p class="mt-2 text-sm text-slate-700">${error.message}</p>
       </section>
@@ -617,36 +617,64 @@ function renderImportantCalendarDates(viewKey) {
   const title = importantCalendarDates.metadata?.title ?? "Important Calendar Dates";
   const disclaimer = importantCalendarDates.metadata?.disclaimer
     ?? "Selected dates are shown for orientation only. Official county and state instructions control.";
+  const fullCalendarButton = `
+    <button type="button" class="important-calendar-action" data-assessment-dates-open aria-controls="assessmentDatesPanel">
+      See Full Calendar
+    </button>
+  `;
 
   if (!dates.length) {
     return `
+      <div class="important-calendar-desktop">
+        <div class="important-calendar-header">
+          <div>
+            <p class="guided-kicker">Calendar reference</p>
+            <h3 id="importantCalendarDatesTitle">${escapeHtml(title)}</h3>
+          </div>
+          ${fullCalendarButton}
+        </div>
+        <p class="important-calendar-empty">No selected dates are mapped to this step yet.</p>
+      </div>
+      <details class="important-calendar-mobile">
+        <summary>See important dates</summary>
+        <div class="important-calendar-mobile-panel">
+          <p class="important-calendar-empty">No selected dates are mapped to this step yet.</p>
+          ${fullCalendarButton}
+        </div>
+      </details>
+    `;
+  }
+
+  const dateList = `
+    <div class="important-calendar-list" role="list" aria-labelledby="importantCalendarDatesTitle">
+      ${dates.map(renderImportantCalendarDate).join("")}
+    </div>
+  `;
+
+  return `
+    <div class="important-calendar-desktop">
       <div class="important-calendar-header">
         <div>
           <p class="guided-kicker">Calendar reference</p>
           <h3 id="importantCalendarDatesTitle">${escapeHtml(title)}</h3>
+          <p>${escapeHtml(disclaimer)}</p>
         </div>
-        <button type="button" class="important-calendar-action" data-assessment-dates-open aria-controls="assessmentDatesPanel">
-          See Full Calendar
-        </button>
+        ${fullCalendarButton}
       </div>
-      <p class="important-calendar-empty">No selected dates are mapped to this step yet.</p>
-    `;
-  }
-
-  return `
-    <div class="important-calendar-header">
-      <div>
-        <p class="guided-kicker">Calendar reference</p>
-        <h3 id="importantCalendarDatesTitle">${escapeHtml(title)}</h3>
-        <p>${escapeHtml(disclaimer)}</p>
+      ${dateList}
+    </div>
+    <details class="important-calendar-mobile">
+      <summary>See important dates</summary>
+      <div class="important-calendar-mobile-panel">
+        <div>
+          <p class="guided-kicker">Calendar reference</p>
+          <h3 id="importantCalendarDatesTitleMobile">${escapeHtml(title)}</h3>
+          <p>${escapeHtml(disclaimer)}</p>
+        </div>
+        ${dateList.replace("importantCalendarDatesTitle", "importantCalendarDatesTitleMobile")}
+        ${fullCalendarButton}
       </div>
-      <button type="button" class="important-calendar-action" data-assessment-dates-open aria-controls="assessmentDatesPanel">
-        See Full Calendar
-      </button>
-    </div>
-    <div class="important-calendar-list" role="list" aria-labelledby="importantCalendarDatesTitle">
-      ${dates.map(renderImportantCalendarDate).join("")}
-    </div>
+    </details>
   `;
 }
 
@@ -730,21 +758,28 @@ function formatSourceDate(value) {
 function initGuidedPathStickiness(guidedPath) {
   if (!guidedPath) return;
 
-  let stickPoint = 0;
-
-  function measure() {
-    guidedPath.classList.remove("guided-path-nav-stuck");
-    stickPoint = guidedPath.getBoundingClientRect().top + window.scrollY - 1;
-    update();
-  }
+  let scheduled = false;
 
   function update() {
-    const stuck = window.scrollY > stickPoint;
+    const stuck = guidedPath.getBoundingClientRect().top <= 0;
     guidedPath.classList.toggle("guided-path-nav-stuck", stuck);
   }
 
+  function requestUpdate() {
+    if (scheduled) return;
+    scheduled = true;
+    window.requestAnimationFrame(() => {
+      scheduled = false;
+      update();
+    });
+  }
+
+  function measure() {
+    update();
+  }
+
   measure();
-  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("scroll", requestUpdate, { passive: true });
   window.addEventListener("resize", measure);
 }
 

@@ -253,6 +253,7 @@ export function renderGroupedTreemap({
   formatAmount,
   formatShare,
   initialGroup = "all",
+  ariaLabel = "Latest distribution chart",
   onGroupChange,
   showControls = false,
   layout = "binary"
@@ -284,7 +285,7 @@ export function renderGroupedTreemap({
       : binaryTreemap(activeNodes);
 
     container.innerHTML = `
-      <div class="levy-treemap-canvas" role="img" aria-label="Latest levy share chart">
+      <div class="levy-treemap-canvas" role="img" aria-label="${escapeHtml(ariaLabel)}">
         ${nodes.map(node => renderTile(node, {
           activeGroup,
           colorAlpha,

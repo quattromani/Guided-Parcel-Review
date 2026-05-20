@@ -3,6 +3,7 @@ import {
   formatNullableLevy,
   formatNullableMoney,
   formatNullablePercent,
+  latestTaxDistributionRows,
   money,
   moneyCents,
   percent,
@@ -27,13 +28,18 @@ import {
   getParcelMarketGroupId
 } from "./market-stats.js";
 import { displayAddress } from "./utils/address.js";
-import { displayValue, formatSquareFeet } from "./utils/display.js";
+import { displayValue, formatSquareFeet, hasDisplayValue } from "./utils/display.js";
 import { escapeHtml } from "./utils/html.js";
 
 const recordReviewStatuses = [
   ["looks-correct", "Looks correct"],
   ["may-need-review", "May need review"]
 ];
+const percentOneDecimal = new Intl.NumberFormat("en-US", {
+  style: "percent",
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1
+});
 const recordReviewStatusLabels = Object.fromEntries(recordReviewStatuses);
 const recordReviewCategories = [
   {
@@ -189,6 +195,8 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderAssessmentNoticeSummary(data, recordCard);
   renderComparisonShells(data, recordCard, summaryContext);
   renderPropertyDetails(data, recordCard);
+  initRecordDisclosureBehavior();
+  initExpandableTables();
   renderDiscrepancyForm(data, recordCard);
   initReportErrorModal(data, recordCard, governingOffice);
   renderHistoryTable(data);
@@ -196,6 +204,34 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderTaxHistoryTable(data);
   renderLevyTable(data);
   renderSources(data);
+}
+
+function initRecordDisclosureBehavior() {
+  if (document.documentElement.dataset.recordDisclosureBehavior === "true") return;
+
+  document.documentElement.dataset.recordDisclosureBehavior = "true";
+  document.addEventListener("toggle", event => {
+    const disclosure = event.target.closest?.(".record-disclosure");
+    if (!disclosure?.open) return;
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const summary = disclosure.querySelector(".record-disclosure-toggle");
+        if (!summary) return;
+
+        const headerBottom = document.querySelector(".guide-review-header")?.getBoundingClientRect().bottom ?? 0;
+        const targetTop = Math.max(headerBottom + 10, 12);
+        const summaryTop = summary.getBoundingClientRect().top;
+
+        if (summaryTop < targetTop) {
+          window.scrollBy({
+            top: summaryTop - targetTop,
+            behavior: "smooth"
+          });
+        }
+      });
+    });
+  }, true);
 }
 
 function renderComparisonShells(data, recordCard, summaryContext = {}) {
@@ -210,7 +246,7 @@ function renderAssessmentSnapshotSource(data, recordCard) {
   const sourceNote = document.querySelector("[data-assessment-snapshot-source]");
   if (!sourceNote) return;
 
-  sourceNote.textContent = propertyRecordSourceText(data, recordCard);
+  sourceNote.textContent = "";
 }
 
 function renderValueTaxHistoryShell() {
@@ -267,7 +303,7 @@ function renderTaxHistoryShell() {
   const container = document.getElementById("tax-history-panel");
   if (!container) return;
 
-  container.className = "tax-history-pair grid gap-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:grid-cols-[minmax(0,1.85fr)_minmax(320px,1fr)]";
+  container.className = "tax-history-pair grid gap-6 rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:grid-cols-[minmax(0,1.85fr)_minmax(320px,1fr)]";
   container.innerHTML = `
     <div id="taxEquationWaterfall" class="tax-equation-waterfall lg:col-span-2" aria-label="Tax statement calculation"></div>
 
@@ -313,7 +349,7 @@ function renderTaxDistributionShell(data) {
         <div class="levy-treemap-panel" aria-labelledby="distributionChartTitle">
           <div class="levy-treemap-heading">
             <h2 id="distributionChartTitle" class="text-xl font-bold text-slate-700">How is the tax bill distributed?</h2>
-            <p class="mt-1 text-sm text-slate-600">The chart shows each taxing body’s share of the latest levy.</p>
+            <p class="mt-1 text-sm text-slate-600">The chart shows this property’s taxing-body share of the latest tax bill after credits are reflected.</p>
           </div>
           <div id="distributionTreemap" class="levy-treemap-shell"></div>
         </div>
@@ -327,14 +363,14 @@ function renderTaxDistributionShell(data) {
           </summary>
           <div class="mobile-support-content">
             <h2 class="text-xl font-bold text-slate-700">Which taxing bodies are included?</h2>
-            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. The 2026 tax bill depends on finalized budgets, levies, credits, and exemptions.</p>
+            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. Levy share is before statement credits; the 2026 tax bill still depends on finalized budgets, levies, credits, and exemptions.</p>
             <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
               <table class="min-w-full divide-y divide-slate-200 text-sm">
                 <thead>
                   <tr>
                     <th class="px-3 py-2 text-left font-semibold">Taxing body</th>
                     <th class="px-3 py-2 text-right font-semibold">Rate</th>
-                    <th class="px-3 py-2 text-right font-semibold">Share</th>
+                    <th class="px-3 py-2 text-right font-semibold">Levy share</th>
                     <th class="px-3 py-2 text-right font-semibold">Per $100k</th>
                   </tr>
                 </thead>
@@ -423,7 +459,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       <section class="market-reading-context lg:col-span-2">
         <article class="market-compare-summary" aria-labelledby="marketCompareSummaryTitle">
           <h4 id="marketCompareSummaryTitle">Compare summary</h4>
-          <ul id="marketNarrative" class="market-compare-list"></ul>
+          <div id="marketNarrative" class="market-compare-table-shell"></div>
         </article>
       </section>
     </section>
@@ -582,15 +618,14 @@ export function renderViewHeader(view = "your-property", snapshotModel, property
     ? {
       eyebrow: section.eyebrow,
       title: section.question,
-      description: section.description,
-      imageAlt: viewHeaderContent[view]?.imageAlt ?? "Map of Nebraska"
+      description: section.description
     }
     : viewHeaderContent[view] || viewHeaderContent["your-property"];
   const title = document.getElementById("pageTitle");
   const titleHtml = escapeHtml(content.title);
 
   title.innerHTML = `
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
           ${content.eyebrow}
@@ -606,11 +641,6 @@ export function renderViewHeader(view = "your-property", snapshotModel, property
       </div>
 
       <div class="page-title-utility">
-        <img
-          src="assets/images/gage-county-map.png"
-          alt="${content.imageAlt}"
-          class="hidden h-20 w-auto shrink-0 opacity-80 sm:block grayscale"
-        />
         ${propertySwitcherMarkup(switcherContext, snapshotModel)}
       </div>
     </div>
@@ -822,6 +852,7 @@ function renderHeader(data, imageModal, recordCard, valuationGroups) {
     <div class="property-record-overview">
       <div class="property-record-value-table" aria-label="Prior and current value breakdown">
         ${valuationNoticeSummary(data, recordCard)}
+        <p class="chart-source">${propertyRecordSourceText(data, recordCard)}</p>
       </div>
       <div class="property-record-media" aria-label="Property images">
         ${imageButton(data.assets.photo, "Property Photos", "Photos")}
@@ -965,7 +996,7 @@ function imageButton(src, caption, label) {
   }
 
   return `
-    <button type="button" data-image-src="${src}" data-image-caption="${caption}" class="group relative overflow-hidden rounded-2xl bg-slate-100 ring-1 ring-slate-200 transition hover:ring-slate-300">
+    <button type="button" data-image-src="${src}" data-image-caption="${caption}" class="group relative overflow-hidden rounded-lg bg-slate-100 ring-1 ring-slate-200 transition hover:ring-slate-300">
       <img src="${src}" alt="${caption}" class="h-28 w-44 object-cover transition duration-200 group-hover:scale-105" />
       <div class="absolute inset-x-0 bottom-0 bg-black/55 px-2 py-1">
         <p class="text-xs font-medium text-white">${label}</p>
@@ -976,18 +1007,20 @@ function imageButton(src, caption, label) {
 
 function renderPropertyDetails(data, recordCard) {
   const situsAddress = displayAddress(data.parcel.situsAddress);
-  const identityDetails = [
+  const siteDetails = [
     ["Parcel ID", data.parcel.parcelId],
-    ["Tax district", data.parcel.taxDistrict],
-    ["Owner", data.parcel.owner],
     ["Situs address", situsAddress],
-    ["Mailing address", mailingAddressHtml(data.parcel.mailingAddress)],
     ["Legal description", data.parcel.legalDescription],
-    ["Status", data.classification.status],
+    ["Owner", data.parcel.owner],
+    ["Mailing address", mailingAddressHtml(data.parcel.mailingAddress)],
+    ["Tax district", data.parcel.taxDistrict],
     ["Zoning", data.classification.zoning],
     ["Lot size", data.classification.lotSize]
   ];
-  const physicalDetails = physicalDetailsForProperty(data);
+  const improvementDetails = [
+    ["Status", data.classification.status],
+    ...physicalDetailsForProperty(data)
+  ];
 
   const compactDetailLabels = new Set([
     "Parcel ID",
@@ -1028,31 +1061,35 @@ function renderPropertyDetails(data, recordCard) {
   };
 
   const renderCards = details => details.map(renderDetailCard).join("");
-
-  const detailCards = [
-    renderCards(identityDetails),
-    renderCards(physicalDetails)
-  ].join("");
+  const detailRowCount = Math.max(siteDetails.length, improvementDetails.length);
 
   const drawers = [
     costSourceLimitation(recordCard),
     technicalCostModel(recordCard, data),
-    sourceExtractDetails(recordCard),
+    sourceExtractDetails(data, recordCard),
     classificationDetails(data),
     landInformation(data, recordCard),
     propertyNotes(data),
-    propertyValueTaxHistory(data, recordCard),
     ownershipHistory(recordCard),
-    recordCardSource(recordCard),
-    reportErrorLink(data, recordCard)
+    recordCardSource(recordCard)
   ].filter(Boolean).join("");
 
   document.getElementById("propertyDetails").innerHTML = `
-    <div class="property-details-card-grid">
-      ${detailCards}
+    <div class="property-details-card-grid" style="--property-details-row-count: ${detailRowCount};">
+      <div class="property-details-column" aria-label="Parcel and site details">
+        ${renderCards(siteDetails)}
+      </div>
+      <div class="property-details-column" aria-label="Improvement details">
+        ${renderCards(improvementDetails)}
+      </div>
     </div>
     ${drawers ? `<div class="property-details-drawer-stack">${drawers}</div>` : ""}
   `;
+
+  const sourceNote = document.getElementById("propertyDetailsSourceNote");
+  if (sourceNote) {
+    sourceNote.textContent = propertyRecordSourceText(data, recordCard);
+  }
 }
 
 function mailingAddressHtml(value) {
@@ -1070,14 +1107,6 @@ function mailingAddressHtml(value) {
   return lines.map((line, index) => `
     <span class="details-card-address-line ${index > 0 ? "details-card-address-locality" : ""}">${escapeHtml(line)}</span>
   `).join("");
-}
-
-function reportErrorLink(data, recordCard) {
-  return `
-    <div class="px-1 pt-1 text-xs text-slate-500">
-      <p>${escapeHtml(propertyRecordSourceText(data, recordCard))}</p>
-    </div>
-  `;
 }
 
 function formSafeId(value) {
@@ -1570,6 +1599,152 @@ function initReportErrorModal(data, recordCard, governingOffice) {
   });
 }
 
+function initExpandableTables() {
+  const modal = document.getElementById("sourceTableModal");
+  const modalTitle = document.getElementById("sourceTableModalTitle");
+  const modalContent = document.getElementById("sourceTableModalContent");
+  if (!modal || !modalTitle || !modalContent || modal.dataset.initialized === "true") return;
+
+  const closeButtons = modal.querySelectorAll("[data-close-source-table]");
+  let tableId = 0;
+  let scheduled = false;
+
+  function tableWrappers() {
+    return Array.from(document.querySelectorAll(".table-shell, .table-clip, .overflow-x-auto"))
+      .filter(wrapper => wrapper.querySelector(":scope > table"))
+      .filter(wrapper => !wrapper.closest("#sourceTableModal"));
+  }
+
+  function tableTitle(wrapper) {
+    return wrapper.closest(".source-extract-section")
+      ?.querySelector(".source-extract-section-header p")
+      ?.textContent
+      ?.trim()
+      || wrapper.closest(".record-disclosure")
+        ?.querySelector(".record-disclosure-title")
+        ?.textContent
+        ?.trim()
+      || wrapper.closest("[aria-labelledby]")
+        ?.querySelector("h2, h3, [id]")
+        ?.textContent
+        ?.trim()
+      || "Table";
+  }
+
+  function tableIsExpandable(wrapper) {
+    if (!window.matchMedia("(min-width: 640px)").matches) return false;
+    if (wrapper.offsetParent === null) return false;
+
+    return wrapper.scrollWidth > wrapper.clientWidth + 2;
+  }
+
+  function ensureTableId(wrapper) {
+    if (!wrapper.dataset.expandableTableId) {
+      tableId += 1;
+      wrapper.dataset.expandableTableId = `expandable-table-${tableId}`;
+    }
+
+    return wrapper.dataset.expandableTableId;
+  }
+
+  function removeExpandButton(wrapper) {
+    const existing = document.querySelector(`[data-table-expand="${wrapper.dataset.expandableTableId}"]`);
+    existing?.closest(".table-expand-toolbar")?.remove();
+    existing?.remove();
+  }
+
+  function placeExpandButton(wrapper) {
+    const id = ensureTableId(wrapper);
+    if (document.querySelector(`[data-table-expand="${id}"]`)) return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "table-expand-button";
+    button.dataset.tableExpand = id;
+    button.textContent = "Expand table";
+
+    const sourceActions = wrapper.closest(".source-extract-section")
+      ?.querySelector(".source-extract-section-actions");
+
+    if (sourceActions) {
+      sourceActions.append(button);
+      return;
+    }
+
+    const toolbar = document.createElement("div");
+    toolbar.className = "table-expand-toolbar";
+    toolbar.append(button);
+    wrapper.before(toolbar);
+  }
+
+  function refreshTableExpandButtons() {
+    tableWrappers().forEach(wrapper => {
+      if (tableIsExpandable(wrapper)) {
+        placeExpandButton(wrapper);
+      } else {
+        removeExpandButton(wrapper);
+      }
+    });
+  }
+
+  function requestRefresh() {
+    if (scheduled) return;
+    scheduled = true;
+    window.requestAnimationFrame(() => {
+      scheduled = false;
+      refreshTableExpandButtons();
+    });
+  }
+
+  function close() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    modal.setAttribute("aria-hidden", "true");
+    modalContent.innerHTML = "";
+    document.body.classList.remove("overflow-hidden");
+  }
+
+  function open(wrapper) {
+    const table = wrapper.cloneNode(true);
+    if (!table) return;
+
+    modalTitle.textContent = tableTitle(wrapper);
+    table.querySelectorAll("[data-table-expand]").forEach(button => button.remove());
+    table.classList.add("expanded-table-clip");
+    modalContent.innerHTML = "";
+    modalContent.append(table);
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("overflow-hidden");
+  }
+
+  document.addEventListener("click", event => {
+    const trigger = event.target.closest?.("[data-table-expand]");
+    if (!trigger) return;
+
+    const wrapper = document.querySelector(`[data-expandable-table-id="${trigger.dataset.tableExpand}"]`);
+    if (!wrapper) return;
+
+    event.preventDefault();
+    open(wrapper);
+  });
+
+  modal.addEventListener("click", close);
+  modal.querySelector("[role='dialog']").addEventListener("click", event => event.stopPropagation());
+  closeButtons.forEach(button => button.addEventListener("click", close));
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !modal.classList.contains("hidden")) close();
+  });
+
+  modal.dataset.initialized = "true";
+  refreshTableExpandButtons();
+  window.addEventListener("resize", requestRefresh);
+  document.addEventListener("toggle", requestRefresh, true);
+  document.addEventListener("click", () => window.setTimeout(refreshTableExpandButtons, 0));
+}
+
 function disclosure(title, meta, content) {
   return `
     <details class="record-disclosure rounded-xl">
@@ -1872,23 +2047,47 @@ function landInformation(data, recordCard) {
     return "Area not listed";
   };
 
+  const compactDisplayParts = parts => parts
+    .filter(hasDisplayValue)
+    .map(part => `${part}`)
+    .join(" / ");
+
+  const renderOptionalInfoCards = items => items
+    .filter(item => hasDisplayValue(item.value))
+    .map(item => `
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(item.label)}</p>
+        <p class="mt-1 font-semibold text-slate-700">${escapeHtml(item.display ?? item.value)}</p>
+      </div>
+    `).join("");
+
+  const landModelCards = landModel && locationModel
+    ? renderOptionalInfoCards([
+      { label: "Neighborhood", value: locationModel.neighborhood },
+      { label: "Valuation group", value: locationModel.valuationGroup },
+      {
+        label: "Model / method",
+        value: compactDisplayParts([locationModel.model, locationModel.method])
+      },
+      { label: "Land model", value: landModel.description },
+      {
+        label: "Model lot size",
+        value: landModel.lotSize,
+        display: `${Number(landModel.lotSize).toLocaleString()} sq. ft.`
+      },
+      {
+        label: "Recorded lot value",
+        value: landModel.recordedLotValue,
+        display: formatNullableMoney(landModel.recordedLotValue)
+      }
+    ])
+    : "";
+
   return disclosure("How is the land described?", meta, `
     ${agriculturalProductivityModel(data, rows, recordCard)}
-    ${landModel && locationModel ? `
+    ${landModelCards ? `
       <div class="grid gap-3 border-b border-slate-200 bg-slate-50 p-3 text-sm md:grid-cols-3">
-        ${[
-          ["Neighborhood", locationModel.neighborhood],
-          ["Valuation group", locationModel.valuationGroup],
-          ["Model / method", `${locationModel.model} / ${locationModel.method}`],
-          ["Land model", landModel.description],
-          ["Model lot size", landModel.lotSize ? `${Number(landModel.lotSize).toLocaleString()} sq. ft.` : null],
-          ["Recorded lot value", formatNullableMoney(landModel.recordedLotValue)]
-        ].map(([label, value]) => `
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-            <p class="mt-1 font-semibold text-slate-700">${escapeHtml(value)}</p>
-          </div>
-        `).join("")}
+        ${landModelCards}
       </div>
     ` : ""}
     <table class="min-w-full divide-y divide-slate-200 text-sm">
@@ -2002,8 +2201,9 @@ function costSourceLimitation(recordCard) {
   return "";
 }
 
-function sourceExtractDetails(recordCard) {
-  const sections = recordCard?.sourceExtract?.sections || [];
+function sourceExtractDetails(data, recordCard) {
+  const sections = combineStatementHistorySections(recordCard?.sourceExtract?.sections || [])
+    .filter(section => !isRepeatedSourceExtractSection(section));
   if (!sections.length) return "";
 
   const meta = sections.length === 1 ? "1 source table" : `${sections.length} source tables`;
@@ -2014,28 +2214,259 @@ function sourceExtractDetails(recordCard) {
       ${escapeHtml(recordCard.sourceExtract.note || "These are the structured facts visible in the source export. Fields not included by the source are left unavailable rather than inferred.")}
     </div>
     <div class="grid gap-4 border-t border-slate-200 p-3">
-      ${sections.map(section => `
-        <section>
-          <div class="mb-2 flex items-center justify-between gap-3">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(section.title)}</p>
-            ${section.summary ? `<p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">${escapeHtml(section.summary)}</p>` : ""}
-          </div>
-          <div class="table-clip ring-1 ring-slate-200">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-              <thead class="bg-slate-50">
-                <tr>${section.columns.map(column => `<th class="px-3 py-2 text-left font-semibold">${escapeHtml(column)}</th>`).join("")}</tr>
-              </thead>
-              <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
-                ${section.rows.map(row => `
-                  <tr>${row.map(value => `<td class="px-3 py-2">${cellValue(value)}</td>`).join("")}</tr>
-                `).join("")}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      `).join("")}
+      ${sections.map(section => sourceExtractSection(section, data, recordCard, cellValue)).join("")}
     </div>
   `);
+}
+
+function sourceExtractSection(section, data, recordCard, cellValue) {
+  return `
+    <section class="source-extract-section">
+      <div class="source-extract-section-header">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(section.title)}</p>
+        <div class="source-extract-section-actions">
+          ${section.summary ? `<p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">${escapeHtml(sourceSectionSummary(section.summary))}</p>` : ""}
+        </div>
+      </div>
+      ${sourceExtractTable(section, data, recordCard, cellValue)}
+    </section>
+  `;
+}
+
+function sourceExtractTable(section, data, recordCard, cellValue) {
+  return `
+    <div class="table-clip source-table-clip ring-1 ring-slate-200">
+      <table class="min-w-full divide-y divide-slate-200 text-sm">
+        <thead class="bg-slate-50">
+          <tr>${section.columns.map(column => `<th class="px-3 py-2 text-left font-semibold">${escapeHtml(column)}</th>`).join("")}</tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
+          ${sourceSectionRows(section, data, recordCard).map(row => `
+            <tr>${row.map(value => `<td class="px-3 py-2">${cellValue(value)}</td>`).join("")}</tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function combineStatementHistorySections(sections = []) {
+  const statementSection = sections.find(isNtoStatementHistorySection);
+  const assessedSection = sections.find(isFullAssessedValuesSection);
+  const ntoValuationSection = sections.find(isNtoValuationSection);
+  const valuationSection = assessedSection || ntoValuationSection;
+  if (!valuationSection || !statementSection) return sections;
+
+  let combinedUsed = false;
+
+  return sections
+    .map(section => {
+      if (section === valuationSection || isNtoValuationSection(section) || isNtoStatementHistorySection(section)) {
+        if (combinedUsed) return null;
+        combinedUsed = true;
+        return combinedStatementHistorySection(valuationSection, statementSection);
+      }
+
+      return section;
+    })
+    .filter(Boolean);
+}
+
+function isNtoValuationSection(section = {}) {
+  return `${section.title || ""}`.toLowerCase().includes("nebraska taxes online assessed valuations");
+}
+
+function isNtoStatementHistorySection(section = {}) {
+  return `${section.title || ""}`.toLowerCase().includes("nebraska taxes online statement history");
+}
+
+function isFullAssessedValuesSection(section = {}) {
+  return `${section.title || ""}`.trim().toLowerCase() === "assessed values";
+}
+
+function combinedStatementHistorySection(valuationSection, statementSection) {
+  const valuationByStatement = new Map();
+  const valuationByYear = new Map();
+
+  (valuationSection.rows || []).forEach(row => {
+    const year = sourceCell(valuationSection, row, "Year");
+    const statement = sourceCell(valuationSection, row, "Statement");
+
+    if (year) valuationByYear.set(year, row);
+    if (year && statement) valuationByStatement.set([year, statement].join("|"), row);
+  });
+
+  const valuationColumns = combinedValuationColumns(valuationSection);
+  const rows = (statementSection.rows || []).map(statementRow => {
+    const year = sourceCell(statementSection, statementRow, "Year");
+    const statement = sourceCell(statementSection, statementRow, "Statement");
+    const valuationRow = valuationByStatement.get([year, statement].join("|")) || valuationByYear.get(year) || [];
+
+    return [
+      year,
+      statement,
+      ...statementTypeCell(statementSection, statementRow),
+      ...valuationColumns.map(column => sourceCell(valuationSection, valuationRow, column.source)),
+      sourceCell(statementSection, statementRow, "Gross tax"),
+      sourceCell(statementSection, statementRow, "Credits"),
+      sourceCell(statementSection, statementRow, "Net tax"),
+      sourceCell(statementSection, statementRow, "Total paid"),
+      sourceCell(statementSection, statementRow, "Tax due")
+    ];
+  });
+
+  return {
+    type: "combined-statement-history",
+    title: "Tax & Value History",
+    summary: sourceYearRange(rows),
+    columns: [
+      "Year",
+      "Statement",
+      ...statementTypeHeader(statementSection),
+      ...valuationColumns.map(column => column.label),
+      "Gross tax",
+      "Credits",
+      "Net tax",
+      "Total paid",
+      "Tax due"
+    ],
+    rows
+  };
+}
+
+function statementTypeHeader(section = {}) {
+  return sourceColumnIndex(section, "Type") >= 0 ? ["Type"] : [];
+}
+
+function statementTypeCell(section, row) {
+  return sourceColumnIndex(section, "Type") >= 0 ? [sourceCell(section, row, "Type")] : [];
+}
+
+function combinedValuationColumns(section = {}) {
+  const columns = section.columns || [];
+  const candidates = [
+    ["Land", "Land"],
+    ["Dwelling", "Dwelling"],
+    ["Building", "Building"],
+    ["Outbuilding", "Outbuilding"],
+    ["Other", "Other"],
+    ["Gross value", "Gross value"],
+    ["Total", "Gross value"]
+  ];
+
+  return candidates
+    .filter(([source]) => columns.some(column => column.toLowerCase() === source.toLowerCase()))
+    .map(([source, label]) => ({ source, label }))
+    .filter((column, index, all) => all.findIndex(item => item.label === column.label) === index);
+}
+
+function sourceCell(section, row, label) {
+  const index = sourceColumnIndex(section, label);
+  return index >= 0 ? row?.[index] : "";
+}
+
+function sourceColumnIndex(section, label) {
+  return (section.columns || []).findIndex(column => column.toLowerCase() === label.toLowerCase());
+}
+
+function sourceYearRange(rows = []) {
+  const years = rows
+    .map(row => Number(row?.[0]))
+    .filter(Number.isFinite)
+    .sort((a, b) => a - b);
+  if (!years.length) return "";
+  return years[0] === years.at(-1) ? `${years[0]}` : `${years[0]}-${years.at(-1)}`;
+}
+
+function sourceSectionRows(section = {}, data, recordCard) {
+  const rows = section.rows || [];
+  if (isTaxDistributionSection(section)) return taxDistributionSourceRows(data, recordCard);
+  if (!isResidentialDatasheetSection(section)) return rows;
+
+  return rows
+    .filter(row => hasDisplayValue(row?.[1]))
+    .map((row, index) => ({ row, index, order: residentialDatasheetRowOrder(row?.[0]) }))
+    .sort((a, b) => a.order - b.order || a.index - b.index)
+    .map(item => item.row);
+}
+
+function isTaxDistributionSection(section = {}) {
+  return `${section.title || ""}`.toLowerCase().includes("tax distribution");
+}
+
+function taxDistributionSourceRows(data, recordCard) {
+  const rows = latestTaxDistributionRows(data, recordCard);
+  if (!rows.length) return [];
+
+  return rows.map(row => [
+    row.authority,
+    formatNullableLevy(row.rate),
+    formatNullableMoney(row.amount, true),
+    percentOneDecimal.format(row.share)
+  ]);
+}
+
+function isResidentialDatasheetSection(section = {}) {
+  return `${section.title || ""}`.toLowerCase().includes("residential datasheet");
+}
+
+function residentialDatasheetRowOrder(label) {
+  const normalized = `${label || ""}`.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+  if (normalized === "zoning") return 10;
+  if (normalized === "year built") return 20;
+  if (normalized === "style") return 30;
+  if (normalized === "building size") return 40;
+  if (normalized === "basement size") return 50;
+  if (normalized === "min finish" || normalized === "minimum finish") return 60;
+  if (normalized === "part finish" || normalized === "partial finish") return 70;
+  if (normalized === "bedrooms") return 80;
+  if (normalized === "bathrooms") return 90;
+  if (normalized === "plumbing fixtures") return 100;
+  if (normalized === "heating cooling" || normalized === "heating and cooling") return 110;
+  if (normalized === "exterior") return 120;
+  if (/^garage \d+( size)?$/.test(normalized)) {
+    const [, number = "0", sizeSuffix = ""] = normalized.match(/^garage (\d+)( size)?$/) || [];
+    return 130 + (Number(number) * 2) + (sizeSuffix ? 1 : 0);
+  }
+  if (normalized === "quality") return 180;
+  if (normalized === "condition") return 190;
+
+  return 160;
+}
+
+function sourceSectionSummary(value) {
+  const summary = `${value || ""}`;
+  const yearRange = summary.match(/^\d{4}[-–]\d{4}/)?.[0];
+  if (yearRange) return yearRange;
+
+  const rowCount = summary.match(/^(\d+)\s+.+\s+rows?\b/i)?.[1];
+  if (rowCount) return rowCount;
+
+  return summary.replace(/\s+land value\b/i, "");
+}
+
+function isRepeatedSourceExtractSection(section) {
+  const title = `${section?.title || ""}`.toLowerCase();
+
+  return title.includes("gworks") && (
+    title.includes("assessed value")
+    || title.includes("tax levy")
+  )
+    || isEmptySalesInformationSection(section);
+}
+
+function isEmptySalesInformationSection(section = {}) {
+  const title = `${section.title || ""}`.toLowerCase();
+  if (!title.includes("sales information")) return false;
+
+  const summary = `${section.summary || ""}`.toLowerCase();
+  const rows = section.rows || [];
+  const rowText = rows.flat().filter(hasDisplayValue).join(" ").toLowerCase();
+
+  return !rows.length
+    || summary.includes("no sales")
+    || rowText.includes("no previous sales information");
 }
 
 function technicalCostModel(recordCard, data) {
@@ -2745,7 +3176,7 @@ function renderPropertyMovementSummary(data) {
     [
       "ETR movement",
       `${formatNullablePercent(firstEtr.etr)} to ${formatNullablePercent(lastEtr.etr)}`,
-      `${signedPoints(etrChange / etrYears)} average per year`,
+      `${signedPoints(etrChange / etrYears)} average / year`,
       `${firstEtr.year}-${lastEtr.year} finalized`
     ]
   ];

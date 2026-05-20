@@ -17,6 +17,7 @@ import {
 } from "./market-stats.js";
 import { getMetricSignal } from "./metric-signals.js";
 import { sortHistoryAscending } from "./calculations/history.js";
+import { latestTaxDistributionRows } from "./calculations/tax.js";
 import { renderGroupedTreemap } from "./charts/treemap.js";
 import { escapeHtml } from "./utils/html.js";
 
@@ -2130,19 +2131,33 @@ function renderMarketNarrative(selected, summary, classStats, medianRange, stand
   const groupText = selected?.label ?? "Selected group";
   const groupLabel = isParcelGroup ? `${groupKind}` : "Selected view";
   const rows = [
-    [groupLabel, groupText],
-    ["Qualified sales", integer.format(Number(selected?.count ?? 0))],
-    ["Median ratio", `${formatRatio(selected?.median)}; county ${formatRatio(summary?.median)}`],
-    ["COD", `${formatRatio(selected?.cod)}; county ${formatRatio(summary?.cod)}`],
-    ["PRD", `${formatRatio(selected?.prd)}; county ${formatRatio(summary?.prd)}`]
+    [groupLabel, groupText, summary?.label ?? "Countywide"],
+    ["Qualified sales", integer.format(Number(selected?.count ?? 0)), integer.format(Number(summary?.count ?? 0))],
+    ["Median ratio", formatRatio(selected?.median), formatRatio(summary?.median)],
+    ["COD", formatRatio(selected?.cod), formatRatio(summary?.cod)],
+    ["PRD", formatRatio(selected?.prd), formatRatio(summary?.prd)]
   ];
 
-  narrative.innerHTML = rows.map(([label, value]) => `
-    <li>
-      <span>${escapeHtml(label)}</span>
-      <strong>${escapeHtml(value)}</strong>
-    </li>
-  `).join("");
+  narrative.innerHTML = `
+    <table class="market-compare-table">
+      <thead>
+        <tr>
+          <th scope="col">Measure</th>
+          <th scope="col">Selected</th>
+          <th scope="col">Countywide</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(([label, selectedValue, countyValue]) => `
+          <tr>
+            <th scope="row">${escapeHtml(label)}</th>
+            <td>${escapeHtml(selectedValue)}</td>
+            <td>${escapeHtml(countyValue)}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
 }
 
 function countywideTotalForClass(marketPositionData, classKey = "residential") {
@@ -3468,35 +3483,20 @@ function levyTreemapLabel(group, label) {
   return label;
 }
 
-function latestFinalTaxAmount(data) {
-  const finalYear = data.latestFinalTaxYear;
-  const finalRow = data.taxpayerHistory?.find(row =>
-    row.year === finalYear && hasDataValue(row.taxes)
-  );
-
-  return finalRow?.taxes
-    ?? data.snapshotModel?.viewModels?.taxes?.latestFinalTax
-    ?? null;
-}
-
-export function buildDistributionChart(data, schoolDistrictColors) {
-  const rows = (data.latestFinalLevyComponents || []).filter(row => hasDataValue(row.rate) && row.rate > 0);
-  const total = rows.reduce((sum, row) => sum + row.rate, 0);
-  const latestTaxesPaid = latestFinalTaxAmount(data);
+export function buildDistributionChart(data, schoolDistrictColors, recordCard) {
+  const rows = latestTaxDistributionRows(data, recordCard)
+    .filter(row => hasDataValue(row.amount) && row.amount > 0);
   const schoolDistrictColor = findSchoolDistrictColor(data, schoolDistrictColors)?.map_color;
   const items = rows
     .map((row, index) => {
       const group = levyGroupLabel(row.group);
-      const paidAmount = total && hasDataValue(latestTaxesPaid)
-        ? (row.rate / total) * latestTaxesPaid
-        : null;
 
       return {
         id: `${group}-${index}`,
         group,
-        label: levyTreemapLabel(group, row.description || group),
-        value: row.rate,
-        amount: paidAmount,
+        label: levyTreemapLabel(group, row.description || row.authority || group),
+        value: row.amount,
+        amount: row.amount,
         color: levyColorForGroup(group, schoolDistrictColor)
       };
     })
@@ -3509,6 +3509,7 @@ export function buildDistributionChart(data, schoolDistrictColors) {
     colorAlpha,
     formatAmount: value => hasDataValue(value) ? moneyCents.format(value) : "",
     formatShare: value => percent.format(value),
+    ariaLabel: "Latest tax bill distribution chart",
     layout: "priority-stack"
   });
 }
