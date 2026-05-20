@@ -70,7 +70,7 @@ function renderDemographicCards(contextData) {
   container.innerHTML = cards.map(([label, row]) => {
     const display = formatCardValue(row);
     return `
-    <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+    <div class="review-card-muted">
       <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
       <p class="mt-1 text-lg font-bold text-slate-700">${display.value}</p>
       <p class="mt-1 text-xs text-slate-500">${display.note}</p>
@@ -124,7 +124,7 @@ function buildCountyValueMixChart(contextData) {
   if (!notes) return;
 
   notes.innerHTML = categories.map(([label, value], index) => `
-    <div class="rounded-lg bg-slate-50 px-3 py-2 ring-1 ring-slate-200">
+    <div class="review-note review-note-compact">
       <div class="flex items-center gap-2">
         <span class="h-2.5 w-2.5 rounded-full" style="background-color: ${colors[index]};"></span>
         <p class="font-semibold leading-5 text-slate-700">${label}</p>

@@ -374,7 +374,7 @@ export function buildTaxBurdenPattern(data) {
   ];
 
   cards.innerHTML = cardItems.map(item => `
-    <div class="tax-pattern-card grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+    <div class="tax-pattern-card review-note grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
       <div class="min-w-0">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${item.label}</p>
         <p class="mt-1 text-2xl font-bold text-slate-700">${item.value}</p>
@@ -2500,7 +2500,7 @@ function renderMarketPriceSummary(selected, countywide) {
 
   container.innerHTML = rows.map(row => `
     <div
-      class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200"
+      class="review-card-muted"
       role="group"
       aria-label="${escapeHtml(`${row.label}: ${row.value}. Countywide: ${row.countyValue}.`)}"
     >
@@ -3371,7 +3371,7 @@ export function buildCtlSummary(data, ctlData) {
     const rateMovement = `${formatApproximateRatePercent(countyRows[0].averageTaxRate * 100)} to ${formatApproximateRatePercent(countyRows.at(-1).averageTaxRate * 100)}`;
 
     countySummary.innerHTML = `
-      <div class="county-growth-pair rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 md:col-span-2 lg:col-span-3">
+      <div class="county-growth-pair review-card-muted md:col-span-2 lg:col-span-3">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Value growth</p>
           <p class="mt-1 text-lg font-bold text-slate-700">${valueGrowth}</p>
@@ -3381,7 +3381,7 @@ export function buildCtlSummary(data, ctlData) {
           <p class="mt-1 text-lg font-bold text-slate-700">${taxGrowth}</p>
         </div>
       </div>
-      <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
+      <div class="review-card-muted lg:col-span-2">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Rate movement</p>
         <p class="mt-1 text-lg font-bold text-slate-700">${rateMovement}</p>
       </div>
@@ -3412,7 +3412,7 @@ export function buildCtlSummary(data, ctlData) {
     ];
 
     stateSummary.innerHTML = stateCards.map(card => `
-      <div class="rounded-xl bg-white p-4 ring-1 ring-slate-200">
+      <div class="statewide-summary-card review-card">
         <div class="flex items-center gap-2">
           <span class="chart-legend-dot inline-block" style="background-color: ${card.color};"></span>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-700">${card.label}</p>

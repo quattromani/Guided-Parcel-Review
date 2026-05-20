@@ -41,11 +41,13 @@
   --accent-primary-dark: var(--color-blue-dark);
   --accent-primary-soft: var(--color-blue-soft);
   --radius-container-lg: 0.5rem;
-  --radius-container-md: 0.375rem;
-  --radius-container-sm: 0.25rem;
-  --step-rail-shadow: 0 8px 18px rgb(var(--brand-ink) / 0.08);
-  --fixed-footer-reveal-space: 28rem;
-  --footer-inline-gutter: 1rem;
+  --radius-container-md: var(--radius-container-lg);
+  --radius-container-sm: var(--radius-container-lg);
+  --surface-pad: 1.25rem;
+  --surface-pad-compact: 1rem;
+  --surface-pad-spacious: 1.5rem;
+  --surface-shadow: 0 1px 2px rgb(var(--brand-ink) / 0.05), inset 0 0 0 1px rgb(var(--border-muted));
+  --surface-muted-shadow: inset 0 0 0 1px rgb(var(--border-muted));
 }
 
 /*
@@ -78,48 +80,9 @@ body {
 
 body > main {
   background: rgb(var(--color-slate-100));
-  margin-bottom: var(--fixed-footer-reveal-space);
   overflow: visible;
   position: relative;
   z-index: 2;
-}
-
-body > main::before {
-  background: linear-gradient(
-    to bottom,
-    rgb(var(--brand-ink) / 0.10) 0,
-    rgb(var(--brand-ink) / 0.10) 1px,
-    rgb(255 255 255 / 0.58) 1px,
-    rgb(255 255 255 / 0.58) 2px
-  );
-  bottom: 0;
-  content: "";
-  height: 2px;
-  left: 0;
-  pointer-events: none;
-  position: absolute;
-  right: 0;
-  z-index: 3;
-}
-
-body > main::after {
-  background: linear-gradient(
-    to bottom,
-    rgb(var(--color-slate-100) / 0) 0%,
-    rgb(var(--color-slate-100) / 0.08) 18%,
-    rgb(var(--color-slate-100) / 0.42) 48%,
-    rgb(var(--color-slate-100) / 0.82) 76%,
-    rgb(var(--color-slate-100)) 100%
-  );
-  bottom: 0;
-  content: "";
-  filter: drop-shadow(0 14px 32px rgb(var(--brand-ink) / 0.10));
-  height: 62%;
-  left: 0;
-  pointer-events: none;
-  position: absolute;
-  right: 0;
-  z-index: -1;
 }
 
 body > main.mx-auto.max-w-7xl {
@@ -147,38 +110,6 @@ body > main.mx-auto.max-w-7xl {
 
 body > footer[aria-label="Site footer"] {
   background: rgb(var(--color-slate-100));
-  bottom: 0;
-  left: 50%;
-  max-height: min(calc(100vh - 2rem), var(--fixed-footer-reveal-space));
-  max-width: 80rem;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  position: fixed;
-  transform: translateX(-50%);
-  width: 100%;
-  z-index: 1;
-}
-
-@media (min-width: 640px) {
-  :root {
-    --footer-inline-gutter: 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  :root {
-    --footer-inline-gutter: 2rem;
-  }
-}
-
-@media (max-width: 639px) {
-  :root {
-    --fixed-footer-reveal-space: 23rem;
-  }
-
-  body > footer[aria-label="Site footer"] {
-    max-height: min(calc(100vh - 1rem), var(--fixed-footer-reveal-space));
-  }
 }
 
 :where(main, footer, header, section, article, aside, nav, div, dl, form, fieldset) {
@@ -200,6 +131,46 @@ body > footer[aria-label="Site footer"] {
 :where(h1, h2, h3, h4, h5, h6, p, dt, dd, label, summary, li) {
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+/*
+  Shell surface contract
+  - review-card: primary white route/card surface.
+  - review-card-muted: inset secondary surface inside a route card.
+  - Full-width/sticky rails opt out with explicit 0 radius rules below.
+*/
+.review-card,
+.review-card-muted {
+  border-radius: var(--radius-container-lg);
+  max-width: 100%;
+  min-width: 0;
+}
+
+.review-card {
+  background: rgb(var(--surface-card));
+  box-shadow: var(--surface-shadow);
+  padding: var(--surface-pad);
+}
+
+.review-card-muted {
+  background: rgb(var(--surface-muted));
+  box-shadow: var(--surface-muted-shadow);
+  padding: var(--surface-pad-compact);
+}
+
+.review-card-spacious {
+  padding: var(--surface-pad-spacious);
+}
+
+.review-note {
+  background: rgb(var(--surface-muted));
+  border-radius: var(--radius-container-lg);
+  box-shadow: var(--surface-muted-shadow);
+  padding: 0.75rem;
+}
+
+.review-note-compact {
+  padding: 0.5rem 0.75rem;
 }
 
 canvas {
@@ -546,10 +517,10 @@ body.property-switcher-guidance-active .property-switcher-empty .property-switch
 }
 
 .orientation-modal-body p strong {
-  color: rgb(var(--color-slate-700));
-  display: inline-block;
-  font-weight: 800;
-  margin-top: 0.2rem;
+  color: inherit;
+  display: inline;
+  font-weight: inherit;
+  margin-top: 0;
 }
 
 .orientation-acknowledgment {
@@ -829,7 +800,7 @@ table thead th[class] + th[class] {
 }
 
 .metric-card {
-  border-radius: 0.75rem;
+  border-radius: var(--radius-container-lg);
   background: rgb(var(--surface-muted));
   padding: 0.75rem;
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
@@ -837,7 +808,7 @@ table thead th[class] + th[class] {
 
 .movement-card {
   background: rgb(var(--surface-muted));
-  border-radius: 0.75rem;
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   container-type: inline-size;
   display: grid;
@@ -1013,7 +984,7 @@ table thead th[class] + th[class] {
 }
 
 .details-card {
-  border-radius: 0.75rem;
+  border-radius: var(--radius-container-lg);
   background: rgb(var(--surface-muted));
   padding: 0.75rem;
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
@@ -1197,17 +1168,6 @@ table thead th[class] + th[class] {
 }
 
 @media (max-width: 640px) {
-  .guide-review-header {
-    gap: 0.18rem;
-    padding: max(0.28rem, env(safe-area-inset-top)) 1rem 0.36rem;
-  }
-
-  .property-context-bar {
-    margin-top: calc(-1 * max(0.42rem, env(safe-area-inset-top)));
-    padding-bottom: 0.34rem;
-    padding-top: 0.34rem;
-  }
-
   .property-context-line {
     font-size: 0.78rem;
   }
@@ -1338,7 +1298,7 @@ table thead th[class] + th[class] {
   aspect-ratio: 16 / 10;
   background: #f8fafc;
   border: 1px dashed #cbd5e1;
-  border-radius: 1rem;
+  border-radius: var(--radius-container-lg);
   color: #64748b;
   display: flex;
   flex-direction: column;
@@ -1467,12 +1427,12 @@ table thead th[class] + th[class] {
 }
 
 .table-shell {
-  border-radius: 0 0 0.75rem 0.75rem;
+  border-radius: 0 0 var(--radius-container-lg) var(--radius-container-lg);
 }
 
 .table-clip,
 .overflow-x-auto.rounded-xl:has(> table) {
-  border-radius: 0.75rem;
+  border-radius: var(--radius-container-lg);
 }
 
 .table-shell table,
@@ -1632,7 +1592,7 @@ table thead th[class] + th[class] {
 
 .assessment-rollup-table {
   background: white;
-  border-radius: 0.75rem;
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   overflow: hidden;
 }
@@ -1697,7 +1657,7 @@ table thead th[class] + th[class] {
   font-weight: 850;
 }
 
-@media (min-width: 760px) {
+@media (min-width: 1024px) {
   .assessment-rollup-summary {
     align-items: start;
     grid-template-columns: minmax(0, 0.85fr) minmax(18rem, 1fr);
@@ -1765,7 +1725,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .dwelling-model-panel {
   background: white;
-  border-radius: 0.75rem;
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   overflow: hidden;
 }
@@ -1837,7 +1797,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .dwelling-model-rows {
   background: white;
-  border-radius: 0.65rem;
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   overflow: hidden;
 }
@@ -2445,13 +2405,14 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .guide-review-header {
   background: white;
   border-bottom: 1px solid rgb(var(--border-muted));
+  border-radius: var(--radius-container-lg);
   box-shadow: none;
   display: grid;
   gap: 0.28rem;
   margin-bottom: 1.25rem;
   margin-left: calc(50% - (var(--layout-viewport-width, 100vw) / 2));
   margin-right: calc(50% - (var(--layout-viewport-width, 100vw) / 2));
-  padding: max(0.42rem, env(safe-area-inset-top)) 1rem 0.46rem;
+  padding: 0;
   position: sticky;
   top: 0;
   transition: border-radius 0.18s ease, box-shadow 0.18s ease, margin 0.18s ease, padding 0.18s ease, top 0.18s ease;
@@ -2464,8 +2425,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .guide-review-header.guided-path-nav-stuck {
   background: white;
-  border-radius: 0 0 calc(var(--radius-container-lg) / 2) calc(var(--radius-container-lg) / 2);
-  box-shadow: var(--step-rail-shadow);
+  border-radius: 0;
 }
 
 .guide-review-header.guided-path-nav-stuck .property-context-bar {
@@ -2478,7 +2438,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   background: transparent !important;
   border-color: transparent !important;
   border-left-color: transparent !important;
-  border-radius: 0 !important;
+  border-radius: var(--radius-container-lg) !important;
   border-right-color: transparent !important;
   border-top-color: transparent !important;
   box-shadow: none !important;
@@ -2773,14 +2733,14 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 @media (min-width: 641px) {
   .guide-review-header {
-    border-radius: calc(var(--radius-container-lg) / 2);
+    border-radius: var(--radius-container-lg);
     margin-left: 0;
     margin-right: 0;
     padding: 0.5rem 0.75rem 0.6rem;
   }
 
   .property-context-bar {
-    border-radius: calc(var(--radius-container-lg) / 2) calc(var(--radius-container-lg) / 2) 0 0;
+    border-radius: var(--radius-container-lg) var(--radius-container-lg) 0 0;
     margin-left: -0.75rem;
     margin-right: -0.75rem;
     margin-top: -0.5rem;
@@ -2792,7 +2752,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .guided-path-nav {
     --guided-step-slot: minmax(4.8rem, 1fr);
     border-left-color: transparent !important;
-    border-radius: 0 !important;
     border-right-color: transparent !important;
     margin-left: 0;
     margin-right: 0;
@@ -2899,7 +2858,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .ooda-decision-card {
   background: white;
-  border-radius: 1rem;
+  border-radius: var(--radius-container-lg);
   box-shadow: 0 1px 2px rgb(var(--brand-ink) / 0.06), inset 0 0 0 1px rgb(var(--border-muted));
   padding: 1.25rem;
 }
@@ -3395,7 +3354,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .assessment-month-switcher {
   background: rgb(var(--color-slate-50));
-  border-radius: 1rem;
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   display: grid;
   gap: 0.18rem;
@@ -3557,7 +3516,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .ooda-inline-note {
   background: rgb(var(--color-secondary-soft));
-  border-radius: 0.875rem;
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--color-secondary) / 0.20);
   margin-top: 1rem;
   padding: 1rem;
@@ -3565,7 +3524,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .market-compare-summary {
   background: rgb(var(--surface-muted));
-  border-radius: var(--radius-container);
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   padding: 1rem;
 }
@@ -3835,7 +3794,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .tax-history-rate-panel {
   align-self: start;
   background: rgb(var(--color-slate-50));
-  border-radius: 0.75rem;
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   padding: 1rem;
 }
@@ -3965,7 +3924,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
   .equalization-support-disclosure .mobile-support-toggle {
     background: rgb(var(--surface-muted));
-    border-radius: 0.75rem;
+    border-radius: var(--radius-container-lg);
     box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
     color: rgb(var(--color-secondary));
     display: flex;
@@ -3985,7 +3944,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   }
 
   .equalization-support-disclosure .overflow-x-auto {
-    border-radius: 0.65rem;
+    border-radius: var(--radius-container-lg);
   }
 
   .equalization-support-table {
@@ -4749,7 +4708,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .checklist-item {
   align-items: center;
   background: rgb(var(--surface-muted));
-  border-radius: 0.75rem;
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   color: rgb(var(--color-slate-700));
   display: flex;
@@ -4937,7 +4896,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .levy-treemap-panel {
   background: rgb(var(--color-slate-50));
-  border-radius: 0.75rem;
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   padding: 1rem;
 }
@@ -4945,7 +4904,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .tax-levy-table-panel {
   align-self: start;
   background: rgb(var(--color-slate-50));
-  border-radius: 0.75rem;
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   min-width: 0;
   padding: 1rem;
@@ -5150,7 +5109,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     margin-bottom: 1.25rem;
     margin-left: calc(50% - (var(--layout-viewport-width, 100vw) / 2));
     margin-right: calc(50% - (var(--layout-viewport-width, 100vw) / 2));
-    padding: 0 var(--guided-shell-gutter) 0.9rem;
+    padding: 0;
   }
 
   .guide-review-header.guided-path-nav-stuck {
@@ -5161,24 +5120,38 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
   .property-context-bar {
     border-radius: 0 !important;
-    margin-left: calc(-1 * var(--guided-shell-gutter));
-    margin-right: calc(-1 * var(--guided-shell-gutter));
+    margin-left: 0;
+    margin-right: 0;
     margin-top: 0;
     padding-left: var(--guided-shell-gutter);
     padding-right: var(--guided-shell-gutter);
-    width: calc(100% + (var(--guided-shell-gutter) * 2));
+    width: 100%;
   }
 
   .guided-path-nav {
     background: rgb(var(--color-slate-100)) !important;
-    border-radius: 0 0 var(--radius-container-lg) var(--radius-container-lg) !important;
+    border-radius: 0 !important;
     margin-left: 0;
     margin-right: 0;
     padding: 0.7rem 1rem 0.85rem !important;
+    position: relative;
   }
 
-  .guide-review-header.guided-path-nav-stuck .guided-path-nav {
-    box-shadow: var(--step-rail-shadow) !important;
+  .guided-path-nav::after {
+    background: linear-gradient(
+      to bottom,
+      rgb(var(--brand-ink) / 0.16) 0,
+      rgb(var(--brand-ink) / 0.16) 1px,
+      rgb(255 255 255 / 0.72) 1px,
+      rgb(255 255 255 / 0.72) 2px
+    );
+    bottom: 0;
+    content: "";
+    height: 2px;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
   }
 
   .mobile-review-canvas {
@@ -5613,7 +5586,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .pressure-card {
   background: rgb(var(--surface-muted));
-  border-radius: 0.75rem;
+  border-radius: var(--radius-container-lg);
   padding: 1rem;
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
 }
@@ -5656,10 +5629,14 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
 .value-tax-history-card {
   background: rgb(var(--surface-muted));
-  border-radius: var(--radius-container);
+  border-radius: var(--radius-container-lg);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   min-width: 0;
   padding: 1rem;
+}
+
+.value-history-content {
+  margin-top: 0;
 }
 
 .value-tax-history-table tbody tr:not(.pending-data-row) > td {
@@ -6197,7 +6174,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 #marketPositionScatter {
-  border-radius: 0.25rem;
+  border-radius: var(--radius-container-lg);
 }
 
 #marketPositionScatter:focus {
@@ -6333,12 +6310,15 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     line-height: 1.55;
   }
 
+  .mobile-review-canvas > [data-guided-panel] > .review-card,
   .mobile-review-canvas > [data-guided-panel] > .rounded-lg,
   .mobile-review-canvas > [data-guided-panel] > .advanced-context-card,
   .mobile-review-canvas > [data-guided-panel] > .conceptual-interstitial,
   .mobile-review-canvas > [data-guided-panel] > .ooda-decision-card,
   .mobile-review-canvas > [data-guided-panel] > .civic-summary-shell,
+  .mobile-review-canvas > [data-guided-panel] > section > .review-card,
   .mobile-review-canvas > [data-guided-panel] > section > .rounded-lg,
+  .data-split-view > .review-card,
   .data-split-view > .rounded-lg {
     padding: 1rem !important;
   }
@@ -6516,36 +6496,8 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   }
 }
 
-.rounded-xl {
-  border-radius: var(--radius-container-md);
-}
-
-.rounded-lg {
-  border-radius: var(--radius-container-sm);
-}
-
-footer > section.rounded-lg {
-  border-radius: 0 0 calc(var(--radius-container-lg) / 2) calc(var(--radius-container-lg) / 2);
-}
-
-footer > section[data-footer-resource-shell] {
-  margin-left: calc(-1 * var(--footer-inline-gutter));
-  margin-right: calc(-1 * var(--footer-inline-gutter));
-  padding-left: var(--footer-inline-gutter);
-  padding-right: var(--footer-inline-gutter);
-  width: calc(100% + (var(--footer-inline-gutter) * 2));
-}
-
-@media (min-width: 1024px) {
-  footer > section[data-footer-resource-shell] {
-    padding-bottom: 0;
-  }
-}
-
-@media (min-width: 1300px) {
-  .guided-path-nav.rounded-lg {
-    border-radius: calc(var(--radius-container-lg) / 2);
-  }
+footer > [data-footer-resource-shell] {
+  border-radius: var(--radius-container-lg);
 }
 
 .advanced-context-card,
@@ -6570,11 +6522,11 @@ footer > section[data-footer-resource-shell] {
 }
 
 .dwelling-model-rows {
-  border-radius: 0.325rem;
+  border-radius: var(--radius-container-lg);
 }
 
 .ooda-inline-note {
-  border-radius: 0.4375rem;
+  border-radius: var(--radius-container-lg);
 }
 
 .assessment-help-tooltip,

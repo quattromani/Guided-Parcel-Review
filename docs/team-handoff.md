@@ -20,6 +20,7 @@ Important current boundaries:
 - Rendering and guided routes: `src/render.js`, `src/routes/`, `src/config/taxpayer-journey.js`
 - Charts and county/equalization context: `src/charts.js`, `src/charts/`
 - Reports: `src/reports/`, `src/assessors-report.js`
+- Visual shell contract: `docs/style-shell-contract.md`
 - Lightweight contract checks: `scripts/validate-data-contracts.js`
 - Schema placeholders: `docs/data-contracts/`
 
@@ -132,6 +133,7 @@ Stable frontend concepts:
 - Chart rendering: `src/charts.js`
 - Shared formatting/display helpers: `src/format.js`, `src/utils/`
 - Design tokens and responsive rules: `src/styles.css`
+- Shell surface and breakpoint contract: `docs/style-shell-contract.md`
 
 Frontend placeholders:
 
@@ -139,6 +141,10 @@ Frontend placeholders:
 - Framework migration plan if React/Vue/Svelte/etc. is introduced.
 - Chart/table alternative text strategy.
 - Regression screenshots for mobile, tablet portrait, tablet landscape, and desktop.
+
+Frontend implementation rule:
+
+- Prefer `review-card`, `review-card-muted`, `review-card-spacious`, and `review-note` over repeated Tailwind surface bundles. Keep pills, buttons, circular controls, and step markers on their own shape rules.
 
 ## QA / Testing Team
 
@@ -162,6 +168,7 @@ Suggested checks:
 - Verify charts render nonblank and use the expected year range.
 - Verify modals open/close by click, keyboard, and touch.
 - Verify downloadable reports generate without runtime errors.
+- Verify shell breakpoints against `docs/style-shell-contract.md`: desktop, tablet landscape, tablet portrait, and phone.
 
 ## Design / UX Team
 
@@ -170,6 +177,9 @@ The product language should remain neutral, explanatory, and sequential. The int
 Current design rules worth preserving:
 
 - Completed step rail uses green; active step uses blue.
+- Primary cards, inset cards, footer containers, and table shells use the 0.5rem container radius; pills and buttons keep pill/circle radii.
+- The body/main/footer background remains light slate. The property identity bar remains brand ink and stretches full width only when the shell enters the below-desktop layout.
+- The footer is normal scroll content, while the below-desktop calendar stays collapsed behind `See important dates`.
 - Value/tax/equalization cards avoid judgment-color backgrounds unless the meaning is explicitly neutral.
 - Dense operational screens should stay organized and scannable, not landing-page-like.
 - Mobile/tablet portrait layouts may stack charts and tables to preserve comprehension.
@@ -272,5 +282,6 @@ Until those playbooks exist, start with:
 - `README.md`
 - `data/README.md`
 - `docs/data-dictionary.md`
+- `docs/style-shell-contract.md`
 - `docs/vendor-handoff.md`
 - `scripts/validate-data-contracts.js`

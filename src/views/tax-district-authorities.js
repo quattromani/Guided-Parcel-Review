@@ -39,7 +39,7 @@ export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
   ];
 
   summary.innerHTML = cardPairs.map(pair => `
-    <div class="metric-pair-card rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+    <div class="metric-pair-card review-card-muted">
       ${pair.map(card => `
         <div>
           <p class="metric-pair-card-label text-xs font-semibold uppercase tracking-wide">${escapeHtml(card.label)}</p>

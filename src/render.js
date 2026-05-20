@@ -303,7 +303,7 @@ function renderTaxHistoryShell() {
   const container = document.getElementById("tax-history-panel");
   if (!container) return;
 
-  container.className = "tax-history-pair grid gap-6 rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:grid-cols-[minmax(0,1.85fr)_minmax(320px,1fr)]";
+  container.className = "tax-history-pair review-card grid gap-6 lg:grid-cols-[minmax(0,1.85fr)_minmax(320px,1fr)]";
   container.innerHTML = `
     <div id="taxEquationWaterfall" class="tax-equation-waterfall lg:col-span-2" aria-label="Tax statement calculation"></div>
 
@@ -430,7 +430,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
           <tbody id="equalizationSalePriceRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
         </table>
       </div>
-      <div class="equalization-sales-chart-panel rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+      <div class="equalization-sales-chart-panel review-card-muted">
         <p id="equalizationSalePriceChartTitle" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sales distribution</p>
         <p id="equalizationSalePriceChartNote" class="mt-1 text-sm leading-5 text-slate-600">Qualified sales by price band, including empty upper bands.</p>
         <div id="equalizationSalePriceChartLegend" class="chart-disc-legend mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
@@ -444,7 +444,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
   const localPosition = `
     <section class="market-local-split grid gap-6 lg:grid-cols-5">
       <div class="market-position-support lg:col-span-3">
-        <article id="market-position-panel" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+        <article id="market-position-panel" class="review-card-muted">
           <div class="market-position-heading">
             <h4 class="text-xl font-bold text-slate-700">Compare it with nearby groups</h4>
             <span id="marketAreaContextPill" class="equalization-context-pill" aria-live="polite"></span>
@@ -468,7 +468,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
   const unifiedView = `
     <section class="data-split-view equalization-unified-section grid gap-6 lg:grid-cols-5">
       <div class="equalization-chart-support lg:col-span-3">
-        <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+        <article class="review-card-muted">
           <div class="equalization-chart-heading">
             <h3 class="text-lg font-bold text-slate-700">How do the assessment measures come together?</h3>
             <span id="assessmentClassContextPill" class="equalization-context-pill" aria-live="polite"></span>
@@ -480,7 +480,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
         </article>
         <p id="assessmentAccuracyConvergenceNote" class="equalization-unified-note mt-3 text-sm text-slate-600">COD, PRD, COV, and level of value are normalized to their own bands so their relative movement can be read together.</p>
       </div>
-      <article class="equalization-year-table-panel rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
+      <article class="equalization-year-table-panel review-card-muted lg:col-span-2">
         <details class="mobile-support-disclosure equalization-support-disclosure" data-mobile-support${supportOpen}>
           <summary class="mobile-support-toggle">
             <span>See reported values table</span>
@@ -1149,7 +1149,7 @@ function reviewCategoryCards() {
     const examplesId = `${groupName}-examples`;
 
     return `
-      <fieldset class="rounded-xl bg-white p-4 ring-1 ring-slate-200">
+      <fieldset class="review-card">
         <legend class="text-base font-bold text-slate-700">${escapeHtml(category.title)}</legend>
         <p class="mt-2 text-sm leading-6 text-slate-600">${escapeHtml(category.description)}</p>
         <p id="${examplesId}" class="mt-2 text-xs leading-5 text-slate-500">
@@ -1209,7 +1209,7 @@ function renderDiscrepancyForm(data, recordCard) {
           ["Property class", data.classification.propertyClass],
           ["County", `${data.parcel.countyName} County`]
         ].map(([label, value]) => `
-          <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+          <div class="review-note">
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
             <p class="mt-1 text-sm font-semibold leading-5 text-slate-700">${escapeHtml(value)}</p>
           </div>
@@ -1246,7 +1246,7 @@ function renderDiscrepancyForm(data, recordCard) {
             <input id="discrepancySenderName" name="senderName" type="text" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Your name" />
           </div>
 
-          <fieldset class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+          <fieldset class="review-note">
             <legend class="text-sm font-semibold text-slate-700">Preferred contact method</legend>
             <div class="mt-2 space-y-2 text-sm text-slate-700">
               ${[
@@ -2125,7 +2125,7 @@ function landInformation(data, recordCard) {
         <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Land cutoff schedule</p>
         <div class="grid gap-2 sm:grid-cols-3">
           ${landModel.cutoffSchedule.map(row => `
-            <div class="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200">
+            <div class="review-note">
               <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Cutoff ${Number(row.cutoff).toLocaleString()}</p>
               <p class="mt-1 font-semibold text-slate-700">${row.value.toFixed(3)}</p>
             </div>
@@ -3481,7 +3481,7 @@ function renderSources(data) {
   if (!container) return;
 
   container.innerHTML = data.sources.map(source => `
-    <div class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+    <div class="review-note">
       <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${source.label}</p>
       <p class="mt-1 font-medium text-slate-700">${source.value}</p>
     </div>

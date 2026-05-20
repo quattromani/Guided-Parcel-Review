@@ -12,6 +12,21 @@
       window.location.replace(`http://localhost:4173/${window.location.search}${window.location.hash}`);
     }
   </script>
+  <script>
+    window.tailwind = {
+      config: {
+        theme: {
+          extend: {
+            borderRadius: {
+              lg: "var(--radius-container-lg)",
+              xl: "var(--radius-container-lg)",
+              "2xl": "var(--radius-container-lg)"
+            }
+          }
+        }
+      }
+    };
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="src/styles.css?v=trim-guided-path-copy" />
@@ -24,11 +39,11 @@
       <div class="guide-review-header">
         <section id="propertyViewContext" class="hidden"></section>
 
-        <nav aria-label="Guided parcel review path" class="guided-path-nav overflow-x-auto rounded-lg bg-white px-3 py-3 shadow-sm ring-1 ring-slate-200">
+        <nav aria-label="Guided parcel review path" class="guided-path-nav">
           <div class="guided-progress-shell">
             <p class="guided-progress-status" data-guided-progress-status>You're reviewing <strong>Property Record</strong></p>
             <div class="guided-path-track">
-              <div id="guidedPathTabs" class="relative z-10 flex min-w-max gap-4">
+              <div id="guidedPathTabs">
                 <button type="button" data-guided-tab="property-record" class="guided-step" aria-selected="false"><span>1</span>Property Record</button>
                 <button type="button" data-guided-tab="what-changed" class="guided-step" aria-selected="false"><span>2</span>What Changed</button>
                 <button type="button" data-guided-tab="valuation-detail" class="guided-step" aria-selected="false"><span>3</span>Value Detail</button>
@@ -44,14 +59,14 @@
       </div>
 
     <section data-guided-panel="your-property" class="hidden space-y-6">
-      <header id="pageHeader" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-200"></header>
+      <header id="pageHeader" class="review-card review-card-spacious"></header>
 
       <aside class="guided-transition">
         <p>Start with the record facts. These details anchor the value, market, equalization, and tax views that follow.</p>
       </aside>
 
       <section class="grid gap-6 lg:grid-cols-12">
-        <article class="property-details-panel rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-12">
+        <article class="property-details-panel review-card lg:col-span-12">
           <h2 class="text-xl font-bold text-slate-700">Property details</h2>
           <p class="mt-1 text-sm text-slate-600">These are the property details used to place the parcel in later value and tax views. Confirming them first makes the later numbers easier to understand.</p>
           <dl id="propertyDetails" class="property-details-layout mt-4"></dl>
@@ -82,13 +97,13 @@
       </aside>
 
       <section id="assessment-notice" class="grid gap-6 lg:grid-cols-5">
-        <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-2">
+        <article class="review-card lg:col-span-2">
           <h2 class="text-xl font-bold text-slate-700">Prior & Current Assessments</h2>
             <p class="mt-1 text-sm text-slate-600">Review land, building, other improvements, and total value before connecting those numbers to taxes.</p>
           <div id="assessmentNoticeSummary" class="mt-4"></div>
           <p data-assessment-snapshot-source class="chart-source"></p>
         </article>
-        <article id="property-movement-summary" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200 lg:col-span-3">
+        <article id="property-movement-summary" class="review-card lg:col-span-3">
           <div id="propertyMovementSummary"></div>
         </article>
       </section>
@@ -97,7 +112,7 @@
         <p>Now compare the current change with prior years.</p>
       </aside>
 
-      <section id="value-tax-history-panel" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200"></section>
+      <section id="value-tax-history-panel" class="review-card"></section>
 
       <aside class="guided-transition">
         <p>With the change and history in view, place the property in its local market context.</p>
@@ -114,7 +129,7 @@
         <p>Start with the tax district and levy mix. The chart shows where the latest bill is allocated along with the year-by-year tax history.</p>
       </aside>
 
-      <article id="tax-district-authorities" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <article id="tax-district-authorities" class="review-card">
         <h2 class="sr-only">Tax district and levy distribution</h2>
         <div id="taxDistrictAuthoritySummary" class="grid gap-6 lg:grid-cols-2"></div>
         <section id="tax-distribution" class="mt-4"></section>
@@ -131,11 +146,11 @@
         <p>Now isolate the net-bill pattern. This view shows where the bill peaked and how the latest statement compares with the period average.</p>
       </aside>
 
-      <article id="equalization-pressure" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <article id="equalization-pressure" class="review-card">
         <h2 class="sr-only">Tax bill pattern</h2>
         <div class="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]">
           <div>
-            <div class="h-80 rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
+            <div class="review-card-muted h-80">
               <canvas id="taxBurdenPatternChart"></canvas>
             </div>
             <p class="mt-2 text-xs leading-5 text-slate-500">Dashed line: period average. Points use statement net tax after credits.</p>
@@ -150,12 +165,12 @@
         <p>Step back to the county baseline. Countywide value, tax, and rate movement show the broader tax context before the optional statewide comparison.</p>
       </aside>
 
-      <article id="county-summary" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <article id="county-summary" class="review-card">
         <h2 class="sr-only">Countywide baseline</h2>
         <p id="countyCtlSummaryIntro" class="sr-only">Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.</p>
         <div id="countyCtlSummary" class="grid gap-4 md:grid-cols-3 lg:grid-cols-5"></div>
         <section class="county-chart-pair mt-4 grid gap-4 lg:grid-cols-5" aria-label="County value and tax charts">
-          <section id="county-indexed" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
+          <section id="county-indexed" class="review-card-muted lg:col-span-3">
             <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
             <p id="countyIndexedRangeNote" class="mt-1 text-sm text-slate-600">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>
             <div id="countyIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
@@ -163,7 +178,7 @@
               <canvas id="countyIndexedChart"></canvas>
             </div>
           </section>
-          <section id="county-etr" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
+          <section id="county-etr" class="review-card-muted lg:col-span-2">
             <h2 class="text-xl font-bold text-slate-700">How do county taxes compare with value?</h2>
             <p class="mt-1 text-sm text-slate-600">The countywide effective tax rate divides taxes levied by certified value, giving a broad tax-rate baseline.</p>
             <div id="countyEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
@@ -197,13 +212,13 @@
         <p>Start with the qualified sales behind this class. The count and distribution give the measures below their context.</p>
       </aside>
 
-      <article id="market-sales-makeup" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200"></article>
+      <article id="market-sales-makeup" class="review-card"></article>
 
       <aside class="guided-transition">
         <p id="marketSourceNote">Next, place the property in its local comparison group. These local sales-study measures introduce the countywide equalization check.</p>
       </aside>
 
-      <article id="market-overview" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <article id="market-overview" class="review-card">
         <section id="market-price-context">
           <div class="market-price-context-header">
             <div>
@@ -224,7 +239,7 @@
         <p>With the sales base in view, anchor the value in its local group. The scatterplot shows how that group sits next to nearby groups.</p>
       </aside>
 
-      <article id="market-local-position" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200"></article>
+      <article id="market-local-position" class="review-card"></article>
 
       <aside class="guided-transition">
         <p>With the sales base and local group in view, move to the countywide equalization layer.</p>
@@ -241,7 +256,7 @@
         <p>Qualified sales from the sales-study period test assessed values against market evidence. Those sales produce the statistical measures below.</p>
       </aside>
 
-      <article id="assessment-accuracy-measures" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <article id="assessment-accuracy-measures" class="review-card">
         <div id="assessment-accuracy-body"></div>
       </article>
 
@@ -249,7 +264,7 @@
         <p>Next, put the measures on one scale. The chart shows whether COD, PRD, COV, and level of value are moving together or apart.</p>
       </aside>
 
-      <article id="assessment-accuracy-unified" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200"></article>
+      <article id="assessment-accuracy-unified" class="review-card"></article>
 
       <article class="conceptual-interstitial" aria-labelledby="assessmentPlacementTitle">
         <p class="guided-kicker">How the pieces connect</p>
@@ -267,7 +282,7 @@
     </section>
 
     <section data-guided-panel="state-context" class="hidden space-y-6">
-      <article id="county-comparison" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <article id="county-comparison" class="review-card">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County Comparison</p>
@@ -288,7 +303,7 @@
             <p>The Nebraska = 100 comparison, value growth, tax growth, and average rate movement show whether the local pattern is unusual or broadly typical.</p>
         </div>
         <section class="mt-5 grid gap-6 lg:grid-cols-5">
-          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
+          <article class="review-card-muted lg:col-span-3">
             <h3 class="text-lg font-bold text-slate-700">How do value and tax growth compare?</h3>
             <p id="countyComparisonIndexedNote" class="mt-1 text-sm text-slate-600"></p>
             <div id="countyComparisonIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
@@ -296,7 +311,7 @@
               <canvas id="countyComparisonIndexedChart"></canvas>
             </div>
           </article>
-          <article class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
+          <article class="review-card-muted lg:col-span-2">
             <h3 class="text-lg font-bold text-slate-700">How do average tax rates compare?</h3>
             <p id="countyComparisonRateNote" class="mt-1 text-sm text-slate-600"></p>
             <div id="countyComparisonRateChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
@@ -312,14 +327,14 @@
         <p>The statewide baseline is supporting context.</p>
       </aside>
 
-      <article id="statewide-ctl-context" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <article id="statewide-ctl-context" class="review-card">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Statewide CTL Context</p>
         <h2 class="mt-1 text-2xl font-bold text-slate-700">What statewide pattern is behind that comparison?</h2>
         <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
           After the county comparison, the statewide CTL baseline shows the broader movement in values, taxes levied, and average tax rates.
         </p>
         <section class="mt-5 grid gap-6 lg:grid-cols-5">
-          <article id="state-indexed" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-3">
+          <article id="state-indexed" class="review-card-muted lg:col-span-3">
             <h3 class="text-lg font-bold text-slate-700">How are statewide values and taxes moving?</h3>
               <p class="mt-1 text-sm text-slate-600">Statewide values and taxes are indexed to 2019 so their movement can be compared over time.</p>
             <div id="stateIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
@@ -327,7 +342,7 @@
               <canvas id="stateIndexedChart"></canvas>
             </div>
           </article>
-          <article id="state-etr" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-2">
+          <article id="state-etr" class="review-card-muted lg:col-span-2">
               <h3 class="text-lg font-bold text-slate-700">How is the statewide average tax rate trending?</h3>
               <p class="mt-1 text-sm text-slate-600">The statewide average tax rate is a broad reference point for understanding local tax patterns.</p>
             <div id="stateEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
@@ -335,7 +350,7 @@
               <canvas id="stateEtrChart"></canvas>
             </div>
           </article>
-          <section id="state-summary" class="rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200 lg:col-span-5">
+          <section id="state-summary" class="review-card-muted lg:col-span-5">
             <h3 class="text-lg font-bold text-slate-700">Statewide summary</h3>
             <div id="stateCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
           </section>
@@ -355,7 +370,7 @@
   </main>
 
   <footer class="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8" aria-label="Site footer">
-    <section class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200" data-footer-resource-shell>
+    <section class="review-card" data-footer-resource-shell>
       <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between" data-step-footer-resources>
         <div>
           <h2 class="text-xl font-bold text-slate-700">Resources and policies</h2>
@@ -384,9 +399,9 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Terms of Use</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Use of this site</h3>
           <div class="mt-2 grid gap-3 text-sm leading-6 text-slate-600 md:grid-cols-3">
-            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">This site is provided for public information and general guidance. It is not a legal notice, tax bill, valuation decision, or substitute for official records.</p>
-            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Information may be incomplete, pending, delayed, or updated after publication. Official county, state, court, or agency records control when accuracy, deadlines, rights, or obligations matter.</p>
-            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">Links to outside sites are provided for convenience. Those sites have their own terms, privacy practices, forms, and instructions. Use this site lawfully and do not rely on it as professional advice.</p>
+            <p class="review-note">This site is provided for public information and general guidance. It is not a legal notice, tax bill, valuation decision, or substitute for official records.</p>
+            <p class="review-note">Information may be incomplete, pending, delayed, or updated after publication. Official county, state, court, or agency records control when accuracy, deadlines, rights, or obligations matter.</p>
+            <p class="review-note">Links to outside sites are provided for convenience. Those sites have their own terms, privacy practices, forms, and instructions. Use this site lawfully and do not rely on it as professional advice.</p>
           </div>
         </section>
 
@@ -394,9 +409,9 @@
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Privacy Policy</p>
           <h3 class="mt-1 text-lg font-bold text-slate-700">Privacy and public information</h3>
           <div class="mt-2 grid gap-3 text-sm leading-6 text-slate-600 md:grid-cols-3">
-            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">A civic website may collect basic usage data, such as browser, device, page visit, and diagnostic information, to operate, secure, and improve the site.</p>
-            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">If you submit information through a form, email, or support channel, it may be used to respond to your request and may be subject to applicable public-records, retention, or disclosure laws.</p>
-            <p class="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">This site should not sell personal information. Information may be shared with service providers, official agencies, or others when needed to operate the site, respond to requests, or comply with law.</p>
+            <p class="review-note">A civic website may collect basic usage data, such as browser, device, page visit, and diagnostic information, to operate, secure, and improve the site.</p>
+            <p class="review-note">If you submit information through a form, email, or support channel, it may be used to respond to your request and may be subject to applicable public-records, retention, or disclosure laws.</p>
+            <p class="review-note">This site should not sell personal information. Information may be shared with service providers, official agencies, or others when needed to operate the site, respond to requests, or comply with law.</p>
           </div>
         </section>
 

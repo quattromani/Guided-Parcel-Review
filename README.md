@@ -37,7 +37,7 @@ git diff --check
 rg -n "/Users/|/private/tmp|<<<<<<<|>>>>>>>|debugger" src index.html docs data scripts server.js
 ```
 
-After UI changes, run the app locally and spot-check the affected guided steps in the browser.
+After UI changes, run the app locally and spot-check the affected guided steps in the browser. Shell or breakpoint work should also follow `docs/style-shell-contract.md` and check desktop, tablet landscape, tablet portrait, and phone widths.
 
 ## Experience Model
 
@@ -79,12 +79,14 @@ The frontend should consume static app-ready JSON only. It should not scrape PAD
 - `src/domain/`, `src/data/`, and `src/calculations/` contain normalization, view-model, review-signal, history, and tax helpers that should stay independent of DOM rendering where practical.
 - `src/render.js`, `src/routes/`, and `src/views/` render the property record, guided route panels, footer resources, property switcher, correction-request surface, and view-specific sections.
 - `src/charts.js` and `src/charts/` build Chart.js visualizations, market-position views, county comparison displays, and equalization context.
+- `src/styles.css` owns the shell surface contract (`review-card`, `review-card-muted`, `review-note`), radius rules, guided rail behavior, and breakpoint layout decisions. See `docs/style-shell-contract.md`.
 - `src/reports/` builds the downloadable property report PDF; `src/assessors-report.js` builds the supplemental assessor print view.
 - `src/config/taxpayer-journey.js` and `src/content/` own guided-route labels, sequencing, and route-specific supporting resources.
 
 ## Handoff Notes
 
 - `docs/team-handoff.md` maps the current repo shape to likely backend, database, data/ETL, frontend, QA, design, accessibility, policy, DevOps, security, and support handoff needs.
+- `docs/style-shell-contract.md` records the current visual shell rules for surfaces, radii, guided rails, footer behavior, and breakpoint smoke checks.
 - Treat `data/app/property-manifest.json` as the demo inventory and shared-data wiring point. Add new sample records there only when the referenced static JSON is complete enough to pass validation.
 - Keep property-specific facts in record cards and county/state/reference facts in their shared datasets. Avoid embedding report statistics directly in components.
 - Preserve the selected-property flow: query string first, then stored selection. The Start page is intentional for first-run demos.

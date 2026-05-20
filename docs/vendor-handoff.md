@@ -32,12 +32,15 @@ The target vendor adapter should map roughly these groups of fields:
 
 The app should not require the vendor to provide UI copy, chart-ready arrays, or taxpayer-facing conclusions. Those belong in the app-ready layer and view models.
 
+The vendor adapter also should not emit presentational classes. Frontend surface, spacing, radius, table expansion, footer, and guided-rail behavior are owned by `src/styles.css` and the shell rules in `docs/style-shell-contract.md`.
+
 ## Current Handoff Gaps
 
 - The active record currently combines raw MIPS-style record data and `guidedSnapshot` app-ready data.
 - JSON contracts are documented here and in schemas, but not yet enforced by a full JSON Schema validator.
 - Calculations exist in shared helpers and view modules; they should continue moving into `src/calculations/`.
 - Some secondary panels remain in the app shell even when they are not primary guided steps.
+- Frontend shell rules are now centralized enough for handoff, but a framework migration should preserve the `review-card`/`review-card-muted`/`review-note` contract before decomposing components.
 
 For non-vendor teams, see `docs/team-handoff.md`. It maps the current prototype to likely backend, database, data/ETL, frontend, QA, design, accessibility, policy, DevOps, security, and support handoff needs.
 
