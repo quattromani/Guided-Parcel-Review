@@ -2913,12 +2913,18 @@ function taxesQuickReadLine(data) {
   const etrLine = firstEtr && latestEtr
     ? `<span class="summary-tax-line"><strong>ETR:</strong> moved from <strong>${formatNullablePercent(firstEtr.etr)}</strong> to <strong>${formatNullablePercent(latestEtr.etr)}</strong>.</span>`
     : "";
+  const recentTaxLine = isZeroToZero(previousTax?.taxes, latestTax?.taxes)
+    ? `net tax remained <strong>${formatNullableMoney(latestTax?.taxes, true)}</strong>`
+    : `net tax moved <strong>${signedPercent(recentTaxChange)}</strong>
+    from <strong>${formatNullableMoney(previousTax?.taxes, true)}</strong> to <strong>${formatNullableMoney(latestTax?.taxes, true)}</strong>`;
+  const historyTaxLine = isZeroToZero(firstTax?.taxes, latestTax?.taxes)
+    ? `loaded tax years show <strong>${formatNullableMoney(latestTax?.taxes, true)} net tax</strong>`
+    : `net tax changed <strong>${signedPercent(historyTaxChange)}</strong>
+    from <strong>${firstTax.year}</strong> to <strong>${latestTax.year}</strong>`;
 
   return `
-    <span class="summary-tax-line"><strong>Recent movement:</strong> net tax moved <strong>${signedPercent(recentTaxChange)}</strong>
-    from <strong>${formatNullableMoney(previousTax?.taxes, true)}</strong> to <strong>${formatNullableMoney(latestTax?.taxes, true)}</strong>.</span>
-    <span class="summary-tax-line"><strong>Movement history:</strong> net tax changed <strong>${signedPercent(historyTaxChange)}</strong>
-    from <strong>${firstTax.year}</strong> to <strong>${latestTax.year}</strong>.</span>
+    <span class="summary-tax-line"><strong>Recent movement:</strong> ${recentTaxLine}.</span>
+    <span class="summary-tax-line"><strong>Movement history:</strong> ${historyTaxLine}.</span>
     ${etrLine}
   `;
 }
@@ -3071,25 +3077,42 @@ function historyHeatStyle(value, range, colorVariable) {
 }
 
 function annualizedChange(startValue, endValue, years) {
-  if (!startValue || !endValue || !years) return null;
+  if (!Number.isFinite(startValue) || !Number.isFinite(endValue) || !years) return null;
+  if (startValue === 0) return endValue === 0 ? 0 : null;
+  if (endValue < 0 || startValue < 0) return null;
   return Math.pow(endValue / startValue, 1 / years) - 1;
 }
 
 function signedPercent(value) {
-  if (value === null || value === undefined) return "—";
+  if (!Number.isFinite(value)) return "—";
   const prefix = value > 0 ? "+" : "";
   return `${prefix}${percent.format(value)}`;
 }
 
 function signedPoints(value) {
-  if (value === null || value === undefined) return "—";
+  if (!Number.isFinite(value)) return "—";
   const prefix = value > 0 ? "+" : "";
   return `${prefix}${(value * 100).toFixed(2)} pts`;
 }
 
 function percentChangeBetween(previous, current) {
-  if (!previous || !current) return null;
+  if (!Number.isFinite(previous) || !Number.isFinite(current)) return null;
+  if (previous === 0) return current === 0 ? 0 : null;
   return (current - previous) / previous;
+}
+
+function isZeroToZero(previous, current) {
+  return Number.isFinite(previous) && Number.isFinite(current) && previous === 0 && current === 0;
+}
+
+function taxMovementValue(previous, current) {
+  return isZeroToZero(previous, current) ? "No net tax" : signedPercent(percentChangeBetween(previous, current));
+}
+
+function taxAnnualNote(firstTax, lastTax, years) {
+  if (!firstTax || !lastTax) return "Loaded tax years unavailable";
+  if (isZeroToZero(firstTax.taxes, lastTax.taxes)) return "No net tax in loaded years";
+  return `${signedPercent(annualizedChange(firstTax.taxes, lastTax.taxes, years))} average per year`;
 }
 
 function movementCard([label, value, note, range]) {
@@ -3133,13 +3156,13 @@ function renderPropertyMovementSummary(data) {
   const previousTax = taxRows.at(-2);
   const previousEtr = etrRows.at(-2);
 
-  const valueYears = lastValue.year - firstValue.year;
-  const taxYears = lastTax.year - firstTax.year;
-  const etrYears = lastEtr.year - firstEtr.year;
+  const valueYears = firstValue && lastValue ? lastValue.year - firstValue.year : null;
+  const taxYears = firstTax && lastTax ? lastTax.year - firstTax.year : null;
+  const etrYears = firstEtr && lastEtr ? lastEtr.year - firstEtr.year : null;
 
-  const valueChange = (lastValue.assessedValue / firstValue.assessedValue) - 1;
-  const taxChange = (lastTax.taxes / firstTax.taxes) - 1;
-  const etrChange = lastEtr.etr - firstEtr.etr;
+  const valueChange = percentChangeBetween(firstValue?.assessedValue, lastValue?.assessedValue);
+  const taxChange = percentChangeBetween(firstTax?.taxes, lastTax?.taxes);
+  const etrChange = firstEtr && lastEtr ? lastEtr.etr - firstEtr.etr : null;
 
   const recentCards = [
     [
@@ -3150,7 +3173,7 @@ function renderPropertyMovementSummary(data) {
     ],
     [
       "Net taxes",
-      signedPercent(percentChangeBetween(previousTax?.taxes, lastTax?.taxes)),
+      taxMovementValue(previousTax?.taxes, lastTax?.taxes),
       `${formatNullableMoney(previousTax?.taxes, true)} to ${formatNullableMoney(lastTax?.taxes, true)}`,
       previousTax && lastTax ? `${previousTax.year}-${lastTax.year} finalized` : "Recent finalized years"
     ],
@@ -3171,15 +3194,15 @@ function renderPropertyMovementSummary(data) {
     ],
     [
       "Tax growth",
-      signedPercent(taxChange),
-      `${signedPercent(annualizedChange(firstTax.taxes, lastTax.taxes, taxYears))} average per year`,
-      `${firstTax.year}-${lastTax.year} finalized`
+      taxMovementValue(firstTax?.taxes, lastTax?.taxes),
+      taxAnnualNote(firstTax, lastTax, taxYears),
+      firstTax && lastTax ? `${firstTax.year}-${lastTax.year} finalized` : "Loaded tax years"
     ],
     [
       "ETR movement",
-      `${formatNullablePercent(firstEtr.etr)} to ${formatNullablePercent(lastEtr.etr)}`,
-      `${signedPoints(etrChange / etrYears)} average / year`,
-      `${firstEtr.year}-${lastEtr.year} finalized`
+      `${formatNullablePercent(firstEtr?.etr)} to ${formatNullablePercent(lastEtr?.etr)}`,
+      `${signedPoints(etrYears ? etrChange / etrYears : null)} average / year`,
+      firstEtr && lastEtr ? `${firstEtr.year}-${lastEtr.year} finalized` : "Loaded tax years"
     ]
   ];
 

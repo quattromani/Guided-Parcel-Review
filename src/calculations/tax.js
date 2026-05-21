@@ -1,6 +1,15 @@
 export function calculateEtr(row) {
-  if (!row?.taxes || !row?.assessedValue) return null;
-  return row.taxes / row.assessedValue;
+  const taxes = finiteNumber(row?.taxes);
+  const assessedValue = finiteNumber(row?.assessedValue);
+
+  if (taxes === null || assessedValue === null || assessedValue <= 0) return null;
+  return taxes / assessedValue;
+}
+
+function finiteNumber(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
 }
 
 export function sumRates(rows = []) {

@@ -21,7 +21,7 @@ export function formatNullableMoney(value, cents = false) {
 }
 
 export function formatNullablePercent(value) {
-  if (value === null || value === undefined) return "—";
+  if (value === null || value === undefined || !Number.isFinite(value)) return "—";
   return percent.format(value);
 }
 
