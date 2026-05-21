@@ -1123,7 +1123,7 @@ function physicalDetailsForProperty(data) {
   if (data.commercial?.buildingDatasheet?.length || data.classification.propertyClass === "Commercial") {
     return [
       ["Primary occupancy", data.commercial?.primaryOccupancy],
-      ["Year built", data.commercial?.yearBuilt],
+      ["Year built", formatYearBuilt(data.commercial?.yearBuilt)],
       ["Construction", data.commercial?.constructionType],
       ["Building size", formatSquareFeet(data.commercial?.buildingSize)],
       ["Perimeter", data.commercial?.perimeter ? `${data.commercial.perimeter} ft.` : null],
@@ -1134,7 +1134,7 @@ function physicalDetailsForProperty(data) {
   }
 
   return [
-    ["Year built", data.residential?.yearBuilt],
+    ["Year built", formatYearBuilt(data.residential?.yearBuilt)],
     ["Style", data.residential?.style],
     ["Building size", formatSquareFeet(data.residential?.buildingSize)],
     ["Basement size", formatSquareFeet(data.residential?.basementSize)],
@@ -1143,6 +1143,11 @@ function physicalDetailsForProperty(data) {
     ["Garage", [data.residential?.garage1, data.residential?.garage2].filter(Boolean).join("; ")],
     ["Exterior", data.residential?.exterior]
   ];
+}
+
+function formatYearBuilt(value) {
+  if (!hasDisplayValue(value)) return null;
+  return String(value);
 }
 
 function reviewCategoryCards() {

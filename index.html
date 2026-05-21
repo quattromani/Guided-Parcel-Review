@@ -168,24 +168,29 @@
       <article id="county-summary" class="review-card">
         <h2 class="sr-only">Countywide baseline</h2>
         <p id="countyCtlSummaryIntro" class="sr-only">Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.</p>
-        <div id="countyCtlSummary" class="grid gap-4 md:grid-cols-3 lg:grid-cols-5"></div>
-        <section class="county-chart-pair mt-4 grid gap-4 lg:grid-cols-5" aria-label="County value and tax charts">
-          <section id="county-indexed" class="review-card-muted lg:col-span-3">
-            <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
-            <p id="countyIndexedRangeNote" class="mt-1 text-sm text-slate-600">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>
-            <div id="countyIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
-            <div class="mt-4 h-72">
-              <canvas id="countyIndexedChart"></canvas>
-            </div>
-          </section>
-          <section id="county-etr" class="review-card-muted lg:col-span-2">
-            <h2 class="text-xl font-bold text-slate-700">How do county taxes compare with value?</h2>
-            <p class="mt-1 text-sm text-slate-600">The countywide effective tax rate divides taxes levied by certified value, giving a broad tax-rate baseline.</p>
-            <div id="countyEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-            <div class="mt-4 h-72">
-              <canvas id="countyEtrChart"></canvas>
-            </div>
-          </section>
+        <section class="county-baseline-pair grid gap-4 lg:grid-cols-5" aria-label="County value and tax charts">
+          <div class="county-baseline-column lg:col-span-3">
+            <div id="countyGrowthSummary"></div>
+            <section id="county-indexed" class="review-card-muted">
+              <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
+              <p id="countyIndexedRangeNote" class="mt-1 text-sm text-slate-600">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>
+              <div id="countyIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
+              <div class="mt-4 h-72">
+                <canvas id="countyIndexedChart"></canvas>
+              </div>
+            </section>
+          </div>
+          <div class="county-baseline-column lg:col-span-2">
+            <div id="countyRateSummary"></div>
+            <section id="county-etr" class="review-card-muted">
+              <h2 class="text-xl font-bold text-slate-700">How do county taxes compare with value?</h2>
+              <p class="mt-1 text-sm text-slate-600">The countywide effective tax rate divides taxes levied by certified value, giving a broad tax-rate baseline.</p>
+              <div id="countyEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+              <div class="mt-4 h-72">
+                <canvas id="countyEtrChart"></canvas>
+              </div>
+            </section>
+          </div>
         </section>
         <p class="chart-source">Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL).</p>
       </article>
@@ -266,14 +271,13 @@
 
       <article id="assessment-accuracy-unified" class="review-card"></article>
 
-      <article class="conceptual-interstitial" aria-labelledby="assessmentPlacementTitle">
-        <p class="guided-kicker">How the pieces connect</p>
-        <p id="assessmentPlacementTitle" class="conceptual-definition-line"><strong>Assessment</strong> places the property in the shared value base.</p>
-        <p class="conceptual-definition-line"><strong>Equalization</strong> keeps that shared base in view before levies and taxes are applied.</p>
-      </article>
-
-      <aside class="guided-transition">
-        <p>Now carry that shared value base into tax context, where levies and credits turn assessed value into the bill.</p>
+      <aside class="guided-transition guided-transition-two-part" aria-labelledby="assessmentPlacementTitle">
+        <div class="guided-transition-context">
+          <p id="assessmentPlacementTitle">Assessment places the property in the shared value base.</p>
+          <p>Equalization keeps that shared base in view before levies and taxes are applied.</p>
+        </div>
+        <span class="guided-transition-divider" aria-hidden="true"></span>
+        <p class="guided-transition-emphasis">Now carry that shared value base into tax context, where levies and credits turn assessed value into the bill.</p>
       </aside>
 
       <nav class="guided-next-action" aria-label="Continue review">

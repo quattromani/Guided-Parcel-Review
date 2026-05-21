@@ -920,6 +920,12 @@ table thead th[class] + th[class] {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.county-baseline-column {
+  align-content: start;
+  display: grid;
+  gap: 1rem;
+}
+
 .county-growth-pair > div,
 .metric-pair-card > div {
   min-width: 0;
@@ -3586,6 +3592,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .market-compare-table td + td,
+.market-compare-table tbody th + td,
 .market-compare-table th + th {
   border-left: 1px solid rgb(var(--border-muted));
 }
@@ -4152,6 +4159,44 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   letter-spacing: 0;
   line-height: 1.48;
   max-width: 50rem;
+}
+
+.guided-transition-two-part {
+  margin-bottom: clamp(0.8rem, 1.8vw, 1.35rem);
+  max-width: 62rem;
+}
+
+.guided-transition-two-part::before {
+  content: none;
+}
+
+.guided-transition-context {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.guided-transition-context p {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.18rem, 2vw, 1.55rem);
+  font-weight: 760;
+  line-height: 1.42;
+  max-width: 54rem;
+}
+
+.guided-transition-divider {
+  background: rgb(var(--brand-ink) / 0.34);
+  border-radius: 999px;
+  display: block;
+  height: 2px;
+  margin: clamp(1.05rem, 2vw, 1.4rem) 0 clamp(0.95rem, 1.7vw, 1.2rem);
+  width: min(7rem, 28vw);
+}
+
+.guided-transition-two-part .guided-transition-emphasis {
+  font-size: clamp(1.18rem, 2vw, 1.55rem);
+  font-weight: 760;
+  line-height: 1.42;
+  max-width: 54rem;
 }
 
 .next-step-button.property-report-download-button:disabled {
@@ -4832,6 +4877,34 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 @media (min-width: 1024px) {
+  .county-baseline-pair {
+    grid-template-rows: auto auto;
+  }
+
+  .county-baseline-column {
+    display: contents;
+  }
+
+  #countyGrowthSummary {
+    grid-column: 1 / span 3;
+    grid-row: 1;
+  }
+
+  #county-indexed {
+    grid-column: 1 / span 3;
+    grid-row: 2;
+  }
+
+  #countyRateSummary {
+    grid-column: 4 / span 2;
+    grid-row: 1;
+  }
+
+  #county-etr {
+    grid-column: 4 / span 2;
+    grid-row: 2;
+  }
+
   .data-split-view > * + * {
     border-left: 1px solid rgb(var(--border-muted));
     padding-left: 1.5rem;
@@ -4848,18 +4921,6 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   .equalization-unified-section > .equalization-year-table-panel {
     border-left: 0;
     padding-left: 1rem !important;
-  }
-
-  .county-chart-pair {
-    column-gap: 1rem;
-  }
-
-  .county-chart-pair > *:first-child {
-    padding-right: 0;
-  }
-
-  .county-chart-pair > * + * {
-    padding-left: 0;
   }
 
 }
@@ -6194,7 +6255,8 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 #taxBurdenPatternCards .rounded-xl p:first-child,
 #marketSignalCards .rounded-xl > p:first-child,
 #countyComparisonSummary .pressure-card > p:first-child,
-#countyCtlSummary .rounded-xl > p:first-child,
+.county-baseline-card > p:first-child,
+#countyGrowthSummary .county-baseline-card > div > p:first-child,
 #stateCtlSummary .rounded-xl p:first-child,
 #stateCtlSummary .rounded-xl .flex > p,
 #demographicProfileCards .rounded-xl > p:first-child,

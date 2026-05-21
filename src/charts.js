@@ -3360,18 +3360,19 @@ export function buildCtlSummary(data, ctlData) {
     .sort((a, b) => a.year - b.year);
   const stateRows = ctlData.statewide.slice().sort((a, b) => a.year - b.year);
 
-  const countySummary = document.getElementById("countyCtlSummary");
+  const countyGrowthSummary = document.getElementById("countyGrowthSummary");
+  const countyRateSummary = document.getElementById("countyRateSummary");
   const countyRange = yearRangeLabel(countyRows);
   setText("countyCtlSummaryIntro", `Certified values and taxes levied from ${countyRange} show the broader value base and the public obligations distributed across it before the parcel-level tax step.`);
   setText("countyIndexedRangeNote", `The chart and table below cover ${countyRange}. Values and taxes are indexed to the same starting point so their movement can be compared over time.`);
 
-  if (countySummary) {
-    const valueGrowth = formatChange(indexChange(countyRows, "totalValue"));
-    const taxGrowth = formatChange(indexChange(countyRows, "taxesLevied"));
-    const rateMovement = `${formatApproximateRatePercent(countyRows[0].averageTaxRate * 100)} to ${formatApproximateRatePercent(countyRows.at(-1).averageTaxRate * 100)}`;
+  const valueGrowth = formatChange(indexChange(countyRows, "totalValue"));
+  const taxGrowth = formatChange(indexChange(countyRows, "taxesLevied"));
+  const rateMovement = `${formatApproximateRatePercent(countyRows[0].averageTaxRate * 100)} to ${formatApproximateRatePercent(countyRows.at(-1).averageTaxRate * 100)}`;
 
-    countySummary.innerHTML = `
-      <div class="county-growth-pair review-card-muted md:col-span-2 lg:col-span-3">
+  if (countyGrowthSummary) {
+    countyGrowthSummary.innerHTML = `
+      <div class="county-growth-pair county-baseline-card review-card-muted">
         <div>
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Value growth</p>
           <p class="mt-1 text-lg font-bold text-slate-700">${valueGrowth}</p>
@@ -3380,12 +3381,15 @@ export function buildCtlSummary(data, ctlData) {
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax growth</p>
           <p class="mt-1 text-lg font-bold text-slate-700">${taxGrowth}</p>
         </div>
-      </div>
-      <div class="review-card-muted lg:col-span-2">
+      </div>`;
+  }
+
+  if (countyRateSummary) {
+    countyRateSummary.innerHTML = `
+      <div class="county-baseline-card review-card-muted">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Rate movement</p>
         <p class="mt-1 text-lg font-bold text-slate-700">${rateMovement}</p>
-      </div>
-    `;
+      </div>`;
   }
 
   const stateSummary = document.getElementById("stateCtlSummary");
@@ -3478,9 +3482,13 @@ function levyColorForGroup(label, schoolColor) {
 function levyTreemapLabel(group, label) {
   const groupLabel = levyGroupLabel(group);
   if (groupLabel === "Natural resources") return "NRD";
-  if (groupLabel === "Community college") return "SCC";
+  if (groupLabel === "Community college") return "CC";
   if (groupLabel === "Education service") return "ESU";
   return label;
+}
+
+function levyTreemapGroupLabel(group) {
+  return levyTreemapLabel(group, levyGroupLabel(group));
 }
 
 export function buildDistributionChart(data, schoolDistrictColors, recordCard) {
@@ -3494,6 +3502,7 @@ export function buildDistributionChart(data, schoolDistrictColors, recordCard) {
       return {
         id: `${group}-${index}`,
         group,
+        groupLabel: levyTreemapGroupLabel(group),
         label: levyTreemapLabel(group, row.description || row.authority || group),
         value: row.amount,
         amount: row.amount,

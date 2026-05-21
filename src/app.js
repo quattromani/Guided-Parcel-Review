@@ -213,7 +213,7 @@ function initGuidedNavigation(data, options = {}) {
 
   if (tabsContainer) {
     tabsContainer.innerHTML = progressRoutes.map((route, index) => `
-      <button type="button" data-guided-tab="${route.id}" class="guided-step" aria-selected="false">
+      <button type="button" data-guided-tab="${route.id}" class="guided-step" aria-label="Step ${index + 1}: ${escapeHtml(route.label)}" aria-selected="false">
         ${guidedStepMarker(index + 1)}
         <span class="guided-step-label">${route.label}</span>
       </button>
@@ -383,8 +383,14 @@ function initGuidedNavigation(data, options = {}) {
       item.classList.toggle("guided-step-complete", complete);
       item.classList.toggle("guided-step-future", future);
       item.disabled = tabIsPrimary && !unlocked;
+      item.setAttribute("aria-label", `Step ${primaryIndex + 1}: ${progressRoutes[primaryIndex]?.label || "Guided review"}`);
       item.setAttribute("aria-selected", String(active));
       item.setAttribute("aria-disabled", String(tabIsPrimary && !unlocked));
+      if (active) {
+        item.setAttribute("aria-current", "step");
+      } else {
+        item.removeAttribute("aria-current");
+      }
       if (marker) {
         marker.textContent = complete ? "✓" : String(primaryIndex + 1);
       }

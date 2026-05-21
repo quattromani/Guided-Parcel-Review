@@ -158,7 +158,7 @@ function groupItems(items) {
     const key = item.group || "Other";
     const group = groups.get(key) || {
       id: key,
-      label: key,
+      label: item.groupLabel || key,
       group: key,
       value: 0,
       amount: 0,
