@@ -77,8 +77,8 @@ The frontend should consume static app-ready JSON only. It should not scrape PAD
 - `src/data-service.js` loads the manifest, selected property record, county/state datasets, standards, forms, and calendar data.
 - `src/adapters/mips/` maps the current MIPS/GWorks record-card handoff shape into the guided snapshot model.
 - `src/domain/`, `src/data/`, and `src/calculations/` contain normalization, view-model, review-signal, history, and tax helpers that should stay independent of DOM rendering where practical.
-- `src/render.js`, `src/routes/`, and `src/views/` render the property record, guided route panels, footer resources, property switcher, correction-request surface, and view-specific sections.
-- `src/charts.js` and `src/charts/` build Chart.js visualizations, market-position views, county comparison displays, and equalization context.
+- `src/render.js`, `src/routes/`, and `src/views/` render the property record, guided route panels, footer resources, property switcher, correction-request surface, start page, and view-specific sections.
+- `src/charts.js` and `src/charts/` build Chart.js visualizations, tax-distribution treemaps, market-position views, county comparison displays, and equalization context.
 - `src/styles.css` owns the shell surface contract (`review-card`, `review-card-muted`, `review-note`), radius rules, guided rail behavior, and breakpoint layout decisions. See `docs/style-shell-contract.md`.
 - `src/reports/` builds the downloadable property report PDF; `src/assessors-report.js` builds the supplemental assessor print view.
 - `src/config/taxpayer-journey.js` and `src/content/` own guided-route labels, sequencing, and route-specific supporting resources.
