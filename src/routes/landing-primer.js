@@ -211,6 +211,7 @@ function buildFinalReviewModel(data, context = {}) {
   const latestEtr = calculateEtr(latestTax);
   const marketAreaSummary = selectedMarketArea(data, context.recordCard, context);
   const marketArea = marketAreaSummary.marketArea;
+  const reviewSignalCount = reviewSignals.filter(signal => signal.tone === "review").length;
   const propertyDetails = compactParts([
     formatSquareFeet(residential.buildingSize, { fallback: null }),
     [residential.quality, residential.condition].filter(Boolean).join(" / ") || null,
@@ -275,10 +276,9 @@ function buildFinalReviewModel(data, context = {}) {
           },
           {
             step: "Step 6 · Review Signals",
-            route: "review-signals",
-            value: reviewSignals.length ? itemCountLabel(reviewSignals.length, "item") : "No items surfaced",
-            meta: signalMeta(reviewSignals),
-            note: reviewSignals.some(signal => signal.tone === "review")
+            value: itemCountLabel(reviewSignalCount, "item"),
+            meta: reviewSignalCount ? signalMeta(reviewSignals) : "Generally consistent",
+            note: reviewSignalCount
               ? "Review signals point to source items to verify. They are not conclusions."
               : "Loaded records did not surface an obvious record mismatch."
           }
@@ -314,8 +314,8 @@ function installReviewSignalsPanel(data, context = {}) {
       ${finalReview.blocks.map(finalReviewBlock).join("")}
     </article>
 
-    <aside class="guided-transition">
-      <p>After checking the facts, value movement, equalization, and tax context, finish with a compact review summary.</p>
+    <aside class="guided-transition guided-step-handoff">
+      <p>You have reviewed the key facts, value movement, equalization, and tax context. Next, finish with a compact review summary.</p>
     </aside>
 
     <nav class="guided-next-action" aria-label="Continue review">
@@ -355,8 +355,8 @@ function installFinalSummary(data, context = {}) {
       ${quickReadSummaryMarkup(data, context.recordCard, context)}
     </article>
 
-    <aside class="guided-transition">
-      <p>You have reached the end of the guided review. The path covered the record, value, equalization, taxes, and review signals.</p>
+    <aside class="guided-transition guided-step-handoff">
+      <p>You have reached the end of the guided review. The summary brings together the record, value, equalization, taxes, and review signals for download.</p>
     </aside>
     <nav class="guided-next-action" aria-label="Download guided review summary">
       <button type="button" class="next-step-button property-report-download-button" data-property-report-download>Download Guided Review Summary</button>

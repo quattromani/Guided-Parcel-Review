@@ -269,7 +269,7 @@ function renderTaxHistoryShell() {
             <tr>
               <th class="px-2 py-2 text-left font-semibold sm:px-3">Year</th>
               <th class="px-2 py-2 text-right font-semibold sm:px-3">Levy</th>
-              <th class="tax-history-change-column px-2 py-2 text-center font-semibold sm:px-3">Change</th>
+              <th class="tax-history-change-column px-2 py-2 text-center font-semibold sm:px-3">YOY Change</th>
               <th class="px-2 py-2 text-right font-semibold sm:px-3">Gross</th>
               <th class="px-2 py-2 text-right font-semibold sm:px-3">Credits</th>
               <th class="px-2 py-2 text-right font-semibold sm:px-3">Net</th>

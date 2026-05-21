@@ -27,7 +27,8 @@ import {
   loadValuationGroups,
   loadIaaoStandards,
   loadAssessmentDateEvents,
-  PROPERTY_SELECTION_STORAGE_KEY
+  PROPERTY_SELECTION_STORAGE_KEY,
+  hasDirectPropertyRequest
 } from "./data-service.js";
 import { applyChartDefaults, applyVisualizationPalette } from "./config/visualization-palettes.js";
 import { initImageModal } from "./modal.js";
@@ -78,6 +79,7 @@ async function main() {
   applyChartDefaults();
   const propertySwitcher = await loadPropertySwitcherRecords();
   const developmentFeaturePropertyId = developmentFeatureSampleStartPropertyId(propertySwitcher.manifest);
+  const directPropertyRequest = hasDirectPropertyRequest(propertySwitcher.manifest);
 
   if (!propertySwitcher.activePropertyId) {
     const [realPropertyForms, assessmentDateEvents, taxpayerActionDates] = await Promise.all([
@@ -186,11 +188,13 @@ async function main() {
     },
     loadTaxDistrictAuthorities
   });
-  initFirstVisitOrientation({
-    primaryButtonLabel: "Continue to Property Record",
-    propertySelectionCopy: "A sample parcel is already loaded. Continue to the Property Record, then move through the guided steps.",
-    onAccepted: () => {}
-  });
+  if (!directPropertyRequest) {
+    initFirstVisitOrientation({
+      primaryButtonLabel: "Continue to Property Record",
+      propertySelectionCopy: "A sample parcel is already loaded. Continue to the Property Record, then move through the guided steps.",
+      onAccepted: () => {}
+    });
+  }
 }
 
 main().catch(error => {

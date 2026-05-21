@@ -29,7 +29,7 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="src/styles.css?v=trim-guided-path-copy" />
+  <link rel="stylesheet" href="src/styles.css?v=green-guided-page-handoffs" />
 </head>
 <body class="bg-slate-100 text-slate-700">
   <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
@@ -85,6 +85,10 @@
         <p>Review these facts against what you know about the property. Follow up if the owner, address, land size, class, condition, rooms, garage, improvements, or sketch appears inaccurate or incomplete.</p>
       </article>
 
+      <aside class="guided-step-handoff">
+        <p>You have completed the first step: reviewing your property details. The green button takes you to the next step, where you can learn more about what may have changed from year to year.</p>
+      </aside>
+
       <nav class="guided-next-action" aria-label="Continue review">
         <button type="button" data-guided-next="what-changed" class="next-step-button">Go to What Changed</button>
       </nav>
@@ -114,8 +118,8 @@
 
       <section id="value-tax-history-panel" class="review-card"></section>
 
-      <aside class="guided-transition">
-        <p>With the change and history in view, place the property in its local market context.</p>
+      <aside class="guided-transition guided-step-handoff">
+        <p>You have reviewed the current assessment and recent value history. Next, look closer at the value details behind the change.</p>
       </aside>
 
       <nav class="guided-next-action" aria-label="Continue review">
@@ -203,8 +207,8 @@
         <button type="button" data-guided-next="state-context" class="advanced-context-button">Compare Counties</button>
       </aside>
 
-      <aside class="guided-transition">
-        <p>The main record, value, equalization, and tax context is now in view.</p>
+      <aside class="guided-transition guided-step-handoff">
+        <p>You have reviewed how the tax bill is built from levies, credits, and the county baseline. Next, bring the record, value, equalization, and tax signals together.</p>
       </aside>
 
       <nav class="guided-next-action" aria-label="Continue review">
@@ -246,8 +250,8 @@
 
       <article id="market-local-position" class="review-card"></article>
 
-      <aside class="guided-transition">
-        <p>With the sales base and local group in view, move to the countywide equalization layer.</p>
+      <aside class="guided-transition guided-step-handoff">
+        <p>You have reviewed the sales base and the property's local comparison group. Next, move to the countywide equalization layer.</p>
       </aside>
 
       <nav class="guided-next-action" aria-label="Continue review">
@@ -271,13 +275,13 @@
 
       <article id="assessment-accuracy-unified" class="review-card"></article>
 
-      <aside class="guided-transition guided-transition-two-part" aria-labelledby="assessmentPlacementTitle">
+      <aside class="guided-transition guided-transition-two-part guided-step-handoff" aria-labelledby="assessmentPlacementTitle">
         <div class="guided-transition-context">
           <p id="assessmentPlacementTitle">Assessment places the property in the shared value base.</p>
           <p>Equalization keeps that shared base in view before levies and taxes are applied.</p>
         </div>
         <span class="guided-transition-divider" aria-hidden="true"></span>
-        <p class="guided-transition-emphasis">Now carry that shared value base into tax context, where levies and credits turn assessed value into the bill.</p>
+        <p class="guided-transition-emphasis">Next, carry that shared value base into tax context, where levies and credits turn assessed value into the bill.</p>
       </aside>
 
       <nav class="guided-next-action" aria-label="Continue review">
@@ -362,8 +366,13 @@
         <p class="chart-source">Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL).</p>
       </article>
 
-      <nav class="guided-next-action" aria-label="Continue review">
-        <button type="button" data-guided-next="tax-context" class="next-step-button">Go to Tax Context</button>
+      <aside class="guided-transition guided-step-handoff">
+        <p>You have reviewed the county comparison and statewide baseline. You can return to tax context for the view you came from, or move ahead to review signals.</p>
+      </aside>
+
+      <nav class="guided-next-action guided-next-action-split" aria-label="Continue review">
+        <button type="button" data-guided-next="tax-context" class="next-step-button next-step-button-secondary">Return to Tax Context</button>
+        <button type="button" data-guided-next="review-signals" class="next-step-button">Go to Review Signals</button>
       </nav>
 
     </section>
@@ -537,6 +546,6 @@
     </div>
   </div>
 
-  <script type="module" src="src/app.js"></script>
+  <script type="module" src="src/app.js?v=direct-property-routing"></script>
 </body>
 </html>

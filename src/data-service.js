@@ -31,18 +31,40 @@ export function loadPropertyManifest() {
 export function getActivePropertyId(manifest) {
   if (developmentFeatureSampleStartPropertyId(manifest)) return null;
 
-  const requestedPropertyId = getRequestedPropertyId();
-  const requestedProperty = manifest.properties.find(item => item.id === requestedPropertyId);
+  const requestedProperty = getRequestedProperty(manifest);
 
   if (requestedProperty) return requestedProperty.id;
 
   return null;
 }
 
+export function hasDirectPropertyRequest(manifest) {
+  if (developmentFeatureSampleStartPropertyId(manifest)) return false;
+
+  return Boolean(getRequestedProperty(manifest, { queryOnly: true }));
+}
+
+function normalizePropertyLookup(value) {
+  return `${value ?? ""}`.replace(/[^a-z0-9]/gi, "").toLowerCase();
+}
+
+function getRequestedProperty(manifest, options = {}) {
+  const requestedPropertyId = options.queryOnly ? getQueryPropertyId() : getRequestedPropertyId();
+  if (!requestedPropertyId) return null;
+
+  const requestedKey = normalizePropertyLookup(requestedPropertyId);
+
+  return manifest.properties.find(item =>
+    item.id === requestedPropertyId
+    || normalizePropertyLookup(item.id) === requestedKey
+    || normalizePropertyLookup(item.parcelId) === requestedKey
+  ) ?? null;
+}
+
 function getRequestedPropertyId() {
   if (typeof window === "undefined") return null;
 
-  const queryPropertyId = new URLSearchParams(window.location.search).get("property");
+  const queryPropertyId = getQueryPropertyId();
   if (queryPropertyId) return queryPropertyId;
 
   try {
@@ -50,6 +72,12 @@ function getRequestedPropertyId() {
   } catch {
     return null;
   }
+}
+
+function getQueryPropertyId() {
+  if (typeof window === "undefined") return null;
+
+  return new URLSearchParams(window.location.search).get("property");
 }
 
 async function getActivePropertyEntry() {

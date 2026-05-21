@@ -1949,7 +1949,13 @@ function renderMarketSignalCards(selected, summary, standards, context = {}) {
     >
       <div class="assessment-metric-topline">
         <div class="min-w-0">
-          <p class="text-xs font-semibold uppercase tracking-wide">${escapeHtml(card.label)}</p>
+          <p class="assessment-metric-heading text-xs font-semibold uppercase tracking-wide">
+            <span>${escapeHtml(card.label)}</span>
+            <span class="assessment-metric-help">
+              <button type="button" class="assessment-help-button" aria-label="${escapeHtml(card.label)} explanation">?</button>
+              <span class="assessment-help-tooltip" role="tooltip">${escapeHtml(card.definition)}</span>
+            </span>
+          </p>
           <p class="mt-1 text-lg font-bold text-slate-700">${escapeHtml(card.value)}</p>
           <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(card.note)}</p>
           <p class="metric-signal-text mt-2">${escapeHtml(signal.label)}</p>
