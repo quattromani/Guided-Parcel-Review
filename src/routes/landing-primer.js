@@ -219,10 +219,10 @@ function buildFinalReviewModel(data, context = {}) {
 
   return {
     heading: `Review of the main assessment story for ${notice.displayAddress || notice.situsAddress}`,
-    intro: "The main takeaways from the record, value movement, equalization, taxes, and review signals are gathered here.",
+    intro: "This gathers the main points from the record, value, equalization, taxes, and review signals.",
     blocks: [
       {
-        narrative: "The first part anchors the parcel facts, then separates value status from tax statement and payment status.",
+        narrative: "Start with the parcel facts. Then check value status, tax statement status, and payment status separately.",
         cards: [
           {
             step: "Step 1 · Property Record",
@@ -242,13 +242,13 @@ function buildFinalReviewModel(data, context = {}) {
               ? `Latest listed value: ${formatNullableMoney(latestValue.assessedValue)} (${latestValue.year})`
               : "No assessed value listed",
             note: latestValueMovement !== null && previousValue
-              ? `Latest listed value movement is ${formatNullablePercent(latestValueMovement)} from ${previousValue.year} to ${latestValue.year}.`
-              : "Value movement depends on available assessment years."
+              ? `The latest listed value changed ${formatNullablePercent(latestValueMovement)} from ${previousValue.year} to ${latestValue.year}.`
+              : "Value movement depends on which assessment years are available."
           }
         ]
       },
       {
-        narrative: "The later steps move from market context to equalization, then to taxes.",
+        narrative: "Next, compare local sales, equalization measures, and tax results.",
         cards: [
           {
             step: "Step 3 · Value Detail",
@@ -257,21 +257,21 @@ function buildFinalReviewModel(data, context = {}) {
             meta: marketArea?.count ? itemCountLabel(marketArea.count, "qualified sale") : "Market-area context",
             note: marketArea
               ? `Median ratio ${formatRatio(marketArea.median)}, COD ${formatRatio(marketArea.cod)}, PRD ${formatRatio(marketArea.prd)}.`
-              : "Market data helps place the property in context, but it is not a conclusion about this parcel by itself."
+              : "Market data helps compare this property with nearby sales. It is not a conclusion about this parcel by itself."
           },
           {
             step: "Step 4 · Equalization",
             route: "equalization",
             value: "Equalization check",
             meta: "Required level and uniformity",
-            note: "Equalization does not stop market movement or set the levy. It checks whether assessments are at the required level and reasonably uniform."
+            note: "Equalization does not stop market changes or set the levy. It checks level and consistency across assessments."
           },
           {
             step: "Step 5 · Tax Context",
             route: "tax-context",
             value: latestEtr !== null ? `ETR ${formatNullablePercent(latestEtr)}` : "ETR pending",
             meta: latestTax ? `Net tax ${moneyCents.format(latestTax.taxes)} (${latestTax.year})` : "No tax statement listed",
-            note: "Effective tax rate compares statement net tax with assessed value after levy, credits, and exemptions are reflected."
+            note: "Effective tax rate compares net tax with assessed value after levy, credits, and exemptions are applied."
           },
           {
             step: "Step 6 · Review Signals",
@@ -279,7 +279,7 @@ function buildFinalReviewModel(data, context = {}) {
             value: reviewSignals.length ? itemCountLabel(reviewSignals.length, "item") : "No items surfaced",
             meta: signalMeta(reviewSignals),
             note: reviewSignals.some(signal => signal.tone === "review")
-              ? "Review signals identify source items to verify; they are not conclusions."
+              ? "Review signals point to source items to verify. They are not conclusions."
               : "Loaded records did not surface an obvious record mismatch."
           }
         ]
@@ -301,7 +301,7 @@ function installReviewSignalsPanel(data, context = {}) {
 
   panel.innerHTML = `
     <aside class="guided-transition">
-      <p>Use this page as a final scan. The signals collect source facts and patterns from the steps above without turning them into findings.</p>
+      <p>This page gathers the main signals from the earlier steps. It helps identify items that may deserve a closer look. It does not make conclusions for the user.</p>
     </aside>
 
     <article class="civic-summary-shell civic-final-review">
@@ -315,7 +315,7 @@ function installReviewSignalsPanel(data, context = {}) {
     </article>
 
     <aside class="guided-transition">
-      <p>With the listed facts, value movement, equalization context, and tax context scanned, finish with a compact summary of the review.</p>
+      <p>After checking the facts, value movement, equalization, and tax context, finish with a compact review summary.</p>
     </aside>
 
     <nav class="guided-next-action" aria-label="Continue review">
@@ -336,7 +336,7 @@ function installFinalSummary(data, context = {}) {
 
   section.innerHTML = `
     <aside class="guided-transition">
-      <p>Start with the property snapshot, then read the quick summary of value, market, taxes, and county context.</p>
+      <p>Start with the property snapshot. Then read the quick summary for value, market, taxes, and county context.</p>
     </aside>
 
     <article class="civic-summary-shell civic-summary-snapshot">
@@ -356,7 +356,7 @@ function installFinalSummary(data, context = {}) {
     </article>
 
     <aside class="guided-transition">
-      <p>You have reached the end of the guided review. The path covered the record, value movement, equalization context, tax context, and review signals.</p>
+      <p>You have reached the end of the guided review. The path covered the record, value, equalization, taxes, and review signals.</p>
     </aside>
     <nav class="guided-next-action" aria-label="Download guided review summary">
       <button type="button" class="next-step-button property-report-download-button" data-property-report-download>Download Guided Review Summary</button>

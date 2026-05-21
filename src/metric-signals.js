@@ -224,7 +224,7 @@ function medianRatioSignal({ value, standards, context }) {
       label: tone === "red" ? "Outside reference range" : "Near edge of range",
       explanation: tone === "red"
         ? "This value is outside the reference range for the applicable property class."
-        : "This value is near the edge of the reference range and is worth reviewing in context.",
+        : "This value is near the edge of the reference range. Review it with the surrounding class data.",
       trigger: tone === "red"
         ? "median ratio outside applicable class range by at least 1.2 points"
         : "median ratio just outside applicable class range",
@@ -247,7 +247,7 @@ function medianRatioSignal({ value, standards, context }) {
     tone,
     severity: tone === "yellowGreen" ? "context" : "within",
     label: tone === "yellowGreen" ? "Near edge of range" : "Within expected range",
-    explanation: "This median ratio is inside the expected range for the applicable property class.",
+    explanation: "This median ratio is inside the expected range for this property class.",
     trigger: "median ratio inside applicable class range",
     normalizedValue,
     standardUsed
@@ -276,7 +276,7 @@ function codSignal({ value, standards, context }) {
       tone: "yellow",
       severity: "context",
       label: "Below reference range",
-      explanation: "A very low COD can indicate an unusually homogeneous or limited sample, so it should be read with sample context.",
+      explanation: "A very low COD can mean the sales are unusually similar or the sample is limited. Read it with the sales count and sample context.",
       trigger: "COD below selected range",
       normalizedValue,
       standardUsed
@@ -291,7 +291,7 @@ function codSignal({ value, standards, context }) {
       tone: "strongGreen",
       severity: "within",
       label: "Inside reference range",
-      explanation: "Lower COD means the sales ratios are more tightly grouped around the median. This result is inside the selected reference range.",
+      explanation: "Lower COD means the sales ratios are grouped more tightly around the median. This result is inside the selected reference range.",
       trigger: "COD within the strongest part of the selected range",
       normalizedValue,
       standardUsed
@@ -330,7 +330,7 @@ function codSignal({ value, standards, context }) {
     label: tone === "red" ? "Outside reference range" : "Near upper edge",
     explanation: tone === "red"
       ? "This COD is above the selected reference range."
-      : "This COD is near or just above the selected reference range and should be read with context.",
+      : "This COD is near or just above the selected reference range. Read it with the sales count and sample context.",
     trigger: tone === "red"
       ? "COD above selected range by at least 1.2 points"
       : "COD above selected range",
@@ -376,7 +376,7 @@ function prdSignal({ value, standards }) {
       label: tone === "red" ? "Outside reference range" : "Near edge of range",
       explanation: tone === "red"
         ? "This PRD is outside the reference range by at least 1.2 points."
-        : "This PRD is near the edge of the reference range and is worth reviewing in context.",
+        : "This PRD is near the edge of the reference range. Review it with the surrounding class data.",
       trigger: tone === "red"
         ? "PRD outside expected range by at least 1.2 points"
         : "PRD just outside expected range",
@@ -399,7 +399,7 @@ function prdSignal({ value, standards }) {
     tone,
     severity: tone === "yellowGreen" ? "context" : "within",
     label: tone === "yellowGreen" ? "Near upper edge" : "Within expected range",
-    explanation: "This PRD is inside the expected range. Values above the upper range can be a broader equalization signal, not a parcel-specific finding.",
+    explanation: "This PRD is inside the expected range. Values above the upper range can signal a broader equalization issue, not a parcel-specific finding.",
     trigger: "PRD inside expected range",
     normalizedValue,
     standardUsed

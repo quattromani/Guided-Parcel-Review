@@ -14,13 +14,13 @@ const viewHeaderContent = {
   "your-assessment": {
     eyebrow: "Step 2 · Assessment",
     title: "What changed about the assessed value?",
-    description: "Separate current value movement from finalized tax years.",
+    description: "See what changed, and which years are still pending or final.",
     imageAlt: "Map of Nebraska highlighting the local market area"
   },
   "your-taxes": {
     eyebrow: "Step 5 · Tax context",
     title: "What does this mean for taxes?",
-    description: "Read levy, credits, districts, and net tax separately.",
+    description: "See how value, levy, credits, and districts affect net tax.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "market-area": {
@@ -31,8 +31,8 @@ const viewHeaderContent = {
   },
   "county-equalization": {
     eyebrow: "Step 4 · Equalization",
-    title: "How is the base checked for uniformity and proportionality?",
-    description: "Equalization checks value level and price-related fairness before levies are applied.",
+    title: "Are assessments checked for level and consistency?",
+    description: "Equalization checks whether assessments are at the required level and applied consistently.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "state-context": {

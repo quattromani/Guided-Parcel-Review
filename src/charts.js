@@ -270,8 +270,8 @@ export function buildIndexedChart(data) {
   if (indexedTrendsIntro) {
     const baseYear = usableValueRows[0]?.year ?? usableTaxRows[0]?.year;
     indexedTrendsIntro.textContent = baseYear
-      ? `Using ${baseYear} as the baseline, compare the relative relationship between value and net taxes after levy adjustments and credits are factored in.`
-      : "Compare the relative relationship between value and net taxes after levy adjustments and credits are factored in.";
+      ? `Using ${baseYear} as the baseline, compare how assessed value and net taxes moved after levy changes and credits were applied.`
+      : "Compare how assessed value and net taxes moved after levy changes and credits were applied.";
   }
 
   const valueIndex = rows.map(row =>
@@ -917,7 +917,7 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
   const levelRangeText = standardRangeLabel(levelRange, 0, "No class range");
   const levelRangeNote = levelRange ? `Class range: ${levelRangeText}%` : levelRangeText;
   const levelHelp = levelRange
-    ? `Level of value uses the median ratio as the class-level assessment indicator. The applicable range for this class is ${levelRangeText}%.`
+    ? `Level of value uses the median ratio to show the class assessment level. The applicable range for this class is ${levelRangeText}%.`
     : "Level of value uses the median ratio as the class-level assessment indicator.";
 
   const cards = [
@@ -927,7 +927,7 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
       note: `${formatSignedChange(classSummary.codChangeSince2025)} from 2025`,
       color: chartColors.cod,
       status: rawBandStatus(latest.cod, bandConfig.cod),
-      help: "Coefficient of Dispersion shows how tightly assessment ratios cluster around the median. Lower values generally indicate more uniform assessments, but very low COD readings should still be read with sample context."
+      help: "Coefficient of Dispersion shows how tightly assessment ratios group around the median. Lower values usually mean more uniform assessments. Very low COD readings should still be read with sample context."
     },
     {
       label: "PRD",
@@ -935,7 +935,7 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
       note: `${formatSignedChange(classSummary.prdDistanceChangeSince2025, 3)} from 2025`,
       color: chartColors.prd,
       status: rawBandStatus(latest.prd, bandConfig.prd),
-      help: "Price-Related Differential checks whether lower- and higher-priced properties are assessed evenly. Values close to 1.00 are preferred."
+      help: "Price-Related Differential checks whether lower-priced and higher-priced properties are assessed consistently. Values close to 1.00 are preferred."
     },
     {
       label: "COV",
@@ -943,7 +943,7 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
       note: `${formatSignedChange(classSummary.covChangeSince2025)} from 2025`,
       color: chartColors.cov,
       status: rawBandStatus(latest.cov, bandConfig.cov, { approximate: true }),
-      help: "Coefficient of Variation shows how spread out assessment ratios are around their mean. The displayed band is approximate context, not a direct COD substitute."
+      help: "Coefficient of Variation shows how spread out assessment ratios are around their average. The displayed band is approximate context, not a direct COD substitute."
     },
     {
       label: "Level of value",
@@ -1172,11 +1172,11 @@ function renderAssessmentConvergenceNote(records, datasets) {
 
   const latest = spreads.at(-1);
   if (!latest) {
-    note.textContent = "COD, PRD, COV, and level of value are normalized to their own bands so their relative movement can be read together.";
+    note.textContent = "COD, PRD, COV, and level of value use different scales. This view puts each measure into its own band so the trends can be compared together.";
     return;
   }
 
-  note.textContent = `${latest.year}: COD, PRD, COV, and level of value sit ${latest.spread.toFixed(2)} normalized band-widths apart. Closer spacing is easier to read together; wider spacing needs more context, especially with smaller sales samples.`;
+  note.textContent = `${latest.year}: COD, PRD, COV, and level of value are ${latest.spread.toFixed(2)} band-widths apart. Closer spacing is easier to compare. Wider spacing needs more attention, especially when the sales sample is small.`;
 }
 
 function renderAssessmentAccuracyChart(selectedClass, iaaoStandards) {
@@ -2008,7 +2008,7 @@ function renderMarketGroupSalesDistribution(selected, classStats) {
           <div>
             <p class="guided-kicker">Evidence depth</p>
             <h3 id="marketGroupSalesTitle">Sales by ${escapeHtml(groupKind)}</h3>
-            <p>Qualified sales are not spread evenly across local comparison groups. This shows how much of the class study is coming from each ${escapeHtml(groupKind)}.</p>
+            <p>Recent qualified sales are not spread evenly across local comparison groups. This shows how many class-study sales came from each ${escapeHtml(groupKind)}.</p>
           </div>
           <div class="market-group-sales-callout">
             <span>${escapeHtml(selectedLabel)}</span>
@@ -2195,7 +2195,7 @@ function localGroupStudyForClass(marketPositionData, classKey = "residential", v
     key: normalizedClassKey,
     label: `${classLabel} ${groupKindPlural}`,
     propertyClassLabel: className,
-    description: `${rangeHeader}s show where qualified ${className} sales are concentrated and how each local comparison group sits against the countywide sales study.`,
+    description: `${rangeHeader}s show where recent qualified ${className} sales are concentrated. They also show how each local group compares with the countywide sales study.`,
     chartTitle: `Sales by ${groupKind}`,
     chartNote: `Qualified sales by ${groupKind}.`,
     rangeHeader,
@@ -2233,8 +2233,8 @@ function priceBandStudyForClass(
     return {
       key: "residential",
       label: "Residential sale-price bands",
-      description: "Sale-price ranges show where qualified residential sales are concentrated and whether the study is based mostly on lower-, middle-, or higher-priced properties.",
-      chartNote: "Qualified sales by price band, including empty upper bands.",
+      description: "These numbers come from recent qualified residential sales. The price ranges show whether most sales were lower-priced, middle-priced, or higher-priced properties.",
+      chartNote: "Recent qualified sales grouped by price band. Empty upper bands are shown when no sales were reported there.",
       rangeHeader: "Sale price range",
       rows: padRatioData.salePriceRanges.filter(row => row.section === "Incremental Ranges"),
       totalRow: countywideTotalForClass(marketPositionData, "residential")
@@ -2470,7 +2470,7 @@ function renderMarketScatterSummary(selected, countywide, classStats, medianRang
       ? `with COD ${formatRatio(Math.abs(codDelta))} points more dispersed than the county overall`
       : `with COD ${formatRatio(Math.abs(codDelta))} points less dispersed than the county overall`;
   const sampleText = selected.count < 10
-    ? " The sales sample is small, so read the point with context."
+    ? " The sales sample is small, so treat this point as limited evidence."
     : "";
 
   summary.textContent = `The highlighted group ${medianRangeText} and ${codText}. The nearby cluster shows how other local groups relate to the broader county pattern.${sampleText}`;
@@ -2678,7 +2678,7 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
   const defaultGroup = getParcelMarketGroupId(recordCard, classStats.classKey) ?? groups[0].id;
   const sourceNote = document.getElementById("marketSourceNote");
   if (sourceNote) {
-    sourceNote.textContent = "Next, place the property in its local comparison group. These local sales-study measures introduce the countywide equalization check.";
+    sourceNote.textContent = "Next, place the property in its local comparison group. These recent sales measures lead into the countywide equalization check.";
   }
 
   const optionsMarkup = groups.map(group => `
@@ -2698,7 +2698,7 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
     const priceContextNote = document.getElementById("marketPriceContextNote");
     if (priceContextNote) {
       const groupName = marketGroupContextName(selected, classStats.classKey);
-      priceContextNote.textContent = `Average sale price, average assessed value, and level of value show price context for ${groupName}.`;
+      priceContextNote.textContent = `Average sale price, average assessed value, and level of value show how ${groupName} compares with other groups.`;
     }
     marketAreaSelects.forEach(select => {
       select.value = selected.id;

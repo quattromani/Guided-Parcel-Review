@@ -22,7 +22,7 @@ const resourcesByView = {
     faqTitle: "Tax FAQs",
     formTitle: "Tax and exemption forms",
     faqs: [
-      ["Why does tax context come after equalization?", "Equalization checks the value base for required level and reasonable uniformity. Tax context then shows how levies, credits, exemptions, and tax-district assignment turn that value base into a bill."],
+      ["Why does tax context come after equalization?", "Equalization checks whether assessments are at the required level and applied consistently. Tax context then shows how levies, credits, exemptions, and tax-district assignment affect the bill."],
       ["What is the difference between gross tax and net tax?", "Gross tax starts from value and levy. Net tax reflects applicable credits and adjustments before payment status is applied."],
       ["Why do value and taxes not always move together?", "Taxes also depend on budgets, levies, exemptions, credits, and tax district changes."],
       ["What does effective tax rate show?", "It divides statement net tax by assessed value so different years can be compared more clearly."],
@@ -43,7 +43,7 @@ const resourcesByView = {
     faqTitle: "Equalization FAQs",
     formTitle: "Equalization resources",
     faqs: [
-      ["Why does equalization sit before taxes?", "It checks whether the value base is at the required level and reasonably uniform before levies are applied."],
+      ["Why does equalization sit before taxes?", "It checks whether assessments are at the required level and applied consistently before levies are applied."],
       ["What does equalization not do?", "It does not stop market values from moving, set the tax levy, or decide whether one parcel outcome is right or wrong."],
       ["What do COD and PRD measure?", "COD describes assessment uniformity. PRD helps flag whether high- and low-value properties are treated consistently."],
       ["Can countywide measures prove the parcel value is wrong?", "Not by themselves. They are context; parcel facts and market evidence still matter."]
@@ -65,8 +65,8 @@ const resourcesByView = {
     faqs: [
       ["What should I review first?", "Start with the property record: square footage, year built, basement, garage, outbuildings, condition, lot size, property class, value history, and tax history."],
       ["What should I do with an unresolved question?", "Keep notes, verify official source documents, and contact the appropriate county or state office if the issue depends on official records or deadlines."],
-      ["What steps feed these signals?", "They synthesize the property record, value movement, equalization context, tax context, and source documents."],
-      ["Does this summary decide an outcome?", "No. It is a review aid that separates property facts, value movement, taxes, and context."]
+      ["What steps feed these signals?", "They come from the property record, value movement, equalization measures, tax context, and source documents."],
+      ["Does this summary decide an outcome?", "No. It is a review aid. It separates property facts, value movement, taxes, and context."]
     ]
   }
 };

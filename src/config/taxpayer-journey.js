@@ -15,7 +15,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "What Changed",
     question: "What changed?",
     title: "Look at the value movement",
-    description: "Compare recent value movement with the longer pattern."
+    description: "Compare the latest change with the longer value history."
   },
   {
     id: "valuation-detail",
@@ -23,17 +23,17 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     eyebrow: "Observe",
     label: "Value Detail",
     question: "What may be driving the value?",
-    title: "Connect the value to the record and market context",
-    description: "Read the property record beside local sales-study context."
+    title: "Compare the value with the record and local sales",
+    description: "Read the property facts beside recent qualified sales."
   },
   {
     id: "equalization",
     panelId: "county-equalization",
     eyebrow: "Check",
     label: "Equalization",
-    question: "How is the base checked for uniformity and proportionality?",
-    title: "Use equalization as the check between value and tax",
-    description: "Equalization checks value level and price-related fairness before levies are applied."
+    question: "Are assessments checked for level and consistency?",
+    title: "Use equalization to check the assessment base",
+    description: "Equalization checks whether assessments are at the required level and applied consistently."
   },
   {
     id: "state-context",
@@ -52,8 +52,8 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     eyebrow: "Understand",
     label: "Tax Context",
     question: "How do values connect to taxes?",
-    title: "Separate value, levy, credits, and final tax bills",
-    description: "Read value, levy, credits, districts, and net tax separately."
+    title: "See how value changes affect the tax bill",
+    description: "Review value, levy, credits, districts, and net tax separately."
   },
   {
     id: "review-signals",
@@ -71,7 +71,7 @@ export const TAXPAYER_JOURNEY_ROUTES = [
     label: "Summary",
     question: "What was reviewed?",
     title: "Leave with orientation and optional next steps",
-    description: "Everything in one place: the record, value, equalization, taxes, and review signals."
+    description: "Review the record, value, equalization, taxes, and signals in one place."
   }
 ];
 

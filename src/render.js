@@ -133,7 +133,7 @@ export function renderStartPage(propertySwitcherContext = {}) {
         </section>
         <section>
           <h3>Tax impact</h3>
-          <p>Connect value movement with levy, credits, effective tax rate, and the latest available tax bill context.</p>
+          <p>See how value changes, levy, credits, and effective tax rate relate to the latest available tax bill.</p>
         </section>
       </div>
 
@@ -259,9 +259,11 @@ function renderValueTaxHistoryShell() {
         <div class="mobile-support-content value-history-content">
             <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
             <p class="mt-1 text-sm text-slate-600">
-                Compare assessed value, net tax, and effective tax rate (ETR) year by year.
-                A straight value-by-levy calculation is gross tax; credits reduce that to net tax, and ETR divides the net tax back against assessed value.
-                The table keeps tax statement amounts separate from any payment balance shown in the source statement.
+                Compare assessed value, net tax, and effective tax rate (ETR) by year.
+                Gross tax starts with value and levy.
+                Credits reduce gross tax to net tax.
+                ETR compares net tax back to assessed value.
+                Payment balances stay separate from tax statement amounts.
             </p>
             <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
               <table class="value-tax-history-table min-w-full divide-y divide-slate-200 text-sm">
@@ -284,7 +286,7 @@ function renderValueTaxHistoryShell() {
         <div>
           <div>
             <h2 class="text-xl font-bold text-slate-700">How are this property’s value and taxes moving together?</h2>
-              <p id="indexedTrendsIntro" class="text-sm text-slate-600">Compare the relative relationship between value and net taxes after levy adjustments and credits are factored in.</p>
+              <p id="indexedTrendsIntro" class="text-sm text-slate-600">Compare how assessed value and net taxes moved after levy changes and credits are applied.</p>
           </div>
         </div>
         <div class="indexed-trends-chart mt-4">
@@ -349,7 +351,7 @@ function renderTaxDistributionShell(data) {
         <div class="levy-treemap-panel" aria-labelledby="distributionChartTitle">
           <div class="levy-treemap-heading">
             <h2 id="distributionChartTitle" class="text-xl font-bold text-slate-700">How is the tax bill distributed?</h2>
-            <p class="mt-1 text-sm text-slate-600">The chart shows this property’s taxing-body share of the latest tax bill after credits are reflected.</p>
+            <p class="mt-1 text-sm text-slate-600">The chart shows which taxing bodies receive shares of the latest tax bill after credits are applied.</p>
           </div>
           <div id="distributionTreemap" class="levy-treemap-shell"></div>
         </div>
@@ -363,7 +365,7 @@ function renderTaxDistributionShell(data) {
           </summary>
           <div class="mobile-support-content">
             <h2 class="text-xl font-bold text-slate-700">Which taxing bodies are included?</h2>
-            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. Levy share is before statement credits; the 2026 tax bill still depends on finalized budgets, levies, credits, and exemptions.</p>
+            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. Levy share is shown before statement credits. The 2026 tax bill still depends on final budgets, levies, credits, and exemptions.</p>
             <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
               <table class="min-w-full divide-y divide-slate-200 text-sm">
                 <thead>
@@ -402,7 +404,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
 
   const salesMakeup = `
     <h3 id="equalizationSalePriceTitle" class="text-lg font-bold text-slate-700">What makes up the class sales data?</h3>
-    <p id="equalizationSalePriceDescription" class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">Sale-price ranges show where qualified sales are concentrated and whether the class study is based mostly on lower-, middle-, or higher-priced properties.</p>
+    <p id="equalizationSalePriceDescription" class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">These numbers come from recent qualified sales in this class. The price ranges show whether most sales were lower-priced, middle-priced, or higher-priced properties.</p>
     <div class="data-split-view equalization-sales-split-view mt-4 grid gap-4 lg:grid-cols-2">
       <div class="equalization-sales-table-scroll overflow-auto rounded-xl bg-white ring-1 ring-slate-200">
         <table class="min-w-full divide-y divide-slate-200 text-xs equalization-support-table equalization-sales-table">
@@ -432,7 +434,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
       </div>
       <div class="equalization-sales-chart-panel review-card-muted">
         <p id="equalizationSalePriceChartTitle" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sales distribution</p>
-        <p id="equalizationSalePriceChartNote" class="mt-1 text-sm leading-5 text-slate-600">Qualified sales by price band, including empty upper bands.</p>
+        <p id="equalizationSalePriceChartNote" class="mt-1 text-sm leading-5 text-slate-600">Recent qualified sales grouped by price band. Empty upper bands are shown when no sales were reported there.</p>
         <div id="equalizationSalePriceChartLegend" class="chart-disc-legend mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
         <div class="equalization-sales-chart-frame mt-3">
           <canvas id="equalizationSalePriceChart"></canvas>
@@ -478,7 +480,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
             <canvas id="assessmentAccuracyChart"></canvas>
           </div>
         </article>
-        <p id="assessmentAccuracyConvergenceNote" class="equalization-unified-note mt-3 text-sm text-slate-600">COD, PRD, COV, and level of value are normalized to their own bands so their relative movement can be read together.</p>
+        <p id="assessmentAccuracyConvergenceNote" class="equalization-unified-note mt-3 text-sm text-slate-600">COD, PRD, COV, and level of value use different scales. This view puts each measure into its own band so the trends can be compared together.</p>
       </div>
       <article class="equalization-year-table-panel review-card-muted lg:col-span-2">
         <details class="mobile-support-disclosure equalization-support-disclosure" data-mobile-support${supportOpen}>
@@ -488,7 +490,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
           </summary>
           <div class="mobile-support-content">
             <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
-            <p class="mt-1 text-sm text-slate-600">Latest years appear first so recent county sales-study results are easy to compare with prior years.</p>
+            <p class="mt-1 text-sm text-slate-600">The latest years appear first. This makes recent county sales-study results easier to compare with prior years.</p>
             <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
               <table class="min-w-full divide-y divide-slate-200 text-sm equalization-support-table">
                 <thead class="sticky top-0">
@@ -2858,34 +2860,34 @@ function localMarketQuickReadLine(selectedMarket, context = {}) {
   if (count === 1) {
     return `
       <span class="summary-tax-line">There was <strong>1 qualified ${classNoun} sale</strong> in ${studyLabel}.</span>
-      <span class="summary-tax-line">That sale was assessed at <strong>${ratio}</strong> of sale price, so it is a context clue rather than a broad market pattern.</span>
+      <span class="summary-tax-line">That sale was assessed at <strong>${ratio}</strong> of sale price. One sale is a clue, not a broad market pattern.</span>
     `;
   }
 
   if (count < 5) {
     return `
       <span class="summary-tax-line">There were <strong>${count.toLocaleString()} qualified ${classNoun} ${saleNoun}</strong> in ${studyLabel}.</span>
-      <span class="summary-tax-line">The median result was <strong>${ratio}</strong> of sale price, but a sample this small can move a lot from one sale to the next.</span>
+      <span class="summary-tax-line">The median result was <strong>${ratio}</strong> of sale price. A sample this small can change a lot from one sale to the next.</span>
     `;
   }
 
   if (count < 10) {
     return `
       <span class="summary-tax-line">There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.</span>
-      <span class="summary-tax-line">The middle sale was assessed at <strong>${ratio}</strong> of sale price, so this should be read as limited context.</span>
+      <span class="summary-tax-line">The middle sale was assessed at <strong>${ratio}</strong> of sale price. Read this as limited context.</span>
     `;
   }
 
   if (count < 25) {
     return `
       <span class="summary-tax-line">There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.</span>
-      <span class="summary-tax-line">The middle sale was assessed at <strong>${ratio}</strong> of sale price, based on a modest local sample.</span>
+      <span class="summary-tax-line">The middle sale was assessed at <strong>${ratio}</strong> of sale price. The local sample is modest.</span>
     `;
   }
 
   return `
     <span class="summary-tax-line">There were <strong>${count.toLocaleString()} qualified ${classNoun} sales</strong> in ${studyLabel}.</span>
-    <span class="summary-tax-line">The middle sale was assessed at <strong>${ratio}</strong> of sale price, based on a strong local sample.</span>
+    <span class="summary-tax-line">The middle sale was assessed at <strong>${ratio}</strong> of sale price. The local sample is strong.</span>
   `;
 }
 
@@ -2936,9 +2938,9 @@ function countyQuickReadLine(data, summaryContext = {}) {
 
   return `
     <span class="summary-tax-line"><strong>${latest.year} ${selectedClass.label}</strong> county study:</span>
-    <span class="summary-tax-line">LOV <strong>${formatRatioPercent(latest.levelOfValue)}</strong></span>
-    <span class="summary-tax-line">COD <strong>${Number(latest.cod).toFixed(2)}</strong></span>
-    <span class="summary-tax-line">PRD <strong>${Number(latest.prd).toFixed(3)}</strong></span>
+    <span class="summary-tax-line">Level of value (LOV): <strong>${formatRatioPercent(latest.levelOfValue)}</strong></span>
+    <span class="summary-tax-line">COD: <strong>${Number(latest.cod).toFixed(2)}</strong></span>
+    <span class="summary-tax-line">PRD: <strong>${Number(latest.prd).toFixed(3)}</strong></span>
   `;
 }
 
