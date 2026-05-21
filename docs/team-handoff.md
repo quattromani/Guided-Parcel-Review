@@ -139,6 +139,7 @@ Frontend placeholders:
 
 - Component inventory for cards, tables, modals, charts, route headers, and next-step controls.
 - Framework migration plan if React/Vue/Svelte/etc. is introduced.
+- Route-level progressive hydration plan for deferring later-step chart/data/report work until the user reaches or approaches that guided step.
 - Chart/table alternative text strategy.
 - Regression screenshots for mobile, tablet portrait, tablet landscape, and desktop.
 
