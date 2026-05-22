@@ -154,7 +154,7 @@ export function renderPage(data, imageModal, calendar, recordCard, valuationGrou
   renderHistoryTable(data);
   renderPropertyMovementSummary(data);
   renderTaxHistoryTable(data);
-  renderLevyTable(data);
+  renderLevyTable(data, recordCard);
   renderSources(data);
 }
 
@@ -302,8 +302,8 @@ function renderTaxDistributionShell(data) {
       <article>
         <div class="levy-treemap-panel" aria-labelledby="distributionChartTitle">
           <div class="levy-treemap-heading">
-            <h2 id="distributionChartTitle" class="text-xl font-bold text-slate-700">How is the tax bill distributed?</h2>
-            <p class="mt-1 text-sm text-slate-600">The chart shows which taxing bodies receive shares of the latest tax bill after credits are applied.</p>
+            <h2 id="distributionChartTitle" class="text-xl font-bold text-slate-700">How is the gross levy distributed for this property?</h2>
+            <p class="mt-1 text-sm text-slate-600">The chart shows each taxing body's share of the latest completed levy against this property's assessed value before statement credits.</p>
           </div>
           <div id="distributionTreemap" class="levy-treemap-shell"></div>
         </div>
@@ -317,7 +317,7 @@ function renderTaxDistributionShell(data) {
           </summary>
           <div class="mobile-support-content">
             <h2 class="text-xl font-bold text-slate-700">Which taxing bodies are included?</h2>
-            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. Levy share is shown before statement credits. The 2026 tax bill still depends on final budgets, levies, credits, and exemptions.</p>
+            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. Levy share and property amount show the gross levy applied to this property before statement credits. The 2026 tax bill still depends on final budgets, levies, credits, and exemptions.</p>
             <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
               <table class="min-w-full divide-y divide-slate-200 text-sm">
                 <thead>
@@ -325,7 +325,7 @@ function renderTaxDistributionShell(data) {
                     <th class="px-3 py-2 text-left font-semibold">Taxing body</th>
                     <th class="px-3 py-2 text-right font-semibold">Rate</th>
                     <th class="px-3 py-2 text-right font-semibold">Levy share</th>
-                    <th class="px-3 py-2 text-right font-semibold">Per $100k</th>
+                    <th class="px-3 py-2 text-right font-semibold">Property amount</th>
                   </tr>
                 </thead>
                 <tbody id="levyRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
@@ -3426,32 +3426,31 @@ function statementTotalCredits(statement) {
   return Math.abs(Object.values(statement.credits || {}).reduce((sum, credit) => sum + (credit?.amount || 0), 0));
 }
 
-function renderLevyTable(data) {
-  const total = sumRates(data.latestFinalLevyComponents);
-  const taxableValuePer100k = 100000;
-  const sortedRows = data.latestFinalLevyComponents.slice().sort((a, b) => b.rate - a.rate);
+function renderLevyTable(data, recordCard) {
+  const rows = latestTaxDistributionRows(data, recordCard);
+  const total = sumRates(rows);
+  const sortedRows = rows.slice().sort((a, b) => b.rate - a.rate);
 
   const dataRows = sortedRows.map(row => {
     const share = row.rate / total;
-    const taxPer100k = taxableValuePer100k * (row.rate / 100);
 
     return `
       <tr>
         <td class="px-3 py-2 font-medium">${row.description}</td>
         <td class="whitespace-nowrap px-3 py-2 text-right">${formatNullableLevy(row.rate)}</td>
         <td class="whitespace-nowrap px-3 py-2 text-right">${percent.format(share)}</td>
-        <td class="whitespace-nowrap px-3 py-2 text-right">${moneyCents.format(taxPer100k)}</td>
+        <td class="whitespace-nowrap px-3 py-2 text-right">${formatNullableMoney(row.amount, true)}</td>
       </tr>
     `;
   }).join("");
 
-  const totalTaxPer100k = taxableValuePer100k * (total / 100);
+  const totalPropertyAmount = sortedRows.reduce((sum, row) => sum + (Number(row.amount) || 0), 0);
   const totalRow = `
     <tr class="table-total-row font-semibold">
       <td class="px-3 py-3">Total levy</td>
       <td class="whitespace-nowrap px-3 py-3 text-right">${formatNullableLevy(total)}</td>
       <td class="whitespace-nowrap px-3 py-3 text-right">100.00%</td>
-      <td class="whitespace-nowrap px-3 py-3 text-right">${moneyCents.format(totalTaxPer100k)}</td>
+      <td class="whitespace-nowrap px-3 py-3 text-right">${formatNullableMoney(totalPropertyAmount, true)}</td>
     </tr>
   `;
 

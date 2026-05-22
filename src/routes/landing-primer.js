@@ -356,7 +356,7 @@ function installFinalSummary(data, context = {}) {
     </article>
 
     <aside class="guided-transition guided-step-handoff">
-      <p>You have reached the end of the guided review. The summary brings together the record, value, equalization, taxes, and review signals for download.</p>
+      <p>You're all done! This summary brings the main points together, and you can download a guided review to keep or share.</p>
     </aside>
     <nav class="guided-next-action" aria-label="Download guided review summary">
       <button type="button" class="next-step-button property-report-download-button" data-property-report-download>Download Guided Review Summary</button>

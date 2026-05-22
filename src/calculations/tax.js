@@ -38,15 +38,26 @@ function roundedKey(value) {
   return Number.isFinite(Number(value)) ? Number(value).toFixed(6) : "";
 }
 
-function latestFinalTaxAmount(data = {}) {
-  const finalYear = data.latestFinalTaxYear;
-  const finalRow = data.taxpayerHistory?.find(row =>
-    row.year === finalYear && row.taxes !== null && row.taxes !== undefined
+function latestFinalAssessedValue(data = {}) {
+  const finalYear = data.latestFinalTaxYear ?? data.snapshotYear;
+  const statement = data.taxStatements?.find(row =>
+    row.taxYear === finalYear && finiteNumber(row.assessedValue) !== null
+  );
+  const history = data.taxpayerHistory?.find(row =>
+    row.year === finalYear && finiteNumber(row.assessedValue) !== null
   );
 
-  return finalRow?.taxes
-    ?? data.snapshotModel?.viewModels?.taxes?.latestFinalTax
+  return finiteNumber(statement?.assessedValue)
+    ?? finiteNumber(history?.assessedValue)
     ?? null;
+}
+
+function grossPropertyLevyAmount(rate, data = {}) {
+  const assessedValue = latestFinalAssessedValue(data);
+  const levyRate = finiteNumber(rate);
+
+  if (assessedValue === null || levyRate === null) return null;
+  return assessedValue * (levyRate / 100);
 }
 
 function taxDistributionSourceSection(recordCard = {}) {
@@ -76,17 +87,18 @@ function sourceDistributionRows(data = {}, recordCard = {}) {
         description: component?.description ?? row?.[0] ?? "",
         group: component?.group ?? "Other",
         rate,
-        amount
+        statementDistributionAmount: amount
       };
     })
-    .filter(row => row.authority && Number.isFinite(row.rate) && Number.isFinite(row.amount) && row.amount > 0);
-  const totalAmount = rows.reduce((sum, row) => sum + row.amount, 0);
+    .filter(row => row.authority && Number.isFinite(row.rate) && row.rate > 0);
+  const totalRate = sumRates(rows);
 
-  if (!totalAmount) return [];
+  if (!totalRate) return [];
 
   return rows.map(row => ({
     ...row,
-    share: row.amount / totalAmount
+    amount: grossPropertyLevyAmount(row.rate, data),
+    share: row.rate / totalRate
   }));
 }
 
@@ -94,7 +106,6 @@ function fallbackDistributionRows(data = {}) {
   const rows = (data.latestFinalLevyComponents || [])
     .filter(row => Number.isFinite(Number(row.rate)) && Number(row.rate) > 0);
   const totalRate = sumRates(rows);
-  const latestTaxesPaid = latestFinalTaxAmount(data);
 
   if (!totalRate) return [];
 
@@ -106,7 +117,7 @@ function fallbackDistributionRows(data = {}) {
       description: row.description,
       group: row.group ?? "Other",
       rate: row.rate,
-      amount: Number.isFinite(Number(latestTaxesPaid)) ? share * latestTaxesPaid : null,
+      amount: grossPropertyLevyAmount(row.rate, data),
       share
     };
   });

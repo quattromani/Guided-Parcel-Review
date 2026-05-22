@@ -90,7 +90,7 @@ function levyTreemapGroupLabel(group) {
 
 export function buildDistributionChart(data, schoolDistrictColors, recordCard) {
   const rows = latestTaxDistributionRows(data, recordCard)
-    .filter(row => hasDataValue(row.amount) && row.amount > 0);
+    .filter(row => hasDataValue(row.rate) && row.rate > 0);
   const schoolDistrictColor = findSchoolDistrictColor(data, schoolDistrictColors)?.map_color;
   const items = rows
     .map((row, index) => {
@@ -101,7 +101,7 @@ export function buildDistributionChart(data, schoolDistrictColors, recordCard) {
         group,
         groupLabel: levyTreemapGroupLabel(group),
         label: levyTreemapLabel(group, row.description || row.authority || group),
-        value: row.amount,
+        value: row.rate,
         amount: row.amount,
         color: levyColorForGroup(group, schoolDistrictColor)
       };
@@ -115,7 +115,7 @@ export function buildDistributionChart(data, schoolDistrictColors, recordCard) {
     colorAlpha,
     formatAmount: value => hasDataValue(value) ? moneyCents.format(value) : "",
     formatShare: value => percent.format(value),
-    ariaLabel: "Latest tax bill distribution chart",
+    ariaLabel: "Property gross levy distribution chart",
     layout: "priority-stack"
   });
 }
