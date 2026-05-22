@@ -12,6 +12,7 @@ import {
 import {
   getPreviousFinalValueHistory,
   getSnapshotHistory,
+  sortHistoryAscending,
   sortHistoryDescending
 } from "./calculations/history.js";
 import {
@@ -244,6 +245,7 @@ function renderValueTaxHistoryShell() {
                 <tbody id="historyRows" class="divide-y divide-slate-200 bg-white"></tbody>
               </table>
             </div>
+            <div id="historyMovementSummary" class="history-movement-summary"></div>
             <p id="historyFootnote" class="mt-2 hidden text-xs leading-5 text-slate-500"></p>
         </div>
       </article>
@@ -2982,6 +2984,7 @@ function initJumpLinks() {
 
 function renderHistoryTable(data) {
   const rows = sortHistoryDescending(data.taxpayerHistory);
+  const ascendingRows = sortHistoryAscending(data.taxpayerHistory);
   const heatRanges = {
     assessedValue: historyHeatRange(rows, row => row.assessedValue),
     taxes: historyHeatRange(rows, row => row.taxes),
@@ -3023,6 +3026,82 @@ function renderHistoryTable(data) {
   document.querySelectorAll("[data-tax-history-source]").forEach(element => {
     element.textContent = taxHistorySourceText(data);
   });
+
+  renderHistoryMovementSummary(ascendingRows);
+}
+
+function movementDirection(value, label) {
+  if (!Number.isFinite(value)) return `${label} unavailable`;
+  if (value > 0) return `${label} up`;
+  if (value < 0) return `${label} down`;
+  return `${label} flat`;
+}
+
+function historyMovementForRows(rows, valueForRow, formatter) {
+  const usableRows = rows
+    .map(row => ({ year: row.year, value: valueForRow(row) }))
+    .filter(row => Number.isFinite(row.value))
+    .sort((a, b) => a.year - b.year);
+  const first = usableRows[0];
+  const last = usableRows.at(-1);
+  const change = percentChangeBetween(first?.value, last?.value);
+
+  return {
+    first,
+    last,
+    change,
+    display: formatter(change)
+  };
+}
+
+function etrPointMovementForRows(rows) {
+  const usableRows = rows
+    .map(row => ({ year: row.year, value: calculateEtr(row) }))
+    .filter(row => Number.isFinite(row.value))
+    .sort((a, b) => a.year - b.year);
+  const first = usableRows[0];
+  const last = usableRows.at(-1);
+  const change = Number.isFinite(first?.value) && Number.isFinite(last?.value) ? last.value - first.value : null;
+
+  return {
+    first,
+    last,
+    change,
+    display: signedPoints(change)
+  };
+}
+
+function renderHistoryMovementSummary(rows) {
+  const container = document.getElementById("historyMovementSummary");
+  if (!container) return;
+
+  const valueMovement = historyMovementForRows(rows, row => row.assessedValue, signedPercent);
+  const taxMovement = historyMovementForRows(rows, row => row.taxes, signedPercent);
+  const etrMovement = etrPointMovementForRows(rows);
+  const firstYear = valueMovement.first?.year ?? taxMovement.first?.year ?? etrMovement.first?.year;
+  const lastYear = valueMovement.last?.year ?? taxMovement.last?.year ?? etrMovement.last?.year;
+  const rangeLabel = firstYear && lastYear ? `${firstYear}-${lastYear}` : "Loaded years";
+
+  const items = [
+    ["Assessed value", movementDirection(valueMovement.change, "Value"), valueMovement.display],
+    ["Net tax", movementDirection(taxMovement.change, "Net tax"), taxMovement.display],
+    ["ETR", Number.isFinite(etrMovement.change) ? (etrMovement.change > 0 ? "ETR up" : etrMovement.change < 0 ? "ETR down" : "ETR flat") : "ETR unavailable", etrMovement.display]
+  ];
+
+  container.innerHTML = `
+    <div class="history-movement-cards">
+      <div class="history-movement-range">${rangeLabel}</div>
+      <div class="history-movement-range-spacer" aria-hidden="true"></div>
+      <div class="history-movement-range-spacer" aria-hidden="true"></div>
+      ${items.map(([label, direction, value]) => `
+        <div class="history-movement-card">
+          <p>${escapeHtml(label)}</p>
+          <strong>${escapeHtml(direction)}</strong>
+          <span>${escapeHtml(value)}</span>
+        </div>
+      `).join("")}
+    </div>
+  `;
 }
 
 function historyHeatRange(rows, valueForRow) {
@@ -3050,13 +3129,6 @@ function historyHeatStyle(value, range, colorVariable) {
   return ` style="--history-heat-color: var(${colorVariable}); --history-heat-alpha: ${alpha.toFixed(3)}; --history-heat-stop: ${Math.round(stop)}%;"`;
 }
 
-function annualizedChange(startValue, endValue, years) {
-  if (!Number.isFinite(startValue) || !Number.isFinite(endValue) || !years) return null;
-  if (startValue === 0) return endValue === 0 ? 0 : null;
-  if (endValue < 0 || startValue < 0) return null;
-  return Math.pow(endValue / startValue, 1 / years) - 1;
-}
-
 function signedPercent(value) {
   if (!Number.isFinite(value)) return "—";
   const prefix = value > 0 ? "+" : "";
@@ -3081,12 +3153,6 @@ function isZeroToZero(previous, current) {
 
 function taxMovementValue(previous, current) {
   return isZeroToZero(previous, current) ? "No net tax" : signedPercent(percentChangeBetween(previous, current));
-}
-
-function taxAnnualNote(firstTax, lastTax, years) {
-  if (!firstTax || !lastTax) return "Loaded tax years unavailable";
-  if (isZeroToZero(firstTax.taxes, lastTax.taxes)) return "No net tax in loaded years";
-  return `${signedPercent(annualizedChange(firstTax.taxes, lastTax.taxes, years))} average per year`;
 }
 
 function movementCard([label, value, note, range]) {
@@ -3122,21 +3188,11 @@ function renderPropertyMovementSummary(data) {
 
   const firstValue = valueRows[0];
   const lastValue = valueRows.at(-1);
-  const firstTax = taxRows[0];
   const lastTax = taxRows.at(-1);
-  const firstEtr = etrRows[0];
   const lastEtr = etrRows.at(-1);
   const previousValue = valueRows.at(-2);
   const previousTax = taxRows.at(-2);
   const previousEtr = etrRows.at(-2);
-
-  const valueYears = firstValue && lastValue ? lastValue.year - firstValue.year : null;
-  const taxYears = firstTax && lastTax ? lastTax.year - firstTax.year : null;
-  const etrYears = firstEtr && lastEtr ? lastEtr.year - firstEtr.year : null;
-
-  const valueChange = percentChangeBetween(firstValue?.assessedValue, lastValue?.assessedValue);
-  const taxChange = percentChangeBetween(firstTax?.taxes, lastTax?.taxes);
-  const etrChange = firstEtr && lastEtr ? lastEtr.etr - firstEtr.etr : null;
 
   const recentCards = [
     [
@@ -3159,45 +3215,15 @@ function renderPropertyMovementSummary(data) {
     ]
   ];
 
-  const historicalCards = [
-    [
-      "Value increase",
-      signedPercent(valueChange),
-      `${signedPercent(annualizedChange(firstValue.assessedValue, lastValue.assessedValue, valueYears))} average per year`,
-      `${firstValue.year}-${lastValue.year}`
-    ],
-    [
-      "Tax growth",
-      taxMovementValue(firstTax?.taxes, lastTax?.taxes),
-      taxAnnualNote(firstTax, lastTax, taxYears),
-      firstTax && lastTax ? `${firstTax.year}-${lastTax.year} finalized` : "Loaded tax years"
-    ],
-    [
-      "ETR movement",
-      `${formatNullablePercent(firstEtr?.etr)} to ${formatNullablePercent(lastEtr?.etr)}`,
-      `${signedPoints(etrYears ? etrChange / etrYears : null)} average / year`,
-      firstEtr && lastEtr ? `${firstEtr.year}-${lastEtr.year} finalized` : "Loaded tax years"
-    ]
-  ];
-
   container.innerHTML = `
     <div class="movement-summary-grid">
       <section class="movement-summary-section">
         <div class="movement-section-heading">
-          <p>Recent movement</p>
+          <p>Recent Movement</p>
           <p>${previousValue?.year && lastValue?.year ? `${previousValue.year}-${lastValue.year}` : "Recent available years"}</p>
         </div>
         <div class="mt-2 grid gap-3">
           ${recentCards.map(movementCard).join("")}
-        </div>
-      </section>
-      <section class="movement-summary-section">
-        <div class="movement-section-heading">
-          <p>Movement history</p>
-          <p>${firstValue.year}-${lastValue.year}</p>
-        </div>
-        <div class="mt-2 grid gap-3">
-          ${historicalCards.map(movementCard).join("")}
         </div>
       </section>
     </div>
