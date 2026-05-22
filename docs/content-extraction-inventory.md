@@ -34,7 +34,7 @@ These repeats were identified during validation and left unchanged so this pass 
 
 - Route questions/descriptions repeated as view-header titles/descriptions:
   - "Are assessments checked for level and consistency?"
-  - "Equalization checks whether assessments are at the required level and applied consistently."
+  - "Equalization checks whether assessments meet required levels and are applied consistently."
   - "How does the county compare statewide?"
   - "Use statewide CTL data as broader context."
   - "Check whether the source facts line up."
@@ -48,6 +48,11 @@ These repeats were identified during validation and left unchanged so this pass 
   - "Property record forms"
 - Display label reused in two contexts:
   - "Legal description"
+
+## Editor Recommendations Held For Review
+
+- `pages.your-taxes.countyBaseline.intro`: an editor suggested changing "broader value base" to "broader tax base." Hold for internal policy/legal terminology review before changing tax-base framing.
+- `footer.panels.privacy.notes.2`: an editor suggested changing "This site should not sell personal information" to "This site does not intend to sell personal information." Hold for legal/privacy review before changing prototype privacy language.
 
 ## Validation Notes
 

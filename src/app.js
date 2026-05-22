@@ -236,7 +236,7 @@ function renderStaticContent() {
   setAttr(".guided-path-nav", "aria-label", "navigation.ariaLabel", "Guided parcel review path");
   setHtml("[data-guided-progress-status]", "navigation.initialProgress", "You're reviewing <strong>Property Record</strong>");
   setText(".property-details-panel h2", "pages.your-property.propertyDetails.title", "Property details");
-  setText(".property-details-panel > p", "pages.your-property.propertyDetails.description", "These are the property details used to place the parcel in later value and tax views. Confirming them first makes the later numbers easier to understand.");
+  setText(".property-details-panel > p", "pages.your-property.propertyDetails.description", "These property details shape the value and tax views that follow. Reviewing them first makes the later numbers easier to follow.");
   setText("[data-report-error]", "pages.your-property.decisionCheck.button", "Open record review");
   setText(".ooda-decision-card .guided-kicker", "pages.your-property.decisionCheck.kicker", "Decision check");
   setText(".ooda-decision-card h2", "pages.your-property.decisionCheck.title", "Does the record look right?");
@@ -264,7 +264,7 @@ function renderStaticContent() {
   setText("#marketPriceContextNote", "pages.market-area.priceContext.description", "Average sale price, average assessed value, and level of value show price context for the selected group.");
 
   setText("#countyComparisonTitle", "pages.state-context.comparison.title", "How does this county compare?");
-  setText("#countyComparisonRangeIntro", "pages.state-context.comparison.description", "This comparison uses the assessment-year range shown in the charts below. It starts with a simple rate baseline: Nebraska equals 100. A county above 100 has a higher average tax rate than the statewide average; below 100 is lower. Certified values, taxes levied, and average tax rate give the rest of the context.");
+  setText("#countyComparisonRangeIntro", "pages.state-context.comparison.description", "This comparison uses the assessment-year range shown in the charts below. It starts with a simple baseline: Nebraska equals 100. A county above 100 has a higher average tax rate than the statewide average; below 100 has a lower rate. Certified values, taxes levied, and average tax rates provide additional context.");
   setText("#county-comparison .guided-kicker", "pages.state-context.comparison.decisionKicker", "Decision check");
   setText("#county-comparison .ooda-inline-note h3", "pages.state-context.comparison.decisionTitle", "Does the county stand out?");
   setText("#county-comparison .ooda-inline-note p:last-child", "pages.state-context.comparison.decisionBody", "The Nebraska = 100 comparison, value growth, tax growth, and average rate movement show whether the local pattern is unusual or broadly typical.");
@@ -280,7 +280,7 @@ function renderStaticContent() {
   setAttr("[data-close-assessment-dates]", "aria-label", "modals.assessmentDates.closeLabel", "Close assessment dates");
   setText("#reportErrorModal .app-modal-header .uppercase", "modals.recordCorrection.kicker", "Property record correction request");
   setText("#reportErrorTitle", "modals.recordCorrection.title", "Report a property record discrepancy");
-  setText("#reportErrorTitle + p", "modals.recordCorrection.description", "Use this to request factual record review when parcel, land, dwelling, improvement, or other property details appear inaccurate, incomplete, or misclassified.");
+  setText("#reportErrorTitle + p", "modals.recordCorrection.description", "Use this form to request factual record review when parcel, land, dwelling, improvement, or other property details appear inaccurate, incomplete, or misclassified.");
   setAttr("[data-close-report-error]", "aria-label", "modals.recordCorrection.closeLabel", "Close property record correction form");
   setText("#sourceTableModal .app-modal-header .uppercase", "modals.sourceTable.kicker", "Source table");
   setText("#sourceTableModalTitle", "modals.sourceTable.title", "Statement history");

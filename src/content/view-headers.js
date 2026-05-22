@@ -27,14 +27,14 @@ const fallbackViewHeaderContent = {
   },
   "market-area": {
     eyebrow: "Step 3 · Value detail",
-    title: "How does this compare nearby?",
+    title: "How does this property compare nearby?",
     description: "Start with the property's local comparison group.",
     imageAlt: "Map of Nebraska highlighting the local market area"
   },
   "county-equalization": {
     eyebrow: "Step 4 · Equalization",
     title: "Are assessments checked for level and consistency?",
-    description: "Equalization checks whether assessments are at the required level and applied consistently.",
+    description: "Equalization checks whether assessments meet required levels and are applied consistently.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
   "state-context": {

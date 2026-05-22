@@ -3268,7 +3268,7 @@ function renderCountyComparisonCharts(ctlData, primaryCounty, comparisonTarget) 
   const ratePendingColumns = pendingColumnsForChartDatasets(years, rateDatasets);
   const comparisonRange = yearRangeLabel(primaryRows);
 
-  setText("countyComparisonRangeIntro", `This comparison covers the ${comparisonRange} assessment-year range shown in the charts below. It starts with a simple rate baseline: Nebraska equals 100. A county above 100 has a higher average tax rate than the statewide average; below 100 is lower. Certified values, taxes levied, and average tax rate give the rest of the context.`);
+  setText("countyComparisonRangeIntro", `This comparison covers the ${comparisonRange} assessment-year range shown in the charts below. It starts with a simple baseline: Nebraska equals 100. A county above 100 has a higher average tax rate than the statewide average; below 100 has a lower rate. Certified values, taxes levied, and average tax rates provide additional context.`);
   setText("countyComparisonIndexedNote", `${primaryLabel} is compared with ${comparisonLabel}, indexed to ${years[0]}.`);
   setText("countyComparisonRateNote", `${primaryLabel} and ${comparisonLabel} average CTL tax rates.`);
   renderCountyComparisonSummary(primaryRows, comparisonRows, statewideRows, primaryLabel, comparisonLabel);

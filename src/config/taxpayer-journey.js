@@ -25,7 +25,7 @@ const fallbackTaxpayerJourneyRoutes = [
     eyebrow: "Observe",
     label: "Value Detail",
     question: "What may be driving the value?",
-    title: "Compare the value with the record and local sales",
+    title: "Compare the value with the property record and local sales",
     description: "Read the property facts beside recent qualified sales."
   },
   {
@@ -35,7 +35,7 @@ const fallbackTaxpayerJourneyRoutes = [
     label: "Equalization",
     question: "Are assessments checked for level and consistency?",
     title: "Use equalization to check the assessment base",
-    description: "Equalization checks whether assessments are at the required level and applied consistently."
+    description: "Equalization checks whether assessments meet required levels and are applied consistently."
   },
   {
     id: "state-context",
@@ -63,7 +63,7 @@ const fallbackTaxpayerJourneyRoutes = [
     eyebrow: "Decide",
     label: "Review Signals",
     question: "Is there anything worth reviewing more closely?",
-    title: "Review neutral signals and organize questions",
+    title: "Review neutral signals and organize follow-up questions",
     description: "Check whether the source facts line up."
   },
   {

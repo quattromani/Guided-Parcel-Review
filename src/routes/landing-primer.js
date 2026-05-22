@@ -304,7 +304,7 @@ function installReviewSignalsPanel(data, context = {}) {
 
   panel.innerHTML = `
     <aside class="guided-transition">
-      <p>This page gathers the main signals from the earlier steps. It helps identify items that may deserve a closer look. It does not make conclusions for the user.</p>
+      <p>This page gathers the main signals from the earlier steps. It highlights items that may deserve a closer look. It does not make conclusions or recommendations.</p>
     </aside>
 
     <article class="civic-summary-shell civic-final-review">
@@ -364,7 +364,7 @@ function installFinalSummary(data, context = {}) {
     </article>
 
     <aside class="guided-transition guided-step-handoff">
-      <p>You're all done! This summary brings the main points together, and you can download a guided review to keep or share.</p>
+      <p>This summary brings the main points together. You can also download a guided review to keep or share.</p>
     </aside>
     <nav class="guided-next-action" aria-label="Download guided review summary">
       <button type="button" class="next-step-button property-report-download-button" data-property-report-download>Download Guided Review Summary</button>
