@@ -1,5 +1,7 @@
 import { hasValue, latestKnown, percentChange, previousKnown } from "../calculations/history.js";
 
+const MATERIAL_VALUE_MOVEMENT_THRESHOLD = 0.15;
+
 function signal(id, tone, title, summary, detail) {
   return { id, tone, title, summary, detail };
 }
@@ -43,13 +45,13 @@ export function buildReviewSignalModel(propertyData, recordCard) {
     ));
   }
 
-  if (latestChange !== null && Math.abs(latestChange) >= 0.15) {
+  if (latestChange !== null && Math.abs(latestChange) >= MATERIAL_VALUE_MOVEMENT_THRESHOLD) {
     signals.push(signal(
       "material-value-movement",
       "review",
-      "Recent value movement may warrant review",
+      "Large value movement noted",
       `The latest known assessed value changed by ${(latestChange * 100).toFixed(1)}% from ${previousValue.year} to ${latestValue.year}.`,
-      "A larger movement can be explainable, but it is worth comparing against property facts, land/building splits, and local market context."
+      `This orientation signal appears at ${(MATERIAL_VALUE_MOVEMENT_THRESHOLD * 100).toFixed(0)}% or more. It is not an official standard or conclusion; it is a prompt to compare property facts, land/building splits, and local market context.`
     ));
   }
 
