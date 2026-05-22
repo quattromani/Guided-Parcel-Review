@@ -30,11 +30,16 @@ function validateSchemasParse() {
 
 function validateManifest() {
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-  assert(typeof manifest.activePropertyId === "string", "Manifest must define activePropertyId.");
+  assert(typeof manifest.activePropertyId === "string" || manifest.activePropertyId === null, "Manifest activePropertyId must be a string or null.");
   assert(Array.isArray(manifest.properties) && manifest.properties.length, "Manifest must list at least one property.");
-  const active = manifest.properties.find(property => property.id === manifest.activePropertyId);
-  assert(active, `Active property '${manifest.activePropertyId}' is not listed.`);
-  assertFile(active.recordCardPath);
+  const active = manifest.activePropertyId
+    ? manifest.properties.find(property => property.id === manifest.activePropertyId)
+    : null;
+
+  if (manifest.activePropertyId) {
+    assert(active, `Active property '${manifest.activePropertyId}' is not listed.`);
+    assertFile(active.recordCardPath);
+  }
 
   for (const property of manifest.properties) {
     assert(property.id, "Every manifest property needs an id.");
