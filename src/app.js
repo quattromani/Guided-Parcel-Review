@@ -28,6 +28,7 @@ import {
   loadIaaoStandards,
   loadAssessmentDateEvents,
   PROPERTY_SELECTION_STORAGE_KEY,
+  acceptDirectPropertyRequest,
   hasDirectPropertyRequest
 } from "./data-service.js";
 import { applyChartDefaults, applyVisualizationPalette } from "./config/visualization-palettes.js";
@@ -83,6 +84,7 @@ async function main() {
   const propertySwitcher = await loadPropertySwitcherRecords();
   const developmentFeaturePropertyId = developmentFeatureSampleStartPropertyId(propertySwitcher.manifest);
   const directPropertyRequest = hasDirectPropertyRequest(propertySwitcher.manifest);
+  const pendingDirectProperty = propertySwitcher.pendingDirectProperty;
 
   if (!propertySwitcher.activePropertyId) {
     const [realPropertyForms, assessmentDateEvents, taxpayerActionDates] = await Promise.all([
@@ -99,7 +101,18 @@ async function main() {
     renderGuidedResourceContent("your-property");
     initAssessmentDatesPanel(assessmentDateEvents);
     initFooterNavigation();
-    initFirstVisitOrientation(developmentFeaturePropertyId
+    initFirstVisitOrientation(pendingDirectProperty
+      ? {
+        force: true,
+        primaryButtonLabel: copy("orientation.directPrimaryButtonLabel", "View Property"),
+        propertySelectionCopy: copyTemplate(
+          "orientation.directPropertySelectionCopy",
+          { propertyLabel: escapeHtml(directPropertyDisplayName(pendingDirectProperty)) },
+          "This direct link will open {propertyLabel}. Confirm the notice below, then continue to the guided property view."
+        ),
+        onAccepted: () => continueDirectPropertyStart(pendingDirectProperty.id)
+      }
+      : developmentFeaturePropertyId
       ? {
         force: true,
         primaryButtonLabel: copy("orientation.samplePrimaryButtonLabel", "Start Sample Review"),
@@ -198,6 +211,22 @@ async function main() {
       onAccepted: () => {}
     });
   }
+}
+
+function directPropertyDisplayName(property = {}) {
+  return property.situsAddress
+    ? `${property.situsAddress} (${property.propertyClass || "property"})`
+    : property.label || property.id || "this property";
+}
+
+function continueDirectPropertyStart(propertyId) {
+  acceptDirectPropertyRequest(propertyId);
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("property", propertyId);
+  url.searchParams.set("view", "property");
+  url.hash = "";
+  window.location.assign(url.toString());
 }
 
 main().catch(error => {
@@ -980,6 +1009,7 @@ function initFooterNavigation() {
     url.searchParams.delete("property");
     url.searchParams.delete("orientation");
     url.searchParams.delete("developmentFeature");
+    url.searchParams.delete("view");
     url.hash = "";
 
     if (url.toString() === window.location.href) {

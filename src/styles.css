@@ -275,6 +275,13 @@ canvas {
   font-weight: 650;
 }
 
+.property-switcher-static {
+  color: rgb(var(--brand-ink));
+  cursor: default;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
 .property-switcher-empty .property-switcher-select {
   background:
     linear-gradient(135deg, rgb(var(--color-yellow-soft)) 0%, rgb(var(--surface-card)) 72%);

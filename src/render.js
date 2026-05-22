@@ -585,13 +585,14 @@ export function renderViewHeader(view = "your-property", snapshotModel, property
   const switcherContext = propertySwitcher ?? window.__PROPERTY_SWITCHER_CONTEXT__ ?? null;
   const section = snapshotModel?.sections?.find(item => item.id === view);
   const headers = viewHeaderContent();
+  const headerView = view === "start" && switcherContext?.pendingDirectProperty ? "directStart" : view;
   const content = section
     ? {
       eyebrow: section.eyebrow,
       title: section.question,
       description: section.description
     }
-    : headers[view] || headers["your-property"];
+    : headers[headerView] || headers["your-property"];
   const title = document.getElementById("pageTitle");
   const titleHtml = escapeHtml(content.title);
 
@@ -624,8 +625,19 @@ function propertySwitcherMarkup(propertySwitcher, snapshotModel) {
   const groups = propertySwitcherOptionGroups(propertySwitcher, snapshotModel);
   const hasOptions = groups.some(group => group.options.length);
   const hasActiveProperty = Boolean(propertySwitcher?.activePropertyId);
+  const pendingDirectProperty = propertySwitcher?.pendingDirectProperty;
 
   if (!hasOptions) return disabledParcelLookupMarkup();
+  if (pendingDirectProperty && !hasActiveProperty) {
+    return `
+      <div class="parcel-lookup-placeholder property-switcher-empty" data-property-switcher-shell>
+        <p class="parcel-lookup-label">View property</p>
+        <div class="parcel-lookup-shell property-switcher-static" aria-label="Direct property selected">
+          ${escapeHtml(pendingDirectPropertyLabel(propertySwitcher, snapshotModel))}
+        </div>
+      </div>
+    `;
+  }
 
   return `
     <div class="parcel-lookup-placeholder ${hasActiveProperty ? "" : "property-switcher-empty"}" data-property-switcher-shell>
@@ -703,6 +715,18 @@ function propertySwitcherOptions(propertySwitcher, snapshotModel) {
         label: `${situsNumber} • ${valuationGroup} • ${propertyClass}`
       };
     });
+}
+
+function pendingDirectPropertyLabel(propertySwitcher, snapshotModel) {
+  const pending = propertySwitcher?.pendingDirectProperty;
+  if (!pending) return "Direct property";
+
+  const match = propertySwitcherOptions(
+    { ...propertySwitcher, activePropertyId: pending.id },
+    snapshotModel
+  ).find(option => option.id === pending.id);
+
+  return match?.label || pending.situsAddress || pending.parcelId || pending.id || "Direct property";
 }
 
 function switcherGroupLabel(value, county) {
@@ -812,6 +836,7 @@ function switchPropertyRecord(propertyId) {
 
   const url = new URL(window.location.href);
   url.searchParams.set("property", propertyId);
+  url.searchParams.set("view", "property");
   url.hash = "";
   window.location.assign(url.toString());
 }

@@ -120,6 +120,12 @@
       "description": "Choose a sample parcel and begin the review path.",
       "imageAlt": "Map of Nebraska highlighting Gage County"
     },
+    "directStart": {
+      "eyebrow": "Guided Parcel Review",
+      "title": "Start this property review",
+      "description": "Review the notice, then open the linked property.",
+      "imageAlt": "Map of Nebraska highlighting Gage County"
+    },
     "your-property": {
       "eyebrow": "Guided Parcel Review",
       "title": "This property, step by step",
@@ -187,6 +193,30 @@
         }
       ],
       "disclaimer": "This prototype uses pre-loaded sample records for demonstration, stress testing, and smoke testing. Official records, valuations, and tax determinations remain with the appropriate county offices."
+    },
+    "directStart": {
+      "kicker": "Direct property review",
+      "title": "Start with this property",
+      "intro": "This link is ready to open a specific property review. First, review the short notice so the property view is read as guidance, not an official record.",
+      "calloutAriaLabel": "Selected property",
+      "calloutLabel": "View property",
+      "calloutText": "The linked property will open after you acknowledge the informational notice.",
+      "coverageAriaLabel": "What the review covers",
+      "cards": [
+        {
+          "title": "Parcel context",
+          "description": "Review parcel facts, classification, land details, valuation groups, and practical items to verify."
+        },
+        {
+          "title": "Value and assessment history",
+          "description": "See how the property's assessed value has moved and which years are still pending or finalized."
+        },
+        {
+          "title": "Tax impact",
+          "description": "See how value changes, levy, credits, and effective tax rate relate to the latest available tax bill."
+        }
+      ],
+      "disclaimer": "This prototype uses pre-loaded records for demonstration, stress testing, and smoke testing. Official records, valuations, and tax determinations remain with the appropriate county offices."
     },
     "your-property": {
       "transitions": {
@@ -495,6 +525,13 @@
         "examples": ["Miscellaneous notes", "Unusual details", "Classification concerns", "Other record questions"]
       }
     ]
+  },
+  "orientation": {
+    "directPrimaryButtonLabel": "View Property",
+    "directPropertySelectionCopy": "This direct link will open {propertyLabel}. Confirm the notice below, then continue to the guided property view.",
+    "samplePrimaryButtonLabel": "Start Sample Review",
+    "continuePrimaryButtonLabel": "Continue to Property Record",
+    "propertySelectionCopy": "A sample parcel is already loaded. Continue to the Property Record, then move through the guided steps."
   },
   "recordCorrectionRequest": {
     "title": "Property Record Correction Request",

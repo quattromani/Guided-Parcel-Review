@@ -7,6 +7,12 @@ const fallbackViewHeaderContent = {
     description: "Choose a sample parcel and begin the review path.",
     imageAlt: "Map of Nebraska highlighting Gage County"
   },
+  directStart: {
+    eyebrow: "Guided Parcel Review",
+    title: "Start this property review",
+    description: "Review the notice, then open the linked property.",
+    imageAlt: "Map of Nebraska highlighting Gage County"
+  },
   "your-property": {
     eyebrow: "Guided Parcel Review",
     title: "This property, step by step",

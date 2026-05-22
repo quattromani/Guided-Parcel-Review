@@ -21,6 +21,9 @@ let manifestPromise;
 let activeRecordCardPromise;
 let activePropertyDataPromise;
 export const PROPERTY_SELECTION_STORAGE_KEY = "propertySnapshot.selectedPropertyId.v1";
+const DIRECT_PROPERTY_VIEW_PARAM = "view";
+const DIRECT_PROPERTY_VIEW_VALUE = "property";
+const DIRECT_PROPERTY_SESSION_PREFIX = "propertySnapshot.directPropertyStartAccepted.v1:";
 
 export function loadPropertyManifest() {
   manifestPromise ??= loadJson(DATA_PATHS.manifest, "property manifest");
@@ -31,7 +34,12 @@ export function loadPropertyManifest() {
 export function getActivePropertyId(manifest) {
   if (developmentFeatureSampleStartPropertyId(manifest)) return null;
 
-  const requestedProperty = getRequestedProperty(manifest);
+  const queryProperty = getQueryRequestedProperty(manifest);
+  if (queryProperty) {
+    return isDirectPropertyViewAllowed(queryProperty.id) ? queryProperty.id : null;
+  }
+
+  const requestedProperty = getStoredRequestedProperty(manifest);
 
   if (requestedProperty) return requestedProperty.id;
 
@@ -41,15 +49,34 @@ export function getActivePropertyId(manifest) {
 export function hasDirectPropertyRequest(manifest) {
   if (developmentFeatureSampleStartPropertyId(manifest)) return false;
 
-  return Boolean(getRequestedProperty(manifest, { queryOnly: true }));
+  return Boolean(getQueryRequestedProperty(manifest));
+}
+
+export function getPendingDirectProperty(manifest) {
+  if (developmentFeatureSampleStartPropertyId(manifest)) return null;
+
+  const property = getQueryRequestedProperty(manifest);
+  if (!property || isDirectPropertyViewAllowed(property.id)) return null;
+
+  return property;
+}
+
+export function acceptDirectPropertyRequest(propertyId) {
+  if (!propertyId || typeof window === "undefined") return;
+
+  try {
+    window.sessionStorage?.setItem(directPropertySessionKey(propertyId), "accepted");
+    window.localStorage?.setItem(PROPERTY_SELECTION_STORAGE_KEY, propertyId);
+  } catch {
+    // The view query flag still opens the property when storage is unavailable.
+  }
 }
 
 function normalizePropertyLookup(value) {
   return `${value ?? ""}`.replace(/[^a-z0-9]/gi, "").toLowerCase();
 }
 
-function getRequestedProperty(manifest, options = {}) {
-  const requestedPropertyId = options.queryOnly ? getQueryPropertyId() : getRequestedPropertyId();
+function getRequestedProperty(manifest, requestedPropertyId) {
   if (!requestedPropertyId) return null;
 
   const requestedKey = normalizePropertyLookup(requestedPropertyId);
@@ -61,14 +88,14 @@ function getRequestedProperty(manifest, options = {}) {
   ) ?? null;
 }
 
-function getRequestedPropertyId() {
+function getQueryRequestedProperty(manifest) {
+  return getRequestedProperty(manifest, getQueryPropertyId());
+}
+
+function getStoredRequestedProperty(manifest) {
   if (typeof window === "undefined") return null;
-
-  const queryPropertyId = getQueryPropertyId();
-  if (queryPropertyId) return queryPropertyId;
-
   try {
-    return window.localStorage?.getItem(PROPERTY_SELECTION_STORAGE_KEY) ?? null;
+    return getRequestedProperty(manifest, window.localStorage?.getItem(PROPERTY_SELECTION_STORAGE_KEY));
   } catch {
     return null;
   }
@@ -78,6 +105,23 @@ function getQueryPropertyId() {
   if (typeof window === "undefined") return null;
 
   return new URLSearchParams(window.location.search).get("property");
+}
+
+function isDirectPropertyViewAllowed(propertyId) {
+  if (typeof window === "undefined") return false;
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get(DIRECT_PROPERTY_VIEW_PARAM) === DIRECT_PROPERTY_VIEW_VALUE) return true;
+
+  try {
+    return window.sessionStorage?.getItem(directPropertySessionKey(propertyId)) === "accepted";
+  } catch {
+    return false;
+  }
+}
+
+function directPropertySessionKey(propertyId) {
+  return `${DIRECT_PROPERTY_SESSION_PREFIX}${normalizePropertyLookup(propertyId)}`;
 }
 
 async function getActivePropertyEntry() {
@@ -125,6 +169,7 @@ export function loadPropertySwitcherRecords() {
 
     return {
       activePropertyId: getActivePropertyId(manifest),
+      pendingDirectProperty: getPendingDirectProperty(manifest),
       manifest,
       records
     };
