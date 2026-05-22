@@ -58,9 +58,10 @@ The default first-run experience is the Start view. A user selects a sample parc
 
 Sample properties are listed in `data/app/property-manifest.json`. Available records currently live under `data/property-records/mips/` and include residential, agricultural, and commercial GWorks/MIPS-derived samples. Each record card contains source-shaped property data plus a `guidedSnapshot` object used by the current app-ready view models.
 
-Shared app and reference data stays separate from the property record:
+Shared app, copy, and reference data stays separate from the property record:
 
-- `data/app/` for navigation, copy, legal references, PAD forms, assessment calendar events, and the property manifest.
+- `data/app/site-copy.json` for centralized public-facing app copy: guided route labels, page/section copy, modal text, footer resources, record-review categories, and record-correction report/email text.
+- `data/app/` for legal references, PAD forms, assessment calendar events, and the property manifest.
 - `data/counties/gage/` for county ratio, market-position, valuation-group, governing-office, school-color, and tax-district authority data.
 - `data/statewide/` for statewide and county comparison datasets.
 - `data/calendars/` for static PAD calendar data.
@@ -81,17 +82,19 @@ The frontend should consume static app-ready JSON only. It should not scrape PAD
 - `src/charts.js` and `src/charts/` build Chart.js visualizations, tax-distribution treemaps, market-position views, county comparison displays, and equalization context.
 - `src/styles.css` owns the shell surface contract (`review-card`, `review-card-muted`, `review-note`), radius rules, guided rail behavior, and breakpoint layout decisions. See `docs/style-shell-contract.md`.
 - `src/reports/` builds the downloadable property report PDF; `src/assessors-report.js` builds the supplemental assessor print view.
-- `src/config/taxpayer-journey.js` and `src/content/` own guided-route labels, sequencing, and route-specific supporting resources.
+- `src/content/site-copy.js` loads centralized copy from `data/app/site-copy.json`; `src/config/taxpayer-journey.js` and `src/content/` provide fallbacks and route/resource accessors.
 
 ## Handoff Notes
 
 - `docs/team-handoff.md` maps the current repo shape to likely backend, database, data/ETL, frontend, QA, design, accessibility, policy, DevOps, security, and support handoff needs.
+- `docs/content-extraction-inventory.md` records which public-facing strings moved into `data/app/site-copy.json`, which values remain data-driven, and which generated fragments are intentionally still in code.
 - `docs/style-shell-contract.md` records the current visual shell rules for surfaces, radii, guided rails, footer behavior, and breakpoint smoke checks.
 - Treat `data/app/property-manifest.json` as the demo inventory and shared-data wiring point. Add new sample records there only when the referenced static JSON is complete enough to pass validation.
 - Keep property-specific facts in record cards and county/state/reference facts in their shared datasets. Avoid embedding report statistics directly in components.
 - Preserve the selected-property flow: query string first, then stored selection. The Start page is intentional for first-run demos.
 - Keep large optional datasets behind route/action boundaries. For example, full tax-district authority data loads when the Tax Context step needs it.
 - Keep taxpayer-facing copy neutral and sequential. The app should orient users, not imply ownership, predict protest outcomes, or replace official determinations.
+- Edit public-facing app language in `data/app/site-copy.json` first. Keep property values, tax figures, statistics, deadlines, forms, and legal/source records in their structured data files unless the value is purely a display label.
 - PDF/report flows are demonstration outputs. Email delivery for correction requests requires a future `window.propertyCorrectionEmailService` integration.
 
 ## Known Limitations

@@ -1,0 +1,556 @@
+{
+  "version": "0.1",
+  "metadata": {
+    "source": {
+      "sourceType": "internal",
+      "displayCitation": "Internal application copy",
+      "notes": "Centralized user-facing language for the Guided Parcel Review static site. Dynamic property, tax, market, and statistical values remain in data/model files."
+    }
+  },
+  "site": {
+    "documentTitle": "2026 Guided Parcel Review",
+    "description": "A guided parcel review that helps taxpayers understand property records, assessed value, tax context, market context, equalization, and review items.",
+    "loadErrorTitle": "Guided Parcel Review could not load"
+  },
+  "navigation": {
+    "ariaLabel": "Guided parcel review path",
+    "initialProgress": "You're reviewing <strong>Property Record</strong>",
+    "startProgress": "Start the guided review",
+    "progressTemplate": "You're reviewing <strong>{label}</strong>",
+    "nextTemplate": "Next: {label}",
+    "continueAriaLabel": "Continue review",
+    "steps": [
+      { "id": "property-record", "number": "1", "label": "Property Record" },
+      { "id": "what-changed", "number": "2", "label": "What Changed" },
+      { "id": "valuation-detail", "number": "3", "label": "Value Detail" },
+      { "id": "equalization", "number": "4", "label": "Equalization" },
+      { "id": "tax-context", "number": "5", "label": "Tax Context" },
+      { "id": "review-signals", "number": "6", "label": "Review Signals" },
+      { "id": "final-summary", "number": "7", "label": "Summary" }
+    ],
+    "nextButtons": {
+      "what-changed": "Go to What Changed",
+      "valuation-detail": "Go to Value Detail",
+      "equalization": "Go to Equalization",
+      "tax-context": "Go to Tax Context",
+      "review-signals": "Go to Review Signals",
+      "return-tax-context": "Return to Tax Context"
+    }
+  },
+  "routes": [
+    {
+      "id": "property-record",
+      "panelId": "your-property",
+      "eyebrow": "Observe",
+      "label": "Property Record",
+      "question": "Does the county record describe this property correctly?",
+      "title": "Review the property record before value or taxes",
+      "description": "Start with identity, land, building facts, and photos."
+    },
+    {
+      "id": "what-changed",
+      "panelId": "your-assessment",
+      "eyebrow": "Orient",
+      "label": "What Changed",
+      "question": "What changed?",
+      "title": "Look at the value movement",
+      "description": "Compare the latest change with the longer value history."
+    },
+    {
+      "id": "valuation-detail",
+      "panelId": "market-area",
+      "eyebrow": "Observe",
+      "label": "Value Detail",
+      "question": "What may be driving the value?",
+      "title": "Compare the value with the record and local sales",
+      "description": "Read the property facts beside recent qualified sales."
+    },
+    {
+      "id": "equalization",
+      "panelId": "county-equalization",
+      "eyebrow": "Check",
+      "label": "Equalization",
+      "question": "Are assessments checked for level and consistency?",
+      "title": "Use equalization to check the assessment base",
+      "description": "Equalization checks whether assessments are at the required level and applied consistently."
+    },
+    {
+      "id": "state-context",
+      "panelId": "state-context",
+      "eyebrow": "Deeper equalization context",
+      "label": "State Context",
+      "question": "How does the county compare statewide?",
+      "title": "Keep the statewide comparison inside the tax context step",
+      "description": "Use statewide CTL data as broader context.",
+      "secondary": true,
+      "primaryRouteId": "tax-context"
+    },
+    {
+      "id": "tax-context",
+      "panelId": "your-taxes",
+      "eyebrow": "Understand",
+      "label": "Tax Context",
+      "question": "How do values connect to taxes?",
+      "title": "See how value changes affect the tax bill",
+      "description": "Review value, levy, credits, districts, and net tax separately."
+    },
+    {
+      "id": "review-signals",
+      "panelId": "review-checklist",
+      "eyebrow": "Decide",
+      "label": "Review Signals",
+      "question": "Is there anything worth reviewing more closely?",
+      "title": "Review neutral signals and organize questions",
+      "description": "Check whether the source facts line up."
+    },
+    {
+      "id": "final-summary",
+      "panelId": "final-summary",
+      "eyebrow": "Summary",
+      "label": "Summary",
+      "question": "What was reviewed?",
+      "title": "Leave with orientation and optional next steps",
+      "description": "Review the record, value, equalization, taxes, and signals in one place."
+    }
+  ],
+  "viewHeaders": {
+    "start": {
+      "eyebrow": "Guided Parcel Review",
+      "title": "Start with a sample parcel",
+      "description": "Choose a sample parcel and begin the review path.",
+      "imageAlt": "Map of Nebraska highlighting Gage County"
+    },
+    "your-property": {
+      "eyebrow": "Guided Parcel Review",
+      "title": "This property, step by step",
+      "description": "Start with the record, then move through value, equalization, taxes, and review signals.",
+      "imageAlt": "Map of Nebraska highlighting Gage County"
+    },
+    "your-assessment": {
+      "eyebrow": "Step 2 · Assessment",
+      "title": "What changed about the assessed value?",
+      "description": "See what changed, and which years are still pending or final.",
+      "imageAlt": "Map of Nebraska highlighting the local market area"
+    },
+    "your-taxes": {
+      "eyebrow": "Step 5 · Tax context",
+      "title": "What does this mean for taxes?",
+      "description": "See how value, levy, credits, and districts affect net tax.",
+      "imageAlt": "Map of Nebraska highlighting Gage County"
+    },
+    "market-area": {
+      "eyebrow": "Step 3 · Value detail",
+      "title": "How does this compare nearby?",
+      "description": "Start with the property's local comparison group.",
+      "imageAlt": "Map of Nebraska highlighting the local market area"
+    },
+    "county-equalization": {
+      "eyebrow": "Step 4 · Equalization",
+      "title": "Are assessments checked for level and consistency?",
+      "description": "Equalization checks whether assessments are at the required level and applied consistently.",
+      "imageAlt": "Map of Nebraska highlighting Gage County"
+    },
+    "state-context": {
+      "eyebrow": "State baseline",
+      "title": "How does the county compare statewide?",
+      "description": "Use statewide CTL data as broader context.",
+      "imageAlt": "Map of Nebraska"
+    },
+    "review-checklist": {
+      "eyebrow": "Step 6 · Review",
+      "title": "Need to review anything?",
+      "description": "Check whether the source facts line up.",
+      "imageAlt": "Map of Nebraska highlighting Gage County"
+    }
+  },
+  "pages": {
+    "start": {
+      "kicker": "Ready for review",
+      "title": "Preview the review workspace",
+      "intro": "Each sample opens a full parcel view with record details, value history, tax context, market charts, and guided review steps.",
+      "calloutAriaLabel": "Sample record coverage",
+      "calloutLabel": "Sample coverage",
+      "calloutText": "Residential, agricultural, and commercial samples are available.",
+      "coverageAriaLabel": "What the review covers",
+      "cards": [
+        {
+          "title": "Parcel context",
+          "description": "Review parcel facts, classification, land details, valuation groups, and practical items to verify."
+        },
+        {
+          "title": "Value and assessment history",
+          "description": "See how the sample property's assessed value has moved and which years are still pending or finalized."
+        },
+        {
+          "title": "Tax impact",
+          "description": "See how value changes, levy, credits, and effective tax rate relate to the latest available tax bill."
+        }
+      ],
+      "disclaimer": "This prototype uses pre-loaded sample records for demonstration, stress testing, and smoke testing. Official records, valuations, and tax determinations remain with the appropriate county offices."
+    },
+    "your-property": {
+      "transitions": {
+        "intro": "Start with the record facts. These details anchor the value, market, equalization, and tax views that follow.",
+        "handoff": "You have completed the first step: reviewing your property details. The green button takes you to the next step, where you can learn more about what may have changed from year to year."
+      },
+      "propertyDetails": {
+        "title": "Property details",
+        "description": "These are the property details used to place the parcel in later value and tax views. Confirming them first makes the later numbers easier to understand."
+      },
+      "decisionCheck": {
+        "kicker": "Decision check",
+        "title": "Does the record look right?",
+        "button": "Open record review",
+        "body": "Review these facts against what you know about the property. Follow up if the owner, address, land size, class, condition, rooms, garage, improvements, or sketch appears inaccurate or incomplete."
+      }
+    },
+    "your-assessment": {
+      "transitions": {
+        "intro": "Start with the current assessment and the most recent movement. Then compare it with the longer value and tax history.",
+        "history": "Now compare the current change with prior years.",
+        "handoff": "You have reviewed the current assessment and recent value history. Next, look closer at the value details behind the change."
+      },
+      "notice": {
+        "title": "Prior & Current Assessments",
+        "description": "Review land, building, other improvements, and total value before connecting those numbers to taxes."
+      }
+    },
+    "market-area": {
+      "transitions": {
+        "intro": "Start with the qualified sales behind this class. The count and distribution give the measures below their context.",
+        "source": "Next, place the property in its local comparison group. These local sales-study measures introduce the countywide equalization check.",
+        "scatter": "With the sales base in view, anchor the value in its local group. The scatterplot shows how that group sits next to nearby groups.",
+        "handoff": "You have reviewed the sales base and the property's local comparison group. Next, move to the countywide equalization layer."
+      },
+      "priceContext": {
+        "title": "What prices are represented?",
+        "description": "Average sale price, average assessed value, and level of value show price context for the selected group.",
+        "selectLabel": "Want to see another area?"
+      }
+    },
+    "county-equalization": {
+      "transitions": {
+        "intro": "Qualified sales from the sales-study period test assessed values against market evidence. Those sales produce the statistical measures below.",
+        "unified": "Next, put the measures on one scale. The chart shows whether COD, PRD, COV, and level of value are moving together or apart.",
+        "placementTitle": "Assessment places the property in the shared value base.",
+        "placementBody": "Equalization keeps that shared base in view before levies and taxes are applied.",
+        "placementEmphasis": "Next, carry that shared value base into tax context, where levies and credits turn assessed value into the bill."
+      }
+    },
+    "your-taxes": {
+      "transitions": {
+        "intro": "Start with the tax district and levy mix. The chart shows where the latest bill is allocated, followed by the year-by-year tax history.",
+        "history": "Next, read how levy, net tax, credits, and effective tax rate moved across completed statement years.",
+        "pattern": "Now isolate the net-bill pattern. This view shows where the bill peaked and how the latest statement compares with the period average.",
+        "baseline": "Step back to the county baseline. Countywide value, tax, and rate movement show the broader tax context before the optional statewide comparison.",
+        "handoff": "You have reviewed how the tax bill is built from levies, credits, and the county baseline. Next, bring the record, value, equalization, and tax signals together."
+      },
+      "taxDistrictTitle": "Tax district and levy distribution",
+      "taxPatternTitle": "Tax bill pattern",
+      "taxPatternNote": "Dashed line: period average. Points use statement net tax after credits.",
+      "countyBaseline": {
+        "title": "Countywide baseline",
+        "intro": "Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.",
+        "valueTitle": "How are county values and taxes moving?",
+        "valueDescription": "Values and taxes are indexed to the same starting point so their movement can be compared over time.",
+        "rateTitle": "How do county taxes compare with value?",
+        "rateDescription": "The countywide effective tax rate divides taxes levied by certified value, giving a broad tax-rate baseline.",
+        "source": "Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL)."
+      },
+      "advancedContext": {
+        "title": "Want a broader comparison?",
+        "body": "View this county with statewide CTL patterns and other Nebraska counties without leaving the main review path.",
+        "button": "Compare Counties"
+      }
+    },
+    "state-context": {
+      "comparison": {
+        "kicker": "County Comparison",
+        "title": "How does this county compare?",
+        "description": "This comparison uses the assessment-year range shown in the charts below. It starts with a simple rate baseline: Nebraska equals 100. A county above 100 has a higher average tax rate than the statewide average; below 100 is lower. Certified values, taxes levied, and average tax rate give the rest of the context.",
+        "selectLabel": "Compare with",
+        "decisionKicker": "Decision check",
+        "decisionTitle": "Does the county stand out?",
+        "decisionBody": "The Nebraska = 100 comparison, value growth, tax growth, and average rate movement show whether the local pattern is unusual or broadly typical.",
+        "indexedTitle": "How do value and tax growth compare?",
+        "rateTitle": "How do average tax rates compare?",
+        "source": "Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL)."
+      },
+      "statewide": {
+        "transition": "The statewide baseline is supporting context.",
+        "kicker": "Statewide CTL Context",
+        "title": "What statewide pattern is behind that comparison?",
+        "description": "After the county comparison, the statewide CTL baseline shows the broader movement in values, taxes levied, and average tax rates.",
+        "indexedTitle": "How are statewide values and taxes moving?",
+        "indexedDescription": "Statewide values and taxes are indexed to 2019 so their movement can be compared over time.",
+        "rateTitle": "How is the statewide average tax rate trending?",
+        "rateDescription": "The statewide average tax rate is a broad reference point for understanding local tax patterns.",
+        "summaryTitle": "Statewide summary",
+        "source": "Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL).",
+        "handoff": "You have reviewed the county comparison and statewide baseline. You can return to tax context for the view you came from, or move ahead to review signals."
+      }
+    }
+  },
+  "footer": {
+    "resourceShell": {
+      "title": "Resources and policies",
+      "description": "Need help with what you just reviewed? Find focused answers and forms.",
+      "resourceMenuAriaLabel": "Resource menu",
+      "faqLabel": "FAQs",
+      "formsLabel": "Forms"
+    },
+    "siteLinksAriaLabel": "Site links",
+    "resetPropertySelection": "Reset property selection",
+    "panels": {
+      "about": {
+        "kicker": "About",
+        "title": "About Guided Parcel Review",
+        "body": "Guided Parcel Review walks through one property in a clear order: record, value, market context, equalization, taxes, and review signals."
+      },
+      "terms": {
+        "kicker": "Terms of Use",
+        "title": "Use of this site",
+        "notes": [
+          "This site is provided for public information and general guidance. It is not a legal notice, tax bill, valuation decision, or substitute for official records.",
+          "Information may be incomplete, pending, delayed, or updated after publication. Official county, state, court, or agency records control when accuracy, deadlines, rights, or obligations matter.",
+          "Links to outside sites are provided for convenience. Those sites have their own terms, privacy practices, forms, and instructions. Use this site lawfully and do not rely on it as professional advice."
+        ]
+      },
+      "privacy": {
+        "kicker": "Privacy Policy",
+        "title": "Privacy and public information",
+        "notes": [
+          "A civic website may collect basic usage data, such as browser, device, page visit, and diagnostic information, to operate, secure, and improve the site.",
+          "If you submit information through a form, email, or support channel, it may be used to respond to your request and may be subject to applicable public-records, retention, or disclosure laws.",
+          "This site should not sell personal information. Information may be shared with service providers, official agencies, or others when needed to operate the site, respond to requests, or comply with law."
+        ]
+      },
+      "accessibility": {
+        "kicker": "Accessibility",
+        "title": "Accessibility statement",
+        "body": "This demonstration is intended to be readable, keyboard-accessible, and usable with assistive technology. Before public release, it should receive formal accessibility review, assistive-technology testing, and color-contrast verification."
+      },
+      "faq": {
+        "kicker": "FAQs",
+        "title": "Property record FAQs"
+      },
+      "forms": {
+        "kicker": "Forms",
+        "title": "Property record forms"
+      },
+      "contact": {
+        "kicker": "Contact",
+        "title": "Contact and support",
+        "body": "For questions about official records, valuation, exemptions, levies, or payment, contact the appropriate county or state office. This demonstration does not replace official guidance."
+      }
+    }
+  },
+  "modals": {
+    "assessmentDates": {
+      "kicker": "Assessment year reference",
+      "description": "Nebraska assessment process dates.",
+      "closeLabel": "Close assessment dates"
+    },
+    "recordCorrection": {
+      "kicker": "Property record correction request",
+      "title": "Report a property record discrepancy",
+      "description": "Use this to request factual record review when parcel, land, dwelling, improvement, or other property details appear inaccurate, incomplete, or misclassified.",
+      "closeLabel": "Close property record correction form"
+    },
+    "sourceTable": {
+      "kicker": "Source table",
+      "title": "Statement history",
+      "closeLabel": "Close expanded source table"
+    },
+    "image": {
+      "closeLabel": "Close expanded image",
+      "previousLabel": "Previous property image",
+      "nextLabel": "Next property image",
+      "propertyPhoto": "Property Photo",
+      "propertySketch": "Property Sketch",
+      "showTemplate": "Show {caption}"
+    }
+  },
+  "resourcesByView": {
+    "your-property": {
+      "faqTitle": "Property record FAQs",
+      "formTitle": "Property record forms",
+      "faqs": [
+        ["What should I check first?", "Start with ownership, situs address, legal description, dwelling facts, improvements, condition, and photos. Factual record issues can affect later value review."],
+        ["Do bedrooms, bathrooms, condition, and square footage matter?", "Yes. Those characteristics help describe the property and can influence the assessment model."],
+        ["What if a photo or property characteristic looks outdated?", "Use the record review request to describe what appears inaccurate, incomplete, or misclassified."]
+      ]
+    },
+    "your-assessment": {
+      "faqTitle": "Assessment FAQs",
+      "formTitle": "Assessment forms",
+      "faqs": [
+        ["Is assessed value the same as market value?", "For most residential real property, assessed value is intended to reflect market value as of the assessment date."],
+        ["Why are land and improvement values separated?", "Separating land from buildings helps show which part of the property model changed."],
+        ["Why did the value change?", "Value can change because of updated property facts, market movement, depreciation, new construction, or sale evidence."],
+        ["How does market evidence matter?", "Sales evidence helps explain whether assessments are moving with the market."]
+      ]
+    },
+    "your-taxes": {
+      "faqTitle": "Tax FAQs",
+      "formTitle": "Tax and exemption forms",
+      "faqs": [
+        ["Why does tax context come after equalization?", "Equalization checks whether assessments are at the required level and applied consistently. Tax context then shows how levies, credits, exemptions, and tax-district assignment affect the bill."],
+        ["What is the difference between gross tax and net tax?", "Gross tax starts from value and levy. Net tax reflects applicable credits and adjustments before payment status is applied."],
+        ["Why do value and taxes not always move together?", "Taxes also depend on budgets, levies, exemptions, credits, and tax district changes."],
+        ["What does effective tax rate show?", "It divides statement net tax by assessed value so different years can be compared more clearly."],
+        ["Where do credits fit?", "Credits reduce the final amount due after the tax calculation is applied."]
+      ]
+    },
+    "market-area": {
+      "faqTitle": "Market area FAQs",
+      "formTitle": "Market review forms",
+      "faqs": [
+        ["What is a market area?", "It is a group of properties reviewed together because they share market or valuation characteristics."],
+        ["Are nearby sales exact matches?", "Usually no. Sales are market evidence because they are reasonably related to the same local market."],
+        ["What do local sales trends show?", "They help explain whether values are moving with nearby market evidence."],
+        ["What is a ratio study?", "It compares assessed values with sale prices to test assessment level and uniformity."]
+      ]
+    },
+    "county-equalization": {
+      "faqTitle": "Equalization FAQs",
+      "formTitle": "Equalization resources",
+      "faqs": [
+        ["Why does equalization sit before taxes?", "It checks whether assessments are at the required level and applied consistently before levies are applied."],
+        ["What does equalization not do?", "It does not stop market values from moving, set the tax levy, or decide whether one parcel outcome is right or wrong."],
+        ["What do COD and PRD measure?", "COD describes assessment uniformity. PRD helps flag whether high- and low-value properties are treated consistently."],
+        ["Can countywide measures prove the parcel value is wrong?", "Not by themselves. They are context; parcel facts and market evidence still matter."]
+      ]
+    },
+    "state-context": {
+      "faqTitle": "State context FAQs",
+      "formTitle": "State-related forms",
+      "faqs": [
+        ["What does the Property Assessment Division do?", "Nebraska's Property Assessment Division helps frame statewide assessment oversight and comparison."],
+        ["How do state assessment reports help?", "They summarize county sales studies and equalization information used for statewide context."],
+        ["What is statewide equalization?", "It is the state-level role of reviewing whether county assessments meet required standards."],
+        ["Are credits decided here?", "No. Official credits and tax calculations are applied through the tax process."]
+      ]
+    },
+    "review-checklist": {
+      "faqTitle": "Review FAQs",
+      "formTitle": "Review resources",
+      "faqs": [
+        ["What should I review first?", "Start with the property record: square footage, year built, basement, garage, outbuildings, condition, lot size, property class, value history, and tax history."],
+        ["What should I do with an unresolved question?", "Keep notes, verify official source documents, and contact the appropriate county or state office if the issue depends on official records or deadlines."],
+        ["What steps feed these signals?", "They come from the property record, value movement, equalization measures, tax context, and source documents."],
+        ["Does this summary decide an outcome?", "No. It is a review aid. It separates property facts, value movement, taxes, and context."]
+      ]
+    }
+  },
+  "resourceAliases": {
+    "property-record": "your-property",
+    "what-changed": "your-assessment",
+    "valuation-detail": "market-area",
+    "equalization": "county-equalization",
+    "tax-context": "your-taxes",
+    "review-signals": "review-checklist",
+    "final-summary": "review-checklist"
+  },
+  "recordReview": {
+    "statuses": [
+      ["looks-correct", "Looks correct"],
+      ["may-need-review", "May need review"]
+    ],
+    "categories": [
+      {
+        "id": "ownership-mailing-details",
+        "title": "Ownership & mailing details",
+        "description": "Names, addresses, parcel identifiers, and other administrative details tied to the property record.",
+        "examples": ["Owner name", "Mailing address", "Situs address", "Parcel ID", "Legal description", "Tax district"]
+      },
+      {
+        "id": "land-site-details",
+        "title": "Land & site details",
+        "description": "Land size, site characteristics, zoning, and classification details that describe the parcel itself.",
+        "examples": ["Acreage", "Lot or site size", "Zoning", "Land classification", "Valuation group", "Location group"]
+      },
+      {
+        "id": "dwelling-main-structure",
+        "title": "Dwelling / main structure",
+        "description": "The main building details shown on the record, including size, age, layout, quality, and major systems.",
+        "examples": ["Year built", "Style", "Square footage", "Basement", "Bedrooms and bathrooms", "Heating/cooling"]
+      },
+      {
+        "id": "garages-attached-improvements",
+        "title": "Garages & attached improvements",
+        "description": "Attached or closely related improvements that may be listed separately from the main structure.",
+        "examples": ["Garages", "Carports", "Porches", "Patios", "Attached additions"]
+      },
+      {
+        "id": "outbuildings-farm-ag-structures",
+        "title": "Outbuildings & farm/ag structures",
+        "description": "Detached buildings and agricultural structures that may appear as separate improvement records.",
+        "examples": ["Sheds", "Barns", "Bins", "Utility buildings", "Detached structures", "Farm improvements"]
+      },
+      {
+        "id": "other-record-details",
+        "title": "Other record details",
+        "description": "Anything unusual or important that does not fit neatly into the other review areas.",
+        "examples": ["Miscellaneous notes", "Unusual details", "Classification concerns", "Other record questions"]
+      }
+    ]
+  },
+  "recordCorrectionRequest": {
+    "title": "Property Record Correction Request",
+    "senderFallback": "Not provided",
+    "acknowledgment": "I understand this request is for factual property record review.",
+    "emailSubjectTemplate": "Property Record Correction Request - Parcel {parcelId}",
+    "emailBody": {
+      "attachedTemplate": "Attached is a property record correction request for parcel {parcelId}.",
+      "contactTemplate": "Please contact me by {preferredContact} if additional information is needed.",
+      "thanks": "Thank you,"
+    },
+    "pdf": {
+      "intro": "Use this request for factual review of parcel, land, dwelling, improvement, or other property record details.",
+      "sections": [
+        "1. Submission Details",
+        "2. Property / Parcel Summary",
+        "3. Requested Record Review Categories",
+        "4. Correction Narrative",
+        "5. Taxpayer Acknowledgment",
+        "6. Assessor's Office Routing Information"
+      ],
+      "emptyCategories": "No review categories selected; comments provided.",
+      "examplesPrefix": "Examples:",
+      "selectedStatusFallback": "Selected",
+      "emptyNarrative": "No additional narrative provided."
+    },
+    "labels": {
+      "dateTimeSubmitted": "Date/time submitted",
+      "parcelId": "Parcel ID",
+      "propertyAddress": "Property address",
+      "ownerTaxpayerName": "Owner/taxpayer name",
+      "senderName": "Sender name",
+      "senderEmail": "Sender email",
+      "senderPhone": "Sender phone",
+      "preferredContactMethod": "Preferred contact method",
+      "mailingAddress": "Mailing address",
+      "legalDescription": "Legal description",
+      "county": "County",
+      "taxDistrict": "Tax district",
+      "propertyClass": "Property class",
+      "location": "Location",
+      "lotSize": "Lot size",
+      "office": "Office",
+      "assessor": "Assessor",
+      "email": "Email",
+      "phone": "Phone",
+      "officeHours": "Office hours",
+      "address": "Address",
+      "website": "Website"
+    },
+    "contactMethods": {
+      "office": "In-office visit",
+      "email": "Email",
+      "phone": "Phone call",
+      "fallback": "Not provided"
+    },
+    "dateFallback": "Not available"
+  }
+}

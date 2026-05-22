@@ -13,6 +13,8 @@ static JSON files -> data-service loader -> app/domain models -> charts/renderer
 Important current boundaries:
 
 - Demo inventory and shared data wiring: `data/app/property-manifest.json`
+- Public-facing app copy: `data/app/site-copy.json`
+- Content extraction inventory: `docs/content-extraction-inventory.md`
 - Property records: `data/property-records/mips/*-record-card.json`
 - County/state reference data: `data/counties/` and `data/statewide/`
 - App boot/data loading: `src/data-service.js` and `src/app.js`
@@ -36,7 +38,7 @@ Important current boundaries:
 | QA | Manual smoke checks and data-contract script. | Add fixture matrix, browser coverage, regression assertions, and accessibility checks. |
 | Design/UX | Implemented responsive and judgment-neutral rules in CSS/content. | Convert recurring patterns into design-system tokens/components. |
 | Accessibility | Semantic landmarks, modal roles, and keyboard basics exist. | Formal audit for focus order, chart alternatives, SR copy, contrast, and Safari/iOS behavior. |
-| Content/legal | Neutral orientation copy and source disclaimers exist. | Formal policy/legal review of taxpayer guidance, deadlines, and non-advice language. |
+| Content/legal | Centralized app copy exists in `data/app/site-copy.json`; source/legal/form/deadline records remain in structured data. | Formal policy/legal review of taxpayer guidance, deadlines, non-advice language, and county/vendor override strategy. |
 | DevOps | Static hosting model works. | Add production build/deploy, cache strategy, API env config, monitoring. |
 | Security/privacy | No production submissions or auth. | Review PII, correction-request delivery, logs, retention, external links, and CSP. |
 | Support/implementation | Sample-data workflow is understandable but manual. | Add operator playbooks for adding counties, updating annual data, and troubleshooting charts. |
@@ -127,6 +129,8 @@ The frontend is currently plain HTML/CSS/JS with modular renderers. If it moves 
 Stable frontend concepts:
 
 - Guided route order: `src/config/taxpayer-journey.js`
+- Centralized public copy: `data/app/site-copy.json`
+- Copy loader/accessors: `src/content/site-copy.js`
 - Static shell and route mount points: `index.html`
 - Main rendering: `src/render.js`
 - Route-specific rendering: `src/routes/`
@@ -216,6 +220,12 @@ Accessibility placeholders:
 
 The app explains public assessment and tax concepts. Content reviewers should verify that copy is accurate, neutral, and appropriately scoped.
 
+Current content boundary:
+
+- Edit taxpayer-facing app language in `data/app/site-copy.json`.
+- Use `docs/content-extraction-inventory.md` to see what was extracted, what remains data-driven, and what generated copy fragments still need a lower-risk template pass.
+- Keep parcel facts, tax amounts, ratio statistics, CTL figures, IAAO standards, forms, deadline records, legal references, and source citations in their structured data files unless the item is purely a display label.
+
 Review areas:
 
 - Disclaimers around official records controlling.
@@ -224,6 +234,7 @@ Review areas:
 - Tax payment/status language.
 - Equalization and review-signal explanations.
 - Source citations and publication-year references.
+- County/vendor-specific language override needs.
 
 Policy placeholders:
 
@@ -231,6 +242,7 @@ Policy placeholders:
 - Jurisdiction-specific copy overrides.
 - Required legal/source disclaimers.
 - Process for annual review of dates, forms, and official links.
+- Workflow for reviewing copy changes without touching calculations or structured data.
 
 ## DevOps / Deployment Team
 
@@ -284,5 +296,6 @@ Until those playbooks exist, start with:
 - `data/README.md`
 - `docs/data-dictionary.md`
 - `docs/style-shell-contract.md`
+- `docs/content-extraction-inventory.md`
 - `docs/vendor-handoff.md`
 - `scripts/validate-data-contracts.js`

@@ -1,3 +1,5 @@
+import { copy, copyTemplate } from "./content/site-copy.js";
+
 export function initImageModal(assets = {}) {
   const modal = document.getElementById("imageModal");
   const modalImage = document.getElementById("modalImage");
@@ -7,8 +9,8 @@ export function initImageModal(assets = {}) {
   const previousButton = document.getElementById("previousImage");
   const nextButton = document.getElementById("nextImage");
   const galleryItems = [
-    { src: assets.photo, caption: "Property Photo" },
-    { src: assets.sketch, caption: "Property Sketch" },
+    { src: assets.photo, caption: copy("modals.image.propertyPhoto", "Property Photo") },
+    { src: assets.sketch, caption: copy("modals.image.propertySketch", "Property Sketch") },
     ...(assets.additionalPhotos || [])
   ].filter(item => item.src);
   let currentIndex = 0;
@@ -32,7 +34,7 @@ export function initImageModal(assets = {}) {
         type="button"
         data-gallery-index="${index}"
         class="h-16 w-24 shrink-0 overflow-hidden rounded-lg ring-2 transition ${index === currentIndex ? "ring-slate-300" : "ring-white/25 hover:ring-white/70"}"
-        aria-label="Show ${item.caption}"
+        aria-label="${copyTemplate("modals.image.showTemplate", { caption: item.caption }, `Show ${item.caption}`)}"
       >
         <img src="${item.src}" alt="${item.caption}" class="h-full w-full object-cover" />
       </button>

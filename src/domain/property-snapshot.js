@@ -5,7 +5,7 @@ import {
   previousKnown,
   sortHistoryAscending
 } from "../calculations/history.js";
-import { TAXPAYER_JOURNEY_ROUTES } from "../config/taxpayer-journey.js";
+import { getTaxpayerJourneyRoutes } from "../config/taxpayer-journey.js";
 import { buildAssessmentNoticeModel } from "../data/notice-model.js";
 import { buildReviewSignalModel } from "../data/review-signal-model.js";
 
@@ -96,7 +96,7 @@ export function buildPropertySnapshotModel({
 }) {
   return {
     pipeline: "raw JSON -> normalized property snapshot model -> derived metrics -> view-specific data objects -> UI sections",
-    sections: TAXPAYER_JOURNEY_ROUTES,
+    sections: getTaxpayerJourneyRoutes(),
     rawSources: {
       propertyRecord: recordCard?.source?.displayCitation ?? "MIPS property record card",
       ctlYears: ctlData?.statewide?.map(row => row.year) ?? [],

@@ -1,4 +1,6 @@
-export const TAXPAYER_JOURNEY_ROUTES = [
+import { copyArray } from "../content/site-copy.js";
+
+const fallbackTaxpayerJourneyRoutes = [
   {
     id: "property-record",
     panelId: "your-property",
@@ -75,12 +77,19 @@ export const TAXPAYER_JOURNEY_ROUTES = [
   }
 ];
 
+export function getTaxpayerJourneyRoutes() {
+  // Guided-step labels and route intro copy are authored in the central site copy file.
+  return copyArray("routes", fallbackTaxpayerJourneyRoutes);
+}
+
+export const TAXPAYER_JOURNEY_ROUTES = fallbackTaxpayerJourneyRoutes;
+
 export function getJourneyRoute(idOrPanelId) {
-  return TAXPAYER_JOURNEY_ROUTES.find(route =>
+  return getTaxpayerJourneyRoutes().find(route =>
     route.id === idOrPanelId || route.panelId === idOrPanelId
   );
 }
 
 export function getRouteForPanel(panelId) {
-  return TAXPAYER_JOURNEY_ROUTES.find(route => route.panelId === panelId);
+  return getTaxpayerJourneyRoutes().find(route => route.panelId === panelId);
 }

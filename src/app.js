@@ -39,12 +39,13 @@ import {
 } from "./render.js";
 import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.js";
 import {
-  TAXPAYER_JOURNEY_ROUTES,
+  getTaxpayerJourneyRoutes,
   getJourneyRoute,
   getRouteForPanel
 } from "./config/taxpayer-journey.js";
 import { installCivicJourneyPanels } from "./routes/landing-primer.js";
 import { resourceAliases, resourcesByView } from "./content/route-resources.js";
+import { copy, copyObject, copyTemplate, loadSiteCopy } from "./content/site-copy.js";
 import { renderTaxDistrictAuthorities } from "./views/tax-district-authorities.js";
 import { escapeHtml } from "./utils/html.js";
 import { initAssessorsReport } from "./assessors-report.js";
@@ -75,6 +76,8 @@ syncLayoutViewportWidth();
 window.addEventListener("resize", syncLayoutViewportWidth, { passive: true });
 
 async function main() {
+  await loadSiteCopy();
+  applyDocumentCopy();
   applyVisualizationPalette();
   applyChartDefaults();
   const propertySwitcher = await loadPropertySwitcherRecords();
@@ -99,7 +102,7 @@ async function main() {
     initFirstVisitOrientation(developmentFeaturePropertyId
       ? {
         force: true,
-        primaryButtonLabel: "Start Sample Review",
+        primaryButtonLabel: copy("orientation.samplePrimaryButtonLabel", "Start Sample Review"),
         onAccepted: () => continueDevelopmentFeatureSampleStart(
           developmentFeaturePropertyId,
           PROPERTY_SELECTION_STORAGE_KEY
@@ -190,8 +193,8 @@ async function main() {
   });
   if (!directPropertyRequest) {
     initFirstVisitOrientation({
-      primaryButtonLabel: "Continue to Property Record",
-      propertySelectionCopy: "A sample parcel is already loaded. Continue to the Property Record, then move through the guided steps.",
+      primaryButtonLabel: copy("orientation.continuePrimaryButtonLabel", "Continue to Property Record"),
+      propertySelectionCopy: copy("orientation.propertySelectionCopy", "A sample parcel is already loaded. Continue to the Property Record, then move through the guided steps."),
       onAccepted: () => {}
     });
   }
@@ -202,16 +205,119 @@ main().catch(error => {
   document.body.innerHTML = `
     <main class="mx-auto max-w-2xl p-6">
       <section class="review-card">
-        <h1 class="text-xl font-bold text-red-700">Guided Parcel Review could not load</h1>
+        <h1 class="text-xl font-bold text-red-700">${copy("site.loadErrorTitle", "Guided Parcel Review could not load")}</h1>
         <p class="mt-2 text-sm text-slate-700">${error.message}</p>
       </section>
     </main>
   `;
 });
 
+function applyDocumentCopy() {
+  document.title = copy("site.documentTitle", document.title);
+  document.querySelector("meta[name='description']")?.setAttribute("content", copy("site.description", ""));
+  renderStaticContent();
+}
+
+function renderStaticContent() {
+  // Static shell copy appears in index.html containers before route-specific rendering fills data views.
+  const setText = (selector, path, fallback = "") => {
+    const element = document.querySelector(selector);
+    if (element) element.textContent = copy(path, fallback);
+  };
+  const setHtml = (selector, path, fallback = "") => {
+    const element = document.querySelector(selector);
+    if (element) element.innerHTML = copy(path, fallback);
+  };
+  const setAttr = (selector, attr, path, fallback = "") => {
+    const element = document.querySelector(selector);
+    if (element) element.setAttribute(attr, copy(path, fallback));
+  };
+
+  setAttr(".guided-path-nav", "aria-label", "navigation.ariaLabel", "Guided parcel review path");
+  setHtml("[data-guided-progress-status]", "navigation.initialProgress", "You're reviewing <strong>Property Record</strong>");
+  setText(".property-details-panel h2", "pages.your-property.propertyDetails.title", "Property details");
+  setText(".property-details-panel > p", "pages.your-property.propertyDetails.description", "These are the property details used to place the parcel in later value and tax views. Confirming them first makes the later numbers easier to understand.");
+  setText("[data-report-error]", "pages.your-property.decisionCheck.button", "Open record review");
+  setText(".ooda-decision-card .guided-kicker", "pages.your-property.decisionCheck.kicker", "Decision check");
+  setText(".ooda-decision-card h2", "pages.your-property.decisionCheck.title", "Does the record look right?");
+  setText(".ooda-decision-card > p", "pages.your-property.decisionCheck.body", "Review these facts against what you know about the property. Follow up if the owner, address, land size, class, condition, rooms, garage, improvements, or sketch appears inaccurate or incomplete.");
+
+  setText("#assessment-notice h2", "pages.your-assessment.notice.title", "Prior & Current Assessments");
+  setText("#assessment-notice article > p", "pages.your-assessment.notice.description", "Review land, building, other improvements, and total value before connecting those numbers to taxes.");
+  setText("#tax-district-authorities h2", "pages.your-taxes.taxDistrictTitle", "Tax district and levy distribution");
+  setText("#equalization-pressure h2", "pages.your-taxes.taxPatternTitle", "Tax bill pattern");
+  setText("#equalization-pressure .mt-2", "pages.your-taxes.taxPatternNote", "Dashed line: period average. Points use statement net tax after credits.");
+  setText("#county-summary h2", "pages.your-taxes.countyBaseline.title", "Countywide baseline");
+  setText("#countyCtlSummaryIntro", "pages.your-taxes.countyBaseline.intro", "Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.");
+  setText("#county-indexed h2", "pages.your-taxes.countyBaseline.valueTitle", "How are county values and taxes moving?");
+  setText("#countyIndexedRangeNote", "pages.your-taxes.countyBaseline.valueDescription", "Values and taxes are indexed to the same starting point so their movement can be compared over time.");
+  setText("#county-etr h2", "pages.your-taxes.countyBaseline.rateTitle", "How do county taxes compare with value?");
+  setText("#county-etr p", "pages.your-taxes.countyBaseline.rateDescription", "The countywide effective tax rate divides taxes levied by certified value, giving a broad tax-rate baseline.");
+  document.querySelectorAll("#county-summary > .chart-source, #county-comparison > .chart-source").forEach(element => {
+    element.textContent = copy("pages.your-taxes.countyBaseline.source", "Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL).");
+  });
+  setText("#stateContextPromptTitle", "pages.your-taxes.advancedContext.title", "Want a broader comparison?");
+  setText(".advanced-context-card p:not([id])", "pages.your-taxes.advancedContext.body", "View this county with statewide CTL patterns and other Nebraska counties without leaving the main review path.");
+  setText(".advanced-context-button", "pages.your-taxes.advancedContext.button", "Compare Counties");
+
+  setText("#market-price-context h3", "pages.market-area.priceContext.title", "What prices are represented?");
+  setText("#marketPriceContextNote", "pages.market-area.priceContext.description", "Average sale price, average assessed value, and level of value show price context for the selected group.");
+
+  setText("#countyComparisonTitle", "pages.state-context.comparison.title", "How does this county compare?");
+  setText("#countyComparisonRangeIntro", "pages.state-context.comparison.description", "This comparison uses the assessment-year range shown in the charts below. It starts with a simple rate baseline: Nebraska equals 100. A county above 100 has a higher average tax rate than the statewide average; below 100 is lower. Certified values, taxes levied, and average tax rate give the rest of the context.");
+  setText("#county-comparison .guided-kicker", "pages.state-context.comparison.decisionKicker", "Decision check");
+  setText("#county-comparison .ooda-inline-note h3", "pages.state-context.comparison.decisionTitle", "Does the county stand out?");
+  setText("#county-comparison .ooda-inline-note p:last-child", "pages.state-context.comparison.decisionBody", "The Nebraska = 100 comparison, value growth, tax growth, and average rate movement show whether the local pattern is unusual or broadly typical.");
+
+  setText("[data-footer-resource-shell] h2", "footer.resourceShell.title", "Resources and policies");
+  setText("[data-footer-resource-shell] h2 + p", "footer.resourceShell.description", "Need help with what you just reviewed? Find focused answers and forms.");
+  setAttr(".footer-site-nav", "aria-label", "footer.siteLinksAriaLabel", "Site links");
+  setAttr("[data-reset-property-manifest]", "aria-label", "footer.resetPropertySelection", "Reset property selection");
+  setAttr("[data-reset-property-manifest]", "title", "footer.resetPropertySelection", "Reset property selection");
+
+  setText("#assessmentDatesPanel .assessment-dates-dialog-bar .uppercase", "modals.assessmentDates.kicker", "Assessment year reference");
+  setText("#assessmentDatesPanel .assessment-dates-dialog-bar .mt-1", "modals.assessmentDates.description", "Nebraska assessment process dates.");
+  setAttr("[data-close-assessment-dates]", "aria-label", "modals.assessmentDates.closeLabel", "Close assessment dates");
+  setText("#reportErrorModal .app-modal-header .uppercase", "modals.recordCorrection.kicker", "Property record correction request");
+  setText("#reportErrorTitle", "modals.recordCorrection.title", "Report a property record discrepancy");
+  setText("#reportErrorTitle + p", "modals.recordCorrection.description", "Use this to request factual record review when parcel, land, dwelling, improvement, or other property details appear inaccurate, incomplete, or misclassified.");
+  setAttr("[data-close-report-error]", "aria-label", "modals.recordCorrection.closeLabel", "Close property record correction form");
+  setText("#sourceTableModal .app-modal-header .uppercase", "modals.sourceTable.kicker", "Source table");
+  setText("#sourceTableModalTitle", "modals.sourceTable.title", "Statement history");
+  setAttr("[data-close-source-table]", "aria-label", "modals.sourceTable.closeLabel", "Close expanded source table");
+  setAttr("#closeImageModal", "aria-label", "modals.image.closeLabel", "Close expanded image");
+  setAttr("#previousImage", "aria-label", "modals.image.previousLabel", "Previous property image");
+  setAttr("#nextImage", "aria-label", "modals.image.nextLabel", "Next property image");
+
+  renderFooterPanelCopy();
+}
+
+function renderFooterPanelCopy() {
+  const panels = copyObject("footer.panels", {});
+  Object.entries(panels).forEach(([id, panelCopy]) => {
+    const panel = document.querySelector(`[data-footer-panel="${id}"]`);
+    if (!panel) return;
+
+    const kicker = panel.querySelector(".uppercase");
+    const title = panel.querySelector("h3");
+    if (kicker && panelCopy.kicker) kicker.textContent = panelCopy.kicker;
+    if (title && panelCopy.title) title.textContent = panelCopy.title;
+
+    if (Array.isArray(panelCopy.notes)) {
+      const notes = panel.querySelectorAll(".review-note");
+      panelCopy.notes.forEach((note, index) => {
+        if (notes[index]) notes[index].textContent = note;
+      });
+    } else if (panelCopy.body) {
+      const body = panel.querySelector("p:not(.uppercase)");
+      if (body) body.textContent = panelCopy.body;
+    }
+  });
+}
+
 function initGuidedNavigation(data, options = {}) {
   const snapshotModel = data.snapshotModel;
-  const routeList = snapshotModel?.sections?.length ? snapshotModel.sections : TAXPAYER_JOURNEY_ROUTES;
+  const routeList = snapshotModel?.sections?.length ? snapshotModel.sections : getTaxpayerJourneyRoutes();
   const progressRoutes = routeList.filter(route => !route.secondary);
   const tabsContainer = document.getElementById("guidedPathTabs");
 
@@ -351,7 +457,7 @@ function initGuidedNavigation(data, options = {}) {
     currentGuidedRouteId = currentRouteId;
     const currentIndex = primarySectionIds.indexOf(currentRouteId);
     if (currentIndex === -1) {
-      guidedProgressStatus.innerHTML = "Start the guided review";
+      guidedProgressStatus.textContent = copy("navigation.startProgress", "Start the guided review");
       if (guidedProgressNext) guidedProgressNext.textContent = "";
       return;
     }
@@ -360,10 +466,14 @@ function initGuidedNavigation(data, options = {}) {
     const compactRouteLabel = routeLabel === "What Changed" ? "What Changed?" : routeLabel;
     const nextRouteLabel = progressRoutes[currentIndex + 1]?.label || "";
 
-    guidedProgressStatus.innerHTML = `You're reviewing <strong>${escapeHtml(compactRouteLabel)}</strong>`;
+    guidedProgressStatus.innerHTML = copyTemplate(
+      "navigation.progressTemplate",
+      { label: escapeHtml(compactRouteLabel) },
+      `You're reviewing <strong>${escapeHtml(compactRouteLabel)}</strong>`
+    );
     if (guidedProgressNext) {
       guidedProgressNext.textContent = labelsHiddenProgressQuery.matches && nextRouteLabel
-        ? `Next: ${nextRouteLabel}`
+        ? copyTemplate("navigation.nextTemplate", { label: nextRouteLabel }, `Next: ${nextRouteLabel}`)
         : "";
     }
   }
@@ -585,8 +695,10 @@ function guidedStepMarker(index) {
 }
 
 function renderGuidedResourceContent(viewKey) {
-  const resourceKey = resourceAliases[viewKey] ?? viewKey;
-  const resources = resourcesByView[resourceKey] ?? resourcesByView["your-property"];
+  const aliases = resourceAliases();
+  const resourcesCopy = resourcesByView();
+  const resourceKey = aliases[viewKey] ?? viewKey;
+  const resources = resourcesCopy[resourceKey] ?? resourcesCopy["your-property"];
   const datesContent = document.getElementById("importantCalendarDates");
   const faqTitle = document.getElementById("footerFaqTitle");
   const formsTitle = document.getElementById("footerFormsTitle");

@@ -1,3 +1,5 @@
+import { copyArray, copyObject } from "../content/site-copy.js";
+
 export function renderStartPage(propertySwitcherContext = {}, renderViewHeader) {
   renderViewHeader?.("start", null, propertySwitcherContext);
 
@@ -18,35 +20,31 @@ export function renderStartPage(propertySwitcherContext = {}, renderViewHeader) 
   }
 
   start.className = "guided-start-state";
+  const content = copyObject("pages.start", {});
+  const cards = copyArray("pages.start.cards", []);
   start.innerHTML = `
     <article class="guided-start-card" aria-labelledby="guidedStartTitle">
       <div class="guided-start-copy">
-        <p class="guided-kicker">Ready for review</p>
-        <h2 id="guidedStartTitle">Preview the review workspace</h2>
-        <p>Each sample opens a full parcel view with record details, value history, tax context, market charts, and guided review steps.</p>
+        <p class="guided-kicker">${content.kicker}</p>
+        <h2 id="guidedStartTitle">${content.title}</h2>
+        <p>${content.intro}</p>
       </div>
 
-      <div class="guided-start-callout" aria-label="Sample record coverage">
-        <p class="guided-start-callout-label">Sample coverage</p>
-        <p>Residential, agricultural, and commercial samples are available.</p>
+      <div class="guided-start-callout" aria-label="${content.calloutAriaLabel}">
+        <p class="guided-start-callout-label">${content.calloutLabel}</p>
+        <p>${content.calloutText}</p>
       </div>
 
-      <div class="guided-start-grid" aria-label="What the review covers">
-        <section>
-          <h3>Parcel context</h3>
-          <p>Review parcel facts, classification, land details, valuation groups, and practical items to verify.</p>
-        </section>
-        <section>
-          <h3>Value and assessment history</h3>
-          <p>See how the sample property's assessed value has moved and which years are still pending or finalized.</p>
-        </section>
-        <section>
-          <h3>Tax impact</h3>
-          <p>See how value changes, levy, credits, and effective tax rate relate to the latest available tax bill.</p>
-        </section>
+      <div class="guided-start-grid" aria-label="${content.coverageAriaLabel}">
+        ${cards.map(card => `
+          <section>
+            <h3>${card.title}</h3>
+            <p>${card.description}</p>
+          </section>
+        `).join("")}
       </div>
 
-      <p class="guided-start-disclaimer">This prototype uses pre-loaded sample records for demonstration, stress testing, and smoke testing. Official records, valuations, and tax determinations remain with the appropriate county offices.</p>
+      <p class="guided-start-disclaimer">${content.disclaimer}</p>
     </article>
   `;
 }

@@ -33,11 +33,11 @@ export function buildRecordCorrectionSubmission({ data, formValues, selectedCate
   const contact = office.contact ?? {};
   const address = office.address ?? {};
   const hours = office.office_hours ?? {};
-  const senderName = formValues.senderName || data.parcel.owner || "Not provided";
+  const senderName = formValues.senderName || data.parcel.owner || copy("recordCorrectionRequest.senderFallback", "Not provided");
   const categories = selectedCategories || [];
 
   return {
-    title: "Property Record Correction Request",
+    title: copy("recordCorrectionRequest.title", "Property Record Correction Request"),
     submittedAt: new Date().toISOString(),
     parcel: {
       parcelId: data.parcel.parcelId,
@@ -61,7 +61,7 @@ export function buildRecordCorrectionSubmission({ data, formValues, selectedCate
     reviewCategoryCount: categories.filter(category => category.status === "may-need-review").length,
     availableCategoryCount: 6,
     narrative: formValues.comments,
-    acknowledgment: "I understand this request is for factual property record review.",
+    acknowledgment: copy("recordCorrectionRequest.acknowledgment", "I understand this request is for factual property record review."),
     office: {
       assessorName: office.assessor_name,
       title: office.office_title,
@@ -84,13 +84,13 @@ export function buildRecordCorrectionEmailPayload(submission, pdfBytes) {
   return {
     to: submission.office.email,
     cc: sender.email,
-    subject: `Property Record Correction Request - Parcel ${parcelId}`,
+    subject: copyTemplate("recordCorrectionRequest.emailSubjectTemplate", { parcelId }, `Property Record Correction Request - Parcel ${parcelId}`),
     body: [
-      `Attached is a property record correction request for parcel ${parcelId}.`,
+      copyTemplate("recordCorrectionRequest.emailBody.attachedTemplate", { parcelId }, `Attached is a property record correction request for parcel ${parcelId}.`),
       "",
-      `Please contact me by ${preferredContact} if additional information is needed.`,
+      copyTemplate("recordCorrectionRequest.emailBody.contactTemplate", { preferredContact }, `Please contact me by ${preferredContact} if additional information is needed.`),
       "",
-      "Thank you,",
+      copy("recordCorrectionRequest.emailBody.thanks", "Thank you,"),
       "",
       sender.name,
       sender.phone,
@@ -195,15 +195,15 @@ export async function generateRecordCorrectionPdf(submission) {
 
   function selectedCategorySummary(categories) {
     if (!categories.length) {
-      wrapped("No review categories selected; comments provided.", MARGIN, CONTENT_WIDTH, { size: 10 });
+      wrapped(copy("recordCorrectionRequest.pdf.emptyCategories", "No review categories selected; comments provided."), MARGIN, CONTENT_WIDTH, { size: 10 });
       return;
     }
 
     categories.forEach(category => {
       const exampleText = Array.isArray(category.examples) && category.examples.length
-        ? `Examples: ${category.examples.join(", ")}`
+        ? `${copy("recordCorrectionRequest.pdf.examplesPrefix", "Examples:")} ${category.examples.join(", ")}`
         : "";
-      const status = category.statusLabel || "Selected";
+      const status = category.statusLabel || copy("recordCorrectionRequest.pdf.selectedStatusFallback", "Selected");
       const descriptionLines = lines(category.description || "", CONTENT_WIDTH - 20, 9.5, regular);
       const exampleLines = exampleText ? lines(exampleText, CONTENT_WIDTH - 20, 8.5, regular) : [];
       const rowHeight = 33 + descriptionLines.length * 12 + exampleLines.length * 11;
@@ -225,71 +225,78 @@ export async function generateRecordCorrectionPdf(submission) {
     });
   }
 
-  text("Property Record Correction Request", MARGIN, y, { size: 20, bold: true, color: palette.navy });
+  const sectionLabels = copyArray("recordCorrectionRequest.pdf.sections", [
+    "1. Submission Details",
+    "2. Property / Parcel Summary",
+    "3. Requested Record Review Categories",
+    "4. Correction Narrative",
+    "5. Taxpayer Acknowledgment",
+    "6. Assessor's Office Routing Information"
+  ]);
+  const labels = copyObject("recordCorrectionRequest.labels", {});
+
+  text(copy("recordCorrectionRequest.title", "Property Record Correction Request"), MARGIN, y, { size: 20, bold: true, color: palette.navy });
   y -= 22;
   wrapped(
-    "Use this request for factual review of parcel, land, dwelling, improvement, or other property record details.",
+    copy("recordCorrectionRequest.pdf.intro", "Use this request for factual review of parcel, land, dwelling, improvement, or other property record details."),
     MARGIN,
     CONTENT_WIDTH,
     { size: 10, color: palette.ink, lineHeight: 14 }
   );
 
-  section("1. Submission Details");
+  section(sectionLabels[0]);
   keyValueRows([
-    ["Date/time submitted", formatSubmittedAt(submission.submittedAt)],
-    ["Parcel ID", submission.parcel.parcelId],
-    ["Property address", submission.parcel.situsAddress],
-    ["Owner/taxpayer name", submission.parcel.owner],
-    ["Sender name", submission.sender.name],
-    ["Sender email", submission.sender.email],
-    ["Sender phone", submission.sender.phone],
-    ["Preferred contact method", contactMethodLabel(submission.sender.preferredContactMethod)]
+    [labels.dateTimeSubmitted || "Date/time submitted", formatSubmittedAt(submission.submittedAt)],
+    [labels.parcelId || "Parcel ID", submission.parcel.parcelId],
+    [labels.propertyAddress || "Property address", submission.parcel.situsAddress],
+    [labels.ownerTaxpayerName || "Owner/taxpayer name", submission.parcel.owner],
+    [labels.senderName || "Sender name", submission.sender.name],
+    [labels.senderEmail || "Sender email", submission.sender.email],
+    [labels.senderPhone || "Sender phone", submission.sender.phone],
+    [labels.preferredContactMethod || "Preferred contact method", contactMethodLabel(submission.sender.preferredContactMethod)]
   ]);
 
-  section("2. Property / Parcel Summary");
+  section(sectionLabels[1]);
   keyValueRows([
-    ["Mailing address", submission.parcel.mailingAddress],
-    ["Legal description", submission.parcel.legalDescription],
-    ["County", submission.parcel.county ? `${submission.parcel.county} County` : null],
-    ["Tax district", submission.parcel.taxDistrict],
-    ["Property class", submission.parcel.propertyClass],
-    ["Location", submission.parcel.location],
-    ["Lot size", submission.parcel.lotSize]
+    [labels.mailingAddress || "Mailing address", submission.parcel.mailingAddress],
+    [labels.legalDescription || "Legal description", submission.parcel.legalDescription],
+    [labels.county || "County", submission.parcel.county ? `${submission.parcel.county} County` : null],
+    [labels.taxDistrict || "Tax district", submission.parcel.taxDistrict],
+    [labels.propertyClass || "Property class", submission.parcel.propertyClass],
+    [labels.location || "Location", submission.parcel.location],
+    [labels.lotSize || "Lot size", submission.parcel.lotSize]
   ]);
 
-  section("3. Requested Record Review Categories");
+  section(sectionLabels[2]);
   selectedCategorySummary(submission.selectedCategories || []);
 
-  section("4. Correction Narrative");
-  wrapped(submission.narrative || "No additional narrative provided.", MARGIN, CONTENT_WIDTH, { size: 10, lineHeight: 14 });
+  section(sectionLabels[3]);
+  wrapped(submission.narrative || copy("recordCorrectionRequest.pdf.emptyNarrative", "No additional narrative provided."), MARGIN, CONTENT_WIDTH, { size: 10, lineHeight: 14 });
 
-  section("5. Taxpayer Acknowledgment");
+  section(sectionLabels[4]);
   wrapped(submission.acknowledgment, MARGIN, CONTENT_WIDTH, { size: 10, lineHeight: 14 });
 
-  section("6. Assessor's Office Routing Information");
+  section(sectionLabels[5]);
   keyValueRows([
-    ["Office", submission.office.title || submission.office.assessorName],
-    ["Assessor", submission.office.assessorName],
-    ["Email", submission.office.email],
-    ["Phone", submission.office.phone],
-    ["Office hours", submission.office.hours],
-    ["Address", submission.office.address],
-    ["Website", submission.office.website]
+    [labels.office || "Office", submission.office.title || submission.office.assessorName],
+    [labels.assessor || "Assessor", submission.office.assessorName],
+    [labels.email || "Email", submission.office.email],
+    [labels.phone || "Phone", submission.office.phone],
+    [labels.officeHours || "Office hours", submission.office.hours],
+    [labels.address || "Address", submission.office.address],
+    [labels.website || "Website", submission.office.website]
   ]);
 
   return doc.save();
 }
 
 export function contactMethodLabel(value) {
-  return {
-    office: "In-office visit",
-    email: "Email",
-    phone: "Phone call"
-  }[value] ?? "Not provided";
+  const labels = copyObject("recordCorrectionRequest.contactMethods", {});
+  return labels[value] ?? labels.fallback ?? "Not provided";
 }
 
 function formatSubmittedAt(iso) {
-  if (!iso) return "Not available";
+  if (!iso) return copy("recordCorrectionRequest.dateFallback", "Not available");
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "short",
@@ -299,3 +306,4 @@ function formatSubmittedAt(iso) {
     timeZoneName: "short"
   }).format(new Date(iso));
 }
+import { copy, copyArray, copyObject, copyTemplate } from "./content/site-copy.js";

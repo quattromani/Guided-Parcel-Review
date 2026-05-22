@@ -20,6 +20,7 @@ import {
   generateRecordCorrectionPdf
 } from "./recordCorrectionRequest.js";
 import { viewHeaderContent } from "./content/view-headers.js";
+import { copyArray } from "./content/site-copy.js";
 import { PROPERTY_SELECTION_STORAGE_KEY } from "./data-service.js";
 import { propertyRecordSourceText, taxHistorySourceText } from "./domain/source-labels.js";
 import {
@@ -32,7 +33,7 @@ import { displayAddress } from "./utils/address.js";
 import { displayValue, formatSquareFeet, hasDisplayValue } from "./utils/display.js";
 import { escapeHtml } from "./utils/html.js";
 
-const recordReviewStatuses = [
+const fallbackRecordReviewStatuses = [
   ["looks-correct", "Looks correct"],
   ["may-need-review", "May need review"]
 ];
@@ -41,8 +42,7 @@ const percentOneDecimal = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 1,
   maximumFractionDigits: 1
 });
-const recordReviewStatusLabels = Object.fromEntries(recordReviewStatuses);
-const recordReviewCategories = [
+const fallbackRecordReviewCategories = [
   {
     id: "ownership-mailing-details",
     title: "Ownership & mailing details",
@@ -80,6 +80,20 @@ const recordReviewCategories = [
     examples: ["Miscellaneous notes", "Unusual details", "Classification concerns", "Other record questions"]
   }
 ];
+
+function recordReviewStatuses() {
+  // Record correction modal status labels appear on each review-category card.
+  return copyArray("recordReview.statuses", fallbackRecordReviewStatuses);
+}
+
+function recordReviewStatusLabels() {
+  return Object.fromEntries(recordReviewStatuses());
+}
+
+function recordReviewCategories() {
+  // Record correction modal categories group factual issues for the downloadable/email request.
+  return copyArray("recordReview.categories", fallbackRecordReviewCategories);
+}
 
 const legacyRecordReviewCategorySlugPatterns = [
   ["ownership-mailing-details", /^(parcel-id|owner|situs-address|tax-district|legal-description)$/],
@@ -568,13 +582,14 @@ function formatValuationGroupLabel(value) {
 export function renderViewHeader(view = "your-property", snapshotModel, propertySwitcher = null) {
   const switcherContext = propertySwitcher ?? window.__PROPERTY_SWITCHER_CONTEXT__ ?? null;
   const section = snapshotModel?.sections?.find(item => item.id === view);
+  const headers = viewHeaderContent();
   const content = section
     ? {
       eyebrow: section.eyebrow,
       title: section.question,
       description: section.description
     }
-    : viewHeaderContent[view] || viewHeaderContent["your-property"];
+    : headers[view] || headers["your-property"];
   const title = document.getElementById("pageTitle");
   const titleHtml = escapeHtml(content.title);
 
@@ -1103,7 +1118,7 @@ function formatYearBuilt(value) {
 }
 
 function reviewCategoryCards() {
-  return recordReviewCategories.map(category => {
+  return recordReviewCategories().map(category => {
     const groupName = `category-${category.id}`;
     const examplesId = `${groupName}-examples`;
 
@@ -1115,7 +1130,7 @@ function reviewCategoryCards() {
           ${category.examples.map(example => escapeHtml(example)).join(", ")}
         </p>
         <div class="mt-4 grid gap-2 sm:grid-cols-2" role="presentation">
-          ${recordReviewStatuses.map(([value, label]) => {
+          ${recordReviewStatuses().map(([value, label]) => {
             const inputId = `${groupName}-${value}`;
             return `
               <label
@@ -1289,7 +1304,9 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
   function selectedCategories() {
     const formData = new FormData(form);
 
-    return recordReviewCategories
+    const statusLabels = recordReviewStatusLabels();
+
+    return recordReviewCategories()
       .map(category => {
         const status = formData.get(`category-${category.id}`);
         if (!status) return null;
@@ -1300,7 +1317,7 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
           description: category.description,
           examples: category.examples,
           status,
-          statusLabel: recordReviewStatusLabels[status] || String(status)
+          statusLabel: statusLabels[status] || String(status)
         };
       })
       .filter(Boolean);

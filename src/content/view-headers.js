@@ -1,4 +1,6 @@
-const viewHeaderContent = {
+import { copyObject } from "./site-copy.js";
+
+const fallbackViewHeaderContent = {
   start: {
     eyebrow: "Guided Parcel Review",
     title: "Start with a sample parcel",
@@ -48,5 +50,10 @@ const viewHeaderContent = {
     imageAlt: "Map of Nebraska highlighting Gage County"
   }
 };
+
+function viewHeaderContent() {
+  // Page header copy appears in the top visual header for each guided route.
+  return copyObject("viewHeaders", fallbackViewHeaderContent);
+}
 
 export { viewHeaderContent };

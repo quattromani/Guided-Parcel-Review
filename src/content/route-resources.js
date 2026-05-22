@@ -1,4 +1,6 @@
-const resourcesByView = {
+import { copyObject } from "./site-copy.js";
+
+const fallbackResourcesByView = {
   "your-property": {
     faqTitle: "Property record FAQs",
     formTitle: "Property record forms",
@@ -71,7 +73,7 @@ const resourcesByView = {
   }
 };
 
-const resourceAliases = {
+const fallbackResourceAliases = {
   "property-record": "your-property",
   "what-changed": "your-assessment",
   "valuation-detail": "market-area",
@@ -80,5 +82,15 @@ const resourceAliases = {
   "review-signals": "review-checklist",
   "final-summary": "review-checklist"
 };
+
+function resourcesByView() {
+  // Footer FAQ/form copy is shown below the active guided route.
+  return copyObject("resourcesByView", fallbackResourcesByView);
+}
+
+function resourceAliases() {
+  // Route aliases map guided-step ids to the reusable footer resource groups.
+  return copyObject("resourceAliases", fallbackResourceAliases);
+}
 
 export { resourceAliases, resourcesByView };
