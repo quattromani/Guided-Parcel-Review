@@ -1,24 +1,49 @@
 const SITE_COPY_PATH = "data/app/site-copy.json";
 
 let siteCopy = {};
+let siteCopyStatus = {
+  loaded: false,
+  fallback: false,
+  error: null
+};
 
 function valueAtPath(source, path) {
   return `${path}`.split(".").reduce((current, key) => current?.[key], source);
 }
 
 export async function loadSiteCopy(path = SITE_COPY_PATH) {
-  const response = await fetch(path);
+  try {
+    const response = await fetch(path);
 
-  if (!response.ok) {
-    throw new Error(`Unable to load site copy: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Unable to load site copy: ${response.status}`);
+    }
+
+    siteCopy = await response.json();
+    siteCopyStatus = {
+      loaded: true,
+      fallback: false,
+      error: null
+    };
+  } catch (error) {
+    siteCopy = {};
+    siteCopyStatus = {
+      loaded: false,
+      fallback: true,
+      error
+    };
+    console.warn("Using built-in copy fallbacks because centralized site copy could not be loaded.", error);
   }
 
-  siteCopy = await response.json();
   return siteCopy;
 }
 
 export function getSiteCopy() {
   return siteCopy;
+}
+
+export function getSiteCopyStatus() {
+  return siteCopyStatus;
 }
 
 export function copy(path, fallback = "") {

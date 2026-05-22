@@ -1,5 +1,30 @@
 import { copyArray, copyObject } from "../content/site-copy.js";
 
+const fallbackStartPageContent = {
+  kicker: "Ready for review",
+  title: "Preview the review workspace",
+  intro: "Each sample opens a full parcel view with record details, value history, tax context, market charts, and guided review steps.",
+  calloutAriaLabel: "Sample record coverage",
+  calloutLabel: "Sample coverage",
+  calloutText: "Residential, agricultural, and commercial samples are available.",
+  coverageAriaLabel: "What the review covers",
+  cards: [
+    {
+      title: "Parcel context",
+      description: "Review parcel facts, classification, land details, valuation groups, and practical items to verify."
+    },
+    {
+      title: "Value and assessment history",
+      description: "See how the sample property's assessed value has moved and which years are still pending or finalized."
+    },
+    {
+      title: "Tax impact",
+      description: "See how value changes, levy, credits, and effective tax rate relate to the latest available tax bill."
+    }
+  ],
+  disclaimer: "This prototype uses pre-loaded sample records for demonstration, stress testing, and smoke testing. Official records, valuations, and tax determinations remain with the appropriate county offices."
+};
+
 export function renderStartPage(propertySwitcherContext = {}, renderViewHeader) {
   renderViewHeader?.("start", null, propertySwitcherContext);
 
@@ -20,8 +45,8 @@ export function renderStartPage(propertySwitcherContext = {}, renderViewHeader) 
   }
 
   start.className = "guided-start-state";
-  const content = copyObject("pages.start", {});
-  const cards = copyArray("pages.start.cards", []);
+  const content = copyObject("pages.start", fallbackStartPageContent);
+  const cards = copyArray("pages.start.cards", fallbackStartPageContent.cards);
   start.innerHTML = `
     <article class="guided-start-card" aria-labelledby="guidedStartTitle">
       <div class="guided-start-copy">

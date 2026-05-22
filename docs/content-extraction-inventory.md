@@ -27,3 +27,31 @@ This inventory tracks the user-facing copy reviewed during the centralized-copy 
 - Formatting units and very small generated fragments, such as `year`, `years`, `item`, `items`, `Pending`, `Notice`, symbols, punctuation, and chart operators. These are tied to table formatting or grammar around dynamic values.
 - Developer-facing errors and internal pipeline labels where text is not public UI copy.
 - Some generated narrative templates in chart/report modules. They combine statistical values, class names, and thresholds and need a second, lower-risk template pass so calculations and chart behavior stay unchanged.
+
+## Duplicate Semantic Copy Identified
+
+These repeats were identified during validation and left unchanged so this pass does not silently rewrite wording:
+
+- Route questions/descriptions repeated as view-header titles/descriptions:
+  - "Are assessments checked for level and consistency?"
+  - "Equalization checks whether assessments are at the required level and applied consistently."
+  - "How does the county compare statewide?"
+  - "Use statewide CTL data as broader context."
+  - "Check whether the source facts line up."
+- Reused image alt text:
+  - "Map of Nebraska highlighting Gage County"
+  - "Map of Nebraska highlighting the local market area"
+- Reused source note:
+  - "Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL)."
+- Footer resource defaults duplicated with active route resources:
+  - "Property record FAQs"
+  - "Property record forms"
+- Display label reused in two contexts:
+  - "Legal description"
+
+## Validation Notes
+
+- `src/content/site-copy.js` now fails open. If `data/app/site-copy.json` cannot be fetched or parsed, the app keeps booting with built-in fallback copy.
+- `src/routes/start-page.js` includes complete fallback content to avoid visible `undefined` text when centralized copy is unavailable.
+- The copy file has no numeric JSON values. Numeric strings are limited to document title/year, step numbers, section numbering, repeated CTL source years, and explanatory "Nebraska = 100" copy.
+- The copy file is still acceptable as one file for this static prototype because it is route/page/component grouped and under 600 lines. If county/vendor overrides grow, split by stable top-level groups rather than by renderer file.

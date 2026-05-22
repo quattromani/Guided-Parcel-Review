@@ -84,6 +84,14 @@ The frontend should consume static app-ready JSON only. It should not scrape PAD
 - `src/reports/` builds the downloadable property report PDF; `src/assessors-report.js` builds the supplemental assessor print view.
 - `src/content/site-copy.js` loads centralized copy from `data/app/site-copy.json`; `src/config/taxpayer-journey.js` and `src/content/` provide fallbacks and route/resource accessors.
 
+## Editing Site Copy
+
+Centralized public-facing app copy lives in `data/app/site-copy.json`. The file is organized by stable top-level groups: `site`, `navigation`, `routes`, `viewHeaders`, `pages`, `footer`, `modals`, `resourcesByView`, `recordReview`, and `recordCorrectionRequest`. Within `pages`, copy is grouped by route or panel, then by section or component.
+
+The app loads that file through `src/content/site-copy.js` before route, page, modal, footer, or report rendering. If the JSON cannot be fetched or parsed, the app falls back to built-in literals so the static site does not render blank UI. When changing foundational shell copy, update both `data/app/site-copy.json` and any fallback literal in the module that uses the key, especially for start page, route metadata, footer resources, modal labels, and record-correction report text.
+
+Do not move dynamic values into copy files. Property values, parcel facts, tax amounts, levy/rate figures, chart data, calculation inputs, thresholds, ratio-study measures, CTL data, IAAO/statistical standards, deadlines, forms, legal references, and source citations should stay in their structured data files unless the item is purely a display label or surrounding explanatory text. Use `docs/content-extraction-inventory.md` before moving generated narrative text; some chart/report sentences intentionally remain in code because they combine copy with calculations and statistical context.
+
 ## Handoff Notes
 
 - `docs/team-handoff.md` maps the current repo shape to likely backend, database, data/ETL, frontend, QA, design, accessibility, policy, DevOps, security, and support handoff needs.
