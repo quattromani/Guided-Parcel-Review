@@ -926,6 +926,12 @@ table thead th[class] + th[class] {
   gap: 1rem;
 }
 
+#countyGrowthSummary,
+#countyRateSummary {
+  display: grid;
+  gap: 1rem;
+}
+
 .county-growth-pair > div,
 .metric-pair-card > div {
   min-width: 0;

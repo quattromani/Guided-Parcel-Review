@@ -3066,6 +3066,22 @@ function formatApproximateRatePercent(value) {
   return `${Number(value).toFixed(1)}%`;
 }
 
+function indexChangeFromAvailableRows(rows, key) {
+  const usableRows = (rows || [])
+    .filter(row => hasDataValue(row?.[key]) && Number(row[key]) !== 0)
+    .sort((a, b) => a.year - b.year);
+  return indexChange(usableRows, key);
+}
+
+function propertyRateMovement(rows) {
+  const usableRows = (rows || [])
+    .map(row => ({ ...row, etr: calculateEtr(row) }))
+    .filter(row => row.etr !== null)
+    .sort((a, b) => a.year - b.year);
+  if (usableRows.length < 2) return "—";
+  return `${formatApproximateRatePercent(usableRows[0].etr * 100)} to ${formatApproximateRatePercent(usableRows.at(-1).etr * 100)}`;
+}
+
 function latestRow(rows) {
   return rows?.length ? rows.slice().sort((a, b) => a.year - b.year).at(-1) : null;
 }
@@ -3373,17 +3389,31 @@ export function buildCtlSummary(data, ctlData) {
   const valueGrowth = formatChange(indexChange(countyRows, "totalValue"));
   const taxGrowth = formatChange(indexChange(countyRows, "taxesLevied"));
   const rateMovement = `${formatApproximateRatePercent(countyRows[0].averageTaxRate * 100)} to ${formatApproximateRatePercent(countyRows.at(-1).averageTaxRate * 100)}`;
+  const propertyRows = taxpayerTimelineRows(data);
+  const propertyValueGrowth = formatChange(indexChangeFromAvailableRows(propertyRows, "assessedValue"));
+  const propertyTaxGrowth = formatChange(indexChangeFromAvailableRows(propertyRows, "taxes"));
+  const propertyRateChange = propertyRateMovement(propertyRows);
 
   if (countyGrowthSummary) {
     countyGrowthSummary.innerHTML = `
       <div class="county-growth-pair county-baseline-card review-card-muted">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Value growth</p>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County value growth</p>
           <p class="mt-1 text-lg font-bold text-slate-700">${valueGrowth}</p>
         </div>
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax growth</p>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County tax growth</p>
           <p class="mt-1 text-lg font-bold text-slate-700">${taxGrowth}</p>
+        </div>
+      </div>
+      <div class="county-growth-pair county-baseline-card review-card-muted">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property value growth</p>
+          <p class="mt-1 text-lg font-bold text-slate-700">${propertyValueGrowth}</p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property tax growth</p>
+          <p class="mt-1 text-lg font-bold text-slate-700">${propertyTaxGrowth}</p>
         </div>
       </div>`;
   }
@@ -3391,8 +3421,12 @@ export function buildCtlSummary(data, ctlData) {
   if (countyRateSummary) {
     countyRateSummary.innerHTML = `
       <div class="county-baseline-card review-card-muted">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Rate movement</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County rate movement</p>
         <p class="mt-1 text-lg font-bold text-slate-700">${rateMovement}</p>
+      </div>
+      <div class="county-baseline-card review-card-muted">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property rate movement</p>
+        <p class="mt-1 text-lg font-bold text-slate-700">${propertyRateChange}</p>
       </div>`;
   }
 
