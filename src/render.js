@@ -317,7 +317,7 @@ function renderTaxDistributionShell(data) {
           </summary>
           <div class="mobile-support-content">
             <h2 class="text-xl font-bold text-slate-700">Which taxing bodies are included?</h2>
-            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. Levy share and property amount show the gross levy applied to this property before statement credits. The 2026 tax bill still depends on final budgets, levies, credits, and exemptions.</p>
+            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. Levy share and property amount show the gross levy applied to this property before statement credits.</p>
             <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
               <table class="min-w-full divide-y divide-slate-200 text-sm">
                 <thead>
@@ -3301,10 +3301,13 @@ function renderTaxEquationWaterfall(data, displayLevyByYear) {
   const container = document.getElementById("taxEquationWaterfall");
   if (!container) return;
 
+  container.innerHTML = taxStatementShorthandMarkup(data, displayLevyByYear);
+}
+
+export function taxStatementShorthandMarkup(data, displayLevyByYear = null) {
   const statement = finalizedTaxStatements(data)[0];
   if (!statement) {
-    container.innerHTML = "";
-    return;
+    return "";
   }
 
   const levy = displayLevyByYear?.get(statement.taxYear)?.levy ?? statementGrossLevy(statement);
@@ -3320,7 +3323,7 @@ function renderTaxEquationWaterfall(data, displayLevyByYear) {
   ];
   const operators = ["×", "=", "−", "="];
 
-  container.innerHTML = `
+  return `
     <div class="tax-equation-heading">
       <h3>${statement.taxYear} tax statement shorthand</h3>
     </div>

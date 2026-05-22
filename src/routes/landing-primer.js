@@ -11,7 +11,7 @@ import {
   getParcelMarketClass,
   getParcelMarketGroupId
 } from "../market-stats.js";
-import { quickReadSummaryMarkup } from "../render.js";
+import { quickReadSummaryMarkup, taxStatementShorthandMarkup } from "../render.js";
 import { initPropertyReportExport } from "../reports/property-report.js";
 import { compactParts, formatSquareFeet } from "../utils/display.js";
 import { escapeHtml } from "../utils/html.js";
@@ -56,7 +56,8 @@ function propertySnapshotSummary(notice, options = {}) {
     kicker = "Property record",
     title = "Property review starting point",
     showStatus = true,
-    showAction = true
+    showAction = true,
+    showSource = true
   } = options;
   const address = notice.displayAddress || notice.situsAddress;
   const statusLabel = `${notice.assessmentLabel} status ${notice.valueStatusLabel}`;
@@ -100,10 +101,12 @@ function propertySnapshotSummary(notice, options = {}) {
         ${noticeMetric(notice.reviewDeadlineLabel, escapeHtml(notice.reviewDeadline))}
       </dl>
 
+      ${showAction || showSource ? `
       <div class="civic-notice-footer ${showAction ? "" : "civic-notice-footer-source-only"}">
-        <p class="civic-source-note">Source: ${escapeHtml(notice.source)}.</p>
+        ${showSource ? `<p class="civic-source-note">Source: ${escapeHtml(notice.source)}.</p>` : ""}
         ${showAction ? `<button type="button" data-guided-next="property-record" class="next-step-button">Go to Property Record</button>` : ""}
       </div>
+      ` : ""}
     </section>
   `;
 }
@@ -344,9 +347,14 @@ function installFinalSummary(data, context = {}) {
         kicker: "Property snapshot",
         title: "Record values at a glance",
         showStatus: false,
-        showAction: false
+        showAction: false,
+        showSource: false
       })}
     </article>
+
+    <section class="summary-tax-equation-float tax-equation-waterfall" aria-label="Tax statement calculation">
+      ${taxStatementShorthandMarkup(data)}
+    </section>
 
     <article class="civic-summary-shell civic-summary-quick-read" aria-labelledby="summaryQuickReadTitle">
       <div>

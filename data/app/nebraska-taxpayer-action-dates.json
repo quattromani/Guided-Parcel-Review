@@ -38,8 +38,8 @@
         "landing-primer": 4,
         "your-property": 4,
         "your-assessment": 4,
-        "your-taxes": 3,
-        "review-checklist": 4
+        "your-taxes": 5,
+        "review-checklist": 5
       }
     },
     {
@@ -55,8 +55,8 @@
         "your-property": 2,
         "your-assessment": 1,
         "market-area": 1,
-        "county-equalization": 3,
-        "review-checklist": 2
+        "county-equalization": 1,
+        "review-checklist": 1
       }
     },
     {
@@ -72,8 +72,8 @@
         "your-property": 3,
         "your-assessment": 3,
         "market-area": 2,
-        "county-equalization": 1,
-        "review-checklist": 1
+        "county-equalization": 2,
+        "review-checklist": 2
       }
     },
     {
@@ -85,7 +85,7 @@
       "whyItMatters": "This is when local review moves through the board process.",
       "sourceEventIds": ["boe-review-period"],
       "routePriority": {
-        "county-equalization": 2,
+        "county-equalization": 3,
         "review-checklist": 3
       }
     },
@@ -112,7 +112,7 @@
       "sourceEventIds": ["terc-appeal-deadline"],
       "routePriority": {
         "county-equalization": 4,
-        "review-checklist": 2
+        "review-checklist": 4
       }
     },
     {
@@ -125,7 +125,7 @@
       "sourceEventIds": ["budget-hearing-setup"],
       "routePriority": {
         "your-taxes": 1,
-        "state-context": 3,
+        "state-context": 1,
         "review-checklist": 6
       }
     },
@@ -151,8 +151,8 @@
       "whyItMatters": "Tax bills follow the assessment, equalization, budget, levy, credit, and tax-list steps from earlier in the year.",
       "sourceEventIds": ["taxes-due-lien-date"],
       "routePriority": {
-        "your-taxes": 4,
-        "state-context": 4,
+        "your-taxes": 3,
+        "state-context": 3,
         "review-checklist": 7
       }
     }
