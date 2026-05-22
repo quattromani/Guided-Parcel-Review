@@ -156,18 +156,29 @@ function marketAreaName(recordCard, marketArea, classKey = "residential") {
 }
 
 function signalMeta(signals) {
+  const reviewSignals = signals.filter(signal => signal.tone === "review");
+  if (reviewSignals.length) {
+    const titles = reviewSignals.slice(0, 2).map(signal => signal.title).filter(Boolean);
+    const remaining = reviewSignals.length - titles.length;
+    return remaining > 0 ? `${titles.join(" · ")} · ${remaining} more` : titles.join(" · ");
+  }
+
   const counts = signals.reduce((acc, signal) => {
     acc[signal.tone] = (acc[signal.tone] ?? 0) + 1;
     return acc;
   }, {});
 
   const parts = [
-    counts.review ? `${counts.review} may warrant review` : "",
     counts.informational ? `${counts.informational} informational` : "",
     counts.steady ? `${counts.steady} generally consistent` : ""
   ].filter(Boolean);
 
   return parts.length ? parts.join(" · ") : "No review signals generated";
+}
+
+function signalSummary(signals) {
+  const reviewSignal = signals.find(signal => signal.tone === "review");
+  return reviewSignal?.summary || "Review signals point to source items to verify. They are not conclusions.";
 }
 
 function finalReviewCard(card) {
@@ -281,9 +292,7 @@ function buildFinalReviewModel(data, context = {}) {
             step: "Step 6 · Review Signals",
             value: itemCountLabel(reviewSignalCount, "item"),
             meta: reviewSignalCount ? signalMeta(reviewSignals) : "Generally consistent",
-            note: reviewSignalCount
-              ? "Review signals point to source items to verify. They are not conclusions."
-              : "Loaded records did not surface an obvious record mismatch."
+            note: reviewSignalCount ? signalSummary(reviewSignals) : "Loaded records did not surface an obvious record mismatch."
           }
         ]
       }
