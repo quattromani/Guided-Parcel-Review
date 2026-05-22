@@ -903,6 +903,14 @@ function valuationNoticeRow(label, priorValue, currentValue, emphasized = false)
 }
 
 function imageButton(src, caption, label) {
+  if (!src) {
+    return `
+      <div class="flex h-28 w-44 items-center justify-center rounded-2xl bg-slate-100 px-3 text-center text-xs font-medium text-slate-500 ring-1 ring-slate-200">
+        ${label} unavailable
+      </div>
+    `;
+  }
+
   return `
     <button type="button" data-image-src="${src}" data-image-caption="${caption}" class="group relative overflow-hidden rounded-2xl bg-slate-100 ring-1 ring-slate-200 transition hover:ring-slate-300">
       <img src="${src}" alt="${caption}" class="h-28 w-44 object-cover transition duration-200 group-hover:scale-105" />
