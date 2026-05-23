@@ -441,6 +441,10 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
           <h4 id="marketCompareSummaryTitle">Compare summary</h4>
           <div id="marketNarrative" class="market-compare-table-shell"></div>
         </article>
+        <label class="market-local-position-select text-sm font-semibold text-slate-700">
+          Want to see another area?
+          <select data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
+        </label>
       </section>
     </section>
     <p id="marketPositionSource" class="chart-source"></p>

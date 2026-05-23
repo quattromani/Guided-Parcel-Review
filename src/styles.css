@@ -3601,6 +3601,16 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   padding: 1rem;
 }
 
+.market-reading-context {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.market-local-position-select {
+  display: block;
+}
+
 .market-compare-summary h4 {
   color: rgb(var(--color-slate-700));
   font-size: 1.1rem;

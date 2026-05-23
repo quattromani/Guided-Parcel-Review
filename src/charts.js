@@ -341,18 +341,30 @@ export function buildTaxBurdenPattern(data) {
   if (!canvas || !cards) return;
 
   const rows = (data.taxStatements || [])
-    .filter(row => row.netAmountDue !== null && row.netAmountDue !== undefined)
+    .filter(row => Number.isFinite(Number(row.netAmountDue)) && Number.isFinite(Number(row.taxYear)))
+    .map(row => ({
+      ...row,
+      netAmountDue: Number(row.netAmountDue),
+      taxYear: Number(row.taxYear)
+    }))
     .slice()
     .sort((a, b) => a.taxYear - b.taxYear);
   if (!rows.length) return;
 
   const labels = rows.map(row => row.taxYear);
-  const netTaxes = rows.map(row => row.netAmountDue);
+  const netTaxes = rows.map(row => Number(row.netAmountDue));
   const average = netTaxes.reduce((sum, value) => sum + value, 0) / netTaxes.length;
   const averageLine = rows.map(() => average);
   const peak = rows.reduce((highest, row) => row.netAmountDue > highest.netAmountDue ? row : highest, rows[0]);
   const latest = rows.at(-1);
   const latestVsAverage = latest.netAmountDue - average;
+  const rangeLabel = `${rows[0].taxYear}-${rows.at(-1).taxYear}`;
+  const endpointLabel = `${rows[0].taxYear} / ${rows.at(-1).taxYear}`;
+  const averageYearlyChange = calculateAverageYearlyChange(
+    rows[0].netAmountDue,
+    latest.netAmountDue,
+    rows.length - 1
+  );
   const cardItems = [
     {
       label: "Latest net bill",
@@ -367,7 +379,12 @@ export function buildTaxBurdenPattern(data) {
     {
       label: "Period average",
       value: moneyCents.format(average),
-      pill: `${rows[0].taxYear}-${rows.at(-1).taxYear}`
+      pill: rangeLabel
+    },
+    {
+      label: "Average yearly change",
+      value: averageYearlyChange === null ? "Not available" : `${formatCurrencyDelta(averageYearlyChange)} / yr`,
+      pill: endpointLabel
     }
   ];
 
@@ -445,6 +462,26 @@ export function buildTaxBurdenPattern(data) {
       }
     }
   });
+}
+
+function calculateAverageYearlyChange(firstValue, lastValue, intervals) {
+  const first = Number(firstValue);
+  const last = Number(lastValue);
+  const intervalCount = Number(intervals);
+
+  if (!Number.isFinite(first) || !Number.isFinite(last) || !Number.isFinite(intervalCount) || intervalCount <= 0) {
+    return null;
+  }
+
+  return (last - first) / intervalCount;
+}
+
+function formatCurrencyDelta(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "Not available";
+  if (number === 0) return moneyCents.format(0);
+
+  return `${number < 0 ? "-" : "+"}${moneyCents.format(Math.abs(number))}`;
 }
 
 function getDefaultAssessmentClass(data, ratioData) {

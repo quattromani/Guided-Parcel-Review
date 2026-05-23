@@ -181,6 +181,33 @@ function signalSummary(signals) {
   return reviewSignal?.summary || "Review signals point to source items to verify. They are not conclusions.";
 }
 
+function valueMovementLabel(change) {
+  if (!Number.isFinite(change)) return "Value movement";
+  if (change > 0) return `Value up ${formatNullablePercent(change)}`;
+  if (change < 0) return `Value down ${formatNullablePercent(Math.abs(change))}`;
+  return "Value flat";
+}
+
+function valueMovementMeta(latestValue, previousValue) {
+  if (!latestValue || !previousValue) {
+    return latestValue
+      ? `Latest listed value: ${formatNullableMoney(latestValue.assessedValue)} (${latestValue.year})`
+      : "No assessed value listed";
+  }
+
+  return `${formatNullableMoney(previousValue.assessedValue)} to ${formatNullableMoney(latestValue.assessedValue)} · ${previousValue.year}-${latestValue.year}`;
+}
+
+function valueMovementNote(latestValueMovement, latestValue, previousValue, notice, currentYearPending) {
+  if (Number.isFinite(latestValueMovement) && latestValue && previousValue) {
+    return currentYearPending
+      ? `Current ${notice.taxYear} value is pending; the latest listed year sets the working value base.`
+      : `This sets the property value in the ${latestValue.year} assessment base.`;
+  }
+
+  return "Value movement depends on which assessment years are available.";
+}
+
 function finalReviewCard(card) {
   const toneClass = card.tone ? ` final-review-kpi-card-${card.tone}` : "";
   const reviewAction = card.route ? `
@@ -251,14 +278,10 @@ function buildFinalReviewModel(data, context = {}) {
           {
             step: "Step 2 · What Changed",
             route: "what-changed",
-            value: currentYearPending ? `${notice.taxYear} pending` : formatNullableMoney(notice.currentAssessedValue),
+            value: valueMovementLabel(latestValueMovement),
             tone: currentYearPending ? "pending" : "",
-            meta: latestValue
-              ? `Latest listed value: ${formatNullableMoney(latestValue.assessedValue)} (${latestValue.year})`
-              : "No assessed value listed",
-            note: latestValueMovement !== null && previousValue
-              ? `The latest listed value changed ${formatNullablePercent(latestValueMovement)} from ${previousValue.year} to ${latestValue.year}.`
-              : "Value movement depends on which assessment years are available."
+            meta: valueMovementMeta(latestValue, previousValue),
+            note: valueMovementNote(latestValueMovement, latestValue, previousValue, notice, currentYearPending)
           }
         ]
       },
@@ -373,7 +396,7 @@ function installFinalSummary(data, context = {}) {
     </article>
 
     <aside class="guided-transition guided-step-handoff">
-      <p>This summary brings the main points together. You can also download a guided review to keep or share.</p>
+      <p>You're all done! You can download a guided review to keep or share.</p>
     </aside>
     <nav class="guided-next-action" aria-label="Download guided review summary">
       <button type="button" class="next-step-button property-report-download-button" data-property-report-download>Download Guided Review Summary</button>
