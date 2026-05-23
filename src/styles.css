@@ -3789,11 +3789,34 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .summary-tax-equation-float {
-  border-bottom: 1px solid rgb(var(--brand-ink) / 0.22);
-  border-top: 1px solid rgb(var(--brand-ink) / 0.22);
   margin: clamp(1.35rem, 2.8vw, 2.1rem) auto;
   max-width: 100%;
   padding: clamp(1.1rem, 2.2vw, 1.55rem) clamp(0.25rem, 1.8vw, 1rem);
+  position: relative;
+}
+
+.summary-tax-equation-float::before,
+.summary-tax-equation-float::after {
+  background:
+    linear-gradient(
+      to bottom,
+      rgb(var(--brand-ink) / 0.22) 0 1px,
+      rgb(255 255 255 / 0.78) 1px 2px
+    );
+  content: "";
+  display: block;
+  height: 2px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.summary-tax-equation-float::before {
+  top: 0;
+}
+
+.summary-tax-equation-float::after {
+  bottom: 0;
 }
 
 .tax-history-pair > * {
@@ -4285,7 +4308,12 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .guided-transition-divider {
-  background: rgb(var(--brand-ink) / 0.34);
+  background:
+    linear-gradient(
+      to bottom,
+      rgb(var(--brand-ink) / 0.34) 0 1px,
+      rgb(255 255 255 / 0.82) 1px 2px
+    );
   border-radius: 999px;
   display: block;
   height: 2px;
@@ -4317,7 +4345,12 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .guided-transition-two-part.guided-step-handoff .guided-transition-divider {
-  background: rgb(var(--color-green));
+  background:
+    linear-gradient(
+      to bottom,
+      rgb(var(--color-green)) 0 1px,
+      rgb(255 255 255 / 0.82) 1px 2px
+    );
 }
 
 .next-step-button.property-report-download-button:disabled {
