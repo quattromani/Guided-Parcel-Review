@@ -17,6 +17,7 @@ const analyticsState = {
 
 export function initVisitAnalytics(context = {}) {
   if (typeof window === "undefined" || analyticsState.active) return;
+  if (shouldSkipVisitAnalytics()) return;
 
   analyticsState.active = true;
   analyticsState.context = normalizeContext(context);
@@ -140,6 +141,7 @@ function trackCurrentStepDuration() {
 
 function trackVisitEvent(event, details = {}) {
   if (typeof window === "undefined" || !VISIT_ANALYTICS_ENDPOINT) return;
+  if (shouldSkipVisitAnalytics()) return;
   if (event === "visit_end" && Date.now() - analyticsState.lastVisitEndAt < 2000) return;
   if (event === "visit_end") analyticsState.lastVisitEndAt = Date.now();
 
@@ -228,6 +230,23 @@ function viewportBucket() {
   if (width < 700) return "mobile";
   if (width < 1100) return "tablet";
   return "desktop";
+}
+
+function shouldSkipVisitAnalytics() {
+  return isLocalWorkingHost() || isWorkingSessionUserAgent(navigator.userAgent || "");
+}
+
+function isLocalWorkingHost() {
+  const hostname = window.location.hostname;
+
+  return hostname === "localhost"
+    || hostname === "127.0.0.1"
+    || hostname === "::1"
+    || hostname.endsWith(".localhost");
+}
+
+function isWorkingSessionUserAgent(userAgent) {
+  return /(?:codex|chatgpt|openai|headlesschrome|playwright|puppeteer)(?:\/|\b)/i.test(userAgent);
 }
 
 function secondsSince(timestamp) {
