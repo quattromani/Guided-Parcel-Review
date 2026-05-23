@@ -182,13 +182,12 @@ function statementCredits(statement = {}) {
   return values.length ? Math.abs(values.reduce((sum, value) => sum + value, 0)) : null;
 }
 
-function averageYearlyChange(rows = []) {
+function netChangeOverPeriod(rows = []) {
   if (rows.length < 2) return null;
   const first = rows[0];
   const last = rows.at(-1);
-  const intervals = rows.length - 1;
-  if (!Number.isFinite(first?.netAmountDue) || !Number.isFinite(last?.netAmountDue) || intervals <= 0) return null;
-  return (last.netAmountDue - first.netAmountDue) / intervals;
+  if (!Number.isFinite(first?.netAmountDue) || !Number.isFinite(last?.netAmountDue)) return null;
+  return last.netAmountDue - first.netAmountDue;
 }
 
 function signedMoney(value) {
@@ -235,7 +234,7 @@ function reportModel(data, recordCard, context = {}) {
     ? taxStatements.reduce((sum, row) => sum + row.netAmountDue, 0) / taxStatements.length
     : null;
   const latestStatement = taxStatements.at(-1);
-  const statementAverageChange = averageYearlyChange(taxStatements);
+  const statementNetChange = netChangeOverPeriod(taxStatements);
   const history = normalizedHistoryRows(data.taxpayerHistory || []);
 
   return {
@@ -304,7 +303,7 @@ function reportModel(data, recordCard, context = {}) {
       latestStatement,
       peakTaxStatement,
       averageNetTax,
-      statementAverageChange
+      statementNetChange
     },
     history: history.slice(-7)
   };
@@ -777,12 +776,11 @@ function drawTaxContextPage(ctx, model) {
     ? statement.netAmountDue - model.taxSummary.averageNetTax
     : null;
   const rangeLabel = model.taxStatements.length ? `${model.taxStatements[0].taxYear}-${model.taxStatements.at(-1).taxYear}` : "Loaded years";
-  const endpointLabel = model.taxStatements.length ? `${model.taxStatements[0].taxYear} / ${model.taxStatements.at(-1).taxYear}` : "Loaded endpoints";
   drawCardGrid(ctx, [
     { kicker: "Latest net bill", title: statement ? moneyCents.format(statement.netAmountDue) : "Not listed", body: signedMoney(latestVsAverage) },
     { kicker: "Highest net bill", title: model.taxSummary.peakTaxStatement?.netAmountDue ? moneyCents.format(model.taxSummary.peakTaxStatement.netAmountDue) : "Not listed", body: `${model.taxSummary.peakTaxStatement?.taxYear ?? ""}` },
     { kicker: "Period average", title: Number.isFinite(model.taxSummary.averageNetTax) ? moneyCents.format(model.taxSummary.averageNetTax) : "Not listed", body: rangeLabel },
-    { kicker: "Average yearly change", title: Number.isFinite(model.taxSummary.statementAverageChange) ? `${signedMoney(model.taxSummary.statementAverageChange)} / yr` : "Not available", body: endpointLabel }
+    { kicker: "Net change over period", title: Number.isFinite(model.taxSummary.statementNetChange) ? signedMoney(model.taxSummary.statementNetChange) : "Not available", body: rangeLabel }
   ], cardX, chartTop, cardW, { columns: 2, height: 64, titleSize: 10.5, bodyLines: 1 });
 
   drawSectionTitle(ctx, "Completed statement years", ctx.margin, 130, ctx.contentWidth);

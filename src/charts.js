@@ -359,11 +359,9 @@ export function buildTaxBurdenPattern(data) {
   const latest = rows.at(-1);
   const latestVsAverage = latest.netAmountDue - average;
   const rangeLabel = `${rows[0].taxYear}-${rows.at(-1).taxYear}`;
-  const endpointLabel = `${rows[0].taxYear} / ${rows.at(-1).taxYear}`;
-  const averageYearlyChange = calculateAverageYearlyChange(
+  const netChangeOverPeriod = calculateNetChangeOverPeriod(
     rows[0].netAmountDue,
-    latest.netAmountDue,
-    rows.length - 1
+    latest.netAmountDue
   );
   const cardItems = [
     {
@@ -382,9 +380,9 @@ export function buildTaxBurdenPattern(data) {
       pill: rangeLabel
     },
     {
-      label: "Average yearly change",
-      value: averageYearlyChange === null ? "Not available" : `${formatCurrencyDelta(averageYearlyChange)} / yr`,
-      pill: endpointLabel
+      label: "Net change over period",
+      value: netChangeOverPeriod === null ? "Not available" : formatCurrencyDelta(netChangeOverPeriod),
+      pill: rangeLabel
     }
   ];
 
@@ -464,16 +462,15 @@ export function buildTaxBurdenPattern(data) {
   });
 }
 
-function calculateAverageYearlyChange(firstValue, lastValue, intervals) {
+function calculateNetChangeOverPeriod(firstValue, lastValue) {
   const first = Number(firstValue);
   const last = Number(lastValue);
-  const intervalCount = Number(intervals);
 
-  if (!Number.isFinite(first) || !Number.isFinite(last) || !Number.isFinite(intervalCount) || intervalCount <= 0) {
+  if (!Number.isFinite(first) || !Number.isFinite(last)) {
     return null;
   }
 
-  return (last - first) / intervalCount;
+  return last - first;
 }
 
 function formatCurrencyDelta(value) {
