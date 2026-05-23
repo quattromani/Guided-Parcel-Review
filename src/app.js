@@ -291,6 +291,10 @@ function renderStaticContent() {
   setText("#assessment-notice h2", "pages.your-assessment.notice.title", "Prior & Current Assessments");
   setText("#assessment-notice article > p", "pages.your-assessment.notice.description", "Review land, building, other improvements, and total value before connecting those numbers to taxes.");
   setText("#tax-district-authorities h2", "pages.your-taxes.taxDistrictTitle", "Tax district and levy distribution");
+  setText("[data-guided-panel='your-taxes'] .guided-transition:first-child p", "pages.your-taxes.transitions.intro", "Start with the tax district and levy mix. The chart shows where the latest gross levy is allocated before the history view.");
+  setText("[data-tax-transition='history']", "pages.your-taxes.transitions.history", "Next, read the completed statement years. The table tracks levy, credits, net tax, and effective tax rate; the chart shows the rate pattern.");
+  setText("[data-tax-transition='calculation']", "pages.your-taxes.transitions.calculation", "Then isolate the latest statement math. This shorthand shows how assessed value and levy become gross tax, then how credits reduce it to net tax.");
+  setText("[data-tax-transition='pattern']", "pages.your-taxes.transitions.pattern", "After the statement math, isolate the net-bill pattern. This view shows where the bill peaked and how the latest statement compares with the period average.");
   setText("#equalization-pressure h2", "pages.your-taxes.taxPatternTitle", "Tax bill pattern");
   setText("#equalization-pressure .mt-2", "pages.your-taxes.taxPatternNote", "Dashed line: period average. Points use statement net tax after credits.");
   setText("#county-summary h2", "pages.your-taxes.countyBaseline.title", "Countywide baseline");

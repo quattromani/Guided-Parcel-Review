@@ -205,6 +205,7 @@ function initRecordDisclosureBehavior() {
 function renderComparisonShells(data, recordCard, summaryContext = {}) {
   renderValueTaxHistoryShell();
   renderTaxHistoryShell();
+  renderTaxEquationShell();
   renderTaxDistributionShell(data);
   renderAssessmentAccuracyShell(summaryContext);
   renderAssessmentSnapshotSource(data, recordCard);
@@ -276,8 +277,6 @@ function renderTaxHistoryShell() {
 
   container.className = "tax-history-pair review-card grid gap-6 lg:grid-cols-[minmax(0,1.85fr)_minmax(320px,1fr)]";
   container.innerHTML = `
-    <div id="taxEquationWaterfall" class="tax-equation-waterfall lg:col-span-2" aria-label="Tax statement calculation"></div>
-
     <article id="tax-history" class="tax-history-detail-panel">
       <h2 class="sr-only">Levy, credits, and net tax history</h2>
       <div class="overflow-x-auto rounded-xl ring-1 ring-slate-200">
@@ -307,6 +306,16 @@ function renderTaxHistoryShell() {
     </article>
   `;
   initMobileSupportDisclosureCharts(container);
+}
+
+function renderTaxEquationShell() {
+  const container = document.getElementById("tax-equation-panel");
+  if (!container) return;
+
+  container.className = "tax-equation-panel review-card";
+  container.innerHTML = `
+    <div id="taxEquationWaterfall" class="tax-equation-waterfall" aria-label="Tax statement calculation"></div>
+  `;
 }
 
 function renderTaxDistributionShell(data) {
@@ -3371,7 +3380,10 @@ function renderTaxEquationWaterfall(data, displayLevyByYear) {
   const container = document.getElementById("taxEquationWaterfall");
   if (!container) return;
 
-  container.innerHTML = taxStatementShorthandMarkup(data, displayLevyByYear);
+  const panel = document.getElementById("tax-equation-panel");
+  const markup = taxStatementShorthandMarkup(data, displayLevyByYear);
+  container.innerHTML = markup;
+  panel?.classList.toggle("hidden", !markup);
 }
 
 export function taxStatementShorthandMarkup(data, displayLevyByYear = null) {

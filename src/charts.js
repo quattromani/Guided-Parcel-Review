@@ -355,6 +355,11 @@ export function buildTaxBurdenPattern(data) {
   const latestVsAverage = latest.netAmountDue - average;
   const cardItems = [
     {
+      label: "Latest net bill",
+      value: moneyCents.format(latest.netAmountDue),
+      pill: `${latestVsAverage < 0 ? "-" : "+"}${moneyCents.format(Math.abs(latestVsAverage))}`
+    },
+    {
       label: "Highest net bill",
       value: moneyCents.format(peak.netAmountDue),
       pill: peak.taxYear
@@ -363,11 +368,6 @@ export function buildTaxBurdenPattern(data) {
       label: "Period average",
       value: moneyCents.format(average),
       pill: `${rows[0].taxYear}-${rows.at(-1).taxYear}`
-    },
-    {
-      label: "Latest net bill",
-      value: moneyCents.format(latest.netAmountDue),
-      pill: `${latestVsAverage < 0 ? "-" : "+"}${moneyCents.format(Math.abs(latestVsAverage))}`
     }
   ];
 
