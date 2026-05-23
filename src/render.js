@@ -33,6 +33,7 @@ import { renderStartPage as renderStartPageRoute } from "./routes/start-page.js"
 import { displayAddress } from "./utils/address.js";
 import { displayValue, formatSquareFeet, hasDisplayValue } from "./utils/display.js";
 import { escapeHtml } from "./utils/html.js";
+import { trackPropertySwitch } from "./visit-analytics.js";
 
 const fallbackRecordReviewStatuses = [
   ["looks-correct", "Looks correct"],
@@ -828,6 +829,7 @@ function initPropertySwitcher(root) {
 function switchPropertyRecord(propertyId) {
   if (!propertyId) return;
 
+  trackPropertySwitch(propertyId);
   try {
     window.localStorage?.setItem(PROPERTY_SELECTION_STORAGE_KEY, propertyId);
   } catch {

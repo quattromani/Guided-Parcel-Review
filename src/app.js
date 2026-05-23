@@ -56,6 +56,17 @@ import {
   continueDevelopmentFeatureSampleStart,
   developmentFeatureSampleStartPropertyId
 } from "./development-feature.js";
+import {
+  configureStepTracking,
+  initVisitAnalytics,
+  propertyAnalyticsContext,
+  trackDirectStartAcknowledged,
+  trackDirectStartView,
+  trackFormOpen,
+  trackParcelView,
+  trackResourceClick,
+  trackStepView
+} from "./visit-analytics.js";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 let importantCalendarDates = { dates: [], metadata: {} };
@@ -97,6 +108,7 @@ async function main() {
     importantCalendarDates = taxpayerActionDates;
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
     renderStartPage(propertySwitcher);
+    if (pendingDirectProperty) trackDirectStartView(pendingDirectProperty);
     setFooterResourcesVisible(false);
     renderGuidedResourceContent("your-property");
     initAssessmentDatesPanel(assessmentDateEvents);
@@ -159,6 +171,9 @@ async function main() {
     iaaoStandards
   });
   const data = withSnapshotModel(propertyData, snapshotModel);
+  const analyticsContext = propertyAnalyticsContext(data, propertySwitcherContext);
+  initVisitAnalytics(analyticsContext);
+  trackParcelView(analyticsContext);
   const imageModal = initImageModal(data.assets);
 
   renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, {
@@ -220,6 +235,8 @@ function directPropertyDisplayName(property = {}) {
 }
 
 function continueDirectPropertyStart(propertyId) {
+  const pendingProperty = window.__PROPERTY_SWITCHER_CONTEXT__?.pendingDirectProperty;
+  if (pendingProperty) trackDirectStartAcknowledged(pendingProperty);
   acceptDirectPropertyRequest(propertyId);
 
   const url = new URL(window.location.href);
@@ -348,6 +365,7 @@ function initGuidedNavigation(data, options = {}) {
   const snapshotModel = data.snapshotModel;
   const routeList = snapshotModel?.sections?.length ? snapshotModel.sections : getTaxpayerJourneyRoutes();
   const progressRoutes = routeList.filter(route => !route.secondary);
+  configureStepTracking(routeList);
   const tabsContainer = document.getElementById("guidedPathTabs");
 
   if (tabsContainer) {
@@ -607,6 +625,7 @@ function initGuidedNavigation(data, options = {}) {
       history.pushState(null, "", `#${selected}`);
     }
     updateGuidedProgressStatus(progressRouteId || selected);
+    trackStepView(progressRouteId || selected);
     window.dispatchEvent(new Event("resize"));
     queueActiveGuidedStepAlignment(scrollTop ? "smooth" : "auto");
     queueFinalStepCompletionCheck();
@@ -668,6 +687,10 @@ function initGuidedNavigation(data, options = {}) {
       target.classList.add("jump-target-active");
       window.setTimeout(() => target.classList.remove("jump-target-active"), 1400);
     });
+  });
+
+  document.querySelectorAll("[data-report-error]").forEach(button => {
+    button.addEventListener("click", () => trackFormOpen("record-correction-request"));
   });
 
   document.addEventListener("property-snapshot:select-guided-step", event => {
@@ -985,6 +1008,7 @@ function initFooterNavigation() {
   links.forEach(link => {
     link.addEventListener("click", event => {
       event.preventDefault();
+      trackResourceClick(link.dataset.footerTarget || link.textContent?.trim() || "footer-resource");
       openFooterPanel(link.dataset.footerTarget, { updateHash: true });
     });
   });
