@@ -513,6 +513,15 @@ function colorAlpha(hex, alpha) {
   return channel ? `rgb(${channel} / ${alpha})` : hex;
 }
 
+function colorDepth(hex, depth = 0.5) {
+  const channel = hexToRgbChannel(hex);
+  if (!channel) return hex;
+
+  const channels = channel.split(" ").map(Number);
+  const mixed = channels.map(value => Math.round(255 - ((255 - value) * depth)));
+  return `rgb(${mixed.join(" ")})`;
+}
+
 const assessmentStandardKeys = {
   residential: "residential-improved-rural",
   agFarm: "agricultural-rural",
@@ -838,21 +847,21 @@ const marketPositionReferencePlugin = {
     ctx.save();
     const medianRange = options.medianRange;
     if (medianRange) {
-      const xStart = scales.x.getPixelForValue(medianRange.min);
-      const xEnd = scales.x.getPixelForValue(medianRange.max);
-      const left = Math.max(chartArea.left, Math.min(xStart, xEnd));
-      const right = Math.min(chartArea.right, Math.max(xStart, xEnd));
+      const yStart = scales.y.getPixelForValue(medianRange.min);
+      const yEnd = scales.y.getPixelForValue(medianRange.max);
+      const top = Math.max(chartArea.top, Math.min(yStart, yEnd));
+      const bottom = Math.min(chartArea.bottom, Math.max(yStart, yEnd));
 
-      if (right > left) {
+      if (bottom > top) {
         ctx.fillStyle = options.medianBandColor ?? colorAlpha(visualizationTheme.roles.equalization, 0.10);
-        ctx.fillRect(left, chartArea.top, right - left, chartArea.bottom - chartArea.top);
+        ctx.fillRect(chartArea.left, top, chartArea.right - chartArea.left, bottom - top);
       }
     }
 
     const countywide = options.countywide;
     if (countywide) {
-      const centerX = scales.x.getPixelForValue(countywide.median);
-      const centerY = scales.y.getPixelForValue(countywide.cod);
+      const centerX = scales.x.getPixelForValue(countywide.cod);
+      const centerY = scales.y.getPixelForValue(countywide.median);
       if (Number.isFinite(centerX) && Number.isFinite(centerY)) {
         ctx.save();
         ctx.beginPath();
@@ -867,12 +876,12 @@ const marketPositionReferencePlugin = {
         ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
 
         [
-          { xRadius: 5.5, yRadius: 4.4, alpha: 0.155 },
-          { xRadius: 11, yRadius: 8.8, alpha: 0.11 },
-          { xRadius: 17.6, yRadius: 14.3, alpha: 0.078 }
+          { codRadius: 4.4, medianRadius: 5.5, alpha: 0.155 },
+          { codRadius: 8.8, medianRadius: 11, alpha: 0.11 },
+          { codRadius: 14.3, medianRadius: 17.6, alpha: 0.078 }
         ].forEach(ring => {
-          const radiusX = Math.abs(scales.x.getPixelForValue(countywide.median + ring.xRadius) - centerX);
-          const radiusY = Math.abs(scales.y.getPixelForValue(countywide.cod + ring.yRadius) - centerY);
+          const radiusX = Math.abs(scales.x.getPixelForValue(countywide.cod + ring.codRadius) - centerX);
+          const radiusY = Math.abs(scales.y.getPixelForValue(countywide.median + ring.medianRadius) - centerY);
           if (!Number.isFinite(radiusX) || !Number.isFinite(radiusY) || radiusX <= 0 || radiusY <= 0) return;
 
           ctx.beginPath();
@@ -888,14 +897,14 @@ const marketPositionReferencePlugin = {
 
     const codRange = options.codRange;
     if (codRange) {
-      const yStart = scales.y.getPixelForValue(codRange.min);
-      const yEnd = scales.y.getPixelForValue(codRange.max);
-      const top = Math.max(chartArea.top, Math.min(yStart, yEnd));
-      const bottom = Math.min(chartArea.bottom, Math.max(yStart, yEnd));
+      const xStart = scales.x.getPixelForValue(codRange.min);
+      const xEnd = scales.x.getPixelForValue(codRange.max);
+      const left = Math.max(chartArea.left, Math.min(xStart, xEnd));
+      const right = Math.min(chartArea.right, Math.max(xStart, xEnd));
 
-      if (bottom > top) {
+      if (right > left) {
         ctx.fillStyle = options.codBandColor ?? colorAlpha(visualizationTheme.roles.comparison, 0.08);
-        ctx.fillRect(chartArea.left, top, chartArea.right - chartArea.left, bottom - top);
+        ctx.fillRect(left, chartArea.top, right - left, chartArea.bottom - chartArea.top);
       }
     }
     ctx.restore();
@@ -905,8 +914,8 @@ const marketPositionReferencePlugin = {
     const countywide = options.countywide;
     if (!chartArea || !scales.x || !scales.y || !countywide) return;
 
-    const x = scales.x.getPixelForValue(countywide.median);
-    const y = scales.y.getPixelForValue(countywide.cod);
+    const x = scales.x.getPixelForValue(countywide.cod);
+    const y = scales.y.getPixelForValue(countywide.median);
     if (!Number.isFinite(x) || !Number.isFinite(y)) return;
 
     ctx.save();
@@ -2405,13 +2414,13 @@ function renderMarketPositionLegend() {
   const items = [
     {
       label: "Other local groups",
-      borderColor: colorAlpha(visualizationTheme.roles.comparison, 0.68),
-      backgroundColor: colorAlpha(visualizationTheme.roles.comparison, 0.18)
+      borderColor: colorDepth(visualizationTheme.roles.comparison, 0.72),
+      backgroundColor: colorDepth(visualizationTheme.roles.comparison, 0.5)
     },
     {
       label: "Selected group",
       borderColor: visualizationTheme.roles.equalization,
-      backgroundColor: colorAlpha(visualizationTheme.roles.equalization, 0.20)
+      backgroundColor: colorDepth(visualizationTheme.roles.equalization, 0.5)
     },
     {
       label: "Countywide result",
@@ -2443,37 +2452,33 @@ function renderMarketPositionLegend() {
   `).join("");
 }
 
-function marketPositionBounds(points, countywide, medianRange, codRange) {
+function marketPositionPlotPoint(point) {
+  return {
+    ...point,
+    x: Number(point.cod),
+    y: Number(point.median)
+  };
+}
+
+function marketPositionBounds(points, countywide, xRange, yRange) {
   const xValues = points.map(point => point.x).concat(countywide ? [countywide.x] : []);
   const yValues = points.map(point => point.y).concat(countywide ? [countywide.y] : []);
-  if (medianRange) xValues.push(medianRange.min, medianRange.max);
-  if (codRange) yValues.push(codRange.min, codRange.max);
+  if (xRange) xValues.push(xRange.min, xRange.max);
+  if (yRange) yValues.push(yRange.min, yRange.max);
 
   const xMinRaw = Math.min(...xValues);
   const xMaxRaw = Math.max(...xValues);
+  const yMinRaw = Math.min(...yValues);
   const yMaxRaw = Math.max(...yValues);
   const xPadding = Math.max(3, (xMaxRaw - xMinRaw) * 0.08);
-  const yPadding = Math.max(2, yMaxRaw * 0.12);
+  const yPadding = Math.max(3, (yMaxRaw - yMinRaw) * 0.08);
 
   return {
     xMin: Math.max(0, Math.floor(xMinRaw - xPadding)),
     xMax: Math.ceil(xMaxRaw + xPadding),
+    yMin: Math.max(0, Math.floor(yMinRaw - yPadding)),
     yMax: Math.ceil(yMaxRaw + yPadding)
   };
-}
-
-function centralMarketPoint(point, medianRange, codRange, countywide) {
-  const medianCenter = medianRange?.center
-    ?? (medianRange ? (medianRange.min + medianRange.max) / 2 : countywide?.median);
-  const medianPadding = medianRange
-    ? Math.max(6, (medianRange.max - medianRange.min) * 1.5)
-    : 10;
-  const codLimit = codRange?.max ?? (countywide ? countywide.cod * 1.6 : 25);
-  const codFloor = codRange?.min ?? 0;
-
-  return Math.abs(point.median - medianCenter) <= medianPadding
-    && point.cod >= codFloor
-    && point.cod <= codLimit + 3;
 }
 
 function marketPointTooltip(point, classStats) {
@@ -2571,24 +2576,17 @@ function renderMarketPositionScatter(selected, classStats, iaaoStandards, onSele
   const points = getMarketScatterPoints(classStats);
   const selectedPoint = points.find(point => String(point.id) === String(selected.id)) ?? points[0];
   const otherPoints = points.filter(point => String(point.id) !== String(selectedPoint.id));
-  const bounds = marketPositionBounds(points, countywide, medianRange, codRange);
-  const mutedPointColor = colorAlpha(visualizationTheme.roles.comparison, 0.55);
-  const mutedPointFill = colorAlpha(visualizationTheme.roles.comparison, 0.18);
+  const plotPoints = points.map(marketPositionPlotPoint);
+  const countywidePlotPoint = countywide ? marketPositionPlotPoint(countywide) : null;
+  const selectedPlotPoint = selectedPoint ? marketPositionPlotPoint(selectedPoint) : null;
+  const otherPlotPoints = otherPoints.map(marketPositionPlotPoint);
+  const bounds = marketPositionBounds(plotPoints, countywidePlotPoint, codRange, medianRange);
+  const peerPointColor = colorDepth(visualizationTheme.roles.comparison, 0.5);
+  const peerPointBorder = colorDepth(visualizationTheme.roles.comparison, 0.72);
   const selectedColor = visualizationTheme.roles.equalization;
+  const selectedFill = colorDepth(selectedColor, 0.5);
   const countyColor = visualizationTheme.roles.comparison;
-  const otherPointRadii = otherPoints.map(point =>
-    centralMarketPoint(point, medianRange, codRange, countywide) ? 5.5 : 3.5
-  );
-  const otherPointBackgrounds = otherPoints.map(point =>
-    centralMarketPoint(point, medianRange, codRange, countywide)
-      ? mutedPointFill
-      : colorAlpha(visualizationTheme.roles.comparison, 0.08)
-  );
-  const otherPointBorders = otherPoints.map(point =>
-    centralMarketPoint(point, medianRange, codRange, countywide)
-      ? mutedPointColor
-      : colorAlpha(visualizationTheme.roles.comparison, 0.32)
-  );
+  const peerPointRadius = 5.5;
 
   renderMarketPositionLegend();
   marketPositionScatterChart?.destroy();
@@ -2598,25 +2596,25 @@ function renderMarketPositionScatter(selected, classStats, iaaoStandards, onSele
       datasets: [
         {
           label: "Other local groups",
-          data: otherPoints,
-          pointRadius: otherPointRadii,
-          pointHoverRadius: otherPointRadii.map(radius => radius + 2),
-          pointBackgroundColor: otherPointBackgrounds,
-          pointBorderColor: otherPointBorders,
+          data: otherPlotPoints,
+          pointRadius: peerPointRadius,
+          pointHoverRadius: peerPointRadius + 2,
+          pointBackgroundColor: peerPointColor,
+          pointBorderColor: peerPointBorder,
           pointBorderWidth: 1.5
         },
         {
           label: "Selected group",
-          data: selectedPoint ? [selectedPoint] : [],
-          pointRadius: 8,
-          pointHoverRadius: 10,
-          pointBackgroundColor: colorAlpha(selectedColor, 0.22),
+          data: selectedPlotPoint ? [selectedPlotPoint] : [],
+          pointRadius: 8.5,
+          pointHoverRadius: 10.5,
+          pointBackgroundColor: selectedFill,
           pointBorderColor: selectedColor,
-          pointBorderWidth: 3
+          pointBorderWidth: 3.25
         },
         {
           label: "Countywide result",
-          data: countywide ? [countywide] : [],
+          data: countywidePlotPoint ? [countywidePlotPoint] : [],
           pointRadius: 7,
           pointHoverRadius: 9,
           pointStyle: "triangle",
@@ -2663,16 +2661,16 @@ function renderMarketPositionScatter(selected, classStats, iaaoStandards, onSele
       },
       scales: {
         x: {
-          title: { display: true, text: "Median ratio" },
+          title: { display: true, text: "COD" },
           min: bounds.xMin,
           max: bounds.xMax,
           grid: { color: visualizationTheme.neutrals.gridline },
           ticks: { callback: value => formatRatio(Number(value), 0) }
         },
         y: {
-          title: mobileAxisTitle("COD"),
-          min: 0,
-          suggestedMax: bounds.yMax,
+          title: mobileAxisTitle("Median ratio"),
+          min: bounds.yMin,
+          max: bounds.yMax,
           grid: { color: visualizationTheme.neutrals.gridline },
           ticks: { callback: value => formatRatio(Number(value), 0) }
         }
