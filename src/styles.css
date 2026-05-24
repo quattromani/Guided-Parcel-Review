@@ -192,11 +192,25 @@ canvas {
   white-space: nowrap;
 }
 
+.page-title-logo {
+  display: none;
+}
+
+.page-title-shell {
+  display: grid;
+  gap: 1rem;
+}
+
+.page-title-heading-row {
+  display: block;
+}
+
 .page-title-utility {
   align-items: stretch;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  margin-top: 1rem;
   position: relative;
   width: 100%;
 }
@@ -774,6 +788,27 @@ body.property-switcher-guidance-active .property-switcher-empty .property-switch
     flex: 0 0 18.5rem;
     width: 18.5rem;
   }
+}
+
+@media (min-width: 1024px) {
+  .page-title-heading-row {
+    align-items: end;
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+  }
+
+  .page-title-logo {
+    display: block;
+    filter:
+      drop-shadow(0 0.45rem 0.75rem rgb(var(--brand-ink) / 0.10))
+      drop-shadow(0 -1px 0 rgb(255 255 255 / 0.55));
+    height: auto;
+    max-width: 15.6rem;
+    object-fit: contain;
+    width: clamp(12.35rem, 18.2vw, 15.6rem);
+  }
+
 }
 
 button,

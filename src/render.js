@@ -611,23 +611,35 @@ export function renderViewHeader(view = "your-property", snapshotModel, property
   const titleHtml = escapeHtml(content.title);
 
   title.innerHTML = `
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
-          ${content.eyebrow}
-        </p>
+    <div class="page-title-shell">
+      <div class="page-title-heading-row">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+            ${content.eyebrow}
+          </p>
 
-        <h1 class="mt-1 text-4xl font-bold tracking-tight text-slate-700">
-          ${titleHtml}
-        </h1>
+          <h1 class="mt-1 text-4xl font-bold tracking-tight text-slate-700">
+            ${titleHtml}
+          </h1>
 
-        <p class="mt-2 max-w-3xl text-base text-slate-600">
-          ${content.description}
-        </p>
-      </div>
+          <p class="mt-2 max-w-3xl text-base text-slate-600">
+            ${content.description}
+          </p>
 
-      <div class="page-title-utility">
-        ${propertySwitcherMarkup(switcherContext, snapshotModel)}
+          <div class="page-title-utility">
+            ${propertySwitcherMarkup(switcherContext, snapshotModel)}
+          </div>
+        </div>
+
+        <img
+          class="page-title-logo"
+          src="assets/brand/gage-county-logo-color.png"
+          alt="Gage County courthouse"
+          width="1024"
+          height="742"
+          loading="eager"
+          decoding="async"
+        />
       </div>
     </div>
   `;
