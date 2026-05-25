@@ -609,9 +609,26 @@ export function renderViewHeader(view = "your-property", snapshotModel, property
     : headers[headerView] || headers["your-property"];
   const title = document.getElementById("pageTitle");
   const titleHtml = escapeHtml(content.title);
+  const showCountyLogo = shouldShowCountyLogo(switcherContext);
+  const countyLogoMarkup = showCountyLogo ? `
+        <img
+          class="page-title-logo"
+          src="assets/brand/gage-county-logo-color.png"
+          alt="Gage County courthouse"
+          width="1024"
+          height="742"
+          loading="eager"
+          decoding="async"
+        />
+  ` : "";
+  const switcherMarkup = `
+          <div class="page-title-utility">
+            ${propertySwitcherMarkup(switcherContext, snapshotModel)}
+          </div>
+  `;
 
   title.innerHTML = `
-    <div class="page-title-shell">
+    <div class="page-title-shell${showCountyLogo ? "" : " page-title-shell-no-logo"}">
       <div class="page-title-heading-row">
         <div>
           <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
@@ -626,25 +643,24 @@ export function renderViewHeader(view = "your-property", snapshotModel, property
             ${content.description}
           </p>
 
-          <div class="page-title-utility">
-            ${propertySwitcherMarkup(switcherContext, snapshotModel)}
-          </div>
+${showCountyLogo ? switcherMarkup : ""}
         </div>
 
-        <img
-          class="page-title-logo"
-          src="assets/brand/gage-county-logo-color.png"
-          alt="Gage County courthouse"
-          width="1024"
-          height="742"
-          loading="eager"
-          decoding="async"
-        />
+${showCountyLogo ? countyLogoMarkup : switcherMarkup}
       </div>
     </div>
   `;
 
   initPropertySwitcher(title);
+}
+
+function shouldShowCountyLogo(propertySwitcher) {
+  const activePropertyId = propertySwitcher?.activePropertyId ?? propertySwitcher?.pendingDirectProperty?.id;
+  const activeProperty = propertySwitcher?.manifest?.properties?.find(item => item.id === activePropertyId)
+    ?? propertySwitcher?.records?.find(item => item.property?.id === activePropertyId)?.property
+    ?? propertySwitcher?.pendingDirectProperty;
+
+  return `${activeProperty?.county ?? ""}`.trim().toLowerCase() === "gage";
 }
 
 function propertySwitcherMarkup(propertySwitcher, snapshotModel) {

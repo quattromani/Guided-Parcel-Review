@@ -809,6 +809,13 @@ body.property-switcher-guidance-active .property-switcher-empty .property-switch
     width: clamp(12.35rem, 18.2vw, 15.6rem);
   }
 
+  .page-title-shell-no-logo .page-title-heading-row {
+    align-items: end;
+  }
+
+  .page-title-shell-no-logo .page-title-utility {
+    margin-top: 0;
+  }
 }
 
 button,
