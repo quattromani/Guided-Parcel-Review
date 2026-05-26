@@ -111,6 +111,7 @@ function extractPdfAssets(pdfPath, parcelId) {
       return {
         sourcePath,
         ...dimensions,
+        fileSize: fs.statSync(sourcePath).size,
         area: dimensions.width * dimensions.height
       };
     })
@@ -123,9 +124,11 @@ function extractPdfAssets(pdfPath, parcelId) {
 
   fs.mkdirSync(path.resolve("assets/images"), { recursive: true });
 
-  const [photoCandidate, sketchCandidate] = candidates
+  const [sketchCandidate] = candidates
     .slice()
-    .sort((a, b) => b.height - a.height);
+    .sort((a, b) => a.fileSize - b.fileSize || a.area - b.area);
+  const [photoCandidate] = candidates
+    .filter(candidate => candidate !== sketchCandidate);
 
   const copyAsset = (candidate, suffix) => {
     if (!candidate) return null;
@@ -142,6 +145,23 @@ function extractPdfAssets(pdfPath, parcelId) {
       .map((candidate, index) => copyAsset(candidate, index + 3))
       .filter(Boolean)
   };
+}
+
+function extractPdfImageLinks(pdfPath) {
+  try {
+    const output = execFileSync("pdfinfo", ["-url", pdfPath], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"]
+    });
+    const links = [...output.matchAll(/https?:\/\/\S+/g)].map(match => match[0]);
+    return [...new Set(links)].sort((left, right) => {
+      const leftIndex = Number(left.match(/_(\d+)\.[a-z]+$/i)?.[1] || Number.MAX_SAFE_INTEGER);
+      const rightIndex = Number(right.match(/_(\d+)\.[a-z]+$/i)?.[1] || Number.MAX_SAFE_INTEGER);
+      return leftIndex - rightIndex || left.localeCompare(right);
+    });
+  } catch {
+    return [];
+  }
 }
 
 function firstMatch(text, pattern, fallback = null) {
@@ -311,6 +331,7 @@ function buildSourceExtract(pdf, ntoRows, latestRows) {
 
 function buildRecordCard(pdf, capture, assets, options = {}) {
   const propertyClass = normalizedPropertyClass(pdf);
+  const sourceImageLinks = extractPdfImageLinks(pdf.pdfPath);
   const ntoRows = capture.detailRecords.map(parseNtoRecord).sort((a, b) => b.year - a.year);
   const latest = ntoRows[0];
   const prior = ntoRows[1];
@@ -330,6 +351,7 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
         assets.sketch,
         ...(assets.additionalPhotos || [])
       ].filter(Boolean),
+      sourceImageLinks,
       notes: "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
     },
     guidedSnapshot: {
