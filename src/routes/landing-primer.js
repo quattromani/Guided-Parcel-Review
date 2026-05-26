@@ -260,7 +260,7 @@ function buildFinalReviewModel(data, context = {}) {
   ]);
 
   return {
-    heading: `Review of the main assessment story for ${notice.displayAddress || notice.situsAddress}`,
+    heading: `Review of the main assessment summary for ${notice.displayAddress || notice.situsAddress}`,
     intro: "This gathers the main points from the record, value, equalization, taxes, and review signals.",
     blocks: [
       {

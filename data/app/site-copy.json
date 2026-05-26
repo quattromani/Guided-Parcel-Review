@@ -220,7 +220,7 @@
     },
     "your-property": {
       "transitions": {
-        "intro": "Start with the record facts. These details anchor the value, market, equalization, and tax views that follow.",
+        "intro": "Start with the property record first. These details support the value, equalization, and tax views that follow.",
         "handoff": "You have completed the first step: reviewing your property details. The green button takes you to the next step, where you can learn more about what may have changed from year to year."
       },
       "propertyDetails": {
@@ -237,7 +237,7 @@
     "your-assessment": {
       "transitions": {
         "intro": "Start with the current assessment and the latest change.",
-        "history": "Now compare the current change with prior years.",
+        "history": "Now compare the current year with the longer trend.",
         "handoff": "You have reviewed the current assessment and recent value history. Next, look closer at the value details behind the change."
       },
       "notice": {
@@ -247,7 +247,7 @@
     },
     "market-area": {
       "transitions": {
-        "intro": "Start with the qualified sales behind this property class. The count and distribution help explain the measures below.",
+        "intro": "Start with the qualified sales behind this property group. The number, distribution, and sale levels help explain the measures below.",
         "source": "Next, place the property in its local comparison group. These local sales-study measures introduce the countywide equalization check.",
         "scatter": "With the sales base in view, compare this property group with nearby groups. The scatterplot shows how the groups relate to each other.",
         "handoff": "You have reviewed the sales base and the property's local comparison group. Next, move to the countywide equalization layer."
@@ -272,7 +272,7 @@
         "intro": "Start with the tax district and levy mix. The chart shows where the latest gross levy is allocated before the history view.",
         "history": "Next, read the completed statement years. The table tracks levy, credits, net tax, and effective tax rate; the chart shows the rate pattern.",
         "calculation": "Then break out the latest statement math. This shorthand shows how assessed value and levy become gross tax, then how credits reduce it to net tax.",
-        "pattern": "After the statement math, isolate the net-bill pattern. This view shows where the bill peaked and how the latest statement compares with the period average.",
+        "pattern": "After the statement math, isolate the net-tax pattern. This view shows where the bill peaked and how the latest statement compares with the period average.",
         "baseline": "Step back to the county baseline. Countywide value, tax, and rate trends show the broader tax context before the optional statewide comparison.",
         "handoff": "You have reviewed how the tax bill is built from levies, credits, and the county baseline. Next, bring the record, value, equalization, and tax signals together."
       },
@@ -308,7 +308,7 @@
         "source": "Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL)."
       },
       "statewide": {
-        "transition": "The statewide baseline is supporting context.",
+        "transition": "The statewide comparison adds broader context.",
         "kicker": "Statewide CTL Context",
         "title": "What statewide pattern is behind that comparison?",
         "description": "After the county comparison, the statewide CTL baseline shows the broader movement in values, taxes levied, and average tax rates.",
@@ -485,7 +485,7 @@
   },
   "recordReview": {
     "statuses": [
-      ["looks-correct", "Looks correct"],
+      ["looks-correct", "No issue noticed"],
       ["may-need-review", "May need review"]
     ],
     "categories": [

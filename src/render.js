@@ -36,7 +36,7 @@ import { escapeHtml } from "./utils/html.js";
 import { trackPropertySwitch } from "./visit-analytics.js";
 
 const fallbackRecordReviewStatuses = [
-  ["looks-correct", "Looks correct"],
+  ["looks-correct", "No issue noticed"],
   ["may-need-review", "May need review"]
 ];
 const percentOneDecimal = new Intl.NumberFormat("en-US", {
@@ -232,7 +232,6 @@ function renderValueTaxHistoryShell() {
                 Gross tax starts with value and levy.
                 Credits reduce gross tax to net tax.
                 ETR compares net tax back to assessed value.
-                Payment balances stay separate from tax statement amounts.
             </p>
             <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
               <table class="value-tax-history-table min-w-full divide-y divide-slate-200 text-sm">
