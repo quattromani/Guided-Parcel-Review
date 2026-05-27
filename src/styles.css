@@ -960,6 +960,25 @@ table thead th[class] + th[class] {
   white-space: nowrap;
 }
 
+.movement-trend-value {
+  align-items: center;
+  color: inherit;
+  display: inline-flex;
+  gap: 0.35rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.movement-trend-icon {
+  flex: 0 0 auto;
+  height: 1.05em;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
+  width: 1.05em;
+}
+
 .movement-card-body p:last-child {
   color: rgb(var(--color-slate-600));
   font-size: 0.8rem;
@@ -4319,7 +4338,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .guided-step-handoff::before {
-  background: rgb(var(--brand-ink));
+  background: rgb(var(--brand-ink) / 0.34);
   border-radius: 999px;
   content: "";
   display: block;

@@ -3348,22 +3348,78 @@ function isZeroToZero(previous, current) {
   return Number.isFinite(previous) && Number.isFinite(current) && previous === 0 && current === 0;
 }
 
-function taxMovementValue(previous, current) {
-  return isZeroToZero(previous, current) ? "No net tax" : signedPercent(percentChangeBetween(previous, current));
+function absolutePercent(value) {
+  if (!Number.isFinite(value)) return "—";
+  return percent.format(Math.abs(value));
 }
 
-function movementCard([label, value, note, range]) {
+function absolutePoints(value) {
+  if (!Number.isFinite(value)) return "—";
+  return `${Math.abs(value * 100).toFixed(2)} pts`;
+}
+
+function movementTrendDirection(value) {
+  if (!Number.isFinite(value)) return null;
+  if (value > 0) return "up";
+  if (value < 0) return "down";
+  return "flat";
+}
+
+function movementTrendIcon(direction) {
+  if (direction === "up") {
+    return `
+      <svg class="movement-trend-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M3 16.5 8.5 11l4 4L21 6.5"></path>
+        <path d="M15.5 6.5H21V12"></path>
+      </svg>
+    `;
+  }
+
+  if (direction === "down") {
+    return `
+      <svg class="movement-trend-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M3 7.5 8.5 13l4-4L21 17.5"></path>
+        <path d="M15.5 17.5H21V12"></path>
+      </svg>
+    `;
+  }
+
+  if (direction === "flat") {
+    return `
+      <svg class="movement-trend-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M4 12h16"></path>
+      </svg>
+    `;
+  }
+
+  return "";
+}
+
+function movementTrendValue(change, display) {
+  const direction = movementTrendDirection(change);
+  const directionLabel = direction ? `Trend ${direction}` : "Trend unavailable";
+
+  return `
+    <span class="movement-trend-value">
+      ${movementTrendIcon(direction)}
+      <span class="sr-only">${directionLabel}: </span>
+      <span>${escapeHtml(display)}</span>
+    </span>
+  `;
+}
+
+function movementCard({ label, value, note, range }) {
   const status = /finalized/i.test(range) ? "Finalized" : "";
 
   return `
     <div class="movement-card">
       <div class="movement-card-header">
-        <p>${label}</p>
+        <p>${escapeHtml(label)}</p>
         <p>${status}</p>
       </div>
       <div class="movement-card-body">
         <p>${value}</p>
-        <p>${note}</p>
+        <p>${escapeHtml(note)}</p>
       </div>
     </div>
   `;
@@ -3390,26 +3446,31 @@ function renderPropertyMovementSummary(data) {
   const previousValue = valueRows.at(-2);
   const previousTax = taxRows.at(-2);
   const previousEtr = etrRows.at(-2);
+  const valueChange = percentChangeBetween(previousValue?.assessedValue, lastValue?.assessedValue);
+  const taxChange = percentChangeBetween(previousTax?.taxes, lastTax?.taxes);
+  const etrChange = previousEtr && lastEtr ? lastEtr.etr - previousEtr.etr : null;
 
   const recentCards = [
-    [
-      "Assessed value",
-      signedPercent(percentChangeBetween(previousValue?.assessedValue, lastValue?.assessedValue)),
-      `${formatNullableMoney(previousValue?.assessedValue)} to ${formatNullableMoney(lastValue?.assessedValue)}`,
-      previousValue && lastValue ? `${previousValue.year}-${lastValue.year}` : "Recent available years"
-    ],
-    [
-      "Net taxes",
-      taxMovementValue(previousTax?.taxes, lastTax?.taxes),
-      `${formatNullableMoney(previousTax?.taxes, true)} to ${formatNullableMoney(lastTax?.taxes, true)}`,
-      previousTax && lastTax ? `${previousTax.year}-${lastTax.year} finalized` : "Recent finalized years"
-    ],
-    [
-      "Effective tax rate",
-      `${formatNullablePercent(previousEtr?.etr)} to ${formatNullablePercent(lastEtr?.etr)}`,
-      `${signedPoints(previousEtr && lastEtr ? lastEtr.etr - previousEtr.etr : null)} from prior year`,
-      previousEtr && lastEtr ? `${previousEtr.year}-${lastEtr.year} finalized` : "Recent finalized years"
-    ]
+    {
+      label: "Assessed value",
+      value: movementTrendValue(valueChange, absolutePercent(valueChange)),
+      note: `${formatNullableMoney(previousValue?.assessedValue)} to ${formatNullableMoney(lastValue?.assessedValue)}`,
+      range: previousValue && lastValue ? `${previousValue.year}-${lastValue.year}` : "Recent available years"
+    },
+    {
+      label: "Net taxes",
+      value: isZeroToZero(previousTax?.taxes, lastTax?.taxes)
+        ? movementTrendValue(0, "No net tax")
+        : movementTrendValue(taxChange, absolutePercent(taxChange)),
+      note: `${formatNullableMoney(previousTax?.taxes, true)} to ${formatNullableMoney(lastTax?.taxes, true)}`,
+      range: previousTax && lastTax ? `${previousTax.year}-${lastTax.year} finalized` : "Recent finalized years"
+    },
+    {
+      label: "Effective tax rate",
+      value: movementTrendValue(etrChange, `${formatNullablePercent(previousEtr?.etr)} to ${formatNullablePercent(lastEtr?.etr)}`),
+      note: `${absolutePoints(etrChange)} from prior year`,
+      range: previousEtr && lastEtr ? `${previousEtr.year}-${lastEtr.year} finalized` : "Recent finalized years"
+    }
   ];
 
   container.innerHTML = `
