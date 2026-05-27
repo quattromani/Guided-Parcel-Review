@@ -136,14 +136,21 @@ function extractPdfAssets(pdfPath, parcelId) {
     fs.copyFileSync(candidate.sourcePath, path.resolve(relativePath));
     return relativePath;
   };
+  const additionalCaption = (candidate, index) => {
+    const label = candidate.fileSize < 12000 ? "Additional Property Sketch" : "Additional Property Photo";
+    return `${label} ${index + 1}`;
+  };
 
   return {
     photo: copyAsset(photoCandidate, 1),
     sketch: copyAsset(sketchCandidate, 2),
     additionalPhotos: candidates
       .filter(candidate => candidate !== photoCandidate && candidate !== sketchCandidate)
-      .map((candidate, index) => copyAsset(candidate, index + 3))
-      .filter(Boolean)
+      .map((candidate, index) => ({
+        src: copyAsset(candidate, index + 3),
+        caption: additionalCaption(candidate, index)
+      }))
+      .filter(item => item.src)
   };
 }
 
@@ -169,21 +176,58 @@ function firstMatch(text, pattern, fallback = null) {
   return match ? match[1].trim().replace(/\s+/g, " ") : fallback;
 }
 
-function parseNtoRecord(record) {
+function roundCurrency(value) {
+  return Math.round((value || 0) * 100) / 100;
+}
+
+function parseStatementHistoryRow(text, year) {
+  const pattern = new RegExp(`${year}\\s+VIEW DETAILS\\s+\\S+\\s+•\\s*([0-9 /]+)\\s+([A-Z+]+)\\s+(\\$[\\d,.]+)\\s+(\\$[\\d,.]+)\\s+(\\(?\\$[\\d,.]+\\)?)\\s+(\\$[\\d,.]+)\\s+(\\$[\\d,.]+)\\s+(\\$[\\d,.]+)`);
+  const match = text.match(pattern);
+  if (!match) return null;
+
+  return {
+    statementNumber: match[1].trim(),
+    statementType: match[2],
+    grossTaxAmount: money(match[3]),
+    penalty: money(match[4]),
+    totalCredit: money(match[5]),
+    netAmountDue: money(match[6]),
+    totalPaid: money(match[7]),
+    taxDue: money(match[8])
+  };
+}
+
+function fallbackDistributionRows(pdf, assessedValue, grossTaxAmount) {
+  if (!pdf?.levyRows?.length || !assessedValue) return [];
+
+  return pdf.levyRows.map(row => {
+    const amount = roundCurrency((assessedValue * row.rate) / 100);
+    return {
+      authority: row.description,
+      levy: row.rate,
+      amount,
+      share: grossTaxAmount ? Math.round((amount / grossTaxAmount) * 1000) / 10 : 0
+    };
+  });
+}
+
+function parseNtoRecord(record, pdf = null) {
   const text = record.text;
   const statementMatch = text.match(/TAX STATEMENTS\s+([A-Z+]+)\s+No\.\s+([0-9 /]+)\s+DISTRICT\s+([0-9]+)/);
   const assessedMatch = text.match(/#([0-9]+)\s+([A-Z]+)\s+\$([\d,]+)\s+\$([\d,]+)\s+\$([\d,]+)\s+(?:\$([\d,]+)|—)/);
-  const totalCredit = money(firstMatch(text, /TOTAL\s+All Statements\s+Gross\s+\$[\d,.]+\s+Credits\s+(\(?\$[\d,.]+\)?)/));
-  const grossTax = money(firstMatch(text, /Gross Tax\s+(\$[\d,.]+)/));
-  const netTax = money(firstMatch(text, /NET TAX\s+(\$[\d,.]+)/));
-  const totalPaid = money(firstMatch(text, /TOTAL POSTED:\s+(\$[\d,.]+)/));
-  const assessedValue = money(firstMatch(text, /ASSESSED VALUATIONS\s+TOTAL:\s+(\$[\d,]+)/));
-  const building = assessedMatch ? money(`$${assessedMatch[4]}`) : null;
-  const land = assessedMatch ? money(`$${assessedMatch[5]}`) : null;
-  const other = assessedMatch ? money(assessedMatch[6] ? `$${assessedMatch[6]}` : "—") : 0;
+  const historyRow = parseStatementHistoryRow(text, record.year);
+  const pdfValue = pdf?.assessedValues?.find(row => row.year === record.year);
+  const totalCredit = money(firstMatch(text, /TOTAL\s+All Statements\s+Gross\s+\$[\d,.]+\s+Credits\s+(\(?\$[\d,.]+\)?)/)) || historyRow?.totalCredit || 0;
+  const grossTax = money(firstMatch(text, /Gross Tax\s+(\$[\d,.]+)/)) || historyRow?.grossTaxAmount || 0;
+  const netTax = money(firstMatch(text, /NET TAX\s+(\$[\d,.]+)/)) || historyRow?.netAmountDue || 0;
+  const totalPaid = money(firstMatch(text, /TOTAL POSTED:\s+(\$[\d,.]+)/)) || historyRow?.totalPaid || 0;
+  const assessedValue = money(firstMatch(text, /ASSESSED VALUATIONS\s+TOTAL:\s+(\$[\d,]+)/)) || pdfValue?.total || 0;
+  const building = assessedMatch ? money(`$${assessedMatch[4]}`) : (pdfValue?.dwelling ?? null);
+  const land = assessedMatch ? money(`$${assessedMatch[5]}`) : (pdfValue?.land ?? null);
+  const other = assessedMatch ? money(assessedMatch[6] ? `$${assessedMatch[6]}` : "—") : (pdfValue?.outbuilding ?? 0);
   const taxDue = Math.round((netTax - totalPaid) * 100) / 100;
 
-  const distributionRows = [...text.matchAll(/^\s*([0-9]+:\s+.+?)\s+([0-9]\.[0-9]{6})\s+\$([\d,]+\.\d{2})\s*\n([0-9.]+)%/gm)]
+  let distributionRows = [...text.matchAll(/^\s*([0-9]+:\s+.+?)\s+([0-9]\.[0-9]{6})\s+\$([\d,]+\.\d{2})\s*\n([0-9.]+)%/gm)]
     .map(match => ({
       authority: match[1].trim().replace(/\s+/g, " "),
       levy: Number(match[2]),
@@ -191,13 +235,18 @@ function parseNtoRecord(record) {
       share: Number(match[4])
     }));
 
-  const totalLevy = Number(firstMatch(text, /\n TOTAL\s+([0-9]\.[0-9]{6})\s+\$[\d,.]+\s+100\.0%/)) || null;
+  if (!distributionRows.length) {
+    distributionRows = fallbackDistributionRows(pdf, assessedValue, grossTax);
+  }
+
+  const totalLevy = Number(firstMatch(text, /\n TOTAL\s+([0-9]\.[0-9]{6})\s+\$[\d,.]+\s+100\.0%/))
+    || (distributionRows.length ? Math.round(distributionRows.reduce((sum, row) => sum + row.levy, 0) * 1000000) / 1000000 : null);
 
   return {
     year: record.year,
-    statementNumber: statementMatch?.[2]?.trim() || assessedMatch?.[1] || null,
-    statementType: statementMatch?.[1] || assessedMatch?.[2] || "REAL",
-    district: statementMatch?.[3] || null,
+    statementNumber: statementMatch?.[2]?.trim() || assessedMatch?.[1] || historyRow?.statementNumber || null,
+    statementType: statementMatch?.[1] || assessedMatch?.[2] || historyRow?.statementType || "REAL",
+    district: statementMatch?.[3] || pdf?.taxDistrict || null,
     assessedValue,
     building,
     land,
@@ -332,7 +381,7 @@ function buildSourceExtract(pdf, ntoRows, latestRows) {
 function buildRecordCard(pdf, capture, assets, options = {}) {
   const propertyClass = normalizedPropertyClass(pdf);
   const sourceImageLinks = extractPdfImageLinks(pdf.pdfPath);
-  const ntoRows = capture.detailRecords.map(parseNtoRecord).sort((a, b) => b.year - a.year);
+  const ntoRows = capture.detailRecords.map(record => parseNtoRecord(record, pdf)).sort((a, b) => b.year - a.year);
   const latest = ntoRows[0];
   const prior = ntoRows[1];
   const latestPdfValue = pdf.assessedValues.find(row => row.year === latest.year) || pdf.assessedValues[0];
@@ -349,7 +398,7 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
       sourceImages: [
         assets.photo,
         assets.sketch,
-        ...(assets.additionalPhotos || [])
+        ...(assets.additionalPhotos || []).map(item => item.src)
       ].filter(Boolean),
       sourceImageLinks,
       notes: "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."

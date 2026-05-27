@@ -2714,7 +2714,7 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
   const defaultGroup = getParcelMarketGroupId(recordCard, classStats.classKey) ?? groups[0].id;
   const sourceNote = document.getElementById("marketSourceNote");
   if (sourceNote) {
-    sourceNote.textContent = "Next, place the property in its local comparison group. These recent sales measures lead into the countywide equalization check.";
+    sourceNote.textContent = "Then compare it with the other groups. The table and chart show where recent sales are concentrated across the class.";
   }
 
   const optionsMarkup = groups.map(group => `

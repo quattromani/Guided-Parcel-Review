@@ -34,7 +34,7 @@ const fallbackViewHeaderContent = {
   "market-area": {
     eyebrow: "Step 3 · Value detail",
     title: "How does this property compare nearby?",
-    description: "Start with the property's local comparison group.",
+    description: "Review the property's valuation group or local market area.",
     imageAlt: "Map of Nebraska highlighting the local market area"
   },
   "county-equalization": {
