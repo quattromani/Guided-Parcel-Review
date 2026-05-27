@@ -9,10 +9,13 @@ const {
   recordId
 } = require("./prepare-record-ingestion");
 
+const CHILD_SCRIPT_TIMEOUT_MS = 180000;
+
 function usage() {
   console.error([
     "Usage: node scripts/ingest-record.js /path/to/parcel.pdf [--update-manifest] [--skip-nto-capture]",
     "       node scripts/ingest-record.js /path/to/parcel.pdf [--valuation-group 3] [--market-area \"Beatrice & Beatrice Subs\"]",
+    "       node scripts/ingest-record.js /path/to/parcel.pdf [--sample-visibility research]",
     "",
     "This runs the standard ingestion pipeline:",
     "  1. Parse the GWorks PDF",
@@ -29,6 +32,7 @@ function parseArgs(argv) {
     valuationGroup: null,
     marketArea: null,
     marketGroup: null,
+    sampleVisibility: null,
     updateManifest: false,
     skipNtoCapture: false
   };
@@ -45,6 +49,8 @@ function parseArgs(argv) {
       args.marketArea = argv[++index];
     } else if (value === "--market-group") {
       args.marketGroup = argv[++index];
+    } else if (value === "--sample-visibility") {
+      args.sampleVisibility = argv[++index];
     } else if (!args.pdfPath) {
       args.pdfPath = value;
     } else {
@@ -53,6 +59,7 @@ function parseArgs(argv) {
   }
 
   if (!args.pdfPath) usage();
+  if (args.sampleVisibility && !["public", "research"].includes(args.sampleVisibility)) usage();
   return args;
 }
 
@@ -60,7 +67,8 @@ function runNodeScript(scriptPath, args) {
   return execFileSync(process.execPath, [scriptPath, ...args], {
     cwd: process.cwd(),
     encoding: "utf8",
-    stdio: ["ignore", "pipe", "inherit"]
+    stdio: ["ignore", "pipe", "inherit"],
+    timeout: CHILD_SCRIPT_TIMEOUT_MS
   });
 }
 
@@ -83,6 +91,7 @@ function main() {
   if (args.valuationGroup) generateArgs.push("--valuation-group", args.valuationGroup);
   if (args.marketArea) generateArgs.push("--market-area", args.marketArea);
   if (args.marketGroup) generateArgs.push("--market-group", args.marketGroup);
+  if (args.sampleVisibility) generateArgs.push("--sample-visibility", args.sampleVisibility);
   if (args.updateManifest) generateArgs.push("--update-manifest");
   const output = runNodeScript("scripts/generate-record-card.js", generateArgs);
   const generated = JSON.parse(output);

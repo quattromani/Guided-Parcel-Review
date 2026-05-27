@@ -31,6 +31,11 @@ export function loadPropertyManifest() {
   return manifestPromise;
 }
 
+export function isPublicSwitcherProperty(property) {
+  const visibility = `${property?.sampleVisibility ?? "public"}`.trim().toLowerCase();
+  return visibility === "public";
+}
+
 export function getActivePropertyId(manifest) {
   if (developmentFeatureSampleStartPropertyId(manifest)) return null;
 
@@ -156,7 +161,8 @@ export function loadPropertyRecordCard() {
 
 export function loadPropertySwitcherRecords() {
   return loadPropertyManifest().then(async manifest => {
-    const records = await Promise.all((manifest.properties || []).map(async property => {
+    const switcherProperties = (manifest.properties || []).filter(isPublicSwitcherProperty);
+    const records = await Promise.all(switcherProperties.map(async property => {
       if (property.recordCardStatus !== "available" || !property.recordCardPath) {
         return { property, recordCard: null };
       }

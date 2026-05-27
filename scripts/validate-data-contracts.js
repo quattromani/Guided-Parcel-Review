@@ -45,6 +45,12 @@ function validateManifest() {
     assert(property.id, "Every manifest property needs an id.");
     assert(property.county, `Property '${property.id}' needs a county slug.`);
     assert(property.recordCardPath, `Property '${property.id}' needs recordCardPath.`);
+    if (property.sampleVisibility !== undefined) {
+      assert(
+        ["public", "research"].includes(property.sampleVisibility),
+        `Property '${property.id}' sampleVisibility must be 'public' or 'research'.`
+      );
+    }
   }
 
   const sharedPaths = [

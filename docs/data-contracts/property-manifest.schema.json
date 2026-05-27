@@ -7,7 +7,7 @@
   "properties": {
     "version": { "type": "string" },
     "metadata": { "type": "object" },
-    "activePropertyId": { "type": "string" },
+    "activePropertyId": { "type": ["string", "null"] },
     "properties": {
       "type": "array",
       "minItems": 1,
@@ -23,7 +23,12 @@
           "county": { "type": "string" },
           "taxDistrict": { "type": "string" },
           "recordCardPath": { "type": "string" },
-          "recordCardStatus": { "type": "string" }
+          "recordCardStatus": { "type": "string" },
+          "sampleVisibility": {
+            "type": "string",
+            "enum": ["public", "research"],
+            "description": "Controls whether the property appears in the public sample switcher. Omitted values are treated as public by the app."
+          }
         }
       }
     },

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Valuation Group Aggregate Experiment</title>
+  <link rel="stylesheet" href="./vg-aggregate.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <header class="experiment-header">
+      <p class="eyebrow">Local experiment</p>
+      <div class="header-grid">
+        <div>
+          <h1>How are this market area’s values and taxes tracking?</h1>
+          <p class="lede">
+            This preview indexes each loaded property to 2019 = 100, then aggregates the indexed paths by year.
+            It is a directional sample view, not a ratio-study result.
+          </p>
+        </div>
+        <label class="group-picker">
+          Comparison group
+          <select id="groupSelect"></select>
+        </label>
+      </div>
+    </header>
+
+    <section class="summary-grid" aria-label="Aggregate summary">
+      <article class="summary-card kpi-card kpi-count">
+        <span>Loaded properties</span>
+        <strong id="propertyCount">—</strong>
+        <small id="historyCoverage">2019-2025 histories</small>
+      </article>
+      <article class="summary-card kpi-card kpi-value">
+        <span>Median assessed value index</span>
+        <strong id="valueIndex">—</strong>
+        <small id="valueChange">since 2019</small>
+        <svg class="kpi-sparkline" data-sparkline="value" viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true">
+          <path class="spark-area"></path>
+          <path class="spark-line"></path>
+        </svg>
+      </article>
+      <article class="summary-card kpi-card kpi-tax">
+        <span>Median net tax index</span>
+        <strong id="taxIndex">—</strong>
+        <small id="taxChange">since 2019</small>
+        <svg class="kpi-sparkline" data-sparkline="tax" viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true">
+          <path class="spark-area"></path>
+          <path class="spark-line"></path>
+        </svg>
+      </article>
+      <article class="summary-card kpi-card kpi-etr">
+        <span>Average ETR</span>
+        <strong id="etrLatest">—</strong>
+        <small id="etrChange">latest year</small>
+        <svg class="kpi-sparkline" data-sparkline="etr" viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true">
+          <path class="spark-area"></path>
+          <path class="spark-line"></path>
+        </svg>
+      </article>
+    </section>
+
+    <section class="chart-card">
+      <div class="chart-heading">
+        <div>
+          <p class="eyebrow">Indexed trend</p>
+          <h2 id="chartTitle">Value and tax movement</h2>
+          <p id="chartNote">Median indexed assessed value and median net tax are shown on the same 2019 baseline.</p>
+        </div>
+        <div class="legend" aria-label="Chart legend">
+          <span><i class="value"></i> Median value index</span>
+          <span><i class="tax"></i> Median net tax index</span>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="trendChart" width="1120" height="520" aria-label="Indexed aggregate value and tax chart"></canvas>
+      </div>
+    </section>
+
+    <section class="detail-grid">
+      <article class="table-card">
+        <h2>Aggregate by year</h2>
+        <p>Average and median are calculated after each property is indexed to its own 2019 baseline.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Avg. value index</th>
+                <th>Median value index</th>
+                <th>Avg. tax index</th>
+                <th>Median tax index</th>
+                <th>Avg. ETR</th>
+              </tr>
+            </thead>
+            <tbody id="aggregateRows"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="table-card">
+        <h2>Properties in sample</h2>
+        <p id="sampleNote">Showing records loaded from the local static database.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>2019 value</th>
+                <th>2025 value</th>
+                <th>Value index</th>
+                <th>Tax index</th>
+                <th>Tax sample flag</th>
+              </tr>
+            </thead>
+            <tbody id="propertyRows"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script type="module" src="./vg-aggregate.js"></script>
+</body>
+</html>
