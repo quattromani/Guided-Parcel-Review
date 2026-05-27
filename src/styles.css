@@ -5962,17 +5962,48 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 }
 
 .history-movement-card {
+  --history-movement-graph-color: var(--color-secondary);
   background: rgb(var(--surface-card));
   border-radius: var(--radius-control);
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
   min-width: 0;
+  overflow: hidden;
   padding: 0.75rem;
+  position: relative;
+}
+
+.history-movement-card-value {
+  --history-movement-graph-color: var(--semantic-value);
+}
+
+.history-movement-card-tax {
+  --history-movement-graph-color: var(--semantic-tax);
+}
+
+.history-movement-card-etr {
+  --history-movement-graph-color: var(--semantic-etr);
+}
+
+.history-movement-sparkline {
+  color: rgb(var(--history-movement-graph-color));
+  height: 100%;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  z-index: 0;
+}
+
+.history-movement-sparkline-area {
+  fill: rgb(var(--history-movement-graph-color) / 0.22);
 }
 
 .history-movement-card p,
 .history-movement-card strong,
 .history-movement-card span {
   display: block;
+  position: relative;
+  z-index: 1;
 }
 
 .history-movement-card p {

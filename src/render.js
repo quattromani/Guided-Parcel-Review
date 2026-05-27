@@ -3138,6 +3138,106 @@ function etrPointMovementForRows(rows) {
   };
 }
 
+function historyMovementSmoothPath(points) {
+  if (!points.length) return "";
+  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+
+  const commands = [`M ${points[0].x} ${points[0].y}`];
+  for (let index = 0; index < points.length - 1; index += 1) {
+    const previous = points[index - 1] || points[index];
+    const current = points[index];
+    const next = points[index + 1];
+    const afterNext = points[index + 2] || next;
+    const cp1 = {
+      x: current.x + (next.x - previous.x) / 6,
+      y: current.y + (next.y - previous.y) / 6
+    };
+    const cp2 = {
+      x: next.x - (afterNext.x - current.x) / 6,
+      y: next.y - (afterNext.y - current.y) / 6
+    };
+    commands.push(`C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${next.x} ${next.y}`);
+  }
+
+  return commands.join(" ");
+}
+
+function historyMovementSparklinePath(values, options = {}) {
+  const usable = values
+    .map((value, index) => ({ value, index }))
+    .filter(item => Number.isFinite(item.value));
+
+  if (usable.length < 2) return "";
+
+  const width = 320;
+  const height = 120;
+  const top = 10;
+  const bottom = 118;
+  const valuesOnly = usable.map(item => item.value);
+  const min = Number.isFinite(options.minValue) ? options.minValue : Math.min(...valuesOnly);
+  const max = Number.isFinite(options.maxValue) ? options.maxValue : Math.max(...valuesOnly);
+  const spread = max - min;
+  const yForValue = value => {
+    if (spread === 0) return (top + bottom) / 2;
+    return top + (1 - ((value - min) / spread)) * (bottom - top);
+  };
+  const lastIndex = Math.max(values.length - 1, 1);
+  const points = usable.map(item => ({
+    x: Number(((item.index / lastIndex) * width).toFixed(2)),
+    y: Number(Math.min(bottom, Math.max(top, yForValue(item.value))).toFixed(2))
+  }));
+  const linePath = historyMovementSmoothPath(points);
+  const first = points[0];
+  const last = points.at(-1);
+
+  return `${linePath} L ${last.x} ${height} L ${first.x} ${height} Z`;
+}
+
+function historyMovementSparklineMarkup(values, options = {}) {
+  const path = historyMovementSparklinePath(values, options);
+  if (!path) return "";
+
+  return `
+    <svg class="history-movement-sparkline" viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path class="history-movement-sparkline-area" d="${path}"></path>
+    </svg>
+  `;
+}
+
+function indexedHistoryMovementValues(rows, valueForRow) {
+  const values = rows.map(valueForRow);
+  const baseline = values.find(value => Number.isFinite(value) && value !== 0);
+  if (!Number.isFinite(baseline)) return values.map(() => null);
+
+  return values.map(value => Number.isFinite(value) ? (value / baseline) * 100 : null);
+}
+
+function historyMovementIndexScale(...series) {
+  const values = series.flat().filter(Number.isFinite);
+  if (!values.length) {
+    return { minValue: 80, maxValue: 215 };
+  }
+
+  return {
+    minValue: Math.min(80, Math.floor(Math.min(...values) / 10) * 10),
+    maxValue: Math.max(215, Math.ceil(Math.max(...values) / 10) * 10)
+  };
+}
+
+function historyMovementZeroFloorScale(values) {
+  const usable = values.filter(Number.isFinite);
+  if (!usable.length) return { minValue: 0 };
+
+  const min = Math.min(...usable);
+  const max = Math.max(...usable);
+  const lowerClearance = Math.max(min, 0);
+
+  return {
+    minValue: 0,
+    maxValue: max + lowerClearance
+  };
+}
+
 function renderHistoryMovementSummary(rows) {
   const container = document.getElementById("historyMovementSummary");
   if (!container) return;
@@ -3148,11 +3248,40 @@ function renderHistoryMovementSummary(rows) {
   const firstYear = valueMovement.first?.year ?? taxMovement.first?.year ?? etrMovement.first?.year;
   const lastYear = valueMovement.last?.year ?? taxMovement.last?.year ?? etrMovement.last?.year;
   const rangeLabel = firstYear && lastYear ? `${firstYear}-${lastYear}` : "Loaded years";
+  const valueIndexValues = indexedHistoryMovementValues(rows, row => row.assessedValue);
+  const taxIndexValues = indexedHistoryMovementValues(rows, row => row.taxes);
+  const etrValues = rows.map(row => calculateEtr(row));
+  const indexScale = historyMovementIndexScale(valueIndexValues, taxIndexValues);
+  const etrScale = historyMovementZeroFloorScale(etrValues);
 
   const items = [
-    ["Assessed value", movementDirection(valueMovement.change, "Value"), valueMovement.display],
-    ["Net tax", movementDirection(taxMovement.change, "Net tax"), taxMovement.display],
-    ["ETR", Number.isFinite(etrMovement.change) ? (etrMovement.change > 0 ? "ETR up" : etrMovement.change < 0 ? "ETR down" : "ETR flat") : "ETR unavailable", etrMovement.display]
+    {
+      metric: "value",
+      label: "Assessed value",
+      direction: movementDirection(valueMovement.change, "Value"),
+      value: valueMovement.display,
+      sparkline: historyMovementSparklineMarkup(valueIndexValues, {
+        ...indexScale
+      })
+    },
+    {
+      metric: "tax",
+      label: "Net tax",
+      direction: movementDirection(taxMovement.change, "Net tax"),
+      value: taxMovement.display,
+      sparkline: historyMovementSparklineMarkup(taxIndexValues, {
+        ...indexScale
+      })
+    },
+    {
+      metric: "etr",
+      label: "ETR",
+      direction: Number.isFinite(etrMovement.change) ? (etrMovement.change > 0 ? "ETR up" : etrMovement.change < 0 ? "ETR down" : "ETR flat") : "ETR unavailable",
+      value: etrMovement.display,
+      sparkline: historyMovementSparklineMarkup(etrValues, {
+        ...etrScale
+      })
+    }
   ];
 
   container.innerHTML = `
@@ -3160,11 +3289,12 @@ function renderHistoryMovementSummary(rows) {
       <div class="history-movement-range">${rangeLabel}</div>
       <div class="history-movement-range-spacer" aria-hidden="true"></div>
       <div class="history-movement-range-spacer" aria-hidden="true"></div>
-      ${items.map(([label, direction, value]) => `
-        <div class="history-movement-card">
-          <p>${escapeHtml(label)}</p>
-          <strong>${escapeHtml(direction)}</strong>
-          <span>${escapeHtml(value)}</span>
+      ${items.map(item => `
+        <div class="history-movement-card history-movement-card-${item.metric}">
+          ${item.sparkline}
+          <p>${escapeHtml(item.label)}</p>
+          <strong>${escapeHtml(item.direction)}</strong>
+          <span>${escapeHtml(item.value)}</span>
         </div>
       `).join("")}
     </div>
