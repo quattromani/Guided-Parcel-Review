@@ -225,7 +225,7 @@ function renderTile(node, options) {
   const tagName = "button";
   const actionAttrs = isFilterTile
     ? `type="button" data-treemap-group="${escapeHtml(node.id)}"`
-    : `type="button" data-treemap-reset="all"`;
+    : `type="button" data-treemap-node="${escapeHtml(node.id)}"`;
   const ariaLabel = `${node.label}: ${share}${amount ? `, ${amount}` : ""}`;
 
   return `
@@ -262,6 +262,7 @@ export function renderGroupedTreemap({
 
   const groups = groupItems(items || []);
   let activeGroup = groups.some(group => group.id === initialGroup) ? initialGroup : "all";
+  let activeNodeId = null;
   const total = sumValues(groups);
 
   function render() {
@@ -276,9 +277,13 @@ export function renderGroupedTreemap({
       return;
     }
 
-    const activeNodes = activeGroup === "all"
+    const groupNodes = activeGroup === "all"
       ? groups
       : groups.find(group => group.id === activeGroup)?.children || [];
+    const selectedNode = activeNodeId
+      ? groupNodes.find(node => node.id === activeNodeId)
+      : null;
+    const activeNodes = selectedNode ? [selectedNode] : groupNodes;
     const activeTotal = activeGroup === "all" ? total : sumValues(activeNodes);
     const nodes = activeGroup === "all" && layout === "priority-stack"
       ? priorityStackTreemap(activeNodes)
@@ -305,21 +310,30 @@ export function renderGroupedTreemap({
     if (!button) return;
 
     activeGroup = button.dataset.treemapGroup || "all";
+    activeNodeId = null;
     render();
   });
 
   container.addEventListener("click", event => {
-    const resetButton = event.target.closest("[data-treemap-reset]");
-    if (resetButton) {
-      activeGroup = "all";
+    const button = event.target.closest(".levy-treemap-filter-tile[data-treemap-group]");
+    if (button) {
+      activeGroup = button.dataset.treemapGroup || "all";
+      activeNodeId = null;
       render();
       return;
     }
 
-    const button = event.target.closest(".levy-treemap-filter-tile[data-treemap-group]");
-    if (!button) return;
+    const detailButton = event.target.closest(".levy-treemap-detail-tile[data-treemap-node]");
+    if (!detailButton) return;
 
-    activeGroup = button.dataset.treemapGroup || "all";
+    const groupNodes = groups.find(group => group.id === activeGroup)?.children || [];
+    const nodeId = detailButton.dataset.treemapNode || null;
+    if (activeNodeId === nodeId || groupNodes.length <= 1) {
+      activeGroup = "all";
+      activeNodeId = null;
+    } else {
+      activeNodeId = nodeId;
+    }
     render();
   });
 
