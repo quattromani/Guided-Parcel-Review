@@ -55,7 +55,7 @@ function requirePlaywright() {
   const candidates = [
     process.env.PLAYWRIGHT_MODULE,
     "playwright",
-    "/Users/maxquattromani/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright"
+    path.join(process.env.HOME || "", ".cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright")
   ].filter(Boolean);
 
   for (const candidate of candidates) {

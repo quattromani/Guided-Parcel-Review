@@ -26,6 +26,8 @@ Important current boundaries:
 - Lightweight contract checks: `scripts/validate-data-contracts.js`
 - Schema placeholders: `docs/data-contracts/`
 
+Research and capture helpers such as `scripts/ingest-record.js`, `scripts/capture-nto-statements.js`, `scripts/prepare-record-ingestion.js`, and `scripts/manage-vg3-sampling.js` are fixture-building tools, not app runtime dependencies. They may be useful for AI-assisted or operator-assisted source capture and data-contract confirmation, but the production handoff should replace that posture with API, database, or audited ETL integrations.
+
 ## Handoff Status
 
 | Area | Current status | Placeholder to mature later |
@@ -121,6 +123,8 @@ ETL placeholders:
 - Validation rules and acceptable null/pending states.
 - Reconciliation notes when source-card values differ from final assessed values.
 - Annual refresh checklist for CTL, ratio-study, calendar, forms, and tax district authority data.
+
+AI-assisted research instructions, browser-automation commands, and local capture notes should stay in research/playbook documentation or external operator runbooks. They should not be embedded in taxpayer-facing copy, production frontend modules, or final API contracts except as historical examples used to confirm source provenance and fixture expectations.
 
 ## Frontend Team
 

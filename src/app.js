@@ -444,9 +444,10 @@ function initGuidedNavigation(data, options = {}) {
   function stepForHashTarget(target) {
     if (!target) return null;
     if (target === "start") return primarySectionIds[0];
+    const normalizedTarget = target === "summary" ? "final-summary" : target;
 
-    const route = routeList.find(item => item.id === target || item.panelId === target);
-    return route?.id ?? stepForTarget(target);
+    const route = routeList.find(item => item.id === normalizedTarget || item.panelId === normalizedTarget);
+    return route?.id ?? stepForTarget(normalizedTarget);
   }
 
   function unlockThrough(target) {

@@ -18,6 +18,12 @@ data/app/property-manifest.json
 
 The record card should preserve the GWorks PDF facts and add NTO statement history, assessed valuation components, credits, payments, balances, and levy distribution for the 2019-current cycle.
 
+## Research Tooling Boundary
+
+The scripts in this playbook are local research and fixture-building helpers. They are useful for AI-assisted or operator-assisted capture, source comparison, and data-contract confirmation while the prototype uses static JSON.
+
+Do not treat these scripts as production runtime architecture. In a production handoff, active property lookup, source refresh, and record capture should move behind a vendor API, county data feed, database job, or audited ETL process. Historical captures under `research/` can remain useful as provenance and contract fixtures, but browser automation notes, ad hoc fetch commands, and AI-assisted working instructions should stay outside the taxpayer-facing app and outside core runtime modules.
+
 ## Fast Start
 
 Run:
