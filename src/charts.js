@@ -2747,6 +2747,11 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
     });
     renderMarketNarrative(selected, countywide, classStats, medianRange, iaaoStandards, isParcelGroup);
     renderEqualizationSalePriceRows(padRatioData, classStats.classKey, marketPositionData, valuationGroups, selected.id);
+    const marketOverviewSource = document.getElementById("marketOverviewSource");
+    const equalizationSalePriceSource = document.getElementById("equalizationSalePriceSource");
+    if (marketOverviewSource && equalizationSalePriceSource) {
+      marketOverviewSource.textContent = equalizationSalePriceSource.textContent;
+    }
     renderMarketPositionScatter(selected, classStats, iaaoStandards, update);
     renderMarketPriceSummary(selected, countywide);
   };

@@ -371,6 +371,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
   const iaaoCitation = summaryContext.iaaoStandards?.metadata?.source?.displayCitation || "IAAO Standard on Ratio Studies";
   const rangeAuthority = legalReferenceHtml(summaryContext.legalReferences, "neb-rev-stat-77-5023", "§ 77-5023");
   const reportsAuthority = legalReferenceHtml(summaryContext.legalReferences, "neb-rev-stat-77-5027", "§ 77-5027");
+  const assessmentAccuracySourceNote = `Source: ${escapeHtml(ratioCitation)}; ${escapeHtml(iaaoCitation)}. Authority context: ${rangeAuthority}, ${reportsAuthority}.`;
   const latestRatioYear = summaryContext.ratioData?.source?.yearRange?.end
     ?? Math.max(...(summaryContext.ratioData?.classes || [])
       .flatMap(item => (item.records || []).map(row => row.year))
@@ -491,9 +492,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
         </details>
       </article>
     </section>
-    <p id="assessmentAccuracySourceNote" class="chart-source">
-      Source: ${escapeHtml(ratioCitation)}; ${escapeHtml(iaaoCitation)}. Authority context: ${rangeAuthority}, ${reportsAuthority}.
-    </p>
+    <p id="assessmentAccuracySourceNote" class="chart-source">${assessmentAccuracySourceNote}</p>
   `;
 
   container.innerHTML = `
@@ -506,6 +505,7 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
         <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
       </div>
       <div id="assessmentAccuracySummary" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
+      <p id="assessmentBandCardsSourceNote" class="chart-source">${assessmentAccuracySourceNote}</p>
     </section>
   `;
   const assessmentUnified = document.getElementById("assessment-accuracy-unified");
