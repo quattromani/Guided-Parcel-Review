@@ -15,8 +15,10 @@
           <h1>How are this market area’s values and taxes tracking?</h1>
           <p class="lede">
             This preview indexes each loaded property to 2019 = 100, then aggregates the indexed paths by year.
-            It is a directional sample view, not a ratio-study result.
+            It now adds a private sensitivity model for asking how value movement, levy/rate movement, and ETR
+            response have historically translated into taxes.
           </p>
+          <p class="research-note">Research-only draft. Keep this page out of public navigation and handoff material.</p>
         </div>
         <label class="group-picker">
           Comparison group
@@ -77,6 +79,196 @@
       </div>
     </section>
 
+    <section class="model-section" aria-labelledby="projectionTitle">
+      <div class="model-heading">
+        <div>
+          <p class="eyebrow">Projection lab</p>
+          <h2 id="projectionTitle">Tax sensitivity draft</h2>
+          <p id="projectionIntro">
+            The model studies each property one year at a time. Instead of asking whether taxes follow value directly,
+            it measures how much ETR changed after levy/rate and credit effects were absorbed.
+          </p>
+        </div>
+        <div class="observation-meter" aria-label="Projection sample size">
+          <span id="observationCount">—</span>
+          <small>year-to-year observations</small>
+        </div>
+      </div>
+
+      <div class="model-controls" aria-label="Model-ready dataset controls">
+        <label class="model-lens-picker">
+          Model lens
+          <select id="modelLensSelect">
+            <option value="stable">Stable parcel</option>
+            <option value="realWorld">Real-world parcel</option>
+          </select>
+        </label>
+        <div class="model-counts" aria-live="polite">
+          <span><strong id="stableModelCount">—</strong> stable</span>
+          <span><strong id="realWorldModelCount">—</strong> real-world</span>
+          <span><strong id="excludedModelCount">—</strong> excluded</span>
+        </div>
+        <p id="modelRuleNote">Stable parcel is the default model-ready lens.</p>
+      </div>
+
+      <div class="formula-grid" aria-label="Projection shorthand">
+        <article class="formula-card">
+          <span class="formula-step">1</span>
+          <h3>Normalize tax pressure</h3>
+          <p>ETR tells us how much tax each dollar of value carried in that year.</p>
+          <code>ETR_y = Tax_y ÷ Value_y</code>
+        </article>
+        <article class="formula-card">
+          <span class="formula-step">2</span>
+          <h3>Measure yearly movement</h3>
+          <p>Each parcel contributes a sequence of paired changes, such as 2024 → 2025.</p>
+          <code>ΔTax = (Tax_2 ÷ Tax_1) − 1</code>
+        </article>
+        <article class="formula-card">
+          <span class="formula-step">3</span>
+          <h3>Project with ETR response</h3>
+          <p>The median ETR response is the historical offset to the value change.</p>
+          <code>Tax_hat = (1 + ΔV) × (1 + med ΔETR) − 1</code>
+        </article>
+      </div>
+
+      <div class="workbench-grid">
+        <article class="scenario-panel">
+          <div class="scenario-control">
+            <label for="scenarioInput">Value-change scenario</label>
+            <input id="scenarioInput" type="range" min="0" max="35" step="1" value="10" />
+            <div class="range-row" aria-hidden="true">
+              <span>0%</span>
+              <strong id="scenarioValue">+10%</strong>
+              <span>35%</span>
+            </div>
+            <p id="scenarioBandNote">Using observations near this value-change scenario.</p>
+          </div>
+
+          <div class="scenario-results" aria-live="polite">
+            <div>
+              <span>Projected median tax movement</span>
+              <strong id="scenarioProjection">—</strong>
+              <small id="scenarioProjectionNote">Waiting for sample data.</small>
+            </div>
+            <div>
+              <span>Median ETR response</span>
+              <strong id="scenarioEtrResponse">—</strong>
+              <small>Historical offset to value movement</small>
+            </div>
+            <div>
+              <span>Median levy/rate movement</span>
+              <strong id="scenarioLevyChange">—</strong>
+              <small>Gross levy-rate change in matching years</small>
+            </div>
+            <div>
+              <span>Matching observations</span>
+              <strong id="scenarioSampleSize">—</strong>
+              <small>Band count and confidence cue</small>
+            </div>
+          </div>
+        </article>
+
+        <article class="sensitivity-card">
+          <div class="chart-heading compact">
+            <div>
+              <p class="eyebrow">Sensitivity field</p>
+              <h2>Observed value change vs. tax change</h2>
+            </div>
+            <div class="legend" aria-label="Sensitivity legend">
+              <span><i class="matched"></i> matching band</span>
+              <span><i class="projected"></i> projected point</span>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="sensitivityChart" width="1120" height="500" aria-label="Value-change to tax-change sensitivity chart"></canvas>
+          </div>
+        </article>
+      </div>
+
+      <article class="matrix-card">
+        <h2>Scenario matrix</h2>
+        <p>Each row uses observations whose value change sits near the scenario. Median matters most; the middle 50% shows the practical spread.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>ΔValue scenario</th>
+                <th>Observed band</th>
+                <th>Obs.</th>
+                <th>Median ΔETR</th>
+                <th>Median levy/rate Δ</th>
+                <th>Projected ΔTax</th>
+                <th>Observed median ΔTax</th>
+                <th>Middle 50% ΔTax</th>
+              </tr>
+            </thead>
+            <tbody id="projectionRows"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <section class="sampling-section" aria-labelledby="samplingTitle">
+      <div class="sampling-heading">
+        <div>
+          <p class="eyebrow">Research sampling queue</p>
+          <h2 id="samplingTitle">Candidate coverage by valuation group</h2>
+          <p id="samplingSummary">Loading the private sampling tracker.</p>
+        </div>
+        <label class="group-picker">
+          Candidate list
+          <select id="samplingGroupSelect"></select>
+        </label>
+      </div>
+
+      <div class="boundary-note">
+        <strong>Agricultural market-area rule</strong>
+        <span>R&O wording and map evidence define <code>MA2 = geocodes 4209 + 4407 + 4455</code>, the three Gage townships sharing the Pawnee County border. <code>MA1 = all other agricultural geocodes</code>.</span>
+      </div>
+
+      <div class="sampling-grid">
+        <article class="sampling-card">
+          <h2>Group target map</h2>
+          <p>Built records count toward the experiment immediately. Screened candidates are ready to ingest as research-only records.</p>
+          <div class="table-scroll">
+            <table class="sampling-table">
+              <thead>
+                <tr>
+                  <th>Group</th>
+                  <th>Target</th>
+                  <th>Built</th>
+                  <th>Screened</th>
+                  <th>Review</th>
+                  <th>Shortfall</th>
+                </tr>
+              </thead>
+              <tbody id="samplingRows"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="sampling-card">
+          <h2>Screened potentials</h2>
+          <p id="candidateNote">Choose a valuation group to inspect the current pull list.</p>
+          <div class="table-scroll">
+            <table class="candidate-table">
+              <thead>
+                <tr>
+                  <th>Parcel</th>
+                  <th>Class</th>
+                  <th>Address</th>
+                  <th>Tax dist.</th>
+                  <th>Confidence</th>
+                </tr>
+              </thead>
+              <tbody id="candidateRows"></tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section class="detail-grid">
       <article class="table-card">
         <h2>Aggregate by year</h2>
@@ -110,12 +302,40 @@
                 <th>2025 value</th>
                 <th>Value index</th>
                 <th>Tax index</th>
-                <th>Tax sample flag</th>
+                <th>Model flag</th>
               </tr>
             </thead>
             <tbody id="propertyRows"></tbody>
           </table>
         </div>
+      </article>
+    </section>
+
+    <section class="school-levy-section" aria-labelledby="schoolLevyTitle">
+      <article class="table-card">
+        <div class="school-levy-heading">
+          <div>
+            <p class="eyebrow">School levy cross-check · 2025</p>
+            <h2 id="schoolLevyTitle">School levy coverage by district</h2>
+            <p id="schoolLevySummary">Loading school levy coverage from sample records.</p>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table class="school-levy-table">
+            <thead>
+              <tr>
+                <th>School district</th>
+                <th>School levy rate</th>
+                <th>Residential share</th>
+                <th>Commercial share</th>
+                <th>Ag share</th>
+              </tr>
+            </thead>
+            <tbody id="schoolLevyRows"></tbody>
+            <tfoot id="schoolLevyTotals"></tfoot>
+          </table>
+        </div>
+        <p class="school-levy-source">Source: Internal experiment sample records with 2025 final levy component detail. Each row is traceable to sampled parcel records; situs is withheld from this summary view to keep the table focused on school district, class-specific school share, and levy interaction. Levy figures use the sample median when more than one parcel supports a district row.</p>
       </article>
     </section>
   </main>
