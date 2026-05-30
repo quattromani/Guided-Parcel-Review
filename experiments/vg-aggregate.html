@@ -315,27 +315,40 @@
       <article class="table-card">
         <div class="school-levy-heading">
           <div>
-            <p class="eyebrow">School levy cross-check · 2025</p>
-            <h2 id="schoolLevyTitle">School levy coverage by district</h2>
+            <p class="eyebrow">Gage County school levy weight · 2025</p>
+            <h2 id="schoolLevyTitle">How much of a typical property's gross levy goes to schools?</h2>
             <p id="schoolLevySummary">Loading school levy coverage from sample records.</p>
           </div>
         </div>
+        <p class="school-levy-takeaway" id="schoolLevyTakeaway">Across the sample, schools account for roughly half of residential and commercial levies and about two-thirds of agricultural levies.</p>
         <div class="table-scroll">
           <table class="school-levy-table">
             <thead>
               <tr>
+                <th class="school-share-header-spacer" colspan="2" aria-hidden="true"></th>
+                <th class="school-share-group-heading" colspan="3">School share</th>
+              </tr>
+              <tr>
                 <th>School district</th>
                 <th>School levy rate</th>
-                <th>Residential share</th>
-                <th>Commercial share</th>
-                <th>Ag share</th>
+                <th class="class-heading class-residential">Residential</th>
+                <th class="class-heading class-commercial">Commercial</th>
+                <th class="class-heading class-agricultural">Agricultural</th>
               </tr>
             </thead>
             <tbody id="schoolLevyRows"></tbody>
-            <tfoot id="schoolLevyTotals"></tfoot>
           </table>
         </div>
-        <p class="school-levy-source">Source: Internal experiment sample records with 2025 final levy component detail. Each row is traceable to sampled parcel records; situs is withheld from this summary view to keep the table focused on school district, class-specific school share, and levy interaction. Levy figures use the sample median when more than one parcel supports a district row.</p>
+        <div class="school-levy-summary-heading">
+          <span></span>
+          <h3>Average school share by property class</h3>
+          <span></span>
+        </div>
+        <div class="school-levy-cards" id="schoolLevyCards" aria-label="Average school share by property class"></div>
+        <aside class="school-levy-note" aria-label="How to read this table">
+          <h3>How to read this table</h3>
+          <p id="schoolLevyMethodNote">Based on an internal sample of Gage County parcels. Percentages show the average share of gross levy attributable to the local school district within each district and property class, before credits or exemptions. Sample counts are shown in each cell.</p>
+        </aside>
       </article>
     </section>
   </main>

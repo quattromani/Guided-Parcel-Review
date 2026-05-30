@@ -28,7 +28,7 @@ function usage() {
     "  node scripts/manage-research-sampling.js probe-range --start 007000000 --end 007050000 [--step 1000] [--target Residential-5]",
     "  node scripts/manage-research-sampling.js surgical [--limit 240] [--retry-failed]",
     "  node scripts/manage-research-sampling.js next [--group Residential-7] [--limit 20]",
-    "  node scripts/manage-research-sampling.js build [--group Residential-7] [--limit 20]",
+    "  node scripts/manage-research-sampling.js build [--group Residential-7] [--name gis-vg15] [--school \"TRI COUNTY\"] [--limit 20]",
     "  node scripts/manage-research-sampling.js audit-built [--group Residential-7] [--limit 200]",
     "  node scripts/manage-research-sampling.js summary",
     "",
@@ -49,6 +49,7 @@ function parseArgs(argv) {
     step: 1000,
     targets: [],
     name: null,
+    school: null,
     parcels: []
   };
   for (let index = 3; index < argv.length; index += 1) {
@@ -70,6 +71,8 @@ function parseArgs(argv) {
       args.targets.push(argv[++index]);
     } else if (argv[index] === "--name") {
       args.name = argv[++index];
+    } else if (argv[index] === "--school") {
+      args.school = argv[++index];
     } else if (!argv[index].startsWith("--")) {
       args.parcels.push(argv[index]);
     } else {
@@ -113,6 +116,14 @@ function normalizedClass(value) {
 
 function compact(value) {
   return `${value ?? ""}`.trim().replace(/\s+/g, " ");
+}
+
+function normalizedSearchText(value) {
+  return `${value ?? ""}`
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function groupCatalog() {
@@ -880,15 +891,18 @@ function next({ group, limit }) {
   })), null, 2));
 }
 
-function build({ group, limit }) {
+function build({ group, limit, name, school }) {
   if (!group) {
     throw new Error("build requires --group so records are added deliberately.");
   }
 
+  const normalizedSchool = school ? normalizedSearchText(school) : null;
   const tracker = loadTracker();
   const candidates = tracker.candidates
     .filter(candidate => ["screened_candidate", "screened_needs_review"].includes(candidate.status))
     .filter(candidate => candidate.groupKey === group)
+    .filter(candidate => !name || candidate.probeName === name)
+    .filter(candidate => !normalizedSchool || normalizedSearchText(candidate.schoolDistrict).includes(normalizedSchool))
     .sort((a, b) => {
       const ap = candidatePriority(a);
       const bp = candidatePriority(b);
@@ -1180,7 +1194,7 @@ function main() {
   if (args.command === "fetch-named") return screenNamed({ fetch: true, name: args.name, limit: args.limit });
   if (args.command === "screen-named") return screenNamed({ fetch: false, name: args.name, limit: args.limit });
   if (args.command === "next") return next({ group: args.group, limit: args.limit });
-  if (args.command === "build") return build({ group: args.group, limit: args.limit });
+  if (args.command === "build") return build({ group: args.group, limit: args.limit, name: args.name, school: args.school });
   if (args.command === "audit-built") return auditBuilt({ group: args.group, limit: args.limit });
   if (args.command === "summary") return printSummary();
   usage();

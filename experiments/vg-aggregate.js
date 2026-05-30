@@ -4,6 +4,7 @@ const SCENARIO_TARGETS = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30];
 const NARROW_BAND = 0.025;
 const WIDE_BAND = 0.05;
 const MINIMUM_BAND_COUNT = 12;
+const GAGE_COUNTY_PARCEL_ESTIMATE = 17767;
 const MODEL_LENSES = {
   stable: {
     label: "Stable parcel",
@@ -22,6 +23,7 @@ let allRecords = [];
 let groups = [];
 let activeProjectionObservations = [];
 let samplingTracker = null;
+let schoolDistrictColors = [];
 let activeModelLens = "stable";
 
 const elements = {
@@ -62,8 +64,10 @@ const elements = {
   candidateNote: document.getElementById("candidateNote"),
   candidateRows: document.getElementById("candidateRows"),
   schoolLevySummary: document.getElementById("schoolLevySummary"),
-  schoolLevyRows: document.getElementById("schoolLevyRows"),
-  schoolLevyTotals: document.getElementById("schoolLevyTotals")
+  schoolLevyCards: document.getElementById("schoolLevyCards"),
+  schoolLevyTakeaway: document.getElementById("schoolLevyTakeaway"),
+  schoolLevyMethodNote: document.getElementById("schoolLevyMethodNote"),
+  schoolLevyRows: document.getElementById("schoolLevyRows")
 };
 
 function canonicalGroup(record) {
@@ -95,6 +99,52 @@ function schoolDistrictLabel(record) {
 function schoolDistrictDisplayLabel(value) {
   return String(value || "Unassigned school district")
     .replace(/^SCHOOL\s+/i, "SCH ");
+}
+
+function schoolDistrictCellLabel(value) {
+  return escapeHtml(schoolDistrictDisplayLabel(value))
+    .replace(/,\s+/, ",<br>");
+}
+
+function normalizeSchoolText(value) {
+  return String(value || "")
+    .toUpperCase()
+    .replace(/&AMP;/g, "&")
+    .replace(/[^A-Z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function schoolDistrictCode(value) {
+  return String(value || "").match(/\b\d{2}-\d{4}\b/)?.[0] || "";
+}
+
+function schoolDistrictColorRecord(value) {
+  const code = schoolDistrictCode(value);
+  const normalized = normalizeSchoolText(value);
+  return schoolDistrictColors.find(district => (
+    (code && (district.district_codes || []).includes(code)) ||
+    (district.aliases || []).some(alias => normalized.includes(normalizeSchoolText(alias)))
+  )) || null;
+}
+
+function readableTextColor(hex) {
+  const normalized = String(hex || "").replace("#", "");
+  if (!/^[0-9a-f]{6}$/i.test(normalized)) return "#203044";
+  const red = parseInt(normalized.slice(0, 2), 16) / 255;
+  const green = parseInt(normalized.slice(2, 4), 16) / 255;
+  const blue = parseInt(normalized.slice(4, 6), 16) / 255;
+  const linear = [red, green, blue].map(value => (
+    value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+  ));
+  const luminance = (0.2126 * linear[0]) + (0.7152 * linear[1]) + (0.0722 * linear[2]);
+  return luminance > 0.42 ? "#203044" : "#ffffff";
+}
+
+function schoolDistrictColorStyle(value) {
+  const color = schoolDistrictColorRecord(value)?.map_color;
+  if (!color) return "";
+  return ` style="--district-color: ${escapeHtml(color)}; --district-text: ${readableTextColor(color)};"`;
 }
 
 function latestLevyComponents(record) {
@@ -202,41 +252,35 @@ function schoolShareText(value) {
   return `${value.toFixed(1)}%`;
 }
 
-function schoolShareHeatStyle(value, scale = { min: 35, max: 70 }) {
-  if (!Number.isFinite(value)) return "";
-  const min = Number.isFinite(scale.min) ? scale.min : 35;
-  const max = Number.isFinite(scale.max) && scale.max > min ? scale.max : min + 1;
-  const clamped = Math.max(min, Math.min(max, value));
-  const intensity = (clamped - min) / (max - min);
-  const alpha = 0.08 + (intensity * 0.32);
-  return `--school-share-heat: rgba(217, 119, 6, ${alpha.toFixed(3)});`;
+function schoolClassKey(className) {
+  const normalized = String(className || "").toLowerCase();
+  if (normalized.includes("residential")) return "residential";
+  if (normalized.includes("commercial")) return "commercial";
+  if (normalized.includes("agricultural")) return "agricultural";
+  return "other";
 }
 
-function schoolShareScales(rows) {
-  return ["Residential", "Agricultural", "Commercial"].reduce((scales, className) => {
-    const values = rows
-      .map(row => classStatFor(row, className)?.schoolShare)
-      .filter(Number.isFinite);
-    scales[className] = {
-      min: values.length ? Math.min(...values) : null,
-      max: values.length ? Math.max(...values) : null
-    };
-    return scales;
-  }, {});
+function schoolShareFillStyle(value) {
+  if (!Number.isFinite(value)) return "";
+  const fill = Math.max(0, Math.min(100, value));
+  return `--share-fill: ${fill.toFixed(1)}%;`;
 }
 
 function classStatFor(row, className) {
   return row.classStats.find(stats => stats.className.toLowerCase() === className.toLowerCase()) || null;
 }
 
-function classShareCell(row, className, scale) {
+function classShareCell(row, className) {
   const stats = classStatFor(row, className);
-  const style = stats ? ` style="${schoolShareHeatStyle(stats.schoolShare, scale)}"` : "";
-  if (!stats) return `<td class="class-share-cell"><span class="class-share-empty">—</span></td>`;
+  const classKey = schoolClassKey(className);
+  const style = stats ? ` style="${schoolShareFillStyle(stats.schoolShare)}"` : "";
+  if (!stats) return `<td class="class-share-cell class-${classKey}"><span class="class-share-empty">—</span></td>`;
   return `
-    <td class="class-share-cell"${style}>
-      <span class="class-share-value">${schoolShareText(stats.schoolShare)}</span>
-      <span class="class-share-count">${stats.count} sample${stats.count === 1 ? "" : "s"}</span>
+    <td class="class-share-cell class-${classKey}"${style}>
+      <span class="class-share-content">
+        <span class="class-share-value">${schoolShareText(stats.schoolShare)}</span>
+        <span class="class-share-count">${stats.count} sample${stats.count === 1 ? "" : "s"}</span>
+      </span>
     </td>
   `;
 }
@@ -250,13 +294,30 @@ function classTotals(rows, className) {
   };
 }
 
-function classTotalCell(rows, className) {
-  const totals = classTotals(rows, className);
-  if (!totals.count) return `<span class="class-share-empty">—</span>`;
-  return `
-    <span class="class-share-value">${schoolShareText(totals.schoolShare)}</span>
-    <span class="class-share-count">${totals.count} sample${totals.count === 1 ? "" : "s"}</span>
-  `;
+function schoolLevySummaryCards(rows) {
+  return ["Residential", "Commercial", "Agricultural"].map(className => {
+    const totals = classTotals(rows, className);
+    const classKey = schoolClassKey(className);
+    const fillStyle = schoolShareFillStyle(totals.schoolShare).replace("--share-fill", "--summary-fill");
+    return `
+      <article class="school-levy-card class-${classKey}" style="${fillStyle}">
+        <span class="school-levy-card-label">${className} Properties</span>
+        <strong>${schoolShareText(totals.schoolShare)}</strong>
+        <span class="school-levy-card-count">${totals.count} sample${totals.count === 1 ? "" : "s"}</span>
+      </article>
+    `;
+  }).join("");
+}
+
+function schoolLevySampleCount(rows) {
+  return rows.reduce((sum, row) => (
+    sum + row.classStats.reduce((classSum, stats) => classSum + stats.count, 0)
+  ), 0);
+}
+
+function countySampleEstimateText(sampleCount) {
+  if (!Number.isFinite(sampleCount) || !GAGE_COUNTY_PARCEL_ESTIMATE) return "roughly 4% of the county";
+  return `about ${((sampleCount / GAGE_COUNTY_PARCEL_ESTIMATE) * 100).toFixed(1)}% of the county`;
 }
 
 function escapeHtml(value) {
@@ -1035,6 +1096,17 @@ async function loadSamplingTracker() {
   }
 }
 
+async function loadSchoolDistrictColors() {
+  try {
+    const response = await fetch("../data/counties/gage/school-district-colors.json");
+    if (!response.ok) return [];
+    const data = await response.json();
+    return Array.isArray(data.districts) ? data.districts : [];
+  } catch {
+    return [];
+  }
+}
+
 function setupGroupSelect() {
   const groupMap = new Map();
   allRecords.forEach(item => {
@@ -1187,35 +1259,34 @@ function renderSchoolLevyCoverage() {
   const rows = schoolLevyCoverageRows();
   if (!rows.length) {
     elements.schoolLevySummary.textContent = "No school levy components are available in the loaded sample records yet.";
+    elements.schoolLevyCards.innerHTML = "";
+    elements.schoolLevyTakeaway.hidden = true;
     elements.schoolLevyRows.innerHTML = `<tr><td colspan="5"><div class="empty-state">School levy coverage is not available.</div></td></tr>`;
-    elements.schoolLevyTotals.innerHTML = "";
     return;
   }
 
-  const heatScales = schoolShareScales(rows);
-  elements.schoolLevySummary.textContent = `${rows.length} school district${rows.length === 1 ? "" : "s"} appear in the loaded Gage sample records. From left to right, each row shows the district, the school levy rate found in the sample, then the residential, commercial, and agricultural share of each class levy stack. Each share cell includes the class sample count behind it.`;
+  const sampleCount = schoolLevySampleCount(rows);
+  elements.schoolLevySummary.textContent = `The table below lists Gage County school districts, their 2025 school levy rates, and the typical share of total gross levy attributable to the local school district before credits or exemptions for residential, commercial, and agricultural sample properties. The sample represents ${countySampleEstimateText(sampleCount)}.`;
+  elements.schoolLevyMethodNote.textContent = `Based on an internal sample of ${sampleCount.toLocaleString("en-US")} Gage County parcels. Percentages show the average share of gross levy attributable to the local school district within each district and property class, before credits or exemptions. Sample counts are shown in each cell.`;
+  elements.schoolLevyCards.innerHTML = schoolLevySummaryCards(rows);
+  elements.schoolLevyTakeaway.hidden = false;
   elements.schoolLevyRows.innerHTML = rows.map(row => `
     <tr class="school-share-row">
-      <td class="school-district-cell"><strong>${escapeHtml(schoolDistrictDisplayLabel(row.schoolDistrict))}</strong></td>
+      <td class="school-district-cell"${schoolDistrictColorStyle(row.schoolDistrict)}><strong>${schoolDistrictCellLabel(row.schoolDistrict)}</strong></td>
       <td class="school-rate-cell">${levyRateText(row.schoolRate)}</td>
-      ${classShareCell(row, "Residential", heatScales.Residential)}
-      ${classShareCell(row, "Commercial", heatScales.Commercial)}
-      ${classShareCell(row, "Agricultural", heatScales.Agricultural)}
+      ${classShareCell(row, "Residential")}
+      ${classShareCell(row, "Commercial")}
+      ${classShareCell(row, "Agricultural")}
     </tr>
   `).join("");
-  elements.schoolLevyTotals.innerHTML = `
-    <tr class="school-total-row">
-      <td class="school-total-label"><strong>Total / average</strong></td>
-      <td class="school-rate-cell">${levyRateText(average(rows.map(row => row.schoolRate)))}</td>
-      <td class="class-share-cell">${classTotalCell(rows, "Residential")}</td>
-      <td class="class-share-cell">${classTotalCell(rows, "Commercial")}</td>
-      <td class="class-share-cell">${classTotalCell(rows, "Agricultural")}</td>
-    </tr>
-  `;
 }
 
 async function main() {
-  [allRecords, samplingTracker] = await Promise.all([loadRecords(), loadSamplingTracker()]);
+  [allRecords, samplingTracker, schoolDistrictColors] = await Promise.all([
+    loadRecords(),
+    loadSamplingTracker(),
+    loadSchoolDistrictColors()
+  ]);
   setupGroupSelect();
   setupProjectionControls();
   setupSamplingControls();
