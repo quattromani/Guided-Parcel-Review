@@ -14,7 +14,7 @@
     "notes": "Parsed from the GWorks PDF report exported 2026-05-17, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, and levy totals added from Nebraska Taxes Online detail modals. The GWorks export includes parcel identity, current/prior value, tax levy, agricultural land rows, residential datasheet, outbuilding rows, and embedded photo/sketch images. It does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
   },
   "guidedSnapshot": {
-    "snapshotYear": 2025,
+    "snapshotYear": 2026,
     "latestFinalTaxYear": 2025,
     "assets": {
       "photo": "assets/images/002157000_1.jpg",
@@ -107,6 +107,13 @@
         "taxes": 736.64,
         "status": "tax-statement",
         "assessmentSource": "Nebraska Taxes Online statement detail modal."
+      },
+      {
+        "year": 2026,
+        "assessedValue": 104785,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
       }
     ],
     "taxStatements": [
@@ -403,6 +410,14 @@
     ],
     "assessedValueBreakdown": [
       {
+        "year": 2026,
+        "dwelling": 66230,
+        "land": 33300,
+        "outbuilding": 5255,
+        "total": 104785,
+        "source": "GWorks PDF"
+      },
+      {
         "year": 2025,
         "dwelling": 66230,
         "land": 33300,
@@ -580,17 +595,17 @@
   },
   "currentCardValue": {
     "previous": {
-      "buildings": 47670,
-      "improvement": 1415,
-      "landLots": 22640,
-      "total": 71725
+      "buildings": 66230,
+      "improvement": 5255,
+      "landLots": 33300,
+      "total": 104785
     },
     "current": {
       "buildings": 66230,
       "improvement": 5255,
       "landLots": 33300,
       "total": 104785,
-      "note": "2025 assessed values from the GWorks export and Nebraska Taxes Online detail modal."
+      "note": "2026 assessed values from the GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
   "propertyValuation": {
@@ -638,6 +653,14 @@
   ],
   "miscImprovements": [],
   "valuationHistory": [
+    {
+      "year": 2026,
+      "dwelling": 66230,
+      "land": 33300,
+      "outbuilding": 5255,
+      "total": 104785,
+      "source": "GWorks PDF"
+    },
     {
       "year": 2025,
       "statement": "4820",

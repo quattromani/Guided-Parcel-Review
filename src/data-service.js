@@ -182,6 +182,22 @@ export function loadPropertySwitcherRecords() {
   });
 }
 
+export function loadValuationGroupSampleRecords() {
+  return getActiveCountyEntry().then(async ({ manifest, property }) => {
+    const sampleProperties = (manifest.properties || []).filter(item =>
+      item.county === property.county &&
+      item.recordCardStatus === "available" &&
+      item.recordCardPath
+    );
+    const records = await Promise.all(sampleProperties.map(async sampleProperty => ({
+      property: sampleProperty,
+      recordCard: await loadJson(sampleProperty.recordCardPath, `valuation group sample ${sampleProperty.id}`).catch(() => null)
+    })));
+
+    return records.filter(item => item.recordCard);
+  });
+}
+
 export function loadPropertyData() {
   activePropertyDataPromise ??= loadPropertyRecordCard().then(guidedSnapshotFromMipsRecordCard);
 

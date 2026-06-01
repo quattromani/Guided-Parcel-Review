@@ -24,9 +24,9 @@ const fallbackTaxpayerJourneyRoutes = [
     panelId: "market-area",
     eyebrow: "Observe",
     label: "Value Detail",
-    question: "What may be driving the value?",
+    question: "What may be influencing this year's value?",
     title: "Compare the value with the property record and local sales",
-    description: "Read the property facts beside recent qualified sales."
+    description: "Compare this property with similar properties from its local market group."
   },
   {
     id: "equalization",

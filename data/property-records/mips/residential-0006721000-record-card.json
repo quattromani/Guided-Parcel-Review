@@ -21,7 +21,7 @@
     "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
   },
   "guidedSnapshot": {
-    "snapshotYear": 2025,
+    "snapshotYear": 2026,
     "latestFinalTaxYear": 2025,
     "assets": {
       "photo": "assets/images/0006721000_1.jpg",
@@ -66,6 +66,13 @@
       "partFinish": 0
     },
     "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 70130,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
       {
         "year": 2025,
         "assessedValue": 70130,
@@ -437,6 +444,14 @@
     ],
     "assessedValueBreakdown": [
       {
+        "year": 2026,
+        "dwelling": 69130,
+        "land": 1000,
+        "outbuilding": 0,
+        "total": 70130,
+        "source": "GWorks PDF"
+      },
+      {
         "year": 2025,
         "dwelling": 69130,
         "land": 1000,
@@ -628,21 +643,29 @@
   },
   "currentCardValue": {
     "previous": {
-      "buildings": 43665,
+      "buildings": 69130,
       "improvement": 0,
-      "landLots": 400,
-      "total": 44065
+      "landLots": 1000,
+      "total": 70130
     },
     "current": {
       "buildings": 69130,
       "improvement": 0,
       "landLots": 1000,
       "total": 70130,
-      "note": "2025 assessed values from GWorks PDF and Nebraska Taxes Online detail modal. PDF latest total: $44,065."
+      "note": "2026 assessed values from the GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
   "ownershipHistory": [],
   "valuationHistory": [
+    {
+      "year": 2026,
+      "dwelling": 69130,
+      "land": 1000,
+      "outbuilding": 0,
+      "total": 70130,
+      "source": "GWorks PDF"
+    },
     {
       "year": 2025,
       "total": 44065,

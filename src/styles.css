@@ -3668,6 +3668,93 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   align-content: start;
 }
 
+.valuation-group-trend-section {
+  display: block;
+}
+
+.valuation-group-trend-layout {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.valuation-group-trend-frame {
+  height: 22rem;
+  min-height: 18rem;
+}
+
+.valuation-group-sample-summary {
+  align-content: start;
+  background: rgb(var(--surface-muted));
+  border-radius: var(--radius-container-lg);
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.valuation-group-sample-summary h4 {
+  color: rgb(var(--color-slate-700));
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.25;
+  margin: 0.2rem 0 0;
+}
+
+.valuation-group-sample-cards {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.valuation-group-sample-card {
+  background: rgb(var(--surface-card));
+  border-radius: var(--radius-container-md);
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  min-width: 0;
+  padding: 0.9rem;
+}
+
+.valuation-group-sample-card p {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.valuation-group-sample-card strong {
+  color: rgb(var(--color-slate-700));
+  display: block;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  font-weight: 850;
+  letter-spacing: 0;
+  line-height: 1.15;
+  margin-top: 0.4rem;
+}
+
+.valuation-group-sample-card span {
+  color: rgb(var(--color-slate-500));
+  display: block;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  margin-top: 0.35rem;
+}
+
+.valuation-group-context-card strong {
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.35;
+  margin-top: 0;
+}
+
+@media (min-width: 1024px) {
+  .valuation-group-trend-layout {
+    grid-template-columns: minmax(0, 2fr) minmax(17rem, 1fr);
+  }
+}
+
 .market-local-position-select {
   display: block;
 }

@@ -377,13 +377,13 @@ function byYear(record) {
     const grossTax = Number(statement?.grossTaxAmount);
     const homesteadCredit = Number(statement?.credits?.homestead?.amount);
     const totalCredit = Number(statement?.derived?.totalCreditAmount);
-    const derivedLevyRate = Number(statement?.derived?.grossLevyRate);
     const levyFromGross = Number.isFinite(value) && value > 0 && Number.isFinite(grossTax) && grossTax > 0
       ? grossTax / value
       : null;
-    const levyRate = Number.isFinite(derivedLevyRate) && derivedLevyRate > 0
-      ? derivedLevyRate
-      : levyFromGross;
+    const derivedLevyRate = Number(statement?.derived?.grossLevyRate);
+    const levyRate = Number.isFinite(levyFromGross) && levyFromGross > 0
+      ? levyFromGross
+      : derivedLevyRate;
     return {
       year,
       value: Number.isFinite(value) ? value : null,

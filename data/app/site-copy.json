@@ -61,9 +61,9 @@
       "panelId": "market-area",
       "eyebrow": "Observe",
       "label": "Value Detail",
-      "question": "What may be driving the value?",
+      "question": "What may be influencing this year's value?",
       "title": "Compare the value with the property record and local sales",
-      "description": "Read the property facts beside recent qualified sales."
+      "description": "Compare this property with similar properties from its local market group."
     },
     {
       "id": "equalization",
@@ -247,10 +247,8 @@
     },
     "market-area": {
       "transitions": {
-        "intro": "Look at the property's local comparison group first. These cards introduce the sales depth, price level, and ratio measures used below.",
-        "source": "Then compare it with the other groups. The table and chart show where recent sales are concentrated across the class.",
-        "scatter": "With the group makeup in view, compare the selected group by level and uniformity. The scatterplot shows how nearby groups relate to each other.",
-        "handoff": "You have reviewed the sales base and the property's local comparison group. Next, move to the countywide equalization layer."
+        "intro": "Start with the local comparison group. These sampled properties help show how this property's value has changed relative to similar properties in the same market area.",
+        "handoff": "You have reviewed how this property compares with similar properties nearby. Next, step back and look at how assessments are evaluated across the county."
       },
       "priceContext": {
         "title": "What prices are represented?",

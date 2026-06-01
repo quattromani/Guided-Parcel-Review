@@ -14,7 +14,7 @@
     "notes": "Parsed from the GWorks PDF report exported 2026-05-17, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, and levy totals added from Nebraska Taxes Online detail modals. Earlier statement years reflect the larger parent parcel before the current 6.54-acre record."
   },
   "guidedSnapshot": {
-    "snapshotYear": 2025,
+    "snapshotYear": 2026,
     "latestFinalTaxYear": 2025,
     "assets": {
       "photo": "assets/images/001878000_2.jpg",
@@ -59,6 +59,13 @@
       "partFinish": 840
     },
     "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 239300,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
       {
         "year": 2025,
         "assessedValue": 150595,
@@ -407,6 +414,14 @@
     ],
     "assessedValueBreakdown": [
       {
+        "year": 2026,
+        "dwelling": 169370,
+        "land": 48065,
+        "outbuilding": 21865,
+        "total": 239300,
+        "source": "GWorks PDF"
+      },
+      {
         "year": 2025,
         "dwelling": 97890,
         "land": 47955,
@@ -643,7 +658,7 @@
   "landModel": {
     "description": "Agricultural land rows from GWorks public export",
     "totalAcres": 6.54,
-    "recordedLotValue": 47955,
+    "recordedLotValue": 48065,
     "frontage": null,
     "cutoffSchedule": []
   },
@@ -651,19 +666,27 @@
     "previous": {
       "buildings": 97890,
       "improvement": 4750,
-      "landLots": 37540,
-      "total": 140180
+      "landLots": 47955,
+      "total": 150595
     },
     "current": {
-      "buildings": 97890,
-      "improvement": 4750,
-      "landLots": 47955,
-      "total": 150595,
-      "note": "2025 assessed values from the GWorks export."
+      "buildings": 169370,
+      "improvement": 21865,
+      "landLots": 48065,
+      "total": 239300,
+      "note": "2026 assessed values from the GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
   "ownershipHistory": [],
   "valuationHistory": [
+    {
+      "year": 2026,
+      "dwelling": 169370,
+      "land": 48065,
+      "outbuilding": 21865,
+      "total": 239300,
+      "source": "GWorks PDF"
+    },
     {
       "year": 2025,
       "statement": "6649",
@@ -762,17 +785,17 @@
     }
   ],
   "propertyValuation": {
-    "buildings": 97890,
-    "improvement": 4750,
-    "landLot": 47955,
-    "total": 150595
+    "buildings": 169370,
+    "improvement": 21865,
+    "landLot": 48065,
+    "total": 239300
   },
   "valuationReconciliation": {
     "source": "GWorks public export",
     "initialMipsTotal": null,
-    "finalAssessedTotal": 150595,
-    "finalDwellingValue": 97890,
-    "landLot": 47955,
+    "finalAssessedTotal": 239300,
+    "finalDwellingValue": 169370,
+    "landLot": 48065,
     "modeledDetailSubtotal": null,
     "cardToFinalAdjustment": null,
     "modelToFinalReconciliation": null,

@@ -229,41 +229,38 @@
 
     <section data-guided-panel="market-area" class="hidden space-y-6">
       <aside class="guided-transition">
-        <p>Look at the property's local comparison group first. These cards introduce the sales depth, price level, and ratio measures used below.</p>
+        <p>Start with the local comparison group. These sampled properties help show how this property's value has changed relative to similar properties in the same market area.</p>
       </aside>
 
       <article id="market-overview" class="review-card">
-        <section id="market-price-context">
-          <div class="market-price-context-header">
-            <div>
-              <h3 class="text-xl font-bold text-slate-700">What prices are represented?</h3>
-              <p id="marketPriceContextNote" class="mt-1 text-sm leading-6 text-slate-600">Average sale price, average assessed value, and level of value show price context for the selected group.</p>
+        <section class="valuation-group-trend-layout">
+          <div class="valuation-group-trend-main">
+            <div class="market-position-heading">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Local movement</p>
+                <h3 class="text-xl font-bold text-slate-700">How this property compares locally</h3>
+              </div>
             </div>
-            <label class="min-w-72 text-sm font-semibold text-slate-700">
-              Want to see another area?
-              <select id="marketAreaSelect" data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
-            </label>
+            <p id="marketPositionTrendNote" class="mt-2 text-sm leading-6 text-slate-600"></p>
+            <div id="marketPositionLegend" class="assessment-line-legend mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600"></div>
+            <div class="valuation-group-trend-frame mt-4">
+              <canvas id="marketPositionTrendChart" role="img" tabindex="0" aria-describedby="marketPositionTrendSummary"></canvas>
+            </div>
+            <p id="marketPositionTrendSummary" class="sr-only"></p>
           </div>
-          <div id="marketPriceSummary" class="mt-4 grid gap-3 text-sm md:grid-cols-3"></div>
+          <aside class="valuation-group-sample-summary" aria-labelledby="valuationGroupSampleSummaryTitle">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Valuation group sample</p>
+              <h4 id="valuationGroupSampleSummaryTitle">Chart sample context</h4>
+            </div>
+            <div id="marketTrendSummaryCards" class="valuation-group-sample-cards"></div>
+          </aside>
         </section>
-        <div id="marketSignalCards" class="mt-5 grid gap-3 md:grid-cols-4"></div>
         <p id="marketOverviewSource" class="chart-source"></p>
       </article>
 
-      <aside class="guided-transition">
-        <p id="marketSourceNote">Then compare it with the other groups. The table and chart show where recent sales are concentrated across the class.</p>
-      </aside>
-
-      <article id="market-sales-makeup" class="review-card"></article>
-
-      <aside class="guided-transition">
-        <p>With the group makeup in view, compare the selected group by level and uniformity. The scatterplot shows how nearby groups relate to each other.</p>
-      </aside>
-
-      <article id="market-local-position" class="review-card"></article>
-
       <aside class="guided-transition guided-step-handoff">
-        <p>You have reviewed the sales base and the property's local comparison group. Next, move to the countywide equalization layer.</p>
+        <p>You have reviewed how this property compares with similar properties nearby. Next, step back and look at how assessments are evaluated across the county.</p>
       </aside>
 
       <nav class="guided-next-action" aria-label="Continue review">

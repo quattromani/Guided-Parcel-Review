@@ -22,7 +22,7 @@
     "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
   },
   "guidedSnapshot": {
-    "snapshotYear": 2025,
+    "snapshotYear": 2026,
     "latestFinalTaxYear": 2025,
     "assets": {
       "photo": "assets/images/0003760000_1.jpg",
@@ -67,6 +67,13 @@
       "partFinish": 0
     },
     "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 154220,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
       {
         "year": 2025,
         "assessedValue": 154220,
@@ -438,6 +445,14 @@
     ],
     "assessedValueBreakdown": [
       {
+        "year": 2026,
+        "dwelling": 102945,
+        "land": 1205,
+        "outbuilding": 50070,
+        "total": 154220,
+        "source": "GWorks PDF"
+      },
+      {
         "year": 2025,
         "dwelling": 102945,
         "land": 1205,
@@ -627,21 +642,29 @@
   },
   "currentCardValue": {
     "previous": {
-      "buildings": 106000,
-      "improvement": 0,
-      "landLots": 325,
-      "total": 106325
+      "buildings": 102945,
+      "improvement": 50070,
+      "landLots": 1205,
+      "total": 154220
     },
     "current": {
       "buildings": 102945,
       "improvement": 50070,
       "landLots": 1205,
       "total": 154220,
-      "note": "2025 assessed values from GWorks PDF and Nebraska Taxes Online detail modal. PDF latest total: $106,325."
+      "note": "2026 assessed values from the GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
   "ownershipHistory": [],
   "valuationHistory": [
+    {
+      "year": 2026,
+      "dwelling": 102945,
+      "land": 1205,
+      "outbuilding": 50070,
+      "total": 154220,
+      "source": "GWorks PDF"
+    },
     {
       "year": 2025,
       "total": 106325,

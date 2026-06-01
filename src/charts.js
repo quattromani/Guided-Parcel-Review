@@ -46,6 +46,7 @@ let countyComparisonRateChart;
 let equalizationSalePriceChart;
 let marketGroupSalesChart;
 let marketPositionScatterChart;
+let marketPositionTrendChart;
 let marketSignalCharts = [];
 let taxBurdenPatternChart;
 
@@ -2568,6 +2569,235 @@ function marketGroupContextName(group, classKey = "residential") {
     .trim() || fallback;
 }
 
+function numberOrNull(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function recordRowForYear(rows, key, year) {
+  return (rows || []).find(row => Number(row?.[key]) === year) || null;
+}
+
+function assessedValueForRecordYear(recordCard, year, taxpayerRow, statement) {
+  const taxpayerValue = numberOrNull(taxpayerRow?.assessedValue);
+  if (taxpayerValue !== null) return taxpayerValue;
+
+  const statementValue = numberOrNull(statement?.assessedValue);
+  if (statementValue !== null) return statementValue;
+
+  const breakdownValue = numberOrNull(recordRowForYear(recordCard?.guidedSnapshot?.assessedValueBreakdown, "year", year)?.total);
+  if (breakdownValue !== null) return breakdownValue;
+
+  const valuationValue = numberOrNull(recordRowForYear(recordCard?.valuationHistory, "year", year)?.total);
+  if (valuationValue !== null) return valuationValue;
+
+  return null;
+}
+
+function valueTaxRowsFromRecord(recordCard) {
+  const taxpayerRows = recordCard?.guidedSnapshot?.taxpayerHistory || [];
+  const statements = recordCard?.guidedSnapshot?.taxStatements || [];
+  const years = new Set([
+    ...taxpayerRows.map(row => Number(row.year)),
+    ...statements.map(statement => Number(statement.taxYear)),
+    ...(recordCard?.guidedSnapshot?.assessedValueBreakdown || []).map(row => Number(row.year)),
+    ...(recordCard?.valuationHistory || []).map(row => Number(row.year))
+  ].filter(Number.isFinite));
+
+  return [...years].sort((a, b) => a - b).map(year => {
+    const taxpayerRow = recordRowForYear(taxpayerRows, "year", year);
+    const statement = recordRowForYear(statements, "taxYear", year);
+    const assessedValue = assessedValueForRecordYear(recordCard, year, taxpayerRow, statement);
+    const taxes = numberOrNull(taxpayerRow?.taxes ?? statement?.netAmountDue);
+
+    return {
+      year,
+      assessedValue: assessedValue !== null && assessedValue > 0 ? assessedValue : null,
+      taxes: taxes !== null && taxes > 0 ? taxes : null
+    };
+  });
+}
+
+function indexedFieldByYear(rows, field, years) {
+  const rowMap = rowsByYear(rows);
+  const preferredBase = rowMap.get(2019)?.[field];
+  const fallbackBase = rows.find(row => hasDataValue(row?.[field]) && Number(row[field]) > 0)?.[field];
+  const base = hasDataValue(preferredBase) && Number(preferredBase) > 0 ? preferredBase : fallbackBase;
+
+  if (!hasDataValue(base) || Number(base) <= 0) {
+    return years.map(() => null);
+  }
+
+  return years.map(year => {
+    const value = rowMap.get(year)?.[field];
+    return hasDataValue(value) && Number(value) > 0 ? (Number(value) / Number(base)) * 100 : null;
+  });
+}
+
+function average(values) {
+  const usable = values.filter(Number.isFinite);
+  if (!usable.length) return null;
+  return usable.reduce((sum, value) => sum + value, 0) / usable.length;
+}
+
+function averageIndexedSeries(records, years, field) {
+  const rowsByRecord = records.map(item => valueTaxRowsFromRecord(item.recordCard));
+  const groupAverageRows = years.map(year => ({
+    year,
+    [field]: average(rowsByRecord.map(rows => rowsByYear(rows).get(year)?.[field]).filter(Number.isFinite))
+  }));
+
+  return indexedFieldByYear(groupAverageRows, field, years);
+}
+
+function sampleRecordClass(recordCard) {
+  return normalizeMarketClassKey(
+    recordCard?.guidedSnapshot?.classification?.propertyClass
+      ?? recordCard?.guidedSnapshot?.parcel?.accountType
+      ?? recordCard?.classification?.propertyClass
+      ?? recordCard?.parcel?.accountType
+  );
+}
+
+function recordsForMarketGroup(sampleRecords, classKey, groupId) {
+  return (sampleRecords || []).filter(item => {
+    const recordCard = item.recordCard;
+    return sampleRecordClass(recordCard) === normalizeMarketClassKey(classKey)
+      && String(getParcelMarketGroupId(recordCard, classKey)) === String(groupId);
+  });
+}
+
+function renderMarketPositionTrend(selected, classStats, recordCard, sampleRecords) {
+  const canvas = document.getElementById("marketPositionTrendChart");
+  if (!canvas) return;
+
+  const groupRecords = recordsForMarketGroup(sampleRecords, classStats.classKey, selected.id);
+  const propertyRows = valueTaxRowsFromRecord(recordCard);
+  const years = [...new Set([
+    ...propertyRows.map(row => row.year),
+    ...groupRecords.flatMap(item => valueTaxRowsFromRecord(item.recordCard).map(row => row.year))
+  ])].filter(year => year >= 2019 && year <= 2026).sort((a, b) => a - b);
+  const propertyValueIndex = indexedFieldByYear(propertyRows, "assessedValue", years);
+  const propertyTaxIndex = indexedFieldByYear(propertyRows, "taxes", years);
+  const groupValueIndex = averageIndexedSeries(groupRecords, years, "assessedValue");
+  const groupTaxIndex = averageIndexedSeries(groupRecords, years, "taxes");
+  const groupName = selected.optionLabel ?? selected.label ?? `Group ${selected.id}`;
+  const datasets = [
+    {
+      label: "This property value",
+      tooltipValues: formattedTooltipValues(years.map((year, index) => ({ year, value: propertyRows.find(row => row.year === year)?.assessedValue, index: propertyValueIndex[index] })), "value", wholeMoney),
+      data: propertyValueIndex,
+      tension: 0.25,
+      borderWidth: 3.5,
+      borderColor: chartColors.contextValue,
+      backgroundColor: semanticChartColors.valueBg,
+      pointRadius: 4,
+      spanGaps: true
+    },
+    {
+      label: "This property net tax",
+      tooltipValues: formattedTooltipValues(years.map((year, index) => ({ year, value: propertyRows.find(row => row.year === year)?.taxes, index: propertyTaxIndex[index] })), "value", moneyCents),
+      data: propertyTaxIndex,
+      tension: 0.25,
+      borderWidth: 3.5,
+      borderColor: chartColors.contextTax,
+      backgroundColor: semanticChartColors.taxBg,
+      pointRadius: 4,
+      spanGaps: true
+    },
+    {
+      label: "Group avg. value",
+      data: groupValueIndex,
+      tension: 0.25,
+      borderWidth: 2.25,
+      borderColor: colorAlpha(chartColors.contextValue, 0.52),
+      backgroundColor: semanticChartColors.valueBg,
+      borderDash: [7, 5],
+      pointRadius: 2,
+      spanGaps: true
+    },
+    {
+      label: "Group avg. net tax",
+      data: groupTaxIndex,
+      tension: 0.25,
+      borderWidth: 2.25,
+      borderColor: colorAlpha(chartColors.contextTax, 0.52),
+      backgroundColor: semanticChartColors.taxBg,
+      borderDash: [7, 5],
+      pointRadius: 2,
+      spanGaps: true
+    }
+  ];
+  const pendingColumns = pendingColumnsForChartDatasets(years, datasets);
+  const hasCustomLegend = renderLineLegend("marketPositionLegend", datasets);
+  const note = document.getElementById("marketPositionTrendNote");
+  if (note) {
+    note.textContent = `${groupName} sample average based on ${integer.format(groupRecords.length)} record${groupRecords.length === 1 ? "" : "s"}. Index baseline is 100 at the first available history year, preferring 2019 when present.`;
+  }
+  const summary = document.getElementById("marketPositionTrendSummary");
+  if (summary) {
+    summary.textContent = `Line chart compares this property's indexed assessed value and net tax with ${groupName} sample average indexed assessed value and net tax.`;
+  }
+  renderMarketTrendSummaryCards(selected, groupRecords);
+
+  marketPositionTrendChart?.destroy();
+  marketPositionTrendChart = new Chart(canvas, {
+    type: "line",
+    plugins: [indexedPendingColumnPlugin],
+    data: { labels: years, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        indexedPendingColumn: pendingColumnOptions(pendingColumns),
+        legend: { display: !hasCustomLegend },
+        tooltip: {
+          callbacks: {
+            label: indexedTooltipLabel
+          }
+        }
+      },
+      scales: {
+        y: {
+          title: mobileAxisTitle("Index"),
+          suggestedMin: 80,
+          suggestedMax: 180
+        },
+        x: {
+          grid: { display: false }
+        }
+      }
+    }
+  });
+
+  canvas.setAttribute("aria-label", `Indexed value and net-tax trend for this property compared with ${groupName}.`);
+  const source = document.getElementById("marketOverviewSource") ?? document.getElementById("marketPositionSource");
+  if (source) source.textContent = `Source: Property record histories and ${getMarketPositionSourceAnchor(classStats).replace(/^Source:\s*/, "")}`;
+}
+
+function renderMarketTrendSummaryCards(selected, groupRecords) {
+  const container = document.getElementById("marketTrendSummaryCards");
+  if (!container) return;
+
+  const marketAreaLabel = `${selected.description || selected.optionLabel || selected.label || "Local"}`
+    .replace(/\s*·.*$/, "")
+    .split(",")[0]
+    .trim() || "Local";
+  const cards = [
+    `${integer.format(groupRecords.length)} sampled properties`,
+    `${marketAreaLabel} market area`,
+    "Records reviewed from 2019 to present"
+  ];
+
+  container.innerHTML = cards.map(card => `
+    <article class="valuation-group-sample-card valuation-group-context-card">
+      <strong>${escapeHtml(card)}</strong>
+    </article>
+  `).join("");
+}
+
 function renderMarketPositionScatter(selected, classStats, iaaoStandards, onSelectGroup = null) {
   const canvas = document.getElementById("marketPositionScatter");
   if (!canvas) return;
@@ -2689,10 +2919,7 @@ function renderMarketPositionScatter(selected, classStats, iaaoStandards, onSele
   if (source) source.textContent = getMarketPositionSourceAnchor(classStats);
 }
 
-export function initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards, marketPositionData) {
-  const legacySelect = document.getElementById("marketAreaSelect");
-  const marketAreaSelects = [...document.querySelectorAll("[data-market-area-select]")];
-  if (!marketAreaSelects.length && legacySelect) marketAreaSelects.push(legacySelect);
+export function initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards, marketPositionData, valuationGroupSampleRecords = []) {
   const classKey = getParcelMarketClass(data);
   const baseClassStats = getClassMarketStats(marketPositionData, classKey);
   if (!baseClassStats?.groups?.length) return;
@@ -2714,51 +2941,25 @@ export function initMarketAreaView(data, recordCard, padRatioData, valuationGrou
     greenbelt: Boolean(data.classification?.greenbelt)
   };
   const defaultGroup = getParcelMarketGroupId(recordCard, classStats.classKey) ?? groups[0].id;
-  const sourceNote = document.getElementById("marketSourceNote");
-  if (sourceNote) {
-    sourceNote.textContent = "Then compare it with the other groups. The table and chart show where recent sales are concentrated across the class.";
-  }
-
-  const optionsMarkup = groups.map(group => `
-    <option value="${group.id}">${group.optionLabel ?? group.label}</option>
-  `).join("");
-  marketAreaSelects.forEach(select => {
-    select.innerHTML = optionsMarkup;
-  });
 
   const update = groupId => {
     const selected = getSelectedMarketGroup(recordCard, classStats, groupId) ?? groups[0];
     const isParcelGroup = String(selected.id) === String(defaultGroup);
-    const contextPill = document.getElementById("marketAreaContextPill");
-    if (contextPill) {
-      contextPill.textContent = selected.optionLabel ?? selected.label ?? `Area ${selected.id}`;
-    }
     const priceContextNote = document.getElementById("marketPriceContextNote");
     if (priceContextNote) {
       const groupName = marketGroupContextName(selected, classStats.classKey);
       priceContextNote.textContent = `Average sale price, average assessed value, and level of value show how ${groupName} compares with other groups.`;
     }
-    marketAreaSelects.forEach(select => {
-      select.value = selected.id;
-    });
     renderMarketSignalCards(selected, countywide, iaaoStandards, {
       ...signalContext,
       classStats
     });
     renderMarketNarrative(selected, countywide, classStats, medianRange, iaaoStandards, isParcelGroup);
     renderEqualizationSalePriceRows(padRatioData, classStats.classKey, marketPositionData, valuationGroups, selected.id);
-    const marketOverviewSource = document.getElementById("marketOverviewSource");
-    const equalizationSalePriceSource = document.getElementById("equalizationSalePriceSource");
-    if (marketOverviewSource && equalizationSalePriceSource) {
-      marketOverviewSource.textContent = equalizationSalePriceSource.textContent;
-    }
-    renderMarketPositionScatter(selected, classStats, iaaoStandards, update);
+    renderMarketPositionTrend(selected, classStats, recordCard, valuationGroupSampleRecords);
     renderMarketPriceSummary(selected, countywide);
   };
 
-  marketAreaSelects.forEach(select => {
-    select.addEventListener("change", () => update(select.value));
-  });
   update(defaultGroup);
 }
 

@@ -24,6 +24,7 @@ import {
   loadSchoolDistrictColors,
   loadTaxDistrictAuthorities,
   loadTaxpayerActionDates,
+  loadValuationGroupSampleRecords,
   loadValuationGroups,
   loadIaaoStandards,
   loadAssessmentDateEvents,
@@ -137,7 +138,7 @@ async function main() {
     return;
   }
 
-  const [propertyData, recordCard, calendar, legalReferences, realPropertyForms, ctlData, ratioData, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, valuationGroups, iaaoStandards, assessmentDateEvents, taxpayerActionDates] = await Promise.all([
+  const [propertyData, recordCard, calendar, legalReferences, realPropertyForms, ctlData, ratioData, governingOffice, padRatioData, marketPositionData, schoolDistrictColors, valuationGroups, iaaoStandards, assessmentDateEvents, taxpayerActionDates, valuationGroupSampleRecords] = await Promise.all([
     loadPropertyData(),
     loadPropertyRecordCard(),
     loadAssessmentCalendar(),
@@ -152,7 +153,8 @@ async function main() {
     loadValuationGroups(),
     loadIaaoStandards(),
     loadAssessmentDateEvents(),
-    loadTaxpayerActionDates()
+    loadTaxpayerActionDates(),
+    loadValuationGroupSampleRecords()
   ]);
   officialRealPropertyForms = realPropertyForms;
   importantCalendarDates = taxpayerActionDates;
@@ -198,7 +200,7 @@ async function main() {
   buildEtrChart(data);
   buildDistributionChart(data, schoolDistrictColors, recordCard);
   buildOverviewCharts(data, ctlData);
-  initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards, marketPositionData);
+  initMarketAreaView(data, recordCard, padRatioData, valuationGroups, iaaoStandards, marketPositionData, valuationGroupSampleRecords);
   buildCtlSummary(data, ctlData);
   initCountyComparison(data, ctlData, recordCard);
   initAssessmentRatioAnalysis(data, ratioData, iaaoStandards, padRatioData, marketPositionData, valuationGroups);

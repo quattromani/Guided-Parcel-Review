@@ -25,7 +25,7 @@
     "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
   },
   "guidedSnapshot": {
-    "snapshotYear": 2025,
+    "snapshotYear": 2026,
     "latestFinalTaxYear": 2025,
     "assets": {
       "photo": "assets/images/0000228012_1.jpg",
@@ -79,6 +79,13 @@
       "partFinish": 1380
     },
     "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 418495,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
       {
         "year": 2025,
         "assessedValue": 418495,
@@ -450,6 +457,14 @@
     ],
     "assessedValueBreakdown": [
       {
+        "year": 2026,
+        "dwelling": 343495,
+        "land": 75000,
+        "outbuilding": 0,
+        "total": 418495,
+        "source": "GWorks PDF"
+      },
+      {
         "year": 2025,
         "dwelling": 343495,
         "land": 75000,
@@ -641,21 +656,29 @@
   },
   "currentCardValue": {
     "previous": {
-      "buildings": 430620,
+      "buildings": 343495,
       "improvement": 0,
-      "landLots": 52000,
-      "total": 482620
+      "landLots": 75000,
+      "total": 418495
     },
     "current": {
       "buildings": 343495,
       "improvement": 0,
       "landLots": 75000,
       "total": 418495,
-      "note": "2025 assessed values from GWorks PDF and Nebraska Taxes Online detail modal. PDF latest total: $229,265."
+      "note": "2026 assessed values from the GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
   "ownershipHistory": [],
   "valuationHistory": [
+    {
+      "year": 2026,
+      "dwelling": 343495,
+      "land": 75000,
+      "outbuilding": 0,
+      "total": 418495,
+      "source": "GWorks PDF"
+    },
     {
       "year": 2025,
       "total": 229265,

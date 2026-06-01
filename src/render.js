@@ -380,75 +380,6 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
     ? `Where does each measure stand in ${latestRatioYear}?`
     : "Where does each measure stand?";
 
-  const salesMakeup = `
-    <h3 id="equalizationSalePriceTitle" class="text-lg font-bold text-slate-700">What makes up the class sales data?</h3>
-    <p id="equalizationSalePriceDescription" class="mt-1 max-w-4xl text-sm leading-6 text-slate-600">These numbers come from recent qualified sales in this class. The price ranges show whether most sales were lower-priced, middle-priced, or higher-priced properties.</p>
-    <div class="data-split-view equalization-sales-split-view mt-4 grid gap-4 lg:grid-cols-2">
-      <div class="equalization-sales-table-scroll overflow-auto rounded-xl bg-white ring-1 ring-slate-200">
-        <table class="min-w-full divide-y divide-slate-200 text-xs equalization-support-table equalization-sales-table">
-          <colgroup>
-            <col class="equalization-sales-label-col" />
-            <col class="equalization-sales-count-col" />
-            <col class="equalization-sales-ratio-col" />
-            <col class="equalization-sales-ratio-col" />
-            <col class="equalization-sales-ratio-col" />
-            <col class="equalization-sales-money-col" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th id="equalizationSalePriceRangeHeader" class="px-2 py-2 text-left font-semibold">
-                <span class="sales-range-label-full">Sale price range</span>
-                <span class="sales-range-label-compact">Price band</span>
-              </th>
-              <th class="px-2 py-2 text-right font-semibold">Sales</th>
-              <th class="px-2 py-2 text-right font-semibold">Median</th>
-              <th class="px-2 py-2 text-right font-semibold">COD</th>
-              <th class="px-2 py-2 text-right font-semibold">PRD</th>
-              <th class="px-2 py-2 text-right font-semibold">Avg. sale</th>
-            </tr>
-          </thead>
-          <tbody id="equalizationSalePriceRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
-        </table>
-      </div>
-      <div class="equalization-sales-chart-panel review-card-muted">
-        <p id="equalizationSalePriceChartTitle" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sales distribution</p>
-        <p id="equalizationSalePriceChartNote" class="mt-1 text-sm leading-5 text-slate-600">Recent qualified sales grouped by price band. Empty upper bands are shown when no sales were reported there.</p>
-        <div id="equalizationSalePriceChartLegend" class="chart-disc-legend mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-        <div class="equalization-sales-chart-frame mt-3">
-          <canvas id="equalizationSalePriceChart"></canvas>
-        </div>
-      </div>
-    </div>
-    <p id="equalizationSalePriceSource" class="chart-source"></p>
-  `;
-  const localPosition = `
-    <section class="market-local-split grid gap-6 lg:grid-cols-5">
-      <div class="market-position-support lg:col-span-3">
-        <article id="market-position-panel" class="review-card-muted">
-          <div class="market-position-heading">
-            <h4 class="text-xl font-bold text-slate-700">Compare it with nearby groups</h4>
-            <span id="marketAreaContextPill" class="equalization-context-pill" aria-live="polite"></span>
-          </div>
-          <div id="marketPositionLegend" class="chart-disc-legend mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-          <div class="mt-4 h-80">
-            <canvas id="marketPositionScatter" role="img" tabindex="0" aria-describedby="marketScatterSummary"></canvas>
-          </div>
-        </article>
-        <p id="marketScatterSummary" class="sr-only"></p>
-      </div>
-      <section class="market-reading-context lg:col-span-2">
-        <article class="market-compare-summary" aria-labelledby="marketCompareSummaryTitle">
-          <h4 id="marketCompareSummaryTitle">Compare summary</h4>
-          <div id="marketNarrative" class="market-compare-table-shell"></div>
-        </article>
-        <label class="market-local-position-select text-sm font-semibold text-slate-700">
-          Want to see another area?
-          <select data-market-area-select class="market-area-select mt-2 w-full rounded-xl px-3 py-2 text-sm font-semibold shadow-sm focus:outline-none"></select>
-        </label>
-      </section>
-    </section>
-    <p id="marketPositionSource" class="chart-source"></p>
-  `;
   const unifiedView = `
     <section class="data-split-view equalization-unified-section grid gap-6 lg:grid-cols-5">
       <div class="equalization-chart-support lg:col-span-3">
@@ -512,18 +443,8 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
   if (assessmentUnified) {
     assessmentUnified.innerHTML = unifiedView;
   }
-  const marketLocalPosition = document.getElementById("market-local-position");
-  if (marketLocalPosition) {
-    marketLocalPosition.innerHTML = localPosition;
-  }
-  const marketSalesMakeup = document.getElementById("market-sales-makeup");
-  if (marketSalesMakeup) {
-    marketSalesMakeup.innerHTML = salesMakeup;
-  }
   initMobileSupportDisclosureCharts(container);
   if (assessmentUnified) initMobileSupportDisclosureCharts(assessmentUnified);
-  if (marketLocalPosition) initMobileSupportDisclosureCharts(marketLocalPosition);
-  if (marketSalesMakeup) initMobileSupportDisclosureCharts(marketSalesMakeup);
 }
 
 function mobileSupportOpenAttribute() {
@@ -706,7 +627,6 @@ function propertySwitcherMarkup(propertySwitcher, snapshotModel) {
 
 function propertySwitcherOptionGroups(propertySwitcher, snapshotModel) {
   const groups = new Map([
-    ["Saline County sample", []],
     ["Residential Samples", []],
     ["Agricultural Samples", []],
     ["Commercial / Industrial Samples", []],
@@ -715,7 +635,7 @@ function propertySwitcherOptionGroups(propertySwitcher, snapshotModel) {
   const options = propertySwitcherOptions(propertySwitcher, snapshotModel);
 
   options.forEach(option => {
-    const groupLabel = switcherGroupLabel(option.propertyClass, option.county);
+    const groupLabel = switcherGroupLabel(option.propertyClass);
     if (!groups.has(groupLabel)) groups.set(groupLabel, []);
     groups.get(groupLabel).push(option);
   });
@@ -723,14 +643,7 @@ function propertySwitcherOptionGroups(propertySwitcher, snapshotModel) {
   const optionGroups = [...groups.entries()]
     .map(([label, groupOptions]) => ({ label, options: groupOptions }))
     .filter(group => group.options.length);
-  const countySampleGroups = optionGroups.filter(group => group.label.endsWith("County sample"));
-  const gageGroups = optionGroups.filter(group => !group.label.endsWith("County sample"));
-
-  return [
-    ...countySampleGroups,
-    ...(gageGroups.length ? [{ type: "heading", label: "Gage sample properties", options: [] }] : []),
-    ...gageGroups
-  ];
+  return optionGroups;
 }
 
 function propertySwitcherOptions(propertySwitcher, snapshotModel) {
@@ -770,11 +683,7 @@ function pendingDirectPropertyLabel(propertySwitcher, snapshotModel) {
   return match?.label || pending.situsAddress || pending.parcelId || pending.id || "Direct property";
 }
 
-function switcherGroupLabel(value, county) {
-  const normalizedCounty = `${county ?? ""}`.trim().toLowerCase();
-  if (normalizedCounty === "saline") return "Saline County sample";
-  if (normalizedCounty === "lancaster") return "Lancaster County sample";
-
+function switcherGroupLabel(value) {
   const normalized = `${value ?? ""}`.trim().toLowerCase();
 
   if (normalized.includes("res")) return "Residential Samples";
@@ -3664,12 +3573,12 @@ function taxHistoryLevyDisplay(row) {
 
 function statementGrossLevy(statement) {
   if (!statement) return null;
-  if (statement.derived?.grossLevyRate !== null && statement.derived?.grossLevyRate !== undefined) {
-    return statement.derived.grossLevyRate * 100;
-  }
-
   if (statement.grossTaxAmount && statement.assessedValue) {
     return (statement.grossTaxAmount / statement.assessedValue) * 100;
+  }
+
+  if (statement.derived?.grossLevyRate !== null && statement.derived?.grossLevyRate !== undefined) {
+    return statement.derived.grossLevyRate * 100;
   }
 
   return null;

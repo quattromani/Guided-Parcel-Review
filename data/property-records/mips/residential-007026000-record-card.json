@@ -14,7 +14,7 @@
     "notes": "Parsed from the GWorks PDF report exported 2026-05-18, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail modals."
   },
   "guidedSnapshot": {
-    "snapshotYear": 2025,
+    "snapshotYear": 2026,
     "latestFinalTaxYear": 2025,
     "assets": {
       "photo": "assets/images/007026000_1.jpg",
@@ -59,6 +59,13 @@
       "partFinish": 0
     },
     "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 91340,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
       {
         "year": 2025,
         "assessedValue": 91340,
@@ -423,6 +430,14 @@
     ],
     "assessedValueBreakdown": [
       {
+        "year": 2026,
+        "dwelling": 90340,
+        "land": 1000,
+        "outbuilding": 0,
+        "total": 91340,
+        "source": "GWorks PDF"
+      },
+      {
         "year": 2025,
         "dwelling": 90340,
         "land": 1000,
@@ -599,17 +614,17 @@
   },
   "currentCardValue": {
     "previous": {
-      "buildings": 83070,
+      "buildings": 90340,
       "improvement": 0,
-      "landLots": 200,
-      "total": 83270
+      "landLots": 1000,
+      "total": 91340
     },
     "current": {
       "buildings": 90340,
       "improvement": 0,
       "landLots": 1000,
       "total": 91340,
-      "note": "2025 assessed values from the GWorks export and Nebraska Taxes Online detail modal."
+      "note": "2026 assessed values from the GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
   "ownershipHistory": [
@@ -641,6 +656,14 @@
     }
   ],
   "valuationHistory": [
+    {
+      "year": 2026,
+      "dwelling": 90340,
+      "land": 1000,
+      "outbuilding": 0,
+      "total": 91340,
+      "source": "GWorks PDF"
+    },
     {
       "year": 2025,
       "statement": "138",

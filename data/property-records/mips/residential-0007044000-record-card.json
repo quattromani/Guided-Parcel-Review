@@ -20,7 +20,7 @@
     "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
   },
   "guidedSnapshot": {
-    "snapshotYear": 2025,
+    "snapshotYear": 2026,
     "latestFinalTaxYear": 2025,
     "assets": {
       "photo": "assets/images/0007044000_1.jpg",
@@ -65,6 +65,13 @@
       "partFinish": 0
     },
     "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 164510,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
       {
         "year": 2025,
         "assessedValue": 142505,
@@ -436,6 +443,14 @@
     ],
     "assessedValueBreakdown": [
       {
+        "year": 2026,
+        "dwelling": 144260,
+        "land": 15000,
+        "outbuilding": 5250,
+        "total": 164510,
+        "source": "GWorks PDF"
+      },
+      {
         "year": 2025,
         "dwelling": 122255,
         "land": 15000,
@@ -632,21 +647,29 @@
   },
   "currentCardValue": {
     "previous": {
-      "buildings": 93790,
-      "improvement": 0,
-      "landLots": 3900,
-      "total": 97690
-    },
-    "current": {
       "buildings": 122255,
       "improvement": 5250,
       "landLots": 15000,
-      "total": 142505,
-      "note": "2025 assessed values from GWorks PDF and Nebraska Taxes Online detail modal. PDF latest total: $97,690."
+      "total": 142505
+    },
+    "current": {
+      "buildings": 144260,
+      "improvement": 5250,
+      "landLots": 15000,
+      "total": 164510,
+      "note": "2026 assessed values from the GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
   "ownershipHistory": [],
   "valuationHistory": [
+    {
+      "year": 2026,
+      "dwelling": 144260,
+      "land": 15000,
+      "outbuilding": 5250,
+      "total": 164510,
+      "source": "GWorks PDF"
+    },
     {
       "year": 2025,
       "total": 97690,
@@ -657,16 +680,16 @@
     }
   ],
   "propertyValuation": {
-    "buildings": 122255,
+    "buildings": 144260,
     "improvement": 5250,
     "landLot": 15000,
-    "total": 142505
+    "total": 164510
   },
   "valuationReconciliation": {
     "source": "GWorks public export and Nebraska Taxes Online detail modal",
     "initialMipsTotal": null,
-    "finalAssessedTotal": 142505,
-    "finalDwellingValue": 122255,
+    "finalAssessedTotal": 164510,
+    "finalDwellingValue": 144260,
     "landLot": 15000,
     "modeledDetailSubtotal": null,
     "cardToFinalAdjustment": null,

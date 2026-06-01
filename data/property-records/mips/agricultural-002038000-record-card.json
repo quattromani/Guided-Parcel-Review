@@ -15,7 +15,7 @@
     "notes": "Parsed from the GWorks PDF report exported 2026-05-17, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, and levy totals added from Nebraska Taxes Online detail modals. The GWorks export includes parcel identity, value, tax levy, agricultural land rows, residential datasheet, dwelling data, outbuilding data, and embedded photo/sketch images. It does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
   },
   "guidedSnapshot": {
-    "snapshotYear": 2025,
+    "snapshotYear": 2026,
     "latestFinalTaxYear": 2025,
     "assets": {
       "photo": "assets/images/002038000_2.jpg",
@@ -113,6 +113,13 @@
         "taxes": 5620.12,
         "status": "partially-paid",
         "assessmentSource": "Nebraska Taxes Online detail modal"
+      },
+      {
+        "year": 2026,
+        "assessedValue": 703450,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
       }
     ],
     "taxStatements": [
@@ -408,6 +415,14 @@
       }
     ],
     "assessedValueBreakdown": [
+      {
+        "year": 2026,
+        "dwelling": 190175,
+        "land": 268900,
+        "outbuilding": 244375,
+        "total": 703450,
+        "source": "GWorks PDF"
+      },
       {
         "year": 2025,
         "dwelling": 190175,
@@ -706,27 +721,35 @@
   "landModel": {
     "description": "Agricultural land rows from GWorks public export",
     "totalAcres": 78.62,
-    "recordedLotValue": 261120,
+    "recordedLotValue": 268900,
     "frontage": null,
     "cutoffSchedule": []
   },
   "currentCardValue": {
     "previous": {
-      "buildings": 187805,
-      "improvement": 226815,
-      "landLots": 222295,
-      "total": 636915
+      "buildings": 190175,
+      "improvement": 244375,
+      "landLots": 261120,
+      "total": 695670
     },
     "current": {
       "buildings": 190175,
       "improvement": 244375,
-      "landLots": 261120,
-      "total": 695670,
-      "note": "2025 assessed values from the GWorks export."
+      "landLots": 268900,
+      "total": 703450,
+      "note": "2026 assessed values from the GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
   "ownershipHistory": [],
   "valuationHistory": [
+    {
+      "year": 2026,
+      "dwelling": 190175,
+      "land": 268900,
+      "outbuilding": 244375,
+      "total": 703450,
+      "source": "GWorks PDF"
+    },
     {
       "year": 2025,
       "statement": "6028",
@@ -822,15 +845,15 @@
   "propertyValuation": {
     "buildings": 190175,
     "improvement": 244375,
-    "landLot": 261120,
-    "total": 695670
+    "landLot": 268900,
+    "total": 703450
   },
   "valuationReconciliation": {
     "source": "GWorks public export",
     "initialMipsTotal": null,
-    "finalAssessedTotal": 695670,
+    "finalAssessedTotal": 703450,
     "finalDwellingValue": 190175,
-    "landLot": 261120,
+    "landLot": 268900,
     "modeledDetailSubtotal": null,
     "cardToFinalAdjustment": null,
     "modelToFinalReconciliation": null,

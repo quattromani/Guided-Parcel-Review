@@ -751,9 +751,11 @@ function drawTaxContextPage(ctx, model) {
   const top = ctx.height - 214;
   const statement = model.taxSummary.latestStatement;
   const creditText = Number.isFinite(statement?.totalCredits) ? moneyCents.format(statement.totalCredits) : "—";
-  const grossLevy = Number.isFinite(statement?.derived?.grossLevyRate)
-    ? statement.derived.grossLevyRate * 100
-    : statement?.levyRate;
+  const grossLevy = Number.isFinite(statement?.grossTaxAmount) && Number.isFinite(statement?.assessedValue) && statement.assessedValue > 0
+    ? (statement.grossTaxAmount / statement.assessedValue) * 100
+    : Number.isFinite(statement?.derived?.grossLevyRate)
+      ? statement.derived.grossLevyRate * 100
+      : statement?.levyRate;
   drawCardGrid(ctx, [
     { kicker: "Assessed value", title: formatNullableMoney(statement?.assessedValue), body: `${statement?.taxYear ?? model.review.latestFinalTaxYear}` },
     { kicker: "Levy", title: Number.isFinite(grossLevy) ? grossLevy.toFixed(6).replace(/\.?0+$/, "") : "—", body: "gross rate" },

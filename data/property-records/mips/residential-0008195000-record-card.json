@@ -20,7 +20,7 @@
     "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
   },
   "guidedSnapshot": {
-    "snapshotYear": 2025,
+    "snapshotYear": 2026,
     "latestFinalTaxYear": 2025,
     "assets": {
       "photo": "assets/images/0008195000_1.jpg",
@@ -65,6 +65,13 @@
       "partFinish": 0
     },
     "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 34500,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
       {
         "year": 2025,
         "assessedValue": 34500,
@@ -436,6 +443,14 @@
     ],
     "assessedValueBreakdown": [
       {
+        "year": 2026,
+        "dwelling": 18220,
+        "land": 2000,
+        "outbuilding": 14280,
+        "total": 34500,
+        "source": "GWorks PDF"
+      },
+      {
         "year": 2025,
         "dwelling": 18220,
         "land": 2000,
@@ -632,21 +647,29 @@
   },
   "currentCardValue": {
     "previous": {
-      "buildings": 36030,
-      "improvement": 0,
+      "buildings": 18220,
+      "improvement": 14280,
       "landLots": 2000,
-      "total": 38030
+      "total": 34500
     },
     "current": {
       "buildings": 18220,
       "improvement": 14280,
       "landLots": 2000,
       "total": 34500,
-      "note": "2025 assessed values from GWorks PDF and Nebraska Taxes Online detail modal. PDF latest total: $38,030."
+      "note": "2026 assessed values from the GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
   "ownershipHistory": [],
   "valuationHistory": [
+    {
+      "year": 2026,
+      "dwelling": 18220,
+      "land": 2000,
+      "outbuilding": 14280,
+      "total": 34500,
+      "source": "GWorks PDF"
+    },
     {
       "year": 2025,
       "total": 38030,
