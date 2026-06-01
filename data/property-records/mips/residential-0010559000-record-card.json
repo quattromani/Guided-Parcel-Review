@@ -16,7 +16,12 @@
       "https://gage.gworks.com/photos/0010559000_2.jpg",
       "https://gage.gworks.com/photos/0010559000_3.jpg",
       "https://gage.gworks.com/photos/0010559000_4.jpg",
-      "https://gage.gworks.com/photos/0010559000_5.jpg"
+      "https://gage.gworks.com/photos/0010559000_5.jpg",
+      "https://gage.gworks.com/photos/0010559000_6.jpg",
+      "https://gage.gworks.com/photos/0010559000_7.jpg",
+      "https://gage.gworks.com/photos/0010559000_8.jpg",
+      "https://gage.gworks.com/photos/0010559000_9.jpg",
+      "https://gage.gworks.com/photos/0010559000_10.jpg"
     ],
     "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
   },
@@ -47,7 +52,7 @@
       "propertyClass": "Residential",
       "citySize": "12,001-100,000",
       "zoning": "Single Family",
-      "lotSize": "21000.00 sq ft"
+      "lotSize": "20,001 sq. ft. - .99 ac."
     },
     "residential": {
       "style": "100% One Story",
@@ -55,20 +60,20 @@
       "buildingSize": 3050,
       "basementSize": 3050,
       "bedrooms": 4,
-      "bathrooms": 3.3,
-      "plumbingFixtures": 17,
-      "quality": "Average +",
+      "bathrooms": 3.5,
+      "plumbingFixtures": 16,
+      "quality": "Good",
       "condition": "Average",
-      "exterior": "100% Veneer, Masonry",
-      "heatingCooling": "100% Heat pump with Ground",
+      "exterior": "100% Veneer, Brick",
+      "heatingCooling": "100% Heat Pump",
       "garage1": "Attached Garage(SF), 875 sq. ft.",
       "minFinish": 0,
-      "partFinish": 0
+      "partFinish": 1500
     },
     "taxpayerHistory": [
       {
         "year": 2026,
-        "assessedValue": 334360,
+        "assessedValue": 590085,
         "taxes": null,
         "status": "assessment-only",
         "assessmentSource": "GWorks PDF"
@@ -78,7 +83,7 @@
         "assessedValue": 365625,
         "taxes": 4473.26,
         "status": "partially-paid",
-        "assessmentSource": "Nebraska Taxes Online detail modal"
+        "assessmentSource": "GWorks PDF"
       },
       {
         "year": 2024,
@@ -445,10 +450,10 @@
     "assessedValueBreakdown": [
       {
         "year": 2026,
-        "dwelling": 312660,
-        "land": 21700,
+        "dwelling": 558165,
+        "land": 31920,
         "outbuilding": 0,
-        "total": 334360,
+        "total": 590085,
         "source": "GWorks PDF"
       },
       {
@@ -457,7 +462,7 @@
         "land": 21700,
         "outbuilding": 0,
         "total": 365625,
-        "source": "Nebraska Taxes Online detail modal"
+        "source": "GWorks PDF"
       },
       {
         "year": 2024,
@@ -570,12 +575,17 @@
       {
         "description": "SLAB W/ROOF",
         "units": 416,
-        "value": 8570
+        "value": 8075
       },
       {
         "description": "FIREPLACE",
         "units": 2,
-        "value": 8915
+        "value": 20180
+      },
+      {
+        "description": "Floor Allowance",
+        "units": 3050,
+        "value": 29675
       }
     ],
     "outbuildingData": [],
@@ -591,7 +601,7 @@
     ],
     "landInformation": [
       {
-        "description": "21000.00 sq ft",
+        "description": "20,001 sq. ft. - .99 ac.",
         "squareFeet": null,
         "acres": null,
         "actualFrontFeet": null,
@@ -627,23 +637,23 @@
   },
   "landModel": {
     "description": "Land row from GWorks public export",
-    "lotSize": "21000.00 sq ft",
-    "recordedLotValue": 21700,
+    "lotSize": "20,001 sq. ft. - .99 ac.",
+    "recordedLotValue": 31920,
     "frontage": null,
     "cutoffSchedule": []
   },
   "currentCardValue": {
     "previous": {
-      "buildings": 284235,
+      "buildings": 343925,
       "improvement": 0,
       "landLots": 21700,
-      "total": 305935
+      "total": 365625
     },
     "current": {
-      "buildings": 312660,
+      "buildings": 558165,
       "improvement": 0,
-      "landLots": 21700,
-      "total": 334360,
+      "landLots": 31920,
+      "total": 590085,
       "note": "2026 assessed values from GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
@@ -651,33 +661,33 @@
   "valuationHistory": [
     {
       "year": 2026,
-      "total": 334360,
-      "land": 21700,
+      "total": 590085,
+      "land": 31920,
       "outbuilding": 0,
-      "dwelling": 312660,
+      "dwelling": 558165,
       "source": "GWorks PDF"
     },
     {
       "year": 2025,
-      "total": 305935,
+      "total": 365625,
       "land": 21700,
       "outbuilding": 0,
-      "dwelling": 284235,
+      "dwelling": 343925,
       "source": "GWorks PDF"
     }
   ],
   "propertyValuation": {
-    "buildings": 312660,
+    "buildings": 558165,
     "improvement": 0,
-    "landLot": 21700,
-    "total": 334360
+    "landLot": 31920,
+    "total": 590085
   },
   "valuationReconciliation": {
     "source": "GWorks public export and Nebraska Taxes Online detail modal",
     "initialMipsTotal": null,
-    "finalAssessedTotal": 334360,
-    "finalDwellingValue": 312660,
-    "landLot": 21700,
+    "finalAssessedTotal": 590085,
+    "finalDwellingValue": 558165,
+    "landLot": 31920,
     "modeledDetailSubtotal": null,
     "cardToFinalAdjustment": null,
     "modelToFinalReconciliation": null,
@@ -686,18 +696,18 @@
   "reviewHistory": [],
   "residentialInformation": {
     "type": "Single Family",
-    "quality": "Average +",
+    "quality": "Good",
     "condition": "Average",
     "architecture": null,
     "baseTotalArea": "3,050",
     "style": "100% One Story",
-    "exteriorWall": "100% Veneer, Masonry",
-    "heatingCooling": "100% Heat pump with Ground",
+    "exteriorWall": "100% Veneer, Brick",
+    "heatingCooling": "100% Heat Pump",
     "roofCover": null,
     "areaOfSlab": null,
     "areaOfCrawl": null,
-    "fixtureRoughin": "17",
-    "bedBathroom": "4 / 3.3",
+    "fixtureRoughin": "16",
+    "bedBathroom": "4 / 3.5",
     "basementArea": "3,050"
   },
   "costApproach": {
@@ -734,13 +744,19 @@
     {
       "description": "SLAB W/ROOF",
       "units": 416,
-      "value": 8570,
+      "value": 8075,
       "source": "GWorks PDF dwelling data"
     },
     {
       "description": "FIREPLACE",
       "units": 2,
-      "value": 8915,
+      "value": 20180,
+      "source": "GWorks PDF dwelling data"
+    },
+    {
+      "description": "Floor Allowance",
+      "units": 3050,
+      "value": 29675,
       "source": "GWorks PDF dwelling data"
     }
   ],
@@ -760,17 +776,17 @@
         "rows": [
           [
             "2026",
-            "$334,360",
-            "$21,700",
+            "$590,085",
+            "$31,920",
             "$0",
-            "$312,660"
+            "$558,165"
           ],
           [
             "2025",
-            "$305,935",
+            "$365,625",
             "$21,700",
             "$0",
-            "$284,235"
+            "$343,925"
           ]
         ]
       },
@@ -942,15 +958,15 @@
           ],
           [
             "Bathrooms",
-            "3.3"
+            "3.5"
           ],
           [
             "Exterior",
-            "100% Veneer, Masonry"
+            "100% Veneer, Brick"
           ],
           [
             "Heating/Cooling",
-            "100% Heat pump with Ground"
+            "100% Heat Pump"
           ],
           [
             "Bedrooms",
@@ -958,7 +974,7 @@
           ],
           [
             "Plumbing fixtures",
-            "17"
+            "16"
           ],
           [
             "Basement size",
@@ -978,7 +994,7 @@
           ],
           [
             "Quality",
-            "Average +"
+            "Good"
           ],
           [
             "Condition",
@@ -988,7 +1004,7 @@
       },
       {
         "title": "Dwelling Data",
-        "summary": "2 visible rows",
+        "summary": "3 visible rows",
         "columns": [
           "Description",
           "Units",
@@ -998,12 +1014,17 @@
           [
             "SLAB W/ROOF",
             "416",
-            "$8,570"
+            "$8,075"
           ],
           [
             "FIREPLACE",
             "2",
-            "$8,915"
+            "$20,180"
+          ],
+          [
+            "Floor Allowance",
+            "3050",
+            "$29,675"
           ]
         ]
       },

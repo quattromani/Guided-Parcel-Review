@@ -20,7 +20,7 @@
       "https://gage.gworks.com/photos/0010560000_6.jpg",
       "https://gage.gworks.com/photos/0010560000_7.jpg"
     ],
-    "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
+    "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail. Current owner corrected from Nebraska Taxes Online 2025 and 2024 statement records; GWorks PDF still lists prior owner ZUHLKE, CRAIG & AMY."
   },
   "guidedSnapshot": {
     "snapshotYear": 2026,
@@ -77,10 +77,10 @@
       },
       {
         "year": 2025,
-        "assessedValue": 363510,
+        "assessedValue": 304185,
         "taxes": 4447.4,
         "status": "partially-paid",
-        "assessmentSource": "Nebraska Taxes Online detail modal"
+        "assessmentSource": "GWorks PDF"
       },
       {
         "year": 2024,
@@ -455,11 +455,11 @@
       },
       {
         "year": 2025,
-        "dwelling": 341810,
+        "dwelling": 282485,
         "land": 21700,
         "outbuilding": 0,
-        "total": 363510,
-        "source": "Nebraska Taxes Online detail modal"
+        "total": 304185,
+        "source": "GWorks PDF"
       },
       {
         "year": 2024,
@@ -664,7 +664,12 @@
       "note": "2026 assessed values from GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
-  "ownershipHistory": [],
+  "ownershipHistory": [
+    {
+      "owner": "ZUHLKE, CRAIG & AMY",
+      "note": "Prior owner shown on GWorks PDF and older Nebraska Taxes Online statement records. Current owner corrected to Lisherness from 2024-2025 NTO records."
+    }
+  ],
   "valuationHistory": [
     {
       "year": 2026,

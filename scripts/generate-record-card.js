@@ -466,15 +466,25 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
   const latestTaxYear = latest?.year || null;
   const latestTotalLevy = sumLevyRates(latestDistributionRows) || latest?.totalLevy || null;
   const latestValueYear = latestPdfValue?.year || latestTaxYear;
-  const pdfValueRows = pdf.assessedValues
-    .filter(row => !ntoRows.some(ntoRow => ntoRow.year === row.year))
+  const ntoRowsByYear = new Map(ntoRows.map(row => [row.year, row]));
+  const pdfAssessmentRows = pdf.assessedValues.map(row => ({
+    year: row.year,
+    dwelling: row.dwelling,
+    land: row.land,
+    outbuilding: row.outbuilding,
+    total: row.total,
+    source: "GWorks PDF"
+  }));
+  const pdfAssessmentYears = new Set(pdfAssessmentRows.map(row => row.year));
+  const ntoAssessmentRows = ntoRows
+    .filter(row => !pdfAssessmentYears.has(row.year))
     .map(row => ({
       year: row.year,
-      dwelling: row.dwelling,
+      dwelling: row.building,
       land: row.land,
-      outbuilding: row.outbuilding,
-      total: row.total,
-      source: "GWorks PDF"
+      outbuilding: row.other,
+      total: row.assessedValue,
+      source: "Nebraska Taxes Online detail modal"
     }));
 
   return {
@@ -533,14 +543,19 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
         partFinish: pdf.residential.partFinish
       } : null,
       taxpayerHistory: [
-        ...pdfValueRows.map(row => ({
-          year: row.year,
-          assessedValue: row.total,
-          taxes: null,
-          status: "assessment-only",
-          assessmentSource: "GWorks PDF"
-        })),
-        ...ntoRows.map(row => ({
+        ...pdfAssessmentRows.map(row => {
+          const statementRow = ntoRowsByYear.get(row.year);
+          return {
+            year: row.year,
+            assessedValue: row.total,
+            taxes: statementRow?.netAmountDue ?? null,
+            status: statementRow
+              ? (statementRow.taxDue > 0 ? "partially-paid" : "tax-statement")
+              : "assessment-only",
+            assessmentSource: "GWorks PDF"
+          };
+        }),
+        ...ntoRows.filter(row => !pdfAssessmentYears.has(row.year)).map(row => ({
           year: row.year,
           assessedValue: row.assessedValue,
           taxes: row.netAmountDue,
@@ -556,15 +571,8 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
         note: "Listed in the Nebraska Taxes Online tax distribution detail modal."
       })),
       assessedValueBreakdown: [
-        ...pdfValueRows,
-        ...ntoRows.map(row => ({
-          year: row.year,
-          dwelling: row.building,
-          land: row.land,
-          outbuilding: row.other,
-          total: row.assessedValue,
-          source: "Nebraska Taxes Online detail modal"
-        }))
+        ...pdfAssessmentRows,
+        ...ntoAssessmentRows
       ].sort((a, b) => b.year - a.year),
       latestFinalLevyComponents: latestDistributionRows.map(row => ({
         description: row.authority.replace(/^[0-9]+:\s+/, ""),
