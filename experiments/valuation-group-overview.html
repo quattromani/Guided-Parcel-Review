@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Valuation Group Overview</title>
+  <link rel="stylesheet" href="./valuation-group-overview.css" />
+</head>
+<body>
+  <main class="overview-shell">
+    <section class="overview-board" aria-labelledby="overviewTitle">
+      <header class="overview-header">
+        <div>
+          <p class="eyebrow">Valuation group overview</p>
+          <h1 id="overviewTitle">Assessment &amp; Tax Movement Across Gage County</h1>
+          <p class="lede">
+            This view compares median assessed value movement and median net tax movement across sampled residential, agricultural, and commercial market areas from 2019 through 2025.
+          </p>
+          <div class="dataset-method" id="datasetMethodology" aria-live="polite">
+            <strong><span class="dataset-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <ellipse cx="12" cy="5" rx="8" ry="3"></ellipse>
+                <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"></path>
+                <path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"></path>
+              </svg>
+            </span> Dataset</strong>
+            <span>Loading randomized sample details.</span>
+          </div>
+        </div>
+        <div class="overview-actions">
+          <a class="lab-link" href="./vg-aggregate.html">Aggregate lab</a>
+        </div>
+      </header>
+
+      <div class="seeing-panel" aria-label="What you're seeing">
+        <strong>What You're Seeing</strong>
+        <div class="seeing-list">
+          <p><i class="value"></i> Green lines show assessed value movement.</p>
+          <p><i class="tax"></i> Red lines show net tax movement.</p>
+          <p><i class="neutral"></i> Because assessments and taxes are related but not identical, the two often move differently over time.</p>
+          <p><i class="neutral"></i> The relationship between assessed values and net tax burden can vary across market areas and property classes.</p>
+        </div>
+      </div>
+
+      <div class="orientation-grid" aria-label="Overview orientation">
+        <article>
+          <strong>Sampled Properties</strong>
+          <span id="sampledPropertiesMetric">Loading sampled properties</span>
+          <small>Residential, agricultural, and commercial</small>
+        </article>
+        <article>
+          <strong>Market Areas</strong>
+          <span id="marketAreasMetric">Loading market areas</span>
+          <small id="marketAreasBreakdown">Residential • agricultural • commercial</small>
+        </article>
+        <article>
+          <strong>Explore Patterns</strong>
+          <span>Compare how value and tax movement changed across market areas over time.</span>
+        </article>
+      </div>
+
+    </section>
+
+    <div class="class-stack" id="valuationGroupOverview" aria-live="polite"></div>
+
+    <footer class="overview-footnote">
+      <div>
+        <strong>About this view</strong>
+        <span>This experimental view uses a randomized sample of public property records to visualize relative value and tax movement across market areas. It is not an official appraisal or valuation product.</span>
+      </div>
+      <div>
+        <strong>Data window</strong>
+        <span id="dataWindowNote">Loading available value and tax years.</span>
+      </div>
+    </footer>
+  </main>
+
+  <script type="module" src="./valuation-group-overview.js"></script>
+</body>
+</html>

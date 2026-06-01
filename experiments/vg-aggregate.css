@@ -30,6 +30,7 @@ body {
 }
 
 .experiment-header,
+.valuation-overview,
 .chart-card,
 .table-card,
 .summary-card {
@@ -55,7 +56,8 @@ body {
 .detail-grid > *,
 .model-heading > *,
 .formula-grid > *,
-.workbench-grid > * {
+.workbench-grid > *,
+.overview-card-grid > * {
   min-width: 0;
 }
 
@@ -258,6 +260,259 @@ th {
 .kpi-value .kpi-sparkline { color: var(--value); }
 .kpi-tax .kpi-sparkline { color: var(--tax); }
 .kpi-etr .kpi-sparkline { color: var(--etr); }
+
+.valuation-overview {
+  margin-top: 18px;
+  padding: 22px;
+}
+
+.valuation-overview-heading {
+  display: flex;
+  gap: 18px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.valuation-overview-heading p {
+  max-width: 720px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.overview-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-self: end;
+  gap: 10px 16px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.overview-legend span {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.overview-legend i,
+.legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.overview-legend .value,
+.legend .value {
+  background: var(--value);
+}
+
+.overview-legend .tax,
+.legend .tax {
+  background: var(--tax);
+}
+
+.overview-sample-pill {
+  align-self: start;
+  border: 1px solid #cdd9e6;
+  border-radius: 999px;
+  background: #f7fafc;
+  color: #34465d;
+  font-size: 0.84rem;
+  font-weight: 850;
+  line-height: 1.2;
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+.class-overview-stack {
+  display: grid;
+  gap: 24px;
+  margin-top: 22px;
+}
+
+.class-overview-section {
+  display: grid;
+  gap: 16px;
+}
+
+.class-divider {
+  height: 2px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(23, 57, 94, 0.34) 0 1px,
+      rgba(255, 255, 255, 0.88) 1px 2px
+    );
+}
+
+.class-overview-heading {
+  display: flex;
+  gap: 18px;
+  align-items: end;
+  justify-content: space-between;
+}
+
+.class-overview-heading > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.overview-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.overview-card {
+  display: grid;
+  grid-template-rows: auto minmax(174px, 1fr) auto;
+  min-height: 292px;
+  border: 1px solid #d9e3ee;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 8px 18px rgba(29, 48, 72, 0.05);
+}
+
+.overview-card-heading {
+  padding: 14px 14px 4px;
+}
+
+.overview-card-heading h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.overview-card-footer {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid #edf1f6;
+  margin: 0 14px 14px;
+  padding-top: 10px;
+}
+
+.overview-card-footer p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.overview-pill-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  align-items: center;
+}
+
+.overview-pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #d5e0ec;
+  border-radius: 999px;
+  background: #f7fafc;
+  color: #526780;
+  font-size: 0.72rem;
+  font-weight: 850;
+  line-height: 1.15;
+  padding: 5px 8px;
+}
+
+.overview-pill.tax {
+  justify-self: end;
+}
+
+.overview-pill.value {
+  justify-self: start;
+  border-color: #c7ddcf;
+  background: #eef7f1;
+  color: #2f6c49;
+}
+
+.overview-pill.tax {
+  border-color: #ead2d2;
+  background: #fbf1f1;
+  color: #8a3434;
+}
+
+.overview-chart-frame {
+  display: grid;
+  grid-template-rows: minmax(156px, 1fr) auto;
+  margin-top: 2px;
+  padding: 0 10px;
+}
+
+.overview-chart {
+  width: 100%;
+  height: 156px;
+}
+
+.overview-year-labels {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 11px 2px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #6b7c90;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.overview-chart-baseline {
+  stroke: #cfd9e5;
+  stroke-width: 1;
+  stroke-dasharray: 4 5;
+}
+
+.overview-chart-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.6;
+}
+
+.overview-chart-line.value-line {
+  stroke: var(--value);
+}
+
+.overview-chart-line.tax-line {
+  stroke: var(--tax);
+}
+
+.overview-chart-empty {
+  display: grid;
+  height: 178px;
+  margin: 8px 14px 0;
+  place-items: center;
+  border: 1px dashed #cdd8e4;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.overview-card.class-residential {
+  --class-accent: #8fb8d9;
+}
+
+.overview-card.class-agricultural {
+  --class-accent: #94bd93;
+}
+
+.overview-card.class-commercial {
+  --class-accent: #a6b2bf;
+}
 
 .chart-card,
 .table-card {
@@ -1113,6 +1368,7 @@ tbody tr:nth-child(even) {
 
   .header-grid,
   .summary-grid,
+  .overview-card-grid,
   .detail-grid,
   .model-heading,
   .model-controls,
@@ -1124,13 +1380,20 @@ tbody tr:nth-child(even) {
     grid-template-columns: 1fr;
   }
 
+  .valuation-overview-heading,
+  .class-overview-heading,
   .chart-heading {
     display: block;
   }
 
+  .overview-legend,
   .legend {
     justify-content: flex-start;
     margin-top: 14px;
+  }
+
+  .overview-card {
+    min-height: auto;
   }
 
   .research-note {

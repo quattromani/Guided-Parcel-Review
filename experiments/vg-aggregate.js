@@ -1,10 +1,15 @@
-const YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
+const BASELINE_YEAR = 2019;
+// GWorks assessed values may arrive before final tax statements; keep value and tax timelines separate.
+const VALUE_YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+const TAX_YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
 const DEFAULT_GROUP_KEY = "residential::3 - beatrice & beatrice subs";
 const SCENARIO_TARGETS = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30];
 const NARROW_BAND = 0.025;
 const WIDE_BAND = 0.05;
 const MINIMUM_BAND_COUNT = 12;
 const GAGE_COUNTY_PARCEL_ESTIMATE = 17767;
+const CLASS_OVERVIEW_ORDER = ["Residential", "Agricultural", "Commercial"];
+const LATEST_FINAL_TAX_YEAR = TAX_YEARS.at(-1);
 const MODEL_LENSES = {
   stable: {
     label: "Stable parcel",
@@ -63,6 +68,8 @@ const elements = {
   samplingRows: document.getElementById("samplingRows"),
   candidateNote: document.getElementById("candidateNote"),
   candidateRows: document.getElementById("candidateRows"),
+  overviewSamplePill: document.getElementById("overviewSamplePill"),
+  valuationGroupOverview: document.getElementById("valuationGroupOverview"),
   schoolLevySummary: document.getElementById("schoolLevySummary"),
   schoolLevyCards: document.getElementById("schoolLevyCards"),
   schoolLevyTakeaway: document.getElementById("schoolLevyTakeaway"),
@@ -329,16 +336,44 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
+function numberOrNull(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function rowForYear(rows, field, year) {
+  return (rows || []).find(row => Number(row?.[field]) === year) || null;
+}
+
+function assessedValueForYear(record, year, historyRow, statement) {
+  const historyValue = numberOrNull(historyRow?.assessedValue);
+  if (historyValue !== null) return historyValue;
+
+  const statementValue = numberOrNull(statement?.assessedValue);
+  if (statementValue !== null) return statementValue;
+
+  const guidedBreakdown = rowForYear(record.guidedSnapshot?.assessedValueBreakdown, "year", year);
+  const guidedBreakdownValue = numberOrNull(guidedBreakdown?.total);
+  if (guidedBreakdownValue !== null) return guidedBreakdownValue;
+
+  const valuationRow = rowForYear(record.valuationHistory, "year", year);
+  const valuationValue = numberOrNull(valuationRow?.total);
+  if (valuationValue !== null) return valuationValue;
+
+  return null;
+}
+
 function byYear(record) {
   const history = new Map((record.guidedSnapshot?.taxpayerHistory || [])
     .map(row => [Number(row.year), row]));
   const statements = new Map((record.guidedSnapshot?.taxStatements || [])
     .map(statement => [Number(statement.taxYear), statement]));
-  return YEARS.map(year => {
+  return VALUE_YEARS.map(year => {
     const row = history.get(year);
     const statement = statements.get(year);
-    const value = Number(row?.assessedValue);
-    const netTax = Number(row?.taxes);
+    const value = assessedValueForYear(record, year, row, statement);
+    const netTax = numberOrNull(row?.taxes ?? statement?.netAmountDue);
     const grossTax = Number(statement?.grossTaxAmount);
     const homesteadCredit = Number(statement?.credits?.homestead?.amount);
     const totalCredit = Number(statement?.derived?.totalCreditAmount);
@@ -363,12 +398,51 @@ function byYear(record) {
 }
 
 function indexedSeries(rows, field) {
-  const baseline = rows.find(row => row.year === 2019)?.[field];
+  const baseline = rows.find(row => row.year === BASELINE_YEAR)?.[field];
   if (!baseline || baseline <= 0) return null;
   return rows.map(row => ({
     year: row.year,
     value: row[field] === null || row[field] === undefined ? null : (row[field] / baseline) * 100
   }));
+}
+
+function isTaxYear(year) {
+  return TAX_YEARS.includes(Number(year));
+}
+
+function modelRows(rows) {
+  return rows.filter(row => isTaxYear(row.year));
+}
+
+function latestFiniteRow(rows, field) {
+  return rows.slice().reverse().find(row => Number.isFinite(row?.[field])) || null;
+}
+
+function hasAggregateData(row) {
+  return Number.isFinite(row?.medianValueIndex)
+    || Number.isFinite(row?.medianTaxIndex)
+    || Number.isFinite(row?.avgEtr);
+}
+
+function displayAggregateRows(aggregate) {
+  return aggregate.filter(hasAggregateData);
+}
+
+function yearsInRange(startYear, endYear) {
+  const start = Number.isFinite(startYear) ? startYear : BASELINE_YEAR;
+  const end = Number.isFinite(endYear) ? endYear : LATEST_FINAL_TAX_YEAR;
+  const years = [];
+  for (let year = start; year <= end; year += 1) years.push(year);
+  return years;
+}
+
+function aggregateYearDomain(aggregate) {
+  const years = displayAggregateRows(aggregate).map(row => row.year);
+  if (!years.length) return { start: BASELINE_YEAR, end: LATEST_FINAL_TAX_YEAR };
+  return {
+    start: Math.min(BASELINE_YEAR, ...years),
+    end: Math.max(...years)
+  };
 }
 
 function mean(values) {
@@ -417,6 +491,10 @@ function changeText(indexValue) {
   return `${sign}${decimal.format(change)}% since 2019`;
 }
 
+function moneyText(value) {
+  return Number.isFinite(value) ? money.format(value) : "—";
+}
+
 function recordLabel(record) {
   const address = (
     record.guidedSnapshot?.parcel?.situsAddress ||
@@ -430,7 +508,8 @@ function recordLabel(record) {
 
 function baseModelReasons(rows) {
   const flags = new Set();
-  rows.forEach(row => {
+  const taxRows = modelRows(rows);
+  taxRows.forEach(row => {
     if (row.value > 0 && row.grossTax > 0 && (row.netTax === null || row.netTax <= row.grossTax * 0.25)) {
       flags.add("excessive credits or near-zero net tax");
     }
@@ -441,8 +520,8 @@ function baseModelReasons(rows) {
       flags.add("missing or zero net tax");
     }
   });
-  if (!rows.every(row => row.value > 0 && row.netTax > 0 && row.etr > 0 && row.levyRate > 0)) {
-    flags.add("incomplete 2019-2025 value/tax/levy history");
+  if (!taxRows.every(row => row.value > 0 && row.netTax > 0 && row.etr > 0 && row.levyRate > 0)) {
+    flags.add(`incomplete ${BASELINE_YEAR}-${LATEST_FINAL_TAX_YEAR} value/tax/levy history`);
   }
 
   return flags;
@@ -459,11 +538,12 @@ function oneYearChanges(rows, field) {
 
 function stableModelReasons(rows) {
   const flags = baseModelReasons(rows);
-  const valueChanges = oneYearChanges(rows, "value");
-  const taxChanges = oneYearChanges(rows, "netTax");
-  const etrChanges = oneYearChanges(rows, "etr");
-  const verySmallTaxBase = rows.some(row => row.value > 0 && row.value < 10000)
-    || rows.some(row => row.netTax > 0 && row.netTax < 100);
+  const taxRows = modelRows(rows);
+  const valueChanges = oneYearChanges(taxRows, "value");
+  const taxChanges = oneYearChanges(taxRows, "netTax");
+  const etrChanges = oneYearChanges(taxRows, "etr");
+  const verySmallTaxBase = taxRows.some(row => row.value > 0 && row.value < 10000)
+    || taxRows.some(row => row.netTax > 0 && row.netTax < 100);
   const extremeMovement = [...valueChanges, ...taxChanges, ...etrChanges]
     .some(change => Math.abs(change) > 0.75);
 
@@ -487,9 +567,10 @@ function buildYearlyObservations(preparedRecords) {
     if (item.modelFlag.excludedFromModel) return [];
     const label = recordLabel(item.record);
     const observations = [];
-    for (let index = 1; index < item.rows.length; index += 1) {
-      const previous = item.rows[index - 1];
-      const current = item.rows[index];
+    const taxRows = modelRows(item.rows);
+    for (let index = 1; index < taxRows.length; index += 1) {
+      const previous = taxRows[index - 1];
+      const current = taxRows[index];
       const valueChange = percentChange(previous.value, current.value);
       const taxChange = percentChange(previous.netTax, current.netTax);
       const etrChange = percentChange(previous.etr, current.etr);
@@ -582,12 +663,12 @@ function computeGroup(records, lens = activeModelLens) {
       record,
       rows,
       valueIndex: indexedSeries(rows, "value"),
-      taxIndex: modelFlag.excludedFromModel ? null : indexedSeries(rows, "netTax"),
+      taxIndex: modelFlag.excludedFromModel ? null : indexedSeries(modelRows(rows), "netTax"),
       modelFlag
     };
   });
 
-  const aggregate = YEARS.map(year => {
+  const aggregate = VALUE_YEARS.map(year => {
     const valueIndexes = preparedRecords
       .filter(item => item.valueIndex)
       .map(item => item.valueIndex.find(row => row.year === year)?.value)
@@ -632,7 +713,8 @@ function drawChart(aggregate) {
   const pad = { left: 72, right: 36, top: 36, bottom: 62 };
   const plotW = width - pad.left - pad.right;
   const plotH = height - pad.top - pad.bottom;
-  const indexValues = aggregate.flatMap(row => [
+  const displayRows = displayAggregateRows(aggregate);
+  const indexValues = displayRows.flatMap(row => [
     row.medianValueIndex,
     row.medianTaxIndex
   ]).filter(Number.isFinite);
@@ -646,8 +728,10 @@ function drawChart(aggregate) {
   }
   const minIndex = Math.min(80, Math.floor(Math.min(...indexValues) / 10) * 10);
   const maxIndex = Math.max(140, Math.ceil(Math.max(...indexValues) / 10) * 10);
+  const domain = aggregateYearDomain(displayRows);
+  const yearSpan = Math.max(domain.end - domain.start, 1);
 
-  const x = year => pad.left + ((year - YEARS[0]) / (YEARS.at(-1) - YEARS[0])) * plotW;
+  const x = year => pad.left + ((year - domain.start) / yearSpan) * plotW;
   const yIndex = value => pad.top + (1 - ((value - minIndex) / (maxIndex - minIndex))) * plotH;
 
   ctx.strokeStyle = "#d7e0ea";
@@ -667,7 +751,7 @@ function drawChart(aggregate) {
 
   ctx.textAlign = "center";
   ctx.textBaseline = "top";
-  YEARS.forEach(year => {
+  yearsInRange(domain.start, domain.end).forEach(year => {
     ctx.fillText(String(year), x(year), height - pad.bottom + 20);
   });
 
@@ -978,7 +1062,7 @@ function renderKpiSparkline(name, values, options = {}) {
     return top + (1 - ((value - min) / ((max - min) || 1))) * (bottom - top);
   };
   const points = usable.map(item => ({
-    x: usable.length === 1 ? width : (item.index / (YEARS.length - 1)) * width,
+    x: usable.length === 1 ? width : (item.index / Math.max(values.length - 1, 1)) * width,
     y: yForValue(item.value)
   }));
   const linePath = sparklinePath(points);
@@ -990,24 +1074,202 @@ function renderKpiSparkline(name, values, options = {}) {
 }
 
 function renderKpiSparklines(aggregate) {
-  const indexValues = aggregate.flatMap(row => [
+  const displayRows = displayAggregateRows(aggregate);
+  const valueRows = displayRows.filter(row => Number.isFinite(row.medianValueIndex));
+  const taxRows = displayRows.filter(row => Number.isFinite(row.medianTaxIndex));
+  const etrRows = displayRows.filter(row => Number.isFinite(row.avgEtr));
+  const indexValues = displayRows.flatMap(row => [
     row.medianValueIndex,
     row.medianTaxIndex
   ]).filter(Number.isFinite);
   const minIndex = indexValues.length ? Math.min(80, Math.floor(Math.min(...indexValues) / 10) * 10) : 80;
   const maxIndex = indexValues.length ? Math.max(140, Math.ceil(Math.max(...indexValues) / 10) * 10) : 140;
   const indexScaleOptions = { minValue: minIndex, maxValue: maxIndex };
-  renderKpiSparkline("value", aggregate.map(row => row.medianValueIndex), indexScaleOptions);
-  renderKpiSparkline("tax", aggregate.map(row => row.medianTaxIndex), indexScaleOptions);
-  renderKpiSparkline("etr", aggregate.map(row => row.avgEtr));
+  renderKpiSparkline("value", valueRows.map(row => row.medianValueIndex), indexScaleOptions);
+  renderKpiSparkline("tax", taxRows.map(row => row.medianTaxIndex), indexScaleOptions);
+  renderKpiSparkline("etr", etrRows.map(row => row.avgEtr));
+}
+
+function overviewClassLabel(value) {
+  const normalized = String(value || "").toLowerCase();
+  if (normalized.includes("residential")) return "Residential";
+  if (normalized.includes("agricultural")) return "Agricultural";
+  if (normalized.includes("commercial")) return "Commercial";
+  return "Property";
+}
+
+function firstNumberToken(value) {
+  return String(value || "").match(/\d+/)?.[0] || "";
+}
+
+function overviewGroupKeyForRecord(record) {
+  const classLabel = overviewClassLabel(
+    record.guidedSnapshot?.classification?.propertyClass ||
+    record.guidedSnapshot?.parcel?.accountType ||
+    record.classification?.propertyClass ||
+    record.parcel?.accountType
+  );
+  const rawGroup = record.locationModel?.valuationGroup || record.locationModel?.marketArea || "";
+  const groupNumber = firstNumberToken(rawGroup);
+  if (!groupNumber || classLabel === "Property") return null;
+  return `${classLabel}-${groupNumber}`;
+}
+
+function overviewGroups() {
+  if (!samplingTracker?.groups?.length) return [];
+  const classRank = new Map(CLASS_OVERVIEW_ORDER.map((className, index) => [className, index]));
+  return samplingTracker.groups
+    .filter(group => classRank.has(group.class))
+    .sort((a, b) => (
+      classRank.get(a.class) - classRank.get(b.class)
+      || Number(a.number || 0) - Number(b.number || 0)
+      || a.valuationGroup.localeCompare(b.valuationGroup)
+    ));
+}
+
+function groupedOverviewRecords() {
+  return allRecords.reduce((map, item) => {
+    const key = overviewGroupKeyForRecord(item.record);
+    if (!key) return map;
+    const records = map.get(key) || [];
+    records.push(item.record);
+    map.set(key, records);
+    return map;
+  }, new Map());
+}
+
+function indexDeltaText(indexValue) {
+  if (!Number.isFinite(indexValue)) return "No baseline";
+  return signedPercent((indexValue - 100) / 100);
+}
+
+function overviewPath(aggregate, key, scale, domain) {
+  const width = 300;
+  const height = 128;
+  const pad = { left: 12, right: 12, top: 15, bottom: 27 };
+  const plotW = width - pad.left - pad.right;
+  const plotH = height - pad.top - pad.bottom;
+  const yearSpan = Math.max(domain.end - domain.start, 1);
+  const points = aggregate
+    .filter(row => Number.isFinite(row[key]))
+    .map(row => ({
+      x: pad.left + ((row.year - domain.start) / yearSpan) * plotW,
+      y: pad.top + (1 - ((row[key] - scale.min) / (scale.max - scale.min))) * plotH
+    }));
+  return sparklinePath(points);
+}
+
+function overviewChartSvg(aggregate) {
+  const displayRows = displayAggregateRows(aggregate);
+  const values = displayRows.flatMap(row => [row.medianValueIndex, row.medianTaxIndex]).filter(Number.isFinite);
+  if (values.length < 2) {
+    return `
+      <div class="overview-chart-empty">
+        <span>No indexed history yet</span>
+      </div>
+    `;
+  }
+
+  const min = Math.min(80, Math.floor(Math.min(...values) / 10) * 10);
+  const max = Math.max(140, Math.ceil(Math.max(...values) / 10) * 10);
+  const scale = { min, max: max === min ? min + 1 : max };
+  const domain = aggregateYearDomain(displayRows);
+  const baselineY = 15 + (1 - ((100 - scale.min) / (scale.max - scale.min))) * 86;
+  const valuePath = overviewPath(displayRows, "medianValueIndex", scale, domain);
+  const taxPath = overviewPath(displayRows, "medianTaxIndex", scale, domain);
+
+  return `
+    <div class="overview-chart-frame">
+      <svg class="overview-chart" viewBox="0 0 300 128" preserveAspectRatio="none" role="img" aria-label="Value and tax index line chart">
+        <line class="overview-chart-baseline" x1="12" y1="${baselineY.toFixed(2)}" x2="288" y2="${baselineY.toFixed(2)}"></line>
+        <path class="overview-chart-line value-line" d="${valuePath}"></path>
+        <path class="overview-chart-line tax-line" d="${taxPath}"></path>
+      </svg>
+      <div class="overview-year-labels" aria-hidden="true">
+        <span>${domain.start}</span>
+        <span>${domain.end}</span>
+      </div>
+    </div>
+  `;
+}
+
+function overviewCard(group, recordsByGroup) {
+  const records = recordsByGroup.get(group.key) || [];
+  const { aggregate } = computeGroup(records, activeModelLens);
+  const latestValue = latestFiniteRow(aggregate, "medianValueIndex");
+  const latestTax = latestFiniteRow(aggregate, "medianTaxIndex");
+  const subtitle = [group.marketGroup, `${records.length} sample${records.length === 1 ? "" : "s"}`]
+    .filter(Boolean)
+    .join(" · ");
+
+  return `
+    <article class="overview-card class-${group.class.toLowerCase()}">
+      <div class="overview-card-heading">
+        <h3>${escapeHtml(group.valuationGroup)}</h3>
+      </div>
+      ${overviewChartSvg(aggregate)}
+      <div class="overview-card-footer">
+        <p>${escapeHtml(subtitle)}</p>
+        <div class="overview-pill-row" aria-label="Movement summary">
+          <span class="overview-pill value">Value ${indexDeltaText(latestValue?.medianValueIndex)}</span>
+          <span class="overview-pill tax">Tax ${indexDeltaText(latestTax?.medianTaxIndex)}</span>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderValuationGroupOverview() {
+  if (!elements.valuationGroupOverview) return;
+  const groupsForOverview = overviewGroups();
+  if (!groupsForOverview.length) {
+    elements.valuationGroupOverview.innerHTML = `<div class="empty-state">No valuation group tracker is available yet.</div>`;
+    return;
+  }
+
+  const recordsByGroup = groupedOverviewRecords();
+  const totalSampleCount = groupsForOverview.reduce((sum, group) => (
+    sum + (recordsByGroup.get(group.key)?.length || 0)
+  ), 0);
+  if (elements.overviewSamplePill) {
+    elements.overviewSamplePill.textContent = `${totalSampleCount} loaded samples`;
+  }
+  const sections = CLASS_OVERVIEW_ORDER.map(className => {
+    const classGroups = groupsForOverview.filter(group => group.class === className);
+    if (!classGroups.length) return "";
+    const groupLabel = className === "Agricultural" ? "market areas" : "valuation groups";
+    return `
+      <section class="class-overview-section class-${className.toLowerCase()}" aria-label="${escapeHtml(className)} valuation group overview">
+        <div class="class-divider" aria-hidden="true"></div>
+        <div class="class-overview-heading">
+          <div>
+            <p class="eyebrow">${escapeHtml(className)}</p>
+            <h2>${classGroups.length} ${groupLabel}</h2>
+          </div>
+          <div class="overview-legend" aria-label="${escapeHtml(className)} chart legend">
+            <span><i class="value"></i> Value index</span>
+            <span><i class="tax"></i> Tax index</span>
+          </div>
+        </div>
+        <div class="overview-card-grid">
+          ${classGroups.map(group => overviewCard(group, recordsByGroup)).join("")}
+        </div>
+      </section>
+    `;
+  }).join("");
+
+  elements.valuationGroupOverview.innerHTML = sections;
 }
 
 function render(groupKey) {
   const group = groups.find(item => item.key === groupKey) || groups[0];
   const records = allRecords.filter(item => item.group.key === group.key).map(item => item.record);
   const { preparedRecords, aggregate, observations, valueBaselineCount, taxBaselineCount, taxFlagCount, counts } = computeGroup(records, activeModelLens);
-  const latest = aggregate.at(-1);
-  const first = aggregate[0];
+  const aggregateDisplayRows = displayAggregateRows(aggregate);
+  const latestValue = latestFiniteRow(aggregate, "medianValueIndex");
+  const latestTax = latestFiniteRow(aggregate, "medianTaxIndex");
+  const firstEtr = aggregateDisplayRows.find(row => Number.isFinite(row.avgEtr));
+  const latestEtr = latestFiniteRow(aggregate, "avgEtr");
 
   elements.groupSelect.value = group.key;
   elements.propertyCount.textContent = String(records.length);
@@ -1019,16 +1281,16 @@ function render(groupKey) {
     ? counts.excludedFromStable
     : counts.excludedFromRealWorld);
   elements.modelRuleNote.textContent = MODEL_LENSES[activeModelLens].note;
-  elements.valueIndex.textContent = Number.isFinite(latest?.medianValueIndex) ? decimal.format(latest.medianValueIndex) : "—";
-  elements.valueChange.textContent = changeText(latest?.medianValueIndex);
-  elements.taxIndex.textContent = Number.isFinite(latest?.medianTaxIndex) ? decimal.format(latest.medianTaxIndex) : "—";
-  elements.taxChange.textContent = changeText(latest?.medianTaxIndex);
-  elements.etrLatest.textContent = Number.isFinite(latest?.avgEtr) ? percent.format(latest.avgEtr) : "—";
-  elements.etrChange.textContent = Number.isFinite(first?.avgEtr) && Number.isFinite(latest?.avgEtr)
-    ? `${((latest.avgEtr - first.avgEtr) * 100).toFixed(2)} pts since 2019`
+  elements.valueIndex.textContent = Number.isFinite(latestValue?.medianValueIndex) ? decimal.format(latestValue.medianValueIndex) : "—";
+  elements.valueChange.textContent = changeText(latestValue?.medianValueIndex);
+  elements.taxIndex.textContent = Number.isFinite(latestTax?.medianTaxIndex) ? decimal.format(latestTax.medianTaxIndex) : "—";
+  elements.taxChange.textContent = changeText(latestTax?.medianTaxIndex);
+  elements.etrLatest.textContent = Number.isFinite(latestEtr?.avgEtr) ? percent.format(latestEtr.avgEtr) : "—";
+  elements.etrChange.textContent = Number.isFinite(firstEtr?.avgEtr) && Number.isFinite(latestEtr?.avgEtr)
+    ? `${((latestEtr.avgEtr - firstEtr.avgEtr) * 100).toFixed(2)} pts since 2019`
     : "latest year";
   elements.chartTitle.textContent = `${group.label}: value and tax movement`;
-  elements.chartNote.textContent = `${records.length} loaded properties are indexed to their own 2019 baselines where available. The tax line uses the ${MODEL_LENSES[activeModelLens].label.toLowerCase()} model-ready cohort.`;
+  elements.chartNote.textContent = `${records.length} loaded properties are indexed to their own ${BASELINE_YEAR} baselines where available. Value can extend to newly posted assessed values; the tax line uses finalized tax years through ${LATEST_FINAL_TAX_YEAR} and the ${MODEL_LENSES[activeModelLens].label.toLowerCase()} model-ready cohort.`;
   elements.sampleNote.textContent = `${group.label}. Model lens: ${MODEL_LENSES[activeModelLens].label}. This is a small local static sample, not a statistical study.`;
 
   if (!records.length || (!valueBaselineCount && !taxBaselineCount)) {
@@ -1040,7 +1302,7 @@ function render(groupKey) {
     return;
   }
 
-  elements.aggregateRows.innerHTML = aggregate.map(row => `
+  elements.aggregateRows.innerHTML = aggregateDisplayRows.map(row => `
     <tr>
       <td>${row.year}</td>
       <td>${Number.isFinite(row.avgValueIndex) ? decimal.format(row.avgValueIndex) : "—"}</td>
@@ -1052,20 +1314,20 @@ function render(groupKey) {
   `).join("");
 
   elements.propertyRows.innerHTML = preparedRecords.map(item => {
-    const row2019 = item.rows.find(row => row.year === 2019);
-    const row2025 = item.rows.find(row => row.year === 2025);
-    const valueIndex = item.valueIndex?.find(row => row.year === 2025)?.value;
-    const taxIndex = item.taxIndex?.find(row => row.year === 2025)?.value;
+    const row2019 = item.rows.find(row => row.year === BASELINE_YEAR);
+    const latestValueRow = latestFiniteRow(item.rows, "value");
+    const latestValueIndex = latestFiniteRow(item.valueIndex || [], "value")?.value;
+    const latestTaxIndex = latestFiniteRow(item.taxIndex || [], "value")?.value;
     const taxFlag = item.modelFlag.excludedFromModel
       ? `<span class="sample-flag">${item.modelFlag.reasons.join("; ")}</span>`
       : `<span class="sample-ok">included</span>`;
     return `
       <tr>
         <td>${recordLabel(item.record)}</td>
-        <td>${money.format(row2019?.value || 0)}</td>
-        <td>${money.format(row2025?.value || 0)}</td>
-        <td>${Number.isFinite(valueIndex) ? decimal.format(valueIndex) : "—"}</td>
-        <td>${Number.isFinite(taxIndex) ? decimal.format(taxIndex) : "—"}</td>
+        <td>${moneyText(row2019?.value)}</td>
+        <td>${moneyText(latestValueRow?.value)}</td>
+        <td>${Number.isFinite(latestValueIndex) ? decimal.format(latestValueIndex) : "—"}</td>
+        <td>${Number.isFinite(latestTaxIndex) ? decimal.format(latestTaxIndex) : "—"}</td>
         <td>${taxFlag}</td>
       </tr>
     `;
@@ -1129,6 +1391,7 @@ function setupProjectionControls() {
   elements.scenarioInput.addEventListener("input", updateScenarioDisplay);
   elements.modelLensSelect.addEventListener("change", () => {
     activeModelLens = elements.modelLensSelect.value;
+    renderValuationGroupOverview();
     render(elements.groupSelect.value);
   });
 }
@@ -1290,6 +1553,7 @@ async function main() {
   setupGroupSelect();
   setupProjectionControls();
   setupSamplingControls();
+  renderValuationGroupOverview();
   renderSamplingTracker();
   renderSchoolLevyCoverage();
   render(groups.find(group => group.key === DEFAULT_GROUP_KEY)?.key || groups[0]?.key);
