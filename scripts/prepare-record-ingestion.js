@@ -14,6 +14,11 @@ function firstMatch(text, pattern, fallback = null) {
   return match ? match[1].trim().replace(/\s+/g, " ") : fallback;
 }
 
+function blockMatch(text, pattern, fallback = "") {
+  const match = text.match(pattern);
+  return match ? match[1] : fallback;
+}
+
 function money(value) {
   if (!value) return null;
   return Number(value.replace(/[$,]/g, ""));
@@ -47,7 +52,8 @@ function parsePdf(pdfPath) {
       rate: Number(match[2])
     }));
 
-  const dwellingRows = [...text.matchAll(/^\s*([A-Z][A-Z0-9 &,.'~/-]+?)\s+([\d,]+)\s+\$?([\d,]+)\s*$/gm)]
+  const dwellingBlock = blockMatch(text, /Dwelling Data([\s\S]*?)Outbuilding Data/, "");
+  const dwellingRows = [...dwellingBlock.matchAll(/^\s*([A-Z][A-Za-z0-9 &,.'~/-]+?)\s+([\d,]+)\s+\$?([\d,]+)\s*$/gm)]
     .filter(match => !/^(YEAR|TOTAL|COUNTY|SCHOOL|DISTRICT|LAND|DWELLING|OUTBUILDING|VALUE|DESCRIPTION)$/i.test(match[1].trim()))
     .map(match => ({
       description: match[1].trim().replace(/\s+/g, " "),
@@ -55,9 +61,20 @@ function parsePdf(pdfPath) {
       value: money(match[3])
     }));
 
+  const outbuildingBlock = blockMatch(text, /Outbuilding Data([\s\S]*?)(?:\n\s*\d+\s*\n|Photo\/Sketch)/, "");
+  const outbuildingRows = [...outbuildingBlock.matchAll(/^\s*([A-Z][A-Za-z0-9 &,.'~/-]+?)\s+([\d,]+)(?:\s+(\d{4}))?\s+\$?([\d,]+)\s*$/gm)]
+    .filter(match => !/DESCRIPTION|YEAR BUILT|COST/i.test(match[1]))
+    .map(match => ({
+      description: match[1].trim().replace(/\s+/g, " "),
+      units: number(match[2]),
+      yearBuilt: match[3] ? Number(match[3]) : null,
+      cost: money(match[4])
+    }));
+
   const exteriorLine = firstMatch(text, /Exterior:\s+(.+?)\s+Bathrooms:/);
-  const exteriorContinuation = firstMatch(text, /Exterior:[^\n]+\n\s+(.+?)\n/);
-  const exterior = [exteriorLine, exteriorContinuation]
+  const exteriorLineFlexible = firstMatch(text, /Exterior:\s+(.+?)\s+(?:Style|Heating\/Cooling|Bathrooms):/);
+  const exteriorContinuation = firstMatch(text, /Exterior:[^\n]+\n\s+(.+?)(?:\n|Bedrooms:)/);
+  const exterior = [exteriorLine || exteriorLineFlexible, exteriorContinuation]
     .filter(Boolean)
     .join(" ")
     .replace(/\s+/g, " ")
@@ -86,26 +103,27 @@ function parsePdf(pdfPath) {
       lotSize: firstMatch(text, /Lot Size:\s+(.+)/)
     },
     residential: {
-      zoning: firstMatch(text, /Residential Datasheet[\s\S]*?Zoning:\s+(.+?)\s+Condition:/),
-      condition: firstMatch(text, /Condition:\s+(.+)/),
+      zoning: firstMatch(text, /Residential Datasheet[\s\S]*?Zoning:\s+(.+?)\s+(?:Quality|Style|Condition|Lot Size):/),
+      condition: firstMatch(text, /Condition:\s+(.+?)(?:\s+Garage 2 Size:|\n)/),
       yearBuilt: Number(firstMatch(text, /Year Built:\s+([0-9]+)/)) || null,
-      style: firstMatch(text, /Style:\s+(.+)/),
+      style: firstMatch(text, /Style:\s+(.+?)(?:\s+Bathrooms:|\n)/),
       exterior,
-      bathrooms: Number(firstMatch(text, /Bathrooms:\s+([0-9.]+)/)) || null,
-      bedrooms: Number(firstMatch(text, /Bedrooms:\s+([0-9.]+)/)) || null,
-      heatingCooling: firstMatch(text, /Heating\/Cooling:\s+(.+)/),
-      plumbingFixtures: Number(firstMatch(text, /Plumbing Fixtures:\s+([0-9.]+)/)) || null,
+      bathrooms: number(firstMatch(text, /Bathrooms:\s+([0-9.]+)/)),
+      bedrooms: number(firstMatch(text, /Bedrooms:\s+([0-9.]+)/)),
+      heatingCooling: firstMatch(text, /Heating\/Cooling:\s+(.+?)(?:\s+Min Finish:|\n)/),
+      plumbingFixtures: number(firstMatch(text, /Plumbing Fixtures:\s+([0-9.]+)/)),
       minFinish: Number(firstMatch(text, /Min Finish:\s+([\d,]+) sq\. ft/)?.replace(/,/g, "")) || 0,
       partFinish: Number(firstMatch(text, /Part Finish:\s+([\d,]+) sq\. ft/)?.replace(/,/g, "")) || 0,
       basementSize: Number(firstMatch(text, /Basement Size:\s+([\d,]+) sq\. ft/)?.replace(/,/g, "")) || null,
       buildingSize: Number(firstMatch(text, /Building Size:\s+([\d,]+) sq\. ft/)?.replace(/,/g, "")) || null,
-      quality: firstMatch(text, /Quality:\s+(.+?)\s+Garage 1 Size:/),
+      quality: firstMatch(text, /Quality:\s+(.+?)(?:\s+Garage 1 Size:|\n)/),
       garage1: firstMatch(text, /Garage 1:\s+(.+)/),
       garage1Size: Number(firstMatch(text, /Garage 1 Size:\s+([\d,]+) sq\. ft/)?.replace(/,/g, "")) || null
     },
     assessedValues: values,
     levyRows,
-    dwellingRows
+    dwellingRows,
+    outbuildingRows
   };
 }
 

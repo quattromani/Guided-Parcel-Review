@@ -2248,7 +2248,8 @@ function costSourceLimitation(recordCard) {
 
 function sourceExtractDetails(data, recordCard) {
   const sections = combineStatementHistorySections(recordCard?.sourceExtract?.sections || [])
-    .filter(section => !isRepeatedSourceExtractSection(section));
+    .filter(section => !isRepeatedSourceExtractSection(section))
+    .filter(isPropertyRecordSourceExtractSection);
   if (!sections.length) return "";
 
   const meta = sections.length === 1 ? "1 source table" : `${sections.length} source tables`;
@@ -2262,6 +2263,14 @@ function sourceExtractDetails(data, recordCard) {
       ${sections.map(section => sourceExtractSection(section, data, recordCard, cellValue)).join("")}
     </div>
   `);
+}
+
+function isPropertyRecordSourceExtractSection(section = {}) {
+  return !(
+    section.type === "combined-statement-history"
+    || isNtoStatementHistorySection(section)
+    || isTaxDistributionSection(section)
+  );
 }
 
 function sourceExtractSection(section, data, recordCard, cellValue) {
@@ -3408,8 +3417,7 @@ function movementTrendValue(change, display) {
   `;
 }
 
-function movementCard({ label, value, note, range }) {
-  const status = /finalized/i.test(range) ? "Finalized" : "";
+function movementCard({ label, value, note, status }) {
 
   return `
     <div class="movement-card">
@@ -3455,7 +3463,7 @@ function renderPropertyMovementSummary(data) {
       label: "Assessed value",
       value: movementTrendValue(valueChange, absolutePercent(valueChange)),
       note: `${formatNullableMoney(previousValue?.assessedValue)} to ${formatNullableMoney(lastValue?.assessedValue)}`,
-      range: previousValue && lastValue ? `${previousValue.year}-${lastValue.year}` : "Recent available years"
+      status: lastValue?.year ? `Latest ${lastValue.year}` : "Latest assessment"
     },
     {
       label: "Net taxes",
@@ -3463,13 +3471,13 @@ function renderPropertyMovementSummary(data) {
         ? movementTrendValue(0, "No net tax")
         : movementTrendValue(taxChange, absolutePercent(taxChange)),
       note: `${formatNullableMoney(previousTax?.taxes, true)} to ${formatNullableMoney(lastTax?.taxes, true)}`,
-      range: previousTax && lastTax ? `${previousTax.year}-${lastTax.year} finalized` : "Recent finalized years"
+      status: lastTax?.year ? `Most recent ${lastTax.year}` : "Most recent finalized"
     },
     {
       label: "Effective tax rate",
       value: movementTrendValue(etrChange, `${formatNullablePercent(previousEtr?.etr)} to ${formatNullablePercent(lastEtr?.etr)}`),
       note: `${absolutePoints(etrChange)} from prior year`,
-      range: previousEtr && lastEtr ? `${previousEtr.year}-${lastEtr.year} finalized` : "Recent finalized years"
+      status: lastEtr?.year ? `Most recent ${lastEtr.year}` : "Most recent finalized"
     }
   ];
 

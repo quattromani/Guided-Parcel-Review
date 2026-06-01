@@ -8,8 +8,8 @@
     "recordType": "GWORKS_PROPERTY_REPORT",
     "printedAt": null,
     "sourceImages": [
-      "assets/images/0014678200_2.jpg",
-      "assets/images/0014678200_1.jpg"
+      "assets/images/014678200_1.jpg",
+      "assets/images/014678200_2.jpg"
     ],
     "sourceImageLinks": [
       "https://gage.gworks.com/photos/0014678200_1.jpg",
@@ -22,15 +22,15 @@
     "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
   },
   "guidedSnapshot": {
-    "snapshotYear": 2025,
+    "snapshotYear": 2026,
     "latestFinalTaxYear": 2025,
     "assets": {
-      "photo": "assets/images/0014678200_2.jpg",
-      "sketch": "assets/images/0014678200_1.jpg",
+      "photo": "assets/images/014678200_1.jpg",
+      "sketch": "assets/images/014678200_2.jpg",
       "additionalPhotos": []
     },
     "parcel": {
-      "parcelId": "0014678200",
+      "parcelId": "014678200",
       "mapNumber": "14678200",
       "stateGeoCode": "4213-00-0-10670-021-0000",
       "owner": "FRANZ, JAMES L",
@@ -67,6 +67,13 @@
       "partFinish": 1377
     },
     "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 390045,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
       {
         "year": 2025,
         "assessedValue": 341280,
@@ -395,7 +402,7 @@
     "districtLevyHistory": [
       {
         "year": 2025,
-        "levy": 1.586964,
+        "levy": 1.5869639999999998,
         "status": "statement-detail",
         "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
       },
@@ -437,6 +444,14 @@
       }
     ],
     "assessedValueBreakdown": [
+      {
+        "year": 2026,
+        "dwelling": 366045,
+        "land": 24000,
+        "outbuilding": 0,
+        "total": 390045,
+        "source": "GWorks PDF"
+      },
       {
         "year": 2025,
         "dwelling": 327140,
@@ -556,7 +571,12 @@
       {
         "description": "SLAB W/ROOF &~STEPS",
         "units": 30,
-        "value": 1000
+        "value": 910
+      },
+      {
+        "description": "Wood Deck, Wood Rail, Roof",
+        "units": 288,
+        "value": 7640
       }
     ],
     "outbuildingData": [],
@@ -593,7 +613,7 @@
     }
   },
   "parcelIdentifiers": {
-    "parcelId": "0014678200",
+    "parcelId": "014678200",
     "cardFilePerm": null,
     "cadastralId": "1-81-66",
     "padClassCode": null,
@@ -602,34 +622,42 @@
     "taxOnlineParcelId": "0014678200"
   },
   "locationModel": {
-    "valuationGroup": "VG 3 - Beatrice & Beatrice Subs",
+    "valuationGroup": "3 - Beatrice & Beatrice Subs",
     "marketArea": "Beatrice & Beatrice Subs",
     "marketGroup": "Urban"
   },
   "landModel": {
     "description": "Land row from GWorks public export",
     "lotSize": "10,000-20,000 sq. ft.",
-    "recordedLotValue": 14140,
+    "recordedLotValue": 24000,
     "frontage": null,
     "cutoffSchedule": []
   },
   "currentCardValue": {
     "previous": {
-      "buildings": 301065,
-      "improvement": 0,
-      "landLots": 14140,
-      "total": 315205
-    },
-    "current": {
       "buildings": 327140,
       "improvement": 0,
       "landLots": 14140,
-      "total": 341280,
-      "note": "2025 assessed values from GWorks PDF and Nebraska Taxes Online detail modal. PDF latest total: $341,280."
+      "total": 341280
+    },
+    "current": {
+      "buildings": 366045,
+      "improvement": 0,
+      "landLots": 24000,
+      "total": 390045,
+      "note": "2026 assessed values from GWorks PDF. Latest finalized tax data remains 2025."
     }
   },
   "ownershipHistory": [],
   "valuationHistory": [
+    {
+      "year": 2026,
+      "total": 390045,
+      "land": 24000,
+      "outbuilding": 0,
+      "dwelling": 366045,
+      "source": "GWorks PDF"
+    },
     {
       "year": 2025,
       "total": 341280,
@@ -637,28 +665,20 @@
       "outbuilding": 0,
       "dwelling": 327140,
       "source": "GWorks PDF"
-    },
-    {
-      "year": 2024,
-      "total": 315205,
-      "land": 14140,
-      "outbuilding": 0,
-      "dwelling": 301065,
-      "source": "GWorks PDF"
     }
   ],
   "propertyValuation": {
-    "buildings": 327140,
+    "buildings": 366045,
     "improvement": 0,
-    "landLot": 14140,
-    "total": 341280
+    "landLot": 24000,
+    "total": 390045
   },
   "valuationReconciliation": {
     "source": "GWorks public export and Nebraska Taxes Online detail modal",
     "initialMipsTotal": null,
-    "finalAssessedTotal": 341280,
-    "finalDwellingValue": 327140,
-    "landLot": 14140,
+    "finalAssessedTotal": 390045,
+    "finalDwellingValue": 366045,
+    "landLot": 24000,
     "modeledDetailSubtotal": null,
     "cardToFinalAdjustment": null,
     "modelToFinalReconciliation": null,
@@ -715,7 +735,13 @@
     {
       "description": "SLAB W/ROOF &~STEPS",
       "units": 30,
-      "value": 1000,
+      "value": 910,
+      "source": "GWorks PDF dwelling data"
+    },
+    {
+      "description": "Wood Deck, Wood Rail, Roof",
+      "units": 288,
+      "value": 7640,
       "source": "GWorks PDF dwelling data"
     }
   ],
@@ -734,18 +760,18 @@
         ],
         "rows": [
           [
+            "2026",
+            "$390,045",
+            "$24,000",
+            "$0",
+            "$366,045"
+          ],
+          [
             "2025",
             "$341,280",
             "$14,140",
             "$0",
             "$327,140"
-          ],
-          [
-            "2024",
-            "$315,205",
-            "$14,140",
-            "$0",
-            "$301,065"
           ]
         ]
       },
@@ -963,7 +989,7 @@
       },
       {
         "title": "Dwelling Data",
-        "summary": "1 visible rows",
+        "summary": "2 visible rows",
         "columns": [
           "Description",
           "Units",
@@ -973,9 +999,25 @@
           [
             "SLAB W/ROOF &~STEPS",
             "30",
-            "$1,000"
+            "$910"
+          ],
+          [
+            "Wood Deck, Wood Rail, Roof",
+            "288",
+            "$7,640"
           ]
         ]
+      },
+      {
+        "title": "Outbuilding Data",
+        "summary": "0 visible rows",
+        "columns": [
+          "Description",
+          "Units",
+          "Year built",
+          "Cost"
+        ],
+        "rows": []
       }
     ]
   }

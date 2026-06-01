@@ -32,6 +32,8 @@ function parseArgs(argv) {
     marketArea: null,
     marketGroup: null,
     sampleVisibility: null,
+    recordId: null,
+    recordCardPath: null,
     updateManifest: false
   };
 
@@ -47,6 +49,10 @@ function parseArgs(argv) {
       args.marketGroup = argv[++index];
     } else if (value === "--sample-visibility") {
       args.sampleVisibility = argv[++index];
+    } else if (value === "--record-id") {
+      args.recordId = argv[++index];
+    } else if (value === "--record-card-path") {
+      args.recordCardPath = argv[++index];
     } else if (value === "--update-manifest") {
       args.updateManifest = true;
     } else if (!args.pdfPath) {
@@ -70,6 +76,44 @@ function money(value) {
 
 function formatMoney(value) {
   return `$${Number(value || 0).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+}
+
+function sumLevyRates(rows = []) {
+  return rows.reduce((sum, row) => sum + Number(row.levy || row.rate || 0), 0);
+}
+
+function expectedGrossLevy(row) {
+  if (!row?.assessedValue || !row?.grossTaxAmount) return null;
+  return row.grossTaxAmount / row.assessedValue * 100;
+}
+
+function existingTaxDistributionRows(existingRecord, year) {
+  const sections = existingRecord?.sourceExtract?.sections || [];
+  const section = sections.find(item => {
+    const title = `${item.title || ""}`.toLowerCase();
+    return title.includes("tax distribution") && (!year || title.includes(`${year}`));
+  }) || sections.find(item => `${item.title || ""}`.toLowerCase().includes("tax distribution"));
+
+  return (section?.rows || [])
+    .map(row => ({
+      authority: row?.[0],
+      levy: Number(row?.[1]),
+      amount: money(row?.[2]),
+      share: Number(`${row?.[3] || ""}`.replace("%", ""))
+    }))
+    .filter(row => row.authority && Number.isFinite(row.levy) && row.levy > 0);
+}
+
+function chooseLatestDistributionRows(latest, existingRecord) {
+  const generatedRows = latest?.distributionRows || [];
+  const existingRows = existingTaxDistributionRows(existingRecord, latest?.year);
+  const expected = expectedGrossLevy(latest);
+
+  if (!expected || !existingRows.length) return generatedRows;
+
+  const generatedDistance = Math.abs(sumLevyRates(generatedRows) - expected);
+  const existingDistance = Math.abs(sumLevyRates(existingRows) - expected);
+  return existingDistance < generatedDistance ? existingRows : generatedRows;
 }
 
 function normalizeAddress(value) {
@@ -280,20 +324,39 @@ function levyGroup(authority) {
   return "Other";
 }
 
-function taxStatement(row) {
+function taxStatement(row, existingStatement = null) {
+  const existingCredits = existingStatement?.credits || {};
+  const creditAmount = (value, fallback) => {
+    if (value === null || value === undefined) return fallback ?? null;
+    if (value === 0 && fallback !== null && fallback !== undefined) return fallback;
+    return value;
+  };
+
   return {
     taxYear: row.year,
     statementNumber: row.statementNumber,
     statementType: row.statementType,
     totalTaxesDue: row.netAmountDue,
-    dueDate: null,
+    dueDate: existingStatement?.dueDate ?? null,
     assessedValue: row.assessedValue,
     grossTaxAmount: row.grossTaxAmount,
     credits: {
-      homestead: { value: 0, amount: 0 },
-      nonAgTax: { value: null, amount: row.nonAgCredit },
-      agLandTax: { value: null, amount: row.agLandCredit },
-      schoolTax: { value: null, amount: row.schoolCredit }
+      homestead: {
+        value: existingCredits.homestead?.value ?? 0,
+        amount: existingCredits.homestead?.amount ?? 0
+      },
+      nonAgTax: {
+        value: existingCredits.nonAgTax?.value ?? null,
+        amount: creditAmount(row.nonAgCredit, existingCredits.nonAgTax?.amount)
+      },
+      agLandTax: {
+        value: existingCredits.agLandTax?.value ?? null,
+        amount: creditAmount(row.agLandCredit, existingCredits.agLandTax?.amount)
+      },
+      schoolTax: {
+        value: existingCredits.schoolTax?.value ?? null,
+        amount: creditAmount(row.schoolCredit, existingCredits.schoolTax?.amount)
+      }
     },
     netAmountDue: row.netAmountDue,
     totalPaid: row.totalPaid,
@@ -378,6 +441,12 @@ function buildSourceExtract(pdf, ntoRows, latestRows) {
         summary: `${pdf.dwellingRows.length} visible rows`,
         columns: ["Description", "Units", "Value"],
         rows: pdf.dwellingRows.map(row => [row.description, `${row.units}`, formatMoney(row.value)])
+      },
+      {
+        title: "Outbuilding Data",
+        summary: `${pdf.outbuildingRows.length} visible rows`,
+        columns: ["Description", "Units", "Year built", "Cost"],
+        rows: pdf.outbuildingRows.map(row => [row.description, `${row.units}`, row.yearBuilt || "", formatMoney(row.cost)])
       }
     ]
   };
@@ -387,9 +456,26 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
   const propertyClass = normalizedPropertyClass(pdf);
   const sourceImageLinks = extractPdfImageLinks(pdf.pdfPath);
   const ntoRows = capture.detailRecords.map(record => parseNtoRecord(record, pdf)).sort((a, b) => b.year - a.year);
+  const existingTaxStatements = new Map((options.existingRecord?.guidedSnapshot?.taxStatements || [])
+    .map(statement => [statement.taxYear, statement]));
   const latest = ntoRows[0];
   const prior = ntoRows[1];
-  const latestPdfValue = pdf.assessedValues.find(row => row.year === latest.year) || pdf.assessedValues[0];
+  const latestDistributionRows = chooseLatestDistributionRows(latest, options.existingRecord);
+  const latestPdfValue = pdf.assessedValues[0] || null;
+  const priorPdfValue = pdf.assessedValues.find(row => row.year < latestPdfValue?.year) || pdf.assessedValues[1] || null;
+  const latestTaxYear = latest?.year || null;
+  const latestTotalLevy = sumLevyRates(latestDistributionRows) || latest?.totalLevy || null;
+  const latestValueYear = latestPdfValue?.year || latestTaxYear;
+  const pdfValueRows = pdf.assessedValues
+    .filter(row => !ntoRows.some(ntoRow => ntoRow.year === row.year))
+    .map(row => ({
+      year: row.year,
+      dwelling: row.dwelling,
+      land: row.land,
+      outbuilding: row.outbuilding,
+      total: row.total,
+      source: "GWorks PDF"
+    }));
 
   return {
     source: {
@@ -409,15 +495,15 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
       notes: "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
     },
     guidedSnapshot: {
-      snapshotYear: latest.year,
-      latestFinalTaxYear: latest.year,
+      snapshotYear: latestValueYear,
+      latestFinalTaxYear: latestTaxYear,
       assets: {
         photo: assets.photo,
         sketch: assets.sketch,
         additionalPhotos: assets.additionalPhotos
       },
       parcel: {
-        parcelId: pdf.ntoParcelId,
+        parcelId: pdf.parcelId,
         mapNumber: pdf.mapNumber,
         stateGeoCode: pdf.stateGeoCode,
         owner: pdf.owner,
@@ -446,29 +532,41 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
         minFinish: pdf.residential.minFinish,
         partFinish: pdf.residential.partFinish
       } : null,
-      taxpayerHistory: ntoRows.map(row => ({
-        year: row.year,
-        assessedValue: row.assessedValue,
-        taxes: row.netAmountDue,
-        status: row.taxDue > 0 ? "partially-paid" : "tax-statement",
-        assessmentSource: "Nebraska Taxes Online detail modal"
-      })),
-      taxStatements: ntoRows.map(taxStatement),
+      taxpayerHistory: [
+        ...pdfValueRows.map(row => ({
+          year: row.year,
+          assessedValue: row.total,
+          taxes: null,
+          status: "assessment-only",
+          assessmentSource: "GWorks PDF"
+        })),
+        ...ntoRows.map(row => ({
+          year: row.year,
+          assessedValue: row.assessedValue,
+          taxes: row.netAmountDue,
+          status: row.taxDue > 0 ? "partially-paid" : "tax-statement",
+          assessmentSource: "Nebraska Taxes Online detail modal"
+        }))
+      ].sort((a, b) => b.year - a.year),
+      taxStatements: ntoRows.map(row => taxStatement(row, existingTaxStatements.get(row.year))),
       districtLevyHistory: ntoRows.map(row => ({
         year: row.year,
-        levy: row.totalLevy,
+        levy: row.year === latestTaxYear ? latestTotalLevy : row.totalLevy,
         status: "statement-detail",
         note: "Listed in the Nebraska Taxes Online tax distribution detail modal."
       })),
-      assessedValueBreakdown: ntoRows.map(row => ({
-        year: row.year,
-        dwelling: row.building,
-        land: row.land,
-        outbuilding: row.other,
-        total: row.assessedValue,
-        source: "Nebraska Taxes Online detail modal"
-      })),
-      latestFinalLevyComponents: latest.distributionRows.map(row => ({
+      assessedValueBreakdown: [
+        ...pdfValueRows,
+        ...ntoRows.map(row => ({
+          year: row.year,
+          dwelling: row.building,
+          land: row.land,
+          outbuilding: row.other,
+          total: row.assessedValue,
+          source: "Nebraska Taxes Online detail modal"
+        }))
+      ].sort((a, b) => b.year - a.year),
+      latestFinalLevyComponents: latestDistributionRows.map(row => ({
         description: row.authority.replace(/^[0-9]+:\s+/, ""),
         rate: row.levy,
         amount: row.amount,
@@ -480,7 +578,12 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
         units: row.units,
         value: row.value
       })),
-      outbuildingData: [],
+      outbuildingData: pdf.outbuildingRows.map(row => ({
+        description: row.description,
+        units: row.units,
+        yearBuilt: row.yearBuilt,
+        cost: row.cost
+      })),
       propertyNotes: [
         {
           date: null,
@@ -514,7 +617,7 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
       }
     },
     parcelIdentifiers: {
-      parcelId: pdf.ntoParcelId,
+      parcelId: pdf.parcelId,
       cardFilePerm: null,
       cadastralId: pdf.cadastralId,
       padClassCode: null,
@@ -530,23 +633,23 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
     landModel: {
       description: "Land row from GWorks public export",
       lotSize: pdf.classification.lotSize,
-      recordedLotValue: latest.land,
+      recordedLotValue: latestPdfValue?.land ?? latest.land,
       frontage: null,
       cutoffSchedule: []
     },
     currentCardValue: {
-      previous: prior ? {
-        buildings: prior.building,
-        improvement: prior.other,
-        landLots: prior.land,
-        total: prior.assessedValue
+      previous: priorPdfValue ? {
+        buildings: priorPdfValue.dwelling,
+        improvement: priorPdfValue.outbuilding,
+        landLots: priorPdfValue.land,
+        total: priorPdfValue.total
       } : null,
       current: {
-        buildings: latest.building,
-        improvement: latest.other,
-        landLots: latest.land,
-        total: latest.assessedValue,
-        note: `${latest.year} assessed values from GWorks PDF and Nebraska Taxes Online detail modal. PDF latest total: ${formatMoney(latestPdfValue?.total)}.`
+        buildings: latestPdfValue?.dwelling ?? latest.building,
+        improvement: latestPdfValue?.outbuilding ?? latest.other,
+        landLots: latestPdfValue?.land ?? latest.land,
+        total: latestPdfValue?.total ?? latest.assessedValue,
+        note: `${latestValueYear} assessed values from GWorks PDF. Latest finalized tax data remains ${latestTaxYear}.`
       }
     },
     ownershipHistory: [],
@@ -559,17 +662,17 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
       source: "GWorks PDF"
     })),
     propertyValuation: {
-      buildings: latest.building,
-      improvement: latest.other,
-      landLot: latest.land,
-      total: latest.assessedValue
+      buildings: latestPdfValue?.dwelling ?? latest.building,
+      improvement: latestPdfValue?.outbuilding ?? latest.other,
+      landLot: latestPdfValue?.land ?? latest.land,
+      total: latestPdfValue?.total ?? latest.assessedValue
     },
     valuationReconciliation: {
       source: "GWorks public export and Nebraska Taxes Online detail modal",
       initialMipsTotal: null,
-      finalAssessedTotal: latest.assessedValue,
-      finalDwellingValue: latest.building,
-      landLot: latest.land,
+      finalAssessedTotal: latestPdfValue?.total ?? latest.assessedValue,
+      finalDwellingValue: latestPdfValue?.dwelling ?? latest.building,
+      landLot: latestPdfValue?.land ?? latest.land,
       modeledDetailSubtotal: null,
       cardToFinalAdjustment: null,
       modelToFinalReconciliation: null,
@@ -626,7 +729,7 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
       value: row.value,
       source: "GWorks PDF dwelling data"
     })),
-    sourceExtract: buildSourceExtract(pdf, ntoRows, latest.distributionRows)
+    sourceExtract: buildSourceExtract(pdf, ntoRows, latestDistributionRows)
   };
 }
 
@@ -638,7 +741,7 @@ function updateManifest(recordIdValue, recordCardPath, pdf, options = {}) {
     id: recordIdValue,
     label: `${pdf.owner} property`,
     propertyClass: pdf.classification.propertyClass || pdf.accountType,
-    parcelId: pdf.ntoParcelId,
+    parcelId: pdf.parcelId,
     situsAddress: pdf.situsAddress,
     county: "gage",
     taxDistrict: pdf.taxDistrict,
@@ -669,12 +772,15 @@ function main() {
   }
 
   const capture = JSON.parse(fs.readFileSync(capturePath, "utf8"));
-  const id = recordId(pdf);
-  const recordCardPath = `data/property-records/mips/${id}-record-card.json`;
+  const id = args.recordId || recordId(pdf);
+  const recordCardPath = args.recordCardPath || `data/property-records/mips/${id}-record-card.json`;
   const absoluteRecordCardPath = path.resolve(recordCardPath);
   fs.mkdirSync(path.dirname(absoluteRecordCardPath), { recursive: true });
-  const assets = extractPdfAssets(pdfPath, pdf.ntoParcelId);
-  fs.writeFileSync(absoluteRecordCardPath, `${JSON.stringify(buildRecordCard(pdf, capture, assets, args), null, 2)}\n`);
+  const assets = extractPdfAssets(pdfPath, pdf.parcelId);
+  const existingRecord = fs.existsSync(absoluteRecordCardPath)
+    ? JSON.parse(fs.readFileSync(absoluteRecordCardPath, "utf8"))
+    : null;
+  fs.writeFileSync(absoluteRecordCardPath, `${JSON.stringify(buildRecordCard(pdf, capture, assets, { ...args, existingRecord }), null, 2)}\n`);
 
   if (args.updateManifest) {
     updateManifest(id, recordCardPath, pdf, args);
@@ -684,7 +790,7 @@ function main() {
     recordCardPath,
     assets,
     manifestUpdated: args.updateManifest,
-    directAppUrl: `http://localhost:4173/?property=${pdf.ntoParcelId}#property-record`,
+    directAppUrl: `http://localhost:4173/?property=${id}#property-record`,
     reviewNotes: [
       "Confirm valuation group/market area if the PDF does not expose it.",
       "Attach photo/sketch assets if desired.",

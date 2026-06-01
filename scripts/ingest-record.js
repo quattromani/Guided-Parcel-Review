@@ -33,6 +33,8 @@ function parseArgs(argv) {
     marketArea: null,
     marketGroup: null,
     sampleVisibility: null,
+    recordId: null,
+    recordCardPath: null,
     updateManifest: false,
     skipNtoCapture: false
   };
@@ -51,6 +53,10 @@ function parseArgs(argv) {
       args.marketGroup = argv[++index];
     } else if (value === "--sample-visibility") {
       args.sampleVisibility = argv[++index];
+    } else if (value === "--record-id") {
+      args.recordId = argv[++index];
+    } else if (value === "--record-card-path") {
+      args.recordCardPath = argv[++index];
     } else if (!args.pdfPath) {
       args.pdfPath = value;
     } else {
@@ -92,6 +98,8 @@ function main() {
   if (args.marketArea) generateArgs.push("--market-area", args.marketArea);
   if (args.marketGroup) generateArgs.push("--market-group", args.marketGroup);
   if (args.sampleVisibility) generateArgs.push("--sample-visibility", args.sampleVisibility);
+  if (args.recordId) generateArgs.push("--record-id", args.recordId);
+  if (args.recordCardPath) generateArgs.push("--record-card-path", args.recordCardPath);
   if (args.updateManifest) generateArgs.push("--update-manifest");
   const output = runNodeScript("scripts/generate-record-card.js", generateArgs);
   const generated = JSON.parse(output);
@@ -99,7 +107,7 @@ function main() {
   console.log(JSON.stringify({
     parcelId: parsed.parcelId,
     ntoParcelId: candidate,
-    manifestId: recordId(parsed),
+    manifestId: args.recordId || recordId(parsed),
     capturePath,
     ...generated
   }, null, 2));
