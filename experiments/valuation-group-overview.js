@@ -416,7 +416,7 @@ function cardMarkup(group, recordsByGroup, aggregateByGroup) {
           <h3>${escapeHtml(group.valuationGroup)}</h3>
           <p class="sample-inline">
             <span>${sampleLine(records.length)}</span>
-            <span>${taxDistrictLine(districtCount)}</span>
+            <span title="Unique tax districts represented in this sample.">${taxDistrictLine(districtCount)}</span>
           </p>
         </div>
       </div>

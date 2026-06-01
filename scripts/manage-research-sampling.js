@@ -14,8 +14,16 @@ const TRACKER_PATH = path.join(ROOT, "data/sampling/gage-research-sampling-track
 const AUDIT_PATH = path.join(ROOT, "data/sampling/gage-research-built-audit.json");
 const PDF_DIR = path.join(ROOT, "research/gworks-pdfs/source-pdfs");
 const GWORKS_REPORT_BASE = "https://report.gworks.com/report.ashx";
-const TARGET_PER_GROUP = 20;
-const PRIMARY_DEEP_SAMPLE_GROUP = "Residential-3";
+const BASE_SAMPLE_COUNT = 20;
+const SAMPLES_PER_TAX_DISTRICT = 5;
+const MAX_SAMPLE_COUNT_PER_GROUP = 150;
+const SAMPLE_TARGET_STATUSES = new Set([
+  "built_research",
+  "built_public",
+  "screened_candidate",
+  "screened_needs_review"
+]);
+const BUILT_SAMPLE_STATUSES = new Set(["built_research", "built_public"]);
 
 function usage() {
   console.error([
@@ -30,6 +38,7 @@ function usage() {
     "  node scripts/manage-research-sampling.js next [--group Residential-7] [--limit 20]",
     "  node scripts/manage-research-sampling.js build [--group Residential-7] [--name gis-vg15] [--school \"TRI COUNTY\"] [--limit 20]",
     "  node scripts/manage-research-sampling.js audit-built [--group Residential-7] [--limit 200]",
+    "  node scripts/manage-research-sampling.js retarget",
     "  node scripts/manage-research-sampling.js summary",
     "",
     "This manages the private all-group Gage research sample tracker."
@@ -142,7 +151,7 @@ function groupCatalog() {
       marketArea: description,
       marketGroup: group.marketGroup,
       description,
-      target: key === PRIMARY_DEEP_SAMPLE_GROUP ? 0 : TARGET_PER_GROUP
+      target: BASE_SAMPLE_COUNT
     });
   }
 
@@ -162,7 +171,7 @@ function groupCatalog() {
       marketArea: label,
       marketGroup: "Agricultural",
       description: label,
-      target: TARGET_PER_GROUP
+      target: BASE_SAMPLE_COUNT
     });
   }
 
@@ -248,13 +257,124 @@ function classifyRecordCard(recordCard, catalog) {
   };
 }
 
+function recordCardTaxDistrict(recordCard) {
+  return compact(
+    recordCard?.guidedSnapshot?.parcel?.taxDistrict
+    || recordCard?.sourceExtract?.taxDistrict
+    || recordCard?.taxDistrict
+  );
+}
+
+function candidateTaxDistrict(candidate) {
+  const direct = compact(candidate.taxDistrict);
+  if (direct) return direct;
+  if (!candidate.recordCardPath) return "";
+  const recordPath = path.join(ROOT, candidate.recordCardPath);
+  if (!fs.existsSync(recordPath)) return "";
+  return recordCardTaxDistrict(readJson(recordPath, {}));
+}
+
+function candidateParcelKeys(candidate) {
+  return [
+    candidate.sourceParcelId,
+    candidate.gworksParcelId,
+    candidate.ntoParcelId,
+    normalizeGworksParcelId(candidate.sourceParcelId),
+    normalizeGworksParcelId(candidate.gworksParcelId),
+    normalizeNtoParcelId(candidate.sourceParcelId),
+    normalizeNtoParcelId(candidate.gworksParcelId),
+    normalizeNtoParcelId(candidate.ntoParcelId)
+  ].filter(Boolean);
+}
+
+function propertyParcelKeys(property) {
+  return [
+    property.id,
+    property.parcelId,
+    normalizeGworksParcelId(property.parcelId),
+    normalizeNtoParcelId(property.parcelId)
+  ].filter(Boolean);
+}
+
+function targetForGroup({ builtCount, uniqueTaxDistrictCount }) {
+  // Tax-district diversity increases the target so multi-district groups get
+  // broader representation without allowing one group to consume the whole run.
+  const districtAdjustedTarget = BASE_SAMPLE_COUNT + (uniqueTaxDistrictCount * SAMPLES_PER_TAX_DISTRICT);
+  const cappedTarget = Math.min(districtAdjustedTarget, MAX_SAMPLE_COUNT_PER_GROUP);
+  return Math.max(builtCount, cappedTarget);
+}
+
+function applySamplingTargets(tracker, groups = [...groupCatalog().values()]) {
+  const catalog = groupCatalog();
+  const statsByGroup = new Map(groups.map(group => [group.key, {
+    builtCount: 0,
+    availableCount: 0,
+    taxDistricts: new Set()
+  }]));
+  const countedBuiltParcelKeys = new Set();
+
+  for (const candidate of tracker.candidates || []) {
+    if (!candidate.groupKey || !statsByGroup.has(candidate.groupKey)) continue;
+    if (!SAMPLE_TARGET_STATUSES.has(candidate.status)) continue;
+    const stats = statsByGroup.get(candidate.groupKey);
+    stats.availableCount += 1;
+    if (BUILT_SAMPLE_STATUSES.has(candidate.status)) {
+      stats.builtCount += 1;
+      candidateParcelKeys(candidate).forEach(key => countedBuiltParcelKeys.add(key));
+    }
+    const taxDistrict = candidateTaxDistrict(candidate);
+    if (taxDistrict) stats.taxDistricts.add(taxDistrict);
+  }
+
+  const manifest = readJson(MANIFEST_PATH, { properties: [] });
+  for (const property of manifest.properties || []) {
+    if (property.county !== "gage" || property.recordCardStatus !== "available" || !property.recordCardPath) continue;
+    const keys = propertyParcelKeys(property);
+    if (keys.some(key => countedBuiltParcelKeys.has(key))) continue;
+    const recordPath = path.join(ROOT, property.recordCardPath);
+    if (!fs.existsSync(recordPath)) continue;
+    const recordCard = readJson(recordPath, null);
+    const recordGroup = classifyRecordCard(recordCard, catalog);
+    if (!recordGroup?.key || !statsByGroup.has(recordGroup.key)) continue;
+    const stats = statsByGroup.get(recordGroup.key);
+    stats.builtCount += 1;
+    stats.availableCount += 1;
+    keys.forEach(key => countedBuiltParcelKeys.add(key));
+    const taxDistrict = recordCardTaxDistrict(recordCard);
+    if (taxDistrict) stats.taxDistricts.add(taxDistrict);
+  }
+
+  return groups.map(group => {
+    const stats = statsByGroup.get(group.key);
+    const uniqueTaxDistrictCount = stats?.taxDistricts.size || 0;
+    const target = targetForGroup({
+      builtCount: stats?.builtCount || 0,
+      uniqueTaxDistrictCount
+    });
+    return {
+      ...group,
+      target,
+      targetBasis: {
+        baseSampleCount: BASE_SAMPLE_COUNT,
+        samplesPerTaxDistrict: SAMPLES_PER_TAX_DISTRICT,
+        maxSampleCountPerGroup: MAX_SAMPLE_COUNT_PER_GROUP,
+        uniqueTaxDistrictCount,
+        builtSampleCount: stats?.builtCount || 0,
+        availableEligibleCount: stats?.availableCount || 0
+      }
+    };
+  });
+}
+
 function defaultTracker() {
   return {
     version: "0.1",
     project: "gage-all-group-research-sample",
     target: {
-      targetPerGroup: TARGET_PER_GROUP,
-      excludedDeepSampleGroup: PRIMARY_DEEP_SAMPLE_GROUP,
+      strategy: "base-plus-tax-district-diversity",
+      baseSampleCount: BASE_SAMPLE_COUNT,
+      samplesPerTaxDistrict: SAMPLES_PER_TAX_DISTRICT,
+      maxSampleCountPerGroup: MAX_SAMPLE_COUNT_PER_GROUP,
       sourceDescription: "Assessor 7-128 change parcel list",
       sourcePath: path.relative(ROOT, SOURCE_PATH)
     },
@@ -282,7 +402,16 @@ function loadTracker() {
 
 function saveTracker(tracker) {
   tracker.updatedAt = new Date().toISOString();
-  tracker.groups = [...groupCatalog().values()];
+  tracker.target = {
+    ...(tracker.target || {}),
+    strategy: "base-plus-tax-district-diversity",
+    baseSampleCount: BASE_SAMPLE_COUNT,
+    samplesPerTaxDistrict: SAMPLES_PER_TAX_DISTRICT,
+    maxSampleCountPerGroup: MAX_SAMPLE_COUNT_PER_GROUP
+  };
+  delete tracker.target.targetPerGroup;
+  delete tracker.target.excludedDeepSampleGroup;
+  tracker.groups = applySamplingTargets(tracker);
   writeJson(TRACKER_PATH, tracker);
 }
 
@@ -1141,11 +1270,12 @@ function countsByStatus(tracker) {
 }
 
 function groupSummaries(tracker) {
-  const catalog = groupCatalog();
-  const summaries = [...catalog.values()].map(group => ({
+  const groups = applySamplingTargets(tracker);
+  const summaries = groups.map(group => ({
     groupKey: group.key,
     label: `${group.class} ${group.valuationGroup}`,
     target: group.target,
+    targetBasis: group.targetBasis,
     built: 0,
     screened: 0,
     needsReview: 0,
@@ -1163,7 +1293,11 @@ function groupSummaries(tracker) {
   }
 
   for (const summary of summaries) {
-    summary.totalPotential = summary.built + summary.screened + summary.needsReview;
+    summary.built = Math.max(summary.built, summary.targetBasis?.builtSampleCount || 0);
+    summary.totalPotential = Math.max(
+      summary.built + summary.screened + summary.needsReview,
+      summary.targetBasis?.availableEligibleCount || 0
+    );
     summary.shortfall = Math.max(0, summary.target - summary.totalPotential);
   }
 
@@ -1179,10 +1313,21 @@ function printSummary(tracker = loadTracker()) {
   console.log(JSON.stringify({
     trackerPath: path.relative(ROOT, TRACKER_PATH),
     totalCandidates: tracker.candidates.length,
-    targetPerGroup: tracker.target.targetPerGroup,
+    targetStrategy: {
+      strategy: "base-plus-tax-district-diversity",
+      baseSampleCount: BASE_SAMPLE_COUNT,
+      samplesPerTaxDistrict: SAMPLES_PER_TAX_DISTRICT,
+      maxSampleCountPerGroup: MAX_SAMPLE_COUNT_PER_GROUP
+    },
     counts: countsByStatus(tracker),
     groups: summaries
   }, null, 2));
+}
+
+function retarget() {
+  const tracker = loadTracker();
+  saveTracker(tracker);
+  printSummary(tracker);
 }
 
 function main() {
@@ -1196,6 +1341,7 @@ function main() {
   if (args.command === "next") return next({ group: args.group, limit: args.limit });
   if (args.command === "build") return build({ group: args.group, limit: args.limit, name: args.name, school: args.school });
   if (args.command === "audit-built") return auditBuilt({ group: args.group, limit: args.limit });
+  if (args.command === "retarget") return retarget();
   if (args.command === "summary") return printSummary();
   usage();
 }

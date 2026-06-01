@@ -2,10 +2,12 @@
   "version": "0.1",
   "project": "gage-all-group-research-sample",
   "target": {
-    "targetPerGroup": 20,
-    "excludedDeepSampleGroup": "Residential-3",
     "sourceDescription": "Assessor 7-128 change parcel list",
-    "sourcePath": "data/sources/assessor-7-128-change-parcel-ids.txt"
+    "sourcePath": "data/sources/assessor-7-128-change-parcel-ids.txt",
+    "strategy": "base-plus-tax-district-diversity",
+    "baseSampleCount": 20,
+    "samplesPerTaxDistrict": 5,
+    "maxSampleCountPerGroup": 150
   },
   "statusDefinitions": {
     "source_candidate": "Parcel is in the 7-128 source list and has not been screened.",
@@ -19,7 +21,7 @@
     "rejected_unsupported_class": "PDF parsed but class is outside the current residential/commercial/ag scope."
   },
   "generatedAt": "2026-05-28T17:17:53.120Z",
-  "updatedAt": "2026-05-31T23:06:32.688Z",
+  "updatedAt": "2026-06-01T03:19:41.196Z",
   "groups": [
     {
       "key": "Residential-1",
@@ -29,7 +31,15 @@
       "marketArea": "Adams",
       "marketGroup": "Village",
       "description": "Adams",
-      "target": 20
+      "target": 25,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 1,
+        "builtSampleCount": 24,
+        "availableEligibleCount": 28
+      }
     },
     {
       "key": "Residential-2",
@@ -39,7 +49,15 @@
       "marketArea": "Barneston",
       "marketGroup": "Village",
       "description": "Barneston",
-      "target": 20
+      "target": 40,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 4,
+        "builtSampleCount": 24,
+        "availableEligibleCount": 24
+      }
     },
     {
       "key": "Residential-3",
@@ -49,7 +67,15 @@
       "marketArea": "Beatrice, Beatrice Subs",
       "marketGroup": "Urban",
       "description": "Beatrice, Beatrice Subs",
-      "target": 0
+      "target": 179,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 1,
+        "builtSampleCount": 179,
+        "availableEligibleCount": 254
+      }
     },
     {
       "key": "Commercial-3",
@@ -59,7 +85,15 @@
       "marketArea": "Beatrice",
       "marketGroup": "Urban",
       "description": "Beatrice",
-      "target": 20
+      "target": 30,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 2,
+        "builtSampleCount": 26,
+        "availableEligibleCount": 30
+      }
     },
     {
       "key": "Residential-5",
@@ -69,7 +103,15 @@
       "marketArea": "Blue Springs",
       "marketGroup": "Village",
       "description": "Blue Springs",
-      "target": 20
+      "target": 36,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 1,
+        "builtSampleCount": 36,
+        "availableEligibleCount": 46
+      }
     },
     {
       "key": "Residential-6",
@@ -79,7 +121,15 @@
       "marketArea": "Clatonia",
       "marketGroup": "Village",
       "description": "Clatonia",
-      "target": 20
+      "target": 25,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 1,
+        "builtSampleCount": 24,
+        "availableEligibleCount": 25
+      }
     },
     {
       "key": "Residential-7",
@@ -89,7 +139,15 @@
       "marketArea": "Cortland",
       "marketGroup": "Village",
       "description": "Cortland",
-      "target": 20
+      "target": 25,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 1,
+        "builtSampleCount": 25,
+        "availableEligibleCount": 27
+      }
     },
     {
       "key": "Residential-9",
@@ -99,7 +157,15 @@
       "marketArea": "Filley",
       "marketGroup": "Village",
       "description": "Filley",
-      "target": 20
+      "target": 25,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 1,
+        "builtSampleCount": 24,
+        "availableEligibleCount": 25
+      }
     },
     {
       "key": "Residential-10",
@@ -109,7 +175,15 @@
       "marketArea": "Liberty",
       "marketGroup": "Village",
       "description": "Liberty",
-      "target": 20
+      "target": 25,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 1,
+        "builtSampleCount": 24,
+        "availableEligibleCount": 25
+      }
     },
     {
       "key": "Commercial-10",
@@ -119,7 +193,15 @@
       "marketArea": "North Half Towns",
       "marketGroup": "Small Town",
       "description": "North Half Towns",
-      "target": 20
+      "target": 45,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 5,
+        "builtSampleCount": 25,
+        "availableEligibleCount": 29
+      }
     },
     {
       "key": "Residential-11",
@@ -129,7 +211,15 @@
       "marketArea": "Odell",
       "marketGroup": "Village",
       "description": "Odell",
-      "target": 20
+      "target": 25,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 1,
+        "builtSampleCount": 24,
+        "availableEligibleCount": 27
+      }
     },
     {
       "key": "Residential-12",
@@ -139,7 +229,15 @@
       "marketArea": "Pickrell",
       "marketGroup": "Village",
       "description": "Pickrell",
-      "target": 20
+      "target": 25,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 1,
+        "builtSampleCount": 24,
+        "availableEligibleCount": 28
+      }
     },
     {
       "key": "Residential-13",
@@ -149,7 +247,15 @@
       "marketArea": "Rockford, Holmesville, Lanham, Ellis",
       "marketGroup": "Unincorporated",
       "description": "Rockford, Holmesville, Lanham, Ellis",
-      "target": 20
+      "target": 45,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 5,
+        "builtSampleCount": 26,
+        "availableEligibleCount": 29
+      }
     },
     {
       "key": "Residential-15",
@@ -159,7 +265,15 @@
       "marketArea": "Rural Sub South, Rural",
       "marketGroup": "Rural",
       "description": "Rural Sub South, Rural",
-      "target": 20
+      "target": 40,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 4,
+        "builtSampleCount": 27,
+        "availableEligibleCount": 45
+      }
     },
     {
       "key": "Commercial-15",
@@ -169,7 +283,15 @@
       "marketArea": "South Half Towns",
       "marketGroup": "Small Town",
       "description": "South Half Towns",
-      "target": 20
+      "target": 50,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 6,
+        "builtSampleCount": 32,
+        "availableEligibleCount": 33
+      }
     },
     {
       "key": "Residential-16",
@@ -179,7 +301,15 @@
       "marketArea": "Rural Sub North",
       "marketGroup": "Rural",
       "description": "Rural Sub North",
-      "target": 20
+      "target": 45,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 5,
+        "builtSampleCount": 24,
+        "availableEligibleCount": 55
+      }
     },
     {
       "key": "Residential-17",
@@ -189,7 +319,15 @@
       "marketArea": "Virginia",
       "marketGroup": "Village",
       "description": "Virginia",
-      "target": 20
+      "target": 30,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 2,
+        "builtSampleCount": 24,
+        "availableEligibleCount": 27
+      }
     },
     {
       "key": "Residential-18",
@@ -199,7 +337,15 @@
       "marketArea": "Wymore",
       "marketGroup": "Small Town",
       "description": "Wymore",
-      "target": 20
+      "target": 37,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 1,
+        "builtSampleCount": 37,
+        "availableEligibleCount": 48
+      }
     },
     {
       "key": "Residential-19",
@@ -209,7 +355,15 @@
       "marketArea": "Doctor's Lake Homes",
       "marketGroup": "Lake Residential",
       "description": "Doctor's Lake Homes",
-      "target": 20
+      "target": 25,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 1,
+        "builtSampleCount": 25,
+        "availableEligibleCount": 27
+      }
     },
     {
       "key": "Commercial-18",
@@ -219,7 +373,15 @@
       "marketArea": "Wymore",
       "marketGroup": "Small Town",
       "description": "Wymore",
-      "target": 20
+      "target": 30,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 2,
+        "builtSampleCount": 24,
+        "availableEligibleCount": 24
+      }
     },
     {
       "key": "Commercial-50",
@@ -229,7 +391,15 @@
       "marketArea": "Rural",
       "marketGroup": "Rural",
       "description": "Rural",
-      "target": 20
+      "target": 150,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 33,
+        "builtSampleCount": 40,
+        "availableEligibleCount": 100
+      }
     },
     {
       "key": "Agricultural-1",
@@ -239,7 +409,15 @@
       "marketArea": "Market Area 1",
       "marketGroup": "Agricultural",
       "description": "Market Area 1",
-      "target": 20
+      "target": 150,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 35,
+        "builtSampleCount": 112,
+        "availableEligibleCount": 146
+      }
     },
     {
       "key": "Agricultural-2",
@@ -249,7 +427,15 @@
       "marketArea": "Market Area 2",
       "marketGroup": "Agricultural",
       "description": "Market Area 2",
-      "target": 20
+      "target": 70,
+      "targetBasis": {
+        "baseSampleCount": 20,
+        "samplesPerTaxDistrict": 5,
+        "maxSampleCountPerGroup": 150,
+        "uniqueTaxDistrictCount": 10,
+        "builtSampleCount": 66,
+        "availableEligibleCount": 100
+      }
     }
   ],
   "candidates": [
