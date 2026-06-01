@@ -2,11 +2,11 @@ import { copyArray, copyObject } from "../content/site-copy.js";
 
 const fallbackStartPageContent = {
   kicker: "Ready for review",
-  title: "Preview the review workspace",
-  intro: "Each sample opens a full parcel view with record details, value history, tax context, market charts, and guided review steps.",
-  calloutAriaLabel: "Sample record coverage",
-  calloutLabel: "Sample coverage",
-  calloutText: "Residential, agricultural, and commercial samples are available.",
+  title: "Find a property review",
+  intro: "Search by situs address to open a loaded parcel view with record details, value history, tax context, market charts, and guided review steps.",
+  calloutAriaLabel: "Loaded record coverage",
+  calloutLabel: "Loaded records",
+  calloutText: "Residential, agricultural, and commercial records are available when they have been loaded into this review workspace.",
   coverageAriaLabel: "What the review covers",
   cards: [
     {
@@ -15,14 +15,14 @@ const fallbackStartPageContent = {
     },
     {
       title: "Value and assessment history",
-      description: "See how the sample property's assessed value has moved and which years are still pending or finalized."
+      description: "See how the property's assessed value has moved and which years are still pending or finalized."
     },
     {
       title: "Tax impact",
       description: "See how value changes, levy, credits, and effective tax rate relate to the latest available tax bill."
     }
   ],
-  disclaimer: "This prototype uses pre-loaded sample records for demonstration, stress testing, and smoke testing. Official records, valuations, and tax determinations remain with the appropriate county offices."
+  disclaimer: "This prototype uses pre-loaded records for demonstration, stress testing, and smoke testing. Official records, valuations, and tax determinations remain with the appropriate county offices."
 };
 
 const fallbackDirectStartPageContent = {
@@ -50,6 +50,23 @@ const fallbackDirectStartPageContent = {
   disclaimer: "This prototype uses pre-loaded records for demonstration, stress testing, and smoke testing. Official records, valuations, and tax determinations remain with the appropriate county offices."
 };
 
+function formatStartCopy(value = "", tokens = {}) {
+  return `${value}`.replace(/\{([a-zA-Z0-9_]+)\}/g, (_, key) => tokens[key] ?? "");
+}
+
+function coverageTokens(propertySwitcherContext = {}) {
+  const loadedPropertyCount = propertySwitcherContext.records?.length ?? propertySwitcherContext.manifest?.properties?.length ?? 0;
+  const countyPropertyCount = 18222;
+  const coveragePercent = countyPropertyCount && loadedPropertyCount
+    ? `${Math.round(loadedPropertyCount / countyPropertyCount * 100)}%`
+    : "5%";
+
+  return {
+    loadedPropertyCount: loadedPropertyCount.toLocaleString(),
+    coveragePercent
+  };
+}
+
 export function renderStartPage(propertySwitcherContext = {}, renderViewHeader) {
   renderViewHeader?.("start", null, propertySwitcherContext);
 
@@ -75,29 +92,30 @@ export function renderStartPage(propertySwitcherContext = {}, renderViewHeader) 
   const fallbackContent = isDirectStart ? fallbackDirectStartPageContent : fallbackStartPageContent;
   const content = copyObject(copyPath, fallbackContent);
   const cards = copyArray(`${copyPath}.cards`, fallbackContent.cards);
+  const tokens = coverageTokens(propertySwitcherContext);
   start.innerHTML = `
     <article class="guided-start-card" aria-labelledby="guidedStartTitle">
       <div class="guided-start-copy">
-        <p class="guided-kicker">${content.kicker}</p>
-        <h2 id="guidedStartTitle">${content.title}</h2>
-        <p>${content.intro}</p>
+        <p class="guided-kicker">${formatStartCopy(content.kicker, tokens)}</p>
+        <h2 id="guidedStartTitle">${formatStartCopy(content.title, tokens)}</h2>
+        <p>${formatStartCopy(content.intro, tokens)}</p>
       </div>
 
-      <div class="guided-start-callout" aria-label="${content.calloutAriaLabel}">
-        <p class="guided-start-callout-label">${content.calloutLabel}</p>
-        <p>${content.calloutText}</p>
+      <div class="guided-start-callout" aria-label="${formatStartCopy(content.calloutAriaLabel, tokens)}">
+        <p class="guided-start-callout-label">${formatStartCopy(content.calloutLabel, tokens)}</p>
+        <p>${formatStartCopy(content.calloutText, tokens)}</p>
       </div>
 
-      <div class="guided-start-grid" aria-label="${content.coverageAriaLabel}">
+      <div class="guided-start-grid" aria-label="${formatStartCopy(content.coverageAriaLabel, tokens)}">
         ${cards.map(card => `
           <section>
-            <h3>${card.title}</h3>
-            <p>${card.description}</p>
+            <h3>${formatStartCopy(card.title, tokens)}</h3>
+            <p>${formatStartCopy(card.description, tokens)}</p>
           </section>
         `).join("")}
       </div>
 
-      <p class="guided-start-disclaimer">${content.disclaimer}</p>
+      <p class="guided-start-disclaimer">${formatStartCopy(content.disclaimer, tokens)}</p>
     </article>
   `;
 }

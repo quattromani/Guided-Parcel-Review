@@ -490,10 +490,10 @@ export function renderPropertyViewContext(data, recordCard, valuationGroups) {
 
 function propertyValuationGroupLabel(data, recordCard, valuationGroups) {
   const valuationGroupId = `${recordCard?.locationModel?.valuationGroup ?? ""}`.match(/\d+/)?.[0];
-  const propertyClass = data.classification.propertyClass;
+  const propertyClass = data?.classification?.propertyClass;
   const match = (valuationGroups?.valuationGroups || []).find(group =>
     String(group.valuationGroup) === String(valuationGroupId)
-    && group.class === propertyClass
+    && (!propertyClass || group.class === propertyClass)
   );
 
   if (recordCard?.locationModel?.valuationGroup) {
@@ -588,6 +588,8 @@ function propertySwitcherMarkup(propertySwitcher, snapshotModel) {
   const hasOptions = groups.some(group => group.options.length);
   const hasActiveProperty = Boolean(propertySwitcher?.activePropertyId);
   const pendingDirectProperty = propertySwitcher?.pendingDirectProperty;
+  const options = groups.flatMap(group => group.options);
+  const activeOption = options.find(option => option.selected);
 
   if (!hasOptions) return disabledParcelLookupMarkup();
   if (pendingDirectProperty && !hasActiveProperty) {
@@ -603,24 +605,38 @@ function propertySwitcherMarkup(propertySwitcher, snapshotModel) {
 
   return `
     <div class="parcel-lookup-placeholder ${hasActiveProperty ? "" : "property-switcher-empty"}" data-property-switcher-shell>
-      <label class="parcel-lookup-label" for="propertySwitcher">${hasActiveProperty ? "Switch sample property" : "Select a sample property"}</label>
-      <select
+      <label class="parcel-lookup-label" for="propertySwitcher">${hasActiveProperty ? "Switch property record" : "Select property record"}</label>
+      <div class="property-switcher-combobox" data-property-switcher>
+        <input
+          type="search"
         id="propertySwitcher"
-        class="parcel-lookup-shell property-switcher-select"
-        data-property-switcher
+          class="parcel-lookup-shell property-switcher-input"
+          data-property-switcher-input
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded="false"
+          aria-controls="propertySwitcherResults"
         aria-label="Switch property record"
-      >
-        ${hasActiveProperty ? "" : `<option value="" selected>Choose a sample property...</option>`}
-        ${groups.map(group => group.type === "heading" ? `
-          <option value="" disabled>${escapeHtml(group.label)}</option>
-        ` : `
-          <optgroup label="${escapeHtml(group.label)}">
-            ${group.options.map(option => `
-              <option value="${escapeHtml(option.id)}"${option.selected ? " selected" : ""}>${escapeHtml(option.label)}</option>
-            `).join("")}
-          </optgroup>
-        `).join("")}
-      </select>
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="${hasActiveProperty ? "Search situs..." : "Search by situs..."}"
+          value="${escapeHtml(activeOption?.label || "")}"
+        />
+        <div id="propertySwitcherResults" class="property-switcher-results" data-property-switcher-results role="listbox" hidden>
+          ${options.map(option => `
+            <button
+              type="button"
+              class="property-switcher-option"
+              data-property-switcher-option
+              data-property-id="${escapeHtml(option.id)}"
+              data-search="${escapeHtml(option.searchText)}"
+              role="option"
+              aria-selected="${option.selected ? "true" : "false"}"
+            >${escapeHtml(option.label)}</button>
+          `).join("")}
+          <p class="property-switcher-no-results" data-property-switcher-empty hidden>No matching record</p>
+        </div>
+      </div>
     </div>
   `;
 }
@@ -652,23 +668,38 @@ function propertySwitcherOptions(propertySwitcher, snapshotModel) {
   const valuationGroups = snapshotModel?.valuationGroups ?? propertySwitcher?.valuationGroups;
 
   return records
-    .filter(item => item.property?.id && item.recordCard)
+    .filter(item => item.property?.id)
     .map(item => {
       const recordCard = item.recordCard;
-      const data = recordCard.guidedSnapshot || {};
+      const data = recordCard?.guidedSnapshot || {};
       const situs = item.property.situsAddress || data.parcel?.situsAddress || "";
-      const situsNumber = firstSitusNumber(situs) || situs || item.property.parcelId;
+      const label = cleanSitusLabel(situs) || item.property.parcelId || item.property.id;
+      const owner = item.property.owner || data.parcel?.owner || ownerFromManifestLabel(item.property.label);
       const propertyClass = switcherClassLabel(item.property.propertyClass || data.classification?.propertyClass || data.parcel?.accountType);
       const valuationGroup = propertyValuationGroupLabel(data, recordCard, valuationGroups);
+      const searchText = [
+        label,
+        situs,
+        owner,
+        firstSitusNumber(situs),
+        item.property.parcelId,
+        stripLeadingZeroes(item.property.parcelId),
+        item.property.id,
+        stripLeadingZeroes(item.property.id),
+        valuationGroup,
+        propertyClass
+      ].filter(Boolean).join(" ");
 
       return {
         id: item.property.id,
         county: item.property.county,
         propertyClass,
         selected: item.property.id === activePropertyId,
-        label: `${situsNumber} • ${valuationGroup} • ${propertyClass}`
+        label,
+        searchText: normalizeSwitcherSearch(searchText)
       };
-    });
+    })
+    .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true, sensitivity: "base" }));
 }
 
 function pendingDirectPropertyLabel(propertySwitcher, snapshotModel) {
@@ -700,6 +731,22 @@ function firstSitusNumber(value) {
   return stripped || token;
 }
 
+function cleanSitusLabel(value) {
+  return `${value ?? ""}`.trim().replace(/^0+(?=\d)/, "");
+}
+
+function stripLeadingZeroes(value) {
+  return `${value ?? ""}`.replace(/^0+(?=\d)/, "");
+}
+
+function ownerFromManifestLabel(value) {
+  return `${value ?? ""}`.replace(/\s+property$/i, "").trim();
+}
+
+function normalizeSwitcherSearch(value) {
+  return `${value ?? ""}`.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
 function switcherClassLabel(value) {
   const normalized = `${value ?? ""}`.trim().toLowerCase();
 
@@ -714,7 +761,7 @@ function switcherClassLabel(value) {
 function disabledParcelLookupMarkup() {
   return `
     <div class="parcel-lookup-placeholder" data-parcel-lookup>
-      <p class="parcel-lookup-label">Sample property selector</p>
+      <p class="parcel-lookup-label">Property record selector</p>
       <button
         type="button"
         class="parcel-lookup-shell"
@@ -722,13 +769,13 @@ function disabledParcelLookupMarkup() {
         aria-disabled="true"
         aria-expanded="false"
         aria-controls="parcelLookupPopover"
-        aria-label="Sample property inventory is not connected to live parcel search"
+        aria-label="Loaded property inventory is not connected to live parcel search"
       >
-        <span class="parcel-lookup-input" title="Sample inventory only">Sample inventory only</span>
+        <span class="parcel-lookup-input" title="Loaded records only">Loaded records only</span>
         <span class="parcel-lookup-action" aria-hidden="true">Demo</span>
       </button>
       <div id="parcelLookupPopover" class="parcel-lookup-popover" data-parcel-lookup-popover hidden>
-        This prototype uses pre-loaded sample records. Live parcel lookup will be available only after a parcel API or assessment database is connected.
+        This prototype uses loaded research records. Live parcel lookup will be available only after a parcel API or assessment database is connected.
       </div>
     </div>
   `;
@@ -736,10 +783,111 @@ function disabledParcelLookupMarkup() {
 
 function initPropertySwitcher(root) {
   const switcher = root.querySelector("[data-property-switcher]");
-  if (switcher) {
-    switcher.addEventListener("change", () => {
-      switchPropertyRecord(switcher.value);
+  const input = root.querySelector("[data-property-switcher-input]");
+  const results = root.querySelector("[data-property-switcher-results]");
+  const empty = root.querySelector("[data-property-switcher-empty]");
+  const options = [...root.querySelectorAll("[data-property-switcher-option]")];
+
+  if (switcher && input && results && options.length) {
+    let activeIndex = -1;
+    let visibleOptions = [];
+
+    function normalizedQuery() {
+      return normalizeSwitcherSearch(input.value);
+    }
+
+    function matchesOption(option, query) {
+      if (!query) return option.getAttribute("aria-selected") === "true";
+
+      const searchText = option.dataset.search || "";
+      return searchText.startsWith(query)
+        || searchText.split(" ").some(token => token.startsWith(query));
+    }
+
+    function setOpen(open) {
+      results.hidden = !open;
+      input.setAttribute("aria-expanded", String(open));
+    }
+
+    function setActiveIndex(nextIndex) {
+      visibleOptions.forEach(option => option.classList.remove("property-switcher-option-active"));
+      activeIndex = nextIndex;
+      const option = visibleOptions[activeIndex];
+      if (!option) {
+        input.removeAttribute("aria-activedescendant");
+        return;
+      }
+
+      option.id ||= `propertySwitcherOption${activeIndex}`;
+      option.classList.add("property-switcher-option-active");
+      input.setAttribute("aria-activedescendant", option.id);
+      option.scrollIntoView({ block: "nearest" });
+    }
+
+    function filterOptions() {
+      const query = normalizedQuery();
+      visibleOptions = options
+        .filter(option => matchesOption(option, query))
+        .sort((a, b) => switcherMatchRank(a, query) - switcherMatchRank(b, query))
+        .slice(0, 12);
+      const visibleSet = new Set(visibleOptions);
+
+      options.forEach(option => {
+        option.hidden = !visibleSet.has(option);
+      });
+
+      if (empty) empty.hidden = Boolean(visibleOptions.length);
+      setActiveIndex(visibleOptions.length ? 0 : -1);
+      setOpen(Boolean(query || visibleOptions.length));
+    }
+
+    function chooseOption(option) {
+      const propertyId = option?.dataset.propertyId;
+      if (propertyId) {
+        switchPropertyRecord(propertyId, {
+          switchSource: "typeahead",
+          searchQuery: input.value.trim(),
+          targetSitus: option.textContent.trim()
+        });
+      }
+    }
+
+    input.addEventListener("input", filterOptions);
+    input.addEventListener("focus", filterOptions);
+    input.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        input.blur();
+        return;
+      }
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (results.hidden) filterOptions();
+        setActiveIndex(Math.min(activeIndex + 1, visibleOptions.length - 1));
+        return;
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        setActiveIndex(Math.max(activeIndex - 1, 0));
+        return;
+      }
+
+      if (event.key === "Enter") {
+        event.preventDefault();
+        chooseOption(visibleOptions[activeIndex]);
+      }
     });
+
+    options.forEach(option => {
+      option.addEventListener("click", () => chooseOption(option));
+    });
+
+    document.addEventListener("click", event => {
+      if (!switcher.contains(event.target)) setOpen(false);
+    });
+
     return;
   }
 
@@ -775,10 +923,19 @@ function initPropertySwitcher(root) {
 
 }
 
-function switchPropertyRecord(propertyId) {
+function switcherMatchRank(option, query) {
+  if (!query) return option.getAttribute("aria-selected") === "true" ? 0 : 1;
+
+  const label = normalizeSwitcherSearch(option.textContent);
+  if (label.startsWith(query)) return 0;
+  if (label.split(" ").some(token => token.startsWith(query))) return 1;
+  return 2;
+}
+
+function switchPropertyRecord(propertyId, switchDetails = {}) {
   if (!propertyId) return;
 
-  trackPropertySwitch(propertyId);
+  trackPropertySwitch(propertyId, switchDetails);
   try {
     window.localStorage?.setItem(PROPERTY_SELECTION_STORAGE_KEY, propertyId);
   } catch {

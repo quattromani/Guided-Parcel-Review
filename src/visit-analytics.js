@@ -111,10 +111,11 @@ export function trackFormOpen(label = "") {
   });
 }
 
-export function trackPropertySwitch(propertyId = "") {
+export function trackPropertySwitch(propertyId = "", details = {}) {
   trackVisitEvent("property_switch", {
     step: analyticsState.currentStep,
-    targetPropertyId: propertyId
+    targetPropertyId: propertyId,
+    ...details
   });
 }
 

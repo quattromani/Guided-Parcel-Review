@@ -21,7 +21,7 @@
     "rejected_unsupported_class": "PDF parsed but class is outside the current residential/commercial/ag scope."
   },
   "generatedAt": "2026-05-28T17:17:53.120Z",
-  "updatedAt": "2026-06-01T03:19:41.196Z",
+  "updatedAt": "2026-06-01T22:44:55.561Z",
   "groups": [
     {
       "key": "Residential-1",
@@ -28833,8 +28833,39 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "parsedAt": "2026-06-01T22:32:59.729Z",
+      "owner": "HATCLIFF, JASON MICHAEL & JAIME RENEE",
+      "situsAddress": "00104 FLORENCE",
+      "propertyClass": "Residential",
+      "accountType": "Residential",
+      "taxDistrict": "157",
+      "schoolDistrict": "SCH 15 BEATRICE, 34-0015",
+      "legalDescription": "0 3 6 S 40' OF LOTS 4-5-6 & ALL LOTS 7-8-9 BLK4 BRUMBACKS 3RD ADD",
+      "pdfParcelId": "010558000",
+      "pdfNtoParcelId": "0010558000",
+      "groupKey": "Residential-3",
+      "groupConfidence": "record-card",
+      "assignmentNotes": "Residential Beatrice/Beatrice Subs group assigned from tax district and record card context.",
+      "assignedValuationGroup": "3 - Beatrice, Beatrice Subs",
+      "assignedMarketArea": "Beatrice, Beatrice Subs",
+      "assignedMarketGroup": "Urban",
+      "manifestId": "residential-0010558000",
+      "recordCardPath": "data/property-records/mips/residential-0010558000-record-card.json",
+      "capturePath": "research/nto-captures/0010558000-2025-nto-capture.json",
+      "directAppUrl": "http://localhost:4173/?property=residential-0010558000#property-record",
+      "assets": {
+        "photo": "assets/images/010558000_1.jpg",
+        "sketch": "assets/images/010558000_2.jpg",
+        "additionalPhotos": [
+          {
+            "src": "assets/images/010558000_3.jpg",
+            "caption": "Additional Property Photo 1"
+          }
+        ]
+      },
+      "rejectedReason": null
     },
     {
       "sequence": 2745,
@@ -28849,8 +28880,33 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "parsedAt": "2026-06-01T22:20:53.185Z",
+      "owner": "BEHRENDS, WESTLEY & SARAH",
+      "situsAddress": "01801 S 2ND",
+      "propertyClass": "Residential",
+      "accountType": "Residential",
+      "taxDistrict": "157",
+      "schoolDistrict": "SCH 15 BEATRICE, 34-0015",
+      "legalDescription": "0 3 6 LOTS 1-3 INC BLK 13 BRUMBACKS 3RD ADD",
+      "pdfParcelId": "010559000",
+      "pdfNtoParcelId": "0010559000",
+      "groupKey": "Residential-3",
+      "groupConfidence": "record-card",
+      "assignmentNotes": "Residential Beatrice/Beatrice Subs group assigned from tax district and record card context.",
+      "assignedValuationGroup": "3 - Beatrice, Beatrice Subs",
+      "assignedMarketArea": "Beatrice, Beatrice Subs",
+      "assignedMarketGroup": "Urban",
+      "manifestId": "residential-0010559000",
+      "recordCardPath": "data/property-records/mips/residential-0010559000-record-card.json",
+      "capturePath": "research/nto-captures/0010559000-2025-nto-capture.json",
+      "directAppUrl": "http://localhost:4173/?property=residential-0010559000#property-record",
+      "assets": {
+        "photo": "assets/images/010559000_1.jpg",
+        "sketch": "assets/images/010559000_2.jpg"
+      },
+      "rejectedReason": null
     },
     {
       "sequence": 2747,
@@ -28881,8 +28937,37 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "parsedAt": "2026-06-01T22:39:40.649Z",
+      "owner": "LISHERNESS, LUKE & JESSICA",
+      "situsAddress": "00100 FRANKLIN",
+      "propertyClass": "Residential",
+      "accountType": "Residential",
+      "taxDistrict": "157",
+      "schoolDistrict": "SCH 15 BEATRICE, 34-0015",
+      "legalDescription": "0 4 6 LOTS 7-8-9 BLK 13 BRUMBACKS 3RD ADD",
+      "pdfParcelId": "010560000",
+      "pdfNtoParcelId": "0010560000",
+      "groupKey": "Residential-3",
+      "groupConfidence": "record-card",
+      "assignmentNotes": "Residential Beatrice/Beatrice Subs group assigned from tax district and record card context.",
+      "assignedValuationGroup": "3 - Beatrice, Beatrice Subs",
+      "assignedMarketArea": "Beatrice, Beatrice Subs",
+      "assignedMarketGroup": "Urban",
+      "manifestId": "residential-0010560000",
+      "recordCardPath": "data/property-records/mips/residential-0010560000-record-card.json",
+      "capturePath": "research/nto-captures/0010560000-2025-nto-capture.json",
+      "directAppUrl": "http://localhost:4173/?property=residential-0010560000#property-record",
+      "assets": {
+        "photo": "assets/images/010560000_1.jpg",
+        "sketch": "assets/images/010560000_2.jpg"
+      },
+      "rejectedReason": null,
+      "mailingAddress": "100 FRANKLIN AVE, BEATRICE, NE 68310-5028",
+      "currentOwnerSource": "Nebraska Taxes Online 2025 and 2024 statement records",
+      "previousOwner": "ZUHLKE, CRAIG & AMY",
+      "ownerReviewNote": "NTO shows Lisherness as primary owner for 2024-2025; 2023 and earlier statement records show Zuhlke."
     },
     {
       "sequence": 2751,
@@ -52266,8 +52351,24 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "builtAt": "2026-06-01T21:57:56.694Z",
+      "groupKey": "Residential-3",
+      "propertyClass": "Residential",
+      "assignedValuationGroup": "3 - Beatrice, Beatrice Subs",
+      "assignedMarketArea": "Beatrice, Beatrice Subs",
+      "assignedMarketGroup": "Urban",
+      "manifestId": "residential-0013102000",
+      "recordCardPath": "data/property-records/mips/residential-0013102000-record-card.json",
+      "capturePath": "research/nto-captures/0013102000-2025-nto-capture.json",
+      "directAppUrl": "http://localhost:4173/?property=residential-0013102000#property-record",
+      "assets": {
+        "photo": "assets/images/013102000_1.jpg",
+        "sketch": "assets/images/013102000_2.jpg",
+        "additionalPhotos": []
+      },
+      "rejectedReason": null
     },
     {
       "sequence": 6084,
@@ -70940,8 +71041,33 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "parsedAt": "2026-06-01T22:43:14.237Z",
+      "owner": "GLOOR, DAVID A & MARY B TRUSTEES",
+      "situsAddress": "01709 S 2ND",
+      "propertyClass": "Residential",
+      "accountType": "Residential",
+      "taxDistrict": "157",
+      "schoolDistrict": "SCH 15 BEATRICE, 34-0015",
+      "legalDescription": "0 3 6 S 40' OF LOTS 1-2-3 & ALL LOTS 10-11-12 BLK 4 BRUMBACKS 3RD ADD",
+      "pdfParcelId": "010557000",
+      "pdfNtoParcelId": "0010557000",
+      "groupKey": "Residential-3",
+      "groupConfidence": "record-card",
+      "assignmentNotes": "Residential Beatrice/Beatrice Subs group assigned from tax district and record card context.",
+      "assignedValuationGroup": "3 - Beatrice, Beatrice Subs",
+      "assignedMarketArea": "Beatrice, Beatrice Subs",
+      "assignedMarketGroup": "Urban",
+      "manifestId": "residential-0010557000",
+      "recordCardPath": "data/property-records/mips/residential-0010557000-record-card.json",
+      "capturePath": "research/nto-captures/0010557000-2025-nto-capture.json",
+      "directAppUrl": "http://localhost:4173/?property=residential-0010557000#property-record",
+      "assets": {
+        "photo": "assets/images/010557000_1.jpg",
+        "sketch": "assets/images/010557000_2.jpg"
+      },
+      "rejectedReason": null
     },
     {
       "sequence": 8795,

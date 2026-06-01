@@ -71,6 +71,7 @@ import {
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 let importantCalendarDates = { dates: [], metadata: {} };
+const GAGE_APPROXIMATE_TOTAL_PROPERTY_COUNT = 18222;
 
 function propertyIdentityKey(value = {}) {
   return `${value.parcelId
@@ -83,6 +84,19 @@ function propertyIdentityKey(value = {}) {
 
 function syncLayoutViewportWidth() {
   document.documentElement.style.setProperty("--layout-viewport-width", `${document.documentElement.clientWidth}px`);
+}
+
+function loadedPropertyCoverageTokens(propertySwitcher = {}) {
+  const loadedPropertyCount = propertySwitcher.records?.length ?? propertySwitcher.manifest?.properties?.length ?? 0;
+  const countyPropertyCount = GAGE_APPROXIMATE_TOTAL_PROPERTY_COUNT;
+  const coveragePercent = countyPropertyCount && loadedPropertyCount
+    ? `${Math.round(loadedPropertyCount / countyPropertyCount * 100)}%`
+    : "5%";
+
+  return {
+    loadedPropertyCount: loadedPropertyCount.toLocaleString(),
+    coveragePercent
+  };
 }
 
 syncLayoutViewportWidth();
@@ -123,18 +137,40 @@ async function main() {
           { propertyLabel: escapeHtml(directPropertyDisplayName(pendingDirectProperty)) },
           "This direct link will open {propertyLabel}. Confirm the notice below, then continue to the guided property view."
         ),
+        coverageCopy: copyTemplate(
+          "orientation.coverageCopy",
+          loadedPropertyCoverageTokens(propertySwitcher),
+          "This project currently contains {loadedPropertyCount} loaded properties, representing about {coveragePercent} of Gage County parcels. It is not a complete property listing. It contains only static records manually pulled from public sources, so many county properties will not appear in search."
+        ),
         onAccepted: () => continueDirectPropertyStart(pendingDirectProperty.id)
       }
       : developmentFeaturePropertyId
       ? {
         force: true,
         primaryButtonLabel: copy("orientation.samplePrimaryButtonLabel", "Start Sample Review"),
+        coverageCopy: copyTemplate(
+          "orientation.coverageCopy",
+          loadedPropertyCoverageTokens(propertySwitcher),
+          "This project currently contains {loadedPropertyCount} loaded properties, representing about {coveragePercent} of Gage County parcels. It is not a complete property listing. It contains only static records manually pulled from public sources, so many county properties will not appear in search."
+        ),
         onAccepted: () => continueDevelopmentFeatureSampleStart(
           developmentFeaturePropertyId,
           PROPERTY_SELECTION_STORAGE_KEY
         )
       }
-      : {});
+      : {
+        primaryButtonLabel: copy("orientation.samplePrimaryButtonLabel", "Start Property Search"),
+        propertySelectionCopy: copyTemplate(
+          "orientation.searchPropertySelectionCopy",
+          loadedPropertyCoverageTokens(propertySwitcher),
+          "Start by searching for a property by situs address in the search field at the top of the page. If the record is loaded, selecting it opens the guided review."
+        ),
+        coverageCopy: copyTemplate(
+          "orientation.coverageCopy",
+          loadedPropertyCoverageTokens(propertySwitcher),
+          "This project currently contains {loadedPropertyCount} loaded properties, representing about {coveragePercent} of Gage County parcels. It is not a complete property listing. It contains only static records manually pulled from public sources, so many county properties will not appear in search."
+        )
+      });
     return;
   }
 
@@ -224,7 +260,12 @@ async function main() {
   if (!directPropertyRequest) {
     initFirstVisitOrientation({
       primaryButtonLabel: copy("orientation.continuePrimaryButtonLabel", "Continue to Property Record"),
-      propertySelectionCopy: copy("orientation.propertySelectionCopy", "A sample parcel is already loaded. Continue to the Property Record, then move through the guided steps."),
+      propertySelectionCopy: copy("orientation.propertySelectionCopy", "A property review is already loaded. Continue to the Property Record, then move through the guided steps."),
+      coverageCopy: copyTemplate(
+        "orientation.coverageCopy",
+        loadedPropertyCoverageTokens(propertySwitcherContext),
+        "This project currently contains {loadedPropertyCount} loaded properties, representing about {coveragePercent} of Gage County parcels. It is not a complete property listing. It contains only static records manually pulled from public sources, so many county properties will not appear in search."
+      ),
       onAccepted: () => {}
     });
   }

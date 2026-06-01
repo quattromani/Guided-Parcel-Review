@@ -160,18 +160,10 @@ export function loadPropertyRecordCard() {
 }
 
 export function loadPropertySwitcherRecords() {
-  return loadPropertyManifest().then(async manifest => {
-    const switcherProperties = (manifest.properties || []).filter(isPublicSwitcherProperty);
-    const records = await Promise.all(switcherProperties.map(async property => {
-      if (property.recordCardStatus !== "available" || !property.recordCardPath) {
-        return { property, recordCard: null };
-      }
-
-      return {
-        property,
-        recordCard: await loadJson(property.recordCardPath, `property switcher record ${property.id}`).catch(() => null)
-      };
-    }));
+  return loadPropertyManifest().then(manifest => {
+    const records = (manifest.properties || [])
+      .filter(property => property.recordCardStatus === "available" && property.recordCardPath)
+      .map(property => ({ property, recordCard: null }));
 
     return {
       activePropertyId: getActivePropertyId(manifest),
