@@ -2,6 +2,11 @@ import { escapeHtml } from "../utils/html.js";
 
 export const experimentLinks = [
   {
+    title: "Property Invite Index",
+    href: "?experiment=property-invite-index",
+    note: "Internal searchable table of loaded records with one-click invite links."
+  },
+  {
     title: "1301 S 5th Comparable Sales Walkthrough",
     href: "?experiment=1301-s-5th-comps",
     note: "Four-property comparable sales experiment with candidate screening and full record comparison."

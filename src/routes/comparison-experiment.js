@@ -11,7 +11,7 @@ import {
   textLabel
 } from "../domain/comparison-review.js";
 import { escapeHtml } from "../utils/html.js";
-import { rankComparableCandidates, renderComparableCandidateReview } from "./comparable-candidate-review.js";
+import { rankComparableCandidates } from "./comparable-candidate-review.js";
 
 async function loadJson(path, label) {
   const response = await fetch(path);
@@ -41,6 +41,16 @@ async function resolveComparisonModel(manifest, item) {
   }
 
   return placeholderComparisonData(item);
+}
+
+function scoreLabel(model, review) {
+  if (model.role === "subject") return "Subject";
+  return review?.score?.totalScore ?? "Not listed";
+}
+
+function burdenLabel(model, review) {
+  if (model.role === "subject") return "Reference";
+  return review?.adjustmentBurden || "Not listed";
 }
 
 function renderPropertyCard(model, review = null) {
@@ -88,16 +98,14 @@ function renderPropertyCard(model, review = null) {
             <dt>Sale price</dt>
             <dd>${escapeHtml(moneyLabel(model.salePrice))}</dd>
           </div>
-          ${review ? `
           <div>
             <dt>Similarity score</dt>
-            <dd>${review.score.totalScore}</dd>
+            <dd>${escapeHtml(scoreLabel(model, review))}</dd>
           </div>
           <div>
-            <dt>Review burden</dt>
-            <dd>${escapeHtml(review.adjustmentBurden.replace(" adjustment burden", ""))}</dd>
+            <dt>Adjustment burden</dt>
+            <dd>${escapeHtml(burdenLabel(model, review))}</dd>
           </div>
-          ` : ""}
         </dl>
       </div>
     </article>
@@ -155,19 +163,33 @@ function renderCompTable(models) {
   `;
 }
 
-function renderSubjectStory(model, comparableModels = []) {
+function assessmentAverageRatio(models = []) {
+  const ratios = models
+    .map(assessmentAtSale)
+    .filter(item => item?.ratio);
+  return ratios.length
+    ? ratios.reduce((sum, item) => sum + item.ratio, 0) / ratios.length
+    : null;
+}
+
+function renderQuestionSection(config = {}) {
+  return `
+    <section class="comp-story-question review-card" aria-labelledby="neighborCompTitle">
+      <p class="guided-kicker">${escapeHtml(config.contextKicker || "Guided Comparable Search")}</p>
+      <h2 id="neighborCompTitle">${escapeHtml(config.introTitle || "A walkthrough for understanding comparison")}</h2>
+      <p>${escapeHtml(config.introCopy || "This exercise is not intended to determine an exact market value. It demonstrates how similar properties can be reviewed and compared as part of an equalization review process.")}</p>
+      ${config.disclaimer ? `<p class="comp-story-disclaimer">${escapeHtml(config.disclaimer)}</p>` : ""}
+    </section>
+  `;
+}
+
+function renderSubjectSnapshot(model) {
   if (!model) return "";
 
   const saleContext = assessmentAtSale(model);
-  const comparableRatios = comparableModels
-    .map(assessmentAtSale)
-    .filter(item => item?.ratio);
-  const comparableAverageRatio = comparableRatios.length
-    ? comparableRatios.reduce((sum, item) => sum + item.ratio, 0) / comparableRatios.length
-    : null;
 
   return `
-    <section class="subject-story-panel review-card" aria-labelledby="subjectStoryTitle">
+    <section class="subject-snapshot-panel review-card" aria-labelledby="subjectStoryTitle">
       <div class="subject-story-photo">
         <img src="${escapeHtml(model.photoUrl || "")}" alt="${escapeHtml(model.address)} house photo" />
       </div>
@@ -177,39 +199,210 @@ function renderSubjectStory(model, comparableModels = []) {
         <dl class="subject-story-facts">
           <div><dt>2026 assessed value</dt><dd>${escapeHtml(moneyLabel(model.values.assessed2026))}</dd></div>
           <div><dt>Building size</dt><dd>${escapeHtml(numberLabel(model.buildingSqFt, " sq. ft."))}</dd></div>
-          <div><dt>Year built</dt><dd>${escapeHtml(numberLabel(model.structure.yearBuilt))}</dd></div>
-          <div><dt>Quality</dt><dd>${escapeHtml(textLabel(model.condition.quality))}</dd></div>
-          <div><dt>Condition</dt><dd>${escapeHtml(textLabel(model.condition.condition))}</dd></div>
-          <div><dt>Tax district</dt><dd>${escapeHtml(textLabel(model.taxDistrict))}</dd></div>
-          <div><dt>School district</dt><dd>${escapeHtml(textLabel(model.schoolDistrict))}</dd></div>
-        </dl>
-      </div>
-      <aside class="subject-market-panel">
-        <p class="guided-kicker">Market Alignment History</p>
-        <h3>Where Did This Property Enter The Cycle?</h3>
-        <dl>
-          <div><dt>Sale date</dt><dd>${escapeHtml(textLabel(model.saleDate))}</dd></div>
           <div><dt>Sale price</dt><dd>${escapeHtml(moneyLabel(model.salePrice))}</dd></div>
-          <div><dt>Assessed value at sale</dt><dd>${escapeHtml(moneyLabel(saleContext?.assessed))}</dd></div>
-          <div><dt>Historical assessment-to-sale reference</dt><dd>${escapeHtml(saleRatioDisplayLabel(saleContext?.ratio))}</dd></div>
+          <div><dt>Assessment-to-sale ratio</dt><dd>${escapeHtml(saleRatioDisplayLabel(saleContext?.ratio))}</dd></div>
         </dl>
-        <div class="subject-ratio-compare">
-          <div>
-            <span>Subject historical reference</span>
-            <strong>${escapeHtml(saleRatioDisplayLabel(saleContext?.ratio))}</strong>
-          </div>
-          <div>
-            <span>Comp average historical reference</span>
-            <strong>${escapeHtml(saleRatioDisplayLabel(comparableAverageRatio))}</strong>
-          </div>
-        </div>
-        <p>
-          When this property last sold, its assessed value represented approximately ${escapeHtml(saleRatioDisplayLabel(saleContext?.ratio))} of the sale price.
-          Properties that begin at lower assessment-to-sale ratios may experience larger increases over time as assessments move closer to market-supported levels.
-        </p>
-        <p class="subject-market-note">This historical context helps explain change. It does not determine whether today's assessment is accurate.</p>
-      </aside>
+        <details class="subject-details-toggle">
+          <summary>View Property Details</summary>
+          <dl>
+            <div><dt>Sale date</dt><dd>${escapeHtml(textLabel(model.saleDate))}</dd></div>
+            <div><dt>Assessed value at sale</dt><dd>${escapeHtml(moneyLabel(saleContext?.assessed))}</dd></div>
+            <div><dt>Year built</dt><dd>${escapeHtml(numberLabel(model.structure.yearBuilt))}</dd></div>
+            <div><dt>Quality / condition</dt><dd>${escapeHtml([model.condition.quality, model.condition.condition].filter(Boolean).join(" / ") || "Not listed")}</dd></div>
+            <div><dt>Tax district</dt><dd>${escapeHtml(textLabel(model.taxDistrict))}</dd></div>
+            <div><dt>School district</dt><dd>${escapeHtml(textLabel(model.schoolDistrict))}</dd></div>
+          </dl>
+        </details>
+      </div>
     </section>
+  `;
+}
+
+function renderBestMatchesSection(models, selectedReviews, reviewByParcelId, config = {}) {
+  return `
+    <section class="best-matches-section review-card" aria-labelledby="bestMatchesTitle">
+      <div class="comp-story-section-head">
+        <p class="guided-kicker">${escapeHtml(config.cardSectionKicker || "Best Available Matches")}</p>
+        <h2 id="bestMatchesTitle">${escapeHtml(config.cardSectionTitle || "Subject property and selected nearby sales")}</h2>
+        <p>Swipe through the subject and selected sales first. The detailed record checks are available farther down the page.</p>
+      </div>
+      <div class="neighbor-comp-card-grid neighbor-comp-card-grid-four neighbor-comp-card-carousel" aria-label="${escapeHtml(config.cardSectionLabel || "Comparison property cards")}">
+        ${models.map(model => renderPropertyCard(model, reviewByParcelId.get(model.parcelId))).join("")}
+      </div>
+      ${renderRankingSummary(selectedReviews)}
+    </section>
+  `;
+}
+
+function renderRankingSummary(reviews = []) {
+  if (!reviews.length) return "";
+
+  return `
+    <section class="mobile-ranking-summary" aria-labelledby="rankingSummaryTitle">
+      <h3 id="rankingSummaryTitle">Best Available Matches</h3>
+      <div class="mobile-ranking-list">
+        ${reviews.map((review, index) => `
+          <article>
+            <span>${index + 1}</span>
+            <strong>${escapeHtml(review.candidate.address)}</strong>
+            <em>${review.score.totalScore}</em>
+            <small>${escapeHtml(review.adjustmentBurden)}</small>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderWhyMatchesSection(ranked, searchStats = {}) {
+  const allCandidates = ranked.allCandidates || [];
+  const selectedCandidates = ranked.selectedCandidates || [];
+  const eligibleCount = allCandidates.filter(review => review.eligibility.eligible).length;
+  const reviewedCount = searchStats.localPdfCandidateCount ?? allCandidates.length;
+
+  return `
+    <section class="why-matches-section review-card" aria-labelledby="whyMatchesTitle">
+      <div class="comp-story-section-head">
+        <p class="guided-kicker">Why These Matches Were Selected</p>
+        <h2 id="whyMatchesTitle">Best available candidates, not identical properties</h2>
+        <p>Comparable selection often means choosing the best available candidates rather than finding perfect matches.</p>
+      </div>
+      <dl class="why-matches-stats">
+        <div><dt>Records reviewed</dt><dd>${Number(reviewedCount).toLocaleString("en-US")}</dd></div>
+        <div><dt>Eligible candidates</dt><dd>${Number(searchStats.eligibleScriptCandidateCount ?? eligibleCount).toLocaleString("en-US")}</dd></div>
+        <div><dt>Selected matches</dt><dd>${selectedCandidates.length}</dd></div>
+      </dl>
+      <p class="why-matches-note">
+        The selected sales rose to the top because they combine usable sale information with similar public-record characteristics.
+        Each one still has differences that require judgment.
+      </p>
+    </section>
+  `;
+}
+
+function renderEqualizationSection() {
+  return `
+    <section class="equalization-story-section review-card" aria-labelledby="equalizationStoryTitle">
+      <div class="comp-story-section-head">
+        <p class="guided-kicker">What Are We Checking?</p>
+        <h2 id="equalizationStoryTitle">Similar properties should be treated similarly</h2>
+      </div>
+      <p>
+        This exercise is not trying to determine the exact value of a house. It is trying to determine whether similar
+        properties are being treated similarly. That principle is known as equalization.
+      </p>
+      <p>
+        Comparable sales are one tool used to evaluate whether assessments appear uniform and proportionate across similar properties.
+      </p>
+    </section>
+  `;
+}
+
+function renderAssessmentContextSection(subject, comparableModels = []) {
+  if (!subject) return "";
+
+  const saleContext = assessmentAtSale(subject);
+  const comparableAverageRatio = assessmentAverageRatio(comparableModels);
+
+  return `
+    <section class="assessment-context-section review-card" aria-labelledby="assessmentContextTitle">
+      <div class="comp-story-section-head">
+        <p class="guided-kicker">Assessment-to-Sale Context</p>
+        <h2 id="assessmentContextTitle">Where the property entered the cycle</h2>
+      </div>
+      <dl class="assessment-context-facts">
+        <div><dt>Subject sale price</dt><dd>${escapeHtml(moneyLabel(subject.salePrice))}</dd></div>
+        <div><dt>Assessed at sale</dt><dd>${escapeHtml(moneyLabel(saleContext?.assessed))}</dd></div>
+        <div><dt>Subject reference</dt><dd>${escapeHtml(saleRatioDisplayLabel(saleContext?.ratio))}</dd></div>
+        <div><dt>Comp average reference</dt><dd>${escapeHtml(saleRatioDisplayLabel(comparableAverageRatio))}</dd></div>
+      </dl>
+      <p>
+        This historical context helps explain starting position and assessment movement over time. It does not determine whether
+        the current assessment is correct.
+      </p>
+    </section>
+  `;
+}
+
+function renderDetailedComparisonSection(reviews = []) {
+  if (!reviews.length) return "";
+
+  return `
+    <details class="detailed-comparison-section review-card">
+      <summary>
+        <span>
+          <span class="guided-kicker">Detailed Comparison</span>
+          <strong>View Detailed Comparison</strong>
+        </span>
+        <small>Open this section to inspect the attribute-by-attribute review behind the selected matches.</small>
+      </summary>
+      <div class="comp-review-checklist-stack">
+        ${reviews.map(renderChecklist).join("")}
+      </div>
+    </details>
+  `;
+}
+
+function renderBadge(label, modifier) {
+  return `<span class="comp-review-badge comp-review-badge-${escapeHtml(modifier)}">${escapeHtml(label)}</span>`;
+}
+
+function renderChecklist(review) {
+  return `
+    <details class="comp-review-checklist">
+      <summary class="comp-review-checklist-head">
+        <div>
+          <p class="neighbor-comp-label">${escapeHtml(review.candidate.roleLabel || "Candidate")}</p>
+          <h3>${escapeHtml(review.candidate.address)} checklist</h3>
+        </div>
+        <div class="comp-review-badge-row">
+          ${renderBadge(`${review.score.totalScore} score`, "score")}
+          ${renderBadge(review.adjustmentBurden, "burden")}
+        </div>
+      </summary>
+      <div class="neighbor-comp-table-wrap">
+        <table class="neighbor-comp-table comp-review-table">
+          <thead>
+            <tr>
+              <th scope="col">Comparison point</th>
+              <th scope="col">Subject</th>
+              <th scope="col">Candidate</th>
+              <th scope="col">Rating</th>
+              <th scope="col">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${review.checklist.rows.map(row => `
+              <tr>
+                <th scope="row">${escapeHtml(row.attribute)}</th>
+                <td>${escapeHtml(row.subjectValue)}</td>
+                <td>${escapeHtml(row.candidateValue)}</td>
+                <td>${renderBadge(row.rating, row.rating)}</td>
+                <td>${escapeHtml(row.explanation)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  `;
+}
+
+function renderAuditTrailSection(models, config = {}) {
+  const sourceText = config.sourceText || "Source: GWorks property record PDFs, Nebraska Taxes Online statement data, and manually selected comparable sales records. This experimental view is for review and layout testing only.";
+
+  return `
+    <details class="neighbor-comp-full-record review-card">
+      <summary>
+        <span>
+          <span class="guided-kicker">${escapeHtml(config.tableKicker || "Audit Trail")}</span>
+          <strong>Full Record Comparison</strong>
+        </span>
+        <small>This section preserves the underlying records used in the review process and is provided for transparency and verification.</small>
+      </summary>
+      ${renderCompTable(models)}
+      <p class="neighbor-comp-source-note">${escapeHtml(sourceText)}</p>
+    </details>
   `;
 }
 
@@ -232,19 +425,6 @@ export async function renderComparisonExperiment(propertySwitcherContext = {}, c
     ? rankComparableCandidates(subject, candidateModels)
     : { selectedCandidates: [] };
   const reviewByParcelId = new Map(rankedForCards.selectedCandidates.map(review => [review.candidate.parcelId, review]));
-  const cardGridClass = models.length >= 4 ? "neighbor-comp-card-grid neighbor-comp-card-grid-four" : "neighbor-comp-card-grid";
-  const fullRecordComparison = `
-    <details class="neighbor-comp-full-record review-card" open>
-      <summary>
-        <span>
-          <span class="guided-kicker">${escapeHtml(config.tableKicker || "Comp Sheet")}</span>
-          <strong>${escapeHtml(config.fullRecordTitle || config.tableTitle || "Full Record Comparison")}</strong>
-        </span>
-        <small>${escapeHtml(config.fullRecordHelp || "This section preserves the underlying record details used in the review. It is intentionally more detailed and is best used after reviewing the summaries above.")}</small>
-      </summary>
-      ${renderCompTable(models)}
-    </details>
-  `;
 
   pageTitle.innerHTML = `
     <div class="comp-page-title">
@@ -256,54 +436,14 @@ export async function renderComparisonExperiment(propertySwitcherContext = {}, c
 
   canvas.innerHTML = `
     <section class="neighbor-comp-page" aria-labelledby="neighborCompTitle">
-      <div class="neighbor-comp-intro">
-        <div>
-          <p class="guided-kicker">${escapeHtml(config.contextKicker || "Manual Review · Experimental Layout")}</p>
-          <h2 id="neighborCompTitle">${escapeHtml(config.introTitle || "Set up for comparison, not a valuation conclusion")}</h2>
-        </div>
-        <p>${escapeHtml(config.introCopy || "")}</p>
-      </div>
-
-      ${config.disclaimer ? `
-        <aside class="neighbor-comp-disclaimer">
-          ${escapeHtml(config.disclaimer)}
-        </aside>
-      ` : ""}
-
-      ${config.showSubjectStory ? renderSubjectStory(subject, models.filter(model => model.role !== "subject")) : ""}
-
-      ${config.showCandidateReview && config.refinedComparableReview ? renderComparableCandidateReview(subject, candidateModels, { refined: true, stage: "pool", searchStats: config.candidateSearchStats }) : ""}
-
-      <section class="neighbor-comp-selected-section" aria-label="${escapeHtml(config.cardSectionLabel || "Comparison property cards")}">
-        ${config.cardSectionTitle ? `
-          <div class="comp-review-subhead">
-            <p class="guided-kicker">${escapeHtml(config.cardSectionKicker || "Selected Comparable Cards")}</p>
-            <h3>${escapeHtml(config.cardSectionTitle)}</h3>
-          </div>
-        ` : ""}
-        <div class="${cardGridClass}">
-          ${models.map(model => renderPropertyCard(model, reviewByParcelId.get(model.parcelId))).join("")}
-        </div>
-      </section>
-
-      ${config.showCandidateReview ? renderComparableCandidateReview(subject, candidateModels, { refined: config.refinedComparableReview, stage: config.refinedComparableReview ? "details" : "full", searchStats: config.candidateSearchStats }) : ""}
-
-      ${config.refinedComparableReview ? fullRecordComparison : `
-      <section class="neighbor-comp-sheet review-card" aria-label="${escapeHtml(config.tableLabel || "Side-by-side comp sheet")}">
-        <div class="neighbor-comp-sheet-header">
-          <div>
-            <p class="guided-kicker">${escapeHtml(config.tableKicker || "Comp Sheet")}</p>
-            <h2>${escapeHtml(config.tableTitle || "Record facts and value breakouts")}</h2>
-          </div>
-          <p>${escapeHtml(config.sourceText || "")}</p>
-        </div>
-        ${renderCompTable(models)}
-      </section>
-      `}
+      ${renderQuestionSection(config)}
+      ${renderSubjectSnapshot(subject)}
+      ${renderBestMatchesSection(models, rankedForCards.selectedCandidates, reviewByParcelId, config)}
+      ${renderWhyMatchesSection(rankedForCards, config.candidateSearchStats)}
+      ${renderEqualizationSection()}
+      ${renderAssessmentContextSection(subject, models.filter(model => model.role !== "subject"))}
+      ${renderDetailedComparisonSection(rankedForCards.selectedCandidates)}
+      ${renderAuditTrailSection(models, config)}
     </section>
   `;
-
-  if (config.refinedComparableReview && window.matchMedia("(max-width: 980px)").matches) {
-    canvas.querySelector(".neighbor-comp-full-record")?.removeAttribute("open");
-  }
 }

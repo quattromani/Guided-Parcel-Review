@@ -58,6 +58,7 @@ import {
   renderExperimentsIndex
 } from "./routes/experiments-index.js";
 import { renderGrantNeighborCompExperiment } from "./routes/grant-neighbor-comps.js";
+import { renderPropertyInviteIndex } from "./routes/property-invite-index.js";
 import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js";
 import {
   continueDevelopmentFeatureSampleStart,
@@ -138,6 +139,13 @@ async function main() {
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
     setFooterResourcesVisible(false);
     await renderSFifthComparableSalesExperiment(propertySwitcher);
+    return;
+  }
+
+  if (experimentView === "property-invite-index") {
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    setFooterResourcesVisible(false);
+    renderPropertyInviteIndex(propertySwitcher);
     return;
   }
 
