@@ -7567,7 +7567,12 @@ footer > [data-footer-resource-shell] {
 }
 
 .best-matches-section .neighbor-comp-card-grid {
+  background: rgb(var(--color-blue-soft) / 0.72);
+  border: 1px solid rgb(var(--color-blue) / 0.16);
+  border-radius: var(--radius-container-md);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.65);
   margin-top: 0.15rem;
+  padding: 0.85rem;
 }
 
 .mobile-ranking-summary {
@@ -8463,9 +8468,9 @@ footer > [data-footer-resource-shell] {
     display: flex;
     gap: 0.85rem;
     grid-template-columns: none;
-    margin-inline: -0.9rem;
+    margin-inline: 0;
     overflow-x: auto;
-    padding: 0 0.9rem 0.4rem;
+    padding: 0.75rem;
     scroll-padding-inline: 0.9rem;
     scroll-snap-type: x mandatory;
   }
