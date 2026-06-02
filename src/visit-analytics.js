@@ -234,7 +234,9 @@ function viewportBucket() {
 }
 
 function shouldSkipVisitAnalytics() {
-  return isLocalWorkingHost() || isWorkingSessionUserAgent(navigator.userAgent || "");
+  return isLocalWorkingHost()
+    || isExperimentRoute()
+    || isWorkingSessionUserAgent(navigator.userAgent || "");
 }
 
 function isLocalWorkingHost() {
@@ -244,6 +246,13 @@ function isLocalWorkingHost() {
     || hostname === "127.0.0.1"
     || hostname === "::1"
     || hostname.endsWith(".localhost");
+}
+
+function isExperimentRoute() {
+  const params = new URLSearchParams(window.location.search);
+  return params.has("experiment")
+    || params.has("experiments")
+    || window.location.pathname.startsWith("/experiments");
 }
 
 function isWorkingSessionUserAgent(userAgent) {

@@ -7063,6 +7063,56 @@ footer > [data-footer-resource-shell] {
   gap: 1.5rem;
 }
 
+.experiments-index-page {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.experiments-index-page h2 {
+  color: rgb(var(--brand-ink));
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.experiments-index-list {
+  display: grid;
+  gap: 0.8rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.experiments-index-list li {
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: var(--radius-container-sm);
+  background: rgb(var(--surface-raised));
+  padding: 0.9rem 1rem;
+}
+
+.experiments-index-list a {
+  color: rgb(var(--brand-blue));
+  display: inline-flex;
+  font-weight: 800;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+.experiments-index-list a:hover,
+.experiments-index-list a:focus-visible {
+  text-decoration: underline;
+}
+
+.experiments-index-list span {
+  color: rgb(var(--color-slate-600));
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  margin-top: 0.25rem;
+}
+
 .neighbor-comp-intro {
   align-items: end;
   display: grid;
@@ -7353,6 +7403,17 @@ footer > [data-footer-resource-shell] {
   overflow-x: auto;
 }
 
+.neighbor-comp-match-note {
+  background: rgb(var(--surface-muted));
+  border-bottom: 1px solid rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0.9rem 1rem;
+}
+
 .neighbor-comp-table {
   border-collapse: collapse;
   color: rgb(var(--brand-ink));
@@ -7397,8 +7458,26 @@ footer > [data-footer-resource-shell] {
   background: rgb(var(--accent-primary) / 0.08);
 }
 
+.neighbor-comp-table .neighbor-comp-best-match {
+  background: rgb(var(--color-slate-200) / 0.25);
+  font-weight: 800;
+}
+
+.neighbor-comp-table .neighbor-comp-subject-col.neighbor-comp-best-match {
+  background: rgb(var(--accent-primary) / 0.08);
+  box-shadow: none;
+}
+
 .neighbor-comp-table thead .neighbor-comp-subject-col {
   background: rgb(var(--accent-primary));
+}
+
+.neighbor-comp-table tfoot th,
+.neighbor-comp-table tfoot td {
+  background: rgb(var(--surface-muted));
+  border-top: 2px solid rgb(var(--border-muted));
+  color: rgb(var(--brand-ink));
+  font-weight: 800;
 }
 
 .neighbor-comp-group-row th {
@@ -7467,6 +7546,7 @@ footer > [data-footer-resource-shell] {
 .comp-search-reality,
 .comp-tells-us,
 .comp-methodology-note,
+.comp-equalization-note,
 .comp-review-card-section {
   display: grid;
   gap: 1rem;
@@ -7497,7 +7577,8 @@ footer > [data-footer-resource-shell] {
 
 .comp-search-reality,
 .comp-tells-us,
-.comp-methodology-note {
+.comp-methodology-note,
+.comp-equalization-note {
   background: rgb(var(--surface-muted));
   border: 1px solid rgb(var(--border-muted));
   border-radius: var(--radius-container-md);
@@ -7511,7 +7592,8 @@ footer > [data-footer-resource-shell] {
 
 .comp-search-reality h3,
 .comp-tells-us h3,
-.comp-methodology-note h3 {
+.comp-methodology-note h3,
+.comp-equalization-note h3 {
   color: rgb(var(--brand-ink));
   font-size: 1.08rem;
   font-weight: 800;
@@ -7520,7 +7602,8 @@ footer > [data-footer-resource-shell] {
 
 .comp-search-reality p,
 .comp-tells-us p,
-.comp-methodology-note p {
+.comp-methodology-note p,
+.comp-equalization-note p {
   color: rgb(var(--color-slate-600));
   font-size: 0.9rem;
   font-weight: 700;
@@ -7530,6 +7613,12 @@ footer > [data-footer-resource-shell] {
 
 .comp-methodology-note {
   border-left: 4px solid rgb(var(--accent-primary) / 0.45);
+  margin: 0 1.25rem;
+  padding: 1rem;
+}
+
+.comp-equalization-note {
+  border-left: 4px solid rgb(var(--color-green) / 0.48);
   margin: 0 1.25rem;
   padding: 1rem;
 }

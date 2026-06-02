@@ -65,6 +65,31 @@ function number(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function garageRowsFromRecordCard(recordCard) {
+  return [
+    ...(recordCard.garageCostLines || []),
+    ...(recordCard.guidedSnapshot?.outbuildingData || []).filter(row => /garage/i.test(`${row.description || ""}`))
+  ];
+}
+
+function garageRowsFromParsed(parsed) {
+  const attached = parsed.residential?.garage1
+    ? [{ description: parsed.residential.garage1, units: parsed.residential.garage1Size }]
+    : [];
+  const detached = (parsed.outbuildingRows || []).filter(row => /garage/i.test(`${row.description || ""}`));
+  return [...attached, ...detached];
+}
+
+function garageTypeLabel(rows) {
+  return rows.length
+    ? rows.map(row => [row.description, row.units ? `${Number(row.units).toLocaleString("en-US")} sq. ft.` : null].filter(Boolean).join(", ")).join("; ")
+    : null;
+}
+
+function garageTotalSize(rows) {
+  return rows.reduce((sum, row) => sum + (Number(row.units) || 0), 0) || null;
+}
+
 function saleInfo(pdfPath) {
   const text = execFileSync("pdftotext", ["-layout", pdfPath, "-"], { encoding: "utf8" });
   const block = text.match(/Sales Information([\s\S]*?)(?:\n\s*\d+\s*\n|Property Classification)/)?.[1] || "";
@@ -86,6 +111,7 @@ function subjectModel(recordCard) {
   const residential = recordCard.guidedSnapshot?.residential || {};
   const classification = recordCard.guidedSnapshot?.classification || {};
   const current = valueRow(recordCard, 2026);
+  const garageRows = garageRowsFromRecordCard(recordCard);
 
   return {
     parcelId: parcel.parcelId,
@@ -108,8 +134,8 @@ function subjectModel(recordCard) {
     bathrooms: residential.bathrooms,
     basementSize: residential.basementSize,
     basementFinishedSqFt: residential.minFinish,
-    garageType: residential.garage1,
-    garageSize: number(`${residential.garage1 || ""}`.match(/([\d,]+)\s*sq\.?\s*ft/i)?.[1]),
+    garageType: garageTypeLabel(garageRows),
+    garageSize: garageTotalSize(garageRows),
     assessed2026: current?.total,
     landValue: current?.land,
     dwellingValue: current?.dwelling,
@@ -120,6 +146,7 @@ function subjectModel(recordCard) {
 function candidateModel(candidate, parsed, pdfPath) {
   const sale = saleInfo(pdfPath);
   const current = parsed.assessedValues?.find(row => row.year === 2026);
+  const garageRows = garageRowsFromParsed(parsed);
 
   return {
     parcelId: parsed.parcelId,
@@ -148,8 +175,8 @@ function candidateModel(candidate, parsed, pdfPath) {
     bathrooms: parsed.residential?.bathrooms,
     basementSize: parsed.residential?.basementSize,
     basementFinishedSqFt: parsed.residential?.minFinish,
-    garageType: parsed.residential?.garage1,
-    garageSize: parsed.residential?.garage1Size || number(`${parsed.residential?.garage1 || ""}`.match(/([\d,]+)\s*sq\.?\s*ft/i)?.[1]),
+    garageType: garageTypeLabel(garageRows),
+    garageSize: garageTotalSize(garageRows),
     outbuildings: parsed.outbuildingRows || [],
     porchesDecks: (parsed.dwellingRows || []).filter(row => /deck|porch|prch/i.test(row.description || "")),
     fireplaces: (parsed.dwellingRows || []).filter(row => /fireplace/i.test(row.description || "")),

@@ -31,6 +31,7 @@ import {
 } from "./market-stats.js";
 import { renderStartPage as renderStartPageRoute } from "./routes/start-page.js";
 import { displayAddress } from "./utils/address.js";
+import { garageSummary } from "./domain/property-record-facts.js";
 import { displayValue, formatSquareFeet, hasDisplayValue } from "./utils/display.js";
 import { escapeHtml } from "./utils/html.js";
 import { trackPropertySwitch } from "./visit-analytics.js";
@@ -1123,7 +1124,7 @@ function renderPropertyDetails(data, recordCard) {
   ];
   const improvementDetails = [
     ["Status", data.classification.status],
-    ...physicalDetailsForProperty(data)
+    ...physicalDetailsForProperty(data, recordCard)
   ];
 
   const compactDetailLabels = new Set([
@@ -1221,7 +1222,7 @@ function hasDetailedRecordCard(recordCard) {
   return Boolean(recordCard?.parcelIdentifiers);
 }
 
-function physicalDetailsForProperty(data) {
+function physicalDetailsForProperty(data, recordCard) {
   if (data.commercial?.buildingDatasheet?.length || data.classification.propertyClass === "Commercial") {
     return [
       ["Primary occupancy", data.commercial?.primaryOccupancy],
@@ -1242,7 +1243,7 @@ function physicalDetailsForProperty(data) {
     ["Basement size", formatSquareFeet(data.residential?.basementSize)],
     ["Bedrooms / bathrooms", [data.residential?.bedrooms, data.residential?.bathrooms].every(value => value !== null && value !== undefined) ? `${data.residential.bedrooms} / ${data.residential.bathrooms}` : null],
     ["Quality / condition", [data.residential?.quality, data.residential?.condition].filter(Boolean).join(" / ")],
-    ["Garage", [data.residential?.garage1, data.residential?.garage2].filter(Boolean).join("; ")],
+    ["Garage", garageSummary(recordCard, null)],
     ["Exterior", data.residential?.exterior]
   ];
 }

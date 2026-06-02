@@ -531,11 +531,11 @@ function renderMethodologyNote() {
   return `
     <section class="comp-methodology-note">
       <p class="guided-kicker">How To Read This</p>
-      <h3>Manual selection, scored for review</h3>
+      <h3>A guided comparable search walkthrough</h3>
       <p>
-        The three comparable sales on this page were manually selected for this experiment. The score and burden labels are a review aid:
-        they show where public record characteristics appear similar, superior, inferior, unknown, or cautionary relative to the subject.
-        Those labels describe adjustment work, not whether a property is good or bad.
+        This page follows a basic comparable-property review process using public records. It starts with the subject property,
+        narrows the candidate pool, and then shows the selected sales side by side. The purpose is to understand similarities,
+        differences, and questions for further review, not to tell the reader what conclusion to reach.
       </p>
     </section>
   `;
@@ -545,8 +545,8 @@ function renderRankingSummary(reviews) {
   return `
     <section class="comp-ranking-summary" aria-labelledby="rankingSummaryTitle">
       <div class="comp-review-subhead">
-        <p class="guided-kicker">Comparable Ranking Summary</p>
-        <h3 id="rankingSummaryTitle">Selected manual candidates at a glance</h3>
+        <p class="guided-kicker">Selected Comparables</p>
+        <h3 id="rankingSummaryTitle">Why these three rose to the top</h3>
       </div>
       <div class="neighbor-comp-table-wrap">
         <table class="neighbor-comp-table comp-ranking-table">
@@ -593,11 +593,12 @@ function renderSearchReality(ranked, searchStats = {}) {
   return `
     <section class="comp-search-reality">
       <div>
-        <p class="guided-kicker">Search Reality</p>
-        <h3>Best available candidates, not identical properties</h3>
+        <p class="guided-kicker">Building The Candidate Pool</p>
+        <h3>Best available candidates, not perfect matches</h3>
         <p>
-          The cards above are the records currently loaded into this experiment. The broader helper script can screen a much larger VG3 residential pool,
-          but only local PDFs with sale and structure data can be scored today.
+          Comparable selection usually starts broad, then narrows. The search looks for nearby residential records in the same
+          valuation group, then keeps the records with usable sale and structure information. From there, the best available
+          candidates are selected for closer review.
         </p>
       </div>
       <dl>
@@ -621,11 +622,27 @@ function renderDynamicNarrative(subject, reviews) {
 
   return `
     <section class="comp-tells-us">
-      <p class="guided-kicker">What This Tells Us</p>
-      <h3>Useful context, with remaining judgment calls</h3>
+      <p class="guided-kicker">What This Exercise Is For</p>
+      <h3>Understanding the comparison, not reaching a conclusion</h3>
       <p>
-        This review found nearby sold properties sharing ${shared.length ? escapeHtml(shared.join(", ")) : "several available public record characteristics"} with the subject.
-        None is a perfect match. The purpose of the comparison is to identify which sales appear most comparable and where meaningful differences remain.
+        This review is not intended to prove whether a value is correct or incorrect. It demonstrates how a property can be
+        compared with nearby sales and similar homes. The selected properties share ${shared.length ? escapeHtml(shared.join(", ")) : "several available public record characteristics"}
+        with the subject, while still leaving differences and questions that may deserve additional review.
+      </p>
+    </section>
+  `;
+}
+
+function renderEqualizationNote() {
+  return `
+    <section class="comp-equalization-note">
+      <p class="guided-kicker">A Note About Equalization</p>
+      <h3>Consistency matters as much as individual comparison</h3>
+      <p>
+        Mass appraisal is different from the appraisal used for a purchase or refinance. The goal is not to estimate the exact
+        value of every individual property one at a time. The goal is to apply values consistently across similar properties so
+        the tax burden is distributed uniformly and proportionately. Comparable sales are one tool for reviewing whether that
+        consistency appears to exist.
       </p>
     </section>
   `;
@@ -649,7 +666,7 @@ function renderCompactReviewCard(review) {
           ${renderMiniList(review.reasons, "Included for review context.")}
         </div>
         <div>
-          <h4>Main cautions</h4>
+          <h4>Limits of comparison</h4>
           ${renderMiniList(review.cautions, "No major caution flagged from available data.")}
         </div>
       </div>
@@ -681,6 +698,55 @@ function renderAlternates(reviews) {
 
 function renderRefinedComparableCandidateReview(subject, candidates, options = {}) {
   const ranked = rankComparableCandidates(subject, candidates);
+  const stage = options.stage || "full";
+
+  if (stage === "pool") {
+    return `
+      <section class="comp-review-section review-card" aria-labelledby="candidateReviewTitle">
+        <div class="comp-review-header">
+          <div>
+            <p class="guided-kicker">Comparable Search Walkthrough</p>
+            <h2 id="candidateReviewTitle">Building the candidate pool</h2>
+          </div>
+          <p>
+            The walkthrough starts with many possible records and narrows toward the best available matches. This is a screening step,
+            not a value conclusion.
+          </p>
+        </div>
+        ${renderMethodologyNote()}
+        ${renderSearchReality(ranked, options.searchStats)}
+        ${renderRankingSummary(ranked.selectedCandidates)}
+        ${renderAlternates(ranked.alternates)}
+      </section>
+    `;
+  }
+
+  if (stage === "details") {
+    return `
+      <section class="comp-review-section review-card" aria-labelledby="candidateReviewCardsTitle">
+        ${renderDynamicNarrative(subject, ranked.selectedCandidates)}
+        ${renderEqualizationNote()}
+        <section class="comp-review-card-section">
+          <div class="comp-review-subhead">
+            <p class="guided-kicker">Comparable Review Cards</p>
+            <h3 id="candidateReviewCardsTitle">What makes each selected property useful</h3>
+          </div>
+          <div class="comp-compact-review-grid">
+            ${ranked.selectedCandidates.map(renderCompactReviewCard).join("")}
+          </div>
+        </section>
+        <section class="comp-review-card-section">
+          <div class="comp-review-subhead">
+            <p class="guided-kicker">Detailed Checklist</p>
+            <h3>Open a comparable to verify the underlying attribute review</h3>
+          </div>
+          <div class="comp-review-checklist-stack">
+            ${ranked.selectedCandidates.map(renderChecklist).join("")}
+          </div>
+        </section>
+      </section>
+    `;
+  }
 
   return `
     <section class="comp-review-section review-card" aria-labelledby="candidateReviewTitle">
@@ -690,15 +756,15 @@ function renderRefinedComparableCandidateReview(subject, candidates, options = {
           <h2 id="candidateReviewTitle">Candidate scoring and review helper</h2>
         </div>
         <p>
-          This experimental score does not determine market value. It only helps identify which sold properties
-          appear most similar to the subject based on available public record characteristics. A real comparable
-          sales analysis still requires judgment, verification, and adjustment.
+          This experimental walkthrough does not determine market value. It shows how public record characteristics
+          can be used to narrow a comparable-property search and preserve questions for further review.
         </p>
       </div>
       ${renderMethodologyNote()}
       ${renderRankingSummary(ranked.selectedCandidates)}
       ${renderSearchReality(ranked, options.searchStats)}
       ${renderDynamicNarrative(subject, ranked.selectedCandidates)}
+      ${renderEqualizationNote()}
       <section class="comp-review-card-section">
         <div class="comp-review-subhead">
           <p class="guided-kicker">Comparable Review Cards</p>

@@ -17,6 +17,7 @@ import {
   displayAddress,
   displayMailingAddress
 } from "./utils/address.js";
+import { garageRowsFromRecord, garageSummary } from "./domain/property-record-facts.js";
 import {
   getClassMarketStats,
   getCodInterpretationRange,
@@ -221,8 +222,8 @@ function drawAssessorRecordPage(ctx, model) {
     ["Land area", propertySummary.landArea],
     ["Land model", recordCard?.landModel?.description],
     ["Recorded land value", formatNullableMoney(recordCard?.landModel?.recordedLotValue)],
-    ["Garage", [residential.garage1, residential.garage2].filter(Boolean).join("; ")],
-    ["Garage lines", countLabel(recordCard?.garageCostLines?.length, "line")],
+    ["Garage", garageSummary(recordCard, null)],
+    ["Garage lines", countLabel(garageRowsFromRecord(recordCard).length, "line")],
     ["Outbuildings", propertySummary.outbuildingSummary],
     ["Misc. improvements", propertySummary.miscImprovementSummary],
     ["Review history", propertySummary.reviewHistorySummary]

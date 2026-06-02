@@ -53,6 +53,10 @@ import { escapeHtml } from "./utils/html.js";
 import { initAssessorsReport } from "./assessors-report.js";
 import { initAssessmentDatesPanel } from "./assessment-dates.js";
 import { initFirstVisitOrientation, ORIENTATION_STORAGE_KEY } from "./orientation.js";
+import {
+  isExperimentIndexRequest,
+  renderExperimentsIndex
+} from "./routes/experiments-index.js";
 import { renderGrantNeighborCompExperiment } from "./routes/grant-neighbor-comps.js";
 import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js";
 import {
@@ -113,7 +117,15 @@ async function main() {
   const developmentFeaturePropertyId = developmentFeatureSampleStartPropertyId(propertySwitcher.manifest);
   const directPropertyRequest = hasDirectPropertyRequest(propertySwitcher.manifest);
   const pendingDirectProperty = propertySwitcher.pendingDirectProperty;
-  const experimentView = new URLSearchParams(window.location.search).get("experiment");
+  const searchParams = new URLSearchParams(window.location.search);
+  const experimentView = searchParams.get("experiment");
+
+  if (isExperimentIndexRequest(searchParams)) {
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    setFooterResourcesVisible(false);
+    renderExperimentsIndex();
+    return;
+  }
 
   if (experimentView === "grant-neighbor-comps") {
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;

@@ -4,6 +4,7 @@ import {
   displayAddress,
   displayMailingAddress
 } from "../utils/address.js";
+import { garageSummary as sharedGarageSummary } from "../domain/property-record-facts.js";
 import {
   getClassMarketStats,
   getParcelMarketClass,
@@ -37,14 +38,7 @@ function schoolDistrictLabel(value) {
 }
 
 function garageSummary(recordCard) {
-  const lines = recordCard?.garageCostLines || [];
-  if (!lines.length) return "No garage records listed";
-  return lines.map(line => compactParts([
-    line.description,
-    line.units,
-    line.yearIn ? `year ${line.yearIn}` : null,
-    line.rcnld ? `${formatNullableMoney(line.rcnld)} value` : null
-  ], ", ")).join("; ");
+  return sharedGarageSummary(recordCard);
 }
 
 function improvementRows(recordCard) {
