@@ -21,7 +21,7 @@
     "rejected_unsupported_class": "PDF parsed but class is outside the current residential/commercial/ag scope."
   },
   "generatedAt": "2026-05-28T17:17:53.120Z",
-  "updatedAt": "2026-06-02T00:52:49.583Z",
+  "updatedAt": "2026-06-02T12:43:19.467Z",
   "groups": [
     {
       "key": "Residential-1",
@@ -9371,8 +9371,17 @@
       "ntoParcelId": "0010432000",
       "gworksPdfPath": "research/gworks-pdfs/source-pdfs/010432000.pdf",
       "gworksUrl": "https://report.gworks.com/report.ashx?county=gage&id=010432000&subs=true&type=assessor",
-      "status": "rejected_download_failed",
-      "rejectedReason": "Command failed: curl -L -s -f --connect-timeout 10 --max-time 30 -o /Users/maxquattromani/Sites/Guided-Parcel-Review/research/gworks-pdfs/source-pdfs/010432000.pdf https://report.gworks.com/report.ashx?county=gage&id=010432000&subs=true&type=assessor"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "recordId": "residential-0010432000",
+      "recordCardPath": "data/property-records/mips/residential-0010432000-record-card.json",
+      "capturePath": "research/nto-captures/0010432000-2025-nto-capture.json",
+      "builtAt": "2026-06-02T13:33:24.055Z",
+      "owner": "MCGILL, JAY & KIMBERLEE TRUSTEES",
+      "situsAddress": "01816 S 5TH",
+      "taxDistrict": "157",
+      "valuationGroup": "3 - Beatrice, Beatrice Subs",
+      "marketArea": "Beatrice, Beatrice Subs"
     },
     {
       "sequence": 616,
@@ -26064,8 +26073,18 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "recordId": "residential-0010300000",
+      "recordCardPath": "data/property-records/mips/residential-0010300000-record-card.json",
+      "capturePath": "research/nto-captures/0010300000-2025-nto-capture.json",
+      "owner": "HAIN, CORY & AMBER",
+      "situsAddress": "02322 GRANT",
+      "builtAt": "2026-06-02T12:43:19.467Z",
+      "propertyClass": "Residential",
+      "accountType": "Residential",
+      "taxDistrict": "157",
+      "valuationGroup": "3 - Beatrice, Beatrice Subs"
     },
     {
       "sequence": 2392,
@@ -26080,8 +26099,18 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "recordId": "residential-0010301000",
+      "recordCardPath": "data/property-records/mips/residential-0010301000-record-card.json",
+      "capturePath": "research/nto-captures/0010301000-2025-nto-capture.json",
+      "owner": "KUHNKE, MARK A & MORGAN A",
+      "situsAddress": "2320 GRANT",
+      "builtAt": "2026-06-02T12:43:19.467Z",
+      "propertyClass": "Residential",
+      "accountType": "Residential",
+      "taxDistrict": "157",
+      "valuationGroup": "3 - Beatrice, Beatrice Subs"
     },
     {
       "sequence": 2394,
@@ -26096,8 +26125,18 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "recordId": "residential-0010302000",
+      "recordCardPath": "data/property-records/mips/residential-0010302000-record-card.json",
+      "capturePath": "research/nto-captures/0010302000-2025-nto-capture.json",
+      "owner": "NELSON, JASON W",
+      "situsAddress": "02318 GRANT",
+      "builtAt": "2026-06-02T12:43:19.467Z",
+      "propertyClass": "Residential",
+      "accountType": "Residential",
+      "taxDistrict": "157",
+      "valuationGroup": "3 - Beatrice, Beatrice Subs"
     },
     {
       "sequence": 2396,
@@ -27856,8 +27895,17 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "recordId": "residential-0010489000",
+      "recordCardPath": "data/property-records/mips/residential-0010489000-record-card.json",
+      "capturePath": "research/nto-captures/0010489000-2025-nto-capture.json",
+      "builtAt": "2026-06-02T13:33:24.056Z",
+      "owner": "JACKSON, JEFFERY A & AMBER A",
+      "situsAddress": "01401 S 3RD",
+      "taxDistrict": "157",
+      "valuationGroup": "3 - Beatrice, Beatrice Subs",
+      "marketArea": "Beatrice, Beatrice Subs"
     },
     {
       "sequence": 2626,
@@ -28433,8 +28481,17 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "recordId": "residential-0010528000",
+      "recordCardPath": "data/property-records/mips/residential-0010528000-record-card.json",
+      "capturePath": "research/nto-captures/0010528000-2025-nto-capture.json",
+      "builtAt": "2026-06-02T13:33:24.056Z",
+      "owner": "HOLSING, CYNTHIA L",
+      "situsAddress": "01623 S 4TH",
+      "taxDistrict": "157",
+      "valuationGroup": "3 - Beatrice, Beatrice Subs",
+      "marketArea": "Beatrice, Beatrice Subs"
     },
     {
       "sequence": 2694,

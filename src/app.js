@@ -53,6 +53,8 @@ import { escapeHtml } from "./utils/html.js";
 import { initAssessorsReport } from "./assessors-report.js";
 import { initAssessmentDatesPanel } from "./assessment-dates.js";
 import { initFirstVisitOrientation, ORIENTATION_STORAGE_KEY } from "./orientation.js";
+import { renderGrantNeighborCompExperiment } from "./routes/grant-neighbor-comps.js";
+import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js";
 import {
   continueDevelopmentFeatureSampleStart,
   developmentFeatureSampleStartPropertyId
@@ -111,6 +113,21 @@ async function main() {
   const developmentFeaturePropertyId = developmentFeatureSampleStartPropertyId(propertySwitcher.manifest);
   const directPropertyRequest = hasDirectPropertyRequest(propertySwitcher.manifest);
   const pendingDirectProperty = propertySwitcher.pendingDirectProperty;
+  const experimentView = new URLSearchParams(window.location.search).get("experiment");
+
+  if (experimentView === "grant-neighbor-comps") {
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    setFooterResourcesVisible(false);
+    await renderGrantNeighborCompExperiment(propertySwitcher);
+    return;
+  }
+
+  if (experimentView === "1301-s-5th-comps") {
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    setFooterResourcesVisible(false);
+    await renderSFifthComparableSalesExperiment(propertySwitcher);
+    return;
+  }
 
   if (!propertySwitcher.activePropertyId) {
     const [realPropertyForms, assessmentDateEvents, taxpayerActionDates] = await Promise.all([
