@@ -30,6 +30,16 @@ function number(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function ownerMailingAddress(text) {
+  const block = blockMatch(text, /Current Owner:[^\n]*\n([\s\S]*?)\nSitus Address:/, "");
+  const lines = block
+    .split(/\n/)
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  return lines.length ? lines.join(", ") : null;
+}
+
 function parsePdf(pdfPath) {
   const text = execFileSync("pdftotext", ["-layout", pdfPath, "-"], { encoding: "utf8" });
   const parcelId = firstMatch(text, /Parcel ID:\s+([0-9]+)/);
@@ -46,7 +56,9 @@ function parsePdf(pdfPath) {
       dwelling: money(match[5])
     }));
 
-  const levyRows = [...text.matchAll(/^\s*([A-Z0-9 #&.'-]+?)\s+([0-9]\.[0-9]{8})\s*$/gm)]
+  const levyRows = text.split(/\n/)
+    .map(line => line.match(/([A-Z][A-Z0-9 #&.'/-]*?)\s+([0-9]\.[0-9]{8})\s*$/))
+    .filter(Boolean)
     .map(match => ({
       description: match[1].trim().replace(/\s+/g, " "),
       rate: Number(match[2])
@@ -88,7 +100,7 @@ function parsePdf(pdfPath) {
     stateGeoCode: firstMatch(text, /State Geo Code\s+([0-9-]+)/),
     cadastralId: firstMatch(text, /Cadastral #\s+([0-9-]+)/),
     owner: firstMatch(text, /Current Owner:\s+(.+?)\n/),
-    mailingAddress: firstMatch(text, /Current Owner:[\s\S]*?\n\s+(.+?\n\s+BEATRICE,\s+NE\s+\d{5}(?:-\d{4})?)/m)?.replace(/\n\s*/g, ", "),
+    mailingAddress: ownerMailingAddress(text),
     situsAddress: firstMatch(text, /Situs Address:\s+(.+)/),
     taxDistrict: firstMatch(text, /Tax District:\s+([0-9]+)/),
     schoolDistrict: firstMatch(text, /School District:\s+(.+)/),

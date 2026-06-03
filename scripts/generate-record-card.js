@@ -374,6 +374,8 @@ function taxStatement(row, existingStatement = null) {
 }
 
 function buildSourceExtract(pdf, ntoRows, latestRows) {
+  const latestDistributionYear = latestRows[0]?.year || ntoRows[0]?.year || null;
+
   return {
     note: "Generated from GWorks PDF facts and Nebraska Taxes Online 2019-current statement details. Review unavailable cost-model fields before publishing.",
     sections: [
@@ -405,7 +407,7 @@ function buildSourceExtract(pdf, ntoRows, latestRows) {
         ])
       },
       {
-        title: `${latestRows[0]?.year || ""} Tax Distribution`,
+        title: latestDistributionYear ? `${latestDistributionYear} Tax Distribution` : "Tax Distribution",
         summary: `${latestRows.length} authority rows from Nebraska Taxes Online`,
         columns: ["Authority / fund", "Levy", "Amount", "Share"],
         rows: latestRows.map(row => [
