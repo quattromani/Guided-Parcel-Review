@@ -1,0 +1,534 @@
+{
+  "source": {
+    "sourceType": "property_record",
+    "system": "GWorks Public Access",
+    "displayCitation": "Gage County Assessor GWorks property report",
+    "county": "Gage County",
+    "reportName": "Gage County Assessor property report",
+    "recordType": "GWORKS_PROPERTY_REPORT",
+    "printedAt": null,
+    "sourceImages": [
+      "assets/images/009926000_1.jpg",
+      "assets/images/009926000_2.jpg"
+    ],
+    "sourceImageLinks": [
+      "https://gage.gworks.com/photos/0009926000_1.jpg",
+      "https://gage.gworks.com/photos/0009926000_2.jpg",
+      "https://gage.gworks.com/photos/0009926000_3.jpg",
+      "https://gage.gworks.com/photos/0009926000_4.jpg",
+      "https://gage.gworks.com/photos/0009926000_5.jpg",
+      "https://gage.gworks.com/photos/0009926000_6.jpg"
+    ],
+    "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
+  },
+  "guidedSnapshot": {
+    "snapshotYear": 2026,
+    "latestFinalTaxYear": 2025,
+    "assets": {
+      "photo": "assets/images/009926000_1.jpg",
+      "sketch": "assets/images/009926000_2.jpg",
+      "additionalPhotos": []
+    },
+    "parcel": {
+      "parcelId": "009926000",
+      "mapNumber": "9926000",
+      "stateGeoCode": "0000-00-0-10005-073-0000",
+      "owner": "BRUNS, WAYNE A",
+      "mailingAddress": "1201 GRANT ST, BEATRICE, NE 68310",
+      "situsAddress": "00200 BELL",
+      "countyName": "GAGE",
+      "taxDistrict": "157",
+      "schoolDistrict": "SCH 15 BEATRICE, 34-0015",
+      "accountType": "Commercial",
+      "legalDescription": "LOT 7 BLK 73 BEATRICE ORIGINAL"
+    },
+    "classification": {
+      "status": "Improved",
+      "location": "Urban",
+      "propertyClass": "Commercial",
+      "citySize": "12,001-100,000",
+      "zoning": "Commerical",
+      "lotSize": "<10,000 sq. ft."
+    },
+    "residential": {
+      "style": "Commercial 100% Storage Warehouse",
+      "yearBuilt": 1945,
+      "buildingSize": 2376,
+      "basementSize": null,
+      "bedrooms": null,
+      "bathrooms": null,
+      "plumbingFixtures": null,
+      "quality": null,
+      "condition": null,
+      "exterior": null,
+      "heatingCooling": null,
+      "garage1": null,
+      "minFinish": null,
+      "partFinish": null,
+      "perimeter": 220
+    },
+    "commercial": {
+      "primaryOccupancy": "100% Storage Warehouse",
+      "buildingSize": 2376,
+      "yearBuilt": 1945,
+      "perimeter": 220,
+      "constructionType": null,
+      "landUse": "Commercial lot",
+      "quality": null,
+      "condition": null,
+      "heatingCooling": null,
+      "buildingDatasheet": [
+        {
+          "occupancy": "100% Storage Warehouse",
+          "size": 2376,
+          "yearBuilt": 1945,
+          "perimeter": 220
+        }
+      ]
+    },
+    "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 62715,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
+      {
+        "year": 2025,
+        "assessedValue": 36960,
+        "taxes": 452.2,
+        "status": "partially-paid",
+        "assessmentSource": "GWorks PDF"
+      }
+    ],
+    "taxStatements": [
+      {
+        "taxYear": 2025,
+        "statementNumber": "1929",
+        "statementType": "REAL",
+        "totalTaxesDue": 452.2,
+        "dueDate": null,
+        "assessedValue": 36960,
+        "grossTaxAmount": 586.54,
+        "credits": {
+          "homestead": {
+            "value": 0,
+            "amount": 0
+          },
+          "nonAgTax": {
+            "value": null,
+            "amount": -43.98
+          },
+          "agLandTax": {
+            "value": null,
+            "amount": 0
+          },
+          "schoolTax": {
+            "value": null,
+            "amount": -90.36
+          }
+        },
+        "netAmountDue": 452.2,
+        "totalPaid": 226.1,
+        "taxDue": 226.1,
+        "derived": {
+          "grossLevyRate": 0.01586964,
+          "netEffectiveTaxRate": 0.012234848484848484,
+          "totalCreditAmount": -134.34
+        },
+        "sourceNote": "Nebraska Taxes Online statement detail modal.",
+        "land": 4225,
+        "dwelling": 32735,
+        "outbuilding": 0
+      }
+    ],
+    "districtLevyHistory": [
+      {
+        "year": 2025,
+        "levy": 1.5869639999999998,
+        "status": "statement-detail",
+        "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
+      }
+    ],
+    "assessedValueBreakdown": [
+      {
+        "year": 2026,
+        "dwelling": 58505,
+        "land": 4210,
+        "outbuilding": 0,
+        "total": 62715,
+        "source": "GWorks PDF"
+      },
+      {
+        "year": 2025,
+        "dwelling": 32735,
+        "land": 4225,
+        "outbuilding": 0,
+        "total": 36960,
+        "source": "GWorks PDF"
+      }
+    ],
+    "latestFinalLevyComponents": [
+      {
+        "description": "BEATRICE SCH",
+        "rate": 0.912565,
+        "amount": 337.28,
+        "share": 57.5,
+        "group": "School"
+      },
+      {
+        "description": "BEATRICE CITY",
+        "rate": 0.368893,
+        "amount": 136.34,
+        "share": 23.2,
+        "group": "City"
+      },
+      {
+        "description": "COUNTY GENERAL",
+        "rate": 0.234958,
+        "amount": 86.86,
+        "share": 14.8,
+        "group": "County"
+      },
+      {
+        "description": "BIG BLUE NRD",
+        "rate": 0.032155,
+        "amount": 11.88,
+        "share": 2,
+        "group": "Natural resources"
+      },
+      {
+        "description": "SCC",
+        "rate": 0.02,
+        "amount": 7.39,
+        "share": 1.3,
+        "group": "Community college"
+      },
+      {
+        "description": "ESU #5",
+        "rate": 0.015,
+        "amount": 5.54,
+        "share": 0.9,
+        "group": "Education service"
+      },
+      {
+        "description": "AG SOCIETY",
+        "rate": 0.002759,
+        "amount": 1.02,
+        "share": 0.2,
+        "group": "Other"
+      },
+      {
+        "description": "HISTORICAL SOCIETY",
+        "rate": 0.000634,
+        "amount": 0.23,
+        "share": 0,
+        "group": "Other"
+      }
+    ],
+    "dwellingData": [],
+    "outbuildingData": [],
+    "propertyNotes": [
+      {
+        "date": null,
+        "note": "Draft generated from GWorks PDF and NTO statement detail captures."
+      },
+      {
+        "date": null,
+        "note": "Review photo/sketch assets and any unavailable cost-model detail before publishing."
+      }
+    ],
+    "landInformation": [
+      {
+        "description": "<10,000 sq. ft.",
+        "squareFeet": null,
+        "acres": null,
+        "actualFrontFeet": null,
+        "effectiveFrontFeet": null,
+        "depth": null,
+        "recordedValue": 4225,
+        "source": "Nebraska Taxes Online detail modal and GWorks PDF classification"
+      }
+    ],
+    "sources": [
+      "Gage County Assessor GWorks property report",
+      "Nebraska Taxes Online statement detail modal"
+    ],
+    "sourcePolicy": {
+      "primaryFacts": "GWorks PDF",
+      "taxStatements": "Nebraska Taxes Online",
+      "unavailableFields": "Leave as null/unavailable instead of inferring."
+    }
+  },
+  "parcelIdentifiers": {
+    "parcelId": "009926000",
+    "cardFilePerm": null,
+    "cadastralId": "97-484",
+    "padClassCode": null,
+    "stateGeo": "0000-00-0-10005-073-0000",
+    "appraiserId": null,
+    "taxOnlineParcelId": "0009926000"
+  },
+  "locationModel": {
+    "valuationGroup": "3 - Beatrice, Beatrice Subs",
+    "marketArea": "Beatrice, Beatrice Subs",
+    "marketGroup": "Urban"
+  },
+  "landModel": {
+    "description": "Land row from GWorks public export",
+    "lotSize": "<10,000 sq. ft.",
+    "recordedLotValue": 4210,
+    "frontage": null,
+    "cutoffSchedule": []
+  },
+  "currentCardValue": {
+    "previous": {
+      "buildings": 32735,
+      "improvement": 0,
+      "landLots": 4225,
+      "total": 36960
+    },
+    "current": {
+      "buildings": 58505,
+      "improvement": 0,
+      "landLots": 4210,
+      "total": 62715,
+      "note": "2026 assessed values from GWorks PDF. Latest finalized tax data remains 2025."
+    }
+  },
+  "ownershipHistory": [],
+  "valuationHistory": [
+    {
+      "year": 2026,
+      "total": 62715,
+      "land": 4210,
+      "outbuilding": 0,
+      "dwelling": 58505,
+      "source": "GWorks PDF"
+    },
+    {
+      "year": 2025,
+      "total": 36960,
+      "land": 4225,
+      "outbuilding": 0,
+      "dwelling": 32735,
+      "source": "GWorks PDF"
+    }
+  ],
+  "propertyValuation": {
+    "buildings": 58505,
+    "improvement": 0,
+    "landLot": 4210,
+    "total": 62715
+  },
+  "valuationReconciliation": {
+    "source": "GWorks public export and Nebraska Taxes Online detail modal",
+    "initialMipsTotal": null,
+    "finalAssessedTotal": 62715,
+    "finalDwellingValue": 58505,
+    "landLot": 4210,
+    "modeledDetailSubtotal": null,
+    "cardToFinalAdjustment": null,
+    "modelToFinalReconciliation": null,
+    "note": "The GWorks export gives value rollups and visible component rows, but not the Marshall & Swift cost/depreciation bridge used by the older MIPS-style card."
+  },
+  "reviewHistory": [],
+  "residentialInformation": {
+    "type": "Commercial",
+    "quality": null,
+    "condition": null,
+    "architecture": null,
+    "baseTotalArea": "2,376",
+    "style": "100% Storage Warehouse",
+    "exteriorWall": null,
+    "heatingCooling": null,
+    "roofCover": null,
+    "areaOfSlab": null,
+    "areaOfCrawl": null,
+    "fixtureRoughin": null,
+    "bedBathroom": null,
+    "basementArea": null
+  },
+  "costApproach": {
+    "available": false,
+    "yearEffectiveAge": null,
+    "baseCost": null,
+    "adjustments": null,
+    "adjustedCost": null,
+    "rcn": null,
+    "totalMiscImprovements": null,
+    "garageCost": null,
+    "totalRcn": null,
+    "depreciation": {
+      "physicalPercent": null,
+      "functionalPercent": null,
+      "amount": null
+    },
+    "depreciatedMiscImprovements": null,
+    "depreciatedGarages": null,
+    "rcnld": null,
+    "adjustedRcnld": null,
+    "costPerSquareFoot": null,
+    "note": "Marshall & Swift-level cost details are not included in this GWorks PDF export."
+  },
+  "garageCostLines": [],
+  "miscImprovements": [],
+  "sourceExtract": {
+    "note": "Generated from GWorks PDF facts and Nebraska Taxes Online 2019-current statement details. Review unavailable cost-model fields before publishing.",
+    "sections": [
+      {
+        "title": "GWorks Current/Prior Assessed Values",
+        "summary": "2 assessment years from the exported PDF",
+        "columns": [
+          "Year",
+          "Total",
+          "Land",
+          "Outbuilding",
+          "Dwelling"
+        ],
+        "rows": [
+          [
+            "2026",
+            "$62,715",
+            "$4,210",
+            "$0",
+            "$58,505"
+          ],
+          [
+            "2025",
+            "$36,960",
+            "$4,225",
+            "$0",
+            "$32,735"
+          ]
+        ]
+      },
+      {
+        "title": "Nebraska Taxes Online Statement History",
+        "summary": "2025-2025 tax statements",
+        "columns": [
+          "Year",
+          "Statement",
+          "Type",
+          "Gross tax",
+          "Credits",
+          "Net tax",
+          "Total paid",
+          "Tax due"
+        ],
+        "rows": [
+          [
+            "2025",
+            "1929",
+            "REAL",
+            "$586.54",
+            "$-134.34",
+            "$452.2",
+            "$226.1",
+            "$226.1"
+          ]
+        ]
+      },
+      {
+        "title": "2025 Tax Distribution",
+        "summary": "8 authority rows from Nebraska Taxes Online",
+        "columns": [
+          "Authority / fund",
+          "Levy",
+          "Amount",
+          "Share"
+        ],
+        "rows": [
+          [
+            "6115: BEATRICE SCH",
+            "0.912565",
+            "$337.28",
+            "57.5%"
+          ],
+          [
+            "8600: BEATRICE CITY",
+            "0.368893",
+            "$136.34",
+            "23.2%"
+          ],
+          [
+            "100: COUNTY GENERAL",
+            "0.234958",
+            "$86.86",
+            "14.8%"
+          ],
+          [
+            "7301: BIG BLUE NRD",
+            "0.032155",
+            "$11.88",
+            "2%"
+          ],
+          [
+            "7100: SCC",
+            "0.020000",
+            "$7.39",
+            "1.3%"
+          ],
+          [
+            "6905: ESU #5",
+            "0.015000",
+            "$5.54",
+            "0.9%"
+          ],
+          [
+            "9200: AG SOCIETY",
+            "0.002759",
+            "$1.02",
+            "0.2%"
+          ],
+          [
+            "9300: HISTORICAL SOCIETY",
+            "0.000634",
+            "$0.23",
+            "0%"
+          ]
+        ]
+      },
+      {
+        "title": "Commercial Datasheet",
+        "summary": "2,376 sq. ft. across 1 listed occupancy",
+        "columns": [
+          "Occupancy",
+          "Size",
+          "Year built",
+          "Perimeter"
+        ],
+        "rows": [
+          [
+            "100% Storage Warehouse",
+            "2,376",
+            1945,
+            220
+          ]
+        ]
+      },
+      {
+        "title": "Dwelling Data",
+        "summary": "0 visible rows",
+        "columns": [
+          "Description",
+          "Units",
+          "Value"
+        ],
+        "rows": []
+      },
+      {
+        "title": "Outbuilding Data",
+        "summary": "0 visible rows",
+        "columns": [
+          "Description",
+          "Units",
+          "Year built",
+          "Cost"
+        ],
+        "rows": []
+      }
+    ]
+  }
+}

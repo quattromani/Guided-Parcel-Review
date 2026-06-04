@@ -117,7 +117,10 @@ function chooseLatestDistributionRows(latest, existingRecord) {
 }
 
 function normalizeAddress(value) {
-  return value ? value.replace(/\s+/g, " ").replace(" BEATRICE", ", BEATRICE").trim() : null;
+  if (!value) return null;
+  const normalized = value.replace(/\s+/g, " ").trim();
+  if (/,\s*BEATRICE\b/i.test(normalized)) return normalized;
+  return normalized.replace(/\s+BEATRICE\b/i, ", BEATRICE");
 }
 
 function jpegDimensions(filePath) {
@@ -373,8 +376,150 @@ function taxStatement(row, existingStatement = null) {
   };
 }
 
+function commercialSummary(pdf) {
+  const buildingDatasheet = pdf.commercialDatasheet || [];
+  const buildingSize = buildingDatasheet.reduce((sum, row) => sum + (Number(row.size) || 0), 0) || null;
+  const perimeter = buildingDatasheet.reduce((sum, row) => sum + (Number(row.perimeter) || 0), 0) || null;
+  const yearBuiltRows = buildingDatasheet
+    .map(row => row.yearBuilt)
+    .filter(Boolean);
+  const primaryOccupancy = buildingDatasheet
+    .map(row => row.occupancy)
+    .filter(Boolean)
+    .join(" / ") || null;
+
+  return {
+    primaryOccupancy,
+    buildingSize,
+    yearBuilt: yearBuiltRows.length ? Math.min(...yearBuiltRows) : null,
+    perimeter,
+    constructionType: null,
+    landUse: "Commercial lot",
+    quality: null,
+    condition: null,
+    heatingCooling: null,
+    buildingDatasheet
+  };
+}
+
+function residentialSnapshot(pdf, propertyClass, commercial) {
+  if (propertyClass === "residential") {
+    return {
+      style: pdf.residential.style,
+      yearBuilt: pdf.residential.yearBuilt,
+      buildingSize: pdf.residential.buildingSize,
+      basementSize: pdf.residential.basementSize,
+      bedrooms: pdf.residential.bedrooms,
+      bathrooms: pdf.residential.bathrooms,
+      plumbingFixtures: pdf.residential.plumbingFixtures,
+      quality: pdf.residential.quality,
+      condition: pdf.residential.condition,
+      exterior: pdf.residential.exterior,
+      heatingCooling: pdf.residential.heatingCooling,
+      garage1: pdf.residential.garage1Size ? `${pdf.residential.garage1}, ${pdf.residential.garage1Size} sq. ft.` : pdf.residential.garage1,
+      minFinish: pdf.residential.minFinish,
+      partFinish: pdf.residential.partFinish
+    };
+  }
+
+  if (propertyClass === "commercial") {
+    return {
+      style: commercial.primaryOccupancy ? `Commercial ${commercial.primaryOccupancy}` : "Commercial building",
+      yearBuilt: commercial.yearBuilt,
+      buildingSize: commercial.buildingSize,
+      basementSize: null,
+      bedrooms: null,
+      bathrooms: null,
+      plumbingFixtures: null,
+      quality: commercial.quality,
+      condition: commercial.condition,
+      exterior: null,
+      heatingCooling: commercial.heatingCooling,
+      garage1: null,
+      minFinish: null,
+      partFinish: null,
+      perimeter: commercial.perimeter
+    };
+  }
+
+  return null;
+}
+
+function residentialInformation(pdf, propertyClass, commercial) {
+  if (propertyClass === "commercial") {
+    return {
+      type: pdf.accountType,
+      quality: commercial.quality,
+      condition: commercial.condition,
+      architecture: null,
+      baseTotalArea: commercial.buildingSize ? `${commercial.buildingSize.toLocaleString("en-US")}` : null,
+      style: commercial.primaryOccupancy,
+      exteriorWall: null,
+      heatingCooling: commercial.heatingCooling,
+      roofCover: null,
+      areaOfSlab: null,
+      areaOfCrawl: null,
+      fixtureRoughin: null,
+      bedBathroom: null,
+      basementArea: null
+    };
+  }
+
+  return {
+    type: pdf.residential.zoning || pdf.accountType,
+    quality: pdf.residential.quality,
+    condition: pdf.residential.condition,
+    architecture: null,
+    baseTotalArea: pdf.residential.buildingSize ? `${pdf.residential.buildingSize.toLocaleString("en-US")}` : null,
+    style: pdf.residential.style,
+    exteriorWall: pdf.residential.exterior,
+    heatingCooling: pdf.residential.heatingCooling,
+    roofCover: null,
+    areaOfSlab: null,
+    areaOfCrawl: null,
+    fixtureRoughin: pdf.residential.plumbingFixtures ? `${pdf.residential.plumbingFixtures}` : null,
+    bedBathroom: `${pdf.residential.bedrooms || ""} / ${pdf.residential.bathrooms || ""}`.trim(),
+    basementArea: pdf.residential.basementSize ? `${pdf.residential.basementSize.toLocaleString("en-US")}` : null
+  };
+}
+
 function buildSourceExtract(pdf, ntoRows, latestRows) {
   const latestDistributionYear = latestRows[0]?.year || ntoRows[0]?.year || null;
+  const propertyClass = normalizedPropertyClass(pdf);
+  const commercial = commercialSummary(pdf);
+  const propertyDatasheetSection = propertyClass === "commercial"
+    ? {
+      title: "Commercial Datasheet",
+      summary: `${commercial.buildingSize?.toLocaleString("en-US") || "Unknown"} sq. ft. across ${commercial.buildingDatasheet.length} listed occupanc${commercial.buildingDatasheet.length === 1 ? "y" : "ies"}`,
+      columns: ["Occupancy", "Size", "Year built", "Perimeter"],
+      rows: commercial.buildingDatasheet.map(row => [
+        row.occupancy || "",
+        row.size ? row.size.toLocaleString("en-US") : "",
+        row.yearBuilt || "",
+        row.perimeter ?? ""
+      ])
+    }
+    : {
+      title: "Residential Datasheet",
+      summary: `${pdf.residential.yearBuilt || "Unknown year"} / ${pdf.residential.buildingSize?.toLocaleString("en-US") || "unknown"} sq. ft.`,
+      columns: ["Field", "Value"],
+      rows: [
+        ["Zoning", pdf.residential.zoning],
+        ["Style", pdf.residential.style],
+        ["Year built", `${pdf.residential.yearBuilt || ""}`],
+        ["Bathrooms", `${pdf.residential.bathrooms || ""}`],
+        ["Exterior", pdf.residential.exterior],
+        ["Heating/Cooling", pdf.residential.heatingCooling],
+        ["Bedrooms", `${pdf.residential.bedrooms || ""}`],
+        ["Plumbing fixtures", `${pdf.residential.plumbingFixtures || ""}`],
+        ["Basement size", `${pdf.residential.basementSize || ""} sq. ft.`],
+        ["Building size", `${pdf.residential.buildingSize || ""} sq. ft.`],
+        ["Garage 1", pdf.residential.garage1],
+        ["Garage 1 size", `${pdf.residential.garage1Size || ""} sq. ft.`],
+        ["Quality", pdf.residential.quality],
+        ["Condition", pdf.residential.condition]
+      ].filter(row => row[1])
+    };
 
   return {
     note: "Generated from GWorks PDF facts and Nebraska Taxes Online 2019-current statement details. Review unavailable cost-model fields before publishing.",
@@ -417,27 +562,7 @@ function buildSourceExtract(pdf, ntoRows, latestRows) {
           `${row.share}%`
         ])
       },
-      {
-        title: "Residential Datasheet",
-        summary: `${pdf.residential.yearBuilt || "Unknown year"} / ${pdf.residential.buildingSize?.toLocaleString("en-US") || "unknown"} sq. ft.`,
-        columns: ["Field", "Value"],
-        rows: [
-          ["Zoning", pdf.residential.zoning],
-          ["Style", pdf.residential.style],
-          ["Year built", `${pdf.residential.yearBuilt || ""}`],
-          ["Bathrooms", `${pdf.residential.bathrooms || ""}`],
-          ["Exterior", pdf.residential.exterior],
-          ["Heating/Cooling", pdf.residential.heatingCooling],
-          ["Bedrooms", `${pdf.residential.bedrooms || ""}`],
-          ["Plumbing fixtures", `${pdf.residential.plumbingFixtures || ""}`],
-          ["Basement size", `${pdf.residential.basementSize || ""} sq. ft.`],
-          ["Building size", `${pdf.residential.buildingSize || ""} sq. ft.`],
-          ["Garage 1", pdf.residential.garage1],
-          ["Garage 1 size", `${pdf.residential.garage1Size || ""} sq. ft.`],
-          ["Quality", pdf.residential.quality],
-          ["Condition", pdf.residential.condition]
-        ].filter(row => row[1])
-      },
+      propertyDatasheetSection,
       {
         title: "Dwelling Data",
         summary: `${pdf.dwellingRows.length} visible rows`,
@@ -456,6 +581,7 @@ function buildSourceExtract(pdf, ntoRows, latestRows) {
 
 function buildRecordCard(pdf, capture, assets, options = {}) {
   const propertyClass = normalizedPropertyClass(pdf);
+  const commercial = commercialSummary(pdf);
   const sourceImageLinks = extractPdfImageLinks(pdf.pdfPath);
   const ntoRows = capture.detailRecords.map(record => parseNtoRecord(record, pdf)).sort((a, b) => b.year - a.year);
   const existingTaxStatements = new Map((options.existingRecord?.guidedSnapshot?.taxStatements || [])
@@ -528,22 +654,8 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
         legalDescription: pdf.legalDescription
       },
       classification: pdf.classification,
-      residential: propertyClass === "residential" ? {
-        style: pdf.residential.style,
-        yearBuilt: pdf.residential.yearBuilt,
-        buildingSize: pdf.residential.buildingSize,
-        basementSize: pdf.residential.basementSize,
-        bedrooms: pdf.residential.bedrooms,
-        bathrooms: pdf.residential.bathrooms,
-        plumbingFixtures: pdf.residential.plumbingFixtures,
-        quality: pdf.residential.quality,
-        condition: pdf.residential.condition,
-        exterior: pdf.residential.exterior,
-        heatingCooling: pdf.residential.heatingCooling,
-        garage1: pdf.residential.garage1Size ? `${pdf.residential.garage1}, ${pdf.residential.garage1Size} sq. ft.` : pdf.residential.garage1,
-        minFinish: pdf.residential.minFinish,
-        partFinish: pdf.residential.partFinish
-      } : null,
+      residential: residentialSnapshot(pdf, propertyClass, commercial),
+      commercial: propertyClass === "commercial" ? commercial : null,
       taxpayerHistory: [
         ...pdfAssessmentRows.map(row => {
           const statementRow = ntoRowsByYear.get(row.year);
@@ -689,22 +801,7 @@ function buildRecordCard(pdf, capture, assets, options = {}) {
       note: "The GWorks export gives value rollups and visible component rows, but not the Marshall & Swift cost/depreciation bridge used by the older MIPS-style card."
     },
     reviewHistory: [],
-    residentialInformation: {
-      type: pdf.residential.zoning || pdf.accountType,
-      quality: pdf.residential.quality,
-      condition: pdf.residential.condition,
-      architecture: null,
-      baseTotalArea: pdf.residential.buildingSize ? `${pdf.residential.buildingSize.toLocaleString("en-US")}` : null,
-      style: pdf.residential.style,
-      exteriorWall: pdf.residential.exterior,
-      heatingCooling: pdf.residential.heatingCooling,
-      roofCover: null,
-      areaOfSlab: null,
-      areaOfCrawl: null,
-      fixtureRoughin: pdf.residential.plumbingFixtures ? `${pdf.residential.plumbingFixtures}` : null,
-      bedBathroom: `${pdf.residential.bedrooms || ""} / ${pdf.residential.bathrooms || ""}`.trim(),
-      basementArea: pdf.residential.basementSize ? `${pdf.residential.basementSize.toLocaleString("en-US")}` : null
-    },
+    residentialInformation: residentialInformation(pdf, propertyClass, commercial),
     costApproach: {
       available: false,
       yearEffectiveAge: null,

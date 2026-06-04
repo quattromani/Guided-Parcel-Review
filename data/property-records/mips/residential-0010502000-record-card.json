@@ -1,0 +1,617 @@
+{
+  "source": {
+    "sourceType": "property_record",
+    "system": "GWorks Public Access",
+    "displayCitation": "Gage County Assessor GWorks property report",
+    "county": "Gage County",
+    "reportName": "Gage County Assessor property report",
+    "recordType": "GWORKS_PROPERTY_REPORT",
+    "printedAt": null,
+    "sourceImages": [
+      "assets/images/010502000_1.jpg",
+      "assets/images/010502000_2.jpg",
+      "assets/images/010502000_3.jpg",
+      "assets/images/010502000_4.jpg"
+    ],
+    "sourceImageLinks": [
+      "https://gage.gworks.com/photos/0010502000_1.jpg",
+      "https://gage.gworks.com/photos/0010502000_2.jpg",
+      "https://gage.gworks.com/photos/0010502000_3.jpg",
+      "https://gage.gworks.com/photos/0010502000_4.jpg",
+      "https://gage.gworks.com/photos/0010502000_5.jpg",
+      "https://gage.gworks.com/photos/0010502000_6.jpg",
+      "https://gage.gworks.com/photos/0010502000_7.jpg"
+    ],
+    "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
+  },
+  "guidedSnapshot": {
+    "snapshotYear": 2026,
+    "latestFinalTaxYear": 2025,
+    "assets": {
+      "photo": "assets/images/010502000_1.jpg",
+      "sketch": "assets/images/010502000_2.jpg",
+      "additionalPhotos": [
+        {
+          "src": "assets/images/010502000_3.jpg",
+          "caption": "Additional Property Photo 1"
+        },
+        {
+          "src": "assets/images/010502000_4.jpg",
+          "caption": "Additional Property Photo 2"
+        }
+      ]
+    },
+    "parcel": {
+      "parcelId": "010502000",
+      "mapNumber": "10502000",
+      "stateGeoCode": "4213-00-0-10090-013-0000",
+      "owner": "HAWKINS, KATHRYNE V",
+      "mailingAddress": "1300 S 5TH AVE, BEATRICE, NE 68310-4836",
+      "situsAddress": "1300 S 5TH",
+      "countyName": "GAGE",
+      "taxDistrict": "157",
+      "schoolDistrict": "SCH 15 BEATRICE, 34-0015",
+      "accountType": "Residential",
+      "legalDescription": "0 3 6 ALL THAT PT OF LOT 1 LYING S OF EXIST ST& ALL LOTS 2 & 3 & N 12'"
+    },
+    "classification": {
+      "status": "Improved",
+      "location": "Urban",
+      "propertyClass": "Residential",
+      "citySize": "12,001-100,000",
+      "zoning": "Single Family",
+      "lotSize": "1.00"
+    },
+    "residential": {
+      "style": "100% One Story",
+      "yearBuilt": 1980,
+      "buildingSize": 1940,
+      "basementSize": 1940,
+      "bedrooms": 3,
+      "bathrooms": 3.5,
+      "plumbingFixtures": 17,
+      "quality": "Average +",
+      "condition": "Average - Good",
+      "exterior": "90% Frame, Siding 10% Veneer, Stone",
+      "heatingCooling": "100% Heat Pump",
+      "garage1": "Attached Garage(SF), 408 sq. ft.",
+      "minFinish": 0,
+      "partFinish": 0
+    },
+    "commercial": null,
+    "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 386980,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
+      {
+        "year": 2025,
+        "assessedValue": 398095,
+        "taxes": 4870.52,
+        "status": "partially-paid",
+        "assessmentSource": "GWorks PDF"
+      }
+    ],
+    "taxStatements": [
+      {
+        "taxYear": 2025,
+        "statementNumber": "6023",
+        "statementType": "REAL",
+        "totalTaxesDue": 4870.52,
+        "dueDate": null,
+        "assessedValue": 398095,
+        "grossTaxAmount": 6317.62,
+        "credits": {
+          "homestead": {
+            "value": 0,
+            "amount": 0
+          },
+          "nonAgTax": {
+            "value": null,
+            "amount": -473.74
+          },
+          "agLandTax": {
+            "value": null,
+            "amount": 0
+          },
+          "schoolTax": {
+            "value": null,
+            "amount": -973.36
+          }
+        },
+        "netAmountDue": 4870.52,
+        "totalPaid": 2439.93,
+        "taxDue": 2430.59,
+        "derived": {
+          "grossLevyRate": 0.01586964,
+          "netEffectiveTaxRate": 0.012234567125937278,
+          "totalCreditAmount": -1447.1
+        },
+        "sourceNote": "Nebraska Taxes Online statement detail modal.",
+        "land": 22275,
+        "dwelling": 375820,
+        "outbuilding": 0
+      }
+    ],
+    "districtLevyHistory": [
+      {
+        "year": 2025,
+        "levy": 1.5869639999999998,
+        "status": "statement-detail",
+        "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
+      }
+    ],
+    "assessedValueBreakdown": [
+      {
+        "year": 2026,
+        "dwelling": 364635,
+        "land": 22345,
+        "outbuilding": 0,
+        "total": 386980,
+        "source": "GWorks PDF"
+      },
+      {
+        "year": 2025,
+        "dwelling": 375820,
+        "land": 22275,
+        "outbuilding": 0,
+        "total": 398095,
+        "source": "GWorks PDF"
+      }
+    ],
+    "latestFinalLevyComponents": [
+      {
+        "description": "BEATRICE SCH",
+        "rate": 0.912565,
+        "amount": 3632.88,
+        "share": 57.5,
+        "group": "School"
+      },
+      {
+        "description": "BEATRICE CITY",
+        "rate": 0.368893,
+        "amount": 1468.54,
+        "share": 23.2,
+        "group": "City"
+      },
+      {
+        "description": "COUNTY GENERAL",
+        "rate": 0.234958,
+        "amount": 935.36,
+        "share": 14.8,
+        "group": "County"
+      },
+      {
+        "description": "BIG BLUE NRD",
+        "rate": 0.032155,
+        "amount": 128.01,
+        "share": 2,
+        "group": "Natural resources"
+      },
+      {
+        "description": "SCC",
+        "rate": 0.02,
+        "amount": 79.62,
+        "share": 1.3,
+        "group": "Community college"
+      },
+      {
+        "description": "ESU #5",
+        "rate": 0.015,
+        "amount": 59.71,
+        "share": 0.9,
+        "group": "Education service"
+      },
+      {
+        "description": "AG SOCIETY",
+        "rate": 0.002759,
+        "amount": 10.98,
+        "share": 0.2,
+        "group": "Other"
+      },
+      {
+        "description": "HISTORICAL SOCIETY",
+        "rate": 0.000634,
+        "amount": 2.52,
+        "share": 0,
+        "group": "Other"
+      }
+    ],
+    "dwellingData": [
+      {
+        "description": "WOOD DECK",
+        "units": 720,
+        "value": 15084
+      },
+      {
+        "description": "FIREPLACE",
+        "units": 1,
+        "value": 7212
+      }
+    ],
+    "outbuildingData": [],
+    "propertyNotes": [
+      {
+        "date": null,
+        "note": "Draft generated from GWorks PDF and NTO statement detail captures."
+      },
+      {
+        "date": null,
+        "note": "Review photo/sketch assets and any unavailable cost-model detail before publishing."
+      }
+    ],
+    "landInformation": [
+      {
+        "description": "1.00",
+        "squareFeet": null,
+        "acres": null,
+        "actualFrontFeet": null,
+        "effectiveFrontFeet": null,
+        "depth": null,
+        "recordedValue": 22275,
+        "source": "Nebraska Taxes Online detail modal and GWorks PDF classification"
+      }
+    ],
+    "sources": [
+      "Gage County Assessor GWorks property report",
+      "Nebraska Taxes Online statement detail modal"
+    ],
+    "sourcePolicy": {
+      "primaryFacts": "GWorks PDF",
+      "taxStatements": "Nebraska Taxes Online",
+      "unavailableFields": "Leave as null/unavailable instead of inferring."
+    }
+  },
+  "parcelIdentifiers": {
+    "parcelId": "010502000",
+    "cardFilePerm": null,
+    "cadastralId": "1-78-24",
+    "padClassCode": null,
+    "stateGeo": "4213-00-0-10090-013-0000",
+    "appraiserId": null,
+    "taxOnlineParcelId": "0010502000"
+  },
+  "locationModel": {
+    "valuationGroup": "3 - Beatrice, Beatrice Subs",
+    "marketArea": "Beatrice, Beatrice Subs",
+    "marketGroup": "Urban"
+  },
+  "landModel": {
+    "description": "Land row from GWorks public export",
+    "lotSize": "1.00",
+    "recordedLotValue": 22345,
+    "frontage": null,
+    "cutoffSchedule": []
+  },
+  "currentCardValue": {
+    "previous": {
+      "buildings": 375820,
+      "improvement": 0,
+      "landLots": 22275,
+      "total": 398095
+    },
+    "current": {
+      "buildings": 364635,
+      "improvement": 0,
+      "landLots": 22345,
+      "total": 386980,
+      "note": "2026 assessed values from GWorks PDF. Latest finalized tax data remains 2025."
+    }
+  },
+  "ownershipHistory": [],
+  "valuationHistory": [
+    {
+      "year": 2026,
+      "total": 386980,
+      "land": 22345,
+      "outbuilding": 0,
+      "dwelling": 364635,
+      "source": "GWorks PDF"
+    },
+    {
+      "year": 2025,
+      "total": 398095,
+      "land": 22275,
+      "outbuilding": 0,
+      "dwelling": 375820,
+      "source": "GWorks PDF"
+    }
+  ],
+  "propertyValuation": {
+    "buildings": 364635,
+    "improvement": 0,
+    "landLot": 22345,
+    "total": 386980
+  },
+  "valuationReconciliation": {
+    "source": "GWorks public export and Nebraska Taxes Online detail modal",
+    "initialMipsTotal": null,
+    "finalAssessedTotal": 386980,
+    "finalDwellingValue": 364635,
+    "landLot": 22345,
+    "modeledDetailSubtotal": null,
+    "cardToFinalAdjustment": null,
+    "modelToFinalReconciliation": null,
+    "note": "The GWorks export gives value rollups and visible component rows, but not the Marshall & Swift cost/depreciation bridge used by the older MIPS-style card."
+  },
+  "reviewHistory": [],
+  "residentialInformation": {
+    "type": "Single Family",
+    "quality": "Average +",
+    "condition": "Average - Good",
+    "architecture": null,
+    "baseTotalArea": "1,940",
+    "style": "100% One Story",
+    "exteriorWall": "90% Frame, Siding 10% Veneer, Stone",
+    "heatingCooling": "100% Heat Pump",
+    "roofCover": null,
+    "areaOfSlab": null,
+    "areaOfCrawl": null,
+    "fixtureRoughin": "17",
+    "bedBathroom": "3 / 3.5",
+    "basementArea": "1,940"
+  },
+  "costApproach": {
+    "available": false,
+    "yearEffectiveAge": null,
+    "baseCost": null,
+    "adjustments": null,
+    "adjustedCost": null,
+    "rcn": null,
+    "totalMiscImprovements": null,
+    "garageCost": null,
+    "totalRcn": null,
+    "depreciation": {
+      "physicalPercent": null,
+      "functionalPercent": null,
+      "amount": null
+    },
+    "depreciatedMiscImprovements": null,
+    "depreciatedGarages": null,
+    "rcnld": null,
+    "adjustedRcnld": null,
+    "costPerSquareFoot": null,
+    "note": "Marshall & Swift-level cost details are not included in this GWorks PDF export."
+  },
+  "garageCostLines": [
+    {
+      "description": "Attached Garage(SF)",
+      "units": 408,
+      "value": null,
+      "source": "GWorks PDF residential datasheet"
+    }
+  ],
+  "miscImprovements": [
+    {
+      "description": "WOOD DECK",
+      "units": 720,
+      "value": 15084,
+      "source": "GWorks PDF dwelling data"
+    },
+    {
+      "description": "FIREPLACE",
+      "units": 1,
+      "value": 7212,
+      "source": "GWorks PDF dwelling data"
+    }
+  ],
+  "sourceExtract": {
+    "note": "Generated from GWorks PDF facts and Nebraska Taxes Online 2019-current statement details. Review unavailable cost-model fields before publishing.",
+    "sections": [
+      {
+        "title": "GWorks Current/Prior Assessed Values",
+        "summary": "2 assessment years from the exported PDF",
+        "columns": [
+          "Year",
+          "Total",
+          "Land",
+          "Outbuilding",
+          "Dwelling"
+        ],
+        "rows": [
+          [
+            "2026",
+            "$386,980",
+            "$22,345",
+            "$0",
+            "$364,635"
+          ],
+          [
+            "2025",
+            "$398,095",
+            "$22,275",
+            "$0",
+            "$375,820"
+          ]
+        ]
+      },
+      {
+        "title": "Nebraska Taxes Online Statement History",
+        "summary": "2025-2025 tax statements",
+        "columns": [
+          "Year",
+          "Statement",
+          "Type",
+          "Gross tax",
+          "Credits",
+          "Net tax",
+          "Total paid",
+          "Tax due"
+        ],
+        "rows": [
+          [
+            "2025",
+            "6023",
+            "REAL",
+            "$6,317.62",
+            "$-1,447.1",
+            "$4,870.52",
+            "$2,439.93",
+            "$2,430.59"
+          ]
+        ]
+      },
+      {
+        "title": "2025 Tax Distribution",
+        "summary": "8 authority rows from Nebraska Taxes Online",
+        "columns": [
+          "Authority / fund",
+          "Levy",
+          "Amount",
+          "Share"
+        ],
+        "rows": [
+          [
+            "6115: BEATRICE SCH",
+            "0.912565",
+            "$3,632.88",
+            "57.5%"
+          ],
+          [
+            "8600: BEATRICE CITY",
+            "0.368893",
+            "$1,468.54",
+            "23.2%"
+          ],
+          [
+            "100: COUNTY GENERAL",
+            "0.234958",
+            "$935.36",
+            "14.8%"
+          ],
+          [
+            "7301: BIG BLUE NRD",
+            "0.032155",
+            "$128.01",
+            "2%"
+          ],
+          [
+            "7100: SCC",
+            "0.020000",
+            "$79.62",
+            "1.3%"
+          ],
+          [
+            "6905: ESU #5",
+            "0.015000",
+            "$59.71",
+            "0.9%"
+          ],
+          [
+            "9200: AG SOCIETY",
+            "0.002759",
+            "$10.98",
+            "0.2%"
+          ],
+          [
+            "9300: HISTORICAL SOCIETY",
+            "0.000634",
+            "$2.52",
+            "0%"
+          ]
+        ]
+      },
+      {
+        "title": "Residential Datasheet",
+        "summary": "1980 / 1,940 sq. ft.",
+        "columns": [
+          "Field",
+          "Value"
+        ],
+        "rows": [
+          [
+            "Zoning",
+            "Single Family"
+          ],
+          [
+            "Style",
+            "100% One Story"
+          ],
+          [
+            "Year built",
+            "1980"
+          ],
+          [
+            "Bathrooms",
+            "3.5"
+          ],
+          [
+            "Exterior",
+            "90% Frame, Siding 10% Veneer, Stone"
+          ],
+          [
+            "Heating/Cooling",
+            "100% Heat Pump"
+          ],
+          [
+            "Bedrooms",
+            "3"
+          ],
+          [
+            "Plumbing fixtures",
+            "17"
+          ],
+          [
+            "Basement size",
+            "1940 sq. ft."
+          ],
+          [
+            "Building size",
+            "1940 sq. ft."
+          ],
+          [
+            "Garage 1",
+            "Attached Garage(SF)"
+          ],
+          [
+            "Garage 1 size",
+            "408 sq. ft."
+          ],
+          [
+            "Quality",
+            "Average +"
+          ],
+          [
+            "Condition",
+            "Average - Good"
+          ]
+        ]
+      },
+      {
+        "title": "Dwelling Data",
+        "summary": "2 visible rows",
+        "columns": [
+          "Description",
+          "Units",
+          "Value"
+        ],
+        "rows": [
+          [
+            "WOOD DECK",
+            "720",
+            "$15,084"
+          ],
+          [
+            "FIREPLACE",
+            "1",
+            "$7,212"
+          ]
+        ]
+      },
+      {
+        "title": "Outbuilding Data",
+        "summary": "0 visible rows",
+        "columns": [
+          "Description",
+          "Units",
+          "Year built",
+          "Cost"
+        ],
+        "rows": []
+      }
+    ]
+  }
+}

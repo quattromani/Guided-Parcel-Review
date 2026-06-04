@@ -254,28 +254,87 @@ function renderRankingSummary(reviews = []) {
   `;
 }
 
-function renderWhyMatchesSection(ranked, searchStats = {}) {
+function renderWhyMatchesSection(ranked, searchStats = {}, config = {}) {
   const allCandidates = ranked.allCandidates || [];
   const selectedCandidates = ranked.selectedCandidates || [];
   const eligibleCount = allCandidates.filter(review => review.eligibility.eligible).length;
   const reviewedCount = searchStats.localPdfCandidateCount ?? allCandidates.length;
+  const statItems = searchStats.statItems || [
+    ["Records reviewed", reviewedCount],
+    ["Eligible candidates", searchStats.eligibleScriptCandidateCount ?? eligibleCount],
+    ["Selected matches", selectedCandidates.length]
+  ];
+  const note = config.whyMatchesNote || `
+        The selected sales rose to the top because they combine usable sale information with similar public-record characteristics.
+        Each one still has differences that require judgment.
+      `;
 
   return `
     <section class="why-matches-section review-card" aria-labelledby="whyMatchesTitle">
       <div class="comp-story-section-head">
-        <p class="guided-kicker">Why These Matches Were Selected</p>
-        <h2 id="whyMatchesTitle">Best available candidates, not identical properties</h2>
-        <p>Comparable selection often means choosing the best available candidates rather than finding perfect matches.</p>
+        <p class="guided-kicker">${escapeHtml(config.whyMatchesKicker || "Why These Matches Were Selected")}</p>
+        <h2 id="whyMatchesTitle">${escapeHtml(config.whyMatchesTitle || "Best available candidates, not identical properties")}</h2>
+        <p>${escapeHtml(config.whyMatchesIntro || "Comparable selection often means choosing the best available candidates rather than finding perfect matches.")}</p>
       </div>
       <dl class="why-matches-stats">
-        <div><dt>Records reviewed</dt><dd>${Number(reviewedCount).toLocaleString("en-US")}</dd></div>
-        <div><dt>Eligible candidates</dt><dd>${Number(searchStats.eligibleScriptCandidateCount ?? eligibleCount).toLocaleString("en-US")}</dd></div>
-        <div><dt>Selected matches</dt><dd>${selectedCandidates.length}</dd></div>
+        ${statItems.map(([label, value]) => `
+          <div><dt>${escapeHtml(label)}</dt><dd>${Number(value).toLocaleString("en-US")}</dd></div>
+        `).join("")}
       </dl>
-      <p class="why-matches-note">
-        The selected sales rose to the top because they combine usable sale information with similar public-record characteristics.
-        Each one still has differences that require judgment.
-      </p>
+      <p class="why-matches-note">${escapeHtml(note)}</p>
+    </section>
+  `;
+}
+
+function moneyPerSqFtLabel(price, squareFeet) {
+  if (!price || !squareFeet) return "Not listed";
+  return `${new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(price / squareFeet)}/sf`;
+}
+
+function renderMipsCandidateReviewSection(rows = []) {
+  if (!rows.length) return "";
+
+  return `
+    <section class="mips-candidate-review-section review-card" aria-labelledby="mipsCandidateReviewTitle">
+      <div class="comp-story-section-head">
+        <p class="guided-kicker">MIPS Public Sales Screen</p>
+        <h2 id="mipsCandidateReviewTitle">Recent sale candidates checked against full records</h2>
+        <p>The MIPS map is used as the first pass. The full-detail score then checks the GWorks property facts where a PDF record is available.</p>
+      </div>
+      <div class="neighbor-comp-table-wrap">
+        <table class="neighbor-comp-table">
+          <thead>
+            <tr>
+              <th scope="col">Candidate</th>
+              <th scope="col">Sale</th>
+              <th scope="col">Price / sq. ft.</th>
+              <th scope="col">MIPS seed</th>
+              <th scope="col">Full-detail score</th>
+              <th scope="col">Review note</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(row => `
+              <tr>
+                <th scope="row">
+                  ${escapeHtml(row.address)}
+                  <br><small>${escapeHtml(row.parcelId)}</small>
+                </th>
+                <td>${escapeHtml(textLabel(row.saleDate))}<br>${escapeHtml(moneyLabel(row.salePrice))}</td>
+                <td>${escapeHtml(moneyPerSqFtLabel(row.salePrice, row.buildingSqFt))}</td>
+                <td>${escapeHtml(numberLabel(row.mipsSeedScore))}</td>
+                <td>${escapeHtml(numberLabel(row.fullDetailScore))}</td>
+                <td>${escapeHtml(row.note || "")}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
     </section>
   `;
 }
@@ -439,7 +498,8 @@ export async function renderComparisonExperiment(propertySwitcherContext = {}, c
       ${renderQuestionSection(config)}
       ${renderSubjectSnapshot(subject)}
       ${renderBestMatchesSection(models, rankedForCards.selectedCandidates, reviewByParcelId, config)}
-      ${renderWhyMatchesSection(rankedForCards, config.candidateSearchStats)}
+      ${renderWhyMatchesSection(rankedForCards, config.candidateSearchStats, config)}
+      ${renderMipsCandidateReviewSection(config.mipsCandidateReview)}
       ${renderEqualizationSection()}
       ${renderAssessmentContextSection(subject, models.filter(model => model.role !== "subject"))}
       ${renderDetailedComparisonSection(rankedForCards.selectedCandidates)}

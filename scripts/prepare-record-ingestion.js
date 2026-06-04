@@ -40,6 +40,53 @@ function ownerMailingAddress(text) {
   return lines.length ? lines.join(", ") : null;
 }
 
+function parseCommercialDatasheet(text) {
+  const block = blockMatch(text, /Comm?er(?:cial|ical) Datasheet - Building([\s\S]*?)(?:Dwelling Data|Outbuilding Data|Photo\/Sketch)/i, "");
+  const rows = [];
+  const pending = [];
+  let current = null;
+
+  const finalize = () => {
+    if (!current) return;
+    rows.push({
+      occupancy: current.occupancyParts.join(" / ").replace(/\s+/g, " ").trim() || null,
+      size: current.size,
+      yearBuilt: current.yearBuilt,
+      perimeter: current.perimeter
+    });
+    current = null;
+  };
+
+  block.split(/\n/)
+    .map(line => line.trim().replace(/\s+/g, " "))
+    .filter(Boolean)
+    .filter(line => !/^(Occupancy|Built|Size|Year|Perimeter)(?:\s+(Occupancy|Built|Size|Year|Perimeter))*$/i.test(line))
+    .forEach(line => {
+      const numeric = line.match(/^(.*?)([\d,]+)\s+(\d{4})\s+([\d,]+)$/);
+      if (numeric) {
+        finalize();
+        const occupancy = [...pending, numeric[1].trim()].filter(Boolean);
+        pending.length = 0;
+        current = {
+          occupancyParts: occupancy,
+          size: number(numeric[2]),
+          yearBuilt: Number(numeric[3]) || null,
+          perimeter: number(numeric[4])
+        };
+        return;
+      }
+
+      if (current) {
+        current.occupancyParts.push(line);
+      } else {
+        pending.push(line);
+      }
+    });
+
+  finalize();
+  return rows;
+}
+
 function parsePdf(pdfPath) {
   const text = execFileSync("pdftotext", ["-layout", pdfPath, "-"], { encoding: "utf8" });
   const parcelId = firstMatch(text, /Parcel ID:\s+([0-9]+)/);
@@ -92,6 +139,8 @@ function parsePdf(pdfPath) {
     .replace(/\s+/g, " ")
     .trim() || null;
 
+  const commercialDatasheet = parseCommercialDatasheet(text);
+
   return {
     pdfPath,
     parcelId,
@@ -135,7 +184,8 @@ function parsePdf(pdfPath) {
     assessedValues: values,
     levyRows,
     dwellingRows,
-    outbuildingRows
+    outbuildingRows,
+    commercialDatasheet
   };
 }
 

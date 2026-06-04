@@ -28113,8 +28113,17 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "recordId": "residential-0010502000",
+      "recordCardPath": "data/property-records/mips/residential-0010502000-record-card.json",
+      "capturePath": "research/nto-captures/0010502000-2025-nto-capture.json",
+      "builtAt": "2026-06-04T00:39:35.000Z",
+      "owner": "HAWKINS, KATHRYNE V",
+      "situsAddress": "1300 S 5TH",
+      "taxDistrict": "157",
+      "valuationGroup": "3 - Beatrice, Beatrice Subs",
+      "marketArea": "Beatrice, Beatrice Subs"
     },
     {
       "sequence": 2648,
@@ -28506,8 +28515,17 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "recordId": "residential-0010529000",
+      "recordCardPath": "data/property-records/mips/residential-0010529000-record-card.json",
+      "capturePath": "research/nto-captures/0010529000-2025-nto-capture.json",
+      "builtAt": "2026-06-03T14:28:55.000Z",
+      "owner": "MAUERHAN, TODD & KAREN",
+      "situsAddress": "1608 S 3RD",
+      "taxDistrict": "157",
+      "valuationGroup": "3 - Beatrice, Beatrice Subs",
+      "marketArea": "Beatrice, Beatrice Subs"
     },
     {
       "sequence": 2696,
@@ -48493,8 +48511,17 @@
       "expectedGroupKeys": [
         "Residential-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "recordId": "residential-0012492000",
+      "recordCardPath": "data/property-records/mips/residential-0012492000-record-card.json",
+      "capturePath": "research/nto-captures/0012492000-2025-nto-capture.json",
+      "builtAt": "2026-06-04T00:39:35.000Z",
+      "owner": "GRAHAM, RICHARD & GRACE",
+      "situsAddress": "1211 S 5TH",
+      "taxDistrict": "157",
+      "valuationGroup": "3 - Beatrice, Beatrice Subs",
+      "marketArea": "Beatrice, Beatrice Subs"
     },
     {
       "sequence": 5419,
@@ -91440,8 +91467,43 @@
       "expectedGroupKeys": [
         "Commercial-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "parsedAt": "2026-06-03T13:38:00.000Z",
+      "owner": "SCHUSTER, TIMOTHY J & CARLA J",
+      "situsAddress": "00210 S REED",
+      "propertyClass": "Commercial",
+      "accountType": "Commercial",
+      "taxDistrict": "157",
+      "schoolDistrict": "SCH 15 BEATRICE, 34-0015",
+      "legalDescription": "0 4 6 LOTS 40-42 INC & LOTS 65-67 INC MCCONNELLS SUB S 1/2 SW 32-4-6",
+      "pdfParcelId": "013380000",
+      "pdfNtoParcelId": "0013380000",
+      "groupKey": "Commercial-3",
+      "groupConfidence": "manual-commercial",
+      "assignmentNotes": "Commercial Beatrice record assigned to Commercial-3 from tracker probe and tax district 157 urban Beatrice context.",
+      "assignedValuationGroup": "3 - Beatrice, Beatrice Subs",
+      "assignedMarketArea": "Beatrice, Beatrice Subs",
+      "assignedMarketGroup": "Urban",
+      "rejectedReason": null,
+      "manifestId": "commercial-0013380000",
+      "recordCardPath": "data/property-records/mips/commercial-0013380000-record-card.json",
+      "capturePath": "research/nto-captures/0013380000-2025-nto-capture.json",
+      "directAppUrl": "http://localhost:4173/?property=commercial-0013380000#property-record",
+      "assets": {
+        "photo": "assets/images/013380000_1.jpg",
+        "sketch": "assets/images/013380000_2.jpg",
+        "additionalPhotos": [
+          {
+            "src": "assets/images/013380000_3.jpg",
+            "caption": "Additional Property Photo 1"
+          },
+          {
+            "src": "assets/images/013380000_4.jpg",
+            "caption": "Additional Property Sketch 2"
+          }
+        ]
+      }
     },
     {
       "sequence": 11523,
@@ -98690,8 +98752,34 @@
       "expectedGroupKeys": [
         "Commercial-3"
       ],
-      "status": "source_candidate",
-      "sampleVisibility": "research"
+      "status": "built_research",
+      "sampleVisibility": "research",
+      "parsedAt": "2026-06-04T00:48:28.000Z",
+      "owner": "BRUNS, WAYNE A",
+      "situsAddress": "00200 BELL",
+      "propertyClass": "Commercial",
+      "accountType": "Commercial",
+      "taxDistrict": "157",
+      "schoolDistrict": "SCH 15 BEATRICE, 34-0015",
+      "legalDescription": "LOT 7 BLK 73 BEATRICE ORIGINAL",
+      "pdfParcelId": "009926000",
+      "pdfNtoParcelId": "0009926000",
+      "groupKey": "Commercial-3",
+      "groupConfidence": "manual-commercial",
+      "assignmentNotes": "Commercial Beatrice storage warehouse record assigned to Commercial-3 from tracker probe and tax district 157 urban Beatrice context.",
+      "assignedValuationGroup": "3 - Beatrice, Beatrice Subs",
+      "assignedMarketArea": "Beatrice, Beatrice Subs",
+      "assignedMarketGroup": "Urban",
+      "rejectedReason": null,
+      "manifestId": "commercial-0009926000",
+      "recordCardPath": "data/property-records/mips/commercial-0009926000-record-card.json",
+      "capturePath": "research/nto-captures/0009926000-2025-nto-capture.json",
+      "directAppUrl": "http://localhost:4173/?property=commercial-0009926000#property-record",
+      "assets": {
+        "photo": "assets/images/009926000_1.jpg",
+        "sketch": "assets/images/009926000_2.jpg",
+        "additionalPhotos": []
+      }
     },
     {
       "sequence": 12429,
