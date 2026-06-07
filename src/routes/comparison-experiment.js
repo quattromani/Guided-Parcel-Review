@@ -49,8 +49,12 @@ function scoreLabel(model, review) {
 }
 
 function burdenLabel(model, review) {
-  if (model.role === "subject") return "Reference";
+  if (model.role === "subject") return "-";
   return review?.adjustmentBurden || "Not listed";
+}
+
+function normalizedPricePerSqFtLabel(model) {
+  return model.normalizedPricePerSqFtLabel || moneyPerSqFtLabel(model.salePrice, model.buildingSqFt);
 }
 
 function renderPropertyCard(model, review = null) {
@@ -97,6 +101,10 @@ function renderPropertyCard(model, review = null) {
           <div>
             <dt>Sale price</dt>
             <dd>${escapeHtml(moneyLabel(model.salePrice))}</dd>
+          </div>
+          <div>
+            <dt>Normalized $/sf</dt>
+            <dd>${escapeHtml(normalizedPricePerSqFtLabel(model))}</dd>
           </div>
           <div>
             <dt>Similarity score</dt>
@@ -214,6 +222,30 @@ function renderSubjectSnapshot(model) {
           </dl>
         </details>
       </div>
+    </section>
+  `;
+}
+
+function renderSubjectAdjustmentSection(adjustment = null) {
+  if (!adjustment) return "";
+
+  const statItems = adjustment.statItems || [];
+
+  return `
+    <section class="subject-adjustment-section review-card" aria-labelledby="subjectAdjustmentTitle">
+      <div class="comp-story-section-head">
+        <p class="guided-kicker">${escapeHtml(adjustment.kicker || "Subject Adjustment")}</p>
+        <h2 id="subjectAdjustmentTitle">${escapeHtml(adjustment.title || "Subject adjustment context")}</h2>
+        ${adjustment.intro ? `<p>${escapeHtml(adjustment.intro)}</p>` : ""}
+      </div>
+      ${statItems.length ? `
+        <dl class="why-matches-stats">
+          ${statItems.map(([label, value]) => `
+            <div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(`${value}`)}</dd></div>
+          `).join("")}
+        </dl>
+      ` : ""}
+      ${adjustment.note ? `<p class="why-matches-note">${escapeHtml(adjustment.note)}</p>` : ""}
     </section>
   `;
 }
@@ -497,6 +529,7 @@ export async function renderComparisonExperiment(propertySwitcherContext = {}, c
     <section class="neighbor-comp-page" aria-labelledby="neighborCompTitle">
       ${renderQuestionSection(config)}
       ${renderSubjectSnapshot(subject)}
+      ${renderSubjectAdjustmentSection(config.subjectAdjustment)}
       ${renderBestMatchesSection(models, rankedForCards.selectedCandidates, reviewByParcelId, config)}
       ${renderWhyMatchesSection(rankedForCards, config.candidateSearchStats, config)}
       ${renderMipsCandidateReviewSection(config.mipsCandidateReview)}

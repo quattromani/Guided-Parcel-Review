@@ -13,6 +13,7 @@ import {
   loadAssessmentCalendar,
   loadAssessmentRatioAnalysis,
   loadCertifiedTaxesLevied,
+  loadCountyContext,
   loadGoverningOffice,
   loadLegalReferences,
   loadMarketPositionStatistics,
@@ -57,9 +58,12 @@ import {
   isExperimentIndexRequest,
   renderExperimentsIndex
 } from "./routes/experiments-index.js";
+import { renderAmesHighway77ComparableSalesExperiment } from "./routes/ames-highway-77-comparable-sales.js";
+import { renderBeekmanCountryClubComparableSalesExperiment } from "./routes/beekman-country-club-comparable-sales.js";
 import { renderGrantNeighborCompExperiment } from "./routes/grant-neighbor-comps.js";
 import { renderPropertyInviteIndex } from "./routes/property-invite-index.js";
 import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js";
+import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js";
 import {
   continueDevelopmentFeatureSampleStart,
   developmentFeatureSampleStartPropertyId
@@ -139,6 +143,55 @@ async function main() {
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
     setFooterResourcesVisible(false);
     await renderSFifthComparableSalesExperiment(propertySwitcher);
+    return;
+  }
+
+  if (experimentView === "ames-highway-77-comps") {
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    setFooterResourcesVisible(false);
+    await renderAmesHighway77ComparableSalesExperiment(propertySwitcher);
+    return;
+  }
+
+  if (experimentView === "beekman-country-club-comps") {
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    setFooterResourcesVisible(false);
+    await renderBeekmanCountryClubComparableSalesExperiment(propertySwitcher);
+    return;
+  }
+
+  if (experimentView === "tax-shorthand") {
+    setFooterResourcesVisible(false);
+    if (!propertySwitcher.activePropertyId) {
+      window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+      renderTaxShorthandExperiment(propertySwitcher);
+      return;
+    }
+
+    const [propertyData, recordCard, calendar, valuationGroups, taxDistrictAuthorities, countyContext] = await Promise.all([
+      loadPropertyData(),
+      loadPropertyRecordCard(),
+      loadAssessmentCalendar(),
+      loadValuationGroups(),
+      loadTaxDistrictAuthorities(),
+      loadCountyContext()
+    ]);
+    const propertySwitcherContext = { ...propertySwitcher, valuationGroups };
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcherContext;
+    const snapshotModel = buildPropertySnapshotModel({
+      propertyData,
+      recordCard,
+      calendar,
+      taxDistrictAuthorities,
+      valuationGroups
+    });
+    const data = withSnapshotModel(propertyData, snapshotModel);
+    renderTaxShorthandExperiment(propertySwitcherContext, {
+      data,
+      recordCard,
+      snapshotModel,
+      countyContext
+    });
     return;
   }
 

@@ -1,0 +1,682 @@
+{
+  "source": {
+    "sourceType": "property_record",
+    "system": "GWorks Public Access",
+    "displayCitation": "Gage County Assessor GWorks property report",
+    "county": "Gage County",
+    "reportName": "Gage County Assessor property report",
+    "recordType": "GWORKS_PROPERTY_REPORT",
+    "printedAt": null,
+    "sourceImages": [
+      "assets/images/000292000_1.jpg",
+      "assets/images/000292000_2.jpg"
+    ],
+    "sourceImageLinks": [
+      "https://gage.gworks.com/photos/0000292000_1.jpg",
+      "https://gage.gworks.com/photos/0000292000_2.jpg",
+      "https://gage.gworks.com/photos/0000292000_3.jpg",
+      "https://gage.gworks.com/photos/0000292000_4.jpg"
+    ],
+    "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
+  },
+  "guidedSnapshot": {
+    "snapshotYear": 2026,
+    "latestFinalTaxYear": 2025,
+    "assets": {
+      "photo": "assets/images/000292000_1.jpg",
+      "sketch": "assets/images/000292000_2.jpg",
+      "additionalPhotos": []
+    },
+    "parcel": {
+      "parcelId": "000292000",
+      "mapNumber": "292000",
+      "stateGeoCode": "4457-05-4-00000-000-0000",
+      "owner": "MALOY, TREVOR J & JOY, ALLISON M",
+      "mailingAddress": "44769 US HWY 77, WYMORE, NE 68466",
+      "situsAddress": "44769 US HWY 77",
+      "countyName": "GAGE",
+      "taxDistrict": "3",
+      "schoolDistrict": "SCHOOL 1 WYMORE, 34-0001",
+      "accountType": "Residential",
+      "legalDescription": "5 1 7 SEC 5-1-7 COM AT SE COR SE SE TH W 59.8'TO POB TH W 599.29' N"
+    },
+    "classification": {
+      "status": "Improved",
+      "location": "Rural",
+      "propertyClass": "Residential",
+      "citySize": "No Population",
+      "zoning": "Agricultural",
+      "lotSize": "N/A"
+    },
+    "residential": {
+      "style": "100% One Story",
+      "yearBuilt": 1967,
+      "buildingSize": 1460,
+      "basementSize": 1454,
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "plumbingFixtures": 9,
+      "quality": "Average",
+      "condition": "Average",
+      "exterior": "100% Frame, Hardboard Sheets",
+      "heatingCooling": "100% Heat Pump",
+      "garage1": "Attached Garage(SF), 520 sq. ft.",
+      "minFinish": 0,
+      "partFinish": 727
+    },
+    "commercial": null,
+    "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 280225,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
+      {
+        "year": 2025,
+        "assessedValue": 200330,
+        "taxes": 2001.82,
+        "status": "partially-paid",
+        "assessmentSource": "GWorks PDF"
+      }
+    ],
+    "taxStatements": [
+      {
+        "taxYear": 2025,
+        "statementNumber": "9059",
+        "statementType": "REAL",
+        "totalTaxesDue": 2001.82,
+        "dueDate": null,
+        "assessedValue": 200330,
+        "grossTaxAmount": 2783.46,
+        "credits": {
+          "homestead": {
+            "value": 0,
+            "amount": 0
+          },
+          "nonAgTax": {
+            "value": null,
+            "amount": -238.4
+          },
+          "agLandTax": {
+            "value": null,
+            "amount": 0
+          },
+          "schoolTax": {
+            "value": null,
+            "amount": -543.24
+          }
+        },
+        "netAmountDue": 2001.82,
+        "totalPaid": 1000.91,
+        "taxDue": 1000.91,
+        "derived": {
+          "grossLevyRate": 0.01389431,
+          "netEffectiveTaxRate": 0.009992612189886686,
+          "totalCreditAmount": -781.64
+        },
+        "sourceNote": "Nebraska Taxes Online statement detail modal.",
+        "land": 50790,
+        "dwelling": 145955,
+        "outbuilding": 3585
+      }
+    ],
+    "districtLevyHistory": [
+      {
+        "year": 2025,
+        "levy": 1.3894309999999999,
+        "status": "statement-detail",
+        "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
+      }
+    ],
+    "assessedValueBreakdown": [
+      {
+        "year": 2026,
+        "dwelling": 217330,
+        "land": 50790,
+        "outbuilding": 12105,
+        "total": 280225,
+        "source": "GWorks PDF"
+      },
+      {
+        "year": 2025,
+        "dwelling": 145955,
+        "land": 50790,
+        "outbuilding": 3585,
+        "total": 200330,
+        "source": "GWorks PDF"
+      }
+    ],
+    "latestFinalLevyComponents": [
+      {
+        "description": "SOUTHERN SCH",
+        "rate": 1.012112,
+        "amount": 2027.56,
+        "share": 72.8,
+        "group": "School"
+      },
+      {
+        "description": "COUNTY GENERAL",
+        "rate": 0.234958,
+        "amount": 470.7,
+        "share": 16.9,
+        "group": "County"
+      },
+      {
+        "description": "BARNESTON TWP",
+        "rate": 0.041813,
+        "amount": 83.76,
+        "share": 3,
+        "group": "Other"
+      },
+      {
+        "description": "BIG BLUE NRD",
+        "rate": 0.032155,
+        "amount": 64.42,
+        "share": 2.3,
+        "group": "Natural resources"
+      },
+      {
+        "description": "WYMORE FIRE",
+        "rate": 0.03,
+        "amount": 60.1,
+        "share": 2.2,
+        "group": "Other"
+      },
+      {
+        "description": "SCC",
+        "rate": 0.02,
+        "amount": 40.07,
+        "share": 1.4,
+        "group": "Community college"
+      },
+      {
+        "description": "ESU #5",
+        "rate": 0.015,
+        "amount": 30.05,
+        "share": 1.1,
+        "group": "Education service"
+      },
+      {
+        "description": "AG SOCIETY",
+        "rate": 0.002759,
+        "amount": 5.53,
+        "share": 0.2,
+        "group": "Other"
+      },
+      {
+        "description": "HISTORICAL SOCIETY",
+        "rate": 0.000634,
+        "amount": 1.27,
+        "share": 0,
+        "group": "Other"
+      }
+    ],
+    "dwellingData": [
+      {
+        "description": "OPEN PORCH",
+        "units": 156,
+        "value": 3055
+      },
+      {
+        "description": "ENCLOSED WOOD SOLID WALL",
+        "units": 156,
+        "value": 8745
+      },
+      {
+        "description": "OPEN SL PRCH/STP",
+        "units": 70,
+        "value": 1195
+      }
+    ],
+    "outbuildingData": [
+      {
+        "description": "STEEL GRAIN BIN",
+        "units": 2523,
+        "yearBuilt": null,
+        "cost": 275
+      },
+      {
+        "description": "HOG BARN",
+        "units": 1600,
+        "yearBuilt": null,
+        "cost": 4120
+      },
+      {
+        "description": "POLE UTIL BUILDI",
+        "units": 480,
+        "yearBuilt": null,
+        "cost": 410
+      },
+      {
+        "description": "TOOL SHED",
+        "units": 240,
+        "yearBuilt": null,
+        "cost": 180
+      }
+    ],
+    "propertyNotes": [
+      {
+        "date": null,
+        "note": "Draft generated from GWorks PDF and NTO statement detail captures."
+      },
+      {
+        "date": null,
+        "note": "Review photo/sketch assets and any unavailable cost-model detail before publishing."
+      }
+    ],
+    "landInformation": [
+      {
+        "description": "N/A",
+        "squareFeet": null,
+        "acres": null,
+        "actualFrontFeet": null,
+        "effectiveFrontFeet": null,
+        "depth": null,
+        "recordedValue": 50790,
+        "source": "Nebraska Taxes Online detail modal and GWorks PDF classification"
+      }
+    ],
+    "sources": [
+      "Gage County Assessor GWorks property report",
+      "Nebraska Taxes Online statement detail modal"
+    ],
+    "sourcePolicy": {
+      "primaryFacts": "GWorks PDF",
+      "taxStatements": "Nebraska Taxes Online",
+      "unavailableFields": "Leave as null/unavailable instead of inferring."
+    }
+  },
+  "parcelIdentifiers": {
+    "parcelId": "000292000",
+    "cardFilePerm": null,
+    "cadastralId": "4-79-31",
+    "padClassCode": null,
+    "stateGeo": "4457-05-4-00000-000-0000",
+    "appraiserId": null,
+    "taxOnlineParcelId": "0000292000"
+  },
+  "locationModel": {
+    "valuationGroup": "15 - Rural Sub South, Rural",
+    "marketArea": "Rural Sub South, Rural",
+    "marketGroup": "Rural"
+  },
+  "landModel": {
+    "description": "Land row from GWorks public export",
+    "lotSize": "N/A",
+    "recordedLotValue": 50790,
+    "frontage": null,
+    "cutoffSchedule": []
+  },
+  "currentCardValue": {
+    "previous": {
+      "buildings": 145955,
+      "improvement": 3585,
+      "landLots": 50790,
+      "total": 200330
+    },
+    "current": {
+      "buildings": 217330,
+      "improvement": 12105,
+      "landLots": 50790,
+      "total": 280225,
+      "note": "2026 assessed values from GWorks PDF. Latest finalized tax data remains 2025."
+    }
+  },
+  "ownershipHistory": [],
+  "valuationHistory": [
+    {
+      "year": 2026,
+      "total": 280225,
+      "land": 50790,
+      "outbuilding": 12105,
+      "dwelling": 217330,
+      "source": "GWorks PDF"
+    },
+    {
+      "year": 2025,
+      "total": 200330,
+      "land": 50790,
+      "outbuilding": 3585,
+      "dwelling": 145955,
+      "source": "GWorks PDF"
+    }
+  ],
+  "propertyValuation": {
+    "buildings": 217330,
+    "improvement": 12105,
+    "landLot": 50790,
+    "total": 280225
+  },
+  "valuationReconciliation": {
+    "source": "GWorks public export and Nebraska Taxes Online detail modal",
+    "initialMipsTotal": null,
+    "finalAssessedTotal": 280225,
+    "finalDwellingValue": 217330,
+    "landLot": 50790,
+    "modeledDetailSubtotal": null,
+    "cardToFinalAdjustment": null,
+    "modelToFinalReconciliation": null,
+    "note": "The GWorks export gives value rollups and visible component rows, but not the Marshall & Swift cost/depreciation bridge used by the older MIPS-style card."
+  },
+  "reviewHistory": [],
+  "residentialInformation": {
+    "type": "Agricultural",
+    "quality": "Average",
+    "condition": "Average",
+    "architecture": null,
+    "baseTotalArea": "1,460",
+    "style": "100% One Story",
+    "exteriorWall": "100% Frame, Hardboard Sheets",
+    "heatingCooling": "100% Heat Pump",
+    "roofCover": null,
+    "areaOfSlab": null,
+    "areaOfCrawl": null,
+    "fixtureRoughin": "9",
+    "bedBathroom": "2 / 2",
+    "basementArea": "1,454"
+  },
+  "costApproach": {
+    "available": false,
+    "yearEffectiveAge": null,
+    "baseCost": null,
+    "adjustments": null,
+    "adjustedCost": null,
+    "rcn": null,
+    "totalMiscImprovements": null,
+    "garageCost": null,
+    "totalRcn": null,
+    "depreciation": {
+      "physicalPercent": null,
+      "functionalPercent": null,
+      "amount": null
+    },
+    "depreciatedMiscImprovements": null,
+    "depreciatedGarages": null,
+    "rcnld": null,
+    "adjustedRcnld": null,
+    "costPerSquareFoot": null,
+    "note": "Marshall & Swift-level cost details are not included in this GWorks PDF export."
+  },
+  "garageCostLines": [
+    {
+      "description": "Attached Garage(SF)",
+      "units": 520,
+      "value": null,
+      "source": "GWorks PDF residential datasheet"
+    }
+  ],
+  "miscImprovements": [
+    {
+      "description": "OPEN PORCH",
+      "units": 156,
+      "value": 3055,
+      "source": "GWorks PDF dwelling data"
+    },
+    {
+      "description": "ENCLOSED WOOD SOLID WALL",
+      "units": 156,
+      "value": 8745,
+      "source": "GWorks PDF dwelling data"
+    },
+    {
+      "description": "OPEN SL PRCH/STP",
+      "units": 70,
+      "value": 1195,
+      "source": "GWorks PDF dwelling data"
+    }
+  ],
+  "sourceExtract": {
+    "note": "Generated from GWorks PDF facts and Nebraska Taxes Online 2019-current statement details. Review unavailable cost-model fields before publishing.",
+    "sections": [
+      {
+        "title": "GWorks Current/Prior Assessed Values",
+        "summary": "2 assessment years from the exported PDF",
+        "columns": [
+          "Year",
+          "Total",
+          "Land",
+          "Outbuilding",
+          "Dwelling"
+        ],
+        "rows": [
+          [
+            "2026",
+            "$280,225",
+            "$50,790",
+            "$12,105",
+            "$217,330"
+          ],
+          [
+            "2025",
+            "$200,330",
+            "$50,790",
+            "$3,585",
+            "$145,955"
+          ]
+        ]
+      },
+      {
+        "title": "Nebraska Taxes Online Statement History",
+        "summary": "2025-2025 tax statements",
+        "columns": [
+          "Year",
+          "Statement",
+          "Type",
+          "Gross tax",
+          "Credits",
+          "Net tax",
+          "Total paid",
+          "Tax due"
+        ],
+        "rows": [
+          [
+            "2025",
+            "9059",
+            "REAL",
+            "$2,783.46",
+            "$-781.64",
+            "$2,001.82",
+            "$1,000.91",
+            "$1,000.91"
+          ]
+        ]
+      },
+      {
+        "title": "2025 Tax Distribution",
+        "summary": "9 authority rows from Nebraska Taxes Online",
+        "columns": [
+          "Authority / fund",
+          "Levy",
+          "Amount",
+          "Share"
+        ],
+        "rows": [
+          [
+            "6101: SOUTHERN SCH",
+            "1.012112",
+            "$2,027.56",
+            "72.8%"
+          ],
+          [
+            "100: COUNTY GENERAL",
+            "0.234958",
+            "$470.7",
+            "16.9%"
+          ],
+          [
+            "8801: BARNESTON TWP",
+            "0.041813",
+            "$83.76",
+            "3%"
+          ],
+          [
+            "7301: BIG BLUE NRD",
+            "0.032155",
+            "$64.42",
+            "2.3%"
+          ],
+          [
+            "7709: WYMORE FIRE",
+            "0.030000",
+            "$60.1",
+            "2.2%"
+          ],
+          [
+            "7100: SCC",
+            "0.020000",
+            "$40.07",
+            "1.4%"
+          ],
+          [
+            "6905: ESU #5",
+            "0.015000",
+            "$30.05",
+            "1.1%"
+          ],
+          [
+            "9200: AG SOCIETY",
+            "0.002759",
+            "$5.53",
+            "0.2%"
+          ],
+          [
+            "9300: HISTORICAL SOCIETY",
+            "0.000634",
+            "$1.27",
+            "0%"
+          ]
+        ]
+      },
+      {
+        "title": "Residential Datasheet",
+        "summary": "1967 / 1,460 sq. ft.",
+        "columns": [
+          "Field",
+          "Value"
+        ],
+        "rows": [
+          [
+            "Zoning",
+            "Agricultural"
+          ],
+          [
+            "Style",
+            "100% One Story"
+          ],
+          [
+            "Year built",
+            "1967"
+          ],
+          [
+            "Bathrooms",
+            "2"
+          ],
+          [
+            "Exterior",
+            "100% Frame, Hardboard Sheets"
+          ],
+          [
+            "Heating/Cooling",
+            "100% Heat Pump"
+          ],
+          [
+            "Bedrooms",
+            "2"
+          ],
+          [
+            "Plumbing fixtures",
+            "9"
+          ],
+          [
+            "Basement size",
+            "1454 sq. ft."
+          ],
+          [
+            "Building size",
+            "1460 sq. ft."
+          ],
+          [
+            "Garage 1",
+            "Attached Garage(SF)"
+          ],
+          [
+            "Garage 1 size",
+            "520 sq. ft."
+          ],
+          [
+            "Quality",
+            "Average"
+          ],
+          [
+            "Condition",
+            "Average"
+          ]
+        ]
+      },
+      {
+        "title": "Dwelling Data",
+        "summary": "3 visible rows",
+        "columns": [
+          "Description",
+          "Units",
+          "Value"
+        ],
+        "rows": [
+          [
+            "OPEN PORCH",
+            "156",
+            "$3,055"
+          ],
+          [
+            "ENCLOSED WOOD SOLID WALL",
+            "156",
+            "$8,745"
+          ],
+          [
+            "OPEN SL PRCH/STP",
+            "70",
+            "$1,195"
+          ]
+        ]
+      },
+      {
+        "title": "Outbuilding Data",
+        "summary": "4 visible rows",
+        "columns": [
+          "Description",
+          "Units",
+          "Year built",
+          "Cost"
+        ],
+        "rows": [
+          [
+            "STEEL GRAIN BIN",
+            "2523",
+            "",
+            "$275"
+          ],
+          [
+            "HOG BARN",
+            "1600",
+            "",
+            "$4,120"
+          ],
+          [
+            "POLE UTIL BUILDI",
+            "480",
+            "",
+            "$410"
+          ],
+          [
+            "TOOL SHED",
+            "240",
+            "",
+            "$180"
+          ]
+        ]
+      }
+    ]
+  }
+}

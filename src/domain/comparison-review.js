@@ -41,7 +41,12 @@ export function cardComparisonData(recordCard, property, config = {}) {
   const outbuildings = outbuildingLabel(recordCard);
   const decksPorches = featureLabel(recordCard, /deck|porch|prch|knee-wall/i);
   const fireplaces = featureLabel(recordCard, /fireplace/i);
-  const pool = hasFeature(recordCard, /pool|swimming/i) ? "Swimming pool listed in dwelling data" : null;
+  const pool = config.excludePoolFromComparison
+    ? null
+    : hasFeature(recordCard, /pool|swimming/i) ? "Swimming pool listed in dwelling data" : null;
+  const otherImprovementPattern = config.excludePoolFromComparison
+    ? /fireplace|patio|slab|stoop|enclosed/i
+    : /fireplace|patio|slab|stoop|enclosed|pool|swimming/i;
   const garage = garageSummary(recordCard, null);
   const garageSqFt = garageSizeTotal(recordCard) || garageSizeFromText(residential.garage1);
 
@@ -67,6 +72,7 @@ export function cardComparisonData(recordCard, property, config = {}) {
       buildingValue: current?.dwelling ?? null,
       otherValue: current?.outbuilding ?? null
     },
+    normalizedPricePerSqFtLabel: config.normalizedPricePerSqFtLabel || null,
     assessedValues: recordValueRowsByYear(recordCard),
     buildingSqFt: residential.buildingSize ?? null,
     basementFinishedSqFt: residential.minFinish ?? null,
@@ -96,12 +102,12 @@ export function cardComparisonData(recordCard, property, config = {}) {
     improvements: {
       outbuildings,
       decksPorches,
-      other: featureLabel(recordCard, /fireplace|patio|slab|stoop|enclosed|pool|swimming/i)
+      other: featureLabel(recordCard, otherImprovementPattern)
     },
     outbuildings,
     porchesDecks: decksPorches,
     fireplaces,
-    pool: config.pool || pool,
+    pool: config.excludePoolFromComparison ? null : config.pool || pool,
     notes: config.notes || "",
     context: {
       valuationGroup: recordCard.locationModel?.valuationGroup || property?.valuationGroupLabel || config.valuationGroup || null,
@@ -136,6 +142,7 @@ export function placeholderComparisonData(config = {}) {
       buildingValue: config.values?.buildingValue ?? null,
       otherValue: config.values?.otherValue ?? null
     },
+    normalizedPricePerSqFtLabel: config.normalizedPricePerSqFtLabel || null,
     assessedValues: config.assessedValues || {},
     buildingSqFt: config.buildingSqFt ?? null,
     basementFinishedSqFt: config.basementFinishedSqFt ?? null,

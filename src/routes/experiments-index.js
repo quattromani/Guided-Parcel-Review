@@ -12,6 +12,21 @@ export const experimentLinks = [
     note: "Four-property comparable sales experiment with candidate screening and full record comparison."
   },
   {
+    title: "Ames Highway 77 Comparable Sales Walkthrough",
+    href: "?experiment=ames-highway-77-comps",
+    note: "MIPS Highway 77 sale screen and full-record dwelling comparison for 29810 US Hwy 77."
+  },
+  {
+    title: "Beekman Country Club Comparable Sales Walkthrough",
+    href: "?experiment=beekman-country-club-comps",
+    note: "MIPS Country Club-area sale screen and full-record dwelling comparison for 1417 Country Club Ln."
+  },
+  {
+    title: "Tax Shorthand Year-Over-Year Walkthrough",
+    href: "?experiment=tax-shorthand",
+    note: "Active-property tax statement table showing assessed value, levy, credits, and final net-tax movement by year."
+  },
+  {
     title: "Grant Street Side-by-Side Comparison",
     href: "?experiment=grant-neighbor-comps",
     note: "Three adjacent Grant Street properties arranged for neighbor comparison."

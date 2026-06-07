@@ -528,6 +528,23 @@ export function renderViewHeader(view = "your-property", snapshotModel, property
       description: section.description
     }
     : headers[headerView] || headers["your-property"];
+
+  renderViewHeaderContent(content, snapshotModel, switcherContext);
+}
+
+export function renderExperimentViewHeader(content = {}, snapshotModel, propertySwitcher = null) {
+  renderViewHeaderContent(
+    {
+      eyebrow: content.eyebrow || "Experiment",
+      title: content.title || "Experiment",
+      description: content.description || ""
+    },
+    snapshotModel,
+    propertySwitcher ?? window.__PROPERTY_SWITCHER_CONTEXT__ ?? null
+  );
+}
+
+function renderViewHeaderContent(content, snapshotModel, switcherContext) {
   const title = document.getElementById("pageTitle");
   const titleHtml = escapeHtml(content.title);
   const showCountyLogo = shouldShowCountyLogo(switcherContext);
@@ -591,6 +608,7 @@ function propertySwitcherMarkup(propertySwitcher, snapshotModel) {
   const pendingDirectProperty = propertySwitcher?.pendingDirectProperty;
   const options = groups.flatMap(group => group.options);
   const activeOption = options.find(option => option.selected);
+  const activeLabel = activeOption?.label || "";
 
   if (!hasOptions) return disabledParcelLookupMarkup();
   if (pendingDirectProperty && !hasActiveProperty) {
@@ -620,8 +638,10 @@ function propertySwitcherMarkup(propertySwitcher, snapshotModel) {
         aria-label="Switch property record"
           autocomplete="off"
           spellcheck="false"
-          placeholder="${hasActiveProperty ? "Search situs..." : "Search by situs..."}"
-          value="${escapeHtml(activeOption?.label || "")}"
+          placeholder="${escapeHtml(hasActiveProperty ? activeLabel || "Search situs..." : "Search by situs...")}"
+          value=""
+          data-has-active-property="${hasActiveProperty ? "true" : "false"}"
+          data-active-label="${escapeHtml(activeLabel)}"
         />
         <div id="propertySwitcherResults" class="property-switcher-results" data-property-switcher-results role="listbox" hidden>
           ${options.map(option => `
@@ -792,9 +812,28 @@ function initPropertySwitcher(root) {
   if (switcher && input && results && options.length) {
     let activeIndex = -1;
     let visibleOptions = [];
+    const hasActiveProperty = input.dataset.hasActiveProperty === "true";
 
     function normalizedQuery() {
       return normalizeSwitcherSearch(input.value);
+    }
+
+    function resetInputToPlaceholder() {
+      if (!hasActiveProperty) return;
+      input.value = "";
+      input.removeAttribute("aria-activedescendant");
+    }
+
+    function prepareInputForTyping() {
+      if (hasActiveProperty && input.value === input.dataset.activeLabel) {
+        input.value = "";
+      }
+
+      if (!input.value && typeof input.setSelectionRange === "function") {
+        input.setSelectionRange(0, 0);
+      }
+
+      filterOptions();
     }
 
     function matchesOption(option, query) {
@@ -854,10 +893,11 @@ function initPropertySwitcher(root) {
     }
 
     input.addEventListener("input", filterOptions);
-    input.addEventListener("focus", filterOptions);
+    input.addEventListener("focus", prepareInputForTyping);
     input.addEventListener("keydown", event => {
       if (event.key === "Escape") {
         setOpen(false);
+        resetInputToPlaceholder();
         input.blur();
         return;
       }
@@ -886,7 +926,10 @@ function initPropertySwitcher(root) {
     });
 
     document.addEventListener("click", event => {
-      if (!switcher.contains(event.target)) setOpen(false);
+      if (!switcher.contains(event.target)) {
+        setOpen(false);
+        resetInputToPlaceholder();
+      }
     });
 
     return;
@@ -3729,7 +3772,7 @@ function taxHistoryLevyDisplay(row) {
   `;
 }
 
-function statementGrossLevy(statement) {
+export function statementGrossLevy(statement) {
   if (!statement) return null;
   if (statement.grossTaxAmount && statement.assessedValue) {
     return (statement.grossTaxAmount / statement.assessedValue) * 100;
@@ -3773,7 +3816,7 @@ function taxHistoryDisplayLevyRow(levyRow, statement) {
   };
 }
 
-function finalizedTaxStatements(data) {
+export function finalizedTaxStatements(data) {
   return (data.taxStatements || [])
     .slice()
     .sort((a, b) => b.taxYear - a.taxYear)
@@ -3798,7 +3841,7 @@ function levyMovementPill(row, priorRow) {
   return `<span class="movement-pill ${colorClass}">${arrow} ${Math.abs(change).toFixed(2)}%</span>`;
 }
 
-function statementTotalCredits(statement) {
+export function statementTotalCredits(statement) {
   if (statement.derived?.totalCreditAmount !== null && statement.derived?.totalCreditAmount !== undefined) {
     return Math.abs(statement.derived.totalCreditAmount);
   }

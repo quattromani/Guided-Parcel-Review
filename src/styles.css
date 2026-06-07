@@ -269,6 +269,12 @@ canvas {
   -webkit-appearance: none;
 }
 
+.property-switcher-input::placeholder {
+  color: rgb(var(--brand-ink) / 0.76);
+  font-weight: 800;
+  opacity: 1;
+}
+
 .property-switcher-input:focus {
   outline: none;
   box-shadow:
@@ -7113,6 +7119,436 @@ footer > [data-footer-resource-shell] {
   margin-top: 0.25rem;
 }
 
+.tax-shorthand-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.tax-shorthand-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.tax-shorthand-card-header {
+  align-items: end;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.tax-shorthand-card-header h2 {
+  color: rgb(var(--brand-ink));
+  font-size: 1.35rem;
+  font-weight: 850;
+  line-height: 1.2;
+  margin: 0.2rem 0 0;
+}
+
+.tax-shorthand-card-header > span {
+  border-radius: 9999px;
+  color: rgb(var(--brand-ink));
+  flex: none;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0.45rem 0.6rem;
+  box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+}
+
+.tax-shorthand-metrics {
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: var(--radius-container-sm);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow: hidden;
+}
+
+.tax-shorthand-metrics article {
+  background: rgb(var(--surface-muted));
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.85rem;
+}
+
+.tax-shorthand-metrics article + article {
+  border-left: 1px solid rgb(var(--border-muted));
+}
+
+.tax-shorthand-metrics p {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.68rem;
+  font-weight: 850;
+  line-height: 1.15;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.tax-shorthand-metrics strong {
+  color: rgb(var(--brand-ink));
+  font-size: 1rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.tax-shorthand-table-wrap {
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: var(--radius-container-sm);
+  overflow-x: auto;
+}
+
+.tax-shorthand-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.84rem;
+  min-width: 820px;
+  width: 100%;
+}
+
+.tax-shorthand-table thead th {
+  background: rgb(var(--brand-ink));
+  color: white;
+  font-size: 0.74rem;
+  font-weight: 850;
+  letter-spacing: 0;
+  line-height: 1.15;
+  padding: 0.7rem 0.65rem;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tax-shorthand-table tbody th,
+.tax-shorthand-table tbody td {
+  border-top: 1px solid rgb(var(--border-muted));
+  color: rgb(var(--brand-ink));
+  padding: 0.65rem;
+  vertical-align: top;
+}
+
+.tax-shorthand-table tbody strong {
+  display: block;
+  font-size: 0.94rem;
+  font-weight: 850;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tax-shorthand-year-cell span,
+.tax-shorthand-change {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 750;
+  line-height: 1.25;
+  margin-top: 0.22rem;
+  white-space: nowrap;
+}
+
+.tax-shorthand-compact-change {
+  border-radius: 9999px;
+  display: inline-flex;
+  font-size: 0.7rem;
+  font-weight: 850;
+  line-height: 1;
+  margin-top: 0.28rem;
+  padding: 0.25rem 0.46rem;
+  white-space: nowrap;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+.tax-shorthand-year-cell span,
+.tax-shorthand-change-baseline {
+  color: rgb(var(--color-slate-500));
+}
+
+.tax-shorthand-change-up {
+  color: rgb(var(--color-red));
+}
+
+.tax-shorthand-change-down {
+  color: rgb(var(--color-green-dark));
+}
+
+.tax-shorthand-change-flat {
+  color: rgb(var(--color-slate-700));
+}
+
+.tax-shorthand-operator {
+  color: rgb(var(--color-slate-500)) !important;
+  font-weight: 850;
+  text-align: center;
+  width: 2rem;
+}
+
+.tax-shorthand-result-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tax-shorthand-area-panel {
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: var(--radius-container-sm);
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 0.2rem;
+  padding: 1rem;
+}
+
+.tax-shorthand-area-heading {
+  align-items: end;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.tax-shorthand-area-heading h3 {
+  color: rgb(var(--brand-ink));
+  font-size: 1.05rem;
+  font-weight: 850;
+  line-height: 1.2;
+  margin: 0.16rem 0 0;
+}
+
+.tax-shorthand-area-heading > p {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0;
+  max-width: 22rem;
+  text-align: right;
+}
+
+.tax-shorthand-area-chart {
+  height: 19rem;
+  min-height: 19rem;
+  position: relative;
+}
+
+.tax-shorthand-area-svg {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.tax-shorthand-chart-grid line {
+  stroke: rgb(var(--color-slate-300) / 0.68);
+  stroke-width: 1;
+}
+
+.tax-shorthand-chart-grid .tax-shorthand-chart-baseline {
+  stroke: rgb(var(--brand-ink) / 0.42);
+  stroke-dasharray: 5 5;
+  stroke-width: 1.3;
+}
+
+.tax-shorthand-chart-grid text,
+.tax-shorthand-chart-years text,
+.tax-shorthand-chart-legend text {
+  fill: rgb(var(--color-slate-600));
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.tax-shorthand-area-fill {
+  stroke: none;
+}
+
+.tax-shorthand-value-fill {
+  fill: rgb(31 73 112 / 0.18);
+}
+
+.tax-shorthand-tax-fill {
+  fill: rgb(148 70 86 / 0.16);
+}
+
+.tax-shorthand-area-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.tax-shorthand-value-line,
+.tax-shorthand-value-point,
+.tax-shorthand-value-swatch {
+  fill: rgb(31 73 112);
+  stroke: rgb(31 73 112);
+}
+
+.tax-shorthand-tax-line,
+.tax-shorthand-tax-point,
+.tax-shorthand-tax-swatch {
+  fill: rgb(148 70 86);
+  stroke: rgb(148 70 86);
+}
+
+.tax-shorthand-value-point,
+.tax-shorthand-tax-point {
+  stroke: white;
+  stroke-width: 2;
+}
+
+.tax-shorthand-empty {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.market-average-card {
+  margin-top: 0.25rem;
+}
+
+.market-average-intro {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.94rem;
+  line-height: 1.55;
+  margin: -0.2rem 0 0;
+  max-width: 68rem;
+}
+
+.market-average-summary {
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: var(--radius-container-sm);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+}
+
+.market-average-summary article {
+  background: rgb(var(--surface-muted));
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.85rem;
+}
+
+.market-average-summary article + article {
+  border-left: 1px solid rgb(var(--border-muted));
+}
+
+.market-average-summary p {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.68rem;
+  font-weight: 850;
+  line-height: 1.15;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.market-average-summary strong {
+  color: rgb(var(--brand-ink));
+  font-size: 1rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.market-average-summary span {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.market-average-table {
+  min-width: 840px;
+}
+
+.market-average-table thead th:not(:first-child),
+.market-average-table tbody td {
+  text-align: left;
+}
+
+.market-average-table tbody td {
+  min-width: 15rem;
+}
+
+.market-average-class-cell {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.market-average-class-cell > div {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.market-average-class-cell .movement-pill {
+  font-size: 0.7rem;
+  padding: 0.24rem 0.48rem;
+}
+
+.market-average-class-cell > span {
+  color: rgb(var(--color-slate-600));
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.market-average-card .chart-source a {
+  color: rgb(var(--brand-blue));
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.market-average-card .chart-source a:hover,
+.market-average-card .chart-source a:focus-visible {
+  text-decoration: underline;
+}
+
+@media (max-width: 780px) {
+  .tax-shorthand-card {
+    padding: 1rem;
+  }
+
+  .tax-shorthand-card-header {
+    align-items: start;
+    display: grid;
+  }
+
+  .tax-shorthand-card-header > span {
+    justify-self: start;
+  }
+
+  .tax-shorthand-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .tax-shorthand-metrics article + article {
+    border-left: 0;
+    border-top: 1px solid rgb(var(--border-muted));
+  }
+
+  .tax-shorthand-area-heading {
+    align-items: start;
+    display: grid;
+  }
+
+  .tax-shorthand-area-heading > p {
+    max-width: none;
+    text-align: left;
+  }
+
+  .tax-shorthand-area-chart {
+    height: 16rem;
+    min-height: 16rem;
+  }
+
+  .market-average-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .market-average-summary article + article {
+    border-left: 0;
+    border-top: 1px solid rgb(var(--border-muted));
+  }
+}
+
 .property-invite-page {
   display: grid;
   gap: 1rem;
@@ -7329,6 +7765,7 @@ footer > [data-footer-resource-shell] {
 }
 
 .neighbor-comp-card-subject {
+  background: rgb(var(--accent-primary) / 0.12);
   border-color: rgb(var(--accent-primary) / 0.62);
   box-shadow: 0 0 0 2px rgb(var(--accent-primary) / 0.13), var(--shadow-soft);
 }
@@ -7399,23 +7836,40 @@ footer > [data-footer-resource-shell] {
 .neighbor-comp-card dl div {
   align-items: baseline;
   display: flex;
-  gap: 0.8rem;
+  gap: 0.6rem;
   justify-content: space-between;
 }
 
 .neighbor-comp-card dt {
   color: rgb(var(--color-slate-500));
+  flex: 1 1 auto;
   font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 0.06em;
+  min-width: 0;
   text-transform: uppercase;
 }
 
 .neighbor-comp-card dd {
   color: rgb(var(--brand-ink));
+  flex: 0 0 auto;
   font-weight: 800;
+  line-height: 1.25;
   margin: 0;
   text-align: right;
+  word-break: normal;
+}
+
+.neighbor-comp-card-grid-four .neighbor-comp-card-body {
+  padding: 0.9rem;
+}
+
+.neighbor-comp-card-grid-four .neighbor-comp-card dt {
+  font-size: 0.72rem;
+}
+
+.neighbor-comp-card-grid-four .neighbor-comp-card dd {
+  font-size: 0.94rem;
 }
 
 .neighbor-comp-sheet {

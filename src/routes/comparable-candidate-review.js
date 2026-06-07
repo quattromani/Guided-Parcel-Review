@@ -356,9 +356,9 @@ export function compareAttributes(subject, candidate) {
 export function adjustmentBurdenLabel(checklist, eligibility) {
   const { superiorCount, inferiorCount, cautionCount, unknownCount, similarCount } = checklist.summary;
   if (!eligibility.eligible || unknownCount >= 10) return "Review only";
-  if (cautionCount >= 3 || superiorCount + inferiorCount >= similarCount) return "High adjustment burden";
-  if (superiorCount + inferiorCount >= 4 || cautionCount >= 1) return "Moderate adjustment burden";
-  return "Low adjustment burden";
+  if (cautionCount >= 3 || superiorCount + inferiorCount >= similarCount) return "High burden";
+  if (superiorCount + inferiorCount >= 4 || cautionCount >= 1) return "Moderate burden";
+  return "Low burden";
 }
 
 function topReasons(subject, candidate, score, checklist) {

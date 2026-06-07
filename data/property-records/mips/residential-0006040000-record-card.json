@@ -1,0 +1,666 @@
+{
+  "source": {
+    "sourceType": "property_record",
+    "system": "GWorks Public Access",
+    "displayCitation": "Gage County Assessor GWorks property report",
+    "county": "Gage County",
+    "reportName": "Gage County Assessor property report",
+    "recordType": "GWORKS_PROPERTY_REPORT",
+    "printedAt": null,
+    "sourceImages": [
+      "assets/images/006040000_1.jpg",
+      "assets/images/006040000_2.jpg"
+    ],
+    "sourceImageLinks": [
+      "https://gage.gworks.com/photos/0006040000_1.jpg",
+      "https://gage.gworks.com/photos/0006040000_2.jpg",
+      "https://gage.gworks.com/photos/0006040000_3.jpg",
+      "https://gage.gworks.com/photos/0006040000_4.jpg"
+    ],
+    "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
+  },
+  "guidedSnapshot": {
+    "snapshotYear": 2026,
+    "latestFinalTaxYear": 2025,
+    "assets": {
+      "photo": "assets/images/006040000_1.jpg",
+      "sketch": "assets/images/006040000_2.jpg",
+      "additionalPhotos": []
+    },
+    "parcel": {
+      "parcelId": "006040000",
+      "mapNumber": "6040000",
+      "stateGeoCode": "4403-10-3-00000-000-0000",
+      "owner": "ECKHOFF, SANDY R & LOMAX JR, BARRY W",
+      "mailingAddress": "37156 US HIGHWAY 77, BLUE SPRINGS, NE 68318-8478",
+      "situsAddress": "37156 US HWY 77",
+      "countyName": "GAGE",
+      "taxDistrict": "136",
+      "schoolDistrict": "SCHOOL 1 WYMORE, 34-0001",
+      "accountType": "Residential",
+      "legalDescription": "10 2 6 SEC 10-2-6 REF TO W 1/4 COR OF SAID SEC TH E 84.30' TO POB TH E"
+    },
+    "classification": {
+      "status": "Improved",
+      "location": "Rural",
+      "propertyClass": "Residential",
+      "citySize": "No Population",
+      "zoning": "Agricultural",
+      "lotSize": "N/A"
+    },
+    "residential": {
+      "style": "100% One Story",
+      "yearBuilt": 1955,
+      "buildingSize": 1224,
+      "basementSize": 660,
+      "bedrooms": 3,
+      "bathrooms": 1,
+      "plumbingFixtures": 6,
+      "quality": "Average",
+      "condition": "Average",
+      "exterior": "100% Frame, Siding, Metal",
+      "heatingCooling": "100% Warmed & Cooled Air",
+      "garage1": "Attached Garage(SF), 288 sq. ft.",
+      "minFinish": 330,
+      "partFinish": 0
+    },
+    "commercial": null,
+    "taxpayerHistory": [
+      {
+        "year": 2026,
+        "assessedValue": 223010,
+        "taxes": null,
+        "status": "assessment-only",
+        "assessmentSource": "GWorks PDF"
+      },
+      {
+        "year": 2025,
+        "assessedValue": 168060,
+        "taxes": 1675.98,
+        "status": "partially-paid",
+        "assessmentSource": "GWorks PDF"
+      }
+    ],
+    "taxStatements": [
+      {
+        "taxYear": 2025,
+        "statementNumber": "2262",
+        "statementType": "REAL",
+        "totalTaxesDue": 1675.98,
+        "dueDate": null,
+        "assessedValue": 168060,
+        "grossTaxAmount": 2331.74,
+        "credits": {
+          "homestead": {
+            "value": 0,
+            "amount": 0
+          },
+          "nonAgTax": {
+            "value": null,
+            "amount": -200
+          },
+          "agLandTax": {
+            "value": null,
+            "amount": 0
+          },
+          "schoolTax": {
+            "value": null,
+            "amount": -455.76
+          }
+        },
+        "netAmountDue": 1675.98,
+        "totalPaid": 837.99,
+        "taxDue": 837.99,
+        "derived": {
+          "grossLevyRate": 0.01387439,
+          "netEffectiveTaxRate": 0.00997250981792217,
+          "totalCreditAmount": -655.76
+        },
+        "sourceNote": "Nebraska Taxes Online statement detail modal.",
+        "land": 41010,
+        "dwelling": 125325,
+        "outbuilding": 1725
+      }
+    ],
+    "districtLevyHistory": [
+      {
+        "year": 2025,
+        "levy": 1.3874389999999999,
+        "status": "statement-detail",
+        "note": "Listed in the Nebraska Taxes Online tax distribution detail modal."
+      }
+    ],
+    "assessedValueBreakdown": [
+      {
+        "year": 2026,
+        "dwelling": 162715,
+        "land": 41010,
+        "outbuilding": 19285,
+        "total": 223010,
+        "source": "GWorks PDF"
+      },
+      {
+        "year": 2025,
+        "dwelling": 125325,
+        "land": 41010,
+        "outbuilding": 1725,
+        "total": 168060,
+        "source": "GWorks PDF"
+      }
+    ],
+    "latestFinalLevyComponents": [
+      {
+        "description": "SOUTHERN SCH",
+        "rate": 1.012112,
+        "amount": 1700.96,
+        "share": 72.9,
+        "group": "School"
+      },
+      {
+        "description": "COUNTY GENERAL",
+        "rate": 0.234958,
+        "amount": 394.87,
+        "share": 16.9,
+        "group": "County"
+      },
+      {
+        "description": "SICILY TOWNSHIP",
+        "rate": 0.039821,
+        "amount": 66.92,
+        "share": 2.9,
+        "group": "Other"
+      },
+      {
+        "description": "BIG BLUE NRD",
+        "rate": 0.032155,
+        "amount": 54.04,
+        "share": 2.3,
+        "group": "Natural resources"
+      },
+      {
+        "description": "BLUE SPRINGS FIRE",
+        "rate": 0.03,
+        "amount": 50.42,
+        "share": 2.2,
+        "group": "Other"
+      },
+      {
+        "description": "SCC",
+        "rate": 0.02,
+        "amount": 33.61,
+        "share": 1.4,
+        "group": "Community college"
+      },
+      {
+        "description": "ESU #5",
+        "rate": 0.015,
+        "amount": 25.21,
+        "share": 1.1,
+        "group": "Education service"
+      },
+      {
+        "description": "AG SOCIETY",
+        "rate": 0.002759,
+        "amount": 4.64,
+        "share": 0.2,
+        "group": "Other"
+      },
+      {
+        "description": "HISTORICAL SOCIETY",
+        "rate": 0.000634,
+        "amount": 1.07,
+        "share": 0,
+        "group": "Other"
+      }
+    ],
+    "dwellingData": [
+      {
+        "description": "ENCLOSED WOOD KNEE WALL",
+        "units": 120,
+        "value": 9705
+      },
+      {
+        "description": "WOOD DECK",
+        "units": 418,
+        "value": 5995
+      }
+    ],
+    "outbuildingData": [
+      {
+        "description": "FARM IMPLMNT BLD",
+        "units": 840,
+        "yearBuilt": null,
+        "cost": 700
+      },
+      {
+        "description": "DETACHED GARAGE",
+        "units": 480,
+        "yearBuilt": null,
+        "cost": 1205
+      },
+      {
+        "description": "STORAGE SHED",
+        "units": 200,
+        "yearBuilt": null,
+        "cost": 200
+      },
+      {
+        "description": "CRIB",
+        "units": 100,
+        "yearBuilt": null,
+        "cost": 100
+      }
+    ],
+    "propertyNotes": [
+      {
+        "date": null,
+        "note": "Draft generated from GWorks PDF and NTO statement detail captures."
+      },
+      {
+        "date": null,
+        "note": "Review photo/sketch assets and any unavailable cost-model detail before publishing."
+      }
+    ],
+    "landInformation": [
+      {
+        "description": "N/A",
+        "squareFeet": null,
+        "acres": null,
+        "actualFrontFeet": null,
+        "effectiveFrontFeet": null,
+        "depth": null,
+        "recordedValue": 41010,
+        "source": "Nebraska Taxes Online detail modal and GWorks PDF classification"
+      }
+    ],
+    "sources": [
+      "Gage County Assessor GWorks property report",
+      "Nebraska Taxes Online statement detail modal"
+    ],
+    "sourcePolicy": {
+      "primaryFacts": "GWorks PDF",
+      "taxStatements": "Nebraska Taxes Online",
+      "unavailableFields": "Leave as null/unavailable instead of inferring."
+    }
+  },
+  "parcelIdentifiers": {
+    "parcelId": "006040000",
+    "cardFilePerm": null,
+    "cadastralId": "4-41-34",
+    "padClassCode": null,
+    "stateGeo": "4403-10-3-00000-000-0000",
+    "appraiserId": null,
+    "taxOnlineParcelId": "0006040000"
+  },
+  "locationModel": {
+    "valuationGroup": "15 - Rural Sub South, Rural",
+    "marketArea": "Rural Sub South, Rural",
+    "marketGroup": "Rural"
+  },
+  "landModel": {
+    "description": "Land row from GWorks public export",
+    "lotSize": "N/A",
+    "recordedLotValue": 41010,
+    "frontage": null,
+    "cutoffSchedule": []
+  },
+  "currentCardValue": {
+    "previous": {
+      "buildings": 125325,
+      "improvement": 1725,
+      "landLots": 41010,
+      "total": 168060
+    },
+    "current": {
+      "buildings": 162715,
+      "improvement": 19285,
+      "landLots": 41010,
+      "total": 223010,
+      "note": "2026 assessed values from GWorks PDF. Latest finalized tax data remains 2025."
+    }
+  },
+  "ownershipHistory": [],
+  "valuationHistory": [
+    {
+      "year": 2026,
+      "total": 223010,
+      "land": 41010,
+      "outbuilding": 19285,
+      "dwelling": 162715,
+      "source": "GWorks PDF"
+    },
+    {
+      "year": 2025,
+      "total": 168060,
+      "land": 41010,
+      "outbuilding": 1725,
+      "dwelling": 125325,
+      "source": "GWorks PDF"
+    }
+  ],
+  "propertyValuation": {
+    "buildings": 162715,
+    "improvement": 19285,
+    "landLot": 41010,
+    "total": 223010
+  },
+  "valuationReconciliation": {
+    "source": "GWorks public export and Nebraska Taxes Online detail modal",
+    "initialMipsTotal": null,
+    "finalAssessedTotal": 223010,
+    "finalDwellingValue": 162715,
+    "landLot": 41010,
+    "modeledDetailSubtotal": null,
+    "cardToFinalAdjustment": null,
+    "modelToFinalReconciliation": null,
+    "note": "The GWorks export gives value rollups and visible component rows, but not the Marshall & Swift cost/depreciation bridge used by the older MIPS-style card."
+  },
+  "reviewHistory": [],
+  "residentialInformation": {
+    "type": "Agricultural",
+    "quality": "Average",
+    "condition": "Average",
+    "architecture": null,
+    "baseTotalArea": "1,224",
+    "style": "100% One Story",
+    "exteriorWall": "100% Frame, Siding, Metal",
+    "heatingCooling": "100% Warmed & Cooled Air",
+    "roofCover": null,
+    "areaOfSlab": null,
+    "areaOfCrawl": null,
+    "fixtureRoughin": "6",
+    "bedBathroom": "3 / 1",
+    "basementArea": "660"
+  },
+  "costApproach": {
+    "available": false,
+    "yearEffectiveAge": null,
+    "baseCost": null,
+    "adjustments": null,
+    "adjustedCost": null,
+    "rcn": null,
+    "totalMiscImprovements": null,
+    "garageCost": null,
+    "totalRcn": null,
+    "depreciation": {
+      "physicalPercent": null,
+      "functionalPercent": null,
+      "amount": null
+    },
+    "depreciatedMiscImprovements": null,
+    "depreciatedGarages": null,
+    "rcnld": null,
+    "adjustedRcnld": null,
+    "costPerSquareFoot": null,
+    "note": "Marshall & Swift-level cost details are not included in this GWorks PDF export."
+  },
+  "garageCostLines": [
+    {
+      "description": "Attached Garage(SF)",
+      "units": 288,
+      "value": null,
+      "source": "GWorks PDF residential datasheet"
+    }
+  ],
+  "miscImprovements": [
+    {
+      "description": "ENCLOSED WOOD KNEE WALL",
+      "units": 120,
+      "value": 9705,
+      "source": "GWorks PDF dwelling data"
+    },
+    {
+      "description": "WOOD DECK",
+      "units": 418,
+      "value": 5995,
+      "source": "GWorks PDF dwelling data"
+    }
+  ],
+  "sourceExtract": {
+    "note": "Generated from GWorks PDF facts and Nebraska Taxes Online 2019-current statement details. Review unavailable cost-model fields before publishing.",
+    "sections": [
+      {
+        "title": "GWorks Current/Prior Assessed Values",
+        "summary": "2 assessment years from the exported PDF",
+        "columns": [
+          "Year",
+          "Total",
+          "Land",
+          "Outbuilding",
+          "Dwelling"
+        ],
+        "rows": [
+          [
+            "2026",
+            "$223,010",
+            "$41,010",
+            "$19,285",
+            "$162,715"
+          ],
+          [
+            "2025",
+            "$168,060",
+            "$41,010",
+            "$1,725",
+            "$125,325"
+          ]
+        ]
+      },
+      {
+        "title": "Nebraska Taxes Online Statement History",
+        "summary": "2025-2025 tax statements",
+        "columns": [
+          "Year",
+          "Statement",
+          "Type",
+          "Gross tax",
+          "Credits",
+          "Net tax",
+          "Total paid",
+          "Tax due"
+        ],
+        "rows": [
+          [
+            "2025",
+            "2262",
+            "REAL",
+            "$2,331.74",
+            "$-655.76",
+            "$1,675.98",
+            "$837.99",
+            "$837.99"
+          ]
+        ]
+      },
+      {
+        "title": "2025 Tax Distribution",
+        "summary": "9 authority rows from Nebraska Taxes Online",
+        "columns": [
+          "Authority / fund",
+          "Levy",
+          "Amount",
+          "Share"
+        ],
+        "rows": [
+          [
+            "6101: SOUTHERN SCH",
+            "1.012112",
+            "$1,700.96",
+            "72.9%"
+          ],
+          [
+            "100: COUNTY GENERAL",
+            "0.234958",
+            "$394.87",
+            "16.9%"
+          ],
+          [
+            "8823: SICILY TOWNSHIP",
+            "0.039821",
+            "$66.92",
+            "2.9%"
+          ],
+          [
+            "7301: BIG BLUE NRD",
+            "0.032155",
+            "$54.04",
+            "2.3%"
+          ],
+          [
+            "7704: BLUE SPRINGS FIRE",
+            "0.030000",
+            "$50.42",
+            "2.2%"
+          ],
+          [
+            "7100: SCC",
+            "0.020000",
+            "$33.61",
+            "1.4%"
+          ],
+          [
+            "6905: ESU #5",
+            "0.015000",
+            "$25.21",
+            "1.1%"
+          ],
+          [
+            "9200: AG SOCIETY",
+            "0.002759",
+            "$4.64",
+            "0.2%"
+          ],
+          [
+            "9300: HISTORICAL SOCIETY",
+            "0.000634",
+            "$1.07",
+            "0%"
+          ]
+        ]
+      },
+      {
+        "title": "Residential Datasheet",
+        "summary": "1955 / 1,224 sq. ft.",
+        "columns": [
+          "Field",
+          "Value"
+        ],
+        "rows": [
+          [
+            "Zoning",
+            "Agricultural"
+          ],
+          [
+            "Style",
+            "100% One Story"
+          ],
+          [
+            "Year built",
+            "1955"
+          ],
+          [
+            "Bathrooms",
+            "1"
+          ],
+          [
+            "Exterior",
+            "100% Frame, Siding, Metal"
+          ],
+          [
+            "Heating/Cooling",
+            "100% Warmed & Cooled Air"
+          ],
+          [
+            "Bedrooms",
+            "3"
+          ],
+          [
+            "Plumbing fixtures",
+            "6"
+          ],
+          [
+            "Basement size",
+            "660 sq. ft."
+          ],
+          [
+            "Building size",
+            "1224 sq. ft."
+          ],
+          [
+            "Garage 1",
+            "Attached Garage(SF)"
+          ],
+          [
+            "Garage 1 size",
+            "288 sq. ft."
+          ],
+          [
+            "Quality",
+            "Average"
+          ],
+          [
+            "Condition",
+            "Average"
+          ]
+        ]
+      },
+      {
+        "title": "Dwelling Data",
+        "summary": "2 visible rows",
+        "columns": [
+          "Description",
+          "Units",
+          "Value"
+        ],
+        "rows": [
+          [
+            "ENCLOSED WOOD KNEE WALL",
+            "120",
+            "$9,705"
+          ],
+          [
+            "WOOD DECK",
+            "418",
+            "$5,995"
+          ]
+        ]
+      },
+      {
+        "title": "Outbuilding Data",
+        "summary": "4 visible rows",
+        "columns": [
+          "Description",
+          "Units",
+          "Year built",
+          "Cost"
+        ],
+        "rows": [
+          [
+            "FARM IMPLMNT BLD",
+            "840",
+            "",
+            "$700"
+          ],
+          [
+            "DETACHED GARAGE",
+            "480",
+            "",
+            "$1,205"
+          ],
+          [
+            "STORAGE SHED",
+            "200",
+            "",
+            "$200"
+          ],
+          [
+            "CRIB",
+            "100",
+            "",
+            "$100"
+          ]
+        ]
+      }
+    ]
+  }
+}
