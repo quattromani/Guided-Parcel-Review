@@ -6,13 +6,14 @@ const path = require("path");
 const DEFAULT_COUNTY_ID = "3";
 const DEFAULT_TAX_YEAR = "2025";
 const DEFAULT_FROM_YEAR = "2019";
+const DEFAULT_MAX_PAGES = "4";
 const DEFAULT_OUTPUT_DIR = "research/nto-captures";
 const DEFAULT_CHROME_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 function usage() {
   console.error([
     "Usage: node scripts/capture-nto-statements.js <nto-parcel-id> [--county 3] [--tax-year 2025] [--out research/nto-captures]",
-    "       node scripts/capture-nto-statements.js <nto-parcel-id> [--from-year 2019]",
+    "       node scripts/capture-nto-statements.js <nto-parcel-id> [--from-year 2019] [--max-pages 4]",
     "",
     "Environment overrides:",
     "  PLAYWRIGHT_MODULE=/absolute/path/to/playwright",
@@ -27,6 +28,7 @@ function parseArgs(argv) {
     countyId: DEFAULT_COUNTY_ID,
     taxYear: DEFAULT_TAX_YEAR,
     fromYear: DEFAULT_FROM_YEAR,
+    maxPages: DEFAULT_MAX_PAGES,
     outputDir: DEFAULT_OUTPUT_DIR
   };
 
@@ -38,6 +40,8 @@ function parseArgs(argv) {
       args.taxYear = argv[++index];
     } else if (value === "--from-year") {
       args.fromYear = argv[++index];
+    } else if (value === "--max-pages") {
+      args.maxPages = argv[++index];
     } else if (value === "--out") {
       args.outputDir = argv[++index];
     } else if (!args.parcelId) {
@@ -96,18 +100,36 @@ function extractRecordText(pageText, year) {
 }
 
 async function getStatementRows(page) {
-  return page.locator("tr").evaluateAll(rows => rows
-    .map((row, rowIndex) => ({
-      rowIndex,
-      text: row.innerText
-    }))
-    .filter(row => /\b20\d{2}\b/.test(row.text) && /VIEW DETAILS/i.test(row.text)));
+  return page.locator("button, a").filter({ hasText: /VIEW DETAILS/i }).evaluateAll(controls => controls
+    .map((control, rowIndex) => {
+      const yearPattern = /\b(?:19|20)\d{2}\b/g;
+      const yearsFrom = value => [...String(value || "").matchAll(yearPattern)].map(match => Number(match[0]));
+      let node = control;
+      let fallback = {
+        rowIndex,
+        text: control.innerText,
+        year: yearsFrom(control.innerText)[0] || null
+      };
+
+      for (let depth = 0; node && depth < 8; depth += 1) {
+        const text = node.innerText || "";
+        const years = yearsFrom(text);
+        if (years.length === 1) {
+          return { rowIndex, text, year: years[0] };
+        }
+        if (!fallback.year && years.length) {
+          fallback = { rowIndex, text, year: years[0] };
+        }
+        node = node.parentElement;
+      }
+
+      return fallback;
+    })
+    .filter(row => row.year && /VIEW DETAILS/i.test(row.text)));
 }
 
 async function clickDetailsForVisibleRow(page, visibleRowIndex) {
-  const rows = page.locator("tr").filter({ hasText: /VIEW DETAILS/i });
-  const row = rows.nth(visibleRowIndex);
-  const button = row.locator("button, a").filter({ hasText: /VIEW DETAILS/i }).first();
+  const button = page.locator("button, a").filter({ hasText: /VIEW DETAILS/i }).nth(visibleRowIndex);
   await button.click();
 }
 
@@ -144,7 +166,7 @@ async function capture(args) {
   const statementPages = [];
   const seenYears = new Set();
 
-  for (let statementPage = 1; statementPage <= 4; statementPage += 1) {
+  for (let statementPage = 1; statementPage <= Number(args.maxPages); statementPage += 1) {
     await page.goto(url, { waitUntil: "networkidle", timeout: 45000 });
     await page.waitForTimeout(1200);
     const reachedPage = await goToStatementPage(page, statementPage);
@@ -154,7 +176,7 @@ async function capture(args) {
     const rows = await getStatementRows(page);
     if (!rows.length && statementPage > 1) break;
     const yearsOnPage = rows
-      .map(row => Number(row.text.match(/\b(20\d{2})\b/)?.[1]))
+      .map(row => row.year)
       .filter(Boolean);
 
     statementPages.push({
@@ -168,7 +190,7 @@ async function capture(args) {
     }
 
     for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
-      const year = rows[rowIndex].text.match(/\b(20\d{2})\b/)?.[1];
+      const year = rows[rowIndex].year;
       if (!year || seenYears.has(year)) continue;
       if (Number(year) < Number(args.fromYear)) continue;
       seenYears.add(year);

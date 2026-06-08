@@ -20,6 +20,46 @@ const marketClassSources = [
   { key: "agricultural", label: "Agricultural", sheet: "agData" }
 ];
 const marketAverageYearRange = { start: 2019, end: 2026 };
+const sFifthLongTaxHistory = [
+  { year: 2026, assessedValue: 384850, grossTax: null, netTax: null, totalPaid: null, statementNumber: null, status: "assessment-only" },
+  { year: 2025, assessedValue: 278930, grossTax: 4426.52, netTax: 3412.58, totalPaid: 1706.29, statementNumber: "11719" },
+  { year: 2024, assessedValue: 275290, grossTax: 4643.14, netTax: 3579.58, totalPaid: 3579.58, statementNumber: "12788" },
+  { year: 2023, assessedValue: 252355, grossTax: 4655.6, netTax: 4374.72, totalPaid: 4374.72, statementNumber: "12748" },
+  { year: 2022, assessedValue: 219035, grossTax: 4240.98, netTax: 4007.52, totalPaid: 4007.52, statementNumber: "11277" },
+  { year: 2021, assessedValue: 198035, grossTax: 3965.06, netTax: 3752.08, totalPaid: 3752.08, statementNumber: "11263" },
+  { year: 2020, assessedValue: 198035, grossTax: 3999.7, netTax: 3797.28, totalPaid: 3797.28, statementNumber: "11231" },
+  { year: 2019, assessedValue: 172940, grossTax: 3564.78, netTax: 3384.66, totalPaid: 3468.4, statementNumber: "11194" },
+  { year: 2018, assessedValue: 159310, grossTax: 3293.18, netTax: 3155.38, totalPaid: 3402.89, statementNumber: "11175" },
+  { year: 2017, assessedValue: 159310, grossTax: 3086.24, netTax: 2946.12, totalPaid: 2946.12, statementNumber: "11153" },
+  { year: 2016, assessedValue: 159310, grossTax: 3048.38, netTax: 2905.68, totalPaid: 2905.68, statementNumber: "11126" },
+  { year: 2015, assessedValue: 159310, grossTax: 3152.48, netTax: 3002.58, totalPaid: 3002.58, statementNumber: "11099" },
+  { year: 2014, assessedValue: 159310, grossTax: 3216.36, netTax: 3102.38, totalPaid: 3102.38, statementNumber: "11092" },
+  { year: 2013, assessedValue: 159310, grossTax: 3253.48, netTax: 3148.38, totalPaid: 3148.38, statementNumber: "11050" },
+  { year: 2012, assessedValue: 159310, grossTax: 3301.4, netTax: 3187.5, totalPaid: 3187.5, statementNumber: "11058" },
+  { year: 2011, assessedValue: 159310, grossTax: 3300.3, netTax: 3180.32, totalPaid: 3298.16, statementNumber: "5245" },
+  { year: 2010, assessedValue: 159310, grossTax: 3296.56, netTax: 3170.84, totalPaid: 3210.98, statementNumber: "11031" },
+  { year: 2009, assessedValue: 159310, grossTax: 3263.6, netTax: 3132.62, totalPaid: 3162.66, statementNumber: "11010" },
+  { year: 2008, assessedValue: 159310, grossTax: 3264.74, netTax: 3127.52, totalPaid: 3128.72, statementNumber: "7229" },
+  { year: 2007, assessedValue: 127670, grossTax: 2634.34, netTax: 2528.1, totalPaid: 2530.04, statementNumber: "10978" },
+  { year: 2006, assessedValue: 127670, grossTax: 2496.78, netTax: 2496.78, totalPaid: 2497.26, statementNumber: "10882" },
+  { year: 2005, assessedValue: 127670, grossTax: 2545.5, netTax: 2545.5, totalPaid: 2545.5, statementNumber: "12390" },
+  { year: 2004, assessedValue: 127670, grossTax: 2554.96, netTax: 2554.96, totalPaid: 2554.96, statementNumber: "10773" },
+  { year: 2003, assessedValue: 119680, grossTax: 2410.42, netTax: 2410.42, totalPaid: 2410.42, statementNumber: "9598" },
+  { year: 2002, assessedValue: 117685, grossTax: 2351.82, netTax: 2351.82, totalPaid: 2351.82, statementNumber: "10717" },
+  { year: 2001, assessedValue: 117685, grossTax: 2320.88, netTax: 2320.88, totalPaid: 2320.88, statementNumber: "11472" },
+  { year: 2000, assessedValue: 107805, grossTax: 2250.72, netTax: 2217.8, totalPaid: 2217.8, statementNumber: "11439" },
+  { year: 1999, assessedValue: 107805, grossTax: 2242.1, netTax: 2242.1, totalPaid: 2242.1, statementNumber: "11274" },
+  { year: 1998, assessedValue: 107805, grossTax: 2282.12, netTax: 2282.12, totalPaid: 2282.12, statementNumber: "11223" },
+  { year: 1997, assessedValue: 107805, grossTax: 2432.24, netTax: 2432.24, totalPaid: 2432.24, statementNumber: "11169" },
+  { year: 1996, assessedValue: 89640, grossTax: 2234.28, netTax: 2234.28, totalPaid: 2234.28, statementNumber: "11100" },
+  { year: 1995, assessedValue: 89640, grossTax: 2297.74, netTax: 2297.74, totalPaid: 2297.74, statementNumber: "11040" },
+  { year: 1994, assessedValue: 69490, grossTax: 1693.9, netTax: 1693.9, totalPaid: 1693.9, statementNumber: "10155" },
+  { year: 1993, assessedValue: 58395, grossTax: 1560.2, netTax: 1560.2, totalPaid: 1560.2, statementNumber: "10926" }
+];
+const longTaxHistoryByParcelId = new Map([
+  ["010496000", sFifthLongTaxHistory],
+  ["0010496000", sFifthLongTaxHistory]
+]);
 
 function prepareExperimentShell() {
   document.querySelector(".guide-review-header")?.classList.add("hidden");
@@ -34,6 +74,10 @@ function percentChange(current, prior) {
 
 function netTaxAmount(statement) {
   return statement?.netAmountDue ?? statement?.totalTaxesDue ?? null;
+}
+
+function firstFinite(...values) {
+  return values.find(value => value !== null && value !== undefined && Number.isFinite(value)) ?? null;
 }
 
 function absoluteMoney(value) {
@@ -131,6 +175,10 @@ function compactMoneyChangePill(current, prior) {
 }
 
 function resultPill(row) {
+  if (row.status === "assessment-only" || row.net === null || row.net === undefined) {
+    return `<span class="movement-pill movement-pill-flat">Assessment only</span>`;
+  }
+
   if (!row.prior || row.net === null || row.net === undefined || row.prior.net === null || row.prior.net === undefined) {
     return `<span class="movement-pill movement-pill-flat">Baseline</span>`;
   }
@@ -146,27 +194,98 @@ function resultPill(row) {
 }
 
 function rowComparisonLabel(row) {
+  if (row.status === "assessment-only") return "value only";
   return row.prior ? `vs ${row.prior.year}` : "first loaded year";
 }
 
-function statementRows(data) {
-  const rows = finalizedTaxStatements(data)
+function longHistoryRows(data) {
+  const parcelIds = [
+    data?.parcel?.parcelId,
+    data?.parcel?.taxOnlineParcelId,
+    data?.parcelIdentifiers?.taxOnlineParcelId
+  ].filter(Boolean);
+
+  return parcelIds.map(parcelId => longTaxHistoryByParcelId.get(parcelId)).find(Boolean) || [];
+}
+
+function finalizedStatementRows(data) {
+  return finalizedTaxStatements(data)
     .slice()
     .sort((a, b) => a.taxYear - b.taxYear)
     .map(statement => ({
       year: statement.taxYear,
+      statementNumber: statement.statementNumber ?? null,
       assessedValue: statement.assessedValue ?? null,
       levy: statementGrossLevy(statement),
       gross: statement.grossTaxAmount ?? null,
       credits: statementTotalCredits(statement),
-      net: netTaxAmount(statement)
+      net: netTaxAmount(statement),
+      totalPaid: statement.totalPaid ?? null,
+      status: "tax-statement"
     }));
+}
+
+function supplementalHistoryRow(row) {
+  const grossLevy = row.assessedValue && row.grossTax
+    ? (row.grossTax / row.assessedValue) * 100
+    : null;
+  const credits = row.grossTax !== null && row.grossTax !== undefined && row.netTax !== null && row.netTax !== undefined
+    ? Math.max(0, Math.round((row.grossTax - row.netTax) * 100) / 100)
+    : null;
+
+  return {
+    year: row.year,
+    statementNumber: row.statementNumber,
+    assessedValue: row.assessedValue,
+    levy: grossLevy,
+    gross: row.grossTax,
+    credits,
+    net: row.netTax,
+    totalPaid: row.totalPaid,
+    status: row.status || "tax-statement",
+    source: "Nebraska Taxes Online"
+  };
+}
+
+function mergeHistoryRows(data) {
+  const rowsByYear = new Map();
+
+  finalizedStatementRows(data).forEach(row => {
+    rowsByYear.set(row.year, row);
+  });
+
+  longHistoryRows(data).map(supplementalHistoryRow).forEach(row => {
+    const existing = rowsByYear.get(row.year);
+    rowsByYear.set(row.year, {
+      ...row,
+      ...existing,
+      statementNumber: existing?.statementNumber ?? row.statementNumber,
+      assessedValue: firstFinite(existing?.assessedValue, row.assessedValue),
+      levy: firstFinite(existing?.levy, row.levy),
+      gross: firstFinite(existing?.gross, row.gross),
+      credits: firstFinite(existing?.credits, row.credits),
+      net: firstFinite(existing?.net, row.net),
+      totalPaid: firstFinite(existing?.totalPaid, row.totalPaid),
+      status: existing?.status ?? row.status,
+      source: existing?.source ?? row.source
+    });
+  });
+
+  return [...rowsByYear.values()].sort((a, b) => a.year - b.year);
+}
+
+function statementRows(data) {
+  const rows = mergeHistoryRows(data);
+  const baselineTax = rows.find(row => row.net !== null && row.net !== undefined)?.net ?? null;
 
   return rows.map((row, index) => {
     const prior = rows[index - 1] ?? null;
     return {
       ...row,
       prior,
+      taxIndex: baselineTax && row.net !== null && row.net !== undefined
+        ? row.net / baselineTax * 100
+        : null,
       valueChange: percentChange(row.assessedValue, prior?.assessedValue),
       levyChange: percentChange(row.levy, prior?.levy),
       grossChange: percentChange(row.gross, prior?.gross),
@@ -176,42 +295,55 @@ function statementRows(data) {
 }
 
 function renderMetricCards(rows) {
-  const latest = rows[0];
-  if (!latest) return "";
+  const latestTax = rows.find(row => row.net !== null && row.net !== undefined);
+  const latestValue = rows.find(row => row.assessedValue !== null && row.assessedValue !== undefined);
+  const latestGross = rows.find(row => row.gross !== null && row.gross !== undefined);
+  if (!latestTax && !latestValue) return "";
 
   return `
     <section class="tax-shorthand-metrics" aria-label="Latest tax shorthand summary">
       <article>
         <p>Latest net tax</p>
-        <strong>${formatNullableMoney(latest.net, true)}</strong>
-        ${latest.prior ? resultPill(latest) : ""}
+        <strong>${formatNullableMoney(latestTax?.net, true)}</strong>
+        ${latestTax ? resultPill(latestTax) : ""}
       </article>
       <article>
         <p>Assessed value movement</p>
-        <strong>${formatNullableMoney(latest.assessedValue)}</strong>
-        ${changeLine("Value", latest.valueChange)}
+        <strong>${formatNullableMoney(latestValue?.assessedValue)}</strong>
+        ${changeLine("Value", latestValue?.valueChange)}
       </article>
       <article>
         <p>Levy movement</p>
-        <strong>${formatNullableLevy(latest.levy)}</strong>
-        ${changeLine("Levy", latest.levyChange)}
+        <strong>${formatNullableLevy(latestTax?.levy)}</strong>
+        ${changeLine("Levy", latestTax?.levyChange)}
       </article>
       <article>
         <p>Gross tax movement</p>
-        <strong>${formatNullableMoney(latest.gross, true)}</strong>
-        ${changeLine("Value + levy", latest.grossChange)}
+        <strong>${formatNullableMoney(latestGross?.gross, true)}</strong>
+        ${changeLine("Value + levy", latestGross?.grossChange)}
       </article>
     </section>
   `;
 }
 
-function renderRows(rows) {
+function taxIndexBaseYear(rows) {
+  return rows
+    .slice()
+    .sort((left, right) => left.year - right.year)
+    .find(row => row.net !== null && row.net !== undefined)?.year ?? null;
+}
+
+function renderRows(rows, taxIndexYear) {
   return rows.map((row, index) => `
     <tr class="${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
       <th scope="row" class="tax-shorthand-year-cell">
         <strong>${row.year}</strong>
         <span>${escapeHtml(rowComparisonLabel(row))}</span>
       </th>
+      <td>
+        <strong>${escapeHtml(row.statementNumber || "—")}</strong>
+        <span class="tax-shorthand-change tax-shorthand-change-baseline">${row.status === "assessment-only" ? "GWorks value" : "NTO statement"}</span>
+      </td>
       <td>
         <strong>${formatNullableMoney(row.assessedValue)}</strong>
         ${compactChangePill(row.valueChange)}
@@ -232,6 +364,10 @@ function renderRows(rows) {
         <strong>${formatNullableMoney(row.net, true)}</strong>
         ${compactChangePill(row.netChange)}
       </td>
+      <td>
+        <strong>${row.taxIndex === null || row.taxIndex === undefined ? "—" : Math.round(row.taxIndex).toLocaleString("en-US")}</strong>
+        <span class="tax-shorthand-change tax-shorthand-change-baseline">${escapeHtml(taxIndexYear ? `${taxIndexYear} = 100` : "tax baseline")}</span>
+      </td>
       <td class="tax-shorthand-result-cell">${resultPill(row)}</td>
     </tr>
   `).join("");
@@ -239,18 +375,22 @@ function renderRows(rows) {
 
 function renderValueTaxChartSection(rows) {
   if (!rows.length) return "";
+  const firstTaxYear = rows
+    .slice()
+    .sort((left, right) => left.year - right.year)
+    .find(row => row.net !== null && row.net !== undefined)?.year;
 
   return `
     <section class="tax-shorthand-area-panel" aria-labelledby="taxShorthandAreaTitle">
       <div class="tax-shorthand-area-heading">
         <div>
-          <p class="guided-kicker">Value and net tax pattern</p>
-          <h3 id="taxShorthandAreaTitle">Assessed value and net tax by statement year</h3>
+          <p class="guided-kicker">Long-run value and tax pattern</p>
+          <h3 id="taxShorthandAreaTitle">Assessed value bars with indexed net-tax line</h3>
         </div>
-        <p>Indexed to the first loaded statement year so value and net tax movement share one scale.</p>
+        <p>Bars use assessed value dollars. The line indexes net tax to ${escapeHtml(`${firstTaxYear || "first year"} = 100`)}.</p>
       </div>
       <div class="tax-shorthand-area-chart">
-        ${renderValueTaxAreaSvg(rows)}
+        ${renderValueTaxComboSvg(rows)}
       </div>
     </section>
   `;
@@ -285,89 +425,150 @@ function chartAreaPath(points, bottom) {
   return `M ${first.x.toFixed(1)} ${bottom} ${chartPath(points).replace(/^M /, "L ")} L ${last.x.toFixed(1)} ${bottom} Z`;
 }
 
-function indexChartTicks(domain) {
-  const step = 50;
+function axisMoneyLabel(value) {
+  if (value >= 1000000) return `$${Math.round(value / 1000000)}M`;
+  if (value >= 1000) return `$${Math.round(value / 1000)}k`;
+  return `$${Math.round(value)}`;
+}
+
+function valueAxisTicks(domain) {
+  const step = 100000;
   const top = Math.ceil(domain.max / step) * step;
-  const bottom = Math.floor(domain.min / step) * step;
   const ticks = [];
 
-  for (let value = top; value >= bottom; value -= step) {
+  for (let value = top; value >= 0; value -= step) {
+    ticks.push({ value, label: axisMoneyLabel(value) });
+  }
+
+  return ticks.length ? ticks : [{ value: 0, label: "$0" }];
+}
+
+function taxIndexAxisTicks(domain) {
+  const step = 100;
+  const top = Math.ceil(domain.max / step) * step;
+  const ticks = [];
+
+  for (let value = top; value >= 0; value -= step) {
     ticks.push({ value, label: `${Math.round(value)}` });
   }
 
-  return ticks.length ? ticks : [{ value: 100, label: "100" }];
+  return ticks.length ? ticks : [{ value: 100, label: "100" }, { value: 0, label: "0" }];
 }
 
-function renderValueTaxAreaSvg(rows) {
-  const chartRows = rows.slice().sort((left, right) => left.year - right.year);
-  const width = 1040;
-  const height = 340;
-  const top = 34;
-  const right = 36;
-  const bottom = 278;
-  const left = 96;
-  const plotWidth = width - left - right;
-  const baseValue = chartRows[0]?.assessedValue || null;
-  const baseTax = chartRows[0]?.net || null;
-  const indexedRows = chartRows.map(row => ({
-    ...row,
-    valueIndex: baseValue ? row.assessedValue / baseValue * 100 : null,
-    taxIndex: baseTax ? row.net / baseTax * 100 : null
-  }));
-  const indexDomain = chartDomain([
+function taxDomainAlignedToBaseValue(indexedRows, valueDomain, baseTaxRow) {
+  const fallbackDomain = chartDomain([
+    0,
     100,
-    ...indexedRows.map(row => row.valueIndex),
     ...indexedRows.map(row => row.taxIndex)
   ]);
+  const baseValue = baseTaxRow?.assessedValue;
+  if (!baseValue || !valueDomain.max) {
+    fallbackDomain.min = 0;
+    return fallbackDomain;
+  }
+
+  const alignedMax = 100 * (valueDomain.max / baseValue);
+  const taxMax = Math.max(100, ...indexedRows.map(row => row.taxIndex).filter(Number.isFinite));
+  return {
+    min: 0,
+    max: Math.max(alignedMax, taxMax * 1.08)
+  };
+}
+
+function shouldShowChartYear(row, index, total) {
+  return index === 0 || index === total - 1 || (row.year % 5 === 0 && index < total - 2);
+}
+
+function renderValueTaxComboSvg(rows) {
+  const chartRows = rows
+    .slice()
+    .filter(row => row.assessedValue !== null && row.assessedValue !== undefined)
+    .sort((left, right) => left.year - right.year);
+  const width = 1280;
+  const height = 390;
+  const top = 42;
+  const right = 86;
+  const bottom = 312;
+  const left = 86;
+  const plotWidth = width - left - right;
+  const taxRows = chartRows.filter(row => row.net !== null && row.net !== undefined);
+  const baseTaxRow = taxRows[0] || null;
+  const baseTax = baseTaxRow?.net || null;
+  const indexedRows = chartRows.map(row => ({
+    ...row,
+    taxIndex: baseTax && row.net !== null && row.net !== undefined
+      ? row.net / baseTax * 100
+      : null
+  }));
+  const valueDomain = { min: 0, max: Math.max(...indexedRows.map(row => row.assessedValue), 1) * 1.14 };
+  const taxDomain = taxDomainAlignedToBaseValue(indexedRows, valueDomain, baseTaxRow);
   const xForIndex = index => left + (chartRows.length === 1 ? plotWidth / 2 : (index / (chartRows.length - 1)) * plotWidth);
-  const baselineY = chartY(100, indexDomain, top, bottom);
-  const valuePoints = indexedRows.map((row, index) => ({
+  const barSlot = chartRows.length > 1 ? plotWidth / chartRows.length : plotWidth / 2;
+  const barWidth = Math.max(8, Math.min(24, barSlot * 0.58));
+  const taxBaselineY = chartY(100, taxDomain, top, bottom);
+  const taxPoints = indexedRows
+    .filter(row => row.taxIndex !== null && row.taxIndex !== undefined && Number.isFinite(row.taxIndex))
+    .map((row, index) => {
+      const chartIndex = chartRows.findIndex(item => item.year === row.year);
+      return {
+        x: xForIndex(chartIndex),
+        y: chartY(row.taxIndex, taxDomain, top, bottom),
+        row
+      };
+    });
+  const bars = indexedRows.map((row, index) => ({
     x: xForIndex(index),
-    y: chartY(row.valueIndex, indexDomain, top, bottom),
+    y: chartY(row.assessedValue, valueDomain, top, bottom),
+    height: bottom - chartY(row.assessedValue, valueDomain, top, bottom),
     row
   }));
-  const taxPoints = indexedRows.map((row, index) => ({
-    x: xForIndex(index),
-    y: chartY(row.taxIndex, indexDomain, top, bottom),
-    row
-  }));
-  const ticks = indexChartTicks(indexDomain);
+  const valueTicks = valueAxisTicks(valueDomain);
+  const taxTicks = taxIndexAxisTicks(taxDomain);
 
   return `
-    <svg class="tax-shorthand-area-svg" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="taxShorthandAreaSvgTitle taxShorthandAreaSvgDesc">
-      <title id="taxShorthandAreaSvgTitle">Assessed value and net tax area chart</title>
-      <desc id="taxShorthandAreaSvgDesc">Indexed area chart comparing assessed value and net tax for ${escapeHtml(chartRows.map(row => row.year).join(", "))}.</desc>
+    <svg class="tax-shorthand-area-svg tax-shorthand-combo-svg" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="taxShorthandAreaSvgTitle taxShorthandAreaSvgDesc">
+      <title id="taxShorthandAreaSvgTitle">Assessed value bar chart with net-tax index line</title>
+      <desc id="taxShorthandAreaSvgDesc">Bars show assessed value dollars from ${escapeHtml(`${chartRows[0]?.year}`)} to ${escapeHtml(`${chartRows.at(-1)?.year}`)}. The line shows net tax indexed to ${escapeHtml(`${baseTaxRow?.year || "first tax year"} = 100`)}.</desc>
       <g class="tax-shorthand-chart-grid">
-        ${ticks.map(tick => {
-          const y = chartY(tick.value, indexDomain, top, bottom);
+        ${valueTicks.map(tick => {
+          const y = chartY(tick.value, valueDomain, top, bottom);
           return `
             <line x1="${left}" y1="${y.toFixed(1)}" x2="${width - right}" y2="${y.toFixed(1)}"></line>
             <text x="${left - 12}" y="${(y + 4).toFixed(1)}" text-anchor="end">${escapeHtml(tick.label)}</text>
           `;
         }).join("")}
-        <line class="tax-shorthand-chart-baseline" x1="${left}" y1="${baselineY.toFixed(1)}" x2="${width - right}" y2="${baselineY.toFixed(1)}"></line>
-        <text x="${width - right}" y="${(baselineY - 8).toFixed(1)}" text-anchor="end">2019 = 100</text>
+        ${taxTicks.map(tick => {
+          const y = chartY(tick.value, taxDomain, top, bottom);
+          return `<text x="${width - right + 12}" y="${(y + 4).toFixed(1)}" text-anchor="start">${escapeHtml(tick.label)}</text>`;
+        }).join("")}
+        <line class="tax-shorthand-chart-baseline" x1="${left}" y1="${taxBaselineY.toFixed(1)}" x2="${width - right}" y2="${taxBaselineY.toFixed(1)}"></line>
+        <text x="${width - right}" y="${(taxBaselineY - 8).toFixed(1)}" text-anchor="end">${escapeHtml(`${baseTaxRow?.year || "Tax"} tax = 100`)}</text>
       </g>
-      <path class="tax-shorthand-area-fill tax-shorthand-value-fill" d="${chartAreaPath(valuePoints, baselineY.toFixed(1))}"></path>
-      <path class="tax-shorthand-area-fill tax-shorthand-tax-fill" d="${chartAreaPath(taxPoints, baselineY.toFixed(1))}"></path>
-      <path class="tax-shorthand-area-line tax-shorthand-value-line" d="${chartPath(valuePoints)}"></path>
-      <path class="tax-shorthand-area-line tax-shorthand-tax-line" d="${chartPath(taxPoints)}"></path>
-      ${valuePoints.map(point => `
-        <circle class="tax-shorthand-value-point" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4"></circle>
-      `).join("")}
-      ${taxPoints.map(point => `
-        <circle class="tax-shorthand-tax-point" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4"></circle>
-      `).join("")}
-      <g class="tax-shorthand-chart-years">
-        ${chartRows.map((row, index) => `
-          <text x="${xForIndex(index).toFixed(1)}" y="${bottom + 32}" text-anchor="middle">${row.year}</text>
+      <g class="tax-shorthand-value-bars">
+        ${bars.map(bar => `
+          <rect class="tax-shorthand-value-bar" x="${(bar.x - barWidth / 2).toFixed(1)}" y="${bar.y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${bar.height.toFixed(1)}" rx="2">
+            <title>${escapeHtml(`${bar.row.year}: assessed value ${formatNullableMoney(bar.row.assessedValue)}${bar.row.net === null || bar.row.net === undefined ? "" : `, net tax ${formatNullableMoney(bar.row.net, true)}`}`)}</title>
+          </rect>
         `).join("")}
       </g>
+      <path class="tax-shorthand-area-line tax-shorthand-tax-line" d="${chartPath(taxPoints)}"></path>
+      ${taxPoints.map(point => `
+        <circle class="tax-shorthand-tax-point" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4">
+          <title>${escapeHtml(`${point.row.year}: tax index ${Math.round(point.row.taxIndex)}; net tax ${formatNullableMoney(point.row.net, true)}`)}</title>
+        </circle>
+      `).join("")}
+      <g class="tax-shorthand-chart-years">
+        ${chartRows.map((row, index) => shouldShowChartYear(row, index, chartRows.length) ? `
+          <text x="${xForIndex(index).toFixed(1)}" y="${bottom + 32}" text-anchor="middle">${row.year}</text>
+        ` : "").join("")}
+      </g>
       <g class="tax-shorthand-chart-legend">
-        <rect x="${left}" y="10" width="12" height="12" class="tax-shorthand-value-swatch"></rect>
-        <text x="${left + 18}" y="20">Assessed value</text>
-        <rect x="${left + 150}" y="10" width="12" height="12" class="tax-shorthand-tax-swatch"></rect>
-        <text x="${left + 168}" y="20">Net tax</text>
+        <rect x="${left}" y="12" width="12" height="12" class="tax-shorthand-value-swatch"></rect>
+        <text x="${left + 18}" y="22">Assessed value bars</text>
+        <line x1="${left + 184}" y1="18" x2="${left + 214}" y2="18" class="tax-shorthand-tax-line"></line>
+        <circle cx="${left + 199}" cy="18" r="4" class="tax-shorthand-tax-point"></circle>
+        <text x="${left + 224}" y="22">Net tax index line</text>
+        <text x="${left}" y="${height - 14}">Left axis: assessed value. Right axis: tax index.</text>
       </g>
     </svg>
   `;
@@ -541,6 +742,12 @@ export function renderTaxShorthandExperiment(propertySwitcherContext = {}, { dat
   }
 
   const rows = statementRows(data);
+  const taxIndexYear = taxIndexBaseYear(rows);
+  const taxYearCount = rows.filter(row => row.net !== null && row.net !== undefined).length;
+  const valueOnlyCount = rows.length - taxYearCount;
+  const historyCountLabel = valueOnlyCount
+    ? `${taxYearCount} tax years + ${valueOnlyCount} value-only year`
+    : `${taxYearCount} statement years`;
   const propertyLabel = displayAddress(data.parcel?.situsAddress) || data.parcel?.parcelId || "selected property";
   renderExperimentViewHeader({
     eyebrow: "Experiment · Tax context",
@@ -559,7 +766,7 @@ export function renderTaxShorthandExperiment(propertySwitcherContext = {}, { dat
             <p class="guided-kicker">Tax statement shorthand</p>
             <h2 id="taxShorthandTitle">${escapeHtml(data.parcel?.parcelId || "Selected parcel")} · ${escapeHtml(propertyLabel)}</h2>
           </div>
-          <span>${escapeHtml(`${rows.length} statement years`)}</span>
+          <span>${escapeHtml(historyCountLabel)}</span>
         </div>
         ${rows.length ? renderMetricCards(rows) : ""}
         ${rows.length ? `
@@ -568,16 +775,18 @@ export function renderTaxShorthandExperiment(propertySwitcherContext = {}, { dat
               <thead>
                 <tr>
                   <th>Year</th>
+                  <th>Statement</th>
                   <th>Assessed value</th>
                   <th>Levy</th>
                   <th>Gross tax</th>
                   <th>Credits</th>
                   <th>Net tax</th>
+                  <th>Tax index</th>
                   <th>Net result</th>
                 </tr>
               </thead>
               <tbody>
-                ${renderRows(rows)}
+                ${renderRows(rows, taxIndexYear)}
               </tbody>
             </table>
           </div>

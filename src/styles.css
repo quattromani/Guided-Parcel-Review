@@ -7202,7 +7202,7 @@ footer > [data-footer-resource-shell] {
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.84rem;
-  min-width: 820px;
+  min-width: 1040px;
   width: 100%;
 }
 
@@ -7323,6 +7323,7 @@ footer > [data-footer-resource-shell] {
 .tax-shorthand-area-chart {
   height: 19rem;
   min-height: 19rem;
+  overflow-x: auto;
   position: relative;
 }
 
@@ -7330,6 +7331,10 @@ footer > [data-footer-resource-shell] {
   display: block;
   height: 100%;
   width: 100%;
+}
+
+.tax-shorthand-combo-svg {
+  min-width: 1120px;
 }
 
 .tax-shorthand-chart-grid line {
@@ -7370,18 +7375,34 @@ footer > [data-footer-resource-shell] {
   stroke-width: 3;
 }
 
-.tax-shorthand-value-line,
+.tax-shorthand-value-line {
+  fill: none;
+  stroke: rgb(31 73 112);
+}
+
 .tax-shorthand-value-point,
 .tax-shorthand-value-swatch {
   fill: rgb(31 73 112);
   stroke: rgb(31 73 112);
 }
 
-.tax-shorthand-tax-line,
+.tax-shorthand-value-bar {
+  fill: rgb(31 73 112 / 0.78);
+}
+
+.tax-shorthand-tax-line {
+  fill: none;
+  stroke: rgb(148 70 86);
+}
+
 .tax-shorthand-tax-point,
 .tax-shorthand-tax-swatch {
   fill: rgb(148 70 86);
   stroke: rgb(148 70 86);
+}
+
+.tax-shorthand-chart-legend .tax-shorthand-tax-line {
+  stroke-width: 3;
 }
 
 .tax-shorthand-value-point,
