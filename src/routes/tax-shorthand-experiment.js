@@ -407,10 +407,10 @@ function renderArticleOpening() {
     <section class="tax-article-section tax-story-chapter tax-article-opening" aria-label="Opening prediction">
       <header class="tax-article-header">
         <p class="guided-kicker">Property tax prediction</p>
-        <h1 id="taxArticleTitle">What will my property cost next year?</h1>
+        <h1 id="taxArticleTitle">What will my property taxes be next year?</h1>
         <p>Last year, my property was assessed at about $278,930. This year’s valuation notice came in at $384,850. That is about a 38% increase.</p>
       </header>
-      <p>So the question I wanted to answer was simple: what is my property likely to cost next year?</p>
+      <p>So the question I wanted to answer was simple: what are my property taxes likely to be next year?</p>
       <aside class="tax-article-pullquote">
         I am budgeting for about <strong>$70 to $85 more per month</strong>.
       </aside>
