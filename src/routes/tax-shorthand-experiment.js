@@ -1,12 +1,9 @@
 import { formatNullableLevy, formatNullableMoney } from "../format.js";
 import {
   finalizedTaxStatements,
-  renderExperimentViewHeader,
   statementGrossLevy,
   statementTotalCredits
 } from "../render.js";
-import { taxHistorySourceText } from "../domain/source-labels.js";
-import { displayAddress } from "../utils/address.js";
 import { escapeHtml } from "../utils/html.js";
 
 const percentOneDecimal = new Intl.NumberFormat("en-US", {
@@ -20,6 +17,7 @@ const marketClassSources = [
   { key: "agricultural", label: "Agricultural", sheet: "agData" }
 ];
 const marketAverageYearRange = { start: 2019, end: 2026 };
+const predicted2026NetTax = 4320;
 const sFifthLongTaxHistory = [
   { year: 2026, assessedValue: 384850, grossTax: null, netTax: null, totalPaid: null, statementNumber: null, status: "assessment-only" },
   { year: 2025, assessedValue: 278930, grossTax: 4426.52, netTax: 3412.58, totalPaid: 1706.29, statementNumber: "11719" },
@@ -375,23 +373,144 @@ function renderRows(rows, taxIndexYear) {
 
 function renderValueTaxChartSection(rows) {
   if (!rows.length) return "";
-  const firstTaxYear = rows
-    .slice()
-    .sort((left, right) => left.year - right.year)
-    .find(row => row.net !== null && row.net !== undefined)?.year;
 
   return `
-    <section class="tax-shorthand-area-panel" aria-labelledby="taxShorthandAreaTitle">
+    <article class="tax-shorthand-area-panel tax-article-panel" aria-labelledby="taxArticleTitle">
+      ${renderArticleOpening()}
+      ${renderGuidedTransition("The rest of this page explains the history and assumptions behind that budgeting number.")}
+      ${renderHistoricalArticleSection(rows)}
+      ${renderGuidedTransition("Once I saw that history, I stopped asking only what my assessment did. I started asking how much of that change would likely reach the tax bill.")}
+      ${renderRelativeExposureSection()}
+      ${renderGuidedTransition("So the next question becomes: how much has that difference historically mattered?")}
+      ${renderCountyHistoryArticleSection()}
+      ${renderGuidedTransition("What does that mean for this property?")}
+      ${renderPredictionMathArticleSection()}
+      ${renderGuidedTransition("This check does not prove the model. It just tells me the estimate is not wildly outside the pattern I can see.")}
+      <section class="tax-article-section tax-story-chapter tax-model-check-section" aria-label="Regression backtest chart">
+        <h2>One check on the estimate</h2>
+        <p>The second chart is a backtest. It checks whether the working estimate still sits near the long-run pattern.</p>
+        ${renderTrendDeviationChartSection(rows)}
+      </section>
+      ${renderGuidedTransition("Whether the estimate is right or wrong, the goal is the same: understand the range before the bill arrives.")}
+      ${renderArticleClosing()}
+      <p class="tax-article-final-source">Sources: Nebraska Taxes Online property history; 2026 Gage County Report & Opinion; county CTL totals.</p>
+    </article>
+  `;
+}
+
+function renderGuidedTransition(text) {
+  return `<aside class="tax-guided-transition">${escapeHtml(text)}</aside>`;
+}
+
+function renderArticleOpening() {
+  return `
+    <section class="tax-article-section tax-story-chapter tax-article-opening" aria-label="Opening prediction">
+      <header class="tax-article-header">
+        <p class="guided-kicker">Property tax prediction</p>
+        <h1 id="taxArticleTitle">What will my property cost next year?</h1>
+        <p>Last year, my property was assessed at about $278,930. This year’s valuation notice came in at $384,850. That is about a 38% increase.</p>
+      </header>
+      <p>So the question I wanted to answer was simple: what is my property likely to cost next year?</p>
+      <aside class="tax-article-pullquote">
+        I am budgeting for about <strong>$70 to $85 more per month</strong>.
+      </aside>
+      <p>This is a prediction. It is a working estimate based on the history and assumptions shown below.</p>
+    </section>
+  `;
+}
+
+function renderHistoricalArticleSection(rows) {
+  return `
+    <section class="tax-article-section tax-story-chapter tax-history-chapter" aria-labelledby="taxShorthandAreaTitle">
       <div class="tax-shorthand-area-heading">
         <div>
-          <p class="guided-kicker">Long-run value and tax pattern</p>
-          <h3 id="taxShorthandAreaTitle">Assessed value bars with indexed net-tax line</h3>
+          <p class="guided-kicker">The evidence</p>
+          <h3 id="taxShorthandAreaTitle">30 Years of Value vs. Tax History</h3>
         </div>
-        <p>Bars use assessed value dollars. The line indexes net tax to ${escapeHtml(`${firstTaxYear || "first year"} = 100`)}.</p>
       </div>
       <div class="tax-shorthand-area-chart">
         ${renderValueTaxComboSvg(rows)}
       </div>
+      <div class="tax-history-highlights">
+        <p>In 1993, this property was assessed at <strong>$58,395</strong> and paid <strong>$1,560.20</strong> in annual property taxes.</p>
+        <p>Fifteen years later, in 2008, it was assessed at <strong>$159,310</strong> and paid <strong>$3,127.52</strong>.</p>
+        <p>By 2025, it was assessed at <strong>$278,930</strong> and paid <strong>$3,412.58</strong>.</p>
+      </div>
+      <div class="tax-essay-observations">
+        <p>Over time, value and taxes moved in the same direction, but not at the same speed.</p>
+      </div>
+    </section>
+  `;
+}
+
+function renderRelativeExposureSection() {
+  return `
+    <section class="tax-article-section tax-story-chapter tax-essay-calculation" aria-labelledby="taxEssayCalculationTitle">
+      <h2 id="taxEssayCalculationTitle">The part that matters</h2>
+      <div class="tax-essay-copy">
+      <p>The number I care about is the gap between my property and the broader residential group. That gap is where my share of the tax burden likely changes.</p>
+      <div class="tax-napkin-block" aria-label="Relative exposure calculation">
+        <div><span>My property</span><strong>+38%</strong></div>
+        <div><span>Residential property overall</span><strong>+14.15%</strong></div>
+        <div class="tax-napkin-result"><span>Difference</span><strong>+23.85 pts</strong></div>
+      </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderCountyHistoryArticleSection() {
+  return `
+    <section class="tax-article-section tax-story-chapter tax-county-history-section" aria-labelledby="taxCountyHistoryTitle">
+      <h2 id="taxCountyHistoryTitle">Recent county history</h2>
+      <div class="tax-essay-copy">
+      <p>The recent county history points the same direction. Since 2019, countywide valuation rose much faster than taxes levied.</p>
+      <div class="tax-napkin-block tax-napkin-block-paired" aria-label="Recent county history">
+        <div><span>Countywide valuation since 2019</span><strong>+54%</strong></div>
+        <div><span>Taxes levied since 2019</span><strong>+14%</strong></div>
+      </div>
+      <p>That history is why I expect some levy compression, even if my own bill still rises. Historically, taxes levied have grown at a rate of 2.2% per year.</p>
+      </div>
+    </section>
+  `;
+}
+
+function renderPredictionMathArticleSection() {
+  return `
+    <section class="tax-article-section tax-story-chapter tax-estimate-section" aria-labelledby="taxPredictionMathArticleTitle">
+      <h2 id="taxPredictionMathArticleTitle">The estimate</h2>
+      <p>Here is where the math lands today.</p>
+      <article class="tax-estimate-block">
+        <div><span>2025 taxes</span><strong>$3,413</strong></div>
+        <div><span>Relative factor</span><strong>1.2385</strong></div>
+        <div><span>Growth factor</span><strong>1.022</strong></div>
+      </article>
+      <div class="tax-estimate-shorthand" aria-label="$3,413 times 1.2385 times 1.022 is approximately $4,320">
+        <strong>$3,413</strong>
+        <span>×</span>
+        <strong>1.2385</strong>
+        <span>×</span>
+        <strong>1.022</strong>
+        <span>≈</span>
+        <strong>$4,320</strong>
+      </div>
+      <p class="tax-estimate-result">As a rough estimate, that works out to <strong>$907 more per year</strong>, or about <strong>$76 more per month</strong>.</p>
+    </section>
+  `;
+}
+
+function renderArticleClosing() {
+  return `
+    <section class="tax-article-section tax-story-chapter tax-article-closing" aria-label="Assumptions and closing">
+      <h2>Bottom line</h2>
+      <p>My goal is not to defend the outcome or make a policy argument. Every property is different, and every taxpayer’s result will vary.</p>
+      <p>I know a property tax bill is coming. I also know this year’s assessment increase makes a higher bill likely for me.</p>
+      <p>So I wanted a working number before the bill arrives.</p>
+      <aside class="tax-article-pullquote tax-article-pullquote-subtle">
+        For budgeting, that number is about <strong>$70 to $85 more per month</strong>.
+      </aside>
+      <p>For what it’s worth, when I tested this same approach against my 2025 tax bill, it came within about 1.4%, or roughly $46, of the actual number. That does not prove the model works, but it was close enough that I am willing to make another prediction.</p>
+      <p>This is what I can work with today, based on the information available. As values are finalized, budgets are announced, and levies are set, I can update the model and test how well this estimate held up.</p>
     </section>
   `;
 }
@@ -479,6 +598,305 @@ function shouldShowChartYear(row, index, total) {
   return index === 0 || index === total - 1 || (row.year % 5 === 0 && index < total - 2);
 }
 
+function formatWholeMoney(value) {
+  return `$${Math.round(value).toLocaleString("en-US")}`;
+}
+
+function linearRegression(points, valueKey = "indexValue") {
+  if (points.length < 2) {
+    const fallback = points[0]?.[valueKey] ?? 0;
+    return { slope: 0, intercept: fallback };
+  }
+
+  const count = points.length;
+  const sumX = points.reduce((sum, point) => sum + point.year, 0);
+  const sumY = points.reduce((sum, point) => sum + point[valueKey], 0);
+  const meanX = sumX / count;
+  const meanY = sumY / count;
+  const numerator = points.reduce((sum, point) => sum + (point.year - meanX) * (point[valueKey] - meanY), 0);
+  const denominator = points.reduce((sum, point) => sum + (point.year - meanX) ** 2, 0);
+  const slope = denominator ? numerator / denominator : 0;
+
+  return { slope, intercept: meanY - slope * meanX };
+}
+
+function regressionValueAtYear(regression, year) {
+  return regression.intercept + regression.slope * year;
+}
+
+function indexedTrendSeries(rows, valueKey) {
+  const seriesRows = rows
+    .slice()
+    .filter(row => Number.isFinite(row[valueKey]))
+    .sort((left, right) => left.year - right.year);
+  const baseValue = seriesRows[0]?.[valueKey] ?? null;
+  if (!seriesRows.length || !baseValue) return [];
+
+  const indexedRows = seriesRows.map(row => ({
+    year: row.year,
+    sourceValue: row[valueKey],
+    indexValue: row[valueKey] / baseValue * 100
+  }));
+  const regression = linearRegression(indexedRows);
+
+  return indexedRows.map(row => {
+    const trendValue = regressionValueAtYear(regression, row.year);
+    return {
+      ...row,
+      trendValue,
+      deviation: row.indexValue - trendValue
+    };
+  });
+}
+
+function percentile(values, ratio) {
+  const sorted = values
+    .filter(Number.isFinite)
+    .slice()
+    .sort((left, right) => left - right);
+  if (!sorted.length) return null;
+  const index = (sorted.length - 1) * ratio;
+  const lower = Math.floor(index);
+  const upper = Math.ceil(index);
+  if (lower === upper) return sorted[lower];
+
+  return sorted[lower] + (sorted[upper] - sorted[lower]) * (index - lower);
+}
+
+function taxBacktestSummary(taxSeries, predictionValue) {
+  const minPriorYears = 6;
+  const misses = [];
+
+  for (let index = minPriorYears; index < taxSeries.length; index += 1) {
+    const trainingRows = taxSeries.slice(0, index);
+    const regression = linearRegression(trainingRows, "sourceValue");
+    const actualRow = taxSeries[index];
+    const predictedValue = regressionValueAtYear(regression, actualRow.year);
+    const miss = actualRow.sourceValue - predictedValue;
+
+    misses.push({
+      year: actualRow.year,
+      actualValue: actualRow.sourceValue,
+      predictedValue,
+      miss,
+      absoluteMiss: Math.abs(miss)
+    });
+  }
+
+  const absoluteMisses = misses.map(row => row.absoluteMiss);
+  const medianAbsoluteMiss = percentile(absoluteMisses, 0.5);
+  const p80AbsoluteMiss = percentile(absoluteMisses, 0.8);
+  const averageMiss = misses.length
+    ? misses.reduce((sum, row) => sum + row.miss, 0) / misses.length
+    : null;
+
+  return {
+    misses,
+    medianAbsoluteMiss,
+    p80AbsoluteMiss,
+    averageMiss,
+    rangeLow: p80AbsoluteMiss === null ? null : predictionValue - p80AbsoluteMiss,
+    rangeHigh: p80AbsoluteMiss === null ? null : predictionValue + p80AbsoluteMiss
+  };
+}
+
+function trendTicks(domain) {
+  const step = 100;
+  const top = Math.ceil(domain.max / step) * step;
+  const ticks = [];
+
+  for (let value = top; value >= 0; value -= step) {
+    ticks.push({ value, label: `${Math.round(value)}` });
+  }
+
+  return ticks.length ? ticks : [{ value: 100, label: "100" }, { value: 0, label: "0" }];
+}
+
+function trendYearTicks(firstYear, actualTaxEndYear) {
+  const ticks = [];
+
+  for (let year = firstYear; year < actualTaxEndYear; year += 6) {
+    ticks.push({ year, label: `${year}` });
+  }
+
+  if (!ticks.some(tick => tick.year === actualTaxEndYear)) {
+    ticks.push({ year: actualTaxEndYear, label: `${actualTaxEndYear}` });
+  }
+
+  return ticks;
+}
+
+function renderTrendDeviationChartSection(rows) {
+  const valueSeries = indexedTrendSeries(rows, "assessedValue");
+  const taxSeries = indexedTrendSeries(rows, "net");
+  if (!valueSeries.length || !taxSeries.length) return "";
+  const backtestSummary = taxBacktestSummary(taxSeries, predicted2026NetTax);
+
+  return `
+    <div class="tax-trend-diagnostic" aria-labelledby="taxTrendDiagnosticTitle">
+      <div class="tax-trend-diagnostic-heading">
+        <div>
+          <p class="guided-kicker">Model check</p>
+          <h4 id="taxTrendDiagnosticTitle">Does the Prediction Fit the Pattern?</h4>
+        </div>
+        <p><span>Indexed to 1993 = 100.</span><span>Dots show actual years. Dashed lines show best-fit trend.</span></p>
+      </div>
+      <div class="tax-trend-diagnostic-chart">
+        ${renderTrendDeviationSvg(valueSeries, taxSeries)}
+      </div>
+      <p class="tax-trend-footer-note">Prediction is not part of the historical series; it is shown separately to test whether it lands within the long-run pattern.</p>
+      ${renderTaxBacktestSummary(backtestSummary)}
+    </div>
+  `;
+}
+
+function renderTaxBacktestSummary(summary) {
+  if (!summary.misses.length || summary.p80AbsoluteMiss === null) return "";
+  const latestActualTax = 3412.58;
+  const predictedIncrease = predicted2026NetTax - latestActualTax;
+  const monthlyIncrease = predictedIncrease / 12;
+  const percentIncrease = predictedIncrease / latestActualTax;
+
+  return `
+    <div class="tax-backtest-summary" aria-label="Backtested tax trend miss summary">
+      <p><strong>${formatWholeMoney(predicted2026NetTax)}</strong> is the point estimate. That is <strong>${percentOneDecimal.format(percentIncrease)}</strong> above the 2025 net tax bill, or about <strong>${formatWholeMoney(monthlyIncrease)}/month</strong>.</p>
+      <div class="tax-backtest-kpis">
+        <article>
+          <span>2026 estimate</span>
+          <strong>${formatWholeMoney(predicted2026NetTax)}</strong>
+        </article>
+        <article>
+          <span>Predicted increase</span>
+          <strong>${percentOneDecimal.format(percentIncrease)}</strong>
+        </article>
+        <article>
+          <span>2025 backtest</span>
+          <strong>$46 miss</strong>
+        </article>
+        <article>
+          <span>Working range</span>
+          <strong>$70-$85/mo</strong>
+        </article>
+      </div>
+    </div>
+  `;
+}
+
+function renderTrendDeviationSvg(valueSeries, taxSeries) {
+  const width = 1280;
+  const height = 430;
+  const top = 52;
+  const right = 54;
+  const bottom = 342;
+  const left = 76;
+  const plotWidth = width - left - right;
+  const firstYear = Math.min(valueSeries[0].year, taxSeries[0].year);
+  const predictionYear = 2026;
+  const actualTaxEndYear = taxSeries.at(-1).year;
+  const lastYear = predictionYear;
+  const valueTrendPoints = [
+    { year: valueSeries[0].year, indexValue: valueSeries[0].trendValue },
+    { year: valueSeries.at(-1).year, indexValue: valueSeries.at(-1).trendValue }
+  ];
+  const taxTrendPoints = [
+    { year: taxSeries[0].year, indexValue: taxSeries[0].trendValue },
+    { year: taxSeries.at(-1).year, indexValue: taxSeries.at(-1).trendValue }
+  ];
+  const predictionPoint = {
+    year: predictionYear,
+    sourceValue: predicted2026NetTax,
+    indexValue: predicted2026NetTax / taxSeries[0].sourceValue * 100
+  };
+  const allIndexValues = [
+    ...valueSeries.flatMap(row => [row.indexValue, row.trendValue]),
+    ...taxSeries.flatMap(row => [row.indexValue, row.trendValue]),
+    predictionPoint.indexValue
+  ];
+  const domain = { min: 0, max: Math.max(...allIndexValues, 100) * 1.12 };
+  const ticks = trendTicks(domain);
+  const yearTicks = trendYearTicks(firstYear, actualTaxEndYear);
+  const xForYear = year => left + ((year - firstYear) / (lastYear - firstYear)) * plotWidth;
+  const pointFor = row => ({
+    x: xForYear(row.year),
+    y: chartY(row.indexValue, domain, top, bottom),
+    trendY: chartY(row.trendValue, domain, top, bottom),
+    row
+  });
+  const valuePoints = valueSeries.map(pointFor);
+  const taxPoints = taxSeries.map(pointFor);
+  const predictionDot = {
+    x: xForYear(predictionPoint.year),
+    y: chartY(predictionPoint.indexValue, domain, top, bottom)
+  };
+  const trendPath = trendRows => chartPath(trendRows.map(row => ({
+    x: xForYear(row.year),
+    y: chartY(row.indexValue, domain, top, bottom)
+  })));
+
+  return `
+    <svg class="tax-trend-svg" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="taxTrendSvgTitle taxTrendSvgDesc">
+      <title id="taxTrendSvgTitle">Indexed assessed value and net tax dots around best-fit regression lines</title>
+      <desc id="taxTrendSvgDesc">Both series are indexed to 1993 equals 100. Assessed value regression runs from 1993 to 2026, net tax regression runs from 1993 to 2025, and the 2026 predicted tax is shown as a larger unconnected point.</desc>
+      <g class="tax-trend-grid">
+        ${ticks.map(tick => {
+          const y = chartY(tick.value, domain, top, bottom);
+          return `
+            <line x1="${left}" y1="${y.toFixed(1)}" x2="${width - right}" y2="${y.toFixed(1)}"></line>
+            <text x="${left - 12}" y="${(y + 4).toFixed(1)}" text-anchor="end">${escapeHtml(tick.label)}</text>
+          `;
+        }).join("")}
+      </g>
+      <path class="tax-trend-line tax-trend-line-value" d="${trendPath(valueTrendPoints)}"></path>
+      <path class="tax-trend-line tax-trend-line-tax" d="${trendPath(taxTrendPoints)}"></path>
+      <g class="tax-trend-stems tax-trend-value-stems">
+        ${valuePoints.map(point => `
+          <line class="${point.row.deviation >= 0 ? "tax-trend-above" : "tax-trend-below"}" x1="${point.x.toFixed(1)}" y1="${point.trendY.toFixed(1)}" x2="${point.x.toFixed(1)}" y2="${point.y.toFixed(1)}"></line>
+        `).join("")}
+      </g>
+      <g class="tax-trend-stems tax-trend-tax-stems">
+        ${taxPoints.map(point => `
+          <line class="${point.row.deviation >= 0 ? "tax-trend-above" : "tax-trend-below"}" x1="${point.x.toFixed(1)}" y1="${point.trendY.toFixed(1)}" x2="${point.x.toFixed(1)}" y2="${point.y.toFixed(1)}"></line>
+        `).join("")}
+      </g>
+      <g class="tax-trend-points tax-trend-value-points">
+        ${valuePoints.map(point => `
+          <circle class="${point.row.deviation >= 0 ? "tax-trend-above" : "tax-trend-below"}" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="5">
+            <title>${escapeHtml(`${point.row.year}: value index ${Math.round(point.row.indexValue)}, trend ${Math.round(point.row.trendValue)}, ${point.row.deviation >= 0 ? "above" : "below"} by ${Math.abs(point.row.deviation).toFixed(1)} index points`)}</title>
+          </circle>
+        `).join("")}
+      </g>
+      <g class="tax-trend-points tax-trend-tax-points">
+        ${taxPoints.map(point => `
+          <circle class="${point.row.deviation >= 0 ? "tax-trend-above" : "tax-trend-below"}" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4">
+            <title>${escapeHtml(`${point.row.year}: tax index ${Math.round(point.row.indexValue)}, trend ${Math.round(point.row.trendValue)}, ${point.row.deviation >= 0 ? "above" : "below"} by ${Math.abs(point.row.deviation).toFixed(1)} index points`)}</title>
+          </circle>
+        `).join("")}
+      </g>
+      <g class="tax-trend-prediction-point">
+        <circle class="tax-trend-prediction-halo" cx="${predictionDot.x.toFixed(1)}" cy="${predictionDot.y.toFixed(1)}" r="13"></circle>
+        <circle class="tax-trend-prediction-dot" cx="${predictionDot.x.toFixed(1)}" cy="${predictionDot.y.toFixed(1)}" r="8">
+          <title>${escapeHtml(`${predictionYear} prediction: $${predicted2026NetTax.toLocaleString("en-US")} net tax, index ${Math.round(predictionPoint.indexValue)}`)}</title>
+        </circle>
+        <text x="${predictionDot.x.toFixed(1)}" y="${(predictionDot.y - 18).toFixed(1)}" text-anchor="middle">2026 prediction</text>
+      </g>
+      <g class="tax-shorthand-chart-years">
+        ${yearTicks.map(tick => `
+          <text x="${xForYear(tick.year).toFixed(1)}" y="${bottom + 32}" text-anchor="middle">${escapeHtml(tick.label)}</text>
+        `).join("")}
+      </g>
+      <g class="tax-trend-legend">
+        <line x1="${left}" y1="18" x2="${left + 34}" y2="18" class="tax-trend-line-value"></line>
+        <circle cx="${left + 17}" cy="18" r="5" class="tax-trend-value-dot"></circle>
+        <text x="${left + 44}" y="22">Assessed value index</text>
+        <line x1="${left + 210}" y1="18" x2="${left + 244}" y2="18" class="tax-trend-line-tax"></line>
+        <circle cx="${left + 227}" cy="18" r="4" class="tax-trend-tax-dot"></circle>
+        <text x="${left + 254}" y="22">Net tax index</text>
+        <text x="${width - right}" y="22" text-anchor="end">1993 = 100</text>
+      </g>
+    </svg>
+  `;
+}
+
 function renderValueTaxComboSvg(rows) {
   const chartRows = rows
     .slice()
@@ -542,7 +960,6 @@ function renderValueTaxComboSvg(rows) {
           return `<text x="${width - right + 12}" y="${(y + 4).toFixed(1)}" text-anchor="start">${escapeHtml(tick.label)}</text>`;
         }).join("")}
         <line class="tax-shorthand-chart-baseline" x1="${left}" y1="${taxBaselineY.toFixed(1)}" x2="${width - right}" y2="${taxBaselineY.toFixed(1)}"></line>
-        <text x="${width - right}" y="${(taxBaselineY - 8).toFixed(1)}" text-anchor="end">${escapeHtml(`${baseTaxRow?.year || "Tax"} tax = 100`)}</text>
       </g>
       <g class="tax-shorthand-value-bars">
         ${bars.map(bar => `
@@ -568,6 +985,7 @@ function renderValueTaxComboSvg(rows) {
         <line x1="${left + 184}" y1="18" x2="${left + 214}" y2="18" class="tax-shorthand-tax-line"></line>
         <circle cx="${left + 199}" cy="18" r="4" class="tax-shorthand-tax-point"></circle>
         <text x="${left + 224}" y="22">Net tax index line</text>
+        <text x="${width - right}" y="22" text-anchor="end">${escapeHtml(`${baseTaxRow?.year || "Tax"} tax = 100`)}</text>
         <text x="${left}" y="${height - 14}">Left axis: assessed value. Right axis: tax index.</text>
       </g>
     </svg>
@@ -575,19 +993,197 @@ function renderValueTaxComboSvg(rows) {
 }
 
 function renderNoActiveProperty(propertySwitcherContext) {
-  renderExperimentViewHeader({
-    eyebrow: "Experiment · Tax context",
-    title: "Year-by-year tax shorthand",
-    description: "Select a loaded property to build the annual assessed-value, levy, credits, and net-tax walkthrough."
-  }, null, propertySwitcherContext);
-
   const canvas = document.querySelector(".mobile-review-canvas");
   if (!canvas) return;
 
   canvas.innerHTML = `
     <section class="tax-shorthand-page review-card" aria-labelledby="taxShorthandEmptyTitle">
-      <h2 id="taxShorthandEmptyTitle">Select a property record</h2>
-      <p>The table will render after an active property is selected.</p>
+      <h2 id="taxShorthandEmptyTitle">Tax prediction story needs a loaded property</h2>
+      <p>Open the S 5th Avenue parcel to render the one-page prediction.</p>
+    </section>
+  `;
+}
+
+function renderPredictionHero() {
+  return `
+    <section class="tax-prediction-hero" aria-labelledby="taxPredictionTitle">
+      <div class="tax-prediction-hero-copy">
+        <p class="guided-kicker">2026 property tax prediction</p>
+        <h1 id="taxPredictionTitle">What I Think My 2026 Property Tax Bill Will Be</h1>
+        <p>Based on 30+ years of property tax history, county valuation growth, valuation-group movement, and historical levy behavior.</p>
+      </div>
+      <div class="tax-prediction-kpis" aria-label="Prediction summary">
+        <article class="tax-prediction-kpi tax-prediction-kpi-primary">
+          <p>Predicted Tax Bill</p>
+          <strong>≈ $4,290</strong>
+        </article>
+        <article class="tax-prediction-kpi">
+          <p>Annual Increase</p>
+          <strong>≈ $877</strong>
+        </article>
+        <article class="tax-prediction-kpi">
+          <p>Monthly Increase</p>
+          <strong>≈ $73</strong>
+        </article>
+      </div>
+      <p class="tax-prediction-range">Estimated range: <strong>$4,200-$4,500 annually</strong> · <strong>≈ $70-$85/month</strong></p>
+    </section>
+  `;
+}
+
+function renderPropertyMathCard() {
+  return `
+    <article class="tax-prediction-step tax-prediction-step-alert">
+      <span class="tax-prediction-step-number">1</span>
+      <div>
+        <p class="guided-kicker">My property</p>
+        <h3>Value jumped faster than normal</h3>
+      </div>
+      <div class="tax-prediction-stat-pair">
+        <div>
+          <span>2025 Value</span>
+          <strong>$278,930</strong>
+        </div>
+        <div>
+          <span>2026 Value</span>
+          <strong>$384,850</strong>
+        </div>
+      </div>
+      <div class="tax-prediction-big-change">↑ +38%</div>
+    </article>
+  `;
+}
+
+function renderGroupMathCard() {
+  return `
+    <article class="tax-prediction-step">
+      <span class="tax-prediction-step-number">2</span>
+      <div>
+        <p class="guided-kicker">Typical valuation group</p>
+        <h3>Typical VG3 Adjustment</h3>
+      </div>
+      <div class="tax-prediction-split-stat">
+        <div>
+          <span>Group movement</span>
+          <strong>+15%</strong>
+        </div>
+        <div>
+          <span>Difference</span>
+          <strong>+23 pts</strong>
+        </div>
+      </div>
+      <p>My property increased faster than typical properties in my valuation group.</p>
+    </article>
+  `;
+}
+
+function renderCountyMathCard() {
+  return `
+    <article class="tax-prediction-step">
+      <span class="tax-prediction-step-number">3</span>
+      <div>
+        <p class="guided-kicker">County history</p>
+        <h3>2019-2025</h3>
+      </div>
+      <div class="tax-prediction-bars" aria-label="County value and tax growth comparison">
+        <div class="tax-prediction-bar-row">
+          <span>County Value Growth</span>
+          <div><i style="width: 100%"></i></div>
+          <strong>+54%</strong>
+        </div>
+        <div class="tax-prediction-bar-row">
+          <span>County Tax Growth</span>
+          <div><i style="width: 26%"></i></div>
+          <strong>+14%</strong>
+        </div>
+      </div>
+      <p>Historically, taxes have grown much slower than valuations.</p>
+    </article>
+  `;
+}
+
+function renderEquationMathCard() {
+  return `
+    <article class="tax-prediction-step tax-prediction-equation-card">
+      <span class="tax-prediction-step-number">4</span>
+      <div>
+        <p class="guided-kicker">Prediction</p>
+        <h3>The working estimate</h3>
+      </div>
+      <div class="tax-prediction-equation" aria-label="$3,413 times 1.23 times 1.022 is approximately $4,290">
+        <strong>$3,413</strong>
+        <span>×</span>
+        <strong>1.23</strong>
+        <span>×</span>
+        <strong>1.022</strong>
+        <span>=</span>
+        <strong>≈ $4,290</strong>
+      </div>
+    </article>
+  `;
+}
+
+function renderMathSection() {
+  return `
+    <section class="tax-prediction-section" aria-labelledby="taxPredictionMathTitle">
+      <div class="tax-prediction-section-heading">
+        <p class="guided-kicker">Here's My Math</p>
+        <h2 id="taxPredictionMathTitle">A faster value correction, softened by levy compression</h2>
+      </div>
+      <div class="tax-prediction-steps">
+        ${renderPropertyMathCard()}
+        ${renderGroupMathCard()}
+        ${renderCountyMathCard()}
+        ${renderEquationMathCard()}
+      </div>
+    </section>
+  `;
+}
+
+function renderWhySection() {
+  const cards = [
+    {
+      icon: "↗",
+      title: "Property Up Faster Than Average",
+      copy: "My property rose about 38%. Typical valuation-group movement appears closer to 15%."
+    },
+    {
+      icon: "⌁",
+      title: "Levy Compression Is Real",
+      copy: "County values increased roughly 54%. Taxes levied increased roughly 14%."
+    },
+    {
+      icon: "$",
+      title: "Budgets Usually Grow Slowly",
+      copy: "Historical tax growth averages about 2.2% annually."
+    }
+  ];
+
+  return `
+    <section class="tax-prediction-section" aria-labelledby="taxPredictionWhyTitle">
+      <div class="tax-prediction-section-heading">
+        <p class="guided-kicker">Why I think this works</p>
+        <h2 id="taxPredictionWhyTitle">The value jump matters, but it is not the whole bill</h2>
+      </div>
+      <div class="tax-prediction-why-grid">
+        ${cards.map(card => `
+          <article class="tax-prediction-why-card">
+            <span>${escapeHtml(card.icon)}</span>
+            <h3>${escapeHtml(card.title)}</h3>
+            <p>${escapeHtml(card.copy)}</p>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderBottomLine() {
+  return `
+    <section class="tax-prediction-bottom-line review-card" aria-label="Bottom-line takeaway">
+      <p>My assessment tells me what my property is worth on paper.</p>
+      <p>Budgets and levies determine what I actually pay.</p>
+      <strong>Today, based on the information available, I'm budgeting for roughly $70-$85 more per month.</strong>
     </section>
   `;
 }
@@ -742,61 +1338,16 @@ export function renderTaxShorthandExperiment(propertySwitcherContext = {}, { dat
   }
 
   const rows = statementRows(data);
-  const taxIndexYear = taxIndexBaseYear(rows);
-  const taxYearCount = rows.filter(row => row.net !== null && row.net !== undefined).length;
-  const valueOnlyCount = rows.length - taxYearCount;
-  const historyCountLabel = valueOnlyCount
-    ? `${taxYearCount} tax years + ${valueOnlyCount} value-only year`
-    : `${taxYearCount} statement years`;
-  const propertyLabel = displayAddress(data.parcel?.situsAddress) || data.parcel?.parcelId || "selected property";
-  renderExperimentViewHeader({
-    eyebrow: "Experiment · Tax context",
-    title: "Year-by-year tax shorthand",
-    description: `${propertyLabel} annual statement math from assessed value through final net tax.`
-  }, snapshotModel, propertySwitcherContext);
-
   const canvas = document.querySelector(".mobile-review-canvas");
   if (!canvas) return;
 
   canvas.innerHTML = `
-    <section class="tax-shorthand-page" aria-labelledby="taxShorthandTitle">
-      <article class="review-card tax-shorthand-card">
-        <div class="tax-shorthand-card-header">
-          <div>
-            <p class="guided-kicker">Tax statement shorthand</p>
-            <h2 id="taxShorthandTitle">${escapeHtml(data.parcel?.parcelId || "Selected parcel")} · ${escapeHtml(propertyLabel)}</h2>
-          </div>
-          <span>${escapeHtml(historyCountLabel)}</span>
-        </div>
-        ${rows.length ? renderMetricCards(rows) : ""}
-        ${rows.length ? `
-          <div class="tax-shorthand-table-wrap">
-            <table class="tax-shorthand-table">
-              <thead>
-                <tr>
-                  <th>Year</th>
-                  <th>Statement</th>
-                  <th>Assessed value</th>
-                  <th>Levy</th>
-                  <th>Gross tax</th>
-                  <th>Credits</th>
-                  <th>Net tax</th>
-                  <th>Tax index</th>
-                  <th>Net result</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${renderRows(rows, taxIndexYear)}
-              </tbody>
-            </table>
-          </div>
-          ${renderValueTaxChartSection(rows)}
-          <p class="chart-source">${escapeHtml(taxHistorySourceText(data))}</p>
-        ` : `
+    <section class="tax-shorthand-page" aria-labelledby="taxArticleTitle">
+      ${rows.length ? renderValueTaxChartSection(rows) : `
+        <section class="tax-shorthand-area-panel">
           <p class="tax-shorthand-empty">No finalized tax statement rows are loaded for this property yet.</p>
-        `}
-      </article>
-      ${renderCountyMarketAverageSection(countyContext)}
+        </section>
+      `}
     </section>
   `;
 }

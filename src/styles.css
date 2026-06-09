@@ -7120,8 +7120,13 @@ footer > [data-footer-resource-shell] {
 }
 
 .tax-shorthand-page {
+  background: #f5f7f9;
   display: grid;
-  gap: 1rem;
+  gap: clamp(1.25rem, 2.6vw, 1.8rem);
+  margin: 0 auto;
+  max-width: 70rem;
+  overflow-x: hidden;
+  padding: clamp(1rem, 2.8vw, 1.6rem);
 }
 
 .tax-shorthand-card {
@@ -7291,7 +7296,6 @@ footer > [data-footer-resource-shell] {
   border-radius: var(--radius-container-sm);
   display: grid;
   gap: 0.85rem;
-  margin-top: 0.2rem;
   padding: 1rem;
 }
 
@@ -7304,7 +7308,7 @@ footer > [data-footer-resource-shell] {
 
 .tax-shorthand-area-heading h3 {
   color: rgb(var(--brand-ink));
-  font-size: 1.05rem;
+  font-size: 1.25rem;
   font-weight: 850;
   line-height: 1.2;
   margin: 0.16rem 0 0;
@@ -7312,7 +7316,7 @@ footer > [data-footer-resource-shell] {
 
 .tax-shorthand-area-heading > p {
   color: rgb(var(--color-slate-600));
-  font-size: 0.82rem;
+  font-size: 0.98rem;
   font-weight: 700;
   line-height: 1.35;
   margin: 0;
@@ -7321,20 +7325,23 @@ footer > [data-footer-resource-shell] {
 }
 
 .tax-shorthand-area-chart {
-  height: 19rem;
-  min-height: 19rem;
-  overflow-x: auto;
+  height: clamp(20rem, 39vw, 28rem);
+  max-width: 100%;
+  min-height: 20rem;
+  overflow-x: hidden;
   position: relative;
+  width: 100%;
 }
 
 .tax-shorthand-area-svg {
   display: block;
   height: 100%;
+  max-width: 100%;
   width: 100%;
 }
 
 .tax-shorthand-combo-svg {
-  min-width: 1120px;
+  min-width: 0;
 }
 
 .tax-shorthand-chart-grid line {
@@ -7352,8 +7359,8 @@ footer > [data-footer-resource-shell] {
 .tax-shorthand-chart-years text,
 .tax-shorthand-chart-legend text {
   fill: rgb(var(--color-slate-600));
-  font-size: 12px;
-  font-weight: 750;
+  font-size: 13px;
+  font-weight: 680;
 }
 
 .tax-shorthand-area-fill {
@@ -7401,6 +7408,31 @@ footer > [data-footer-resource-shell] {
   stroke: rgb(148 70 86);
 }
 
+.tax-shorthand-prediction-band rect {
+  fill: rgb(148 70 86 / 0.16);
+  stroke: rgb(148 70 86 / 0.58);
+  stroke-width: 1.4;
+}
+
+.tax-shorthand-prediction-band line {
+  stroke: rgb(148 70 86);
+  stroke-linecap: round;
+  stroke-width: 2.2;
+}
+
+.tax-shorthand-prediction-band circle {
+  fill: rgb(148 70 86);
+  filter: drop-shadow(0 0.35rem 0.48rem rgb(148 70 86 / 0.28));
+  stroke: white;
+  stroke-width: 2.5;
+}
+
+.tax-shorthand-prediction-band text {
+  fill: rgb(var(--brand-ink));
+  font-size: 14px;
+  font-weight: 900;
+}
+
 .tax-shorthand-chart-legend .tax-shorthand-tax-line {
   stroke-width: 3;
 }
@@ -7416,6 +7448,1174 @@ footer > [data-footer-resource-shell] {
   font-size: 0.95rem;
   line-height: 1.5;
   margin: 0;
+}
+
+.tax-prediction-hero {
+  background:
+    linear-gradient(135deg, rgb(31 73 112 / 0.08), rgb(148 70 86 / 0.08)),
+    rgb(var(--surface));
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: var(--radius-container);
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.1rem, 2.8vw, 2rem);
+  box-shadow: var(--shadow-card);
+}
+
+.tax-prediction-hero-copy {
+  display: grid;
+  gap: 0.55rem;
+  max-width: 52rem;
+}
+
+.tax-prediction-hero h1 {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(2rem, 5vw, 4.25rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 0.98;
+  margin: 0;
+}
+
+.tax-prediction-hero-copy > p:not(.guided-kicker) {
+  color: rgb(var(--color-slate-600));
+  font-size: clamp(0.98rem, 1.7vw, 1.18rem);
+  font-weight: 720;
+  line-height: 1.45;
+  margin: 0;
+  max-width: 44rem;
+}
+
+.tax-prediction-kpis {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tax-prediction-kpi {
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: var(--radius-container-sm);
+  display: grid;
+  gap: 0.4rem;
+  padding: 1rem;
+  box-shadow: 0 0.7rem 1.7rem rgb(var(--brand-ink) / 0.08);
+}
+
+.tax-prediction-kpi-primary {
+  background: rgb(var(--brand-ink));
+  border-color: rgb(var(--brand-ink));
+}
+
+.tax-prediction-kpi p {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.1;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.tax-prediction-kpi-primary p {
+  color: rgb(255 255 255 / 0.72);
+}
+
+.tax-prediction-kpi strong {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.55rem, 3.6vw, 2.8rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.tax-prediction-kpi-primary strong {
+  color: white;
+}
+
+.tax-prediction-range {
+  align-items: center;
+  background: rgb(var(--surface-muted));
+  border-radius: 9999px;
+  color: rgb(var(--color-slate-700));
+  display: inline-flex;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  font-weight: 780;
+  gap: 0.35rem;
+  line-height: 1.35;
+  margin: 0;
+  padding: 0.62rem 0.85rem;
+  width: fit-content;
+}
+
+.tax-prediction-range strong {
+  color: rgb(var(--brand-ink));
+}
+
+.tax-prediction-section {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tax-prediction-section-heading {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.tax-prediction-section-heading h2 {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.25rem, 2.6vw, 2rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.tax-prediction-steps {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.tax-prediction-step,
+.tax-prediction-why-card {
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: var(--radius-container-sm);
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 1rem;
+  position: relative;
+  box-shadow: var(--shadow-card);
+}
+
+.tax-prediction-step-alert {
+  border-color: rgb(var(--color-red) / 0.45);
+  box-shadow: inset 0 0 0 1px rgb(var(--color-red) / 0.12), var(--shadow-card);
+}
+
+.tax-prediction-step-number {
+  align-items: center;
+  background: rgb(var(--brand-ink));
+  border-radius: 9999px;
+  color: white;
+  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 900;
+  height: 1.8rem;
+  justify-content: center;
+  line-height: 1;
+  width: 1.8rem;
+}
+
+.tax-prediction-step h3,
+.tax-prediction-why-card h3 {
+  color: rgb(var(--brand-ink));
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.15;
+  margin: 0.15rem 0 0;
+}
+
+.tax-prediction-step p,
+.tax-prediction-why-card p {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.88rem;
+  font-weight: 720;
+  line-height: 1.42;
+  margin: 0;
+}
+
+.tax-prediction-stat-pair,
+.tax-prediction-split-stat {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.tax-prediction-stat-pair div,
+.tax-prediction-split-stat div {
+  background: rgb(var(--surface-muted));
+  border-radius: 0.55rem;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.65rem;
+}
+
+.tax-prediction-stat-pair span,
+.tax-prediction-split-stat span {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.tax-prediction-stat-pair strong,
+.tax-prediction-split-stat strong {
+  color: rgb(var(--brand-ink));
+  font-size: 1.22rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.tax-prediction-big-change {
+  color: rgb(var(--color-red));
+  font-size: clamp(2rem, 4.8vw, 3.3rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 0.95;
+}
+
+.tax-prediction-bars {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.tax-prediction-bar-row {
+  display: grid;
+  gap: 0.28rem;
+  grid-template-columns: minmax(6rem, 1fr) minmax(5rem, 1.25fr) auto;
+}
+
+.tax-prediction-bar-row span,
+.tax-prediction-bar-row strong {
+  color: rgb(var(--brand-ink));
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.tax-prediction-bar-row div {
+  background: rgb(var(--surface-muted));
+  border-radius: 9999px;
+  height: 0.78rem;
+  overflow: hidden;
+}
+
+.tax-prediction-bar-row i {
+  background: rgb(31 73 112 / 0.82);
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+}
+
+.tax-prediction-bar-row:nth-child(2) i {
+  background: rgb(148 70 86 / 0.82);
+}
+
+.tax-prediction-equation-card {
+  background: rgb(var(--brand-ink));
+  border-color: rgb(var(--brand-ink));
+}
+
+.tax-prediction-equation-card .guided-kicker,
+.tax-prediction-equation-card h3 {
+  color: white;
+}
+
+.tax-prediction-equation {
+  align-items: center;
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.tax-prediction-equation strong {
+  background: rgb(255 255 255 / 0.12);
+  border-radius: 0.55rem;
+  color: white;
+  font-size: clamp(1.25rem, 2.4vw, 2rem);
+  font-weight: 950;
+  line-height: 1;
+  padding: 0.55rem 0.65rem;
+}
+
+.tax-prediction-equation span {
+  color: rgb(255 255 255 / 0.72);
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.tax-prediction-why-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tax-prediction-why-card > span {
+  align-items: center;
+  background: rgb(var(--surface-muted));
+  border-radius: 9999px;
+  color: rgb(var(--brand-ink));
+  display: inline-flex;
+  font-size: 1.05rem;
+  font-weight: 950;
+  height: 2.1rem;
+  justify-content: center;
+  line-height: 1;
+  width: 2.1rem;
+}
+
+.tax-prediction-history {
+  gap: 1rem;
+  padding: 1.15rem;
+}
+
+.tax-article-panel {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  gap: clamp(1.3rem, 3vw, 2rem);
+  padding: 0;
+}
+
+.tax-story-chapter {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid rgb(31 73 112 / 0.18);
+  border-radius: 0.85rem;
+  box-shadow: 0 0.75rem 1.7rem rgb(31 73 112 / 0.045);
+  padding: clamp(1.45rem, 3.6vw, 2.45rem);
+}
+
+.tax-article-header {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 54rem;
+  padding: clamp(0.4rem, 1.8vw, 0.8rem) 0 0;
+}
+
+.tax-article-header h1 {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(2.25rem, 4.2vw, 3.05rem);
+  font-weight: 820;
+  letter-spacing: 0;
+  line-height: 1.08;
+  margin: 0;
+}
+
+.tax-article-header > p:not(.guided-kicker) {
+  color: rgb(var(--color-slate-600));
+  font-size: 1.3125rem;
+  font-weight: 500;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 43rem;
+}
+
+.tax-article-source-line,
+.tax-article-final-source {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.93rem;
+  font-weight: 780;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.tax-article-section {
+  display: grid;
+  gap: 1.15rem;
+}
+
+.tax-article-section > h2 {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.85rem, 3.1vw, 2.32rem);
+  font-weight: 760;
+  letter-spacing: 0;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.tax-article-section > p,
+.tax-article-two-column p,
+.tax-historical-explanation p,
+.tax-article-closing p,
+.tax-model-check-section > p,
+.tax-essay-copy p {
+  color: rgb(var(--color-slate-700));
+  font-size: 1.3125rem;
+  font-weight: 480;
+  line-height: 1.62;
+  margin: 0;
+  max-width: 46rem;
+}
+
+.tax-article-opening blockquote {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.72rem, 3.8vw, 2.98rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 1.08;
+  margin: 0;
+  max-width: 48rem;
+}
+
+.tax-article-pullquote {
+  background: rgb(148 70 86 / 0.075);
+  border-left: 0.22rem solid rgb(148 70 86 / 0.88);
+  border-radius: 0.35rem;
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.55rem, 2.9vw, 2rem);
+  font-weight: 680;
+  line-height: 1.32;
+  padding: 1rem 1.15rem;
+}
+
+.tax-article-pullquote strong {
+  color: rgb(148 70 86);
+  font-weight: 950;
+}
+
+.tax-article-pullquote-subtle {
+  font-size: clamp(1.45rem, 2.7vw, 1.85rem);
+}
+
+.tax-article-panel .guided-kicker {
+  font-size: clamp(0.98rem, 1.5vw, 1.14rem);
+  font-weight: 850;
+  letter-spacing: 0.1em;
+}
+
+.tax-essay-calculation {
+  border-top: 0;
+  padding-top: clamp(1rem, 3vw, 1.75rem);
+}
+
+.tax-essay-copy {
+  display: grid;
+  gap: 0.85rem;
+  justify-items: start;
+  max-width: 50rem;
+}
+
+.tax-county-history-section .tax-essay-copy {
+  max-width: none;
+  width: 100%;
+}
+
+.tax-essay-calculation .tax-essay-copy {
+  max-width: none;
+  width: 100%;
+}
+
+.tax-essay-observations {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+  max-width: 48rem;
+}
+
+.tax-history-highlights {
+  border-left: 0.18rem solid rgb(31 73 112 / 0.28);
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.55rem;
+  max-width: 52rem;
+  padding-left: 1.05rem;
+}
+
+.tax-history-highlights p {
+  color: rgb(var(--color-slate-700));
+  font-size: clamp(1.28rem, 2.08vw, 1.48rem);
+  font-weight: 540;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tax-history-highlights strong {
+  color: rgb(var(--brand-ink));
+  font-weight: 820;
+}
+
+.tax-essay-observations p {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.4rem, 2.38vw, 1.7rem);
+  font-weight: 620;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.tax-essay-observations p:last-child {
+  color: rgb(var(--color-slate-600));
+  font-weight: 520;
+}
+
+.tax-napkin-block,
+.tax-estimate-block {
+  background: transparent;
+  border-bottom: 1px solid rgb(var(--border-muted));
+  border-top: 1px solid rgb(var(--border-muted));
+  display: grid;
+  justify-self: center;
+  max-width: 42rem;
+  width: min(100%, 42rem);
+}
+
+.tax-napkin-block > div,
+.tax-estimate-block > div {
+  align-items: baseline;
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 0.9rem 0;
+}
+
+.tax-napkin-block > div + div,
+.tax-estimate-block > div + div {
+  border-top: 1px solid rgb(var(--border-muted));
+}
+
+.tax-napkin-block span,
+.tax-estimate-block span {
+  color: rgb(var(--color-slate-600));
+  font-size: clamp(1.21rem, 1.72vw, 1.38rem);
+  font-weight: 520;
+  line-height: 1.25;
+}
+
+.tax-napkin-block strong,
+.tax-estimate-block strong {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.52rem, 2.5vw, 1.92rem);
+  font-weight: 760;
+  line-height: 1.1;
+  text-align: right;
+}
+
+.tax-napkin-result strong,
+.tax-estimate-equation strong {
+  color: rgb(148 70 86);
+}
+
+.tax-napkin-block-paired {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-self: center;
+  max-width: 45rem;
+  width: min(100%, 45rem);
+}
+
+.tax-napkin-block-paired > div {
+  display: grid;
+  gap: 0.38rem;
+  grid-template-columns: 1fr;
+}
+
+.tax-napkin-block-paired > div + div {
+  border-left: 1px solid rgb(var(--border-muted));
+  border-top: 0;
+  padding-left: 1rem;
+}
+
+.tax-napkin-block-paired strong {
+  text-align: left;
+}
+
+.tax-estimate-block {
+  max-width: 48rem;
+  width: min(100%, 48rem);
+}
+
+.tax-estimate-shorthand {
+  align-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: clamp(0.5rem, 1vw, 0.75rem);
+  justify-content: center;
+  justify-self: center;
+  max-width: 48rem;
+  padding-top: 0.25rem;
+  width: min(100%, 48rem);
+}
+
+.tax-estimate-shorthand strong {
+  background: rgb(var(--surface-muted));
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.68rem;
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.48rem, 2.55vw, 2rem);
+  font-weight: 790;
+  line-height: 1;
+  min-width: clamp(6.6rem, 10.5vw, 8.6rem);
+  padding: 0.78rem 0.86rem;
+  text-align: center;
+}
+
+.tax-estimate-shorthand strong:last-child {
+  background: rgb(148 70 86 / 0.08);
+  border-color: rgb(148 70 86 / 0.18);
+  color: rgb(148 70 86);
+}
+
+.tax-estimate-shorthand span {
+  color: rgb(var(--color-slate-500));
+  font-size: clamp(1.34rem, 2.35vw, 1.68rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.tax-estimate-equation {
+  background: rgb(148 70 86 / 0.055);
+  margin: 0 -0.5rem;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+}
+
+.tax-estimate-result {
+  color: rgb(var(--brand-ink)) !important;
+  font-size: clamp(1.45rem, 2.5vw, 1.84rem) !important;
+  font-weight: 600 !important;
+  justify-self: center;
+  max-width: 48rem;
+  width: min(100%, 48rem);
+}
+
+.tax-estimate-result strong {
+  color: rgb(148 70 86);
+  font-weight: 860;
+}
+
+.tax-historical-explanation {
+  align-items: stretch;
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.38fr);
+}
+
+.tax-historical-explanation > div {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.tax-historical-explanation aside,
+.tax-article-mini-note {
+  align-items: center;
+  background: rgb(31 73 112 / 0.08);
+  border: 1px solid rgb(31 73 112 / 0.12);
+  border-radius: 0.6rem;
+  color: rgb(var(--brand-ink));
+  display: flex;
+  font-size: clamp(1rem, 1.8vw, 1.22rem);
+  font-weight: 950;
+  line-height: 1.2;
+  padding: 1rem;
+}
+
+.tax-historical-explanation aside {
+  align-content: center;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.tax-prediction-bridge {
+  border-left-width: 0.32rem;
+}
+
+.tax-prediction-bridge > p + p {
+  margin-top: -0.35rem;
+}
+
+.tax-prediction-bridge strong {
+  color: rgb(148 70 86);
+  font-size: 1.18em;
+}
+
+.tax-article-two-column {
+  align-items: start;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.42fr);
+}
+
+.tax-article-two-column > div {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tax-article-math-card,
+.tax-prediction-math-card,
+.tax-county-history-cards article {
+  background: rgb(var(--surface-muted));
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.65rem;
+  box-shadow: var(--shadow-card);
+}
+
+.tax-article-math-card {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+}
+
+.tax-article-math-card span,
+.tax-prediction-math-card span,
+.tax-county-history-cards span {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.7rem;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.tax-article-math-card strong {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.35rem, 3vw, 2.3rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 1.05;
+}
+
+.tax-county-history-cards {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tax-county-history-cards article {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.95rem;
+}
+
+.tax-county-history-cards strong {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.6rem, 3.8vw, 2.75rem);
+  font-weight: 950;
+  line-height: 0.98;
+}
+
+.tax-prediction-math-card {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 1rem;
+}
+
+.tax-prediction-math-card > div {
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.55rem;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem;
+}
+
+.tax-prediction-math-card strong {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1rem, 1.8vw, 1.28rem);
+  font-weight: 930;
+  line-height: 1.15;
+}
+
+.tax-prediction-equation-line {
+  grid-column: 1 / -1;
+}
+
+.tax-prediction-math-card footer {
+  background: rgb(var(--brand-ink));
+  border-radius: 0.65rem;
+  display: grid;
+  gap: 0.35rem;
+  grid-column: 1 / -1;
+  padding: 1rem;
+}
+
+.tax-prediction-math-card footer span,
+.tax-prediction-math-card footer em,
+.tax-prediction-math-card footer strong {
+  color: white;
+}
+
+.tax-prediction-math-card footer strong {
+  font-size: clamp(1.45rem, 3.6vw, 2.6rem);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.tax-prediction-math-card footer em {
+  font-size: 0.95rem;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.tax-article-closing {
+  border-top: 1px solid rgb(var(--border-muted));
+  padding-top: 0.75rem;
+}
+
+.tax-article-final-source {
+  border-top: 1px solid rgb(var(--border-muted));
+  padding-top: 0.75rem;
+}
+
+.tax-story-header {
+  background:
+    linear-gradient(135deg, rgb(31 73 112 / 0.07), rgb(148 70 86 / 0.07)),
+    rgb(var(--surface-muted));
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.7rem;
+  display: grid;
+  gap: 0.45rem;
+  padding: clamp(1rem, 2.4vw, 1.35rem);
+}
+
+.tax-story-header h2 {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.45rem, 3.2vw, 2.45rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 1.02;
+  margin: 0;
+}
+
+.tax-story-header > p:not(.guided-kicker) {
+  color: rgb(var(--color-slate-600));
+  font-size: clamp(0.92rem, 1.7vw, 1.05rem);
+  font-weight: 740;
+  line-height: 1.35;
+  margin: 0;
+  max-width: 50rem;
+}
+
+.tax-prediction-chart-callout {
+  background: rgb(148 70 86 / 0.08);
+  border-left: 0.28rem solid rgb(148 70 86);
+  border-radius: 0.45rem;
+  color: rgb(var(--brand-ink));
+  font-size: 0.95rem;
+  font-weight: 820;
+  line-height: 1.35;
+  padding: 0.8rem 0.9rem;
+}
+
+.tax-guided-transition,
+.tax-prediction-bridge,
+.tax-story-final-note {
+  background: rgb(148 70 86 / 0.06);
+  border: 1px solid rgb(148 70 86 / 0.13);
+  border-left: 0.28rem solid rgb(148 70 86 / 0.72);
+  border-radius: 0.75rem;
+  color: rgb(var(--brand-ink));
+  font-size: clamp(0.95rem, 1.45vw, 1.05rem);
+  font-weight: 620;
+  line-height: 1.45;
+  margin: 0 auto;
+  max-width: 58rem;
+  padding: 0.9rem 1rem;
+  width: calc(100% - clamp(0rem, 2vw, 2rem));
+}
+
+.tax-guided-transition {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: rgb(var(--brand-ink));
+  display: grid;
+  font-size: clamp(1.48rem, 2.8vw, 2.05rem);
+  font-weight: 680;
+  gap: clamp(0.9rem, 2vw, 1.25rem);
+  line-height: 1.35;
+  margin: clamp(1rem, 2.4vw, 1.45rem) auto;
+  max-width: 42rem;
+  padding: clamp(0.7rem, 1.7vw, 1rem) 0;
+  text-align: left;
+  width: min(100%, 42rem);
+}
+
+.tax-guided-transition::before {
+  background: rgb(var(--color-slate-400) / 0.58);
+  border-radius: 9999px;
+  content: "";
+  display: block;
+  height: 2px;
+  width: clamp(6rem, 12vw, 8.5rem);
+}
+
+.tax-prediction-bridge {
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgb(31 73 112 / 0.06), rgb(148 70 86 / 0.08)),
+    rgb(var(--surface));
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tax-prediction-bridge > p {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.19rem, 2.14vw, 1.38rem);
+  font-weight: 850;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.tax-prediction-bridge-math {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tax-prediction-bridge-math span {
+  background: rgb(var(--surface-muted));
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.5rem;
+  color: rgb(var(--color-slate-600));
+  font-size: 0.98rem;
+  font-weight: 780;
+  line-height: 1.25;
+  padding: 0.65rem 0.7rem;
+}
+
+.tax-prediction-bridge-math strong {
+  color: rgb(var(--brand-ink));
+  display: block;
+  font-size: 1.19rem;
+  font-weight: 950;
+  margin-top: 0.12rem;
+}
+
+.tax-trend-diagnostic {
+  background: rgb(var(--surface-muted));
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.45rem;
+  display: grid;
+  gap: 0.95rem;
+  margin-top: 0.05rem;
+  padding: 1rem;
+}
+
+.tax-trend-diagnostic-heading {
+  align-items: end;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.tax-trend-diagnostic-heading h4 {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.24rem, 1.72vw, 1.4rem);
+  font-weight: 740;
+  letter-spacing: 0;
+  line-height: 1.2;
+  margin: 0.16rem 0 0;
+  white-space: nowrap;
+}
+
+.tax-trend-diagnostic-heading > p {
+  color: rgb(var(--color-slate-600));
+  font-size: clamp(1.07rem, 1.49vw, 1.19rem);
+  font-weight: 560;
+  line-height: 1.35;
+  margin: 0;
+  max-width: 24rem;
+  text-align: right;
+}
+
+.tax-trend-diagnostic-heading > p span {
+  display: block;
+}
+
+.tax-trend-diagnostic-chart {
+  height: clamp(18rem, 34vw, 24rem);
+  max-width: 100%;
+  min-height: 18rem;
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.tax-trend-svg {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+}
+
+.tax-trend-grid line {
+  stroke: rgb(var(--color-slate-300) / 0.62);
+  stroke-width: 1;
+}
+
+.tax-trend-grid text,
+.tax-trend-legend text,
+.tax-trend-axis-note {
+  fill: rgb(var(--color-slate-600));
+  font-size: 12.8px;
+  font-weight: 650;
+}
+
+.tax-trend-line {
+  fill: none;
+  opacity: 0.52;
+  stroke-dasharray: 8 7;
+  stroke-linecap: round;
+  stroke-width: 1.8;
+}
+
+.tax-trend-line-value,
+.tax-trend-legend .tax-trend-line-value {
+  stroke: rgb(31 73 112);
+}
+
+.tax-trend-line-tax,
+.tax-trend-legend .tax-trend-line-tax {
+  stroke: rgb(148 70 86);
+}
+
+.tax-trend-stems line {
+  stroke-width: 1.1;
+}
+
+.tax-trend-stems .tax-trend-above {
+  stroke: rgb(var(--color-green-dark) / 0.26);
+}
+
+.tax-trend-stems .tax-trend-below {
+  stroke: rgb(var(--color-red) / 0.26);
+}
+
+.tax-trend-points circle {
+  stroke: white;
+  stroke-width: 2;
+}
+
+.tax-trend-value-points circle,
+.tax-trend-value-dot {
+  fill: rgb(31 73 112);
+  stroke: white;
+}
+
+.tax-trend-tax-points circle,
+.tax-trend-tax-dot {
+  fill: rgb(148 70 86);
+  stroke: white;
+}
+
+.tax-trend-points .tax-trend-below {
+  opacity: 0.68;
+}
+
+.tax-trend-prediction-halo {
+  fill: rgb(148 70 86 / 0.12);
+  stroke: none;
+}
+
+.tax-trend-prediction-dot {
+  fill: rgb(255 255 255 / 0.88);
+  filter: drop-shadow(0 0.35rem 0.45rem rgb(148 70 86 / 0.18));
+  stroke: rgb(148 70 86);
+  stroke-width: 3;
+}
+
+.tax-trend-prediction-point .tax-trend-prediction-dot {
+  fill: rgb(255 255 255 / 0.88);
+  stroke: rgb(148 70 86);
+}
+
+.tax-trend-prediction-point .tax-trend-prediction-halo {
+  fill: rgb(148 70 86 / 0.12);
+  stroke: white;
+  stroke-width: 0;
+}
+
+.tax-trend-prediction-point text {
+  fill: rgb(var(--brand-ink));
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.tax-trend-footer-note {
+  color: rgb(var(--color-slate-600));
+  font-size: clamp(1.1rem, 1.49vw, 1.19rem);
+  font-weight: 560;
+  line-height: 1.4;
+  margin: -0.15rem 0 0;
+}
+
+.tax-backtest-summary {
+  border-top: 1px solid rgb(var(--border-muted));
+  display: grid;
+  gap: 0.7rem;
+  padding-top: 0.7rem;
+}
+
+.tax-backtest-kpis {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.tax-backtest-kpis article {
+  background: #ffffff;
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.55rem;
+  display: grid;
+  gap: 0.22rem;
+  padding: 0.7rem;
+}
+
+.tax-backtest-kpis span {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.81rem;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.tax-backtest-summary strong,
+.tax-backtest-kpis strong {
+  color: rgb(var(--brand-ink));
+  font-weight: 820;
+  letter-spacing: 0;
+  line-height: 1.05;
+}
+
+.tax-backtest-summary p {
+  color: rgb(var(--color-slate-600));
+  font-size: clamp(1.14rem, 1.55vw, 1.25rem);
+  font-weight: 560;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.tax-backtest-kpis strong {
+  font-size: clamp(1.33rem, 2.08vw, 1.62rem);
+}
+
+.tax-story-final-note {
+  background: rgb(var(--brand-ink));
+  border-left-color: rgb(148 70 86);
+  color: white;
+  font-size: 1rem;
+}
+
+.tax-prediction-bottom-line {
+  background: rgb(var(--brand-ink));
+  border-color: rgb(var(--brand-ink));
+  display: grid;
+  gap: 0.45rem;
+  padding: clamp(1.15rem, 3vw, 1.7rem);
+}
+
+.tax-prediction-bottom-line p,
+.tax-prediction-bottom-line strong {
+  color: white;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.tax-prediction-bottom-line p {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 760;
+}
+
+.tax-prediction-bottom-line strong {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 950;
+  letter-spacing: 0;
 }
 
 .market-average-card {
@@ -7522,7 +8722,18 @@ footer > [data-footer-resource-shell] {
   text-decoration: underline;
 }
 
+@media (max-width: 1100px) {
+  .tax-prediction-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 780px) {
+  .tax-shorthand-page {
+    gap: 1.15rem;
+    padding: 0.85rem;
+  }
+
   .tax-shorthand-card {
     padding: 1rem;
   }
@@ -7556,8 +8767,189 @@ footer > [data-footer-resource-shell] {
   }
 
   .tax-shorthand-area-chart {
-    height: 16rem;
-    min-height: 16rem;
+    height: 20rem;
+    min-height: 20rem;
+  }
+
+  .tax-prediction-hero {
+    border-radius: var(--radius-container-sm);
+    padding: 1rem;
+  }
+
+  .tax-prediction-kpis,
+  .tax-prediction-steps,
+  .tax-prediction-why-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tax-prediction-kpi,
+  .tax-prediction-step,
+  .tax-prediction-why-card {
+    padding: 0.9rem;
+  }
+
+  .tax-prediction-kpi {
+    gap: 0.3rem;
+  }
+
+  .tax-prediction-range {
+    align-items: start;
+    border-radius: 0.8rem;
+    display: grid;
+    width: auto;
+  }
+
+  .tax-prediction-stat-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tax-prediction-bar-row {
+    grid-template-columns: minmax(0, 1fr) minmax(7rem, 1.2fr) auto;
+  }
+
+  .tax-prediction-equation strong {
+    font-size: 1.15rem;
+  }
+
+  .tax-prediction-history {
+    padding: 0.9rem;
+  }
+
+  .tax-story-header,
+  .tax-trend-diagnostic {
+    border-radius: var(--radius-container-sm);
+    padding: 0.9rem;
+  }
+
+  .tax-story-chapter {
+    border-radius: var(--radius-container-sm);
+    padding: 1.25rem;
+  }
+
+  .tax-article-header h1 {
+    font-size: clamp(2.05rem, 9vw, 2.45rem);
+    line-height: 1.08;
+  }
+
+  .tax-article-section > h2 {
+    font-size: clamp(1.72rem, 7.1vw, 2rem);
+  }
+
+  .tax-article-header > p:not(.guided-kicker),
+  .tax-article-section > p,
+  .tax-article-two-column p,
+  .tax-historical-explanation p,
+  .tax-article-closing p,
+  .tax-model-check-section > p,
+  .tax-essay-copy p {
+    font-size: 1.3125rem;
+    line-height: 1.58;
+  }
+
+  .tax-historical-explanation,
+  .tax-article-two-column,
+  .tax-county-history-cards,
+  .tax-prediction-math-card {
+    grid-template-columns: 1fr;
+  }
+
+  .tax-historical-explanation aside,
+  .tax-article-mini-note {
+    padding: 0.85rem;
+  }
+
+  .tax-prediction-bridge,
+  .tax-story-final-note {
+    font-size: 1.05rem;
+    padding: 0.75rem 0.82rem;
+  }
+
+  .tax-guided-transition {
+    font-size: clamp(1.42rem, 6.2vw, 1.68rem);
+    font-weight: 670;
+    gap: 0.9rem;
+    margin: 0.9rem auto;
+    padding: 0.75rem 0;
+    width: min(100%, 22rem);
+  }
+
+  .tax-guided-transition::before {
+    height: 2px;
+    width: 6rem;
+  }
+
+  .tax-napkin-block > div,
+  .tax-estimate-block > div {
+    gap: 0.65rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 0.82rem 0;
+  }
+
+  .tax-napkin-block span,
+  .tax-estimate-block span {
+    font-size: 1.19rem;
+  }
+
+  .tax-napkin-block strong,
+  .tax-estimate-block strong {
+    font-size: 1.45rem;
+  }
+
+  .tax-napkin-block-paired {
+    grid-template-columns: 1fr;
+  }
+
+  .tax-napkin-block-paired > div + div {
+    border-left: 0;
+    border-top: 1px solid rgb(var(--border-muted));
+    padding-left: 0;
+  }
+
+  .tax-estimate-shorthand {
+    gap: 0.48rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .tax-estimate-shorthand strong {
+    font-size: 1.35rem;
+    min-width: min(100%, 7.1rem);
+    padding: 0.72rem 0.78rem;
+  }
+
+  .tax-estimate-shorthand span {
+    font-size: 1.28rem;
+  }
+
+  .tax-prediction-bridge-math {
+    grid-template-columns: 1fr;
+  }
+
+  .tax-trend-diagnostic-heading {
+    align-items: start;
+    display: grid;
+  }
+
+  .tax-trend-diagnostic-heading > p {
+    max-width: none;
+    text-align: left;
+  }
+
+  .tax-trend-diagnostic-heading h4 {
+    white-space: normal;
+  }
+
+  .tax-trend-diagnostic-chart {
+    height: 18.5rem;
+    min-height: 18.5rem;
+  }
+
+  .tax-backtest-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .tax-backtest-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .market-average-summary {
