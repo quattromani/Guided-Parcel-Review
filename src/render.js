@@ -435,8 +435,8 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
     <section aria-labelledby="assessmentBandCardsTitle">
       <div class="assessment-band-header">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Class band checks</p>
           <h3 id="assessmentBandCardsTitle" class="text-lg font-bold text-slate-700">${assessmentBandTitle}</h3>
+          <p class="assessment-band-helper">Click the question mark next to each term for a plain-language explanation.</p>
         </div>
         <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
       </div>
@@ -1161,9 +1161,24 @@ function renderPropertyDetails(data, recordCard) {
   const situsAddress = displayAddress(data.parcel.situsAddress);
   const parcelId = data.parcel.parcelId;
   const valuationGroup = recordCard?.locationModel?.valuationGroup || recordCard?.locationModel?.marketArea;
+  const qualityConditionHelp = `
+    <span class="details-help-copy"><strong>Quality</strong> describes construction and materials.</span>
+    <span class="details-help-copy"><strong>Condition</strong> describes upkeep and wear.</span>
+    <span class="details-help-list">
+      <span><strong>No value:</strong> unsalvageable or uninhabitable.</span>
+      <span><strong>Very poor:</strong> extensive structural issues.</span>
+      <span><strong>Fair:</strong> deferred maintenance.</span>
+      <span><strong>Average:</strong> typical for age.</span>
+      <span><strong>Good:</strong> above-average maintenance.</span>
+      <span><strong>Very good:</strong> significant updates.</span>
+      <span><strong>Excellent:</strong> like new or high-end finishes.</span>
+    </span>
+  `;
   const physicalDetails = physicalDetailsForProperty(data, recordCard);
   const houseDetails = physicalDetails.map(detail =>
-    reviewableDetail(detail[0], detail[1], "About the house", null, "Improvement details")
+    reviewableDetail(detail[0], detail[1], "About the house", null, "Improvement details", {
+      help: detail[0] === "Quality / condition" ? qualityConditionHelp : ""
+    })
   );
   const identityDetails = [
     reviewableDetail("Situs address", situsAddress, "Confirm property", null, "Parcel and site"),
@@ -1216,6 +1231,15 @@ function renderPropertyDetails(data, recordCard) {
       <span class="review-flag-indicator" aria-hidden="true"></span>
     </label>
   `;
+  const renderDetailHelp = detail => {
+    if (!detail.help) return "";
+    return `
+      <details class="assessment-metric-help details-card-help">
+        <summary class="assessment-help-button" aria-label="${escapeHtml(detail.label)} help">?</summary>
+        <span class="assessment-help-tooltip details-help-tooltip" role="tooltip">${detail.help}</span>
+      </details>
+    `;
+  };
 
   const renderDetailCard = detail => {
     if (detail?.layout === "pair") {
@@ -1234,11 +1258,15 @@ function renderPropertyDetails(data, recordCard) {
     const label = detail.label;
     const selected = isReviewFlagSelected(parcelId, detail.id);
     const valueMarkup = detail.valueMarkup ?? cardValueMarkup(detail.value);
+    const helpClassName = detail.help ? "details-card-has-help" : "";
 
     return `
-      <div class="details-card ${compactDetailLabels.has(label) ? "details-card-compact" : "details-card-full"} ${selected ? "details-card-marked" : ""}" data-review-flag-card="${escapeHtml(detail.id)}">
+      <div class="details-card ${compactDetailLabels.has(label) ? "details-card-compact" : "details-card-full"} ${helpClassName} ${selected ? "details-card-marked" : ""}" data-review-flag-card="${escapeHtml(detail.id)}">
         <div class="details-card-heading">
-          <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(label)}</dt>
+          <dt class="details-card-label-row text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <span>${escapeHtml(label)}</span>
+            ${renderDetailHelp(detail)}
+          </dt>
           ${renderReviewInput(detail)}
         </div>
         <dd class="mt-1 text-sm font-medium text-slate-700">${valueMarkup}</dd>
@@ -1247,12 +1275,24 @@ function renderPropertyDetails(data, recordCard) {
   };
 
   const renderCards = details => details.map(renderDetailCard).join("");
+  const renderSectionHelp = (title, help) => {
+    if (!help) return "";
+    return `
+      <details class="assessment-metric-help property-section-help">
+        <summary class="assessment-help-button" aria-label="${escapeHtml(title)} help">?</summary>
+        <span class="assessment-help-tooltip" role="tooltip">${escapeHtml(help)}</span>
+      </details>
+    `;
+  };
   const renderSection = (title, body, options = {}) => `
     <section class="property-review-section ${options.className || ""}" aria-labelledby="${options.id}">
       <div class="property-review-section-heading">
         <div>
           <p class="property-review-section-kicker">${escapeHtml(options.kicker || "")}</p>
-          <h3 id="${options.id}">${escapeHtml(title)}</h3>
+          <div class="property-review-section-title-row">
+            <h3 id="${options.id}">${escapeHtml(title)}</h3>
+            ${renderSectionHelp(title, options.help)}
+          </div>
         </div>
         ${options.meta ? `<p class="property-review-section-meta">${escapeHtml(options.meta)}</p>` : ""}
       </div>
@@ -1363,7 +1403,8 @@ function renderPropertyDetails(data, recordCard) {
         ${renderSection("Buildings & improvements", improvementTables || `<p class="property-review-empty">No separately listed additions or outbuilding records were found for this property.</p>`, {
           id: "buildingsImprovementsReviewTitle",
           kicker: "Structures",
-          meta: "Additions and outbuildings"
+          meta: "Additions and outbuildings",
+          help: "In assessment language, improvements are the built parts of a property: homes, garages, decks, outbuildings, and other structures or fixtures attached to the land. They are listed separately from the land itself."
         })}
         ${renderSection("Land information", `
           ${renderFactGrid(landSummaryDetails, "property-land-summary")}
@@ -1395,7 +1436,7 @@ function renderPropertyDetails(data, recordCard) {
   initReviewFlagControls(data);
 }
 
-function reviewableDetail(label, value, section, valueMarkup = null, idSection = section) {
+function reviewableDetail(label, value, section, valueMarkup = null, idSection = section, options = {}) {
   const display = displayValue(value);
 
   return {
@@ -1404,7 +1445,8 @@ function reviewableDetail(label, value, section, valueMarkup = null, idSection =
     value: display,
     valueMarkup,
     section,
-    note: ""
+    note: "",
+    help: options.help || ""
   };
 }
 
@@ -3240,7 +3282,7 @@ function localMarketQuickReadLine(selectedMarket, context = {}) {
   if (count < 5) {
     return `
       <span class="summary-tax-line">There were <strong>${count.toLocaleString()} qualified ${classNoun} ${saleNoun}</strong> in ${studyLabel}.</span>
-      <span class="summary-tax-line">The median result was <strong>${ratio}</strong> of sale price. A sample this small can change a lot from one sale to the next.</span>
+      <span class="summary-tax-line">The median (middle) result was <strong>${ratio}</strong> of sale price. A sample this small can change a lot from one sale to the next.</span>
     `;
   }
 

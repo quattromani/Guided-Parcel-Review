@@ -40,11 +40,13 @@ function noticeMetric(label, value, options = {}) {
   const {
     note = "",
     layout = "pair",
-    pill = null
+    pill = null,
+    className = ""
   } = normalized;
+  const metricClassName = className ? ` ${className}` : "";
 
   return `
-    <div class="civic-notice-metric civic-notice-metric-${layout}">
+    <div class="civic-notice-metric civic-notice-metric-${layout}${metricClassName}">
       <dt>
         <span>${escapeHtml(label)}</span>
         ${pill ? `<span class="civic-notice-pill civic-notice-pill-${escapeHtml(pill.tone || "default")}">${escapeHtml(pill.label)}</span>` : ""}
@@ -88,6 +90,7 @@ function propertySnapshotSummary(notice, options = {}) {
         ${noticeMetric("Tax district", escapeHtml(notice.taxDistrict))}
         ${noticeMetric("Current assessed value", displayMoneyWithFallback(notice.currentAssessedValue, notice.latestKnownValue, notice.latestKnownValueYear), {
           layout: "full",
+          className: "civic-notice-metric-current-value",
           pill: {
             label: `${notice.taxYear}`,
             tone: notice.currentAssessedValue === null || notice.currentAssessedValue === undefined ? "pending" : "current"
@@ -309,7 +312,7 @@ function buildFinalReviewModel(data, context = {}) {
             value: marketAreaName(context.recordCard, marketArea, marketAreaSummary.classKey),
             meta: marketArea?.count ? itemCountLabel(marketArea.count, "qualified sale") : "Market-area context",
             note: marketArea
-              ? `Median ratio ${formatRatio(marketArea.median)}, COD ${formatRatio(marketArea.cod)}, PRD ${formatRatio(marketArea.prd)}.`
+              ? `Median (middle) ratio ${formatRatio(marketArea.median)}, COD ${formatRatio(marketArea.cod)}, PRD ${formatRatio(marketArea.prd)}.`
               : "Market data helps compare this property with nearby sales. It is not a conclusion about this parcel by itself."
           },
           {

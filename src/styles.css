@@ -1112,6 +1112,7 @@ table thead th[class] + th[class] {
   border-radius: var(--radius-container-lg);
   background: rgb(var(--surface-muted));
   padding: 0.75rem;
+  position: relative;
   box-shadow: inset 0 0 0 1px rgb(var(--border-muted));
 }
 
@@ -1130,6 +1131,76 @@ table thead th[class] + th[class] {
 .details-card dt {
   overflow-wrap: normal;
   word-break: normal;
+}
+
+.details-card-label-row {
+  align-items: center;
+  display: block;
+  min-width: 0;
+}
+
+.details-card-help {
+  bottom: 0.58rem;
+  position: absolute;
+  right: 0.58rem;
+  z-index: 3;
+}
+
+.details-card-help .assessment-help-tooltip {
+  bottom: calc(100% + 0.45rem);
+  left: auto;
+  max-width: min(22rem, calc(100vw - 2rem));
+  min-width: min(20rem, calc(100vw - 2rem));
+  right: 0;
+  text-transform: none;
+  top: auto;
+  transform: translateY(0.2rem);
+}
+
+.details-help-tooltip {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.details-help-copy {
+  display: block;
+}
+
+.details-help-copy strong,
+.details-help-list strong {
+  color: rgb(var(--brand-ink));
+  font-weight: 850;
+}
+
+.details-help-list {
+  border-top: 1px solid rgb(var(--border-muted));
+  display: grid;
+  gap: 0.28rem;
+  padding-top: 0.55rem;
+}
+
+.details-help-list span {
+  display: block;
+}
+
+.details-card-help summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.details-card-help summary::-webkit-details-marker {
+  display: none;
+}
+
+.details-card-help[open] .assessment-help-tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.details-card-has-help dd {
+  padding-right: 1.35rem;
 }
 
 .details-card dd {
@@ -1280,6 +1351,42 @@ table thead th[class] + th[class] {
   font-weight: 850;
   line-height: 1.25;
   margin: 0.12rem 0 0;
+}
+
+.property-review-section-title-row {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.property-section-help {
+  position: relative;
+}
+
+.property-section-help .assessment-help-tooltip {
+  left: 50%;
+  max-width: min(19rem, calc(100vw - 2rem));
+  min-width: min(17rem, calc(100vw - 2rem));
+  right: auto;
+  top: calc(100% + 0.45rem);
+  transform: translate(-50%, -0.2rem);
+}
+
+.property-section-help summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.property-section-help summary::-webkit-details-marker {
+  display: none;
+}
+
+.property-section-help[open] .assessment-help-tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+  visibility: visible;
 }
 
 .property-review-section-kicker {
@@ -5272,6 +5379,12 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   visibility: visible;
 }
 
+.property-section-help:hover .assessment-help-tooltip,
+.property-section-help:focus-within .assessment-help-tooltip,
+.property-section-help[open] .assessment-help-tooltip {
+  transform: translate(-50%, 0);
+}
+
 .assessment-band-card {
   background: var(--measure-bg);
   box-shadow: inset 0 0 0 1px var(--measure-border);
@@ -5432,6 +5545,13 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   display: grid;
   gap: 0.85rem;
   grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.assessment-band-helper {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0.25rem 0 0;
 }
 
 #assessmentClassFilter {
@@ -6844,6 +6964,11 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   overflow-wrap: anywhere;
 }
 
+.civic-notice-metric-current-value dd {
+  font-size: 1.2rem;
+  line-height: 1.125;
+}
+
 .civic-notice-metric dd small {
   color: rgb(var(--color-slate-500));
   display: block;
@@ -7697,6 +7822,11 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 
   .civic-notice-metric-full dd {
     font-size: 1rem;
+  }
+
+  .civic-notice-metric-current-value dd {
+    font-size: 1.14rem;
+    line-height: 1.14;
   }
 }
 

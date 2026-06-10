@@ -548,7 +548,7 @@ const assessmentMeasureDefinitions = [
     digits: 2,
     borderDash: [],
     pointStyle: "circle",
-    definition: "COD measures uniformity by showing how tightly assessment ratios cluster around the median."
+    definition: "COD measures uniformity by showing how tightly assessment ratios cluster around the median (middle)."
   },
   {
     key: "prd",
@@ -577,7 +577,7 @@ const assessmentMeasureDefinitions = [
     borderDash: [2, 5],
     pointStyle: "triangle",
     approximateBand: true,
-    definition: "COV shows relative variation around the mean ratio, with its band used as approximate context."
+    definition: "COV shows relative variation around the mean (average) ratio, with its band used as approximate context."
   }
 ];
 
@@ -585,7 +585,7 @@ const assessmentLevelDefinition = {
   key: "levelOfValue",
   label: "Level of value",
   shortLabel: "LOV",
-  category: "Class median range",
+  category: "Class median (middle) range",
   color: chartColors.levelOfValue,
   fill: semanticChartColors.equalizationBg,
   cardBackground: semanticChartColors.equalizationSoft,
@@ -594,7 +594,7 @@ const assessmentLevelDefinition = {
   valueSuffix: "%",
   borderDash: [],
   pointStyle: "rect",
-  definition: "Level of value uses the median ratio to show whether the class is within its assessment range."
+  definition: "Level of value uses the median (middle) ratio to show whether the class is within its assessment range."
 };
 
 const assessmentBandDefinitions = [
@@ -959,8 +959,8 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
   const levelRangeText = standardRangeLabel(levelRange, 0, "No class range");
   const levelRangeNote = levelRange ? `Class range: ${levelRangeText}%` : levelRangeText;
   const levelHelp = levelRange
-    ? `Level of value uses the median ratio to show the class assessment level. The applicable range for this class is ${levelRangeText}%.`
-    : "Level of value uses the median ratio as the class-level assessment indicator.";
+    ? `Level of value uses the median (middle) ratio to show the class assessment level. The applicable range for this class is ${levelRangeText}%.`
+    : "Level of value uses the median (middle) ratio as the class-level assessment indicator.";
 
   const cards = [
     {
@@ -969,7 +969,7 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
       note: `${formatSignedChange(classSummary.codChangeSince2025)} from 2025`,
       color: chartColors.cod,
       status: rawBandStatus(latest.cod, bandConfig.cod),
-      help: "Coefficient of Dispersion shows how tightly assessment ratios group around the median. Lower values usually mean more uniform assessments. Very low COD readings should still be read with sample context."
+      help: "Coefficient of Dispersion shows how tightly assessment ratios group around the median (middle). Lower values usually mean more uniform assessments. Very low COD readings should still be read with sample context."
     },
     {
       label: "PRD",
@@ -1820,7 +1820,7 @@ function marketSignalDefinitions(selected, summary, classStats, standards) {
     },
     {
       metricKey: "medianRatio",
-      label: "Median ratio",
+      label: "Median (middle) ratio",
       shortLabel: "Median",
       category: "Level",
       rawValue: selected.median,
@@ -1830,7 +1830,7 @@ function marketSignalDefinitions(selected, summary, classStats, standards) {
       color: chartColors.levelOfValue,
       range: medianRange,
       formatter: value => formatRatio(value),
-      definition: "Median ratio shows the middle assessment-to-sale ratio for the group, which is the local level signal before countywide equalization."
+      definition: "Median (middle) ratio shows the middle assessment-to-sale ratio for the group, which is the local level signal before countywide equalization."
     },
     {
       metricKey: "cod",
@@ -1844,7 +1844,7 @@ function marketSignalDefinitions(selected, summary, classStats, standards) {
       color: chartColors.cod,
       range: codRange,
       formatter: value => formatRatio(value),
-      definition: "COD shows how tightly this local group's sales ratios cluster around the median ratio, with very low readings still requiring sample context."
+      definition: "COD shows how tightly this local group's sales ratios cluster around the median (middle) ratio, with very low readings still requiring sample context."
     },
     {
       metricKey: "prd",
@@ -2122,7 +2122,7 @@ function renderMarketGroupSalesDistribution(selected, classStats) {
             afterLabel: context => {
               const row = rows[context.dataIndex];
               return [
-                `Median: ${formatRatio(row?.median)}`,
+                `Median (middle): ${formatRatio(row?.median)}`,
                 `COD: ${formatRatio(row?.cod)}`,
                 `PRD: ${formatRatio(row?.prd)}`
               ];
@@ -2183,7 +2183,7 @@ function renderMarketNarrative(selected, summary, classStats, medianRange, stand
   const rows = [
     [groupLabel, groupText, summary?.label ?? "Countywide"],
     ["Qualified sales", integer.format(Number(selected?.count ?? 0)), integer.format(Number(summary?.count ?? 0))],
-    ["Median ratio", formatRatio(selected?.median), formatRatio(summary?.median)],
+    ["Median (middle) ratio", formatRatio(selected?.median), formatRatio(summary?.median)],
     ["COD", formatRatio(selected?.cod), formatRatio(summary?.cod)],
     ["PRD", formatRatio(selected?.prd), formatRatio(summary?.prd)]
   ];
@@ -2488,7 +2488,7 @@ function marketPointTooltip(point, classStats) {
   return [
     `Class: ${classStats?.classLabel ?? "Selected class"}`,
     `Qualified sales: ${integer.format(point.count)}`,
-    `Median ratio: ${formatRatio(point.median)}`,
+    `Median (middle) ratio: ${formatRatio(point.median)}`,
     `COD: ${formatRatio(point.cod)}`,
     `PRD: ${formatRatio(point.prd)}`,
     `Average adjusted sale price: ${wholeMoney.format(point.averageAdjustedSalePrice)}`,
@@ -2505,10 +2505,10 @@ function renderMarketScatterSummary(selected, countywide, classStats, medianRang
     ? selected.median >= medianRange.min && selected.median <= medianRange.max
     : null;
   const medianRangeText = medianInsideRange === null
-    ? "is shown against the available median-ratio reference"
+    ? "is shown against the available median (middle) ratio reference"
     : medianInsideRange
-      ? "remains inside the expected median-ratio range"
-      : "sits outside the expected median-ratio range";
+      ? "remains inside the expected median (middle) ratio range"
+      : "sits outside the expected median (middle) ratio range";
   const codDelta = selected.cod - countywide.cod;
   const codText = Math.abs(codDelta) < 1
     ? "with COD close to the countywide pattern"
@@ -2900,7 +2900,7 @@ function renderMarketPositionScatter(selected, classStats, iaaoStandards, onSele
           ticks: { callback: value => formatRatio(Number(value), 0) }
         },
         y: {
-          title: mobileAxisTitle("Median ratio"),
+          title: mobileAxisTitle("Median (middle) ratio"),
           min: bounds.yMin,
           max: bounds.yMax,
           grid: { color: visualizationTheme.neutrals.gridline },
@@ -2912,7 +2912,7 @@ function renderMarketPositionScatter(selected, classStats, iaaoStandards, onSele
 
   canvas.setAttribute(
     "aria-label",
-    `${selected.label} is highlighted at median ratio ${formatRatio(selected.median)} and COD ${formatRatio(selected.cod)}. Countywide median ratio is ${formatRatio(countywide.median)} and countywide COD is ${formatRatio(countywide.cod)}.`
+    `${selected.label} is highlighted at median (middle) ratio ${formatRatio(selected.median)} and COD ${formatRatio(selected.cod)}. Countywide median (middle) ratio is ${formatRatio(countywide.median)} and countywide COD is ${formatRatio(countywide.cod)}.`
   );
   renderMarketScatterSummary(selected, countywide, classStats, medianRange);
   const source = document.getElementById("marketPositionSource");
