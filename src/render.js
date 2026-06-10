@@ -35,6 +35,10 @@ import { garageSummary } from "./domain/property-record-facts.js";
 import { displayValue, formatSquareFeet, hasDisplayValue } from "./utils/display.js";
 import { escapeHtml } from "./utils/html.js";
 import { trackPropertySwitch } from "./visit-analytics.js";
+import {
+  isReviewFlagSelected,
+  setReviewFlag
+} from "./review-flags.js";
 
 const fallbackRecordReviewStatuses = [
   ["looks-correct", "No issue noticed"],
@@ -1155,24 +1159,37 @@ function imageButton(src, caption, label) {
 
 function renderPropertyDetails(data, recordCard) {
   const situsAddress = displayAddress(data.parcel.situsAddress);
-  const siteDetails = [
-    ["Parcel ID", data.parcel.parcelId],
-    ["Situs address", situsAddress],
-    ["Legal description", data.parcel.legalDescription],
-    ["Owner", data.parcel.owner],
-    ["Mailing address", mailingAddressHtml(data.parcel.mailingAddress)],
-    ["Tax district", data.parcel.taxDistrict],
-    ["Zoning", data.classification.zoning],
-    ["Lot size", data.classification.lotSize]
+  const parcelId = data.parcel.parcelId;
+  const valuationGroup = recordCard?.locationModel?.valuationGroup || recordCard?.locationModel?.marketArea;
+  const physicalDetails = physicalDetailsForProperty(data, recordCard);
+  const houseDetails = physicalDetails.map(detail =>
+    reviewableDetail(detail[0], detail[1], "About the house", null, "Improvement details")
+  );
+  const identityDetails = [
+    reviewableDetail("Situs address", situsAddress, "Confirm property", null, "Parcel and site"),
+    reviewableDetail("Owner", data.parcel.owner, "Confirm property", null, "Parcel and site"),
+    reviewableDetail("Parcel ID", data.parcel.parcelId, "Confirm property", null, "Parcel and site"),
+    reviewableDetail("Mailing address", displayAddress(data.parcel.mailingAddress), "Confirm property", mailingAddressHtml(data.parcel.mailingAddress), "Parcel and site"),
+    reviewableDetail("Legal description", data.parcel.legalDescription, "Confirm property", null, "Parcel and site")
   ];
-  const improvementDetails = [
-    ["Status", data.classification.status],
-    ...physicalDetailsForProperty(data, recordCard)
+  const adminDetails = [
+    reviewableDetail("Tax district", data.parcel.taxDistrict, "Administrative details", null, "Parcel and site"),
+    reviewableDetail("Valuation group", valuationGroup, "Administrative details", null, "Parcel and site"),
+    reviewableDetail("Zoning", data.classification.zoning, "Administrative details", null, "Parcel and site"),
+    reviewableDetail("Status", data.classification.status, "Administrative details", null, "Improvement details"),
+    reviewableDetail("Property class", data.classification.propertyClass, "Administrative details", null, "Parcel and site"),
+    reviewableDetail("Location", data.classification.location, "Administrative details", null, "Parcel and site")
   ];
+  const lotSizeDetail = reviewableDetail("Lot size", data.classification.lotSize, "Land information", null, "Parcel and site");
+  const landDetails = landDataReviewDetails(data, recordCard);
+  const dwellingDetails = dwellingDataReviewDetails(data, recordCard);
+  const outbuildingDetails = outbuildingDataReviewDetails(data);
+  const noteDetails = propertyRecordNoteDetails(data);
 
   const compactDetailLabels = new Set([
     "Parcel ID",
     "Tax district",
+    "Valuation group",
     "Status",
     "Zoning",
     "Status / zoning",
@@ -1183,6 +1200,22 @@ function renderPropertyDetails(data, recordCard) {
     "Bedrooms / bathrooms",
     "Quality / condition"
   ]);
+
+  const renderReviewInput = detail => `
+    <label class="review-flag-control">
+      <input
+        type="checkbox"
+        data-review-flag-toggle
+        data-review-flag-id="${escapeHtml(detail.id)}"
+        data-review-flag-label="${escapeHtml(detail.label)}"
+        data-review-flag-value="${escapeHtml(detail.value)}"
+        data-review-flag-section="${escapeHtml(detail.section)}"
+        aria-label="Mark ${escapeHtml(detail.label)} for review"
+        ${isReviewFlagSelected(parcelId, detail.id) ? "checked" : ""}
+      />
+      <span class="review-flag-indicator" aria-hidden="true"></span>
+    </label>
+  `;
 
   const renderDetailCard = detail => {
     if (detail?.layout === "pair") {
@@ -1198,46 +1231,464 @@ function renderPropertyDetails(data, recordCard) {
       `;
     }
 
-    const [label, value] = detail;
+    const label = detail.label;
+    const selected = isReviewFlagSelected(parcelId, detail.id);
+    const valueMarkup = detail.valueMarkup ?? cardValueMarkup(detail.value);
 
     return `
-      <div class="details-card ${compactDetailLabels.has(label) ? "details-card-compact" : "details-card-full"}">
-        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</dt>
-        <dd class="mt-1 text-sm font-medium text-slate-700">${displayValue(value)}</dd>
+      <div class="details-card ${compactDetailLabels.has(label) ? "details-card-compact" : "details-card-full"} ${selected ? "details-card-marked" : ""}" data-review-flag-card="${escapeHtml(detail.id)}">
+        <div class="details-card-heading">
+          <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(label)}</dt>
+          ${renderReviewInput(detail)}
+        </div>
+        <dd class="mt-1 text-sm font-medium text-slate-700">${valueMarkup}</dd>
       </div>
     `;
   };
 
   const renderCards = details => details.map(renderDetailCard).join("");
-  const detailRowCount = Math.max(siteDetails.length, improvementDetails.length);
+  const renderSection = (title, body, options = {}) => `
+    <section class="property-review-section ${options.className || ""}" aria-labelledby="${options.id}">
+      <div class="property-review-section-heading">
+        <div>
+          <p class="property-review-section-kicker">${escapeHtml(options.kicker || "")}</p>
+          <h3 id="${options.id}">${escapeHtml(title)}</h3>
+        </div>
+        ${options.meta ? `<p class="property-review-section-meta">${escapeHtml(options.meta)}</p>` : ""}
+      </div>
+      ${body}
+    </section>
+  `;
+  const renderFactGrid = (details, className = "") => `
+    <div class="property-review-fact-grid ${className}">
+      ${renderCards(details)}
+    </div>
+  `;
+  const renderFactGroup = (title, details, options = {}) => `
+    <div class="review-data-group" aria-labelledby="${options.id}">
+      <div class="review-data-group-heading">
+        <h4 id="${options.id}">${escapeHtml(title)}</h4>
+        ${options.meta ? `<p>${escapeHtml(options.meta)}</p>` : ""}
+      </div>
+      ${renderFactGrid(details, options.className || "")}
+    </div>
+  `;
+  const renderTableSection = (title, details, columns, options = {}) => {
+    if (!details.length) return "";
 
-  const drawers = [
-    costSourceLimitation(recordCard),
-    technicalCostModel(recordCard, data),
-    sourceExtractDetails(data, recordCard),
-    classificationDetails(data),
-    landInformation(data, recordCard),
-    propertyNotes(data),
-    ownershipHistory(recordCard),
-    recordCardSource(recordCard)
+    return `
+      <div class="review-data-group" aria-labelledby="${options.id}">
+        <div class="review-data-group-heading">
+          <h4 id="${options.id}">${escapeHtml(title)}</h4>
+          ${options.meta ? `<p>${escapeHtml(options.meta)}</p>` : ""}
+        </div>
+      <div class="review-data-card">
+        <table class="review-data-table">
+          <thead>
+            <tr>
+              ${columns.map(column => `<th class="${column.align === "right" ? "text-right" : ""}">${escapeHtml(column.label)}</th>`).join("")}
+              <th class="review-data-table-flag" aria-label="Mark for review"></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${details.map(detail => {
+              const selected = isReviewFlagSelected(parcelId, detail.id);
+              return `
+                <tr class="${selected ? "review-data-row-marked" : ""}" data-review-flag-card="${escapeHtml(detail.id)}">
+                  ${columns.map(column => `
+                    <td class="${column.align === "right" ? "text-right" : ""}">
+                      ${escapeHtml(displayValue(detail.cells?.[column.key]))}
+                    </td>
+                  `).join("")}
+                  <td class="review-data-table-flag">${renderReviewInput(detail)}</td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+      </div>
+    `;
+  };
+
+  const landRowDetails = landDetails.filter(detail => detail.kind === "row");
+  const landSummaryDetails = [lotSizeDetail, ...landDetails.filter(detail => detail.kind !== "row")];
+  const improvementTables = [
+    renderTableSection("Valued additions", dwellingDetails, [
+      { key: "description", label: "Description" },
+      { key: "units", label: "Units", align: "right" },
+      { key: "value", label: "Value", align: "right" }
+    ], {
+      id: "buildingsImprovementsAdditionsTitle",
+      meta: dwellingDetails.length === 1 ? "1 item" : `${dwellingDetails.length} items`
+    }),
+    renderTableSection("Outbuildings", outbuildingDetails, [
+      { key: "description", label: "Description" },
+      { key: "units", label: "Units", align: "right" },
+      { key: "yearBuilt", label: "Year built", align: "right" },
+      { key: "cost", label: "Value", align: "right" }
+    ], {
+      id: "buildingsImprovementsOutbuildingsTitle",
+      meta: outbuildingDetails.length === 1 ? "1 record" : `${outbuildingDetails.length} records`
+    })
   ].filter(Boolean).join("");
+  const landTable = renderTableSection("Land records", landRowDetails, [
+    { key: "description", label: "Description" },
+    { key: "acres", label: "Acres", align: "right" },
+    { key: "value", label: "Value", align: "right" }
+  ], {
+    id: "landRecordRowsTitle",
+    meta: landRowDetails.length === 1 ? "1 land record" : `${landRowDetails.length} land records`
+  });
 
   document.getElementById("propertyDetails").innerHTML = `
-    <div class="property-details-card-grid" style="--property-details-row-count: ${detailRowCount};">
-      <div class="property-details-column" aria-label="Parcel and site details">
-        ${renderCards(siteDetails)}
+    <div class="property-details-worksheet">
+      <div class="property-details-primary-column">
+        ${renderSection("Confirm we have the right property", `
+          ${renderFactGroup("Parcel details", identityDetails, {
+            id: "propertyIdentityParcelDetailsTitle",
+            className: "property-identity-facts"
+          })}
+        `, {
+          id: "propertyIdentityReviewTitle",
+          kicker: "Start here"
+        })}
+        ${renderSection("About the house", renderFactGrid(houseDetails, "property-house-facts"), {
+          id: "propertyHouseReviewTitle",
+          kicker: "Main dwelling",
+          meta: `${houseDetails.length} facts`
+        })}
       </div>
-      <div class="property-details-column" aria-label="Improvement details">
-        ${renderCards(improvementDetails)}
+      <div class="property-details-secondary-column">
+        ${renderSection("Buildings & improvements", improvementTables || `<p class="property-review-empty">No separately listed additions or outbuilding records were found for this property.</p>`, {
+          id: "buildingsImprovementsReviewTitle",
+          kicker: "Structures",
+          meta: "Additions and outbuildings"
+        })}
+        ${renderSection("Land information", `
+          ${renderFactGrid(landSummaryDetails, "property-land-summary")}
+          ${landTable}
+        `, {
+          id: "landInformationReviewTitle",
+          kicker: "Land",
+          meta: data.classification?.propertyClass === "Agricultural" ? "Agricultural parcel" : "Lot and land"
+        })}
+        ${renderSection("Administrative details", renderFactGrid(adminDetails, "property-admin-facts"), {
+          id: "administrativeDetailsReviewTitle",
+          kicker: "Reference",
+          meta: "County classifications"
+        })}
+        ${noteDetails.length ? renderSection("Notes & special situations", renderFactGrid(noteDetails, "property-notes-facts"), {
+          id: "notesSpecialSituationsReviewTitle",
+          kicker: "Notes",
+          meta: noteDetails.length === 1 ? "1 note" : `${noteDetails.length} notes`
+        }) : ""}
       </div>
     </div>
-    ${drawers ? `<div class="property-details-drawer-stack">${drawers}</div>` : ""}
   `;
 
   const sourceNote = document.getElementById("propertyDetailsSourceNote");
   if (sourceNote) {
     sourceNote.textContent = propertyRecordSourceText(data, recordCard);
   }
+
+  initReviewFlagControls(data);
+}
+
+function reviewableDetail(label, value, section, valueMarkup = null, idSection = section) {
+  const display = displayValue(value);
+
+  return {
+    id: `${formSafeId(idSection)}-${formSafeId(label)}`,
+    label,
+    value: display,
+    valueMarkup,
+    section,
+    note: ""
+  };
+}
+
+function cardValueMarkup(value) {
+  const display = displayValue(value);
+  if (!display.includes(";")) return escapeHtml(display);
+
+  const parts = display.split(";").map(part => part.trim()).filter(Boolean);
+  if (parts.length <= 1) return escapeHtml(display);
+
+  return parts.map((part, index) => `
+    <span class="details-card-value-line">${escapeHtml(part)}${index < parts.length - 1 ? ";" : ""}</span>
+  `).join("");
+}
+
+function dwellingDataReviewDetails(data, recordCard) {
+  const rows = data.dwellingData?.length
+    ? data.dwellingData
+    : recordCard?.guidedSnapshot?.dwellingData || [];
+
+  return rows
+    .filter(row => hasDisplayValue(row?.description) || hasDisplayValue(row?.units) || hasDisplayValue(row?.value))
+    .map((row, index) => {
+      const description = formatTaxpayerDisplayLabel(row.description, `Dwelling item ${index + 1}`);
+      const units = hasDisplayValue(row.units) ? Number(row.units).toLocaleString() : "Not listed";
+      const value = formatNullableMoney(row.value);
+      const payloadValue = `Units: ${units}; Value: ${value}`;
+
+      return reviewableDetail(
+        description,
+        payloadValue,
+        "Buildings and improvements",
+        `
+          <dl class="dwelling-data-card-values">
+            <div>
+              <dt>Description</dt>
+              <dd>${escapeHtml(description)}</dd>
+            </div>
+            <div>
+              <dt>Units</dt>
+              <dd>${escapeHtml(units)}</dd>
+            </div>
+            <div>
+              <dt>Value</dt>
+              <dd>${escapeHtml(value)}</dd>
+            </div>
+          </dl>
+        `,
+        "Dwelling data"
+      );
+    })
+    .map((detail, index) => ({
+      ...detail,
+      id: `dwelling-data-${index + 1}-${formSafeId(detail.label)}`,
+      kind: "row",
+      cells: {
+        description: detail.label,
+        units: detail.value.match(/Units: ([^;]+)/)?.[1] || "Not listed",
+        value: detail.value.match(/Value: ([^;]+)/)?.[1] || "Not listed"
+      }
+    }));
+}
+
+function landDataReviewDetails(data, recordCard) {
+  const landModel = recordCard?.landModel;
+  const rows = data.landInformation?.length
+    ? data.landInformation
+    : recordCard?.guidedSnapshot?.landInformation || [];
+  const details = [];
+
+  if (hasDisplayValue(landModel?.recordedLotValue)) {
+    const value = formatNullableMoney(landModel.recordedLotValue);
+    details.push({
+      ...reviewableDetail("Recorded lot value", value, "Land information", null, "Land data"),
+      kind: "summary"
+    });
+  }
+
+  rows
+    .filter(row => isMeaningfulLandRow(row, data))
+    .forEach((row, index) => {
+      const description = displayValue(row.description, { fallback: `Land row ${index + 1}` });
+      const area = landAreaLabel(row);
+      const rawValue = row.value ?? row.recordedValue;
+      const rowValue = hasDisplayValue(rawValue) ? formatMoneyDisplay(rawValue) : "Not listed";
+      const payloadValue = [
+        hasDisplayValue(area) ? `Area: ${area}` : "",
+        hasDisplayValue(rowValue) ? `Value: ${rowValue}` : "",
+        hasDisplayValue(row.source) ? `Source: ${row.source}` : ""
+      ].filter(Boolean).join("; ");
+
+      details.push(reviewableDetail(
+        description,
+        payloadValue,
+        "Land information",
+        `
+          <dl class="land-data-card-values">
+            <div>
+              <dt>Description</dt>
+              <dd>${escapeHtml(description)}</dd>
+            </div>
+            ${hasDisplayValue(area) ? `
+              <div>
+                <dt>Area</dt>
+                <dd>${escapeHtml(area)}</dd>
+              </div>
+            ` : ""}
+            ${hasDisplayValue(rowValue) ? `
+              <div>
+                <dt>Value</dt>
+                <dd>${escapeHtml(rowValue)}</dd>
+              </div>
+            ` : ""}
+          </dl>
+        `,
+        "Land data"
+      ));
+    });
+
+  return details.map((detail, index) => ({
+    ...detail,
+    id: `land-data-${index + 1}-${formSafeId(detail.label)}`,
+    kind: detail.kind || "row",
+    cells: detail.cells || {
+      description: detail.label,
+      acres: detail.value.match(/Area: ([^;]+)/)?.[1]?.replace(/\s*ac\.$/, "") || "—",
+      value: detail.value.match(/Value: ([^;]+)/)?.[1] || "Not listed"
+    }
+  }));
+}
+
+function isMeaningfulLandRow(row = {}, data = {}) {
+  const description = `${row.description || ""}`.trim();
+  const lotSize = `${data.classification?.lotSize || ""}`.trim();
+  const normalizedDescription = description.toLowerCase();
+  const normalizedLotSize = lotSize.toLowerCase();
+
+  if (!description || normalizedDescription === "n/a") return false;
+  if (normalizedLotSize && normalizedDescription === normalizedLotSize) return false;
+
+  return [
+    row.squareFeet,
+    row.acres,
+    row.actualFrontFeet,
+    row.effectiveFrontFeet,
+    row.depth,
+    row.depthFeet,
+    row.recordedValue,
+    row.value
+  ].some(hasDisplayValue);
+}
+
+function landAreaLabel(row = {}) {
+  if (hasDisplayValue(row.acres)) return `${Number(row.acres).toLocaleString()} ac.`;
+  if (hasDisplayValue(row.squareFeet)) return `${Number(row.squareFeet).toLocaleString()} sq. ft.`;
+
+  const frontage = hasDisplayValue(row.actualFrontFeet) || hasDisplayValue(row.effectiveFrontFeet)
+    ? `${displayValue(row.effectiveFrontFeet ?? row.actualFrontFeet)} ft. frontage`
+    : "";
+  const depth = hasDisplayValue(row.depth ?? row.depthFeet) ? `${displayValue(row.depth ?? row.depthFeet)} ft. depth` : "";
+
+  return [frontage, depth].filter(Boolean).join(" / ");
+}
+
+function outbuildingDataReviewDetails(data) {
+  return (data.outbuildingData || [])
+    .filter(row => hasDisplayValue(row?.description) || hasDisplayValue(row?.units) || hasDisplayValue(row?.cost))
+    .map((row, index) => {
+      const description = formatTaxpayerDisplayLabel(row.description, `Outbuilding ${index + 1}`);
+      const units = displayValue(row.units, { fallback: "Not listed" });
+      const yearBuilt = displayValue(row.yearBuilt, { fallback: "—" });
+      const cost = formatMoneyDisplay(row.cost);
+      const value = [
+        `Units: ${units}`,
+        `Year built: ${yearBuilt}`,
+        `Value: ${cost}`
+      ].join("; ");
+
+      return {
+        ...reviewableDetail(description, value, "Buildings and improvements", null, "Outbuilding records"),
+        id: `outbuilding-${index + 1}-${formSafeId(description)}`,
+        kind: "row",
+        cells: {
+          description,
+          units,
+          yearBuilt,
+          cost
+        }
+      };
+    });
+}
+
+function formatMoneyDisplay(value) {
+  if (!hasDisplayValue(value)) return "Not listed";
+  if (typeof value === "number") return formatNullableMoney(value);
+  return displayValue(value);
+}
+
+function formatTaxpayerDisplayLabel(value, fallback = "Item") {
+  if (!hasDisplayValue(value)) return fallback;
+
+  return `${value}`
+    .trim()
+    .replace(/~/g, " ")
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+    .replace(/\b([a-z])/g, character => character.toUpperCase())
+    .replace(/\bW\/\s*/g, "w/ ")
+    .replace(/\bSf\b/g, "SF")
+    .replace(/\bDia\b\.?/g, "Dia.");
+}
+
+function propertyRecordNoteDetails(data) {
+  return (data.propertyNotes || [])
+    .filter(isPropertyRecordFacingNote)
+    .map((row, index) => {
+      const note = displayValue(row.note, { fallback: "" });
+      const date = displayValue(row.date, { fallback: "Date not listed" });
+      const label = hasDisplayValue(row.date) ? `Property note ${date}` : `Property note ${index + 1}`;
+      const value = hasDisplayValue(row.date) ? `${date}: ${note}` : note;
+
+      return reviewableDetail(
+        label,
+        value,
+        "Property notes",
+        `
+          <dl class="property-note-card-values">
+            ${hasDisplayValue(row.date) ? `
+              <div>
+                <dt>Date</dt>
+                <dd>${escapeHtml(date)}</dd>
+              </div>
+            ` : ""}
+            <div>
+              <dt>Note</dt>
+              <dd>${escapeHtml(note)}</dd>
+            </div>
+          </dl>
+        `
+      );
+    })
+    .map((detail, index) => ({
+      ...detail,
+      id: `property-note-${index + 1}-${formSafeId(detail.label)}`
+    }));
+}
+
+function isPropertyRecordFacingNote(row = {}) {
+  const note = `${row.note || ""}`.trim();
+  if (!note) return false;
+
+  return ![
+    /\bdraft generated\b/i,
+    /\bgenerated from\b/i,
+    /\bnto\b/i,
+    /\bcaptures?\b/i,
+    /\bpublishing\b/i,
+    /\breview photo\/sketch assets\b/i,
+    /\bunavailable cost-model\b/i,
+    /\bmarshall\s*&\s*swift\b/i,
+    /\bsource export\b/i
+  ].some(pattern => pattern.test(note));
+}
+
+function initReviewFlagControls(data) {
+  const container = document.getElementById("propertyDetails");
+  const parcelId = data?.parcel?.parcelId;
+  if (!container || !parcelId) return;
+
+  container.querySelectorAll("[data-review-flag-toggle]").forEach(input => {
+    input.addEventListener("change", () => {
+      const flag = {
+        id: input.dataset.reviewFlagId,
+        label: input.dataset.reviewFlagLabel,
+        value: input.dataset.reviewFlagValue,
+        section: input.dataset.reviewFlagSection,
+        note: ""
+      };
+      setReviewFlag(parcelId, flag, input.checked);
+
+      const card = input.closest("[data-review-flag-card]");
+      card?.classList.toggle("details-card-marked", input.checked);
+    });
+  });
 }
 
 function mailingAddressHtml(value) {
@@ -1259,10 +1710,6 @@ function mailingAddressHtml(value) {
 
 function formSafeId(value) {
   return `${value}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-}
-
-function hasDetailedRecordCard(recordCard) {
-  return Boolean(recordCard?.parcelIdentifiers);
 }
 
 function physicalDetailsForProperty(data, recordCard) {
@@ -1919,86 +2366,6 @@ function disclosure(title, meta, content) {
   `;
 }
 
-function recordCardSource(recordCard) {
-  if (!recordCard) return "";
-
-  if (!hasDetailedRecordCard(recordCard)) {
-    return disclosure("What source record is this based on?", recordCard.recordStatus || "Pending", `
-      <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
-        <p class="font-semibold text-slate-700">${escapeHtml(recordCard.source || "Source record pending")}</p>
-          <p class="mt-1">${escapeHtml(recordCard.notes || "Detailed record-card fields are not available in this guide.")}</p>
-      </div>
-    `);
-  }
-
-  const printed = new Date(recordCard.source.printedAt).toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit"
-  });
-
-  const reviewRows = recordCard.reviewHistory?.length
-    ? `
-      <section class="border-t border-slate-200">
-        <div class="flex items-center justify-between gap-3 bg-slate-50 px-3 py-2">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Record review history</p>
-          <p class="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-600 ring-1 ring-slate-200">${recordCard.reviewHistory.length} events</p>
-        </div>
-        <table class="min-w-full divide-y divide-slate-200 text-sm">
-          <thead class="bg-white">
-            <tr>
-              <th class="px-3 py-2 text-left font-semibold">Date</th>
-              <th class="px-3 py-2 text-left font-semibold">Action</th>
-              <th class="px-3 py-2 text-left font-semibold">Initials</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
-            ${recordCard.reviewHistory.map(row => `
-              <tr>
-                <td class="px-3 py-2 font-medium">${row.date}</td>
-                <td class="px-3 py-2">${escapeHtml(row.action)}</td>
-                <td class="px-3 py-2">${escapeHtml(row.initials)}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      </section>
-    `
-    : `
-      <section class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-sm leading-6 text-slate-600">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Record review history</p>
-        <p class="mt-1">No review-history rows were available in the loaded source export.</p>
-      </section>
-    `;
-
-  return disclosure("What source record is this based on?", recordCard.source.system, `
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
-        ${[
-          ["Source system", recordCard.source.system],
-          ["Report", recordCard.source.reportName],
-          ["Record type", recordCard.source.recordType],
-          ["Printed", printed],
-          ["Card / perm", recordCard.parcelIdentifiers.cardFilePerm],
-          ["Cadastral ID", recordCard.parcelIdentifiers.cadastralId],
-            ["State property class code", recordCard.parcelIdentifiers.padClassCode],
-          ["Appraiser ID", recordCard.parcelIdentifiers.appraiserId]
-        ].map(([label, value], index) => `
-          <tr>
-            <td class="px-3 py-2 font-semibold text-slate-700">${label}</td>
-            <td class="px-3 py-2">${escapeHtml(value)}</td>
-            ${index % 2 === 0 ? "" : ""}
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-      <p class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">This summary is based on the property data available in this prototype. Official county records should be used to confirm parcel details and values.</p>
-    ${reviewRows}
-  `);
-}
-
 function ownershipHistory(recordCard) {
   if (!recordCard?.ownershipHistory?.length) return "";
 
@@ -2178,167 +2545,6 @@ function propertyNotes(data) {
   `);
 }
 
-function landInformation(data, recordCard) {
-  const rows = data.landInformation || [];
-  const meta = rows.length === 1 ? "1 land record" : `${rows.length} land records`;
-  const landModel = recordCard?.landModel;
-  const locationModel = recordCard?.locationModel;
-
-  const rowSquareFeet = row => {
-    if (row.squareFeet !== null && row.squareFeet !== undefined) return Number(row.squareFeet) || 0;
-    if (row.acres !== null && row.acres !== undefined) return (Number(row.acres) || 0) * 43560;
-    return 0;
-  };
-
-  const totalSquareFeet = rows.reduce(
-    (sum, row) => sum + rowSquareFeet(row),
-    0
-  );
-
-  const totalAcres = totalSquareFeet / 43560;
-  const areaLabel = row => {
-    if (row.acres !== null && row.acres !== undefined) return `${Number(row.acres).toLocaleString()} ac.`;
-    if (row.squareFeet !== null && row.squareFeet !== undefined) return `${Number(row.squareFeet).toLocaleString()} sq. ft.`;
-    return "Area not listed";
-  };
-
-  const compactDisplayParts = parts => parts
-    .filter(hasDisplayValue)
-    .map(part => `${part}`)
-    .join(" / ");
-
-  const renderOptionalInfoCards = items => items
-    .filter(item => hasDisplayValue(item.value))
-    .map(item => `
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(item.label)}</p>
-        <p class="mt-1 font-semibold text-slate-700">${escapeHtml(item.display ?? item.value)}</p>
-      </div>
-    `).join("");
-
-  const landModelCards = landModel && locationModel
-    ? renderOptionalInfoCards([
-      { label: "Neighborhood", value: locationModel.neighborhood },
-      { label: "Valuation group", value: locationModel.valuationGroup },
-      {
-        label: "Model / method",
-        value: compactDisplayParts([locationModel.model, locationModel.method])
-      },
-      { label: "Land model", value: landModel.description },
-      {
-        label: "Model lot size",
-        value: landModel.lotSize,
-        display: `${Number(landModel.lotSize).toLocaleString()} sq. ft.`
-      },
-      {
-        label: "Recorded lot value",
-        value: landModel.recordedLotValue,
-        display: formatNullableMoney(landModel.recordedLotValue)
-      }
-    ])
-    : "";
-
-  return disclosure("How is the land described?", meta, `
-    ${agriculturalProductivityModel(data, rows, recordCard)}
-    ${landModelCards ? `
-      <div class="grid gap-3 border-b border-slate-200 bg-slate-50 p-3 text-sm md:grid-cols-3">
-        ${landModelCards}
-      </div>
-    ` : ""}
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50">
-        <tr>
-          <th class="px-3 py-2 text-left font-semibold">Description</th>
-          <th class="px-3 py-2 text-right font-semibold">Width</th>
-          <th class="px-3 py-2 text-right font-semibold">Depth</th>
-          <th class="px-3 py-2 text-right font-semibold">Area</th>
-        </tr>
-      </thead>
-
-      <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
-        ${rows.map(row => `
-          <tr>
-            <td class="px-3 py-2 font-medium">${row.description}</td>
-            <td class="px-3 py-2 text-right">${row.widthFeet !== null && row.widthFeet !== undefined ? `${row.widthFeet} ft.` : "—"}</td>
-            <td class="px-3 py-2 text-right">${row.depthFeet !== null && row.depthFeet !== undefined ? `${row.depthFeet} ft.` : "—"}</td>
-            <td class="px-3 py-2 text-right">${areaLabel(row)}</td>
-          </tr>
-        `).join("")}
-
-        <tr class="table-total-row font-semibold">
-          <td class="px-3 py-3">Total land area</td>
-          <td class="px-3 py-3 text-right">—</td>
-          <td class="px-3 py-3 text-right">—</td>
-          <td class="px-3 py-3 text-right">
-            ${totalSquareFeet.toLocaleString()} sq. ft. · ${totalAcres.toFixed(2)} ac.
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    ${landModel?.cutoffSchedule?.length ? `
-      <div class="border-t border-slate-200 bg-white p-3">
-        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Land cutoff schedule</p>
-        <div class="grid gap-2 sm:grid-cols-3">
-          ${landModel.cutoffSchedule.map(row => `
-            <div class="review-note">
-              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Cutoff ${Number(row.cutoff).toLocaleString()}</p>
-              <p class="mt-1 font-semibold text-slate-700">${row.value.toFixed(3)}</p>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-    ` : ""}
-  `);
-}
-
-function agriculturalProductivityModel(data, rows, recordCard) {
-  if (data.classification?.propertyClass !== "Agricultural") return "";
-
-  const categoryForRow = row => {
-    const description = String(row.description || "").toUpperCase();
-    if (description.includes("IRR")) return "Irrigated";
-    if (description.includes("DRY")) return "Dryland";
-    if (description.includes("GRAS")) return "Grassland";
-    if (description.includes("WASTE")) return "Waste";
-    if (description.includes("HOME") || description.includes("HMSI")) return "Home site";
-    if (description.includes("BLDG")) return "Building site";
-    if (description.includes("ROAD")) return "Road";
-    return "Other";
-  };
-  const grouped = rows.reduce((acc, row) => {
-    const key = categoryForRow(row);
-    const value = Number(row.value || 0);
-    const acres = Number(row.acres || 0);
-    if (!acc[key]) acc[key] = { acres: 0, value: 0, count: 0 };
-    acc[key].acres += acres;
-    acc[key].value += value;
-    acc[key].count += 1;
-    return acc;
-  }, {});
-  const entries = Object.entries(grouped).filter(([, row]) => row.count);
-  const totalValue = entries.reduce((sum, [, row]) => sum + row.value, 0);
-
-  return `
-    <div class="ag-productivity-model">
-      <div>
-        <p class="guided-kicker">Agricultural productivity model</p>
-        <h3>Land rows are read by use and productivity class.</h3>
-        <p>For agricultural parcels, the land table is a central valuation input: row descriptions identify use or capability group, acres, and the value assigned to that productivity category. Nebraska agricultural land is generally assessed at 75% of its agricultural or horticultural value basis.</p>
-      </div>
-      <div class="ag-productivity-grid">
-        ${entries.map(([label, row]) => `
-          <section>
-            <p>${escapeHtml(label)}</p>
-            <strong>${formatNullableMoney(row.value)}</strong>
-            <span>${row.acres.toFixed(row.acres >= 10 ? 1 : 2)} ac.${totalValue ? ` · ${percent.format(row.value / totalValue)} of land value` : ""}</span>
-          </section>
-        `).join("")}
-      </div>
-      <p class="ag-productivity-source">Source values: ${escapeHtml(recordCard?.source?.displayCitation || "loaded property record")}.</p>
-    </div>
-  `;
-}
-
 function hasMarshallSwiftCostDetail(cost) {
   return Boolean(
     cost
@@ -2359,6 +2565,7 @@ function costSourceLimitation(recordCard) {
 function sourceExtractDetails(data, recordCard) {
   const sections = combineStatementHistorySections(recordCard?.sourceExtract?.sections || [])
     .filter(section => !isRepeatedSourceExtractSection(section))
+    .filter(section => !isDwellingDataSourceSection(section))
     .filter(isPropertyRecordSourceExtractSection);
   if (!sections.length) return "";
 
@@ -2381,6 +2588,10 @@ function isPropertyRecordSourceExtractSection(section = {}) {
     || isNtoStatementHistorySection(section)
     || isTaxDistributionSection(section)
   );
+}
+
+function isDwellingDataSourceSection(section = {}) {
+  return `${section.title || ""}`.trim().toLowerCase() === "dwelling data";
 }
 
 function sourceExtractSection(section, data, recordCard, cellValue) {

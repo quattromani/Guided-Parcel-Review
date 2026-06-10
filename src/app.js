@@ -414,8 +414,8 @@ function renderStaticContent() {
 
   setAttr(".guided-path-nav", "aria-label", "navigation.ariaLabel", "Guided parcel review path");
   setHtml("[data-guided-progress-status]", "navigation.initialProgress", "You're reviewing <strong>Property Record</strong>");
-  setText(".property-details-panel h2", "pages.your-property.propertyDetails.title", "Property details");
-  setText(".property-details-panel > p", "pages.your-property.propertyDetails.description", "These property details shape the value and tax views that follow. Reviewing them first makes the later numbers easier to follow.");
+  setText(".property-details-panel h2", "pages.your-property.propertyDetails.title", "Verify property information");
+  setText(".property-details-panel > p", "pages.your-property.propertyDetails.description", "These property details shape the value and tax views ahead. If an item looks incorrect or does not match your property, select the circle on that card or row to mark it for review.");
   setText("[data-report-error]", "pages.your-property.decisionCheck.button", "Open record review");
   setText(".ooda-decision-card .guided-kicker", "pages.your-property.decisionCheck.kicker", "Decision check");
   setText(".ooda-decision-card h2", "pages.your-property.decisionCheck.title", "Does the record look right?");
@@ -795,19 +795,19 @@ function initGuidedNavigation(data, options = {}) {
     });
   });
 
-  document.querySelectorAll("[data-guided-next]").forEach(button => {
-    button.addEventListener("click", () => {
-      const currentPanel = button.closest("[data-guided-panel]")?.dataset.guidedPanel;
-      const currentRoute = routeIdForPanel(currentPanel);
-      const currentProgressRoute = progressRouteIdFor(resolveRoute(currentRoute));
-      const nextRoute = routeIdFor(button.dataset.guidedNext);
-      if (currentProgressRoute && isPrimaryRouteId(currentProgressRoute)) visitedSteps.add(currentProgressRoute);
-      unlockThrough(nextRoute);
-      if (selectStep(nextRoute, { updateHash: true })) {
-        animateGuidedStep(currentProgressRoute);
-        animateGuidedStep(nextRoute);
-      }
-    });
+  document.addEventListener("click", event => {
+    const button = event.target instanceof Element ? event.target.closest("[data-guided-next]") : null;
+    if (!button) return;
+    const currentPanel = button.closest("[data-guided-panel]")?.dataset.guidedPanel;
+    const currentRoute = routeIdForPanel(currentPanel);
+    const currentProgressRoute = progressRouteIdFor(resolveRoute(currentRoute));
+    const nextRoute = routeIdFor(button.dataset.guidedNext);
+    if (currentProgressRoute && isPrimaryRouteId(currentProgressRoute)) visitedSteps.add(currentProgressRoute);
+    unlockThrough(nextRoute);
+    if (selectStep(nextRoute, { updateHash: true })) {
+      animateGuidedStep(currentProgressRoute);
+      animateGuidedStep(nextRoute);
+    }
   });
 
   document.querySelectorAll("[data-jump-target]").forEach(link => {
@@ -851,10 +851,17 @@ function initGuidedNavigation(data, options = {}) {
   });
 
   function selectStepFromHash() {
-    const hashStep = stepForHashTarget(window.location.hash?.slice(1));
+    const hashTarget = window.location.hash?.slice(1);
+    const hashStep = stepForHashTarget(hashTarget);
     if (!hashStep) return false;
     unlockThrough(hashStep);
-    return selectStep(hashStep, { scrollTop: true, updateHash: false });
+    const selected = selectStep(hashStep, { scrollTop: !document.getElementById(hashTarget), updateHash: false });
+    if (selected && hashTarget && document.getElementById(hashTarget)) {
+      window.setTimeout(() => {
+        document.getElementById(hashTarget)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 0);
+    }
+    return selected;
   }
 
   const hashTarget = window.location.hash?.slice(1);

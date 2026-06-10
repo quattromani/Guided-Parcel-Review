@@ -15,6 +15,10 @@ import { quickReadSummaryMarkup, taxStatementShorthandMarkup } from "../render.j
 import { initPropertyReportExport } from "../reports/property-report.js";
 import { compactParts, formatSquareFeet } from "../utils/display.js";
 import { escapeHtml } from "../utils/html.js";
+import {
+  getReviewFlags,
+  REVIEW_FLAGS_CHANGED_EVENT
+} from "../review-flags.js";
 
 const integer = new Intl.NumberFormat("en-US");
 
@@ -210,8 +214,12 @@ function valueMovementNote(latestValueMovement, latestValue, previousValue, noti
 
 function finalReviewCard(card) {
   const toneClass = card.tone ? ` final-review-kpi-card-${card.tone}` : "";
+  const actionClass = card.actionTone ? ` final-review-card-action-${card.actionTone}` : "";
+  const actionLabel = card.actionLabel || "Review";
+  const actionAriaLabel = card.actionAriaLabel || actionLabel;
+  const actionTarget = card.anchor || card.route;
   const reviewAction = card.route ? `
-      <button type="button" class="final-review-card-action" data-guided-next="${escapeHtml(card.route)}">Review</button>
+      <a href="#${escapeHtml(actionTarget)}" class="final-review-card-action${actionClass}" aria-label="${escapeHtml(actionAriaLabel)}">${escapeHtml(actionLabel)}</a>
     ` : "";
 
   return `
@@ -253,6 +261,7 @@ function buildFinalReviewModel(data, context = {}) {
   const marketAreaSummary = selectedMarketArea(data, context.recordCard, context);
   const marketArea = marketAreaSummary.marketArea;
   const reviewSignalCount = reviewSignals.filter(signal => signal.tone === "review").length;
+  const reviewFlagCount = getReviewFlags(data.parcel?.parcelId).length;
   const propertyDetails = compactParts([
     formatSquareFeet(residential.buildingSize, { fallback: null }),
     [residential.quality, residential.condition].filter(Boolean).join(" / ") || null,
@@ -269,6 +278,12 @@ function buildFinalReviewModel(data, context = {}) {
           {
             step: "Step 1 · Property Record",
             route: "property-record",
+            anchor: reviewFlagCount ? "verify-property-information" : "",
+            actionLabel: reviewFlagCount ? `${reviewFlagCount} marked` : "Review",
+            actionAriaLabel: reviewFlagCount
+              ? `Go back to property record to review ${itemCountLabel(reviewFlagCount, "marked property detail")}`
+              : "Review property record",
+            actionTone: reviewFlagCount ? "marked" : "",
             value: `${notice.propertyClass} property`,
             meta: `Parcel ${notice.parcelId}`,
             note: propertyDetails
@@ -313,6 +328,7 @@ function buildFinalReviewModel(data, context = {}) {
           },
           {
             step: "Step 6 · Review Signals",
+            tone: reviewSignalCount ? "review" : "",
             value: itemCountLabel(reviewSignalCount, "item"),
             meta: reviewSignalCount ? signalMeta(reviewSignals) : "Generally consistent",
             note: reviewSignalCount ? signalSummary(reviewSignals) : "Loaded records did not surface an obvious record mismatch."
@@ -350,11 +366,11 @@ function installReviewSignalsPanel(data, context = {}) {
     </article>
 
     <aside class="guided-transition guided-step-handoff">
-      <p>You have reviewed the key facts, value movement, equalization, and tax context. Next, finish with a compact review summary.</p>
+      <p>You have reviewed the key facts, value movement, equalization, and tax context. Next, take one last look at the summary. If you marked any property details for review, you can submit them there.</p>
     </aside>
 
     <nav class="guided-next-action" aria-label="Continue review">
-      <button type="button" data-guided-next="final-summary" class="next-step-button">Go to Summary</button>
+      <a href="#final-summary" data-guided-next="final-summary" class="next-step-button">Go to Summary</a>
     </nav>
   `;
 }
@@ -371,7 +387,7 @@ function installFinalSummary(data, context = {}) {
 
   section.innerHTML = `
     <aside class="guided-transition">
-      <p>Start with the property snapshot. Then read the quick summary for value, market, taxes, and county context.</p>
+      <p>Start with the property snapshot. Then read the quick summary for value, market, taxes, and county context. If you marked any property details for review, you can submit them below.</p>
     </aside>
 
     <article class="civic-summary-shell civic-summary-snapshot">
@@ -395,8 +411,15 @@ function installFinalSummary(data, context = {}) {
       ${quickReadSummaryMarkup(data, context.recordCard, context)}
     </article>
 
+    <article class="civic-summary-shell review-flags-summary-shell" aria-labelledby="reviewFlagsSummaryTitle">
+      <div>
+        <h2 id="reviewFlagsSummaryTitle">Items you marked for review</h2>
+      </div>
+      <div id="reviewFlagsSummaryContent"></div>
+    </article>
+
     <aside class="guided-transition guided-step-handoff">
-      <p>You're all done! You can download a guided review to keep or share.</p>
+      <p>Download a copy of this guided review for your records when you're ready.</p>
     </aside>
     <nav class="guided-next-action" aria-label="Download guided review summary">
       <button type="button" class="next-step-button property-report-download-button" data-property-report-download>Download Guided Review Summary</button>
@@ -404,5 +427,160 @@ function installFinalSummary(data, context = {}) {
   `;
 
   reviewPanel?.after(section);
+  renderReviewFlagsSummary(data);
+  window.addEventListener(REVIEW_FLAGS_CHANGED_EVENT, event => {
+    if (event.detail?.parcelId !== data.parcel?.parcelId) return;
+    renderReviewFlagsSummary(data);
+  });
   initPropertyReportExport({ data, recordCard: context.recordCard, context });
+}
+
+function renderReviewFlagsSummary(data) {
+  const container = document.getElementById("reviewFlagsSummaryContent");
+  if (!container) return;
+
+  const flags = getReviewFlags(data.parcel?.parcelId);
+  const hasFlags = flags.length > 0;
+  const shell = container.closest(".review-flags-summary-shell");
+  const title = document.getElementById("reviewFlagsSummaryTitle");
+  if (shell) {
+    shell.classList.toggle("review-flags-summary-shell-active", hasFlags);
+    shell.classList.toggle("review-flags-summary-shell-empty", !hasFlags);
+  }
+  if (title) {
+    title.innerHTML = hasFlags
+      ? `Items you marked for review <span class="review-flags-count">(${flags.length})</span>`
+      : "Items you marked for review";
+  }
+
+  container.innerHTML = `
+    ${hasFlags ? `
+      <div class="review-flags-workspace">
+        <section class="review-flags-review-column" aria-label="Marked property details">
+          <p class="review-flags-intro">You marked these property details for review:</p>
+          <ul class="review-flags-list">
+            ${flags.map(flag => `
+              <li>
+                <div class="review-flags-card-heading">
+                  <span>${escapeHtml(flag.label)}</span>
+                  ${flag.section ? `<small>${escapeHtml(flag.section)}</small>` : ""}
+                </div>
+                <dl>
+                  <dt>Current value</dt>
+                  <dd>${escapeHtml(flag.value || "Not listed")}</dd>
+                </dl>
+              </li>
+            `).join("")}
+          </ul>
+        </section>
+        <section class="review-flags-submit-column" aria-label="Submit marked items for review">
+          <p class="review-flags-explainer">You marked these property details for review. If you would like county staff to review them, provide your contact information and any additional context below.</p>
+          ${reviewFlagsIntakeForm()}
+        </section>
+      </div>
+    ` : `
+      <div class="review-flags-empty">
+        <p>You do not have any items marked for review.</p>
+        <p>If everything looks good, you can download a summary to keep below.</p>
+      </div>
+    `}
+  `;
+
+  if (hasFlags) initReviewFlagsSubmission(data, flags);
+}
+
+function reviewFlagsIntakeForm() {
+  return `
+    <form id="reviewFlagsIntakeForm" class="review-flags-intake" novalidate>
+      <div id="reviewFlagsFormErrors" class="review-flags-form-errors hidden" role="alert" aria-live="assertive"></div>
+      <div class="review-flags-form-grid">
+        <div>
+          <label for="reviewFlagsName">Name</label>
+          <input id="reviewFlagsName" name="name" type="text" autocomplete="name" required />
+        </div>
+        <div>
+          <label for="reviewFlagsEmail">Email</label>
+          <input id="reviewFlagsEmail" name="email" type="email" autocomplete="email" required />
+        </div>
+        <div class="review-flags-phone-field">
+          <label for="reviewFlagsPhone">Phone</label>
+          <input id="reviewFlagsPhone" name="phone" type="tel" autocomplete="tel" required />
+        </div>
+        <div class="review-flags-message-field">
+          <label for="reviewFlagsMessage">Optional message / additional explanation</label>
+          <textarea id="reviewFlagsMessage" name="message" rows="4"></textarea>
+        </div>
+      </div>
+      <div class="review-flags-submit-row">
+        <p id="reviewFlagsSubmitStatus" aria-live="polite"></p>
+        <button type="submit" class="next-step-button">Submit these items for review</button>
+      </div>
+    </form>
+  `;
+}
+
+function initReviewFlagsSubmission(data, flags) {
+  const form = document.getElementById("reviewFlagsIntakeForm");
+  const errors = document.getElementById("reviewFlagsFormErrors");
+  const status = document.getElementById("reviewFlagsSubmitStatus");
+  if (!form) return;
+
+  function setErrors(messages) {
+    if (!errors) return;
+    if (!messages.length) {
+      errors.classList.add("hidden");
+      errors.innerHTML = "";
+      return;
+    }
+    errors.classList.remove("hidden");
+    errors.innerHTML = `
+      <p>Please review the intake details before preparing the request.</p>
+      <ul>${messages.map(message => `<li>${escapeHtml(message)}</li>`).join("")}</ul>
+    `;
+  }
+
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    const formData = new FormData(form);
+    const contact = {
+      name: String(formData.get("name") || "").trim(),
+      email: String(formData.get("email") || "").trim(),
+      phone: String(formData.get("phone") || "").trim(),
+      message: String(formData.get("message") || "").trim()
+    };
+    const messages = [];
+
+    if (!contact.name) messages.push("Enter your name.");
+    if (!contact.email) {
+      messages.push("Enter your email address.");
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) {
+      messages.push("Enter a valid email address.");
+    }
+    if (!contact.phone) messages.push("Enter your phone number.");
+    if (!flags.length) messages.push("Mark at least one property detail for review.");
+
+    setErrors(messages);
+    if (messages.length) {
+      if (status) {
+        status.textContent = "The review request needs a little more information.";
+        status.className = "review-flags-status-error";
+      }
+      return;
+    }
+
+    const payload = {
+      parcelId: data.parcel?.parcelId || "",
+      propertyId: data.propertyId || data.parcel?.parcelId || "",
+      propertyAddress: data.snapshotModel?.viewModels?.notice?.displayAddress || data.parcel?.situsAddress || "",
+      flaggedItems: flags,
+      contact,
+      timestamp: new Date().toISOString()
+    };
+
+    console.info("Mock property-detail review request prepared", payload);
+    if (status) {
+      status.textContent = "Your review request has been prepared.";
+      status.className = "review-flags-status-success";
+    }
+  });
 }

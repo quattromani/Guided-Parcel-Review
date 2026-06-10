@@ -67,28 +67,17 @@
       <header id="pageHeader" class="review-card review-card-spacious"></header>
 
       <aside class="guided-transition">
-        <p>Start with the property record first. These details support the value, equalization, and tax views that follow.</p>
+        <p>Start with the property record first. If something looks incorrect, mark it for review. We'll keep track of those items and summarize them at the end.</p>
       </aside>
 
       <section class="grid gap-6 lg:grid-cols-12">
-        <article class="property-details-panel review-card lg:col-span-12">
-          <h2 class="text-xl font-bold text-slate-700">Property details</h2>
-          <p class="mt-1 text-sm text-slate-600">These property details shape the value and tax views that follow. Reviewing them first makes the later numbers easier to follow.</p>
+        <article id="verify-property-information" class="property-details-panel review-card lg:col-span-12">
+          <h2 class="text-xl font-bold text-slate-700">Verify property information</h2>
+          <p class="mt-1 text-sm text-slate-600">These property details shape the value and tax views ahead. If an item looks incorrect or does not match your property, select the circle on that card or row to mark it for review.</p>
           <dl id="propertyDetails" class="property-details-layout mt-4"></dl>
           <p id="propertyDetailsSourceNote" class="property-details-source-note"></p>
         </article>
       </section>
-
-      <article class="ooda-decision-card">
-        <div class="ooda-decision-header">
-          <div>
-            <p class="guided-kicker">Decision check</p>
-            <h2>Does the record look right?</h2>
-          </div>
-          <button type="button" data-report-error class="secondary-link-button">Open record review</button>
-        </div>
-        <p>Review these facts against what you know about the property. Follow up if the owner, address, land size, class, condition, rooms, garage, improvements, or sketch appears inaccurate or incomplete.</p>
-      </article>
 
       <aside class="guided-step-handoff">
         <p>You have completed the first step: reviewing your property details. The green button takes you to the next step, where you can learn more about what may have changed from year to year.</p>
@@ -555,6 +544,6 @@
     </div>
   </div>
 
-  <script type="module" src="src/app.js?v=summary-route-alias"></script>
+  <script type="module" src="src/app.js?v=dynamic-guided-next"></script>
 </body>
 </html>
