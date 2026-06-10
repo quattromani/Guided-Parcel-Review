@@ -7324,10 +7324,73 @@ footer > [data-footer-resource-shell] {
   text-align: right;
 }
 
+.tax-chart-key {
+  align-items: center;
+  color: rgb(var(--color-slate-600));
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.98rem;
+  font-weight: 720;
+  gap: 0.85rem 1.6rem;
+  line-height: 1.25;
+  margin: 0.15rem 0 -0.15rem;
+}
+
+.tax-chart-key span {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.4rem;
+}
+
+.tax-chart-key-swatch {
+  background: rgb(31 73 112);
+  display: inline-block;
+  height: 0.8rem;
+  width: 0.8rem;
+}
+
+.tax-chart-key-line {
+  background: rgb(148 70 86);
+  display: inline-block;
+  height: 2px;
+  position: relative;
+  width: 1.7rem;
+}
+
+.tax-chart-key-value-line {
+  background: rgb(87 134 104);
+}
+
+.tax-chart-key-tax-line {
+  background: rgb(148 70 86);
+}
+
+.tax-chart-key-line::after {
+  background: currentColor;
+  border: 2px solid white;
+  border-radius: 9999px;
+  content: "";
+  height: 0.45rem;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.45rem;
+}
+
+.tax-chart-key-value-line::after {
+  background: rgb(87 134 104);
+}
+
+.tax-chart-key-tax-line::after {
+  background: rgb(148 70 86);
+}
+
 .tax-shorthand-area-chart {
-  height: clamp(20rem, 39vw, 28rem);
+  aspect-ratio: 1280 / 390;
+  height: auto;
   max-width: 100%;
-  min-height: 20rem;
+  min-height: 0;
   overflow-x: hidden;
   position: relative;
   width: 100%;
@@ -7367,6 +7430,11 @@ footer > [data-footer-resource-shell] {
   stroke: none;
 }
 
+.tax-shorthand-index-gap {
+  fill: rgb(87 134 104 / 0.16);
+  stroke: none;
+}
+
 .tax-shorthand-value-fill {
   fill: rgb(31 73 112 / 0.18);
 }
@@ -7384,13 +7452,14 @@ footer > [data-footer-resource-shell] {
 
 .tax-shorthand-value-line {
   fill: none;
-  stroke: rgb(31 73 112);
+  stroke: rgb(87 134 104);
 }
 
 .tax-shorthand-value-point,
 .tax-shorthand-value-swatch {
-  fill: rgb(31 73 112);
-  stroke: rgb(31 73 112);
+  fill: rgb(87 134 104);
+  stroke: white;
+  stroke-width: 2;
 }
 
 .tax-shorthand-value-bar {
@@ -7405,7 +7474,8 @@ footer > [data-footer-resource-shell] {
 .tax-shorthand-tax-point,
 .tax-shorthand-tax-swatch {
   fill: rgb(148 70 86);
-  stroke: rgb(148 70 86);
+  stroke: white;
+  stroke-width: 2;
 }
 
 .tax-shorthand-prediction-band rect {
@@ -8405,11 +8475,12 @@ footer > [data-footer-resource-shell] {
 
 .tax-trend-diagnostic-heading > p {
   color: rgb(var(--color-slate-600));
-  font-size: clamp(1.07rem, 1.49vw, 1.19rem);
-  font-weight: 560;
-  line-height: 1.35;
+  font-size: clamp(0.86rem, 1.08vw, 0.98rem);
+  font-weight: 500;
+  line-height: 1.25;
   margin: 0;
-  max-width: 24rem;
+  max-width: 19rem;
+  opacity: 0.78;
   text-align: right;
 }
 
@@ -8559,7 +8630,7 @@ footer > [data-footer-resource-shell] {
 
 .tax-backtest-kpis span {
   color: rgb(var(--color-slate-500));
-  font-size: 0.81rem;
+  font-size: 0.9rem;
   font-weight: 900;
   line-height: 1.1;
   text-transform: uppercase;
@@ -8767,8 +8838,9 @@ footer > [data-footer-resource-shell] {
   }
 
   .tax-shorthand-area-chart {
-    height: 20rem;
-    min-height: 20rem;
+    aspect-ratio: 1280 / 440;
+    height: auto;
+    min-height: 0;
   }
 
   .tax-prediction-hero {

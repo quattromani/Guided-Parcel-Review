@@ -385,7 +385,7 @@ function renderValueTaxChartSection(rows) {
       ${renderCountyHistoryArticleSection()}
       ${renderGuidedTransition("What does that mean for this property?")}
       ${renderPredictionMathArticleSection()}
-      ${renderGuidedTransition("This check does not prove the model. It just tells me the estimate is not wildly outside the pattern I can see.")}
+      ${renderGuidedTransition("The value determines my property’s position relative to other properties. The relative exposure factor compares my value change with similar properties and turns that difference into a tax-bill multiplier. The tax history shows how budgets, levies, and credits have turned value changes into actual tax bills.")}
       <section class="tax-article-section tax-story-chapter tax-model-check-section" aria-label="Regression backtest chart">
         <h2>One check on the estimate</h2>
         <p>The second chart is a backtest. It checks whether the working estimate still sits near the long-run pattern.</p>
@@ -427,6 +427,11 @@ function renderHistoricalArticleSection(rows) {
           <p class="guided-kicker">The evidence</p>
           <h3 id="taxShorthandAreaTitle">30 Years of Value vs. Tax History</h3>
         </div>
+      </div>
+      <div class="tax-chart-key" aria-label="Chart key">
+        <span><i class="tax-chart-key-line tax-chart-key-value-line"></i>Assessed value index</span>
+        <span><i class="tax-chart-key-line tax-chart-key-tax-line"></i>Net tax index</span>
+        <span>1993 = 100</span>
       </div>
       <div class="tax-shorthand-area-chart">
         ${renderValueTaxComboSvg(rows)}
@@ -507,7 +512,7 @@ function renderArticleClosing() {
       <p>I know a property tax bill is coming. I also know this year’s assessment increase makes a higher bill likely for me.</p>
       <p>So I wanted a working number before the bill arrives.</p>
       <aside class="tax-article-pullquote tax-article-pullquote-subtle">
-        For budgeting, that number is about <strong>$70 to $85 more per month</strong>.
+        For budgeting, I’m using about <strong>$70 to $85 more per month</strong>.
       </aside>
       <p>For what it’s worth, when I tested this same approach against my 2025 tax bill, it came within about 1.4%, or roughly $46, of the actual number. That does not prove the model works, but it was close enough that I am willing to make another prediction.</p>
       <p>This is what I can work with today, based on the information available. As values are finalized, budgets are announced, and levies are set, I can update the model and test how well this estimate held up.</p>
@@ -739,7 +744,7 @@ function renderTrendDeviationChartSection(rows) {
           <p class="guided-kicker">Model check</p>
           <h4 id="taxTrendDiagnosticTitle">Does the Prediction Fit the Pattern?</h4>
         </div>
-        <p><span>Indexed to 1993 = 100.</span><span>Dots show actual years. Dashed lines show best-fit trend.</span></p>
+        <p><span>Dots show actual years.</span><span>Dashed lines show best-fit trend.</span></p>
       </div>
       <div class="tax-trend-diagnostic-chart">
         ${renderTrendDeviationSvg(valueSeries, taxSeries)}
@@ -904,73 +909,83 @@ function renderValueTaxComboSvg(rows) {
     .sort((left, right) => left.year - right.year);
   const width = 1280;
   const height = 390;
-  const top = 42;
-  const right = 86;
-  const bottom = 312;
+  const top = 32;
+  const right = 46;
+  const bottom = 320;
   const left = 86;
   const plotWidth = width - left - right;
   const taxRows = chartRows.filter(row => row.net !== null && row.net !== undefined);
+  const baseValue = chartRows[0]?.assessedValue || null;
   const baseTaxRow = taxRows[0] || null;
   const baseTax = baseTaxRow?.net || null;
   const indexedRows = chartRows.map(row => ({
     ...row,
+    valueIndex: baseValue ? row.assessedValue / baseValue * 100 : null,
     taxIndex: baseTax && row.net !== null && row.net !== undefined
       ? row.net / baseTax * 100
       : null
   }));
-  const valueDomain = { min: 0, max: Math.max(...indexedRows.map(row => row.assessedValue), 1) * 1.14 };
-  const taxDomain = taxDomainAlignedToBaseValue(indexedRows, valueDomain, baseTaxRow);
+  const indexDomain = {
+    min: 0,
+    max: Math.max(
+      100,
+      ...indexedRows.map(row => row.valueIndex).filter(Number.isFinite),
+      ...indexedRows.map(row => row.taxIndex).filter(Number.isFinite)
+    ) * 1.08
+  };
   const xForIndex = index => left + (chartRows.length === 1 ? plotWidth / 2 : (index / (chartRows.length - 1)) * plotWidth);
-  const barSlot = chartRows.length > 1 ? plotWidth / chartRows.length : plotWidth / 2;
-  const barWidth = Math.max(8, Math.min(24, barSlot * 0.58));
-  const taxBaselineY = chartY(100, taxDomain, top, bottom);
-  const taxPoints = indexedRows
-    .filter(row => row.taxIndex !== null && row.taxIndex !== undefined && Number.isFinite(row.taxIndex))
-    .map((row, index) => {
+  const baselineY = chartY(100, indexDomain, top, bottom);
+  const valuePoints = indexedRows
+    .filter(row => Number.isFinite(row.valueIndex))
+    .map(row => {
       const chartIndex = chartRows.findIndex(item => item.year === row.year);
       return {
         x: xForIndex(chartIndex),
-        y: chartY(row.taxIndex, taxDomain, top, bottom),
+        y: chartY(row.valueIndex, indexDomain, top, bottom),
         row
       };
     });
-  const bars = indexedRows.map((row, index) => ({
-    x: xForIndex(index),
-    y: chartY(row.assessedValue, valueDomain, top, bottom),
-    height: bottom - chartY(row.assessedValue, valueDomain, top, bottom),
-    row
-  }));
-  const valueTicks = valueAxisTicks(valueDomain);
-  const taxTicks = taxIndexAxisTicks(taxDomain);
+  const taxPoints = indexedRows
+    .filter(row => Number.isFinite(row.taxIndex))
+    .map(row => {
+      const chartIndex = chartRows.findIndex(item => item.year === row.year);
+      return {
+        x: xForIndex(chartIndex),
+        y: chartY(row.taxIndex, indexDomain, top, bottom),
+        row
+      };
+    });
+  const overlapValuePoints = valuePoints.filter(point => Number.isFinite(point.row.taxIndex) && point.row.net !== null && point.row.net !== undefined);
+  const overlapTaxPoints = taxPoints.filter(point => overlapValuePoints.some(valuePoint => valuePoint.row.year === point.row.year));
+  const divergenceAreaPath = overlapValuePoints.length && overlapTaxPoints.length
+    ? `${chartPath(overlapValuePoints)} ${overlapTaxPoints.slice().reverse().map(point => `L ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ")} Z`
+    : "";
+  const ticks = taxIndexAxisTicks(indexDomain);
 
   return `
     <svg class="tax-shorthand-area-svg tax-shorthand-combo-svg" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="taxShorthandAreaSvgTitle taxShorthandAreaSvgDesc">
-      <title id="taxShorthandAreaSvgTitle">Assessed value bar chart with net-tax index line</title>
-      <desc id="taxShorthandAreaSvgDesc">Bars show assessed value dollars from ${escapeHtml(`${chartRows[0]?.year}`)} to ${escapeHtml(`${chartRows.at(-1)?.year}`)}. The line shows net tax indexed to ${escapeHtml(`${baseTaxRow?.year || "first tax year"} = 100`)}.</desc>
+      <title id="taxShorthandAreaSvgTitle">Assessed value and net-tax index comparison</title>
+      <desc id="taxShorthandAreaSvgDesc">Lines show assessed value and net tax indexed to ${escapeHtml(`${baseTaxRow?.year || "first tax year"} = 100`)}.</desc>
       <g class="tax-shorthand-chart-grid">
-        ${valueTicks.map(tick => {
-          const y = chartY(tick.value, valueDomain, top, bottom);
+        ${ticks.map(tick => {
+          const y = chartY(tick.value, indexDomain, top, bottom);
           return `
             <line x1="${left}" y1="${y.toFixed(1)}" x2="${width - right}" y2="${y.toFixed(1)}"></line>
             <text x="${left - 12}" y="${(y + 4).toFixed(1)}" text-anchor="end">${escapeHtml(tick.label)}</text>
           `;
         }).join("")}
-        ${taxTicks.map(tick => {
-          const y = chartY(tick.value, taxDomain, top, bottom);
-          return `<text x="${width - right + 12}" y="${(y + 4).toFixed(1)}" text-anchor="start">${escapeHtml(tick.label)}</text>`;
-        }).join("")}
-        <line class="tax-shorthand-chart-baseline" x1="${left}" y1="${taxBaselineY.toFixed(1)}" x2="${width - right}" y2="${taxBaselineY.toFixed(1)}"></line>
+        <line class="tax-shorthand-chart-baseline" x1="${left}" y1="${baselineY.toFixed(1)}" x2="${width - right}" y2="${baselineY.toFixed(1)}"></line>
       </g>
-      <g class="tax-shorthand-value-bars">
-        ${bars.map(bar => `
-          <rect class="tax-shorthand-value-bar" x="${(bar.x - barWidth / 2).toFixed(1)}" y="${bar.y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${bar.height.toFixed(1)}" rx="2">
-            <title>${escapeHtml(`${bar.row.year}: assessed value ${formatNullableMoney(bar.row.assessedValue)}${bar.row.net === null || bar.row.net === undefined ? "" : `, net tax ${formatNullableMoney(bar.row.net, true)}`}`)}</title>
-          </rect>
-        `).join("")}
-      </g>
+      ${divergenceAreaPath ? `<path class="tax-shorthand-index-gap" d="${divergenceAreaPath}"></path>` : ""}
+      <path class="tax-shorthand-area-line tax-shorthand-value-line" d="${chartPath(valuePoints)}"></path>
       <path class="tax-shorthand-area-line tax-shorthand-tax-line" d="${chartPath(taxPoints)}"></path>
+      ${valuePoints.map(point => `
+        <circle class="tax-shorthand-value-point" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="${point.row.net === null || point.row.net === undefined ? "5.5" : "4.5"}">
+          <title>${escapeHtml(`${point.row.year}: value index ${Math.round(point.row.valueIndex)}; assessed value ${formatNullableMoney(point.row.assessedValue)}`)}</title>
+        </circle>
+      `).join("")}
       ${taxPoints.map(point => `
-        <circle class="tax-shorthand-tax-point" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4">
+        <circle class="tax-shorthand-tax-point" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4.5">
           <title>${escapeHtml(`${point.row.year}: tax index ${Math.round(point.row.taxIndex)}; net tax ${formatNullableMoney(point.row.net, true)}`)}</title>
         </circle>
       `).join("")}
@@ -980,13 +995,7 @@ function renderValueTaxComboSvg(rows) {
         ` : "").join("")}
       </g>
       <g class="tax-shorthand-chart-legend">
-        <rect x="${left}" y="12" width="12" height="12" class="tax-shorthand-value-swatch"></rect>
-        <text x="${left + 18}" y="22">Assessed value bars</text>
-        <line x1="${left + 184}" y1="18" x2="${left + 214}" y2="18" class="tax-shorthand-tax-line"></line>
-        <circle cx="${left + 199}" cy="18" r="4" class="tax-shorthand-tax-point"></circle>
-        <text x="${left + 224}" y="22">Net tax index line</text>
-        <text x="${width - right}" y="22" text-anchor="end">${escapeHtml(`${baseTaxRow?.year || "Tax"} tax = 100`)}</text>
-        <text x="${left}" y="${height - 14}">Left axis: assessed value. Right axis: tax index.</text>
+        <text x="${left}" y="${height - 14}">Index: 1993 = 100.</text>
       </g>
     </svg>
   `;
