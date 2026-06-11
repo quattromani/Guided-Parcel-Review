@@ -27,6 +27,11 @@ export const experimentLinks = [
     note: "Active-property tax statement table showing assessed value, levy, credits, and final net-tax movement by year."
   },
   {
+    title: "Levy Compression Educational Post",
+    href: "?article=levy-compression",
+    note: "Standalone article and calculator for estimating future ETR and tax changes when valuations rise."
+  },
+  {
     title: "Grant Street Side-by-Side Comparison",
     href: "?experiment=grant-neighbor-comps",
     note: "Three adjacent Grant Street properties arranged for neighbor comparison."

@@ -9160,6 +9160,214 @@ footer > [data-footer-resource-shell] {
   max-width: 50rem;
 }
 
+.levy-compression-page {
+  max-width: 76rem;
+}
+
+.levy-default-kpis,
+.levy-result-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.levy-default-kpis article,
+.levy-result-card,
+.levy-explainer-list article {
+  background: rgb(var(--surface-muted));
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.65rem;
+  box-shadow: var(--shadow-card);
+  display: grid;
+  gap: 0.42rem;
+  min-width: 0;
+  padding: 1rem;
+}
+
+.levy-default-kpis span,
+.levy-result-card p,
+.levy-explainer-list strong {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.12;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.levy-default-kpis strong,
+.levy-result-card strong {
+  color: rgb(var(--brand-ink));
+  font-size: clamp(1.45rem, 3vw, 2.35rem);
+  font-weight: 930;
+  letter-spacing: 0;
+  line-height: 1.02;
+}
+
+.levy-default-kpis p,
+.levy-explainer-list p,
+.levy-calculator-field p,
+.levy-calculator-status,
+.levy-result-card span {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.95rem;
+  font-weight: 520;
+  line-height: 1.42;
+  margin: 0;
+}
+
+.levy-explainer-list {
+  display: grid;
+  gap: 0.72rem;
+}
+
+.levy-explainer-list strong {
+  color: rgb(var(--brand-blue));
+}
+
+.levy-calculator-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.levy-calculator-inputs {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.levy-calculator-field {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.levy-calculator-field label {
+  color: rgb(var(--brand-ink));
+  font-size: 0.9rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.levy-input-shell {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.58rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 3.1rem;
+  overflow: hidden;
+}
+
+.levy-input-shell:focus-within {
+  border-color: rgb(var(--brand-blue));
+  box-shadow: 0 0 0 0.18rem rgb(var(--brand-blue) / 0.12);
+}
+
+.levy-input-shell input {
+  background: transparent;
+  border: 0;
+  color: rgb(var(--brand-ink));
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 750;
+  min-width: 0;
+  outline: 0;
+  padding: 0.82rem 0.9rem;
+  width: 100%;
+}
+
+.levy-input-shell span {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.9rem;
+  font-weight: 850;
+  padding: 0 0.9rem 0 0.3rem;
+}
+
+.levy-calculator-status {
+  background: rgb(31 73 112 / 0.07);
+  border: 1px solid rgb(31 73 112 / 0.12);
+  border-radius: 0.58rem;
+  color: rgb(var(--brand-ink));
+  font-weight: 750;
+  padding: 0.85rem 1rem;
+}
+
+.levy-result-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.levy-result-card {
+  background: #ffffff;
+}
+
+.levy-result-card strong {
+  font-size: clamp(1.05rem, 2vw, 1.42rem);
+  overflow-wrap: anywhere;
+}
+
+.levy-result-equation {
+  border-top: 1px solid rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
+  font-size: 0.78rem;
+  font-weight: 560;
+  line-height: 1.32;
+  margin-top: 0.18rem;
+  overflow-wrap: anywhere;
+  padding-top: 0.55rem;
+}
+
+.levy-full-equation {
+  background: rgb(31 73 112 / 0.045);
+  border: 1px solid rgb(31 73 112 / 0.13);
+  border-radius: 0.58rem;
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.9rem 1rem;
+}
+
+.levy-full-equation p {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.12;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.levy-full-equation div {
+  color: rgb(var(--brand-ink));
+  font-size: 0.98rem;
+  font-weight: 650;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.levy-math-card footer strong {
+  font-size: clamp(1.15rem, 2.4vw, 1.95rem);
+}
+
+.levy-simplified-block {
+  justify-self: start;
+}
+
+.levy-assumptions-section {
+  background: rgb(31 73 112 / 0.055);
+  border-color: rgb(31 73 112 / 0.14);
+}
+
+.levy-assumptions-section ul {
+  color: rgb(var(--color-slate-700));
+  display: grid;
+  font-size: 1.08rem;
+  font-weight: 540;
+  gap: 0.45rem;
+  line-height: 1.45;
+  margin: 0;
+  padding-left: 1.35rem;
+}
+
 .tax-prediction-chart-callout {
   background: rgb(148 70 86 / 0.08);
   border-left: 0.28rem solid rgb(148 70 86);
@@ -9615,6 +9823,11 @@ footer > [data-footer-resource-shell] {
     padding: 0.85rem;
   }
 
+  body:has(.levy-compression-page) #pageTitle {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
   .tax-shorthand-card {
     padding: 1rem;
   }
@@ -9660,7 +9873,10 @@ footer > [data-footer-resource-shell] {
 
   .tax-prediction-kpis,
   .tax-prediction-steps,
-  .tax-prediction-why-grid {
+  .tax-prediction-why-grid,
+  .levy-default-kpis,
+  .levy-calculator-inputs,
+  .levy-result-grid {
     grid-template-columns: 1fr;
   }
 

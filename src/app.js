@@ -61,6 +61,10 @@ import {
 import { renderAmesHighway77ComparableSalesExperiment } from "./routes/ames-highway-77-comparable-sales.js";
 import { renderBeekmanCountryClubComparableSalesExperiment } from "./routes/beekman-country-club-comparable-sales.js";
 import { renderGrantNeighborCompExperiment } from "./routes/grant-neighbor-comps.js";
+import {
+  isLevyCompressionPostRequest,
+  renderLevyCompressionPost
+} from "./routes/levy-compression-post.js";
 import { renderPropertyInviteIndex } from "./routes/property-invite-index.js";
 import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js";
 import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js";
@@ -124,6 +128,13 @@ async function main() {
   const pendingDirectProperty = propertySwitcher.pendingDirectProperty;
   const searchParams = new URLSearchParams(window.location.search);
   const experimentView = searchParams.get("experiment");
+
+  if (isLevyCompressionPostRequest(searchParams)) {
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    setFooterResourcesVisible(false);
+    renderLevyCompressionPost();
+    return;
+  }
 
   if (isExperimentIndexRequest(searchParams)) {
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
