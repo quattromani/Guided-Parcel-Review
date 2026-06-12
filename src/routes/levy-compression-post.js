@@ -525,6 +525,7 @@ export function renderLevyCompressionPost() {
   const canvas = document.querySelector(".mobile-review-canvas");
   if (!canvas) return;
 
+  document.documentElement.classList.add("article-shell-route", "levy-compression-shell-route");
   document.querySelector(".guide-review-header")?.classList.add("hidden");
   document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("hidden"));
   document.querySelector("[data-footer-resource-shell]")?.classList.add("hidden");
@@ -537,7 +538,6 @@ export function renderLevyCompressionPost() {
       <div class="levy-author-byline">
         <p>By Max Quattromani</p>
       </div>
-      <p>Property taxes depend on how your value changes, how the total tax base changes, and how much local governments ultimately need to collect.</p>
     </div>
   `;
 

@@ -116,6 +116,13 @@ body:has(.tax-shorthand-page) > footer[aria-label="Site footer"] {
   display: none;
 }
 
+.article-shell-route .guide-review-header,
+.article-shell-route [data-guided-panel],
+.article-shell-route > body > footer,
+.article-shell-route body > footer[aria-label="Site footer"] {
+  display: none !important;
+}
+
 :where(main, footer, header, section, article, aside, nav, div, dl, form, fieldset) {
   min-width: 0;
 }

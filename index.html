@@ -21,6 +21,14 @@
     }
   </script>
   <script>
+    {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("article") === "levy-compression") {
+        document.documentElement.classList.add("article-shell-route", "levy-compression-shell-route");
+      }
+    }
+  </script>
+  <script>
     window.tailwind = {
       config: {
         theme: {
