@@ -112,6 +112,10 @@ body > footer[aria-label="Site footer"] {
   background: rgb(var(--color-slate-100));
 }
 
+body:has(.tax-shorthand-page) > footer[aria-label="Site footer"] {
+  display: none;
+}
+
 :where(main, footer, header, section, article, aside, nav, div, dl, form, fieldset) {
   min-width: 0;
 }
@@ -9161,31 +9165,205 @@ footer > [data-footer-resource-shell] {
 }
 
 .levy-compression-page {
-  max-width: 76rem;
+  --levy-body-font: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --levy-heading-font: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --levy-mono-font: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --levy-section-padding-y: clamp(1.15rem, 3vw, 2rem);
+  background: transparent;
+  gap: clamp(0.75rem, 1.8vw, 1.4rem);
+  max-width: 74rem;
+  padding-top: 0.5rem;
 }
 
-.levy-default-kpis,
-.levy-result-grid {
+.levy-compression-page .tax-story-chapter {
+  background: transparent;
+  border: 0;
+  border-top: 0;
+  box-shadow: none;
+  padding: var(--levy-section-padding-y) 0;
+}
+
+.levy-article-narrow {
+  justify-self: center;
+  width: min(100%, 46rem);
+}
+
+.levy-wide-panel {
+  justify-self: center;
+  width: min(100%, 64rem);
+}
+
+body:has(.levy-compression-page) #pageTitle {
+  margin-left: auto;
+  margin-right: auto;
+  width: min(100%, 64rem);
+}
+
+.levy-page-title {
+  max-width: 64rem;
+}
+
+.levy-page-title p:not(.guided-kicker) {
+  color: rgb(var(--brand-ink));
+  font-family: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  font-weight: 420;
+  line-height: 1.58;
+  margin-top: 0.55rem;
+  max-width: 46rem;
+}
+
+.levy-author-byline {
+  border-top: 1px solid rgb(var(--border-muted));
+  color: rgb(var(--color-slate-600));
+  display: grid;
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  gap: 0.12rem;
+  margin-top: 0.85rem;
+  padding-top: 0.72rem;
+}
+
+.levy-author-byline p {
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 420;
+  line-height: 1.58;
+  margin: 0;
+}
+
+body:has(.levy-compression-page) .comp-page-title h1 {
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 2.35rem;
+  font-weight: 820;
+  line-height: 1.08;
+}
+
+.levy-compression-page .tax-article-header {
+  gap: 0.62rem;
+  max-width: none;
+  padding-top: 0;
+}
+
+.levy-compression-page .guided-kicker,
+.levy-compression-page.tax-article-panel .guided-kicker {
+  color: rgb(var(--color-secondary));
+  font-family: var(--levy-heading-font);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  line-height: 1.12;
+}
+
+.levy-compression-page .tax-article-header h1,
+.levy-compression-page .tax-article-section > h2,
+.levy-compression-page .tax-article-two-column h2,
+.levy-compression-page .levy-calculator-intro h2 {
+  color: rgb(var(--brand-ink));
+  font-family: var(--levy-heading-font);
+  font-size: 2rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1.26;
+  margin: 0;
+}
+
+.levy-compression-page .tax-article-header > p:not(.guided-kicker),
+.levy-compression-page .tax-article-section > p:not(.guided-kicker),
+.levy-compression-page .tax-article-two-column p:not(.guided-kicker),
+.levy-compression-page .tax-article-closing p,
+.levy-compression-page .levy-calculator-intro p:not(.guided-kicker) {
+  color: rgb(var(--brand-ink));
+  font-family: var(--levy-body-font);
+  font-size: 1.08rem;
+  font-weight: 420;
+  line-height: 1.64;
+  max-width: 68ch;
+}
+
+.levy-compression-page .tax-article-opening blockquote {
+  font-family: var(--levy-heading-font);
+  font-size: 2rem;
+  font-weight: 650;
+  line-height: 1.22;
+}
+
+.levy-compression-page .tax-article-pullquote {
+  border-left-width: 0.18rem;
+  border-radius: 0.55rem;
+  font-family: var(--levy-heading-font);
+  font-size: 1.18rem;
+  font-weight: 560;
+  line-height: 1.42;
+}
+
+.levy-compression-page .tax-article-closing p,
+.levy-compression-page .levy-article-copy p {
+  max-width: 68ch;
+}
+
+.levy-compression-page .tax-article-section.tax-article-closing > p.tax-article-final-source {
+  color: rgb(var(--color-slate-500));
+  font-family: var(--levy-heading-font);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+  max-width: 68ch;
+}
+
+.levy-compression-page .levy-calculator-section {
+  background: #ffffff;
+  border: 1px solid rgb(var(--border-muted));
+  border-top: 3px solid rgb(31 73 112 / 0.18);
+  border-radius: 0.85rem;
+  box-shadow: 0 0.75rem 1.7rem rgb(31 73 112 / 0.045);
+  padding: var(--levy-section-padding-y) clamp(1rem, 2.5vw, 1.45rem) !important;
+}
+
+.levy-sr-only {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.levy-compression-page .levy-teaching-example {
+  border-left: 3px solid rgb(148 70 86 / 0.52);
+  padding: var(--levy-section-padding-y) 0 var(--levy-section-padding-y) clamp(1rem, 2.2vw, 1.3rem) !important;
+}
+
+.levy-default-kpis {
   display: grid;
   gap: 0.85rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .levy-default-kpis article,
-.levy-result-card,
 .levy-explainer-list article {
-  background: rgb(var(--surface-muted));
-  border: 1px solid rgb(var(--border-muted));
-  border-radius: 0.65rem;
-  box-shadow: var(--shadow-card);
+  align-content: start;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid rgb(var(--border-muted));
+  border-radius: 0;
+  box-shadow: none;
   display: grid;
-  gap: 0.42rem;
+  gap: 0.35rem;
   min-width: 0;
-  padding: 1rem;
+  padding: 0.85rem 0 0;
+}
+
+.levy-default-kpis,
+.levy-explainer-list,
+.levy-calculator-section,
+.levy-assumptions-section {
+  font-family: var(--levy-heading-font);
 }
 
 .levy-default-kpis span,
-.levy-result-card p,
 .levy-explainer-list strong {
   color: rgb(var(--color-slate-500));
   font-size: 0.72rem;
@@ -9195,25 +9373,26 @@ footer > [data-footer-resource-shell] {
   text-transform: uppercase;
 }
 
-.levy-default-kpis strong,
-.levy-result-card strong {
+.levy-default-kpis strong {
   color: rgb(var(--brand-ink));
-  font-size: clamp(1.45rem, 3vw, 2.35rem);
-  font-weight: 930;
+  font-size: 1.75rem;
+  font-weight: 850;
   letter-spacing: 0;
   line-height: 1.02;
 }
 
 .levy-default-kpis p,
 .levy-explainer-list p,
-.levy-calculator-field p,
-.levy-calculator-status,
-.levy-result-card span {
+.levy-calculator-field p {
   color: rgb(var(--color-slate-600));
   font-size: 0.95rem;
   font-weight: 520;
   line-height: 1.42;
   margin: 0;
+}
+
+.levy-assumptions-snapshot {
+  border-top: 1px solid rgb(var(--border-muted));
 }
 
 .levy-explainer-list {
@@ -9225,15 +9404,136 @@ footer > [data-footer-resource-shell] {
   color: rgb(var(--brand-blue));
 }
 
+.levy-breakdown-section,
+.levy-section-heading {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.levy-breakdown-section {
+  border-top: 1px solid rgb(var(--border-muted));
+  padding-top: 0.85rem;
+}
+
+.levy-section-heading {
+  gap: 0.18rem;
+}
+
+.levy-section-heading h2,
+.levy-section-heading h3 {
+  color: rgb(var(--brand-ink));
+  font-size: 1.65rem;
+  font-weight: 900;
+  line-height: 1.12;
+  margin: 0;
+}
+
 .levy-calculator-form {
   display: grid;
+  font-family: var(--levy-heading-font);
   gap: 1rem;
+}
+
+.levy-calculator-intro {
+  display: grid;
+  gap: 0.32rem;
 }
 
 .levy-calculator-inputs {
   display: grid;
   gap: 0.85rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.levy-primary-input-group {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.levy-primary-inputs {
+  background: rgb(31 73 112 / 0.035);
+  border: 1px solid rgb(31 73 112 / 0.09);
+  border-radius: 0.72rem;
+  padding: 0.75rem;
+}
+
+.levy-primary-inputs .levy-stepped-input-field {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  display: grid;
+  column-gap: 0.58rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: 0;
+}
+
+.levy-input-step-number {
+  align-items: center;
+  background: rgb(31 73 112);
+  border-radius: 999px;
+  color: #ffffff;
+  display: inline-grid;
+  font-size: 0.82rem;
+  font-weight: 900;
+  height: 1.8rem;
+  justify-content: center;
+  line-height: 1;
+  width: 1.8rem;
+}
+
+.levy-stepped-input-card {
+  background: #ffffff;
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.58rem;
+  display: grid;
+  gap: 0.38rem;
+  min-width: 0;
+  padding: 0.62rem;
+}
+
+.levy-stepped-input-card label {
+  line-height: 1.12;
+}
+
+.levy-assumption-controls {
+  background: rgb(var(--surface-muted));
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.72rem;
+  display: grid;
+  gap: 0.72rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0.75rem;
+}
+
+.levy-assumption-controls-header {
+  display: grid;
+  gap: 0.15rem;
+  grid-column: 1 / -1;
+}
+
+.levy-assumption-controls-header p:not(.guided-kicker) {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.86rem;
+  font-weight: 620;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.levy-assumption-inputs {
+  display: contents;
+}
+
+.levy-assumption-inputs .levy-calculator-field,
+.levy-assumption-controls > .levy-calculator-field {
+  background: #ffffff;
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.58rem;
+  padding: 0.72rem;
+}
+
+.levy-assumption-controls > .levy-calculator-field {
+  max-width: none;
 }
 
 .levy-calculator-field {
@@ -9285,76 +9585,181 @@ footer > [data-footer-resource-shell] {
   padding: 0 0.9rem 0 0.3rem;
 }
 
-.levy-calculator-status {
-  background: rgb(31 73 112 / 0.07);
-  border: 1px solid rgb(31 73 112 / 0.12);
-  border-radius: 0.58rem;
-  color: rgb(var(--brand-ink));
-  font-weight: 750;
-  padding: 0.85rem 1rem;
+.levy-primary-results {
+  background:
+    linear-gradient(135deg, rgb(31 73 112), rgb(47 96 139)),
+    rgb(var(--brand-ink));
+  border: 1px solid rgb(31 73 112 / 0.24);
+  border-radius: 0.75rem;
+  box-shadow: 0 1rem 2.1rem rgb(31 73 112 / 0.18);
+  display: grid;
+  gap: 0.9rem;
+  padding: clamp(1rem, 2vw, 1.2rem);
 }
 
-.levy-result-grid {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+.levy-primary-results .guided-kicker,
+.levy-primary-results h3,
+.levy-primary-results p,
+.levy-primary-results strong {
+  color: #ffffff;
 }
 
-.levy-result-card {
-  background: #ffffff;
+.levy-compression-page .levy-primary-results .guided-kicker {
+  color: rgb(213 226 239);
 }
 
-.levy-result-card strong {
-  font-size: clamp(1.05rem, 2vw, 1.42rem);
-  overflow-wrap: anywhere;
+.levy-primary-results h3 {
+  font-size: 1.8rem;
+  font-weight: 940;
+  letter-spacing: 0;
+  line-height: 1.04;
+  margin: 0.12rem 0 0;
 }
 
-.levy-result-equation {
-  border-top: 1px solid rgb(var(--border-muted));
-  color: rgb(var(--color-slate-600));
-  font-size: 0.78rem;
-  font-weight: 560;
-  line-height: 1.32;
-  margin-top: 0.18rem;
-  overflow-wrap: anywhere;
-  padding-top: 0.55rem;
+.levy-primary-results-grid {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.levy-full-equation {
-  background: rgb(31 73 112 / 0.045);
-  border: 1px solid rgb(31 73 112 / 0.13);
+.levy-primary-results-grid article {
+  background: rgb(255 255 255 / 0.12);
+  border: 1px solid rgb(255 255 255 / 0.18);
   border-radius: 0.58rem;
   display: grid;
-  gap: 0.45rem;
-  padding: 0.9rem 1rem;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.82rem;
 }
 
-.levy-full-equation p {
-  color: rgb(var(--color-slate-500));
+.levy-primary-results-grid p {
   font-size: 0.72rem;
   font-weight: 900;
   line-height: 1.12;
   margin: 0;
+  opacity: 0.78;
   text-transform: uppercase;
 }
 
-.levy-full-equation div {
-  color: rgb(var(--brand-ink));
-  font-size: 0.98rem;
-  font-weight: 650;
-  line-height: 1.45;
+.levy-primary-results-grid strong {
+  font-size: 2rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 1;
   overflow-wrap: anywhere;
 }
 
-.levy-math-card footer strong {
-  font-size: clamp(1.15rem, 2.4vw, 1.95rem);
+.levy-calculation-flow {
+  display: grid;
+  gap: 0.85rem;
 }
 
-.levy-simplified-block {
-  justify-self: start;
+.levy-calculation-flow-header {
+  display: grid;
+  gap: 0.2rem;
 }
 
-.levy-assumptions-section {
-  background: rgb(31 73 112 / 0.055);
-  border-color: rgb(31 73 112 / 0.14);
+.levy-calculation-flow-header p:not(.guided-kicker) {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.92rem;
+  font-weight: 620;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.levy-calculation-step-grid {
+  display: grid;
+  gap: 0.72rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.levy-calculation-step {
+  background: rgb(var(--surface-muted) / 0.72);
+  border: 1px solid rgb(var(--border-muted));
+  border-left: 3px solid rgb(31 73 112 / 0.34);
+  border-radius: 0.45rem;
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.85rem;
+}
+
+.levy-step-header {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.levy-step-header span {
+  color: rgb(var(--color-secondary));
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.levy-step-header h3 {
+  color: rgb(var(--brand-ink));
+  font-family: var(--levy-heading-font);
+  font-size: 1rem;
+  font-weight: 850;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.levy-calculation-step > p {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.88rem;
+  font-weight: 540;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.levy-calculation-step dl {
+  display: grid;
+  gap: 0.42rem;
+  margin: 0;
+}
+
+.levy-calculation-step dl > div {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.levy-calculation-step dt {
+  color: rgb(var(--color-slate-500));
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.levy-calculation-step dd {
+  background: #ffffff;
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.45rem;
+  color: rgb(var(--brand-ink));
+  font-family: var(--levy-mono-font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0;
+  overflow-wrap: anywhere;
+  padding: 0.42rem 0.5rem;
+}
+
+.levy-calculation-step dl > div:last-child dd {
+  border-color: rgb(31 73 112 / 0.2);
+  color: rgb(31 73 112);
+  font-weight: 700;
+}
+
+.levy-compression-page .levy-assumptions-section {
+  background: rgb(31 73 112 / 0.045);
+  border-left: 3px solid rgb(31 73 112 / 0.28);
+  border-radius: 0 !important;
+  padding: var(--levy-section-padding-y) 0 var(--levy-section-padding-y) clamp(1rem, 2.2vw, 1.35rem) !important;
 }
 
 .levy-assumptions-section ul {
@@ -9824,8 +10229,84 @@ footer > [data-footer-resource-shell] {
   }
 
   body:has(.levy-compression-page) #pageTitle {
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
+    width: min(100%, 64rem);
+  }
+
+  body:has(.levy-compression-page) .mobile-review-canvas {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .levy-compression-page {
+    --levy-section-padding-y: 0.85rem;
+    gap: 1.05rem;
+    padding-left: 0.425rem;
+    padding-right: 0.425rem;
+  }
+
+  .levy-compression-page .tax-story-chapter {
+    border-radius: 0.72rem;
+    gap: 0.85rem;
+    padding: 0.85rem;
+  }
+
+  .levy-compression-page .tax-article-header {
+    gap: 0.55rem;
+    max-width: none;
+    padding-top: 0;
+  }
+
+  .levy-compression-page .guided-kicker,
+  .levy-compression-page .tax-article-panel .guided-kicker {
+    color: rgb(var(--color-secondary));
+  }
+
+  .levy-compression-page .tax-article-header h1,
+  .levy-compression-page .tax-article-section > h2,
+  .levy-compression-page .tax-article-two-column h2,
+  .levy-compression-page .levy-calculator-intro h2 {
+    color: rgb(var(--brand-ink));
+    letter-spacing: 0;
+    margin: 0;
+  }
+
+  .levy-compression-page .tax-article-header > p:not(.guided-kicker),
+  .levy-compression-page .tax-article-section > p:not(.guided-kicker),
+  .levy-compression-page .tax-article-two-column p:not(.guided-kicker),
+  .levy-compression-page .tax-article-closing p,
+  .levy-compression-page .levy-calculator-intro p:not(.guided-kicker) {
+    color: rgb(var(--brand-ink));
+    max-width: none;
+  }
+
+  .levy-compression-page .tax-article-pullquote {
+    border-left-width: 0.18rem;
+    border-radius: 0.55rem;
+    padding: 0.8rem 0.85rem;
+  }
+
+  .levy-compression-page .tax-article-two-column {
+    gap: 0.85rem;
+  }
+
+  .levy-compression-page .tax-article-two-column > div {
+    gap: 0.55rem;
+  }
+
+  .levy-compression-page .levy-explainer-list {
+    gap: 0.55rem;
+  }
+
+  .levy-compression-page .levy-explainer-list article,
+  .levy-compression-page .levy-default-kpis article {
+    gap: 0.28rem;
+    padding: 0.8rem;
   }
 
   .tax-shorthand-card {
@@ -9874,10 +10355,121 @@ footer > [data-footer-resource-shell] {
   .tax-prediction-kpis,
   .tax-prediction-steps,
   .tax-prediction-why-grid,
-  .levy-default-kpis,
-  .levy-calculator-inputs,
-  .levy-result-grid {
+  .levy-default-kpis {
     grid-template-columns: 1fr;
+  }
+
+  .levy-calculator-section {
+    gap: 0.85rem;
+    padding: 0.85rem;
+  }
+
+  .levy-calculator-intro {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .levy-calculator-form {
+    gap: 0.75rem;
+  }
+
+  .levy-calculator-inputs {
+    background: rgb(var(--surface-muted));
+    border: 1px solid rgb(var(--border-muted));
+    border-radius: 0.7rem;
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: 1fr;
+    padding: 0.7rem;
+  }
+
+  .levy-calculator-field {
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid rgb(var(--border-muted));
+    border-radius: 0.55rem;
+    gap: 0.55rem;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    padding: 0.58rem 0.65rem;
+  }
+
+  .levy-assumption-controls {
+    gap: 0.58rem;
+    grid-template-columns: 1fr;
+    padding: 0.7rem;
+  }
+
+  .levy-assumption-controls > .levy-calculator-field {
+    max-width: none;
+  }
+
+  .levy-assumption-inputs {
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .levy-assumption-inputs .levy-calculator-field {
+    align-items: stretch;
+    gap: 0.35rem;
+    grid-template-columns: 1fr;
+    padding: 0.58rem 0.62rem;
+  }
+
+  .levy-assumption-inputs .levy-calculator-field label {
+    min-height: 2.05em;
+  }
+
+  .levy-input-shell {
+    border: 1px solid rgb(var(--border-muted));
+    border-radius: 0.45rem;
+    min-height: 2.25rem;
+  }
+
+  .levy-input-shell:focus-within {
+    border-color: rgb(var(--brand-blue));
+    box-shadow: 0 0 0 0.16rem rgb(var(--brand-blue) / 0.12);
+  }
+
+  .levy-input-shell input {
+    padding: 0.35rem 0.48rem;
+    text-align: right;
+  }
+
+  .levy-input-shell span {
+    padding: 0 0.48rem 0 0.25rem;
+  }
+
+  .levy-primary-results {
+    bottom: 0.6rem;
+    gap: 0.65rem;
+    padding: 0.9rem;
+    position: sticky;
+    z-index: 5;
+  }
+
+  .levy-primary-results-grid {
+    gap: 0.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  .levy-primary-results-grid article {
+    align-items: center;
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 0.62rem 0.7rem;
+  }
+
+  .levy-primary-results-grid strong {
+    text-align: right;
+  }
+
+  .levy-calculation-step-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .levy-calculation-step {
+    gap: 0.55rem;
+    padding: 0.72rem;
   }
 
   .tax-prediction-kpi,
@@ -11536,6 +12128,11 @@ footer > [data-footer-resource-shell] {
   .comp-page-title p:last-child {
     font-size: 0.96rem;
     line-height: 1.52;
+  }
+
+  body:has(.levy-compression-page) .levy-author-byline p {
+    font-size: 1rem;
+    line-height: 1.58;
   }
 
   .comp-story-question,
