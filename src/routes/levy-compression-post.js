@@ -341,7 +341,7 @@ function renderScenarioSection() {
     {
       title: "Scenario C",
       facts: ["Your value rises 5%.", "County values rise 10%.", "Budgets rise 3%."],
-      result: "Your taxes may rise less than average."
+      result: "Your taxes may rise less than average, or decrease."
     }
   ];
 
@@ -427,6 +427,23 @@ function setSummary(form, id, value) {
   if (target) target.textContent = value;
 }
 
+function setTextWithLineBreaks(target, value) {
+  if (!target) return;
+  const text = String(value);
+  if (!text.includes("\n")) {
+    target.textContent = text;
+    return;
+  }
+
+  target.replaceChildren(
+    ...text.split("\n").map(line => {
+      const span = document.createElement("span");
+      span.textContent = line;
+      return span;
+    })
+  );
+}
+
 function setCalculationStep(form, id, formula, substitution = "--", result = "--", secondary = "--") {
   const formulaTarget = form.querySelector(`[data-levy-step-formula="${id}"]`);
   const substitutionTarget = form.querySelector(`[data-levy-step-substitution="${id}"]`);
@@ -435,7 +452,7 @@ function setCalculationStep(form, id, formula, substitution = "--", result = "--
   if (formulaTarget) formulaTarget.textContent = formula;
   if (substitutionTarget) substitutionTarget.textContent = substitution;
   if (resultTarget) resultTarget.textContent = result;
-  if (secondaryTarget) secondaryTarget.textContent = secondary;
+  setTextWithLineBreaks(secondaryTarget, secondary);
 }
 
 function setDefaultEquations(form) {
@@ -505,7 +522,7 @@ function updateCalculator(form) {
     "2026 assessed value × adjusted rate",
     `${formatMoney(values.assessed2026)} × ${formatPercent(newEtr)}`,
     formatMoney(estimatedTaxes),
-    `Annual change: ${formatSignedMoney(annualChange)} · Monthly impact: ${formatSignedMoney(monthlyChange)}`
+    `Yearly: ${formatSignedMoney(annualChange)}\nMonthly: ${formatSignedMoney(monthlyChange)}`
   );
 }
 
@@ -582,7 +599,7 @@ export function renderLevyCompressionPost() {
   pageTitle.innerHTML = `
     <div class="comp-page-title levy-page-title">
       <p class="guided-kicker">Educational Post</p>
-      <h1>Your Assessment Went Up. Will Your Taxes Go Up the Same Amount?</h1>
+      <h1>Your Assessment Went Up. Will Your Taxes Go Up by the Same Percentage?</h1>
       <p>A plain-language guide for homeowners worried about rising valuations.</p>
       <div class="levy-author-byline">
         <p>By Max Quattromani</p>
