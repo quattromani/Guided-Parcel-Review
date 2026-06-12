@@ -9263,6 +9263,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .levy-compression-page .tax-article-header h1,
+.levy-compression-page .tax-article-header h2,
 .levy-compression-page .tax-article-section > h2,
 .levy-compression-page .tax-article-two-column h2,
 .levy-compression-page .levy-calculator-intro h2 {
@@ -9309,6 +9310,19 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   max-width: 68ch;
 }
 
+.levy-basic-list {
+  color: rgb(var(--brand-ink));
+  display: grid;
+  font-family: var(--levy-body-font);
+  font-size: 1.08rem;
+  font-weight: 500;
+  gap: 0.35rem;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 68ch;
+  padding-left: 1.35rem;
+}
+
 .levy-compression-page .tax-article-section.tax-article-closing > p.tax-article-final-source {
   color: rgb(var(--color-slate-500));
   font-family: var(--levy-heading-font);
@@ -9341,6 +9355,58 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .levy-compression-page .levy-teaching-example {
   border-left: 3px solid rgb(148 70 86 / 0.52);
   padding: var(--levy-section-padding-y) 0 var(--levy-section-padding-y) clamp(1rem, 2.2vw, 1.3rem) !important;
+}
+
+.levy-scenario-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.levy-scenario-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.levy-scenario-grid article {
+  background: rgb(var(--surface-muted) / 0.72);
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 0.58rem;
+  display: grid;
+  gap: 0.72rem;
+  padding: 0.9rem;
+}
+
+.levy-scenario-grid span {
+  color: rgb(var(--color-secondary));
+  font-family: var(--levy-heading-font);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.levy-scenario-grid ul {
+  color: rgb(var(--brand-ink));
+  display: grid;
+  font-family: var(--levy-body-font);
+  font-size: 0.98rem;
+  gap: 0.24rem;
+  line-height: 1.38;
+  margin: 0;
+  padding-left: 1.05rem;
+}
+
+.levy-scenario-grid p {
+  border-top: 1px solid rgb(var(--border-muted));
+  color: rgb(var(--brand-ink));
+  font-family: var(--levy-heading-font);
+  font-size: 0.94rem;
+  font-weight: 650;
+  line-height: 1.35;
+  margin: 0;
+  padding-top: 0.65rem;
 }
 
 .levy-default-kpis {
@@ -10275,6 +10341,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   }
 
   .levy-compression-page .tax-article-header h1,
+  .levy-compression-page .tax-article-header h2,
   .levy-compression-page .tax-article-section > h2,
   .levy-compression-page .tax-article-two-column h2,
   .levy-compression-page .levy-calculator-intro h2 {
@@ -10314,6 +10381,14 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .levy-compression-page .levy-default-kpis article {
     gap: 0.28rem;
     padding: 0.8rem;
+  }
+
+  .levy-basic-list {
+    max-width: none;
+  }
+
+  .levy-scenario-grid {
+    grid-template-columns: 1fr;
   }
 
   .tax-shorthand-card {

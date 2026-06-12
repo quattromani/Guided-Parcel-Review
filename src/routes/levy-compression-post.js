@@ -148,11 +148,17 @@ function renderOpeningSection() {
   return `
     <section class="tax-article-section tax-story-chapter tax-article-opening levy-article-narrow" aria-labelledby="levyOpeningTitle">
       <header class="tax-article-header">
-        <p class="guided-kicker">Opening Question</p>
-        <h1 id="levyOpeningTitle">Your Value Went Up. Will Your Taxes Go Up By The Same Amount?</h1>
-        <p>Not necessarily. A higher assessment matters, but it is only one part of the property tax equation.</p>
+        <p class="guided-kicker">Short Answer</p>
+        <h2 id="levyOpeningTitle">Usually, no.</h2>
+        <p>A higher assessment matters, but it is only one part of the property-tax equation.</p>
       </header>
-      <p>The important comparison is not only how much your value changed. It is how your value changed compared with the overall tax base and the final budget requests from your taxing districts.</p>
+      <p>Your final tax bill depends on three things:</p>
+      <ol class="levy-basic-list">
+        <li>How much your property value changed.</li>
+        <li>How much other property values changed.</li>
+        <li>How much local governments need to collect.</li>
+      </ol>
+      <p>The important comparison is not just how much your value went up. It is how your increase compares with the rest of the county.</p>
     </section>
   `;
 }
@@ -161,13 +167,14 @@ function renderTeachingExampleSection() {
   return `
     <section class="tax-article-section tax-story-chapter levy-article-narrow levy-teaching-example" aria-labelledby="levyExampleTitle">
       <div>
-        <p class="guided-kicker">Simple Teaching Example</p>
-        <h2 id="levyExampleTitle">When values rise faster than budgets, the tax rate can move down</h2>
+        <p class="guided-kicker">Why Taxes Do Not Always Rise With Assessments</p>
+        <h2 id="levyExampleTitle">When values rise faster than budgets, tax rates can move down</h2>
       </div>
+      <p>If property values rise faster than local budgets, the tax rate can adjust downward. That rate adjustment is called levy compression.</p>
       <aside class="tax-article-pullquote tax-article-pullquote-subtle">
-        If assessments rise about <strong>10%</strong> and budgets rise about <strong>3%</strong>, the levy rate could decline enough to offset part of that growth.
+        If assessments rise about <strong>10%</strong> and budgets rise about <strong>3%</strong>, the levy may compress by about <strong>7%</strong> to balance the difference.
       </aside>
-      <p>This is a plain-language shortcut, not an exact statutory calculation. The actual result depends on final budgets, taxing districts, credits, exemptions, bond levies, TIF, and other property-specific factors.</p>
+      <p>This is a teaching shortcut, not an official tax calculation. Your actual bill depends on your taxing districts, exemptions, credits, bond levies, TIF districts, and final budgets.</p>
     </section>
   `;
 }
@@ -176,9 +183,9 @@ function renderDefaultAssumptionsSection() {
   return `
     <section class="tax-article-section tax-story-chapter levy-assumptions-snapshot levy-article-narrow" aria-labelledby="levyDefaultsTitle">
       <div class="levy-article-copy">
-        <p class="guided-kicker">Key Assumptions</p>
-        <h2 id="levyDefaultsTitle">The estimator starts with countywide assumptions</h2>
-        <p>These defaults are starting points for the calculator. They are assumptions or countywide figures, not final tax rates.</p>
+        <p class="guided-kicker">Default Assumptions</p>
+        <h2 id="levyDefaultsTitle">The calculator starts with countywide estimates</h2>
+        <p>Most homeowners can leave these alone. They are starting points, not final tax rates.</p>
       </div>
       <div class="levy-default-kpis" aria-label="Default assumptions">
         <article>
@@ -192,9 +199,9 @@ function renderDefaultAssumptionsSection() {
           <p>An assumption/example for budget growth, not a guarantee.</p>
         </article>
         <article>
-          <span>Countywide ETR placeholder</span>
+          <span>Effective tax rate placeholder</span>
           <strong>1.254%</strong>
-          <p>The 2025 county-wide average shown only until a parcel-specific ETR can be estimated.</p>
+          <p>The 2025 county-wide average shown only until a parcel-specific effective tax rate can be estimated.</p>
         </article>
       </div>
     </section>
@@ -213,8 +220,8 @@ function renderExplainerSection() {
     <section class="tax-article-section tax-story-chapter levy-article-narrow" aria-labelledby="levyExplainerTitle">
       <div class="tax-article-two-column levy-explainer-layout">
         <div class="levy-article-copy">
-          <p class="guided-kicker">What Is Levy Compression?</p>
-          <h2 id="levyExplainerTitle">Levy compression is the rate adjustment that can happen when the tax base grows</h2>
+          <p class="guided-kicker">Plain-Language Terms</p>
+          <h2 id="levyExplainerTitle">A few words explain most of the tax math</h2>
           <p>Assessments distribute value among properties. Budgets determine how much public money must be collected. Levies convert those budget requests into tax rates.</p>
           <p>If the whole tax base grows, the same budget can be funded with a lower rate. If budgets also rise, the final levy depends on the relationship between budget growth and value growth.</p>
         </div>
@@ -235,13 +242,13 @@ function renderCalculatorSection() {
   return `
     <section class="tax-article-section tax-story-chapter levy-calculator-section levy-wide-panel" aria-labelledby="levyCalculatorTitle">
       <div class="levy-calculator-intro">
-        <p class="guided-kicker">Embedded Interactive Estimator</p>
-        <h2 id="levyCalculatorTitle">Estimate Your Property Tax Impact</h2>
-        <p>Enter your assessed values and taxes paid to see how levy compression could affect your estimated tax bill.</p>
+        <p class="guided-kicker">Estimate Your Own Result</p>
+        <h2 id="levyCalculatorTitle">Enter your numbers to see a rough estimate</h2>
+        <p>This is not a tax bill. It is a quick way to see how assessment changes, countywide value growth, and budget growth can work together.</p>
       </div>
       <form class="levy-calculator-form" data-levy-calculator novalidate>
         <section class="levy-primary-input-group" aria-labelledby="levyPrimaryInputsTitle">
-          <p class="guided-kicker" id="levyPrimaryInputsTitle">What You'll Need</p>
+          <p class="guided-kicker" id="levyPrimaryInputsTitle">Start With These Three Numbers</p>
           <div class="levy-calculator-inputs levy-primary-inputs" aria-label="Primary property inputs">
           ${inputField({
             id: "levyAssessed2026",
@@ -271,16 +278,16 @@ function renderCalculatorSection() {
         </section>
         <section class="levy-assumption-controls" aria-labelledby="levyAssumptionControlsTitle">
           <div class="levy-assumption-controls-header">
-            <p class="guided-kicker" id="levyAssumptionControlsTitle">Adjust Assumptions</p>
-            <p>Test different budget-growth or countywide-growth scenarios.</p>
+            <p class="guided-kicker" id="levyAssumptionControlsTitle">Optional Assumptions</p>
+            <p>Most homeowners can leave these alone. The default values use countywide estimates.</p>
           </div>
           <div class="levy-assumption-inputs">
-            ${inputField({ id: "levyBudgetIncrease", label: "Expected budget increase", visualLabel: "Budget Growth", value: DEFAULTS.budgetIncrease.toFixed(2), suffix: "%" })}
-            ${inputField({ id: "levyValueGrowth", label: "Countywide valuation growth", visualLabel: "County Growth", value: DEFAULTS.valueGrowth.toFixed(2), suffix: "%" })}
+            ${inputField({ id: "levyBudgetIncrease", label: "Budget growth", value: DEFAULTS.budgetIncrease.toFixed(2), suffix: "%" })}
+            ${inputField({ id: "levyValueGrowth", label: "Countywide value growth", value: DEFAULTS.valueGrowth.toFixed(2), suffix: "%" })}
           </div>
           ${inputField({
             id: "levyCurrentEtrOverride",
-            label: "Current county ETR",
+            label: "Effective tax rate",
             value: DEFAULTS.currentEtrOverride,
             placeholder: DEFAULTS.currentEtrOverridePlaceholder,
             suffix: "%"
@@ -308,13 +315,53 @@ function renderCalculatorSection() {
               <p>Each step updates as the estimator values change.</p>
             </div>
             <div class="levy-calculation-step-grid">
-              ${calculationStep("currentEtr", "Step 1", "Current ETR", "Start with the effective rate implied by 2025 taxes and value.", "2025 taxes ÷ 2025 assessed value")}
-              ${calculationStep("newEtr", "Step 2", "Adjusted ETR", "Adjust the current rate for the relationship between budget growth and countywide value growth.", "Current ETR × ((1 + budget increase) ÷ (1 + countywide growth))")}
-              ${calculationStep("taxes2026", "Step 3", "Estimated Taxes", "Apply the adjusted rate to the 2026 assessed value, then compare it with 2025 taxes.", "2026 assessed value × adjusted ETR", "--", "--", "--")}
+              ${calculationStep("currentEtr", "Step 1", "Current effective tax rate", "Start with the rate implied by 2025 taxes and value.", "2025 taxes ÷ 2025 assessed value")}
+              ${calculationStep("newEtr", "Step 2", "Adjusted effective tax rate", "Adjust the current rate for budget growth and countywide value growth.", "Current rate × ((1 + budget growth) ÷ (1 + countywide growth))")}
+              ${calculationStep("taxes2026", "Step 3", "Estimated taxes", "Apply the adjusted rate to the 2026 assessed value, then compare it with 2025 taxes.", "2026 assessed value × adjusted rate", "--", "--", "--")}
             </div>
           </section>
         </section>
       </form>
+    </section>
+  `;
+}
+
+function renderScenarioSection() {
+  const scenarios = [
+    {
+      title: "Scenario A",
+      facts: ["Your value rises 10%.", "County values rise 10%.", "Budgets rise 3%."],
+      result: "Your taxes may rise only slightly."
+    },
+    {
+      title: "Scenario B",
+      facts: ["Your value rises 20%.", "County values rise 10%.", "Budgets rise 3%."],
+      result: "Your taxes may rise more than average."
+    },
+    {
+      title: "Scenario C",
+      facts: ["Your value rises 5%.", "County values rise 10%.", "Budgets rise 3%."],
+      result: "Your taxes may rise less than average."
+    }
+  ];
+
+  return `
+    <section class="tax-article-section tax-story-chapter levy-scenario-section levy-wide-panel" aria-labelledby="levyScenarioTitle">
+      <div class="levy-article-copy">
+        <p class="guided-kicker">Three Simple Scenarios</p>
+        <h2 id="levyScenarioTitle">Your change matters most when compared with everyone else's change</h2>
+      </div>
+      <div class="levy-scenario-grid">
+        ${scenarios.map(scenario => `
+          <article>
+            <span>${escapeHtml(scenario.title)}</span>
+            <ul>
+              ${scenario.facts.map(fact => `<li>${escapeHtml(fact)}</li>`).join("")}
+            </ul>
+            <p><strong>Result:</strong> ${escapeHtml(scenario.result)}</p>
+          </article>
+        `).join("")}
+      </div>
     </section>
   `;
 }
@@ -348,9 +395,11 @@ function renderAssumptionsSection() {
 function renderClosingSection() {
   return `
     <section class="tax-article-section tax-story-chapter tax-article-closing levy-article-narrow" aria-label="Closing takeaway">
-      <p>If your valuation increased sharply, that does not automatically mean your taxes will rise by the same percentage. Levy compression is one mechanism that can reduce the tax rate when property values rise faster than local budgets.</p>
-      <p>The important question is not simply how much your value changed, but how your value changed relative to the overall tax base. Because assessments determine each property's share of that tax base, two properties in the same taxing district can experience very different tax changes even when they are subject to the same levies.</p>
-      <p class="tax-article-final-source">Sources: Gage County 2026 Report & Opinion countywide valuation growth figure; local budget-growth and ETR assumptions entered by the user.</p>
+      <p class="guided-kicker">The One Thing To Remember</p>
+      <h2>If your assessment rises 20%, your taxes do not automatically rise 20%.</h2>
+      <p>Your final bill depends on countywide value growth, local government budgets, exemptions, credits, bond levies, TIF districts, and your specific taxing districts.</p>
+      <p>Because assessments determine each property's share of the tax base, two properties in the same taxing district can experience very different tax changes even when they are subject to the same levies.</p>
+      <p class="tax-article-final-source">Sources: Gage County 2026 Report & Opinion countywide valuation growth figure; local budget-growth and effective-tax-rate assumptions entered by the user.</p>
     </section>
   `;
 }
@@ -391,8 +440,8 @@ function setCalculationStep(form, id, formula, substitution = "--", result = "--
 
 function setDefaultEquations(form) {
   setCalculationStep(form, "currentEtr", "2025 taxes ÷ 2025 assessed value");
-  setCalculationStep(form, "newEtr", "Current ETR × ((1 + budget increase) ÷ (1 + countywide growth))");
-  setCalculationStep(form, "taxes2026", "2026 assessed value × adjusted ETR");
+  setCalculationStep(form, "newEtr", "Current rate × ((1 + budget growth) ÷ (1 + countywide growth))");
+  setCalculationStep(form, "taxes2026", "2026 assessed value × adjusted rate");
 }
 
 function updateCalculator(form) {
@@ -445,7 +494,7 @@ function updateCalculator(form) {
   setCalculationStep(
     form,
     "newEtr",
-    "Current ETR × ((1 + budget increase) ÷ (1 + countywide growth))",
+    "Current rate × ((1 + budget growth) ÷ (1 + countywide growth))",
     `${formatPercent(currentEtr)} × (${formatFactor(budgetFactor)} ÷ ${formatFactor(valueGrowthFactor)})`,
     formatPercent(newEtr),
     `Estimated compression: ${formatPercent(compression, 2)}`
@@ -453,7 +502,7 @@ function updateCalculator(form) {
   setCalculationStep(
     form,
     "taxes2026",
-    "2026 assessed value × adjusted ETR",
+    "2026 assessed value × adjusted rate",
     `${formatMoney(values.assessed2026)} × ${formatPercent(newEtr)}`,
     formatMoney(estimatedTaxes),
     `Annual change: ${formatSignedMoney(annualChange)} · Monthly impact: ${formatSignedMoney(monthlyChange)}`
@@ -473,8 +522,8 @@ function initLevyCompressionCalculator(root = document) {
   function syncCurrentEtrLabel() {
     if (!currentEtrLabel) return;
     currentEtrLabel.textContent = parcelInputsStarted || currentEtrWasEdited
-      ? "2025 ETR"
-      : "Current county ETR";
+      ? "2025 effective tax rate"
+      : "Effective tax rate";
   }
 
   function syncCurrentEtrInput() {
@@ -533,8 +582,8 @@ export function renderLevyCompressionPost() {
   pageTitle.innerHTML = `
     <div class="comp-page-title levy-page-title">
       <p class="guided-kicker">Educational Post</p>
-      <h1>Levy Compression</h1>
-      <p>Why a higher valuation does not automatically mean your taxes rise by the same percentage.</p>
+      <h1>Your Assessment Went Up. Will Your Taxes Go Up the Same Amount?</h1>
+      <p>A plain-language guide for homeowners worried about rising valuations.</p>
       <div class="levy-author-byline">
         <p>By Max Quattromani</p>
       </div>
@@ -544,10 +593,11 @@ export function renderLevyCompressionPost() {
   canvas.innerHTML = `
     <article class="tax-shorthand-page levy-compression-page tax-article-panel" aria-label="Levy compression educational article">
       ${renderOpeningSection()}
-      ${renderExplainerSection()}
       ${renderTeachingExampleSection()}
-      ${renderDefaultAssumptionsSection()}
       ${renderCalculatorSection()}
+      ${renderScenarioSection()}
+      ${renderExplainerSection()}
+      ${renderDefaultAssumptionsSection()}
       ${renderAssumptionsSection()}
       ${renderClosingSection()}
     </article>
