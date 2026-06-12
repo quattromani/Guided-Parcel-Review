@@ -78,6 +78,7 @@ import {
   propertyAnalyticsContext,
   trackDirectStartAcknowledged,
   trackDirectStartView,
+  trackArticleView,
   trackFormOpen,
   trackParcelView,
   trackResourceClick,
@@ -133,6 +134,12 @@ async function main() {
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
     setFooterResourcesVisible(false);
     renderLevyCompressionPost();
+    trackArticleView({
+      contentType: "article",
+      articleId: "levy-compression",
+      articleTitle: "Levy Compression",
+      county: "gage"
+    });
     return;
   }
 

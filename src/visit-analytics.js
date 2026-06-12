@@ -75,6 +75,11 @@ export function trackParcelView(context = {}) {
   trackVisitEvent("parcel_view");
 }
 
+export function trackArticleView(context = {}) {
+  initVisitAnalytics(context);
+  trackVisitEvent("article_view");
+}
+
 export function configureStepTracking(routes = []) {
   analyticsState.routeOrder = routes.filter(route => !route.secondary).map(route => route.id);
 }
@@ -191,7 +196,10 @@ function normalizeContext(context = {}) {
     parcelId: context.parcelId || "",
     invite: inviteToken(),
     propertyClass: context.propertyClass || "",
-    county: context.county || ""
+    county: context.county || "",
+    contentType: context.contentType || "",
+    articleId: context.articleId || "",
+    articleTitle: context.articleTitle || ""
   };
 }
 
