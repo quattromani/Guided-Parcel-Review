@@ -1,4 +1,5 @@
 import { escapeHtml } from "../utils/html.js";
+import { loadPropertyManifest } from "../data-service.js";
 
 const DEFAULTS = {
   taxesPaid: "",
@@ -30,6 +31,10 @@ function numberFromInput(value) {
   if (value === null || value === undefined || value === "") return null;
   const parsed = Number(`${value}`.replace(/[$,%\s,]/g, ""));
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function normalizePropertyLookup(value) {
+  return `${value ?? ""}`.replace(/[^a-z0-9]/gi, "").toLowerCase();
 }
 
 function formatMoney(value) {
@@ -422,6 +427,100 @@ function calculatorValues(form) {
   };
 }
 
+function getLevyPropertyRequest() {
+  if (typeof window === "undefined") return null;
+
+  const params = new URLSearchParams(window.location.search);
+  return params.get("parcel")
+    ?? params.get("pid")
+    ?? params.get("record")
+    ?? params.get("recordCard")
+    ?? params.get("property");
+}
+
+function getRecordCardLookupTokens(property = {}) {
+  const pathParts = `${property.recordCardPath ?? ""}`.split("/");
+  const fileName = pathParts[pathParts.length - 1] ?? "";
+  const recordCardId = fileName.replace(/-record-card\.json$/i, "").replace(/^(residential|commercial|agricultural)-/i, "");
+
+  return [
+    property.id,
+    property.parcelId,
+    property.recordCardPath,
+    fileName,
+    recordCardId
+  ].map(normalizePropertyLookup).filter(Boolean);
+}
+
+function findLevyPropertyEntry(manifest, requestedValue) {
+  const requestedKey = normalizePropertyLookup(requestedValue);
+  if (!requestedKey) return null;
+
+  return (manifest.properties ?? []).find(property => {
+    const tokens = getRecordCardLookupTokens(property);
+    return tokens.some(token => token === requestedKey || token.endsWith(requestedKey));
+  }) ?? null;
+}
+
+function findYearValue(rows, year, keys = []) {
+  const row = Array.isArray(rows) ? rows.find(item => item?.year === year || item?.taxYear === year) : null;
+  if (!row) return null;
+
+  for (const key of keys) {
+    const value = row[key];
+    if (Number.isFinite(value)) return value;
+  }
+
+  return null;
+}
+
+function getLevyPrefillValues(recordCard) {
+  const snapshot = recordCard?.guidedSnapshot ?? {};
+  const assessed2026 = findYearValue(snapshot.taxpayerHistory, 2026, ["assessedValue"])
+    ?? findYearValue(snapshot.assessedValueBreakdown, 2026, ["total"]);
+  const assessed2025 = findYearValue(snapshot.taxpayerHistory, 2025, ["assessedValue"])
+    ?? findYearValue(snapshot.assessedValueBreakdown, 2025, ["total"]);
+  const taxesPaid = findYearValue(snapshot.taxStatements, 2025, ["netAmountDue", "totalTaxesDue"])
+    ?? findYearValue(snapshot.taxpayerHistory, 2025, ["taxes"]);
+
+  return {
+    assessed2026,
+    assessed2025,
+    taxesPaid
+  };
+}
+
+function setInputValue(input, value, formatter = value => `${value}`) {
+  if (!input || !Number.isFinite(value)) return;
+  input.value = formatter(value);
+}
+
+function applyLevyPrefill(form, values) {
+  setInputValue(form.querySelector("#levyAssessed2026"), values.assessed2026, wholeMoneyFormatter.format);
+  setInputValue(form.querySelector("#levyAssessed2025"), values.assessed2025, wholeMoneyFormatter.format);
+  setInputValue(form.querySelector("#levyTaxesPaid"), values.taxesPaid, moneyFormatter.format);
+
+  form.querySelector("#levyAssessed2025")?.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+async function hydrateLevyCalculatorFromUrl(form) {
+  const requestedValue = getLevyPropertyRequest();
+  if (!requestedValue) return;
+
+  try {
+    const manifest = await loadPropertyManifest();
+    const property = findLevyPropertyEntry(manifest, requestedValue);
+    if (!property?.recordCardPath) return;
+
+    const response = await fetch(property.recordCardPath);
+    if (!response.ok) return;
+
+    applyLevyPrefill(form, getLevyPrefillValues(await response.json()));
+  } catch (error) {
+    console.warn("Unable to prefill levy compression estimator from the requested property.", error);
+  }
+}
+
 function setSummary(form, id, value) {
   const target = form.querySelector(`[data-levy-summary="${id}"]`);
   if (target) target.textContent = value;
@@ -580,6 +679,7 @@ function initLevyCompressionCalculator(root = document) {
   syncCurrentEtrInput();
   syncCurrentEtrLabel();
   updateCalculator(form);
+  hydrateLevyCalculatorFromUrl(form);
 }
 
 export function isLevyCompressionPostRequest(searchParams = new URLSearchParams(window.location.search)) {
