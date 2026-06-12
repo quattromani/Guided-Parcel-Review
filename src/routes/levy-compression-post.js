@@ -490,15 +490,22 @@ function getLevyPrefillValues(recordCard) {
   };
 }
 
+function getLevyPrefillAddress(property, recordCard) {
+  return `${property?.situsAddress ?? recordCard?.guidedSnapshot?.parcel?.situsAddress ?? ""}`.trim();
+}
+
 function setInputValue(input, value, formatter = value => `${value}`) {
   if (!input || !Number.isFinite(value)) return;
   input.value = formatter(value);
 }
 
-function applyLevyPrefill(form, values) {
+function applyLevyPrefill(form, values, address = "") {
   setInputValue(form.querySelector("#levyAssessed2026"), values.assessed2026, wholeMoneyFormatter.format);
   setInputValue(form.querySelector("#levyAssessed2025"), values.assessed2025, wholeMoneyFormatter.format);
   setInputValue(form.querySelector("#levyTaxesPaid"), values.taxesPaid, moneyFormatter.format);
+
+  const title = form.closest(".levy-calculator-section")?.querySelector("#levyCalculatorTitle");
+  if (title && address) title.textContent = `See a rough estimate for ${address}`;
 
   form.querySelector("#levyAssessed2025")?.dispatchEvent(new Event("input", { bubbles: true }));
 }
@@ -515,7 +522,8 @@ async function hydrateLevyCalculatorFromUrl(form) {
     const response = await fetch(property.recordCardPath);
     if (!response.ok) return;
 
-    applyLevyPrefill(form, getLevyPrefillValues(await response.json()));
+    const recordCard = await response.json();
+    applyLevyPrefill(form, getLevyPrefillValues(recordCard), getLevyPrefillAddress(property, recordCard));
   } catch (error) {
     console.warn("Unable to prefill levy compression estimator from the requested property.", error);
   }
