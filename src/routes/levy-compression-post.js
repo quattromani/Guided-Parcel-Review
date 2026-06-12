@@ -405,9 +405,9 @@ function renderClosingSection() {
 }
 
 function calculatorValues(form) {
-  const taxesPaid = numberFromInput(form.querySelector("#levyTaxesPaid")?.value);
-  const assessed2025 = numberFromInput(form.querySelector("#levyAssessed2025")?.value);
-  const assessed2026 = numberFromInput(form.querySelector("#levyAssessed2026")?.value);
+  const taxesPaid = numberFromInput(form.querySelector("#levyTaxesPaid")?.value) ?? DEFAULTS.taxesPaidPlaceholder;
+  const assessed2025 = numberFromInput(form.querySelector("#levyAssessed2025")?.value) ?? DEFAULTS.assessed2025Placeholder;
+  const assessed2026 = numberFromInput(form.querySelector("#levyAssessed2026")?.value) ?? DEFAULTS.assessed2026Placeholder;
   const budgetIncrease = numberFromInput(form.querySelector("#levyBudgetIncrease")?.value);
   const valueGrowth = numberFromInput(form.querySelector("#levyValueGrowth")?.value);
   const currentEtrOverride = numberFromInput(form.querySelector("#levyCurrentEtrOverride")?.value);
