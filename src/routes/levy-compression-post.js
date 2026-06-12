@@ -599,7 +599,7 @@ export function renderLevyCompressionPost() {
   pageTitle.innerHTML = `
     <div class="comp-page-title levy-page-title">
       <p class="guided-kicker">Educational Post</p>
-      <h1>Your Assessment Went Up. Will Your Taxes Go Up by the Same Percentage?</h1>
+      <h1>Your Assessment Went Up. Does That Mean Your Tax Bill Will Go Up Just as Much?</h1>
       <p>A plain-language guide for homeowners worried about rising valuations.</p>
       <div class="levy-author-byline">
         <p>By Max Quattromani</p>
