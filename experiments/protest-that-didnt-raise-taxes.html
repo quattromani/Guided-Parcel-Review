@@ -3,18 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Protest That Didn't Raise Taxes | Guided Parcel Review</title>
+  <title>Assessment Up. Protest Denied. Taxes Down. | Guided Parcel Review</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700;800;900&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./protest-that-didnt-raise-taxes.css" />
+  <script defer src="./protest-that-didnt-raise-taxes.js"></script>
 </head>
 <body>
   <main class="case-shell">
     <header class="case-title">
       <p class="kicker">Case Study</p>
-      <h1>The Protest That Didn't Raise Taxes</h1>
-      <p>In 2025, this property owner protested a valuation increase before the Board of Equalization. The protest was denied. Surprisingly, the property's taxes still went down.</p>
+      <h1>Assessment Up. Protest Denied. Taxes Down.</h1>
+      <p class="hero-subtitle">In 2025, a property owner appeared before the Board of Equalization to protest a valuation increase. The Board left the value unchanged. The following year, the owner's taxes went down anyway.</p>
+      <p class="hero-context">This case study follows that property through two assessment cycles and shows a repeatable way to think about valuation changes and tax impact.</p>
       <aside>Assessment changes and tax changes are not always the same thing.</aside>
     </header>
 
@@ -22,14 +24,14 @@
       <section class="chapter narrow protest-chapter" aria-labelledby="protestTitle">
         <div class="chapter-copy">
           <p class="kicker">1. The Protest</p>
-          <h2 id="protestTitle">A higher homesite value, no valuation adjustment</h2>
-          <p>The 2025 protest focused primarily on an increase in homesite value. The owner appeared before the Board of Equalization, and the board left the valuation unchanged.</p>
+          <h2 id="protestTitle">The Board Left The Value Unchanged</h2>
+          <p>The record shows a 2025 protest over the first-acre homesite value adjustment. The dwelling, outbuilding, and agricultural land components did not change that year.</p>
         </div>
         <div class="timeline-card">
-          <span>2025</span>
+          <span>July 21, 2025</span>
           <ul>
             <li>Property owner appeared before the Board of Equalization.</li>
-            <li>Protest focused primarily on an increase in homesite value.</li>
+            <li>Protest focused on a roughly $10,000 first-acre homesite increase.</li>
             <li>Board left valuation unchanged.</li>
           </ul>
         </div>
@@ -55,9 +57,22 @@
       <section class="chapter wide tax-result-chapter" aria-labelledby="actualTitle">
         <div class="chapter-copy narrow-copy">
           <p class="kicker">2. What Actually Happened?</p>
-          <h2 id="actualTitle">The protest was unsuccessful. The tax bill still went down.</h2>
-          <p>Even though the protest was unsuccessful, taxes declined. This happened because taxes are influenced by more than a property's individual assessment.</p>
+          <h2 id="actualTitle">The Outcome Was Unexpected</h2>
+          <p>The Board left the valuation unchanged. Even so, the property's 2025 taxes did not increase. They decreased.</p>
         </div>
+        <aside class="assumption-callout" aria-label="Common assumption compared with actual result">
+          <div>
+            <span>Many people assume</span>
+            <strong>Higher Assessment = Higher Taxes</strong>
+          </div>
+          <div class="outcome-side">
+            <p>This property produced a different outcome.</p>
+            <div class="up-down-visual" aria-label="Assessment rose while taxes fell">
+              <span>Assessment ↑</span>
+              <span>Taxes ↓</span>
+            </div>
+          </div>
+        </aside>
         <div class="tax-kpi-grid">
           <article>
             <span>2024 Net Taxes</span>
@@ -73,55 +88,59 @@
             <small>about -3.6%</small>
           </article>
         </div>
-        <div class="formula-stack" aria-label="Factors that shape the final tax bill">
-          <span>Assessment Change</span>
-          <b>+</b>
-          <span>Countywide Value Growth</span>
-          <b>+</b>
-          <span>Levy Compression</span>
-          <b>+</b>
-          <span>Budget Growth</span>
-          <b>=</b>
-          <strong>Final Tax Bill</strong>
-        </div>
       </section>
 
       <section class="chapter narrow why-chapter" aria-labelledby="whyTitle">
         <div class="chapter-copy">
-          <p class="kicker">3. Why Did Taxes Go Down?</p>
-          <h2 id="whyTitle">The levy compressed faster than this property's value increased</h2>
-          <p>When many properties increase together, levy rates often compress. A property can receive a higher valuation and still experience little change, or even a decrease, in taxes.</p>
+          <p class="kicker">3. How Should We Think About This?</p>
+          <h2 id="whyTitle">Start with movement, not just value</h2>
+          <p>The useful question is not only whether this property increased. It is how this property moved compared with the larger tax base and the revenue needed to fund local budgets.</p>
         </div>
-        <div class="compression-grid">
+        <div class="framework-grid">
           <article>
-            <span>Property Value Change</span>
+            <span>Property Movement</span>
+            <h3>How much did this property move?</h3>
             <strong>+4.75%</strong>
-            <div class="meter"><i style="--w: 47.5%"></i></div>
+            <p>The parcel's assessed value moved from $210,510 to $220,510.</p>
           </article>
           <article>
-            <span>Gross Levy Movement</span>
-            <strong>-10.03%</strong>
-            <div class="meter reverse"><i style="--w: 100%"></i></div>
+            <span>County Movement</span>
+            <h3>How much did everyone else move?</h3>
+            <strong>Countywide growth</strong>
+            <p>When many properties increase together, the tax base expands.</p>
           </article>
           <article>
-            <span>Net Effective Tax Rate</span>
-            <strong>0.695% → 0.640%</strong>
-            <p>Net tax divided by assessed value moved down about 8.0%.</p>
+            <span>Budget Movement</span>
+            <h3>How much additional revenue was needed?</h3>
+            <strong>Budget growth</strong>
+            <p>Budgets determine how much tax pressure must be collected.</p>
           </article>
         </div>
+        <aside class="framework-equation">
+          <span>Property Movement</span>
+          <b>vs</b>
+          <span>County Movement</span>
+          <b>+</b>
+          <span>Budget Growth</span>
+          <b>=</b>
+          <strong>Tax Pressure</strong>
+        </aside>
         <aside class="math-card">
-          <p class="kicker">Levy Compression Shorthand</p>
-          <code>Adjusted rate = current rate × ((1 + budget growth) ÷ (1 + countywide growth))</code>
-          <p>If the countywide value base grows faster than budgets, the rate needed to fund the same obligations can move lower.</p>
+          <p>A valuation increase matters most when a property moves differently than the larger tax base. If many properties increase together, levy rates often compress, which can soften or offset the effect of an individual valuation increase.</p>
         </aside>
       </section>
 
       <section class="chapter narrow" aria-labelledby="fastForwardTitle">
         <div class="chapter-copy">
           <p class="kicker">4. Fast Forward to 2026</p>
-          <h2 id="fastForwardTitle">The next assessment increase is much larger</h2>
-          <p>The 2026 property record shows a total value of $285,015. That is a $64,505 increase from the 2025 value.</p>
+          <h2 id="fastForwardTitle">Applying The Same Framework To 2026</h2>
+          <p>The 2026 property record shows a total assessed value of $285,015. That is a $64,505 increase from the 2025 value.</p>
         </div>
+        <aside class="return-callout">
+          <p class="kicker">Why This Property May Return in 2026</p>
+          <h3>Last year's discussion focused on a roughly $10,000 homesite increase.</h3>
+          <p>This year's increase is approximately $64,500 and comes almost entirely from the dwelling. The scale and source of the increase are substantially different.</p>
+        </aside>
         <div class="value-change-card">
           <div class="value-pair">
             <article>
@@ -144,19 +163,19 @@
             <span>Land</span>
             <strong>$62,690 → $62,690</strong>
             <div class="component-track"><i style="--w: 0%"></i></div>
-            <small>$0 change</small>
+            <small>No change</small>
           </article>
           <article>
             <span>Dwelling</span>
             <strong>$146,455 → $210,990</strong>
             <div class="component-track"><i style="--w: 100%"></i></div>
-            <small>+$64,535</small>
+            <small>Major increase</small>
           </article>
           <article>
             <span>Other Improvements</span>
             <strong>$11,365 → $11,335</strong>
             <div class="component-track muted"><i style="--w: 2%"></i></div>
-            <small>-$30</small>
+            <small>Slight decrease</small>
           </article>
         </div>
       </section>
@@ -165,62 +184,177 @@
         <div class="chapter-copy">
           <p class="kicker">5. What Might Happen Next?</p>
           <h2 id="nextTitle">Estimated 2026 tax impact</h2>
-          <p>This estimate uses the same levy-compression logic as the educational calculator: start with the 2025 net effective tax rate, then adjust it for assumed budget growth and countywide value growth.</p>
+          <p>This year's question may sound like last year's: what is this value change likely to do to my taxes?</p>
         </div>
-        <div class="estimate-grid">
-          <article class="range-card">
-            <span>Estimated Range</span>
-            <strong>$250-$350</strong>
-            <small>annually</small>
-          </article>
-          <article>
-            <span>Center Estimate</span>
-            <strong>About $300</strong>
-            <small>annually</small>
-          </article>
-          <article>
-            <span>Monthly Equivalent</span>
-            <strong>$20-$30</strong>
-            <small>about $25/month at center</small>
-          </article>
-        </div>
-        <div class="estimate-flow">
-          <article>
-            <span>2025 net ETR</span>
-            <strong>0.640%</strong>
-          </article>
-          <article>
-            <span>Countywide value growth assumption</span>
-            <strong>9.57%</strong>
-          </article>
-          <article>
-            <span>Budget growth assumption</span>
-            <strong>3.00%</strong>
-          </article>
-          <article>
-            <span>Adjusted net ETR estimate</span>
-            <strong>0.601%</strong>
-          </article>
-        </div>
+        <section class="estimate-part same-rate-card" aria-labelledby="sameRateTitle">
+          <div>
+            <p class="kicker">Part A</p>
+            <h3 id="sameRateTitle">What If Tax Rates Never Changed?</h3>
+            <p>This is often the first calculation taxpayers make. If the 2025 net effective tax rate stayed the same, the 2026 value would produce a larger increase before any levy compression.</p>
+            <p class="baseline-note">Baseline only — not the likely outcome.</p>
+          </div>
+          <div class="same-rate-grid">
+            <article>
+              <span>Same-rate taxes</span>
+              <strong data-model-output="sameRateTaxes">$1,822.75</strong>
+            </article>
+            <article>
+              <span>Annual change</span>
+              <strong data-model-output="sameRateAnnualChange">+$412.53</strong>
+            </article>
+            <article>
+              <span>Monthly equivalent</span>
+              <strong data-model-output="sameRateMonthlyChange">+$34.38</strong>
+            </article>
+          </div>
+        </section>
+        <section class="estimate-part model-teaching-card" aria-labelledby="modelMathTitle">
+          <div>
+            <p class="kicker">Part B</p>
+            <h3 id="modelMathTitle">Why Is That Probably Not The Final Answer?</h3>
+            <p>Most properties moved too. The tax base expanded. If countywide value growth outpaces budget growth, levy rates often compress.</p>
+          </div>
+          <div class="estimate-flow" aria-label="Applied model assumptions">
+            <article>
+              <span>2025 net ETR</span>
+              <strong data-model-output="currentEtr">0.640%</strong>
+            </article>
+            <article>
+              <span>Budget growth</span>
+              <strong data-model-output="budgetGrowth">3.00%</strong>
+            </article>
+            <article>
+              <span>Countywide value growth</span>
+              <strong data-model-output="valueGrowth">9.57%</strong>
+            </article>
+            <article>
+              <span>Estimated adjusted rate</span>
+              <strong data-model-output="adjustedEtr">0.601%</strong>
+            </article>
+          </div>
+          <code class="secondary-formula">Current rate × (1 + budget growth) ÷ (1 + countywide growth) = adjusted rate</code>
+        </section>
+        <section class="estimate-part outcome-estimate-card" aria-labelledby="propertyMeaningTitle">
+          <div>
+            <p class="kicker">Part C</p>
+            <h3 id="propertyMeaningTitle">What Does That Mean For This Property?</h3>
+            <p>After the baseline is adjusted for county movement and budget movement, the likely outcome is much smaller than the value increase alone might suggest.</p>
+          </div>
+          <div class="estimate-grid">
+            <article class="range-card">
+              <span>Estimated Range</span>
+              <strong>$250-$350</strong>
+              <small>annually</small>
+            </article>
+            <article>
+              <span>Center Estimate</span>
+              <strong>About $300</strong>
+              <small>annually</small>
+            </article>
+            <article>
+              <span>Monthly Equivalent</span>
+              <strong>$20-$30</strong>
+              <small>about $25/month at center</small>
+            </article>
+          </div>
+        </section>
+        <section class="calculator-card" aria-labelledby="calculatorTitle">
+          <div class="calculator-heading">
+            <div>
+              <p class="kicker">How We Got There</p>
+              <h3 id="calculatorTitle">Use the same framework</h3>
+            </div>
+            <p>After the estimate, the calculation follows the same three steps: find the current tax pressure, adjust it for county movement and budget movement, then apply it to the new value.</p>
+          </div>
+          <div class="model-step-grid">
+            <article>
+              <span>Step 1</span>
+              <h4>Find the current tax pressure</h4>
+              <code>2025 net tax ÷ 2025 value</code>
+              <strong data-model-output="currentEtrMath">$1,410.22 ÷ $220,510 = 0.640%</strong>
+            </article>
+            <article>
+              <span>Step 2</span>
+              <h4>Adjust for levy compression</h4>
+              <code>Current rate × (1 + budget growth) ÷ (1 + countywide growth)</code>
+              <strong data-model-output="adjustedEtrMath">0.640% × (1.03 ÷ 1.0957) = 0.601%</strong>
+            </article>
+            <article>
+              <span>Step 3</span>
+              <h4>Apply the adjusted rate</h4>
+              <code>2026 value × adjusted rate</code>
+              <strong data-model-output="taxMath">$285,015 × 0.601% = $1,713.45</strong>
+            </article>
+          </div>
+          <form class="case-calculator" data-case-calculator>
+            <label>
+              2025 net taxes
+              <input data-calc-input="taxes2025" inputmode="decimal" value="$1,410.22" />
+            </label>
+            <label>
+              2025 assessed value
+              <input data-calc-input="value2025" inputmode="decimal" value="$220,510" />
+            </label>
+            <label>
+              2026 assessed value
+              <input data-calc-input="value2026" inputmode="decimal" value="$285,015" />
+            </label>
+            <label>
+              Countywide value growth
+              <input data-calc-input="valueGrowth" inputmode="decimal" value="9.57%" />
+            </label>
+            <label>
+              Budget growth
+              <input data-calc-input="budgetGrowth" inputmode="decimal" value="3.00%" />
+            </label>
+          </form>
+          <div class="calculator-results" aria-live="polite">
+            <article>
+              <span>Estimated taxes</span>
+              <strong data-model-output="estimatedTaxes">$1,713.45</strong>
+            </article>
+            <article>
+              <span>Annual change</span>
+              <strong data-model-output="annualChange">+$303.23</strong>
+            </article>
+            <article>
+              <span>Monthly equivalent</span>
+              <strong data-model-output="monthlyChange">+$25.27</strong>
+            </article>
+          </div>
+        </section>
         <p class="confidence-note">This is not a tax bill prediction. It is an estimate based on historical levy behavior, countywide valuation growth, and reasonable budget assumptions.</p>
       </section>
 
       <section class="chapter narrow lesson-card" aria-labelledby="lessonTitle">
         <p class="kicker">6. The Bigger Lesson</p>
         <h2 id="lessonTitle">What We Learned</h2>
-        <div class="lesson-grid">
-          <ul>
-            <li>Protest denied</li>
-            <li>Assessment increased</li>
-            <li>Taxes still decreased</li>
-          </ul>
-          <ul>
-            <li>Assessment increased substantially again</li>
-            <li>Taxes likely increase this year</li>
-            <li>Tax increase is expected to be much smaller than the valuation increase alone would suggest</li>
-          </ul>
+        <div class="lesson-columns">
+          <article>
+            <h3>What Happened</h3>
+            <ul>
+              <li>Assessment increased</li>
+              <li>Protest denied</li>
+              <li>Taxes decreased</li>
+            </ul>
+          </article>
+          <article>
+            <h3>The Framework</h3>
+            <ul>
+              <li>Start with property movement</li>
+              <li>Compare it to county movement</li>
+              <li>Account for budget growth</li>
+              <li>Estimate tax pressure</li>
+            </ul>
+          </article>
         </div>
-        <p class="closing-statement">The valuation notice tells us how a property moved. The tax bill tells us what that movement ultimately cost. Those are related, but they are not the same thing.</p>
+        <aside class="final-callout">
+          <p>Most taxpayers begin with a valuation notice.</p>
+          <p>Most elected officials begin with a budget.</p>
+          <p>The tax bill is produced somewhere in the middle.</p>
+          <p>Understanding that space is the key to understanding property taxes.</p>
+        </aside>
+        <p class="closing-statement">The valuation notice tells us how a property moved. The tax bill tells us what that movement ultimately cost.</p>
         <p class="source-note">Sources: Gage County property record card for parcel 004817000, generated June 23, 2026; Nebraska Taxes Online tax-year records for parcel 0004817000; levy-compression formula used in the Guided Parcel Review educational article.</p>
       </section>
     </article>
