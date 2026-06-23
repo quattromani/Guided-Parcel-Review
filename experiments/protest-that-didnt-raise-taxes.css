@@ -799,6 +799,21 @@ h1 {
   position: relative;
 }
 
+.estimate-insight {
+  border-top: 1px solid rgb(255 255 255 / 0.22);
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.9rem 0 0.15rem;
+}
+
+.estimate-insight p {
+  color: #ffffff;
+  font-family: var(--heading-font);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-weight: 780;
+  line-height: 1.25;
+}
+
 .calculator-card::before {
   background:
     linear-gradient(90deg, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.1)),
