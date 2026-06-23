@@ -1,9 +1,39 @@
+const articleAnalyticsContext = {
+  allowExperimentAnalytics: true,
+  articleId: "protest-paradox",
+  articleTitle: "Assessment Up. Protest Denied. Taxes Down.",
+  contentType: "case-study",
+  county: "gage",
+  parcelId: "004817000",
+  propertyClass: "Agricultural"
+};
+
+let trackArticleInteractionEvent = () => {};
+
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   minimumFractionDigits: 2,
   maximumFractionDigits: 2
 });
+
+const wholeMoney = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0
+});
+
+async function initArticleAnalytics() {
+  if (window.location.protocol === "file:") return;
+
+  try {
+    const analytics = await import("../src/visit-analytics.js");
+    trackArticleInteractionEvent = analytics.trackArticleInteraction;
+    analytics.trackArticleView(articleAnalyticsContext);
+  } catch {
+    // Analytics should never interrupt the case study or calculator.
+  }
+}
 
 function numberFromInput(value) {
   if (value === null || value === undefined || value === "") return null;
@@ -14,6 +44,33 @@ function numberFromInput(value) {
 function formatPercent(value, digits = 3) {
   if (!Number.isFinite(value)) return "--";
   return `${(value * 100).toFixed(digits)}%`;
+}
+
+function formatInputPercent(value, digits = 2) {
+  if (!Number.isFinite(value)) return "";
+  return `${value.toFixed(digits)}%`;
+}
+
+function formatCalculatorInput(input) {
+  const value = numberFromInput(input.value);
+  if (value === null) {
+    input.value = "";
+    return;
+  }
+
+  if (input.dataset.format === "money-cents") {
+    input.value = money.format(value);
+    return;
+  }
+
+  if (input.dataset.format === "money-whole") {
+    input.value = wholeMoney.format(value);
+    return;
+  }
+
+  if (input.dataset.format === "percent") {
+    input.value = formatInputPercent(value);
+  }
 }
 
 function formatSignedMoney(value) {
@@ -111,10 +168,123 @@ function updateCalculator() {
   );
 }
 
+function formatAndUpdateInput(input) {
+  formatCalculatorInput(input);
+  updateCalculator();
+}
+
+function trackScrollDepth() {
+  const thresholds = [25, 50, 75, 90, 100];
+  const reached = new Set();
+  let ticking = false;
+
+  const measure = () => {
+    ticking = false;
+
+    const documentHeight = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight
+    );
+    const viewportBottom = window.scrollY + window.innerHeight;
+    const scrollableHeight = Math.max(1, documentHeight - window.innerHeight);
+    const depth = Math.min(100, Math.round(((viewportBottom - window.innerHeight) / scrollableHeight) * 100));
+
+    thresholds.forEach(threshold => {
+      if (depth >= threshold && !reached.has(threshold)) {
+        reached.add(threshold);
+        trackArticleInteractionEvent("scroll_depth", {
+          scrollDepthPercent: threshold
+        });
+      }
+    });
+  };
+
+  const requestMeasure = () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(measure);
+  };
+
+  window.addEventListener("scroll", requestMeasure, { passive: true });
+  window.addEventListener("resize", requestMeasure);
+  requestMeasure();
+}
+
+function trackSectionReach() {
+  if (!("IntersectionObserver" in window)) return;
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const section = entry.target;
+      trackArticleInteractionEvent("section_reached", {
+        section: section.getAttribute("aria-labelledby") || section.querySelector(".kicker")?.textContent?.trim() || ""
+      });
+      observer.unobserve(section);
+    });
+  }, {
+    rootMargin: "0px 0px -45% 0px",
+    threshold: 0.2
+  });
+
+  document.querySelectorAll(".case-article > .chapter").forEach(section => {
+    observer.observe(section);
+  });
+}
+
+function trackCalculatorUse() {
+  let calculatorFocused = false;
+  let inputTimer = null;
+
+  document.querySelectorAll("[data-calc-input]").forEach(input => {
+    input.addEventListener("focus", () => {
+      if (calculatorFocused) return;
+      calculatorFocused = true;
+      trackArticleInteractionEvent("calculator_focus", {
+        field: input.dataset.calcInput || ""
+      });
+    });
+
+    input.addEventListener("input", () => {
+      window.clearTimeout(inputTimer);
+      inputTimer = window.setTimeout(() => {
+        const values = readValues();
+        const result = calculate(values);
+        trackArticleInteractionEvent("calculator_change", {
+          field: input.dataset.calcInput || "",
+          value2025: values.value2025,
+          value2026: values.value2026,
+          valueGrowthPercent: Number.isFinite(values.valueGrowth) ? Math.round(values.valueGrowth * 10000) / 100 : null,
+          budgetGrowthPercent: Number.isFinite(values.budgetGrowth) ? Math.round(values.budgetGrowth * 10000) / 100 : null,
+          estimatedAnnualChange: Number.isFinite(result.annualChange) ? Math.round(result.annualChange) : null
+        });
+      }, 1200);
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  initArticleAnalytics();
+  trackScrollDepth();
+  trackSectionReach();
+  trackCalculatorUse();
+
   document.querySelectorAll("[data-calc-input]").forEach(input => {
     input.addEventListener("input", updateCalculator);
-    input.addEventListener("change", updateCalculator);
+    input.addEventListener("change", () => {
+      formatAndUpdateInput(input);
+    });
+    input.addEventListener("blur", () => {
+      formatAndUpdateInput(input);
+    });
+    input.addEventListener("focusout", () => {
+      formatAndUpdateInput(input);
+    });
+    input.addEventListener("keydown", event => {
+      if (event.key !== "Enter") return;
+      formatAndUpdateInput(input);
+      input.blur();
+    });
   });
   updateCalculator();
 });

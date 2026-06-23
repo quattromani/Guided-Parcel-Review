@@ -17,10 +17,10 @@ const analyticsState = {
 
 export function initVisitAnalytics(context = {}) {
   if (typeof window === "undefined" || analyticsState.active) return;
+  analyticsState.context = normalizeContext(context);
   if (shouldSkipVisitAnalytics()) return;
 
   analyticsState.active = true;
-  analyticsState.context = normalizeContext(context);
   analyticsState.startTime = Date.now();
   analyticsState.stepStartTime = analyticsState.startTime;
   trackVisitEvent("visit_start");
@@ -78,6 +78,14 @@ export function trackParcelView(context = {}) {
 export function trackArticleView(context = {}) {
   initVisitAnalytics(context);
   trackVisitEvent("article_view");
+}
+
+export function trackArticleInteraction(action = "", details = {}) {
+  if (!action) return;
+  trackVisitEvent("article_interaction", {
+    detail: action,
+    ...details
+  });
 }
 
 export function configureStepTracking(routes = []) {
@@ -199,7 +207,8 @@ function normalizeContext(context = {}) {
     county: context.county || "",
     contentType: context.contentType || "",
     articleId: context.articleId || "",
-    articleTitle: context.articleTitle || ""
+    articleTitle: context.articleTitle || "",
+    allowExperimentAnalytics: Boolean(context.allowExperimentAnalytics)
   };
 }
 
@@ -243,7 +252,7 @@ function viewportBucket() {
 
 function shouldSkipVisitAnalytics() {
   return isLocalWorkingHost()
-    || isExperimentRoute()
+    || (isExperimentRoute() && !analyticsState.context.allowExperimentAnalytics)
     || isWorkingSessionUserAgent(navigator.userAgent || "");
 }
 

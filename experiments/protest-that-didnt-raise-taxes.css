@@ -125,8 +125,91 @@ h1 {
   font-weight: 650;
   line-height: 1.42;
   margin-top: 0.35rem;
-  max-width: 46rem;
+  max-width: 54rem;
   padding: 0.7rem 0 0.7rem 1rem;
+  width: 100%;
+}
+
+.learning-preview {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 0.32rem solid var(--green);
+  border-radius: 0.95rem;
+  box-shadow: 0 0.9rem 2.2rem rgb(31 73 112 / 0.07);
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 0.35rem;
+  max-width: 54rem;
+  padding: clamp(1rem, 2.5vw, 1.35rem);
+  width: 100%;
+}
+
+.learning-preview h2 {
+  color: var(--ink);
+  font-family: var(--heading-font);
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.learning-preview ul {
+  display: grid;
+  gap: 0.48rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.learning-preview li {
+  color: var(--ink);
+  font-family: var(--heading-font);
+  font-size: 0.98rem;
+  font-weight: 720;
+  line-height: 1.3;
+  padding-left: 1.35rem;
+  position: relative;
+}
+
+.learning-preview li::before {
+  color: var(--green);
+  content: "✓";
+  font-weight: 900;
+  left: 0;
+  position: absolute;
+}
+
+.lesson-roadmap {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin-top: 0.25rem;
+  max-width: 54rem;
+  width: 100%;
+}
+
+.lesson-roadmap a {
+  background: rgb(255 255 255 / 0.72);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  color: var(--ink);
+  display: grid;
+  font-family: var(--heading-font);
+  font-size: 0.78rem;
+  font-weight: 850;
+  gap: 0.24rem;
+  line-height: 1.18;
+  min-width: 0;
+  padding: 0.65rem;
+  text-decoration: none;
+}
+
+.lesson-roadmap span {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .case-article {
@@ -520,6 +603,7 @@ h1 {
   color: var(--muted);
 }
 
+.concept-grid,
 .compression-grid,
 .framework-grid,
 .recipe-grid {
@@ -528,6 +612,7 @@ h1 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.concept-grid article,
 .compression-grid p,
 .math-card p {
   color: var(--muted);
@@ -535,6 +620,116 @@ h1 {
   font-size: 0.92rem;
   font-weight: 620;
   line-height: 1.35;
+}
+
+.concept-grid article {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  box-shadow: 0 0.75rem 1.7rem rgb(31 73 112 / 0.045);
+  color: var(--ink);
+  display: grid;
+  gap: 0.45rem;
+  padding: clamp(1rem, 2.3vw, 1.2rem);
+}
+
+.concept-grid span {
+  color: var(--red);
+  font-family: var(--heading-font);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.concept-grid strong {
+  color: var(--ink);
+  font-family: var(--heading-font);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.quick-explanation {
+  background: linear-gradient(135deg, var(--blue), #2f608b);
+  border-radius: 0.85rem;
+  box-shadow: 0 0.9rem 2rem rgb(31 73 112 / 0.14);
+  color: #ffffff;
+  display: grid;
+  gap: 0.55rem;
+  padding: clamp(1rem, 2.6vw, 1.35rem);
+}
+
+.quick-explanation .kicker,
+.quick-explanation p,
+.quick-explanation strong {
+  color: #ffffff;
+}
+
+.quick-explanation p:not(.kicker) {
+  font-family: var(--body-font);
+  font-size: clamp(1.08rem, 2vw, 1.22rem);
+  font-weight: 520;
+  line-height: 1.45;
+  max-width: 60ch;
+}
+
+.quick-explanation strong {
+  border-top: 1px solid rgb(255 255 255 / 0.18);
+  display: block;
+  font-family: var(--heading-font);
+  font-size: clamp(1rem, 2vw, 1.18rem);
+  font-weight: 850;
+  line-height: 1.35;
+  padding-top: 0.65rem;
+}
+
+.lesson-takeaway {
+  position: relative;
+}
+
+.lesson-takeaway::after {
+  background: rgb(255 255 255 / 0.7);
+  border-radius: 999px;
+  content: "";
+  height: 0.22rem;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: 2rem;
+}
+
+.explanation-card {
+  outline: 1px solid rgb(31 73 112 / 0.08);
+}
+
+.explanation-card::after {
+  background: rgb(255 255 255 / 0.74);
+}
+
+.compact-lesson {
+  background: linear-gradient(135deg, #ffffff, var(--blue-soft));
+  border-left: 0.28rem solid var(--blue);
+}
+
+.compact-lesson .kicker {
+  color: var(--blue);
+}
+
+.compact-lesson p:not(.kicker) {
+  color: var(--ink);
+  font-family: var(--heading-font);
+  font-size: clamp(1rem, 2vw, 1.18rem);
+  font-weight: 850;
+  line-height: 1.3;
+}
+
+.key-lesson-card {
+  box-shadow: 0 0.75rem 1.8rem rgb(31 73 112 / 0.06);
+}
+
+.section-subcopy {
+  margin-top: clamp(0.65rem, 2vw, 1rem);
 }
 
 .framework-grid article,
@@ -714,6 +909,112 @@ h1 {
   line-height: 1.42;
 }
 
+.levy-callout {
+  background: linear-gradient(135deg, var(--blue-soft), #ffffff);
+  border: 1px solid rgb(31 73 112 / 0.16);
+  border-left: 0.28rem solid var(--blue);
+  border-radius: 0.85rem;
+  box-shadow: 0 0.75rem 1.7rem rgb(31 73 112 / 0.045);
+  display: grid;
+  gap: 0.55rem;
+  padding: clamp(1rem, 2.5vw, 1.35rem);
+}
+
+.levy-callout p:not(.kicker) {
+  color: var(--ink);
+  font-family: var(--body-font);
+  font-size: 1.15rem;
+  font-weight: 520;
+  line-height: 1.55;
+  max-width: 68ch;
+}
+
+.participation-card {
+  background: linear-gradient(135deg, var(--gold-soft), #ffffff);
+  border: 1px solid rgb(169 120 43 / 0.22);
+  border-left: 0.28rem solid var(--gold);
+  border-radius: 0.85rem;
+  box-shadow: 0 0.75rem 1.7rem rgb(31 73 112 / 0.045);
+  display: grid;
+  gap: 0.65rem;
+  padding: clamp(1rem, 2.5vw, 1.25rem);
+}
+
+.your-turn-card {
+  border-left-color: var(--green);
+}
+
+.pause-card {
+  background: linear-gradient(135deg, #ffffff, var(--gold-soft));
+}
+
+.estimate-prep-card {
+  margin-top: 0.15rem;
+}
+
+.participation-card h3 {
+  color: var(--ink);
+  font-family: var(--heading-font);
+  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+  font-weight: 850;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.participation-card ol,
+.participation-card ul {
+  color: var(--ink);
+  display: grid;
+  font-family: var(--heading-font);
+  font-size: 0.98rem;
+  font-weight: 650;
+  gap: 0.38rem;
+  line-height: 1.35;
+  margin: 0;
+  padding-left: 1.35rem;
+}
+
+.participation-card p:not(.kicker) {
+  color: var(--ink);
+  font-family: var(--heading-font);
+  font-size: 0.95rem;
+  font-weight: 720;
+  line-height: 1.35;
+}
+
+.apply-transition {
+  background:
+    linear-gradient(135deg, rgb(31 73 112 / 0.96), rgb(47 96 139 / 0.96)),
+    var(--blue);
+  border-radius: 0.95rem;
+  box-shadow: 0 1rem 2.2rem rgb(31 73 112 / 0.12);
+  color: #ffffff;
+  gap: 0.65rem;
+  margin-top: clamp(0.4rem, 1.2vw, 0.8rem);
+  padding: clamp(1.1rem, 2.8vw, 1.55rem);
+}
+
+.apply-transition .kicker,
+.apply-transition h2,
+.apply-transition p {
+  color: #ffffff;
+}
+
+.apply-transition h2 {
+  font-family: var(--heading-font);
+  font-size: clamp(1.55rem, 3.8vw, 2.15rem);
+  font-weight: 850;
+  line-height: 1.12;
+}
+
+.apply-transition p {
+  font-family: var(--body-font);
+  font-size: clamp(1.08rem, 2.2vw, 1.28rem);
+  font-weight: 520;
+  line-height: 1.48;
+  max-width: 62ch;
+}
+
 .recipe-grid {
   margin-top: 0.1rem;
 }
@@ -724,6 +1025,7 @@ h1 {
     var(--blue);
   border: 0;
   color: white;
+  box-shadow: 0 0.75rem 1.7rem rgb(31 73 112 / 0.08);
 }
 
 .estimate-panel .kicker,
@@ -743,6 +1045,39 @@ h1 {
   line-height: 1.42;
 }
 
+.calculation-path {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.calculation-path article {
+  background: rgb(255 255 255 / 0.1);
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 0.58rem;
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.72rem;
+}
+
+.calculation-path span {
+  color: rgb(235 243 250);
+  font-family: var(--heading-font);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.calculation-path strong {
+  color: #ffffff;
+  font-family: var(--heading-font);
+  font-size: 0.9rem;
+  font-weight: 850;
+  line-height: 1.22;
+}
+
 .same-rate-grid article,
 .estimate-grid article,
 .estimate-flow article,
@@ -752,12 +1087,13 @@ h1 {
   border-color: rgb(255 255 255 / 0.18);
 }
 
-.estimate-grid .range-card {
-  background: rgb(255 255 255 / 0.18);
-}
-
 .estimate-part,
 .same-rate-card {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.estimate-part-body {
   background: rgb(255 255 255 / 0.1);
   border: 1px solid rgb(255 255 255 / 0.18);
   border-left: 0.28rem solid rgb(255 255 255 / 0.36);
@@ -767,8 +1103,13 @@ h1 {
   padding: clamp(0.85rem, 2vw, 1rem);
 }
 
-.same-rate-card h3,
-.outcome-estimate-card h3 {
+.estimate-part-header {
+  display: grid;
+  gap: 0.08rem;
+  padding-inline: 0.18rem;
+}
+
+.estimate-part-header h3 {
   color: #ffffff;
   font-family: var(--heading-font);
   font-size: clamp(1.25rem, 3vw, 1.65rem);
@@ -777,8 +1118,8 @@ h1 {
   margin: 0.12rem 0 0;
 }
 
-.same-rate-card p:not(.kicker),
-.outcome-estimate-card p:not(.kicker),
+.same-rate-card .estimate-part-body > p:not(.kicker),
+.outcome-estimate-card .estimate-part-body > p:not(.kicker),
 .baseline-note {
   color: rgb(235 243 250);
   font-family: var(--heading-font);
@@ -800,7 +1141,8 @@ h1 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.same-rate-grid article {
+.same-rate-grid article,
+.estimate-grid article {
   border: 1px solid rgb(255 255 255 / 0.18);
   border-radius: 0.58rem;
   display: grid;
@@ -809,25 +1151,35 @@ h1 {
   padding: 0.78rem;
 }
 
-.same-rate-grid strong {
+.same-rate-grid strong,
+.estimate-grid strong {
   color: #ffffff;
   font-size: clamp(1.35rem, 3vw, 1.85rem);
 }
 
 .estimate-flow {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
 }
 
-.estimate-flow article:first-child,
-.estimate-flow article:last-child {
-  border-left: 3px solid rgb(255 255 255 / 0.55);
+.estimate-operator {
+  color: #ffffff;
+  font-family: var(--heading-font);
+  font-size: 1.22rem;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.88;
+  text-align: center;
 }
 
 .estimate-flow strong {
   font-size: 1.2rem;
 }
 
-.model-teaching-card,
+.estimate-flow span {
+  font-size: 0.7rem;
+}
+
 .calculator-card {
   background: rgb(255 255 255 / 0.1);
   border: 1px solid rgb(255 255 255 / 0.18);
@@ -843,10 +1195,13 @@ h1 {
 }
 
 .estimate-insight {
-  border-top: 1px solid rgb(255 255 255 / 0.22);
+  background: rgb(255 255 255 / 0.1);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-left: 0.28rem solid rgb(255 255 255 / 0.5);
+  border-radius: 0.72rem;
   display: grid;
   gap: 0.3rem;
-  padding: 0.9rem 0 0.15rem;
+  padding: clamp(0.9rem, 2vw, 1rem);
 }
 
 .estimate-insight p {
@@ -872,11 +1227,6 @@ h1 {
   width: min(72%, calc(100% - 2rem));
 }
 
-.model-teaching-card {
-  border-left: 0.28rem solid rgb(255 255 255 / 0.36);
-}
-
-.model-teaching-card h3,
 .calculator-card h3 {
   color: #ffffff;
   font-family: var(--heading-font);
@@ -886,7 +1236,7 @@ h1 {
   margin: 0.12rem 0 0;
 }
 
-.model-teaching-card p:not(.kicker) {
+.model-teaching-card .estimate-part-body > p:not(.kicker) {
   color: rgb(235 243 250);
   font-family: var(--heading-font);
   font-size: 0.95rem;
@@ -984,7 +1334,7 @@ h1 {
   color: rgb(235 243 250);
   display: grid;
   font-family: var(--heading-font);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 900;
   gap: 0.35rem;
   letter-spacing: 0.04em;
@@ -1005,9 +1355,30 @@ h1 {
   width: 100%;
 }
 
+.case-calculator label:nth-child(-n + 3) input {
+  background: rgb(235 247 255 / 0.94);
+  border-color: rgb(255 255 255 / 0.78);
+  color: var(--ink);
+  box-shadow: 0 0.55rem 1.15rem rgb(5 28 50 / 0.14);
+}
+
 .case-calculator input:focus {
   outline: 3px solid rgb(255 255 255 / 0.22);
   outline-offset: 2px;
+}
+
+.calculator-hint {
+  color: rgb(235 243 250);
+  font-family: var(--heading-font);
+  font-size: 0.86rem;
+  font-weight: 650;
+  line-height: 1.35;
+  margin: -0.18rem 0 0;
+}
+
+.calculator-hint strong {
+  color: #ffffff;
+  font-weight: 900;
 }
 
 .calculator-results strong {
@@ -1027,6 +1398,9 @@ h1 {
 .lesson-card {
   display: grid;
   gap: 1rem;
+  border-top: 0.35rem solid var(--blue);
+  box-shadow: 0 1rem 2.4rem rgb(31 73 112 / 0.1);
+  padding-bottom: clamp(1.2rem, 3vw, 1.7rem);
 }
 
 .lesson-columns {
@@ -1073,19 +1447,26 @@ h1 {
 }
 
 .final-callout {
-  background: var(--blue);
+  background:
+    linear-gradient(135deg, rgb(31 73 112), rgb(47 96 139)),
+    var(--blue);
   border-radius: 0.85rem;
   display: grid;
-  gap: 0.45rem;
-  padding: clamp(1rem, 2.6vw, 1.35rem);
+  gap: 0.55rem;
+  padding: clamp(1.1rem, 2.8vw, 1.55rem);
 }
 
 .final-callout p {
   color: #ffffff;
   font-family: var(--heading-font);
-  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
   font-weight: 760;
   line-height: 1.28;
+}
+
+.final-callout .kicker {
+  color: rgb(235 243 250);
+  font-size: 0.72rem;
 }
 
 .closing-statement {
@@ -1113,9 +1494,25 @@ h1 {
   line-height: 1.35;
 }
 
+.source-note a {
+  color: var(--blue);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+.parcel-id,
+.source-note a[x-apple-data-detectors] {
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}
+
 @media (max-width: 760px) {
   .value-pair,
   .tax-kpi-grid,
+  .concept-grid,
   .compression-grid,
   .framework-grid,
   .recipe-grid,
@@ -1127,14 +1524,23 @@ h1 {
   .calculator-heading,
   .case-calculator,
   .calculator-results,
+  .calculation-path,
   .lesson-columns,
   .assumption-callout,
+  .learning-preview ul,
+  .lesson-roadmap,
   .case-timeline {
     grid-template-columns: 1fr;
   }
 
   .story-timeline .timeline-question {
     grid-column: auto;
+  }
+
+  .estimate-operator {
+    font-size: 1rem;
+    justify-self: center;
+    margin: -0.25rem 0;
   }
 
   .story-timeline article:nth-last-child(2)::after {
