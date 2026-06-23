@@ -22,6 +22,11 @@ export const experimentLinks = [
     note: "MIPS Country Club-area sale screen and full-record dwelling comparison for 1417 Country Club Ln."
   },
   {
+    title: "1722 Washington Comparable Sales Walkthrough",
+    href: "?experiment=1722-washington-comps",
+    note: "Residential-3 candidate ranking and full-record comparison for 1722 Washington."
+  },
+  {
     title: "Tax Shorthand Year-Over-Year Walkthrough",
     href: "?experiment=tax-shorthand",
     note: "Active-property tax statement table showing assessed value, levy, credits, and final net-tax movement by year."

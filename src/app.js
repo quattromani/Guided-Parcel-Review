@@ -68,6 +68,7 @@ import {
 import { renderPropertyInviteIndex } from "./routes/property-invite-index.js";
 import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js";
 import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js";
+import { renderWashington1722ComparableSalesExperiment } from "./routes/washington-1722-comparable-sales.js";
 import {
   continueDevelopmentFeatureSampleStart,
   developmentFeatureSampleStartPropertyId
@@ -175,6 +176,13 @@ async function main() {
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
     setFooterResourcesVisible(false);
     await renderBeekmanCountryClubComparableSalesExperiment(propertySwitcher);
+    return;
+  }
+
+  if (experimentView === "1722-washington-comps") {
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    setFooterResourcesVisible(false);
+    await renderWashington1722ComparableSalesExperiment(propertySwitcher);
     return;
   }
 
