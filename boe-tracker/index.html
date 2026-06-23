@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no" />
+  <meta name="theme-color" content="#1f3347" />
+  <title>BOE Protest Tracker | Guided Parcel Review</title>
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700;800;900&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../src/styles.css" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="boe-body">
+  <main class="boe-shell" data-app>
+    <header class="boe-topbar">
+      <a href="../" class="boe-home-link">Guided Parcel Review</a>
+      <div>
+        <p class="guided-kicker">Administrative capture</p>
+        <h1>BOE Protest Tracker</h1>
+      </div>
+      <div class="boe-status-stack">
+        <span data-save-status class="boe-status-pill">Saved</span>
+        <span data-network-status class="boe-status-pill">Offline-ready</span>
+      </div>
+    </header>
+
+    <section class="boe-layout">
+      <aside class="boe-left-column">
+        <section class="review-card boe-session-card" aria-labelledby="sessionTitle">
+          <div class="boe-section-heading">
+            <div>
+              <p class="guided-kicker">Hearing session</p>
+              <h2 id="sessionTitle">Session Controls</h2>
+            </div>
+            <button type="button" data-create-session class="boe-button boe-button-secondary">New Session</button>
+          </div>
+          <label>Session
+            <select data-session-select></select>
+          </label>
+          <div class="boe-field-grid">
+            <label>Date <input data-session-field="meetingDate" type="date" /></label>
+            <label>Meeting # <input data-session-field="meetingNumber" type="text" inputmode="numeric" /></label>
+          </div>
+          <label>Location <input data-session-field="location" type="text" /></label>
+          <label>Board Members <textarea data-session-field="boardMembersPresent" rows="2"></textarea></label>
+          <label>Assessor / Staff <textarea data-session-field="assessorOrStaffPresent" rows="2"></textarea></label>
+          <div class="boe-field-grid">
+            <label>Clerk <input data-session-field="clerkPresent" type="text" /></label>
+            <label>Referee <input data-session-field="refereePresent" type="text" /></label>
+          </div>
+          <label>Session Notes <textarea data-session-field="generalSessionNotes" rows="3"></textarea></label>
+          <div class="boe-button-row">
+            <button type="button" data-generate-queue class="boe-button">Generate Queue</button>
+            <button type="button" data-add-record class="boe-button boe-button-secondary">Add Protest</button>
+          </div>
+        </section>
+
+        <section class="review-card boe-dashboard-card" aria-labelledby="progressTitle">
+          <div class="boe-section-heading">
+            <div>
+              <p class="guided-kicker">Meeting progress</p>
+              <h2 id="progressTitle">Dashboard</h2>
+            </div>
+            <strong data-completion-percent>0%</strong>
+          </div>
+          <div data-progress-dashboard class="boe-stat-grid"></div>
+        </section>
+
+        <section class="review-card boe-queue-card" aria-labelledby="queueTitle">
+          <div class="boe-section-heading">
+            <div>
+              <p class="guided-kicker">Digital hearing packet</p>
+              <h2 id="queueTitle">Queue</h2>
+            </div>
+            <select data-jump-record aria-label="Jump to protest"></select>
+          </div>
+          <div class="boe-filter-row" role="group" aria-label="Review filters">
+            <button type="button" data-filter="all" class="boe-filter is-active">All</button>
+            <button type="button" data-filter="followup" class="boe-filter">Follow-Ups</button>
+            <button type="button" data-filter="incomplete" class="boe-filter">Incomplete</button>
+            <button type="button" data-filter="unsynced" class="boe-filter">Unsynced</button>
+          </div>
+          <input data-search-records type="search" placeholder="Search parcel, address, owner" aria-label="Search records" />
+          <ol data-record-list class="boe-record-list"></ol>
+        </section>
+      </aside>
+
+      <section class="boe-right-column">
+        <form class="review-card boe-record-form" data-record-form>
+          <div class="boe-form-header">
+            <div>
+              <p class="guided-kicker">Active protest</p>
+              <h2 data-active-title>Record</h2>
+              <p data-active-subtitle></p>
+            </div>
+            <div class="boe-record-actions">
+              <button type="button" data-prev-record class="boe-button boe-button-secondary">Previous</button>
+              <button type="button" data-next-record class="boe-button boe-button-secondary">Next</button>
+            </div>
+          </div>
+
+          <section class="boe-form-section">
+            <h3>Parcel Identity</h3>
+            <div class="boe-field-grid boe-field-grid-three">
+              <label>Parcel ID <input data-record-field="parcelId" type="text" autocomplete="off" /></label>
+              <label>Address <input data-record-field="address" type="text" autocomplete="off" /></label>
+              <label>Owner Name <input data-record-field="ownerName" type="text" autocomplete="off" /></label>
+            </div>
+            <label>Property Class
+              <select data-record-field="propertyClass"></select>
+            </label>
+          </section>
+
+          <section class="boe-form-section">
+            <h3>Values</h3>
+            <div class="boe-field-grid boe-field-grid-four">
+              <label>Current Assessed <input data-record-field="currentAssessedValue" type="text" inputmode="decimal" /></label>
+              <label>Owner Requested <input data-record-field="ownerRequestedValue" type="text" inputmode="decimal" /></label>
+              <label>Referee Recommended <input data-record-field="refereeRecommendedValue" type="text" inputmode="decimal" /></label>
+              <label>Final BOE Value <input data-record-field="finalBOEValue" type="text" inputmode="decimal" /></label>
+            </div>
+            <div data-calculation-summary class="boe-calculation-strip"></div>
+          </section>
+
+          <section class="boe-form-section">
+            <h3>Outcome</h3>
+            <div class="boe-field-grid">
+              <label>Outcome <select data-record-field="outcome"></select></label>
+              <label>Referee Alignment <select data-record-field="refereeAlignment"></select></label>
+            </div>
+            <div class="boe-time-row">
+              <button type="button" data-start-hearing class="boe-button">Start Hearing</button>
+              <button type="button" data-end-hearing class="boe-button boe-button-secondary">End Hearing</button>
+              <span data-duration-display class="boe-duration"></span>
+            </div>
+          </section>
+
+          <section class="boe-form-section boe-checklist-grid">
+            <fieldset>
+              <legend>Protest Basis</legend>
+              <div data-checklist="protestBasis"></div>
+            </fieldset>
+            <fieldset>
+              <legend>Evidence</legend>
+              <div data-checklist="evidencePresented"></div>
+            </fieldset>
+            <fieldset>
+              <legend>Observation Tags</legend>
+              <div data-checklist="quickObservationTags"></div>
+            </fieldset>
+          </section>
+
+          <section class="boe-form-section">
+            <div class="boe-follow-row">
+              <label class="boe-toggle"><input data-record-field="followUpFlag" type="checkbox" /> Follow-Up Flag</label>
+              <span data-sync-display class="boe-sync-display">Sync Pending</span>
+            </div>
+            <label>Freeform Notes
+              <textarea data-record-field="freeformNotes" rows="9" class="boe-notes"></textarea>
+            </label>
+          </section>
+
+          <section class="boe-form-footer">
+            <button type="button" data-save-draft class="boe-button">Save Draft</button>
+            <button type="button" data-save-new class="boe-button">Save & New</button>
+            <button type="button" data-duplicate-record class="boe-button boe-button-secondary">Duplicate</button>
+            <button type="button" data-delete-record class="boe-button boe-button-danger">Delete</button>
+          </section>
+        </form>
+
+        <section class="review-card boe-export-card" aria-labelledby="exportTitle">
+          <div class="boe-section-heading">
+            <div>
+              <p class="guided-kicker">Local-first data</p>
+              <h2 id="exportTitle">Export & Sync</h2>
+            </div>
+            <button type="button" data-sync-unsynced class="boe-button">Sync Unsynced</button>
+          </div>
+          <div class="boe-field-grid">
+            <label>Google Sheet ID <input data-config-field="spreadsheetId" type="text" /></label>
+            <label>Apps Script Endpoint <input data-config-field="appsScriptEndpoint" type="url" placeholder="https://script.google.com/macros/s/.../exec" /></label>
+          </div>
+          <div class="boe-button-row">
+            <button type="button" data-export-json class="boe-button boe-button-secondary">Export Session JSON</button>
+            <button type="button" data-export-csv class="boe-button boe-button-secondary">Export CSV</button>
+            <button type="button" data-export-all class="boe-button boe-button-secondary">Export All Data</button>
+            <label class="boe-file-button">Import JSON <input data-import-json type="file" accept="application/json,.json" /></label>
+          </div>
+          <p data-sync-message class="boe-sync-message"></p>
+        </section>
+      </section>
+    </section>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

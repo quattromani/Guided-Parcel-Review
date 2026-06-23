@@ -20,6 +20,11 @@ const fallbackStartPageContent = {
     {
       title: "Tax impact",
       description: "See how value changes, levy, credits, and effective tax rate relate to the latest available tax bill."
+    },
+    {
+      title: "BOE Protest Tracker",
+      description: "Open the administrative field-capture tool for live Board of Equalization hearing observation.",
+      href: "boe-tracker/"
     }
   ],
   disclaimer: "This prototype uses pre-loaded records for demonstration, stress testing, and smoke testing. Official records, valuations, and tax determinations remain with the appropriate county offices."
@@ -45,6 +50,11 @@ const fallbackDirectStartPageContent = {
     {
       title: "Tax impact",
       description: "See how value changes, levy, credits, and effective tax rate relate to the latest available tax bill."
+    },
+    {
+      title: "BOE Protest Tracker",
+      description: "Open the administrative field-capture tool for live Board of Equalization hearing observation.",
+      href: "boe-tracker/"
     }
   ],
   disclaimer: "This prototype uses pre-loaded records for demonstration, stress testing, and smoke testing. Official records, valuations, and tax determinations remain with the appropriate county offices."
@@ -111,6 +121,7 @@ export function renderStartPage(propertySwitcherContext = {}, renderViewHeader) 
           <section>
             <h3>${formatStartCopy(card.title, tokens)}</h3>
             <p>${formatStartCopy(card.description, tokens)}</p>
+            ${card.href ? `<a class="guided-start-link" href="${card.href}">Open ${formatStartCopy(card.title, tokens)}</a>` : ""}
           </section>
         `).join("")}
       </div>

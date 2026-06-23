@@ -84,6 +84,41 @@ The frontend should consume static app-ready JSON only. It should not scrape PAD
 - `src/reports/` builds the downloadable property report PDF; `src/assessors-report.js` builds the supplemental assessor print view.
 - `src/content/site-copy.js` loads centralized copy from `data/app/site-copy.json`; `src/config/taxpayer-journey.js` and `src/content/` provide fallbacks and route/resource accessors.
 
+## BOE Protest Tracker
+
+The BOE Protest Tracker lives at `/boe-tracker/` as a static, mobile-first administrative module inside the same GitHub Pages site. It is designed for live Board of Equalization hearing capture on an iPad or phone. No field is required before saving, records auto-save locally while typing, and queue mode can generate a numbered hearing packet of blank protests before the meeting begins.
+
+Tracker files:
+
+- `boe-tracker/index.html` defines the tracker page.
+- `boe-tracker/styles.css` extends the shared GPR visual shell and card system.
+- `boe-tracker/app.js` renders sessions, records, queue navigation, dashboard filters, and fast-entry controls.
+- `boe-tracker/storage.js` owns localStorage persistence under `gpr.boeTracker.v1`.
+- `boe-tracker/calculations.js` calculates requested reductions, granted reductions, hearing duration, completion status, and session summaries.
+- `boe-tracker/export.js` exports session JSON, all-data JSON, CSV, and imports JSON.
+- `boe-tracker/sync.js` posts unsynced records to Google Apps Script.
+- `apps-script/Code.gs` is the Google Sheets receiver.
+
+Local storage is the primary database. Session and protest records are saved immediately in the browser and remain available offline. Sync never deletes local records; failed syncs leave records marked unsynced so they can be retried later.
+
+The default Google Sheet destination is:
+
+```text
+https://docs.google.com/spreadsheets/d/15ZR2WKTLwPv69CGGh0xhKNzdmT71Qpu2wv5ugFXX78Q
+```
+
+To enable Google Sheets sync:
+
+1. Open Google Apps Script and create a new script project.
+2. Paste the contents of `apps-script/Code.gs`.
+3. Deploy it as a web app with access set for the intended user/account model.
+4. Copy the web app URL ending in `/exec`.
+5. Open `/boe-tracker/`, paste the URL into “Apps Script Endpoint,” and keep or override the default spreadsheet ID.
+
+The Apps Script endpoint accepts a POST body containing `spreadsheetId`, `sheetName`, `session`, and `record`, creates the sheet if needed, appends one row, and returns JSON. The frontend uses a local-first workflow: generate queue records, auto-save field changes, export at any time, and manually sync unsynced records when internet access is available.
+
+GitHub Pages deployment does not require a build step. Commit the `boe-tracker/` and `apps-script/` folders with the rest of the static site; the tracker is served directly at `/boe-tracker/`.
+
 ## Editing Site Copy
 
 Centralized public-facing app copy lives in `data/app/site-copy.json`. The file is organized by stable top-level groups: `site`, `navigation`, `routes`, `viewHeaders`, `pages`, `footer`, `modals`, `resourcesByView`, `recordReview`, and `recordCorrectionRequest`. Within `pages`, copy is grouped by route or panel, then by section or component.

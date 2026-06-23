@@ -15,12 +15,16 @@ const types = {
 http.createServer((request, response) => {
   const url = new URL(request.url, `http://localhost:${port}`);
   const requestedPath = url.pathname === "/" ? "index.html" : url.pathname;
-  const file = path.join(root, requestedPath);
+  let file = path.join(root, requestedPath);
 
   if (!file.startsWith(root)) {
     response.writeHead(403);
     response.end("Forbidden");
     return;
+  }
+
+  if (fs.existsSync(file) && fs.statSync(file).isDirectory()) {
+    file = path.join(file, "index.html");
   }
 
   fs.readFile(file, (error, data) => {
