@@ -32,13 +32,6 @@
   font-size: clamp(2rem, 6vw, 4rem);
 }
 
-.boe-home-link {
-  color: rgb(var(--color-secondary));
-  font-size: 0.9rem;
-  font-weight: 800;
-  text-decoration: none;
-}
-
 .boe-status-stack,
 .boe-button-row,
 .boe-record-actions,
@@ -121,11 +114,24 @@
 }
 
 .boe-form-section h3,
-.boe-checklist-grid legend {
+.boe-checklist-grid legend,
+.boe-session-checklist legend {
   color: rgb(var(--color-slate-700));
   font-size: 0.95rem;
   font-weight: 900;
   margin: 0 0 0.35rem;
+}
+
+.boe-session-checklist {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.boe-session-checklist > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
 }
 
 .boe-checklist-grid {
@@ -392,7 +398,7 @@
 
 @media (min-width: 760px) {
   .boe-topbar {
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .boe-field-grid {

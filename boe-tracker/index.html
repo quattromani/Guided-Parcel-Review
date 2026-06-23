@@ -16,7 +16,6 @@
 <body class="boe-body">
   <main class="boe-shell" data-app>
     <header class="boe-topbar">
-      <a href="../" class="boe-home-link">Guided Parcel Review</a>
       <div>
         <p class="guided-kicker">Administrative capture</p>
         <h1>BOE Protest Tracker</h1>
@@ -45,11 +44,17 @@
             <label>Meeting # <input data-session-field="meetingNumber" type="text" inputmode="numeric" /></label>
           </div>
           <label>Location <input data-session-field="location" type="text" /></label>
-          <label>Board Members <textarea data-session-field="boardMembersPresent" rows="2"></textarea></label>
-          <label>Assessor / Staff <textarea data-session-field="assessorOrStaffPresent" rows="2"></textarea></label>
+          <fieldset class="boe-session-checklist">
+            <legend>Board Members Present</legend>
+            <div data-session-checklist="boardMembersPresent"></div>
+          </fieldset>
+          <fieldset class="boe-session-checklist">
+            <legend>County Officials / Staff Present</legend>
+            <div data-session-checklist="assessorOrStaffPresent"></div>
+          </fieldset>
           <div class="boe-field-grid">
             <label>Clerk <input data-session-field="clerkPresent" type="text" /></label>
-            <label>Referee <input data-session-field="refereePresent" type="text" /></label>
+            <label>Referee <select data-session-field="refereePresent"></select></label>
           </div>
           <label>Session Notes <textarea data-session-field="generalSessionNotes" rows="3"></textarea></label>
           <div class="boe-button-row">

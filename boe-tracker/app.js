@@ -30,6 +30,13 @@ import { syncUnsyncedRecords } from "./sync.js";
 const propertyClasses = ["Residential", "Agricultural", "Commercial", "Industrial", "Exempt/Other", "Unknown"];
 const outcomes = ["", "Pending", "Denied", "Approved", "Modified", "Withdrawn", "Tabled", "Continued", "Unknown"];
 const refereeAlignments = ["", "Accepted", "Modified", "Rejected", "Not Stated", "Unknown"];
+const boardMemberOptions = ["Jurgens", "Dorn", "Lytle", "Tiemann", "Haxby", "Clabaugh", "Adams"];
+const countyStaffOptions = [
+  "Patricia Milligan, Assessor",
+  "Jen Allington, Deputy Assessor",
+  "Amanda Fanning, County Attorney"
+];
+const refereeOptions = ["", "MIPS", "Stanard", "Cardinal", "Other"];
 const protestBasisOptions = [
   "Overvaluation",
   "Equalization / Comparable Sales",
@@ -97,16 +104,24 @@ function cacheSelectors() {
 function ensureInitialState() {
   const state = loadState();
   if (!state.sessions.length) {
-    createSession({ location: "County Board of Equalization" });
+    createSession(defaultSessionValues());
   } else {
+    state.sessions = state.sessions.map(session => ({
+      ...session,
+      clerkPresent: session.clerkPresent || "Dawn Hill",
+      assessorOrStaffPresent: normalizeStaffNames(session.assessorOrStaffPresent)
+    }));
     saveState(state);
   }
 }
 
 function populateStaticControls() {
+  fillSelect(document.querySelector("[data-session-field='refereePresent']"), refereeOptions);
   fillSelect(document.querySelector("[data-record-field='propertyClass']"), propertyClasses);
   fillSelect(document.querySelector("[data-record-field='outcome']"), outcomes);
   fillSelect(document.querySelector("[data-record-field='refereeAlignment']"), refereeAlignments);
+  renderSessionChecklist("boardMembersPresent", boardMemberOptions);
+  renderSessionChecklist("assessorOrStaffPresent", countyStaffOptions);
   renderChecklist("protestBasis", protestBasisOptions);
   renderChecklist("evidencePresented", evidenceOptions);
   renderChecklist("quickObservationTags", observationOptions);
@@ -114,7 +129,7 @@ function populateStaticControls() {
 
 function bindEvents() {
   document.querySelector("[data-create-session]").addEventListener("click", () => {
-    createSession({ meetingDate: new Date().toISOString().slice(0, 10) });
+    createSession(defaultSessionValues());
     render("Created new session.");
   });
 
@@ -124,13 +139,12 @@ function bindEvents() {
   });
 
   document.querySelectorAll("[data-session-field]").forEach(field => {
-    field.addEventListener("input", () => {
-      const { activeSession } = getActiveContext();
-      if (!activeSession) return;
-      updateSession(activeSession.sessionId, { [field.dataset.sessionField]: field.value });
-      showUnsavedThenSaved();
-      renderDashboardOnly();
-    });
+    field.addEventListener("input", () => saveSessionField(field));
+    field.addEventListener("change", () => saveSessionField(field));
+  });
+
+  document.querySelectorAll("[data-session-checklist] input").forEach(field => {
+    field.addEventListener("change", () => saveSessionChecklist(field.closest("[data-session-checklist]").dataset.sessionChecklist));
   });
 
   document.querySelector("[data-generate-queue]").addEventListener("click", () => {
@@ -273,6 +287,12 @@ function renderSessionForm(session) {
   document.querySelectorAll("[data-session-field]").forEach(field => {
     field.value = session?.[field.dataset.sessionField] || "";
   });
+  ["boardMembersPresent", "assessorOrStaffPresent"].forEach(key => {
+    const values = parseList(session?.[key]);
+    document.querySelectorAll(`[data-session-checklist="${key}"] input`).forEach(input => {
+      input.checked = values.includes(input.value);
+    });
+  });
 }
 
 function renderConfig(config = {}) {
@@ -403,6 +423,22 @@ function saveRecordField(field) {
   renderActiveRecord(getActiveContext().activeRecord);
 }
 
+function saveSessionField(field) {
+  const { activeSession } = getActiveContext();
+  if (!activeSession) return;
+  updateSession(activeSession.sessionId, { [field.dataset.sessionField]: field.value });
+  showUnsavedThenSaved();
+  renderDashboardOnly();
+}
+
+function saveSessionChecklist(key) {
+  const { activeSession } = getActiveContext();
+  if (!activeSession) return;
+  const values = [...document.querySelectorAll(`[data-session-checklist="${key}"] input:checked`)].map(input => input.value);
+  updateSession(activeSession.sessionId, { [key]: values.join("; ") });
+  showUnsavedThenSaved();
+}
+
 function saveChecklist(key) {
   const { activeRecord } = getActiveContext();
   if (!activeRecord) return;
@@ -464,8 +500,34 @@ function renderChecklist(key, options) {
   `).join("");
 }
 
+function renderSessionChecklist(key, options) {
+  document.querySelector(`[data-session-checklist="${key}"]`).innerHTML = options.map(option => `
+    <label class="boe-chip">
+      <input type="checkbox" value="${escapeHtml(option)}" />
+      <span>${escapeHtml(option)}</span>
+    </label>
+  `).join("");
+}
+
 function fillSelect(select, options) {
   select.innerHTML = options.map(option => `<option value="${escapeHtml(option)}">${escapeHtml(option || "Select")}</option>`).join("");
+}
+
+function defaultSessionValues() {
+  return {
+    meetingDate: new Date().toISOString().slice(0, 10),
+    location: "County Board of Equalization",
+    clerkPresent: "Dawn Hill"
+  };
+}
+
+function parseList(value = "") {
+  if (Array.isArray(value)) return value;
+  return `${value}`.split(";").map(item => item.trim()).filter(Boolean);
+}
+
+function normalizeStaffNames(value = "") {
+  return `${value}`.replaceAll("Allignton", "Allington");
 }
 
 function showUnsavedThenSaved() {
