@@ -123,6 +123,8 @@ h1 {
 .case-article {
   display: grid;
   gap: clamp(0.45rem, 1.2vw, 0.9rem);
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
 }
 
 .case-timeline {
@@ -211,26 +213,39 @@ h1 {
 .chapter {
   display: grid;
   gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   padding: clamp(0.85rem, 2.1vw, 1.35rem) 0;
+}
+
+.chapter > * {
+  min-width: 0;
 }
 
 .narrow {
   justify-self: center;
-  width: min(100%, 46rem);
+  max-width: 46rem;
+  min-width: 0;
+  width: 100%;
 }
 
 .wide {
   justify-self: center;
-  width: min(100%, 64rem);
+  max-width: 64rem;
+  min-width: 0;
+  width: 100%;
 }
 
 .narrow-copy {
   max-width: 46rem;
+  min-width: 0;
+  width: 100%;
 }
 
 .chapter-copy {
   display: grid;
   gap: 0.58rem;
+  min-width: 0;
 }
 
 .chapter-copy h2,
@@ -387,7 +402,12 @@ h1 {
   display: grid;
   gap: 0.9rem;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.9fr);
+  min-width: 0;
   padding: clamp(0.9rem, 2.3vw, 1.25rem);
+}
+
+.assumption-callout > * {
+  min-width: 0;
 }
 
 .assumption-callout span,
@@ -413,6 +433,7 @@ h1 {
   font-weight: 900;
   line-height: 1.12;
   margin-top: 0.2rem;
+  overflow-wrap: anywhere;
 }
 
 .assumption-callout p {
@@ -420,6 +441,7 @@ h1 {
   font-size: 0.98rem;
   font-weight: 720;
   line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .outcome-side {
@@ -432,8 +454,10 @@ h1 {
 .up-down-visual {
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.6rem;
   justify-content: start;
+  min-width: 0;
 }
 
 .up-down-visual span {
