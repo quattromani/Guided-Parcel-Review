@@ -23,7 +23,7 @@
   <script>
     {
       const params = new URLSearchParams(window.location.search);
-      if (params.get("article") === "levy-compression") {
+      if (["levy-compression", "protest-evidence-guide"].includes(params.get("article"))) {
         document.documentElement.classList.add("article-shell-route", "levy-compression-shell-route");
       }
     }

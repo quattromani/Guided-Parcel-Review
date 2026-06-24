@@ -65,6 +65,10 @@ import {
   isLevyCompressionPostRequest,
   renderLevyCompressionPost
 } from "./routes/levy-compression-post.js";
+import {
+  isProtestEvidenceGuideRequest,
+  renderProtestEvidenceGuide
+} from "./routes/protest-evidence-guide.js";
 import { renderPropertyInviteIndex } from "./routes/property-invite-index.js";
 import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js";
 import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js";
@@ -139,6 +143,19 @@ async function main() {
       contentType: "article",
       articleId: "levy-compression",
       articleTitle: "Levy Compression",
+      county: "gage"
+    });
+    return;
+  }
+
+  if (isProtestEvidenceGuideRequest(searchParams)) {
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    setFooterResourcesVisible(false);
+    renderProtestEvidenceGuide();
+    trackArticleView({
+      contentType: "article",
+      articleId: "protest-evidence-guide",
+      articleTitle: "Before You Walk Into a Property Protest",
       county: "gage"
     });
     return;
