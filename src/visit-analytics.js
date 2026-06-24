@@ -1,4 +1,4 @@
-const VISIT_ANALYTICS_ENDPOINT = "https://script.google.com/macros/s/AKfycby5H_CPJ7wLPcREsIIKChZC4Mnyg37gGcwLVLjT05uJAKQK2liNIoc5wYGKtKIh-IsW/exec";
+const VISIT_ANALYTICS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyJvCITKM9RKIhxzghwySukOFXPK8fRmMx_sTOrbE19Xtq1RiAG3cBXP_oVwytoboz8/exec";
 const VISIT_ANALYTICS_SECRET = "parcel-visits-2026-private-log";
 const VISIT_ID_SESSION_KEY = "guidedParcelReview.visitId.v1";
 const HEARTBEAT_INTERVAL_MS = 30000;

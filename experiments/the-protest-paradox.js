@@ -256,32 +256,84 @@ function trackSectionReach() {
 }
 
 function trackCalculatorUse() {
-  let calculatorFocused = false;
+  const editableExerciseFields = ["taxes2025", "value2025", "value2026"];
+  const startedFields = new Set();
+  const completedFields = new Set();
+  let exerciseCompleted = false;
   let inputTimer = null;
+
+  const fieldRole = field => editableExerciseFields.includes(field)
+    ? "editable_starter"
+    : "model_context";
+  const completedEditableFields = () => editableExerciseFields
+    .filter(field => completedFields.has(field))
+    .join(",");
+  const progressDetails = () => ({
+    completedEditableFields: completedEditableFields(),
+    completedEditableFieldCount: completedFields.size
+  });
+  const hasChangedFromDefault = input => {
+    const value = numberFromInput(input.value);
+    if (value === null) return false;
+    if (!input.dataset.defaultValue) return true;
+
+    const defaultValue = numberFromInput(input.dataset.defaultValue);
+    return defaultValue === null || value !== defaultValue;
+  };
+  const trackFieldCompletion = input => {
+    const field = input.dataset.calcInput || "";
+    if (!editableExerciseFields.includes(field) || completedFields.has(field)) return;
+    if (!hasChangedFromDefault(input)) return;
+
+    completedFields.add(field);
+    trackArticleInteractionEvent("calculator_field_completed", {
+      field,
+      fieldRole: fieldRole(field),
+      ...progressDetails()
+    });
+
+    if (exerciseCompleted || completedFields.size < editableExerciseFields.length) return;
+
+    exerciseCompleted = true;
+    const result = calculate(readValues());
+    trackArticleInteractionEvent("calculator_exercise_completed", {
+      ...progressDetails(),
+      usedObservedCountyGrowth: true,
+      usedBudgetAssumption: true,
+      estimatedAnnualChange: Number.isFinite(result.annualChange) ? Math.round(result.annualChange) : null
+    });
+  };
 
   document.querySelectorAll("[data-calc-input]").forEach(input => {
     input.addEventListener("focus", () => {
-      if (calculatorFocused) return;
-      calculatorFocused = true;
-      trackArticleInteractionEvent("calculator_focus", {
-        field: input.dataset.calcInput || ""
+      const field = input.dataset.calcInput || "";
+      if (!field || startedFields.has(field)) return;
+
+      startedFields.add(field);
+      trackArticleInteractionEvent("calculator_field_started", {
+        field,
+        fieldRole: fieldRole(field),
+        ...progressDetails()
       });
+
+      if (startedFields.size === 1) {
+        trackArticleInteractionEvent("calculator_focus", { field });
+      }
     });
 
     input.addEventListener("input", () => {
       window.clearTimeout(inputTimer);
       inputTimer = window.setTimeout(() => {
-        const values = readValues();
-        const result = calculate(values);
-        trackArticleInteractionEvent("calculator_change", {
-          field: input.dataset.calcInput || "",
-          value2025: values.value2025,
-          value2026: values.value2026,
-          valueGrowthPercent: Number.isFinite(values.valueGrowth) ? Math.round(values.valueGrowth * 10000) / 100 : null,
-          budgetGrowthPercent: Number.isFinite(values.budgetGrowth) ? Math.round(values.budgetGrowth * 10000) / 100 : null,
-          estimatedAnnualChange: Number.isFinite(result.annualChange) ? Math.round(result.annualChange) : null
-        });
+        trackFieldCompletion(input);
       }, 1200);
+    });
+
+    input.addEventListener("change", () => {
+      trackFieldCompletion(input);
+    });
+
+    input.addEventListener("blur", () => {
+      trackFieldCompletion(input);
     });
   });
 }
