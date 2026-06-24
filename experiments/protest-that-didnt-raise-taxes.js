@@ -52,25 +52,34 @@ function formatInputPercent(value, digits = 2) {
 }
 
 function formatCalculatorInput(input) {
+  if (input.dataset.defaultValue && input.value.trim() === "") {
+    input.value = input.dataset.defaultValue;
+  }
+
   const value = numberFromInput(input.value);
   if (value === null) {
     input.value = "";
+    syncDefaultInputState(input);
     return;
   }
 
   if (input.dataset.format === "money-cents") {
     input.value = money.format(value);
+    syncDefaultInputState(input);
     return;
   }
 
   if (input.dataset.format === "money-whole") {
     input.value = wholeMoney.format(value);
+    syncDefaultInputState(input);
     return;
   }
 
   if (input.dataset.format === "percent") {
     input.value = formatInputPercent(value);
   }
+
+  syncDefaultInputState(input);
 }
 
 function formatSignedMoney(value) {
@@ -82,6 +91,18 @@ function formatSignedMoney(value) {
 function formatFactor(value) {
   if (!Number.isFinite(value)) return "--";
   return value.toFixed(4).replace(/0+$/g, "").replace(/\.$/g, "");
+}
+
+function syncDefaultInputState(input) {
+  if (!input.dataset.defaultValue) return;
+  input.classList.toggle("is-default-value", input.value === input.dataset.defaultValue);
+}
+
+function clearDefaultInputForEditing(input) {
+  if (!input.dataset.defaultValue || input.value !== input.dataset.defaultValue) return;
+  input.value = "";
+  input.classList.remove("is-default-value");
+  updateCalculator();
 }
 
 function calculate(values) {
@@ -270,6 +291,10 @@ document.addEventListener("DOMContentLoaded", () => {
   trackCalculatorUse();
 
   document.querySelectorAll("[data-calc-input]").forEach(input => {
+    formatCalculatorInput(input);
+    input.addEventListener("focus", () => {
+      clearDefaultInputForEditing(input);
+    });
     input.addEventListener("input", updateCalculator);
     input.addEventListener("change", () => {
       formatAndUpdateInput(input);
