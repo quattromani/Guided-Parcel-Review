@@ -38,7 +38,7 @@ export const experimentLinks = [
   },
   {
     title: "Case Study: Assessment Up. Protest Denied. Taxes Down.",
-    href: "experiments/protest-that-didnt-raise-taxes.html",
+    href: "experiments/the-protest-paradox.html",
     note: "Article-style case study showing a denied valuation protest, levy compression, and a lower tax bill."
   },
   {
