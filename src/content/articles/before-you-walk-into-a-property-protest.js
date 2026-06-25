@@ -10,8 +10,8 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
   location: "Gage County",
   tags: ["Gage County"],
   displayDate: "June 25, 2026",
-  publishedDate: "2026-06-25",
-  modifiedDate: "2026-06-25",
+  publishedDate: "2026-06-25T17:33:00-05:00",
+  modifiedDate: "2026-06-25T17:33:00-05:00",
   description: "A plain language guide to preparing a property valuation protest with comparables, property record cards, evidence, and a specific correction request.",
   keywords: [
     "property valuation protest",
