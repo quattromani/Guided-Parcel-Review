@@ -504,15 +504,24 @@ function renderBoardQuestionSection() {
         ${sectionHeader("Narrowing the Question", "What is the Board actually deciding?", "protestBoardTitle")}
         ${paragraph("The Board is not there to decide whether a tax bill feels heavy. It is not there to debate public budgets. It is not there to punish or defend the assessor.")}
       </div>
+      <p class="decision-panel-label" id="decisionPanelTitle">The Board's practical question</p>
       <figure class="decision-panel" aria-labelledby="decisionPanelTitle">
-        <figcaption id="decisionPanelTitle">The Board's practical question</figcaption>
-        <div class="decision-question">${editorialIcon("verification")}<span>Does the evidence support a correction?</span></div>
-        <div class="decision-outcomes">
-          <p><strong>Yes</strong><span>What correction?</span></p>
-          <p><strong>No</strong><span>Current record likely remains.</span></p>
+        <p class="decision-question">Is there support for the requested correction?</p>
+        <div class="decision-outcomes decision-branches" role="list" aria-label="Possible Board outcomes">
+          <div class="decision-branch" data-decision-branch="yes" role="listitem">
+            <strong class="decision-node"><span>Yes</span></strong>
+            <span class="decision-result">What correction?</span>
+          </div>
+          <div class="decision-branch" data-decision-branch="no" role="listitem">
+            <strong class="decision-node"><span>No</span></strong>
+            <span class="decision-result">Current record likely remains.</span>
+          </div>
         </div>
-        <p class="note-box">This is a cognitive aid, not a guarantee of outcome. The Board still controls the decision under the applicable process.</p>
       </figure>
+      <aside class="decision-disclaimer" aria-label="Decision diagram note">
+        <strong>Note</strong>
+        <span>This is a cognitive aid, not a guarantee of outcome. The Board still controls the decision under the applicable process.</span>
+      </aside>
       <div class="editorial-narrow">
         ${paragraph("That smaller question keeps the hearing focused on facts that can be checked instead of opinions that cannot be resolved. A good witness does not say, \"This is unfair.\" A good witness says, \"My property record shows two fireplaces. My home has one.\"")}
       </div>
