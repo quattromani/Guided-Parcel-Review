@@ -256,8 +256,15 @@ function viewportBucket() {
 
 function shouldSkipVisitAnalytics() {
   return isLocalWorkingHost()
+    || isReviewMode()
     || (isExperimentRoute() && !analyticsState.context.allowExperimentAnalytics)
     || isWorkingSessionUserAgent(navigator.userAgent || "");
+}
+
+function isReviewMode() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("review") === "1"
+    || params.get("review") === "true";
 }
 
 function isLocalWorkingHost() {
