@@ -586,6 +586,11 @@ function renderClosingSection() {
       ${paragraph("Sometimes a review results in an adjustment. Sometimes it confirms that a property was already positioned appropriately within the broader tax base. Both outcomes have value. One corrects the record. The other confirms it.")}
       ${paragraph("The valuation process helps determine where a property fits within the system. The tax bill reflects how that system moves as a whole. Both questions matter.")}
       <p class="tax-article-final-source">Sources: Gage County property record card for parcel 004817000, generated June 23, 2026; Nebraska Taxes Online tax-year records for parcel 0004817000; 2026 Gage County Report and Opinion (R&amp;O).</p>
+      <aside class="article-share-footer" aria-labelledby="shareArticleTitle">
+        <p id="shareArticleTitle">Know someone trying to make sense of a valuation notice and a tax bill moving in different directions?</p>
+        <button type="button" data-article-share data-article-action="share_article" data-article-label="${ARTICLE_TITLE}">Share this case study</button>
+        <span data-share-status role="status" aria-live="polite"></span>
+      </aside>
       <aside class="related-article-coda" aria-labelledby="relatedEvidenceGuideTitle">
         <hr />
         <p id="relatedEvidenceGuideTitle">Need to prepare for the hearing side of the process?</p>
@@ -736,6 +741,11 @@ function installArticleAnalytics(canvas) {
   article.addEventListener("click", event => {
     const link = event.target.closest("[data-article-action]");
     if (!link) return;
+    if (link.matches("[data-article-share]")) {
+      event.preventDefault();
+      shareArticle(link);
+      return;
+    }
     trackArticleInteraction(link.dataset.articleAction, {
       articleId: ARTICLE_ID,
       detail: link.dataset.articleLabel || link.textContent?.trim() || link.getAttribute("href") || "",
@@ -744,6 +754,58 @@ function installArticleAnalytics(canvas) {
   });
 
   installArticleDepthTracking(article);
+}
+
+async function shareArticle(button) {
+  const shareUrl = absoluteUrl(ARTICLE_CANONICAL_PATH);
+  const status = button.closest(".article-share-footer")?.querySelector("[data-share-status]");
+  const shareData = {
+    title: ARTICLE_TITLE,
+    text: ARTICLE_DESCRIPTION,
+    url: shareUrl
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      status.textContent = "Shared.";
+      trackArticleInteraction("share_article", {
+        articleId: ARTICLE_ID,
+        detail: ARTICLE_TITLE,
+        targetUrl: shareUrl
+      });
+      return;
+    }
+
+    await copyTextToClipboard(shareUrl);
+    status.textContent = "Link copied.";
+    trackArticleInteraction("copy_link", {
+      articleId: ARTICLE_ID,
+      detail: ARTICLE_TITLE,
+      targetUrl: shareUrl
+    });
+  } catch (error) {
+    if (error?.name === "AbortError") return;
+    status.textContent = "Copy this page URL from your browser.";
+  }
+}
+
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.inset = "0 auto auto 0";
+  textarea.style.opacity = "0";
+  document.body.append(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
 }
 
 function calculateArticleScrollDepth(article) {
