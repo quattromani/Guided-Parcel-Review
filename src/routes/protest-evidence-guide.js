@@ -595,19 +595,7 @@ function renderBoardQuestionSection() {
           <div class="decision-branch" data-decision-branch="yes" role="listitem">
             <strong class="decision-node"><span>Yes</span></strong>
             <span class="decision-result">What correction?</span>
-            <div class="decision-followup" role="group" aria-label="Uniformity check">
-              <p class="decision-followup-question">Would that correction keep the assessment uniform and proportionate?</p>
-              <div class="decision-followup-options">
-                <span>
-                  <strong class="decision-node decision-node-small"><span>Yes</span></strong>
-                  <span>Specific correction to review.</span>
-                </span>
-                <span>
-                  <strong class="decision-node decision-node-small" data-decision-node="no"><span>No</span></strong>
-                  <span>Recheck the record or comparable.</span>
-                </span>
-              </div>
-            </div>
+            <p class="decision-followup-question">Does the correction maintain equalization?</p>
           </div>
           <div class="decision-branch" data-decision-branch="no" role="listitem">
             <strong class="decision-node"><span>No</span></strong>
