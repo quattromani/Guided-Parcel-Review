@@ -259,13 +259,13 @@ Each component below includes purpose, usage, cognitive role, semantic structure
 
 ### Article Hero
 
-Purpose: Establish the article title, offer, author context, publication context, and paper pathway.
+Purpose: Establish the article title, offer, author context, publication context, cover media, and available reading/listening formats.
 
 Use when: Every standalone article.
 
 Do not use when: The article is embedded inside an interactive task surface.
 
-Typical size: One title block, short deck, compact byline/date stamp, optional print/PDF call to action.
+Typical size: One title block, short deck, and cover media. Article metadata and format options move into the opening section's article-entry panel.
 
 Cognitive role: Orientation.
 
@@ -279,13 +279,6 @@ HTML structure:
     </div>
     <h1 class="hero-title">Before You Walk Into a Property Protest</h1>
     <p class="hero-deck">Short plain-language deck.</p>
-    <div class="hero-meta">
-      <p>Prepared by Max Quattromani</p>
-      <p>June 25, 2026 · Gage County</p>
-    </div>
-    <div class="hero-action">
-      <a class="article-print-cta" href="/assets/guides/example.pdf" download>Prefer paper? Download the printable guide.</a>
-    </div>
   </div>
   <figure class="hero-media">
     <video class="article-hero-video-player" poster="/assets/images/articles/example-16x9.jpg" preload="metadata" playsinline></video>
@@ -298,6 +291,51 @@ HTML structure:
 Accessibility: One `h1` per article.
 
 Print: Keep with the opening section when possible. The printable PDF should include the same author and location/date stamp. Hide the web print/download CTA inside the printed PDF because it has already served its purpose.
+
+Article entry rule: Publication metadata and format choices belong inside the opening article section, above the first section kicker. The reader should first understand what the guide is, then see the cover media, then enter the article through a compact attribution and format panel. Stack the metadata in reader-order: author, publication date, topical/location tags, reading time, then format choices. Finish the panel with a gentle divider so the first kicker feels like the beginning of the reading experience. Keep utility controls compact and sibling-like: paper/PDF, audio, and similar format options should use matched buttons with clear icons and accessible labels. Audio uses native controls with `preload="none"` unless there is a specific reason to preload metadata.
+
+Tag rule: Tags in the entry panel should be small, muted pills rather than category headlines or filter UI. Use them to name the local or topical context, such as `Gage County`, and allow future articles to add comma-separated conceptual tags without disturbing the author/date/reading-time rhythm.
+
+Reading-time rule: A concise reading-time line belongs inside the article-entry panel, under author/date/tag metadata and above format choices. This keeps the reader's basic decisions together: who prepared it, when/local context, how long it takes, and whether to read, print, or listen. It is a static publication value, not a client-side calculation. Update it during the publication/PDF regeneration pass so the article remains fast, stable, and print-consistent. Mark it up with a `<time>` element and include `wordCount` and `timeRequired` in structured data when available.
+
+Article source artifact rule: Every mature GES article should have a portable source artifact that owns its editorial content and publication metadata. The route or renderer should own component behavior, semantic markup, analytics hooks, and layout assembly; the source artifact should own the title, subtitle, author, date, location, reading-time values, media references, resource links, section kickers, headings, paragraphs, example rows, script lines, and component data. This keeps long-form writing from becoming trapped inside route code and makes future refactors, PDF regeneration, metadata review, and article reuse much easier.
+
+Structured source is preferred for GES articles because the articles are component-driven. Markdown is appropriate for purely narrative essays, but guides with process strips, comparison cards, decision trees, evidence matrices, record callouts, resource cards, audio, video, and print metadata should use a data-plus-prose artifact that can feed reusable components. The renderer may still output ordinary semantic HTML; the source artifact is the editorial manuscript and component brief.
+
+Article entry HTML:
+
+```html
+<section class="article-section narrative-opening">
+  <div class="editorial-narrow">
+    <div class="article-entry-panel">
+      <div class="article-entry-meta">
+        <p>Prepared by Max Quattromani</p>
+        <p>June 25, 2026</p>
+        <ul class="article-entry-tags" aria-label="Article tags">
+          <li>Gage County</li>
+        </ul>
+        <p class="article-reading-time" aria-label="Estimated reading time">
+          <span>Reading time:</span>
+          <time datetime="PT10M">10 min</time>
+          <span>(2,070 words)</span>
+        </p>
+      </div>
+      <div class="hero-utility" aria-label="Article format options">
+        <a class="hero-utility-button article-print-cta" href="/assets/guides/example.pdf" download>Prefer paper? Download the printable guide.</a>
+        <details class="hero-audio">
+          <summary class="hero-utility-button article-audio-cta">Prefer audio? Listen to the article.</summary>
+          <div class="hero-audio-panel">
+            <audio controls preload="none" src="/assets/audio/articles/example.mp3"></audio>
+            <a href="/assets/audio/articles/example.mp3" download>Download MP3</a>
+          </div>
+        </details>
+      </div>
+    </div>
+    <p class="section-kicker">In the Hearing Room</p>
+    <h2>The pattern shows up quickly</h2>
+  </div>
+</section>
+```
 
 Metadata rule: Authorship, location, and date should read as metadata, not body copy. Keep these lines visually quiet, roughly 12 to 13 px on screen, with modest line height. Use a location/date stamp when the article is tied to a county, hearing cycle, meeting schedule, or local procedural context. Dates may be updated before publication, but the document should always make its local moment clear.
 
@@ -854,6 +892,12 @@ Prefer reusable component names:
 - `article-hero`
 - `hero-media`
 - `article-hero-video`
+- `article-entry-panel`
+- `article-entry-meta`
+- `article-reading-time`
+- `hero-utility`
+- `hero-audio`
+- `hero-audio-panel`
 - `article-section`
 - `section-kicker`
 - `concept-diagram`
@@ -870,9 +914,34 @@ Prefer reusable component names:
 - `print-url`
 - `article-meta`
 - `article-print-cta`
+- `article-audio-cta`
 - `meeting-schedule-card`
 
 Avoid names that only make sense in one article unless the component truly cannot be reused.
+
+### Article Source Artifacts
+
+Use `src/content/articles/` or an equivalent content directory for article source artifacts. A GES source artifact should be readable as the article's editorial brief: it should expose publication metadata, assets, resource links, structured component data, and section copy without requiring someone to inspect the route renderer.
+
+Recommended source responsibilities:
+
+- article identity: `id`, canonical slug/path, title, subtitle, author, date, location
+- publishing metadata: description, keywords, publication date, revision date, reading time, word count
+- media: hero image, video, audio, credits, captions, transcript
+- resources: labels, URLs, descriptions, icons, analytics actions
+- component data: process steps, comparison lists, decision-tree labels, matrix rows, schedule dates
+- section copy: kickers, headings, paragraphs, pull quotes, notes, CTAs, related links
+
+Renderer responsibilities stay separate:
+
+- semantic HTML
+- class names and reusable component composition
+- accessibility attributes
+- analytics instrumentation
+- print behavior
+- client-side behavior such as video, audio, sharing, or calendar downloads
+
+This separation is now part of GES cleanup work. When refactoring an older article such as the Property Protest Paradox piece, first create or update its source artifact, then migrate the visual treatment. That prevents legacy prose from staying embedded in a one-off route after the page looks modern.
 
 ## VII. CSS Philosophy
 
@@ -1220,23 +1289,25 @@ For each legacy article, evaluate:
 - Publication context: Does the article need author, location, date, or update context?
 - Paper pathway: Should the article provide a static downloadable PDF?
 - Screen-only affordances: Do any buttons, hover states, calendar actions, or downloads become confusing when printed?
+- Source artifact: Does the article have a portable source artifact that owns the editorial copy, metadata, media references, and component data?
 
 ### Migration Workflow
 
 1. Preserve the core message.
-2. Identify the reader's starting uncertainty.
-3. Rewrite the section sequence as questions.
-4. Mark paragraphs that repeat, over-explain, or introduce multiple tasks.
-5. Replace explanation with visuals where the relationship can be shown faster.
-6. Add a process strip only if there is a real workflow.
-7. Convert contrasts into comparison cards.
-8. Convert action relationships into evidence matrices or checklists.
-9. Move official links into resource cards with visible URLs.
-10. Add print-safe rules for new components.
-11. Add or update article metadata when local context, publication timing, or public procedures matter.
-12. If the article is likely to be printed, generate or regenerate the static PDF.
-13. Verify with mobile, desktop, and rendered print/PDF checks.
-14. Re-read for tone: calm, practical, non-adversarial, and authored.
+2. Extract the article into a source artifact before visual migration when the content is still embedded in route code.
+3. Identify the reader's starting uncertainty.
+4. Rewrite the section sequence as questions.
+5. Mark paragraphs that repeat, over-explain, or introduce multiple tasks.
+6. Replace explanation with visuals where the relationship can be shown faster.
+7. Add a process strip only if there is a real workflow.
+8. Convert contrasts into comparison cards.
+9. Convert action relationships into evidence matrices or checklists.
+10. Move official links into resource cards with visible URLs.
+11. Add print-safe rules for new components.
+12. Add or update article metadata when local context, publication timing, or public procedures matter.
+13. If the article is likely to be printed, generate or regenerate the static PDF.
+14. Verify with mobile, desktop, and rendered print/PDF checks.
+15. Re-read for tone: calm, practical, non-adversarial, and authored.
 
 ### What Not To Do
 

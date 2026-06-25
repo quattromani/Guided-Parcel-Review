@@ -121,13 +121,18 @@ Ensure reusable components are actually reusable.
 
 Review naming.
 
+Confirm the article has a source artifact that owns the editorial manuscript and component data. The route or renderer should assemble reusable components; it should not be the only place where article prose, kickers, examples, resource URLs, media references, and reading-time metadata live.
+
 Examples:
 
 - `article-hero`
 - `hero-media`
 - `article-hero-video`
-- `hero-meta`
-- `hero-action`
+- `article-entry-panel`
+- `article-entry-meta`
+- `article-reading-time`
+- `hero-utility`
+- `hero-audio`
 - `decision-panel`
 - `process-strip`
 - `comparison-card`
@@ -283,6 +288,8 @@ Review:
 
 Ensure no unnecessary assets remain.
 
+For legacy cleanup passes, instantiate the source artifact before or during the visual refactor. This is now a required step for older articles that have not yet been tested against the latest GES guidance, including the Property Protest Paradox article and earlier long-form assessment explainers.
+
 ## 12. Metadata Review
 
 Verify:
@@ -299,6 +306,7 @@ Verify:
 - author
 - publication date
 - structured data
+- source artifact metadata matches rendered metadata
 
 Ensure everything reflects the latest revision.
 

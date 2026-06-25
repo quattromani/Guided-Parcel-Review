@@ -1,190 +1,65 @@
 import { escapeHtml } from "../utils/html.js";
+import { beforeYouWalkIntoPropertyProtestArticle as articleSource } from "../content/articles/before-you-walk-into-a-property-protest.js";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js";
 
 const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg";
-const PRINTABLE_GUIDE_PDF = "assets/guides/before-you-walk-into-a-property-protest.pdf";
-const ARTICLE_ID = "protest-evidence-guide";
-const ARTICLE_SLUG = "protest-evidence-guide";
-const ARTICLE_LEGACY_QUERY_VALUE = ARTICLE_SLUG;
-const ARTICLE_CANONICAL_PATH = "articles/before-you-walk-into-a-property-protest/";
-const ARTICLE_TITLE = "Before You Walk Into a Property Protest";
-const ARTICLE_SUBTITLE = "A plain language, cup-of-coffee-length guide for turning a property valuation protest into a clear, evidence-based request.";
-const ARTICLE_AUTHOR = "Max Quattromani";
-const ARTICLE_LOCATION = "Gage County";
-const ARTICLE_DISPLAY_DATE = "June 25, 2026";
-const ARTICLE_PUBLISHED_DATE = "2026-06-25";
-const ARTICLE_MODIFIED_DATE = "2026-06-25";
-const ARTICLE_DESCRIPTION = "A plain language guide to preparing a property valuation protest with comparables, property record cards, evidence, and a specific correction request.";
-const ARTICLE_SOCIAL_IMAGE = "assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg";
-const ARTICLE_TLDR_VIDEO = "assets/videos/articles/before-you-walk-into-a-property-protest-summary.mp4";
-const ARTICLE_HERO_IMAGE_ALT = "Homeowner reviewing a printed property record on a clipboard.";
-const ARTICLE_HERO_IMAGE_CREDIT = "Photo by RDNE Stock project on Pexels.";
-const ARTICLE_HERO_IMAGE_SOURCE = "https://www.pexels.com/photo/8292825/";
-const ARTICLE_HERO_IMAGE_LICENSE = "https://www.pexels.com/license/";
-const GAGE_COUNTY_WEBSITE = "https://gagecountyne.gov/";
-const GAGE_COUNTY_ASSESSOR_PAGE = "https://gagecountyne.gov/county-assessor/";
-const GAGE_COUNTY_PROTESTS_PAGE = "https://gagecountyne.gov/county-assessor/property-valuation-protests/";
-const GAGE_COUNTY_PROPERTY_SEARCH_PAGE = "https://gagecountyne.gov/county-assessor/disclaimer-and-terms-of-service-assessors-online/";
-const ARTICLE_KEYWORDS = [
-  "property valuation protest",
-  "property record card",
-  "Gage County property protest",
-  "Nebraska Form 422",
-  "comparable properties",
-  "Board of Equalization",
-  "property assessment evidence"
-];
+const ARTICLE_SECTIONS = articleSource.sections;
+const PRINTABLE_GUIDE_PDF = articleSource.assets.printableGuidePdf;
+const ARTICLE_ID = articleSource.id;
+const ARTICLE_SLUG = articleSource.slug;
+const ARTICLE_LEGACY_QUERY_VALUE = articleSource.legacyQueryValue;
+const ARTICLE_CANONICAL_PATH = articleSource.canonicalPath;
+const ARTICLE_TITLE = articleSource.title;
+const ARTICLE_SUBTITLE = articleSource.subtitle;
+const ARTICLE_AUTHOR = articleSource.author;
+const ARTICLE_AUTHOR_EMAIL = articleSource.authorEmail;
+const ARTICLE_LOCATION = articleSource.location;
+const ARTICLE_TAGS = articleSource.tags ?? [ARTICLE_LOCATION].filter(Boolean);
+const ARTICLE_DISPLAY_DATE = articleSource.displayDate;
+const ARTICLE_PUBLISHED_DATE = articleSource.publishedDate;
+const ARTICLE_MODIFIED_DATE = articleSource.modifiedDate;
+const ARTICLE_DESCRIPTION = articleSource.description;
+const ARTICLE_SOCIAL_IMAGE = articleSource.assets.socialImage;
+const ARTICLE_TLDR_VIDEO = articleSource.assets.tldrVideo;
+const ARTICLE_AUDIO_READ = articleSource.assets.audioRead;
+const ARTICLE_AUDIO_DURATION = articleSource.assets.audioDuration;
+const ARTICLE_WORD_COUNT = articleSource.reading.wordCount;
+const ARTICLE_READING_TIME_MINUTES = articleSource.reading.minutes;
+const ARTICLE_READING_TIME = `PT${ARTICLE_READING_TIME_MINUTES}M`;
+const ARTICLE_WORD_COUNT_LABEL = ARTICLE_WORD_COUNT.toLocaleString("en-US");
+const ARTICLE_HERO_IMAGE_ALT = articleSource.assets.heroImageAlt;
+const ARTICLE_HERO_IMAGE_CREDIT = articleSource.assets.heroImageCredit;
+const ARTICLE_HERO_IMAGE_SOURCE = articleSource.assets.heroImageSource;
+const ARTICLE_HERO_IMAGE_LICENSE = articleSource.assets.heroImageLicense;
+const GAGE_COUNTY_WEBSITE = articleSource.references.gageCountyWebsite;
+const GAGE_COUNTY_ASSESSOR_PAGE = articleSource.references.gageCountyAssessorPage;
+const GAGE_COUNTY_PROTESTS_PAGE = articleSource.references.gageCountyProtestsPage;
+const GAGE_COUNTY_PROPERTY_SEARCH_PAGE = articleSource.references.gageCountyPropertySearchPage;
+const ARTICLE_KEYWORDS = articleSource.keywords;
 const ARTICLE_DEPTH_MILESTONES = [25, 50, 75, 100];
-const ARTICLE_TLDR_TRANSCRIPT = [
-  "If you only have a minute, here is the heart of this guide.",
-  "A property protest is not mainly about saying the tax bill feels too high. The useful question is whether the record or assessed value can be corrected with evidence.",
-  "Start with two or three good comparable properties. Pull the property record cards. Compare facts, not just values.",
-  "Then connect what you found to one specific request: here is the evidence, here is the record issue, and here is the correction I am asking the Board to consider.",
-  "You do not need to become an appraiser. You need to become a good witness."
-];
-
-const RESOURCES = [
-  {
-    label: "Gage County GIS / Property Record Lookup",
-    icon: "property-record",
-    analyticsAction: "gis_click",
-    description: "Find the property record card for your parcel and for any comparable properties you plan to discuss.",
-    url: "https://report.gworks.com/report.ashx?county=gage&type=assessor"
-  },
-  {
-    label: "Gage County Sales Comparison Map",
-    icon: "market-chart",
-    analyticsAction: "sales_map_click",
-    description: "Start here when looking for recent sales that may have competed with your property in the market.",
-    url: "https://experience.arcgis.com/experience/67492767fb8d49a8b321d14022d24e81"
-  },
-  {
-    label: "Nebraska Property Valuation Protest Form 422",
-    icon: "document",
-    analyticsAction: "form422_click",
-    description: "Use the official Nebraska form and confirm the deadline, signature, and filing requirements with the county.",
-    url: "https://revenue.nebraska.gov/sites/default/files/doc/pad/forms/422_Property_Valuation_Protest.pdf"
-  }
-];
-
-const PROCESS_STEPS = [
-  ["Find", "2-3 good comparable properties", "observe"],
-  ["Compare", "the property records", "compare"],
-  ["Document", "the specific difference", "document"],
-  ["Request", "one clear correction", "request"]
-];
-
-const BOARD_MEETINGS = [
-  {
-    dateLabel: "Monday, July 6, 2026",
-    timeLabel: "1:00 p.m.",
-    calendarUrl: "assets/calendar/gage-boe-2026-07-06.ics"
-  },
-  {
-    dateLabel: "Friday, July 10, 2026",
-    timeLabel: "1:00 p.m.",
-    calendarUrl: "assets/calendar/gage-boe-2026-07-10.ics"
-  }
-];
-
-const BOARD_MEETING_LOCATION = "Gage County Courthouse, Board of Supervisors Room, 612 Grant Street, Beatrice, NE 68310";
-
-const HARD_REQUESTS = [
-  "My house isn't worth this much.",
-  "This will make my taxes increase.",
-  "Can someone make this make sense?"
-];
-
-const BETTER_REQUESTS = [
-  "My record lists two fireplaces, but I have one.",
-  "My finished basement area appears overstated.",
-  "My condition rating appears inconsistent with comparable records."
-];
-
-const GOOD_COMP_TRAITS = [
-  "location",
-  "style",
-  "age",
-  "size",
-  "condition",
-  "quality",
-  "lot size",
-  "major features"
-];
-
-const WEAK_COMP_SIGNALS = [
-  "very different size",
-  "different property type",
-  "major improvements yours does not have",
-  "different market area",
-  "unusual sale conditions, if known"
-];
-
-const RECORD_FACTS = [
-  "Living area",
-  "Quality",
-  "Condition",
-  "Lot size",
-  "Garage",
-  "Basement",
-  "Fireplaces",
-  "Outbuildings",
-  "Comparable sales",
-  "Land characteristics"
-];
-
-const RECORD_CALLOUT_ROWS = [
-  ["Living area", "Compare this"],
-  ["Condition", "Compare this"],
-  ["Quality", "Compare this"],
-  ["Basement finish", "Check this"],
-  ["Garage", "Measure if wrong"],
-  ["Fireplaces", "Photograph if wrong"],
-  ["Outbuildings", "Photograph if missing"],
-  ["Land size", "Match this to the request"]
-];
-
-const EVIDENCE_EXAMPLES = [
-  [
-    "Photos show sealed fireplace",
-    "record lists functional fireplace",
-    "request fireplace correction"
-  ],
-  [
-    "Measurements show smaller living area",
-    "record shows larger square footage",
-    "request square footage review"
-  ],
-  [
-    "Comparable records show similar homes rated Average",
-    "subject is rated Good",
-    "request condition adjustment"
-  ],
-  [
-    "Basement is only partly finished",
-    "record lists full finish",
-    "request basement finish correction"
-  ],
-  [
-    "Old shed was removed",
-    "record still lists outbuilding",
-    "request outbuilding removal"
-  ],
-  [
-    "Photos show a different major feature",
-    "record describes the wrong feature, size, or type",
-    "request physical-characteristic correction"
-  ]
-];
-
-const EVIDENCE_COLUMNS = [
-  "What you noticed",
-  "What the record says",
-  "What to ask for"
-];
+const ARTICLE_TLDR_TRANSCRIPT = articleSource.tldrTranscript;
+const RESOURCES = articleSource.resources;
+const PROCESS_STEPS = articleSource.processSteps;
+const BOARD_MEETINGS = articleSource.boardMeetings;
+const BOARD_MEETING_LOCATION = articleSource.boardMeetingLocation;
+const DISCONNECT_FIGURE = articleSource.disconnectFigure;
+const HARD_REQUESTS = articleSource.requestComparison.hard;
+const BETTER_REQUESTS = articleSource.requestComparison.better;
+const GOOD_COMP_TRAITS = articleSource.comparableScorecard.goodTraits;
+const WEAK_COMP_SIGNALS = articleSource.comparableScorecard.weakSignals;
+const RECORD_FACTS = articleSource.recordFacts;
+const RECORD_CALLOUT_ROWS = articleSource.recordCalloutRows;
+const EVIDENCE_EXAMPLES = articleSource.evidenceExamples;
+const EVIDENCE_COLUMNS = articleSource.evidenceColumns;
+const ORGANIZATION_STEPS = articleSource.organizationSteps;
+const ARTICLE_AUTHOR_MAILTO = `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeURIComponent(`Re: ${ARTICLE_TITLE}`)}`;
 
 function paragraph(text) {
   return `<p>${escapeHtml(text)}</p>`;
+}
+
+function paragraphs(items = []) {
+  return items.map(paragraph).join("");
 }
 
 function listMarkup(items) {
@@ -269,6 +144,7 @@ function updateProtestEvidenceGuideMetadata() {
   const imageUrl = absoluteUrl(ARTICLE_SOCIAL_IMAGE);
   const pdfUrl = absoluteUrl(PRINTABLE_GUIDE_PDF);
   const videoUrl = absoluteUrl(ARTICLE_TLDR_VIDEO);
+  const audioUrl = absoluteUrl(ARTICLE_AUDIO_READ);
   const title = `${ARTICLE_TITLE} | Guided Parcel Review`;
 
   document.title = title;
@@ -276,6 +152,8 @@ function updateProtestEvidenceGuideMetadata() {
   setMeta("description", ARTICLE_DESCRIPTION);
   setMeta("author", ARTICLE_AUTHOR);
   setMeta("keywords", ARTICLE_KEYWORDS.join(", "));
+  setMeta("article:word_count", String(ARTICLE_WORD_COUNT));
+  setMeta("article:reading_time", ARTICLE_READING_TIME);
   setMeta("robots", "index, follow, max-image-preview:large");
   setMeta("article:published_time", ARTICLE_PUBLISHED_DATE);
   setMeta("article:modified_time", ARTICLE_MODIFIED_DATE);
@@ -332,6 +210,7 @@ function updateProtestEvidenceGuideMetadata() {
         },
         datePublished: ARTICLE_PUBLISHED_DATE,
         dateModified: ARTICLE_MODIFIED_DATE,
+        timeRequired: ARTICLE_READING_TIME,
         inLanguage: "en-US"
       },
       {
@@ -362,6 +241,8 @@ function updateProtestEvidenceGuideMetadata() {
         },
         datePublished: ARTICLE_PUBLISHED_DATE,
         dateModified: ARTICLE_MODIFIED_DATE,
+        wordCount: ARTICLE_WORD_COUNT,
+        timeRequired: ARTICLE_READING_TIME,
         articleSection: "Property assessment education",
         keywords: ARTICLE_KEYWORDS,
         about: [
@@ -417,6 +298,15 @@ function updateProtestEvidenceGuideMetadata() {
             uploadDate: ARTICLE_PUBLISHED_DATE,
             duration: "PT2M44S",
             transcript: ARTICLE_TLDR_TRANSCRIPT.join(" ")
+          },
+          {
+            "@type": "AudioObject",
+            name: "Audio version of Before You Walk Into a Property Protest",
+            description: "A listenable audio version of the property protest preparation guide.",
+            contentUrl: audioUrl,
+            encodingFormat: "audio/mpeg",
+            uploadDate: ARTICLE_PUBLISHED_DATE,
+            duration: ARTICLE_AUDIO_DURATION
           }
         ],
         inLanguage: "en-US",
@@ -490,17 +380,11 @@ function sectionHeader(kicker, title, id) {
 }
 
 function renderDisconnectFigure() {
-  const items = [
-    ["Homeowner thinks", "My value is too high.", "observe"],
-    ["Board needs", "What should change?", "equalization"],
-    ["Evidence-supported request", "Here is the proof. Here is the correction.", "request"]
-  ];
-
   return `
     <figure class="concept-card concept-diagram disconnect-visual" aria-labelledby="disconnectTitle">
       <figcaption id="disconnectTitle">The disconnect</figcaption>
       <div>
-        ${items.map(([label, text, icon]) => `
+        ${DISCONNECT_FIGURE.map(([label, text, icon]) => `
           <article>
             <div class="editorial-card-heading">
               ${editorialIcon(icon)}
@@ -515,9 +399,10 @@ function renderDisconnectFigure() {
 }
 
 function renderProcessStrip() {
+  const section = ARTICLE_SECTIONS.process;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section article-section-visual" data-tone="information" aria-labelledby="processTitle">
-      ${sectionHeader("Before You Begin", "The whole process in four moves", "processTitle")}
+      ${sectionHeader(section.kicker, section.title, "processTitle")}
       <ol class="process-strip" aria-label="Property protest preparation process">
         ${PROCESS_STEPS.map(([verb, detail, icon]) => `
           <li>
@@ -534,32 +419,32 @@ function renderProcessStrip() {
 }
 
 function renderOpeningSection() {
+  const section = ARTICLE_SECTIONS.opening;
   return `
     <section class="tax-article-section tax-story-chapter tax-article-opening levy-wide-panel article-section" data-tone="reflection" aria-labelledby="protestOpeningTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("In the Hearing Room", "The pattern shows up quickly", "protestOpeningTitle")}
-        ${paragraph("Spend a day observing property protest hearings and a rhythm starts to appear. Homeowners come forward one after another. Most are sincere. Most have paid attention to their home. Most believe something about the assessment is wrong.")}
-        ${paragraph("Then the Board asks the practical question that sits underneath almost every hearing: what can we verify?")}
-        ${paragraph("That is where many protests lose their footing. The homeowner may be right that something feels off. But without photographs, measurements, repair estimates, record cards, or comparable properties, the Board has little it can act on.")}
+        ${renderArticleEntryPanel()}
+        ${sectionHeader(section.kicker, section.title, "protestOpeningTitle")}
+        ${paragraphs(section.paragraphs)}
       </div>
       ${renderDisconnectFigure()}
       <aside class="guided-transition protest-guide-takeaway pull-quote">
-        <p>Don't walk into a protest asking for justice. Walk in asking for the record to be corrected.</p>
+        <p>${escapeHtml(section.pullQuote)}</p>
       </aside>
       <div class="editorial-narrow">
-        ${paragraph("That is a narrower request. It is also a stronger one. A property protest is not mainly about proving that taxes are too high. It is about showing, with specific evidence, that the property record or assessed value should be corrected.")}
+        ${paragraph(section.closingParagraph)}
       </div>
     </section>
   `;
 }
 
 function renderWhyProtestsFailSection() {
+  const section = ARTICLE_SECTIONS.whyProtestsFail;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" aria-labelledby="protestFailTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Finding the Disconnect", "Why do sincere protests fail?", "protestFailTitle")}
-        ${paragraph("Usually not because the homeowner is careless. More often, the protest asks the Board to solve the wrong problem.")}
-        ${paragraph("\"Just look at my house\" may be an honest reaction. So is \"there is no way it is worth that.\" But a hearing cannot inspect a feeling. It needs something it can compare, measure, confirm, or correct.")}
+        ${sectionHeader(section.kicker, section.title, "protestFailTitle")}
+        ${paragraphs(section.paragraphs)}
       </div>
       <figure class="comparison-card" aria-labelledby="requestCompareTitle">
         <figcaption id="requestCompareTitle">Sincerity is not the same thing as usable evidence</figcaption>
@@ -575,51 +460,53 @@ function renderWhyProtestsFailSection() {
         </div>
       </figure>
       <div class="editorial-narrow">
-        ${paragraph("This is where the homeowner's role changes. You do not need to become an appraiser. You need to become a good witness. Witnesses observe, document, and explain what their evidence shows.")}
+        ${paragraph(section.closingParagraph)}
       </div>
     </section>
   `;
 }
 
 function renderBoardQuestionSection() {
+  const section = ARTICLE_SECTIONS.boardQuestion;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" aria-labelledby="protestBoardTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Narrowing the Question", "What is the Board actually deciding?", "protestBoardTitle")}
-        ${paragraph("The Board is not there to decide whether a tax bill feels heavy. It is not there to debate public budgets. It is not there to punish or defend the assessor.")}
+        ${sectionHeader(section.kicker, section.title, "protestBoardTitle")}
+        ${paragraph(section.intro)}
       </div>
       <figure class="decision-panel" aria-labelledby="decisionPanelTitle">
-        <figcaption class="decision-panel-label" id="decisionPanelTitle">The Board's practical question</figcaption>
-        <p class="decision-question">Is there support for the requested correction?</p>
+        <figcaption class="decision-panel-label" id="decisionPanelTitle">${escapeHtml(section.label)}</figcaption>
+        <p class="decision-question">${escapeHtml(section.question)}</p>
         <div class="decision-outcomes decision-branches" role="list" aria-label="Possible Board outcomes">
           <div class="decision-branch" data-decision-branch="yes" role="listitem">
-            <strong class="decision-node"><span>Yes</span></strong>
-            <span class="decision-result">What correction?</span>
-            <p class="decision-followup-question">Does the correction maintain equalization?</p>
+            <strong class="decision-node"><span>${escapeHtml(section.yesNode)}</span></strong>
+            <span class="decision-result">${escapeHtml(section.yesResult)}</span>
+            <p class="decision-followup-question">${escapeHtml(section.followupQuestion)}</p>
           </div>
           <div class="decision-branch" data-decision-branch="no" role="listitem">
-            <strong class="decision-node"><span>No</span></strong>
-            <span class="decision-result">Current record likely remains.</span>
+            <strong class="decision-node"><span>${escapeHtml(section.noNode)}</span></strong>
+            <span class="decision-result">${escapeHtml(section.noResult)}</span>
           </div>
         </div>
       </figure>
       <aside class="decision-disclaimer" aria-label="Decision diagram note">
         <strong>Note</strong>
-        <span>This is a cognitive aid, not a guarantee of outcome. The Board still controls the decision under the applicable process.</span>
+        <span>${escapeHtml(section.disclaimer)}</span>
       </aside>
       <div class="editorial-narrow">
-        ${paragraph("Those two questions keep the hearing focused on facts that can be checked instead of opinions that cannot be resolved. A good witness does not say, \"This is unfair.\" A good witness says, \"My property record shows two fireplaces. My home has one.\"")}
+        ${paragraph(section.closingParagraph)}
       </div>
     </section>
   `;
 }
 
 function renderComparableSection() {
+  const section = ARTICLE_SECTIONS.comparables;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="comparison" aria-labelledby="protestCompsTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Finding Good Comparables", "What makes a comparable useful?", "protestCompsTitle")}
-        ${paragraph("A comparable property is not just a nearby house with a lower value. The better question is whether that home would have genuinely competed with yours in the marketplace.")}
+        ${sectionHeader(section.kicker, section.title, "protestCompsTitle")}
+        ${paragraph(section.intro)}
       </div>
       <figure class="scorecard" aria-labelledby="scorecardTitle">
         <figcaption id="scorecardTitle">Comparable property scorecard</figcaption>
@@ -635,21 +522,21 @@ function renderComparableSection() {
         </div>
       </figure>
       <div class="editorial-narrow">
-        ${paragraph("Three strong comparables are usually more persuasive than fifteen weak ones. A short set of good matches lets the Board see the pattern. A long set of loose matches often makes the real point harder to find.")}
-        ${paragraph("Use the sales map or sales search to find candidates (link below). Then slow down. Pull the property record cards. The sale price may get your attention, but the record facts tell you whether the comparison belongs in the packet.")}
+        ${paragraphs(section.paragraphs)}
       </div>
     </section>
   `;
 }
 
 function renderValueLayerFigure() {
+  const section = ARTICLE_SECTIONS.records;
   return `
     <figure class="value-layer-figure" aria-labelledby="valueLayerTitle">
-      <figcaption id="valueLayerTitle">The current assessment is built from many smaller pieces of information.</figcaption>
+      <figcaption id="valueLayerTitle">${escapeHtml(section.layerCaption)}</figcaption>
       <div class="value-layer-top">
         ${editorialIcon("property-record")}
-        <strong>Current Assessed Value</strong>
-        <span>Built from today's property record</span>
+        <strong>${escapeHtml(section.layerTitle)}</strong>
+        <span>${escapeHtml(section.layerSubtitle)}</span>
       </div>
       <ul>
         ${RECORD_FACTS.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
@@ -675,31 +562,32 @@ function renderRecordCallout() {
 }
 
 function renderRecordsSection() {
+  const section = ARTICLE_SECTIONS.records;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="evidence" aria-labelledby="protestRecordsTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Verifying the Record", "How does the record shape today's value?", "protestRecordsTitle")}
-        <p class="article-emphasis">Today's assessed value reflects the information currently available about your property.</p>
+        ${sectionHeader(section.kicker, section.title, "protestRecordsTitle")}
+        <p class="article-emphasis">${escapeHtml(section.emphasis)}</p>
       </div>
       ${renderValueLayerFigure()}
       <div class="editorial-narrow">
-        ${paragraph("The property record is often the most useful place to begin because it holds many of the facts used during valuation. Compare your record with the records for your comparables. Do not stop at the total assessed value. Ask which record facts help explain how each value was assembled.")}
-        ${paragraph("Maybe your home and a comparable are similar, but your record shows more finished basement. Maybe the comparable has a larger garage. Maybe your condition rating is higher even though the homes appear similar. Those differences do not automatically change the value, but they give the Board specific questions it can review.")}
+        ${paragraphs(section.paragraphs)}
       </div>
       ${renderRecordCallout()}
       <div class="editorial-narrow">
-        ${paragraph("But be careful: the Board cannot fix one error by making another. If a comparable looks like a good match but its record is wrong, the answer may not be to change your value to match that mistake. The better question may be: which record is incorrect, and what evidence shows the correction?")}
+        ${paragraph(section.caution)}
       </div>
     </section>
   `;
 }
 
 function renderEvidenceSection() {
+  const section = ARTICLE_SECTIONS.evidence;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="evidence" aria-labelledby="protestEvidenceTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Connecting Proof to Relief", "How do you turn evidence into one correction?", "protestEvidenceTitle")}
-        ${paragraph("Keep the path short. What you noticed should connect directly to what the record says and what you are asking to correct.")}
+        ${sectionHeader(section.kicker, section.title, "protestEvidenceTitle")}
+        ${paragraph(section.intro)}
       </div>
       <figure class="evidence-matrix" aria-labelledby="evidenceMatrixTitle">
         <figcaption id="evidenceMatrixTitle">${editorialIcon("evidence")}<span>Evidence -> Record issue -> Requested correction</span></figcaption>
@@ -717,27 +605,23 @@ function renderEvidenceSection() {
         </ol>
       </figure>
       <div class="editorial-narrow">
-        ${paragraph("The important part is the connection. A photo by itself is helpful. A record card by itself is helpful. Together, they become evidence of a specific correction.")}
+        ${paragraph(section.closingParagraph)}
       </div>
     </section>
   `;
 }
 
 function renderOrganizationSection() {
-  const steps = [
-    ["What appears incorrect?", "Name the record fact or value issue as plainly as possible."],
-    ["What evidence supports that?", "Attach the photo, measurement, estimate, record card, sale record, or comparable record that helps verify it."],
-    ["What correction are you requesting?", "Ask for the specific record or value adjustment you want the Board to consider."]
-  ];
+  const section = ARTICLE_SECTIONS.organization;
 
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="action" aria-labelledby="protestOrganizeTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Building the Packet", "What should the packet say?", "protestOrganizeTitle")}
-        ${paragraph("You do not need a complicated argument. You need a clean sequence the Board can follow.")}
+        ${sectionHeader(section.kicker, section.title, "protestOrganizeTitle")}
+        ${paragraph(section.intro)}
       </div>
       <ol class="question-checklist">
-        ${steps.map(([title, text]) => `
+        ${ORGANIZATION_STEPS.map(([title, text]) => `
           <li>
             <h3>${escapeHtml(title)}</h3>
             <p>${escapeHtml(text)}</p>
@@ -745,42 +629,41 @@ function renderOrganizationSection() {
         `).join("")}
       </ol>
       <aside class="guided-transition protest-guide-takeaway pull-quote">
-        <p>A clear protest is not louder. It is easier to verify.</p>
+        <p>${escapeHtml(section.pullQuote)}</p>
       </aside>
     </section>
   `;
 }
 
 function renderHearingSection() {
+  const section = ARTICLE_SECTIONS.hearing;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="action" aria-labelledby="protestHearingTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Speaking to the Board", "How do you say it out loud?", "protestHearingTitle")}
-        ${paragraph("You do not need to sound formal. Plain speech usually works better. You are simply walking the Board from the record to the evidence to the request.")}
+        ${sectionHeader(section.kicker, section.title, "protestHearingTitle")}
+        ${paragraph(section.intro)}
       </div>
       <figure class="script-card" aria-labelledby="scriptCardTitle">
-        <figcaption id="scriptCardTitle">${editorialIcon("hearing-board")}<span>What to say at the hearing</span></figcaption>
+        <figcaption id="scriptCardTitle">${editorialIcon("hearing-board")}<span>${escapeHtml(section.scriptTitle)}</span></figcaption>
         <blockquote>
-          <p>The property record shows __________________.</p>
-          <p>My evidence shows __________________.</p>
-          <p>The comparable records show __________________.</p>
-          <p>I am requesting __________________.</p>
+          ${section.scriptLines.map(line => `<p>${escapeHtml(line)}</p>`).join("")}
         </blockquote>
       </figure>
       <div class="editorial-narrow">
-        ${paragraph("That gives the Board something to work with. They may ask follow-up questions, and it does not guarantee an outcome, but it puts the record, the evidence, and the request in the same place. It also keeps you from drifting into frustration when the strongest thing you can offer is a specific fact the Board can evaluate.")}
+        ${paragraph(section.closingParagraph)}
       </div>
     </section>
   `;
 }
 
 function renderResourcesSection() {
+  const section = ARTICLE_SECTIONS.resources;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section resource-section" data-tone="action" aria-labelledby="protestResourcesTitle">
       <div class="editorial-narrow">
-        <p class="guided-kicker">Gathering Your Materials</p>
-        <h2 class="levy-sr-only" id="protestResourcesTitle">Where do you find the materials?</h2>
-        <p>Here are the typical tools for checking the record, finding comparable sales, and filing the official protest form.</p>
+        <p class="guided-kicker">${escapeHtml(section.kicker)}</p>
+        <h2 class="levy-sr-only" id="protestResourcesTitle">${escapeHtml(section.title)}</h2>
+        <p>${escapeHtml(section.intro)}</p>
       </div>
       <div class="resource-card-grid">
         ${RESOURCES.map(resource => `
@@ -801,22 +684,21 @@ function renderResourcesSection() {
           </div>
         `).join("")}
       </div>
-      <p class="note-box resource-note">This guide is general educational guidance. It is not legal advice, not an appraisal, and not a guarantee of any outcome. Local deadlines, filing rules, hearing procedures, and Board decisions still control.</p>
+      <p class="note-box resource-note">${escapeHtml(section.note)}</p>
     </section>
   `;
 }
 
 function renderOneMoreThoughtSection() {
+  const section = ARTICLE_SECTIONS.afterHearing;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-labelledby="protestOneMoreThoughtTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("After the Hearing", "If today did not settle it", "protestOneMoreThoughtTitle")}
-        ${paragraph("If your protest was not successful today because you did not have enough evidence to support the adjustment you requested, that does not necessarily mean the conversation is over.")}
-        ${paragraph("For a regular real property valuation protest, June 30 is the statutory filing cutoff. The official Nebraska Form 422 instructions say the protest must be filed after the assessment roll is complete and on or before June 30. A later hearing date does not create a new filing window for a first protest.")}
-        ${paragraph("The Board of Equalization can only act on the information in front of it. If you already filed by the applicable deadline and later gather stronger comparable properties, obtain additional documentation, or discover something in your property record that supports a specific correction, ask the County Clerk's Office whether those materials can still be submitted for the existing protest.")}
+        ${sectionHeader(section.kicker, section.title, "protestOneMoreThoughtTitle")}
+        ${paragraphs(section.paragraphs)}
       </div>
       <aside class="meeting-schedule-card" aria-labelledby="gageBoardScheduleTitle">
-        <h3 id="gageBoardScheduleTitle">${editorialIcon("timeline")}<span>The next scheduled property protest hearings of the Gage County Board of Equalization are:</span></h3>
+        <h3 id="gageBoardScheduleTitle">${editorialIcon("timeline")}<span>${escapeHtml(section.scheduleTitle)}</span></h3>
         <p>${escapeHtml(BOARD_MEETING_LOCATION)}</p>
         <ul>
           ${BOARD_MEETINGS.map(meeting => `
@@ -829,32 +711,33 @@ function renderOneMoreThoughtSection() {
             </li>
           `).join("")}
         </ul>
+        <p class="important-inline-note">${escapeHtml(section.scheduleNote)}</p>
       </aside>
       <div class="editorial-narrow">
-        ${paragraph("These dates are hearing sessions, not filing deadlines.")}
-        ${paragraph("Sometimes the most productive outcome from a first hearing is not an immediate adjustment. It is learning exactly what evidence the Board needs to evaluate your request.")}
+        ${paragraph(section.closingParagraph)}
       </div>
     </section>
   `;
 }
 
 function renderClosingSection() {
+  const section = ARTICLE_SECTIONS.closing;
   return `
     <section class="tax-article-section tax-story-chapter tax-article-closing levy-article-narrow article-section" data-tone="reflection" aria-labelledby="protestClosingTitle">
-      ${sectionHeader("Beyond Your Property", "A protest can improve the record", "protestClosingTitle")}
-      ${paragraph("A protest is not an attack on the assessment system. At its best, it is one of the final quality-control steps before the assessment roll becomes final.")}
-      ${paragraph("The homeowner may be the only person in the room who has lived with the property closely enough to notice the small mistake: the old outbuilding, the wrong fireplace count, the basement finish that was never completed, the condition rating that no longer fits.")}
-      ${paragraph("Better records produce better models. Better models produce more uniform assessments. More uniform assessments reduce the need for future protests.")}
-      ${paragraph("Accuracy compounds.")}
+      ${sectionHeader(section.kicker, section.title, "protestClosingTitle")}
+      ${paragraphs(section.paragraphs)}
       <aside class="article-share-footer" aria-labelledby="shareArticleTitle">
-        <p id="shareArticleTitle">Know someone staring at a valuation notice with one eyebrow raised?</p>
-        <button type="button" data-article-share data-article-action="share_article" data-article-label="${ARTICLE_TITLE}">Share this guide</button>
+        <p id="shareArticleTitle">${escapeHtml(section.sharePrompt)}</p>
+        <button type="button" data-article-share data-article-action="share_article" data-article-label="${ARTICLE_TITLE}">
+          <span class="share-button-label" data-share-button-label>${escapeHtml(section.shareButton)}</span>
+          <span class="share-button-smile" aria-hidden="true"></span>
+        </button>
         <span data-share-status role="status" aria-live="polite"></span>
       </aside>
       <aside class="related-article-coda" aria-labelledby="relatedProtestParadoxTitle">
         <hr />
-        <p id="relatedProtestParadoxTitle">Can't get enough longform reading about property assessments? Extremely relatable.</p>
-        <a href="articles/assessment-up-protest-denied-taxes/" data-article-action="related_article" data-article-label="Assessment Up. Protest Denied. Taxes?">Read the companion case study: <span>Assessment Up. Protest Denied. Taxes?</span></a>
+        <p id="relatedProtestParadoxTitle">${escapeHtml(section.relatedPrompt)}</p>
+        <a href="${escapeHtml(section.relatedHref)}" data-article-action="related_article" data-article-label="${escapeHtml(section.relatedTitle)}">${escapeHtml(section.relatedLabel)} <span>${escapeHtml(section.relatedTitle)}</span></a>
       </aside>
     </section>
   `;
@@ -890,13 +773,6 @@ export function renderProtestEvidenceGuide() {
         </div>
         <h1 id="protestArticleTitle" class="hero-title">${ARTICLE_TITLE}</h1>
         <p class="hero-deck">${ARTICLE_SUBTITLE}</p>
-        <div class="hero-meta" aria-label="Article information">
-          <p>Prepared by ${ARTICLE_AUTHOR}</p>
-          <p>${ARTICLE_DISPLAY_DATE} · ${ARTICLE_LOCATION}</p>
-        </div>
-        <div class="hero-action">
-          <a class="article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable guide PDF">Prefer paper? Download the printable guide.</a>
-        </div>
       </div>
       <figure class="article-hero-media hero-media article-hero-video" data-hero-video>
         <video
@@ -939,6 +815,61 @@ export function renderProtestEvidenceGuide() {
 
   installArticleAnalytics(canvas);
   installHeroVideo(pageTitle);
+  installHeroAudio(canvas);
+  installHeroUtilityTracking(canvas);
+}
+
+function renderArticleEntryPanel() {
+  return `
+    <div class="article-entry-panel">
+      <div class="article-entry-meta" aria-label="Article information">
+        <p>Prepared by <a href="${escapeHtml(ARTICLE_AUTHOR_MAILTO)}" data-article-action="author_email" data-article-label="${escapeHtml(ARTICLE_TITLE)}">${escapeHtml(ARTICLE_AUTHOR)}</a></p>
+        <p>${ARTICLE_DISPLAY_DATE}</p>
+        ${renderArticleTags()}
+        ${renderArticleReadingTime()}
+      </div>
+      <div class="hero-utility" aria-label="Article format options">
+        <a class="hero-utility-button article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable guide PDF">
+          ${editorialIcon("document")}
+          <span>Prefer paper? Download the printable guide.</span>
+        </a>
+        <details class="hero-audio" data-hero-audio>
+          <summary class="hero-utility-button article-audio-cta">
+            ${editorialIcon("audio")}
+            <span>Prefer audio? Listen to the article.</span>
+          </summary>
+          <div class="hero-audio-panel">
+            <p>Full audio version of this guide.</p>
+            <audio class="hero-audio-player" data-hero-audio-player controls preload="none" src="${escapeHtml(ARTICLE_AUDIO_READ)}">
+              <a href="${escapeHtml(ARTICLE_AUDIO_READ)}">Download the MP3 audio version.</a>
+            </audio>
+            <a class="hero-audio-download" href="${escapeHtml(ARTICLE_AUDIO_READ)}" download data-article-action="audio_article_download" data-article-label="Audio article MP3">Download MP3</a>
+          </div>
+        </details>
+      </div>
+    </div>
+  `;
+}
+
+function renderArticleTags() {
+  if (!ARTICLE_TAGS.length) {
+    return "";
+  }
+
+  return `
+        <ul class="article-entry-tags" aria-label="Article tags">
+          ${ARTICLE_TAGS.map((tag) => `<li>${escapeHtml(tag)}</li>`).join("")}
+        </ul>`;
+}
+
+function renderArticleReadingTime() {
+  return `
+    <p class="article-reading-time" aria-label="Estimated reading time">
+      <span>Reading time:</span>
+      <time datetime="${ARTICLE_READING_TIME}">${ARTICLE_READING_TIME_MINUTES} min</time>
+      <span>(${ARTICLE_WORD_COUNT_LABEL} words)</span>
+    </p>
+  `;
 }
 
 function installHeroVideo(root) {
@@ -1001,6 +932,72 @@ function installHeroVideo(root) {
   });
 }
 
+function installHeroAudio(root) {
+  const wrapper = root.querySelector("[data-hero-audio]");
+  if (!wrapper || wrapper.dataset.heroAudioReady === "true") return;
+  wrapper.dataset.heroAudioReady = "true";
+
+  const audio = wrapper.querySelector("[data-hero-audio-player]");
+  if (!audio) return;
+
+  let expandTracked = false;
+  let playTracked = false;
+  let completeTracked = false;
+
+  const trackHeroAudio = (action, details = {}) => {
+    trackArticleInteraction(action, {
+      articleId: ARTICLE_ID,
+      detail: "audio article version",
+      ...details
+    });
+  };
+
+  wrapper.addEventListener("toggle", () => {
+    if (!wrapper.open || expandTracked) return;
+    expandTracked = true;
+    trackHeroAudio("audio_article_expand", { placement: "hero" });
+  });
+
+  audio.addEventListener("play", () => {
+    if (!playTracked) {
+      playTracked = true;
+      trackHeroAudio("audio_article_play", { placement: "hero" });
+    }
+  });
+
+  audio.addEventListener("pause", () => {
+    if (!audio.ended && audio.currentTime > 0) {
+      trackHeroAudio("audio_article_pause", {
+        placement: "hero",
+        currentTime: Math.round(audio.currentTime)
+      });
+    }
+  });
+
+  audio.addEventListener("ended", () => {
+    if (completeTracked) return;
+    completeTracked = true;
+    trackHeroAudio("audio_article_complete", { placement: "hero" });
+  });
+}
+
+function installHeroUtilityTracking(root) {
+  const utility = root.querySelector(".hero-utility");
+  if (!utility || utility.dataset.heroUtilityReady === "true") return;
+  utility.dataset.heroUtilityReady = "true";
+
+  utility.addEventListener("click", event => {
+    const link = event.target.closest("[data-article-action]");
+    if (!link) return;
+    trackArticleInteraction(link.dataset.articleAction, {
+      articleId: ARTICLE_ID,
+      detail: link.dataset.articleLabel || link.textContent?.trim() || link.getAttribute("href") || "",
+      targetUrl: link.getAttribute("href") || "",
+      placement: "hero"
+    });
+  });
+}
+
 function installArticleAnalytics(canvas) {
   const article = canvas.querySelector(".protest-evidence-guide-page");
   if (!article || article.dataset.analyticsReady === "true") return;
@@ -1025,6 +1022,7 @@ function installArticleAnalytics(canvas) {
 async function shareArticle(button) {
   const shareUrl = absoluteUrl(ARTICLE_CANONICAL_PATH);
   const status = button.closest(".article-share-footer")?.querySelector("[data-share-status]");
+  const label = button.querySelector("[data-share-button-label]");
   const shareData = {
     title: ARTICLE_TITLE,
     text: ARTICLE_DESCRIPTION,
@@ -1035,6 +1033,7 @@ async function shareArticle(button) {
     if (navigator.share) {
       await navigator.share(shareData);
       status.textContent = "Shared.";
+      showShareConfirmation(button, label, "Shared");
       trackArticleInteraction("share_article", {
         articleId: ARTICLE_ID,
         detail: ARTICLE_TITLE,
@@ -1045,6 +1044,7 @@ async function shareArticle(button) {
 
     await copyTextToClipboard(shareUrl);
     status.textContent = "Link copied.";
+    showShareConfirmation(button, label, "Copied");
     trackArticleInteraction("copy_link", {
       articleId: ARTICLE_ID,
       detail: ARTICLE_TITLE,
@@ -1054,6 +1054,19 @@ async function shareArticle(button) {
     if (error?.name === "AbortError") return;
     status.textContent = "Copy this page URL from your browser.";
   }
+}
+
+function showShareConfirmation(button, label, message) {
+  if (!button || !label) return;
+  window.clearTimeout(button._shareConfirmationTimer);
+  const originalLabel = button.dataset.originalShareLabel || label.textContent || "Share this guide";
+  button.dataset.originalShareLabel = originalLabel;
+  label.textContent = message;
+  button.classList.add("is-share-confirmed");
+  button._shareConfirmationTimer = window.setTimeout(() => {
+    label.textContent = originalLabel;
+    button.classList.remove("is-share-confirmed");
+  }, 2600);
 }
 
 async function copyTextToClipboard(text) {
