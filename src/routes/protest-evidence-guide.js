@@ -5,7 +5,8 @@ const EDITORIAL_ICON_SPRITE = "/assets/icons/editorial/sprite.svg";
 const PRINTABLE_GUIDE_PDF = "/assets/guides/before-you-walk-into-a-property-protest.pdf";
 const ARTICLE_ID = "protest-evidence-guide";
 const ARTICLE_SLUG = "protest-evidence-guide";
-const ARTICLE_CANONICAL_PATH = `/?article=${ARTICLE_SLUG}`;
+const ARTICLE_LEGACY_QUERY_VALUE = ARTICLE_SLUG;
+const ARTICLE_CANONICAL_PATH = "articles/before-you-walk-into-a-property-protest/";
 const ARTICLE_TITLE = "Before You Walk Into a Property Protest";
 const ARTICLE_SUBTITLE = "A plain language, cup-of-coffee-length guide for turning a property valuation protest into a clear, evidence-based request.";
 const ARTICLE_AUTHOR = "Max Quattromani";
@@ -13,7 +14,11 @@ const ARTICLE_LOCATION_DATE = "Gage County, June 25, 2026";
 const ARTICLE_PUBLISHED_DATE = "2026-06-25";
 const ARTICLE_MODIFIED_DATE = "2026-06-25";
 const ARTICLE_DESCRIPTION = "A plain language guide to preparing a property valuation protest with comparables, property record cards, evidence, and a specific correction request.";
-const ARTICLE_SOCIAL_IMAGE = "/assets/brand/gage-county-logo-color-640.png";
+const ARTICLE_SOCIAL_IMAGE = "/assets/images/articles/before-you-walk-into-a-property-protest-hero.jpg";
+const ARTICLE_HERO_IMAGE_ALT = "Homeowner reviewing a printed property record on a clipboard.";
+const ARTICLE_HERO_IMAGE_CREDIT = "Photo by RDNE Stock project on Pexels.";
+const ARTICLE_HERO_IMAGE_SOURCE = "https://www.pexels.com/photo/8292825/";
+const ARTICLE_HERO_IMAGE_LICENSE = "https://www.pexels.com/license/";
 const ARTICLE_KEYWORDS = [
   "property valuation protest",
   "property record card",
@@ -197,7 +202,10 @@ function renderArticleDepthMarkers() {
 }
 
 function absoluteUrl(path = "/") {
-  return new URL(path, window.location.origin).href;
+  if (/^https?:\/\//i.test(path)) return path;
+  const baseUrl = new URL("./", document.baseURI);
+  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
+  return new URL(normalizedPath, baseUrl).href;
 }
 
 function setMeta(name, content) {
@@ -257,6 +265,8 @@ function updateProtestEvidenceGuideMetadata() {
   setMeta("robots", "index, follow, max-image-preview:large");
   setMeta("article:published_time", ARTICLE_PUBLISHED_DATE);
   setMeta("article:modified_time", ARTICLE_MODIFIED_DATE);
+  setMeta("image:credit", ARTICLE_HERO_IMAGE_CREDIT);
+  setMeta("image:source", ARTICLE_HERO_IMAGE_SOURCE);
   setPropertyMeta("og:type", "article");
   setPropertyMeta("og:site_name", "Guided Parcel Review");
   setPropertyMeta("og:title", ARTICLE_TITLE);
@@ -285,7 +295,16 @@ function updateProtestEvidenceGuideMetadata() {
         },
         primaryImageOfPage: {
           "@type": "ImageObject",
-          url: imageUrl
+          url: imageUrl,
+          contentUrl: imageUrl,
+          caption: ARTICLE_HERO_IMAGE_ALT,
+          creditText: ARTICLE_HERO_IMAGE_CREDIT,
+          creator: {
+            "@type": "Organization",
+            name: "RDNE Stock project"
+          },
+          license: ARTICLE_HERO_IMAGE_LICENSE,
+          acquireLicensePage: ARTICLE_HERO_IMAGE_SOURCE
         },
         datePublished: ARTICLE_PUBLISHED_DATE,
         dateModified: ARTICLE_MODIFIED_DATE,
@@ -298,7 +317,19 @@ function updateProtestEvidenceGuideMetadata() {
         alternativeHeadline: ARTICLE_SUBTITLE,
         description: ARTICLE_DESCRIPTION,
         url: canonicalUrl,
-        image: imageUrl,
+        image: {
+          "@type": "ImageObject",
+          url: imageUrl,
+          contentUrl: imageUrl,
+          caption: ARTICLE_HERO_IMAGE_ALT,
+          creditText: ARTICLE_HERO_IMAGE_CREDIT,
+          creator: {
+            "@type": "Organization",
+            name: "RDNE Stock project"
+          },
+          license: ARTICLE_HERO_IMAGE_LICENSE,
+          acquireLicensePage: ARTICLE_HERO_IMAGE_SOURCE
+        },
         author: {
           "@id": `${canonicalUrl}#author`
         },
@@ -686,7 +717,8 @@ function renderOneMoreThoughtSection() {
       <div class="editorial-narrow">
         ${sectionHeader("After the Hearing", "If today did not settle it", "protestOneMoreThoughtTitle")}
         ${paragraph("If your protest was not successful today because you did not have enough evidence to support the adjustment you requested, that does not necessarily mean the conversation is over.")}
-        ${paragraph("The Board of Equalization can only act on the information in front of it. If you later gather stronger comparable properties, obtain additional documentation, or discover something in your property record that supports a specific correction, you may have another opportunity to present that information.")}
+        ${paragraph("For a regular real property valuation protest, June 30 is the statutory filing cutoff. The official Nebraska Form 422 instructions say the protest must be filed after the assessment roll is complete and on or before June 30. A later hearing date does not create a new filing window for a first protest.")}
+        ${paragraph("The Board of Equalization can only act on the information in front of it. If you already filed by the applicable deadline and later gather stronger comparable properties, obtain additional documentation, or discover something in your property record that supports a specific correction, ask the County Clerk's Office whether those materials can still be submitted for the existing protest.")}
       </div>
       <aside class="meeting-schedule-card" aria-labelledby="gageBoardScheduleTitle">
         <h3 id="gageBoardScheduleTitle">${editorialIcon("timeline")}<span>The next scheduled property protest hearings of the Gage County Board of Equalization are:</span></h3>
@@ -704,7 +736,7 @@ function renderOneMoreThoughtSection() {
         </ul>
       </aside>
       <div class="editorial-narrow">
-        ${paragraph("If you are considering appearing again, contact the County Clerk's Office beforehand to understand the procedures and whether any additional information or updated materials should be submitted in advance.")}
+        ${paragraph("These dates are hearing sessions, not filing deadlines.")}
         ${paragraph("Sometimes the most productive outcome from a first hearing is not an immediate adjustment. It is learning exactly what evidence the Board needs to evaluate your request.")}
       </div>
     </section>
@@ -734,7 +766,14 @@ function renderClosingSection() {
 }
 
 export function isProtestEvidenceGuideRequest(searchParams = new URLSearchParams(window.location.search)) {
-  return searchParams.get("article") === "protest-evidence-guide";
+  return searchParams.get("article") === ARTICLE_LEGACY_QUERY_VALUE
+    || normalizedPathname().endsWith(`/${ARTICLE_CANONICAL_PATH}`);
+}
+
+function normalizedPathname() {
+  return window.location.pathname.endsWith("/")
+    ? window.location.pathname
+    : `${window.location.pathname}/`;
 }
 
 export function renderProtestEvidenceGuide() {
@@ -749,16 +788,26 @@ export function renderProtestEvidenceGuide() {
   document.querySelector("[data-footer-resource-shell]")?.classList.add("hidden");
 
   pageTitle.innerHTML = `
-    <div class="comp-page-title levy-page-title article-hero">
-      <p class="guided-kicker">Educational Guide</p>
-      <h1>${ARTICLE_TITLE}</h1>
-      <p>${ARTICLE_SUBTITLE}</p>
-      <div class="levy-author-byline">
-        <p>By ${ARTICLE_AUTHOR}</p>
-        <p>${ARTICLE_LOCATION_DATE}</p>
+    <header class="comp-page-title levy-page-title article-hero" aria-labelledby="protestArticleTitle">
+      <div class="article-hero-packet">
+        <div class="hero-kicker-row">
+          ${editorialIcon("document", "editorial-icon-sm hero-kicker-icon")}
+          <p class="guided-kicker hero-kicker">Guide / Property Protest Prep</p>
+        </div>
+        <h1 id="protestArticleTitle" class="hero-title">${ARTICLE_TITLE}</h1>
+        <p class="hero-deck">${ARTICLE_SUBTITLE}</p>
+        <div class="hero-meta" aria-label="Article information">
+          <p>Prepared by ${ARTICLE_AUTHOR}</p>
+          <p>${ARTICLE_LOCATION_DATE.replace(", ", " · ")}</p>
+        </div>
+        <div class="hero-action">
+          <a class="article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable guide PDF">Prefer paper? Download the printable guide.</a>
+        </div>
       </div>
-      <a class="article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable guide PDF">Prefer paper? Download the printable guide.</a>
-    </div>
+      <figure class="article-hero-media hero-media">
+        <img src="${escapeHtml(ARTICLE_SOCIAL_IMAGE)}" alt="${escapeHtml(ARTICLE_HERO_IMAGE_ALT)}" title="${escapeHtml(ARTICLE_HERO_IMAGE_CREDIT)}" data-image-credit="${escapeHtml(ARTICLE_HERO_IMAGE_CREDIT)}" data-image-source="${escapeHtml(ARTICLE_HERO_IMAGE_SOURCE)}" loading="eager" decoding="async" />
+      </figure>
+    </header>
   `;
 
   canvas.innerHTML = `

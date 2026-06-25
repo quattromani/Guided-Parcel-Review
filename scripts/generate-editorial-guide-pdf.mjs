@@ -18,7 +18,7 @@ async function loadPlaywright() {
 
 function parseArgs(argv) {
   const args = {
-    url: "http://127.0.0.1:4173/?article=protest-evidence-guide",
+    url: "http://127.0.0.1:4173/articles/before-you-walk-into-a-property-protest/",
     out: "assets/guides/before-you-walk-into-a-property-protest.pdf",
   };
 

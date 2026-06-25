@@ -14,7 +14,7 @@ Outstanding pre-publication checks:
 
 - Verify the production canonical origin before launch.
 - Reconfirm Gage County hearing dates and procedures immediately before publishing.
-- Consider a dedicated social preview image when time allows.
+- Consider a dedicated 1200 x 630 social crop if the current article photo needs a more precise preview composition.
 
 ## Part 1: Editorial Quality Review
 
@@ -33,7 +33,7 @@ Strengths:
 Weaknesses:
 
 - The article depends on timely local hearing dates, so it is not fully evergreen.
-- The social preview image is currently a brand image rather than a dedicated editorial asset.
+- The social preview uses the article photo rather than a purpose-built 1200 x 630 crop.
 - A companion article link now gives readers a natural next step into the protest paradox case study.
 
 Recommended refinements:
@@ -69,7 +69,7 @@ Components present:
 Missing opportunities:
 
 - A broader related-article set is still needed as the publication grows.
-- A dedicated social preview image would strengthen the publication package.
+- A dedicated social crop or reusable preview template would further strengthen the publication package.
 
 Overused components:
 
@@ -129,7 +129,7 @@ Recommendations:
 
 - Continue rendered PDF checks after every content or print CSS change.
 - Track inherited shell/modal ARIA cleanup separately.
-- When a dedicated social image is created, provide an accessible text alternative in surrounding metadata and publication copy.
+- Keep the article image alt text and social metadata aligned whenever the media asset changes.
 
 ## Part 5: Performance Review
 
@@ -137,9 +137,9 @@ Status: Good for publication.
 
 Observations:
 
-- No article-specific raster images are used.
+- One article-specific raster image is used for the web hero and social preview; it is hidden from print/PDF output.
 - Editorial icons are local SVGs and sprite-backed.
-- Generated PDF is approximately 527 KB.
+- Generated PDF is approximately 360 KB.
 - Route metadata and JSON-LD are lightweight.
 - Article interaction tracking is delegated and minimal.
 - No animation or heavy interactive article logic was introduced.
@@ -166,8 +166,8 @@ Before You Walk Into a Property Protest
 
 Suggested URL slug:
 
-Current: `protest-evidence-guide`  
-Future static-route option: `before-you-walk-into-a-property-protest`
+Canonical route: `articles/before-you-walk-into-a-property-protest/`
+Legacy alias: `/?article=protest-evidence-guide`
 
 Meta title:
 
@@ -237,7 +237,7 @@ Other metadata implemented:
 
 Canonical URL:
 
-Runtime canonical uses the current origin with `/?article=protest-evidence-guide`. Verify production origin before publication.
+Runtime canonical uses the current site base with `/articles/before-you-walk-into-a-property-protest/`. Verify production origin before publication.
 
 Robots recommendation:
 
@@ -257,7 +257,7 @@ Twitter Card:
 
 Social image recommendation:
 
-Use a dedicated 1200 x 630 editorial image in the future. Current fallback is the Gage County brand image.
+Use the article hero photo for initial publication. If social distribution becomes important, create a dedicated 1200 x 630 crop from the same image so the preview has a controlled focal point.
 
 ## Part 8: Machine Readability Review
 
@@ -609,6 +609,8 @@ Reusable assets created or strengthened:
 - Schedule card component pattern.
 - Print-safe resource URL pattern.
 - Printable guide PDF.
+- Article hero/social image: `assets/images/articles/before-you-walk-into-a-property-protest-hero.jpg`.
+- Hero image credit metadata: Photo by RDNE Stock project on Pexels.
 - PDF generation script.
 - Calendar files for scheduled hearings.
 - Article metadata and JSON-LD route pattern.
@@ -650,7 +652,7 @@ Outstanding issues:
 
 - Verify production canonical origin before publication.
 - Reconfirm Gage County hearing dates and procedures immediately before publication.
-- Consider a dedicated social preview image.
+- Consider a dedicated 1200 x 630 social crop from the article photo.
 - Track inherited app-shell ARIA cleanup separately.
 
 Recommended improvements:

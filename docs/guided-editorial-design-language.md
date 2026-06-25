@@ -273,14 +273,24 @@ HTML structure:
 
 ```html
 <header class="article-hero">
-  <p class="section-kicker">Educational Guide</p>
-  <h1>Before You Walk Into a Property Protest</h1>
-  <p>Short plain-language deck.</p>
-  <div class="article-meta">
-    <p>By Max Quattromani</p>
-    <p>Gage County, June 25, 2026</p>
+  <div class="article-hero-packet">
+    <div class="hero-kicker-row">
+      <svg class="editorial-icon editorial-icon-sm hero-kicker-icon" aria-hidden="true">...</svg>
+      <p class="hero-kicker section-kicker">Guide / Property Protest Prep</p>
+    </div>
+    <h1 class="hero-title">Before You Walk Into a Property Protest</h1>
+    <p class="hero-deck">Short plain-language deck.</p>
+    <div class="hero-meta">
+      <p>Prepared by Max Quattromani</p>
+      <p>Gage County · June 25, 2026</p>
+    </div>
+    <div class="hero-action">
+      <a class="article-print-cta" href="/assets/guides/example.pdf" download>Prefer paper? Download the printable guide.</a>
+    </div>
   </div>
-  <a class="article-print-cta" href="/assets/guides/example.pdf" download>Prefer paper? Download the printable guide.</a>
+  <figure class="hero-media">
+    <img src="/assets/images/articles/example.jpg" alt="Reader reviewing a printed property record." />
+  </figure>
 </header>
 ```
 
@@ -289,6 +299,10 @@ Accessibility: One `h1` per article.
 Print: Keep with the opening section when possible. The printable PDF should include the same author and location/date stamp. Hide the web print/download CTA inside the printed PDF because it has already served its purpose.
 
 Metadata rule: Authorship, location, and date should read as metadata, not body copy. Keep these lines visually quiet, roughly 12 to 13 px on screen, with modest line height. Use a location/date stamp when the article is tied to a county, hearing cycle, meeting schedule, or local procedural context. Dates may be updated before publication, but the document should always make its local moment clear.
+
+Field-packet rule: For civic process articles, the hero may use a restrained packet or record-jacket treatment: a small document-aware kicker, one quiet accent rule, compact metadata, and a paper/download pathway. The treatment should make the article feel prepared and document-aware without becoming a legal template, campaign flyer, or dashboard UI.
+
+Image credit rule: If a hero image uses third-party media and the credit is not shown as a visible caption, preserve the credit in machine-readable and inspectable places: image `title`, `data-image-credit`, source metadata, and JSON-LD `ImageObject` credit fields. Hidden crediting should not replace legally required visible attribution when a license requires it.
 
 Print/PDF rule: A paper preference should lead to a real downloadable PDF whenever practical, not merely trigger a browser print dialog. The CTA should be short and plain, such as "Prefer paper? Download the printable guide."
 
