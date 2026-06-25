@@ -1,7 +1,7 @@
 const articleAnalyticsContext = {
   allowExperimentAnalytics: true,
   articleId: "protest-paradox",
-  articleTitle: "Assessment Up. Protest Denied. Taxes Down.",
+  articleTitle: "Assessment Up. Protest Denied. Taxes?",
   contentType: "case-study",
   county: "gage",
   parcelId: "004817000",

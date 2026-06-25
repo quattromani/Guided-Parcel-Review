@@ -37,7 +37,7 @@ export const experimentLinks = [
     note: "Standalone article and calculator for estimating future ETR and tax changes when valuations rise."
   },
   {
-    title: "Case Study: Assessment Up. Protest Denied. Taxes Down.",
+    title: "Case Study: Assessment Up. Protest Denied. Taxes?",
     href: "experiments/the-protest-paradox.html",
     note: "Article-style case study showing a denied valuation protest, levy compression, and a lower tax bill."
   },

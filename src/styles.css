@@ -9664,6 +9664,39 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   --editorial-muted: rgb(var(--color-paper));
   --editorial-surface: rgb(var(--color-surface));
   --editorial-blue-soft: rgb(var(--color-information-soft));
+  position: relative;
+}
+
+.article-depth-markers {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.article-depth-marker {
+  block-size: 1px;
+  inline-size: 1px;
+  inset-inline-start: 0;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+}
+
+.article-depth-marker[data-article-depth-marker="25"] {
+  inset-block-start: 25%;
+}
+
+.article-depth-marker[data-article-depth-marker="50"] {
+  inset-block-start: 50%;
+}
+
+.article-depth-marker[data-article-depth-marker="75"] {
+  inset-block-start: 75%;
+}
+
+.article-depth-marker[data-article-depth-marker="100"] {
+  inset-block-end: 0;
 }
 
 .editorial-guide [data-tone="information"] {
@@ -10314,6 +10347,104 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .resource-card a:focus,
 .resource-card a:hover {
   background: var(--editorial-accent);
+}
+
+.article-share-footer {
+  align-items: center;
+  border-top: 1px solid var(--editorial-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 0.9rem;
+  margin-top: clamp(1.4rem, 3vw, 2rem);
+  padding-top: 1rem;
+}
+
+.article-share-footer p {
+  color: rgb(var(--brand-ink));
+  flex: 1 1 18rem;
+  font-family: var(--levy-body-font);
+  font-size: 0.98rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.article-share-footer button {
+  appearance: none;
+  background: rgb(var(--color-ink));
+  border: 1px solid rgb(var(--color-ink));
+  border-radius: 999px;
+  color: #ffffff;
+  cursor: pointer;
+  font-family: var(--levy-heading-font);
+  font-size: 0.88rem;
+  font-weight: 850;
+  line-height: 1.2;
+  padding: 0.66rem 1rem;
+}
+
+.article-share-footer button:focus,
+.article-share-footer button:hover {
+  background: var(--editorial-accent);
+  border-color: var(--editorial-accent);
+}
+
+.article-share-footer button:focus-visible {
+  outline: 3px solid var(--editorial-accent-soft);
+  outline-offset: 3px;
+}
+
+.article-share-footer [data-share-status] {
+  color: rgb(var(--brand-ink));
+  flex-basis: 100%;
+  font-family: var(--levy-heading-font);
+  font-size: 0.82rem;
+  font-weight: 800;
+  min-height: 1.1rem;
+}
+
+.related-article-coda {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.related-article-coda hr {
+  border: 0;
+  border-top: 1px solid var(--editorial-border);
+  margin: 0 0 0.2rem;
+  width: min(100%, 18rem);
+}
+
+.related-article-coda p {
+  color: rgb(var(--brand-ink));
+  font-family: var(--levy-body-font);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.related-article-coda a {
+  align-items: center;
+  color: var(--editorial-accent);
+  display: inline-flex;
+  flex-wrap: wrap;
+  font-family: var(--levy-heading-font);
+  font-size: 1rem;
+  font-weight: 850;
+  gap: 0.28rem;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.related-article-coda a span {
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+.related-article-coda a:focus,
+.related-article-coda a:hover {
+  color: rgb(var(--brand-ink));
 }
 
 .print-url-list {
@@ -13429,7 +13560,9 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   body:has(.protest-evidence-guide-page) .property-identity-bar,
   body:has(.protest-evidence-guide-page) .guided-path-shell,
   body:has(.protest-evidence-guide-page) .guide-review-header,
+  body:has(.protest-evidence-guide-page) .article-depth-markers,
   body:has(.protest-evidence-guide-page) .article-print-cta,
+  body:has(.protest-evidence-guide-page) .article-share-footer,
   body:has(.protest-evidence-guide-page) footer {
     display: none !important;
   }
@@ -13488,6 +13621,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .meeting-schedule-card,
   .resource-section,
   .resource-card,
+  .related-article-coda,
   .question-checklist li {
     break-inside: avoid;
     box-shadow: none !important;

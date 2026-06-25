@@ -88,6 +88,10 @@ export function trackArticleInteraction(action = "", details = {}) {
   });
 }
 
+export function trackArticleScrollDepth(details = {}) {
+  trackVisitEvent("article_scroll_depth", details);
+}
+
 export function configureStepTracking(routes = []) {
   analyticsState.routeOrder = routes.filter(route => !route.secondary).map(route => route.id);
 }

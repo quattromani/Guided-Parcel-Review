@@ -278,7 +278,7 @@ HTML structure:
   <p>Short plain-language deck.</p>
   <div class="article-meta">
     <p>By Max Quattromani</p>
-    <p>Gage County, June 24, 2026</p>
+    <p>Gage County, June 25, 2026</p>
   </div>
   <a class="article-print-cta" href="/assets/guides/example.pdf" download>Prefer paper? Download the printable guide.</a>
 </header>
@@ -1208,6 +1208,131 @@ Every new component, article, or redesign decision should be tested against thes
 - Does it preserve accuracy?
 
 If the answer is no, the decision probably does not belong.
+
+## XIII. Publication Readiness Review
+
+Every finished article must receive a Guided Editorial System Publication Readiness Review, or PRR, before publication.
+
+The PRR is the final stage of the system. Writing is complete. Editorial design is complete. Development is complete. This is not another editing pass. It is the publishing equivalent of pre-flight inspection.
+
+Nothing should be rewritten unless it materially improves the reader's understanding, accessibility, discoverability, measurability, maintainability, or long-term usefulness.
+
+### Optimization Order
+
+Optimize in this order:
+
+1. Readers
+2. Publishers
+3. Search engines
+4. Machines
+
+If an optimization benefits search while harming the reader, reject it. If an optimization benefits readers, it will usually benefit search naturally.
+
+### Review Order
+
+Review in this order:
+
+1. Editorial quality
+2. Guided Editorial System compliance
+3. Semantic HTML
+4. Accessibility
+5. Performance
+6. Search intent
+7. Structured data
+8. Machine readability
+9. Print behavior
+10. Social publishing
+11. Analytics
+12. Internal knowledge graph
+13. Legacy refactoring
+14. Publication assets created
+15. Executive publication recommendation
+
+### Publication Package
+
+Each reviewed article should produce a publication report stored with the project documentation. The report replaces spreadsheet-only tracking and should include:
+
+- article identity, canonical URL, slug, author, dates, and version
+- editorial strengths, weaknesses, refinements, and score
+- GES component compliance and legacy-pattern notes
+- semantic HTML and accessibility findings
+- performance, responsive, print, and PDF findings
+- search intent, metadata, structured data, and social preview recommendations
+- social publishing copy for the major channels the publication uses
+- analytics event recommendations and implemented instrumentation notes
+- article lifecycle and review interval
+- knowledge graph terms, definitions, agencies, forms, datasets, processes, companion articles, and reusable components
+- publication assets created by the article
+- final recommendation
+
+### Analytics Expectations
+
+Article analytics should measure useful reader actions without turning the article into an app.
+
+Recommended event vocabulary:
+
+- `article_open`
+- `scroll_25`
+- `scroll_50`
+- `scroll_75`
+- `scroll_complete`
+- `resource_click`
+- `gis_click`
+- `sales_map_click`
+- `form422_click`
+- `download_pdf`
+- `share_article`
+- `print_article`
+- `copy_link`
+- `external_link`
+- `related_article`
+
+Instrument only the events that answer real editorial or publication questions. Avoid noisy analytics that do not help the publication improve.
+
+For long-form articles, prefer CSS-bound article depth markers over generic document scroll math. Place invisible, non-printing markers at meaningful article-depth thresholds such as 25, 50, 75, and 100 percent, then record both milestone events and a final maximum depth event on exit. This answers the publication question directly: did the reader reach the bottom, and if not, how far did they get?
+
+### Social Publishing Package
+
+A PRR should include publication-ready social copy so publishing requires no additional creative work. Generate:
+
+- Facebook primary introduction, alternative introduction, short version, pinned comment, follow-up comment, discussion question, recommended day/time, and audience framing
+- LinkedIn professional introduction and executive summary
+- Bluesky, Threads, and X copy
+- thread version for X when appropriate
+- OpenGraph title and description
+- social image brief, crop guidance, and suggested pull quote
+- 3 to 5 non-spammy hashtags
+
+Social copy should preserve the article's voice. Do not manufacture urgency, outrage, or partisan framing.
+
+### Knowledge Graph Expectations
+
+Each PRR should extract:
+
+- key concepts
+- definitions
+- referenced statutes
+- referenced forms
+- referenced agencies
+- referenced publications
+- referenced datasets
+- related articles
+- future companion articles
+- glossary entries
+- reusable diagrams
+- reusable components
+
+The publication should become easier to maintain and expand after each article.
+
+### Publication Recommendation
+
+Use one of three outcomes:
+
+- Ready to Publish
+- Minor Revisions Recommended
+- Hold for Revision
+
+The article is ready only when reader clarity, accessibility, print usefulness, discoverability, measurability, and maintainability are all acceptable.
 
 GEDL is not documentation for decoration. It is the constitution for an educational publishing platform.
 
