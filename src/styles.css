@@ -9372,11 +9372,12 @@ body:has(.protest-evidence-guide-page[data-county-theme="gage"]) .article-hero {
   color: rgb(var(--color-slate-600));
   display: grid;
   font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  gap: 0.3rem;
+  gap: 0.26rem;
   margin-top: 0.1rem;
 }
 
-.article-entry-panel .article-entry-meta p {
+.article-entry-panel .article-entry-meta p,
+.article-entry-context p {
   color: inherit;
   font-family: inherit;
   font-size: 0.8125rem;
@@ -9402,12 +9403,28 @@ body:has(.protest-evidence-guide-page[data-county-theme="gage"]) .article-hero {
   text-decoration-color: currentColor;
 }
 
-.article-entry-tags {
+.article-entry-context {
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.28rem;
+  gap: 0.28rem 0.42rem;
+}
+
+.article-entry-context .article-entry-tags::before {
+  color: rgb(var(--color-slate-400));
+  content: "\2022";
+  font-size: 0.75rem;
+  line-height: 1;
+  margin-right: 0.1rem;
+}
+
+.article-entry-tags {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.22rem;
   list-style: none;
-  margin: 0.04rem 0 0;
+  margin: 0;
   padding: 0;
 }
 
@@ -9441,13 +9458,14 @@ body:has(.protest-evidence-guide-page[data-county-theme="gage"]) .article-hero {
   width: 100%;
 }
 
-.article-reading-time {
+.article-entry-panel .article-entry-meta .article-reading-time {
   color: rgb(var(--color-slate-600));
   font-family: var(--levy-body-font);
   font-size: 0.8125rem;
+  font-weight: 360;
   font-style: italic;
   line-height: 1.35;
-  margin: 0.08rem 0 0.12rem;
+  margin: 0.03rem 0 0.12rem;
 }
 
 .article-reading-time span,

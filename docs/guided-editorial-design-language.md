@@ -292,9 +292,9 @@ Accessibility: One `h1` per article.
 
 Print: Keep with the opening section when possible. The printable PDF should include the same author and location/date stamp. Hide the web print/download CTA inside the printed PDF because it has already served its purpose.
 
-Article entry rule: Publication metadata and format choices belong inside the opening article section, above the first section kicker. The reader should first understand what the guide is, then see the cover media, then enter the article through a compact attribution and format panel. Stack the metadata in reader-order: author, publication date, topical/location tags, reading time, then format choices. Finish the panel with a gentle divider so the first kicker feels like the beginning of the reading experience. Keep utility controls compact and sibling-like: paper/PDF, audio, and similar format options should use matched buttons with clear icons and accessible labels. Audio uses native controls with `preload="none"` unless there is a specific reason to preload metadata.
+Article entry rule: Publication metadata and format choices belong inside the opening article section, above the first section kicker. The reader should first understand what the guide is, then see the cover media, then enter the article through a compact attribution and format panel. Stack the metadata in reader-order: author, publication date plus topical/location tags, reading time, then format choices. Finish the panel with a gentle divider so the first kicker feels like the beginning of the reading experience. Keep utility controls compact and sibling-like: paper/PDF, audio, and similar format options should use matched buttons with clear icons and accessible labels. Audio uses native controls with `preload="none"` unless there is a specific reason to preload metadata.
 
-Tag rule: Tags in the entry panel should be small, muted pills rather than category headlines or filter UI. Use them to name the local or topical context, such as `Gage County`, and allow future articles to add comma-separated conceptual tags without disturbing the author/date/reading-time rhythm.
+Tag rule: Tags in the entry panel should be small, muted pills rather than category headlines or filter UI. Keep the first tag on the same line as the publication date, separated by a quiet bullet, so the metadata does not overstack. Use tags to name the local or topical context, such as `Gage County`, and allow future articles to add additional conceptual tags without disturbing the author/date/reading-time rhythm.
 
 Reading-time rule: A concise reading-time line belongs inside the article-entry panel, under author/date/tag metadata and above format choices. This keeps the reader's basic decisions together: who prepared it, when/local context, how long it takes, and whether to read, print, or listen. It is a static publication value, not a client-side calculation. Update it during the publication/PDF regeneration pass so the article remains fast, stable, and print-consistent. Mark it up with a `<time>` element and include `wordCount` and `timeRequired` in structured data when available.
 
@@ -310,10 +310,12 @@ Article entry HTML:
     <div class="article-entry-panel">
       <div class="article-entry-meta">
         <p>Prepared by Max Quattromani</p>
-        <p>June 25, 2026</p>
-        <ul class="article-entry-tags" aria-label="Article tags">
-          <li>Gage County</li>
-        </ul>
+        <div class="article-entry-context">
+          <p>June 25, 2026</p>
+          <ul class="article-entry-tags" aria-label="Article tags">
+            <li>Gage County</li>
+          </ul>
+        </div>
         <p class="article-reading-time" aria-label="Estimated reading time">
           <span>Reading time:</span>
           <time datetime="PT10M">10 min</time>

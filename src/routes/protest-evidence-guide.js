@@ -824,8 +824,10 @@ function renderArticleEntryPanel() {
     <div class="article-entry-panel">
       <div class="article-entry-meta" aria-label="Article information">
         <p>Prepared by <a href="${escapeHtml(ARTICLE_AUTHOR_MAILTO)}" data-article-action="author_email" data-article-label="${escapeHtml(ARTICLE_TITLE)}">${escapeHtml(ARTICLE_AUTHOR)}</a></p>
-        <p>${ARTICLE_DISPLAY_DATE}</p>
-        ${renderArticleTags()}
+        <div class="article-entry-context">
+          <p>${ARTICLE_DISPLAY_DATE}</p>
+          ${renderArticleTags()}
+        </div>
         ${renderArticleReadingTime()}
       </div>
       <div class="hero-utility" aria-label="Article format options">
