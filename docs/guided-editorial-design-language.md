@@ -282,7 +282,7 @@ HTML structure:
     <p class="hero-deck">Short plain-language deck.</p>
     <div class="hero-meta">
       <p>Prepared by Max Quattromani</p>
-      <p>Gage County · June 25, 2026</p>
+      <p>June 25, 2026 · Gage County</p>
     </div>
     <div class="hero-action">
       <a class="article-print-cta" href="/assets/guides/example.pdf" download>Prefer paper? Download the printable guide.</a>

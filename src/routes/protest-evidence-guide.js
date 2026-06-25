@@ -10,7 +10,8 @@ const ARTICLE_CANONICAL_PATH = "articles/before-you-walk-into-a-property-protest
 const ARTICLE_TITLE = "Before You Walk Into a Property Protest";
 const ARTICLE_SUBTITLE = "A plain language, cup-of-coffee-length guide for turning a property valuation protest into a clear, evidence-based request.";
 const ARTICLE_AUTHOR = "Max Quattromani";
-const ARTICLE_LOCATION_DATE = "Gage County, June 25, 2026";
+const ARTICLE_LOCATION = "Gage County";
+const ARTICLE_DISPLAY_DATE = "June 25, 2026";
 const ARTICLE_PUBLISHED_DATE = "2026-06-25";
 const ARTICLE_MODIFIED_DATE = "2026-06-25";
 const ARTICLE_DESCRIPTION = "A plain language guide to preparing a property valuation protest with comparables, property record cards, evidence, and a specific correction request.";
@@ -798,7 +799,7 @@ export function renderProtestEvidenceGuide() {
         <p class="hero-deck">${ARTICLE_SUBTITLE}</p>
         <div class="hero-meta" aria-label="Article information">
           <p>Prepared by ${ARTICLE_AUTHOR}</p>
-          <p>${ARTICLE_LOCATION_DATE.replace(", ", " · ")}</p>
+          <p>${ARTICLE_DISPLAY_DATE} · ${ARTICLE_LOCATION}</p>
         </div>
         <div class="hero-action">
           <a class="article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable guide PDF">Prefer paper? Download the printable guide.</a>
