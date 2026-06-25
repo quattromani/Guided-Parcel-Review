@@ -1,37 +1,55 @@
 import { escapeHtml } from "../utils/html.js";
 
+const EDITORIAL_ICON_SPRITE = "/assets/icons/editorial/sprite.svg";
+const PRINTABLE_GUIDE_PDF = "/assets/guides/before-you-walk-into-a-property-protest.pdf";
+
 const RESOURCES = [
   {
     label: "Gage County GIS / Property Record Lookup",
-    icon: "property",
+    icon: "property-record",
     description: "Find the property record card for your parcel and for any comparable properties you plan to discuss.",
     url: "https://report.gworks.com/report.ashx?county=gage&type=assessor"
   },
   {
     label: "Gage County Sales Comparison Map",
-    icon: "map",
+    icon: "market-chart",
     description: "Start here when looking for recent sales that may have competed with your property in the market.",
     url: "https://experience.arcgis.com/experience/67492767fb8d49a8b321d14022d24e81"
   },
   {
     label: "Nebraska Property Valuation Protest Form 422",
-    icon: "form",
+    icon: "document",
     description: "Use the official Nebraska form and confirm the deadline, signature, and filing requirements with the county.",
     url: "https://revenue.nebraska.gov/sites/default/files/doc/pad/forms/422_Property_Valuation_Protest.pdf"
   }
 ];
 
 const PROCESS_STEPS = [
-  ["Find", "2-3 good comparable properties"],
-  ["Compare", "the property records"],
-  ["Document", "the specific difference"],
-  ["Request", "one clear correction"]
+  ["Find", "2-3 good comparable properties", "observe"],
+  ["Compare", "the property records", "compare"],
+  ["Document", "the specific difference", "document"],
+  ["Request", "one clear correction", "request"]
 ];
 
+const BOARD_MEETINGS = [
+  {
+    dateLabel: "Monday, July 6, 2026",
+    timeLabel: "1:00 p.m.",
+    calendarUrl: "/assets/calendar/gage-boe-2026-07-06.ics"
+  },
+  {
+    dateLabel: "Friday, July 10, 2026",
+    timeLabel: "1:00 p.m.",
+    calendarUrl: "/assets/calendar/gage-boe-2026-07-10.ics"
+  }
+];
+
+const BOARD_MEETING_LOCATION = "Gage County Courthouse, Board of Supervisors Room, 612 Grant Street, Beatrice, NE 68310";
+
 const HARD_REQUESTS = [
-  "My taxes are too high.",
+  "My house isn't worth this much.",
   "This feels unfair.",
-  "My value went up too much."
+  "Can someone make this make sense?"
 ];
 
 const BETTER_REQUESTS = [
@@ -134,33 +152,13 @@ function listMarkup(items) {
   `;
 }
 
-function resourceIcon(type) {
-  const icons = {
-    property: `
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-        <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-      </svg>
-    `,
-    map: `
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.382V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"></path>
-        <path d="M15 5.764v15"></path>
-        <path d="M9 3.236v15"></path>
-      </svg>
-    `,
-    form: `
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"></path>
-        <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-        <path d="M10 9H8"></path>
-        <path d="M16 13H8"></path>
-        <path d="M16 17H8"></path>
-      </svg>
-    `
-  };
-
-  return `<span class="protest-guide-resource-icon">${icons[type] ?? icons.form}</span>`;
+function editorialIcon(name, className = "") {
+  const classes = ["editorial-icon", className].filter(Boolean).join(" ");
+  return `
+    <svg class="${classes}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <use href="${EDITORIAL_ICON_SPRITE}#icon-${escapeHtml(name)}"></use>
+    </svg>
+  `;
 }
 
 function sectionHeader(kicker, title, id) {
@@ -174,18 +172,21 @@ function sectionHeader(kicker, title, id) {
 
 function renderDisconnectFigure() {
   const items = [
-    ["Homeowner thinks", "My value is too high."],
-    ["Board needs", "What should change?"],
-    ["Evidence-supported request", "Here is the proof. Here is the correction."]
+    ["Homeowner thinks", "My value is too high.", "observe"],
+    ["Board needs", "What should change?", "equalization"],
+    ["Evidence-supported request", "Here is the proof. Here is the correction.", "request"]
   ];
 
   return `
     <figure class="concept-card concept-diagram disconnect-visual" aria-labelledby="disconnectTitle">
       <figcaption id="disconnectTitle">The disconnect</figcaption>
       <div>
-        ${items.map(([label, text]) => `
+        ${items.map(([label, text, icon]) => `
           <article>
-            <span>${escapeHtml(label)}</span>
+            <div class="editorial-card-heading">
+              ${editorialIcon(icon)}
+              <span>${escapeHtml(label)}</span>
+            </div>
             <p>${escapeHtml(text)}</p>
           </article>
         `).join("")}
@@ -196,12 +197,13 @@ function renderDisconnectFigure() {
 
 function renderProcessStrip() {
   return `
-    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section article-section-visual" aria-labelledby="processTitle">
-      ${sectionHeader("Roadmap", "The whole process in four moves", "processTitle")}
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section article-section-visual" data-tone="information" aria-labelledby="processTitle">
+      ${sectionHeader("Before You Begin", "The whole process in four moves", "processTitle")}
       <ol class="process-strip" aria-label="Property protest preparation process">
-        ${PROCESS_STEPS.map(([verb, detail]) => `
+        ${PROCESS_STEPS.map(([verb, detail, icon]) => `
           <li>
             <div class="process-step-heading">
+              ${editorialIcon(icon)}
               <span>${escapeHtml(verb)}</span>
             </div>
             <p>${escapeHtml(detail)}</p>
@@ -214,9 +216,9 @@ function renderProcessStrip() {
 
 function renderOpeningSection() {
   return `
-    <section class="tax-article-section tax-story-chapter tax-article-opening levy-wide-panel article-section" aria-labelledby="protestOpeningTitle">
+    <section class="tax-article-section tax-story-chapter tax-article-opening levy-wide-panel article-section" data-tone="reflection" aria-labelledby="protestOpeningTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Homeowner Guide", "The pattern shows up quickly", "protestOpeningTitle")}
+        ${sectionHeader("In the Hearing Room", "The pattern shows up quickly", "protestOpeningTitle")}
         ${paragraph("Spend a day observing property protest hearings and a rhythm starts to appear. Homeowners come forward one after another. Most are sincere. Most have paid attention to their home. Most believe something about the assessment is wrong.")}
         ${paragraph("Then the Board asks the practical question that sits underneath almost every hearing: what can we verify?")}
         ${paragraph("That is where many protests lose their footing. The homeowner may be right that something feels off. But without photographs, measurements, repair estimates, record cards, or comparable properties, the Board has little it can act on.")}
@@ -234,9 +236,9 @@ function renderOpeningSection() {
 
 function renderWhyProtestsFailSection() {
   return `
-    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" aria-labelledby="protestFailTitle">
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" aria-labelledby="protestFailTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("The First Question", "Why do sincere protests fail?", "protestFailTitle")}
+        ${sectionHeader("Finding the Disconnect", "Why do sincere protests fail?", "protestFailTitle")}
         ${paragraph("Usually not because the homeowner is careless. More often, the protest asks the Board to solve the wrong problem.")}
         ${paragraph("\"Just look at my house\" may be an honest reaction. So is \"there is no way it is worth that.\" But a hearing cannot inspect a feeling. It needs something it can compare, measure, confirm, or correct.")}
       </div>
@@ -262,14 +264,14 @@ function renderWhyProtestsFailSection() {
 
 function renderBoardQuestionSection() {
   return `
-    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" aria-labelledby="protestBoardTitle">
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" aria-labelledby="protestBoardTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("The Board's Job", "What is the Board actually deciding?", "protestBoardTitle")}
+        ${sectionHeader("Narrowing the Question", "What is the Board actually deciding?", "protestBoardTitle")}
         ${paragraph("The Board is not there to decide whether a tax bill feels heavy. It is not there to debate public budgets. It is not there to punish or defend the assessor.")}
       </div>
       <figure class="decision-panel" aria-labelledby="decisionPanelTitle">
         <figcaption id="decisionPanelTitle">The Board's practical question</figcaption>
-        <div class="decision-question">Does the evidence support a correction?</div>
+        <div class="decision-question">${editorialIcon("verification")}<span>Does the evidence support a correction?</span></div>
         <div class="decision-outcomes">
           <p><strong>Yes</strong><span>What correction?</span></p>
           <p><strong>No</strong><span>Current record likely remains.</span></p>
@@ -285,20 +287,20 @@ function renderBoardQuestionSection() {
 
 function renderComparableSection() {
   return `
-    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" aria-labelledby="protestCompsTitle">
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="comparison" aria-labelledby="protestCompsTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Comparable Properties", "What makes a comparable useful?", "protestCompsTitle")}
+        ${sectionHeader("Finding Good Comparables", "What makes a comparable useful?", "protestCompsTitle")}
         ${paragraph("A comparable property is not just a nearby house with a lower value. The better question is whether that home would have genuinely competed with yours in the marketplace.")}
       </div>
       <figure class="scorecard" aria-labelledby="scorecardTitle">
         <figcaption id="scorecardTitle">Comparable property scorecard</figcaption>
         <div>
           <section>
-            <h3>A good comp is similar in</h3>
+            <h3>${editorialIcon("comparable-property")}<span>A good comp is similar in</span></h3>
             ${listMarkup(GOOD_COMP_TRAITS)}
           </section>
           <section>
-            <h3>Weak comp signals</h3>
+            <h3>${editorialIcon("compare")}<span>Weak comp signals</span></h3>
             ${listMarkup(WEAK_COMP_SIGNALS)}
           </section>
         </div>
@@ -316,6 +318,7 @@ function renderValueLayerFigure() {
     <figure class="value-layer-figure" aria-labelledby="valueLayerTitle">
       <figcaption id="valueLayerTitle">Value is the conclusion. The record is where the evidence starts.</figcaption>
       <div class="value-layer-top">
+        ${editorialIcon("property-record")}
         <strong>Assessed Value</strong>
         <span>= conclusion</span>
       </div>
@@ -329,7 +332,7 @@ function renderValueLayerFigure() {
 function renderRecordCallout() {
   return `
     <figure class="record-callout" aria-labelledby="recordCalloutTitle">
-      <figcaption id="recordCalloutTitle">A simplified record card: where to look first</figcaption>
+      <figcaption id="recordCalloutTitle">${editorialIcon("property-record")}<span>A simplified record card: where to look first</span></figcaption>
       <dl>
         ${RECORD_CALLOUT_ROWS.map(([field, action]) => `
           <div>
@@ -344,9 +347,9 @@ function renderRecordCallout() {
 
 function renderRecordsSection() {
   return `
-    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" aria-labelledby="protestRecordsTitle">
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="evidence" aria-labelledby="protestRecordsTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Property Records", "Why does the record matter more than the value?", "protestRecordsTitle")}
+        ${sectionHeader("Verifying the Record", "Why does the record matter more than the value?", "protestRecordsTitle")}
         <p class="article-emphasis">The assessed value is not the evidence. It is the conclusion.</p>
       </div>
       ${renderValueLayerFigure()}
@@ -364,13 +367,13 @@ function renderRecordsSection() {
 
 function renderEvidenceSection() {
   return `
-    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" aria-labelledby="protestEvidenceTitle">
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="evidence" aria-labelledby="protestEvidenceTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Evidence to Request", "How do you turn evidence into one correction?", "protestEvidenceTitle")}
+        ${sectionHeader("Connecting Proof to Relief", "How do you turn evidence into one correction?", "protestEvidenceTitle")}
         ${paragraph("Keep the path short. What you noticed should connect directly to what the record says and what you are asking to correct.")}
       </div>
       <figure class="evidence-matrix" aria-labelledby="evidenceMatrixTitle">
-        <figcaption id="evidenceMatrixTitle">Evidence -> Record issue -> Requested correction</figcaption>
+        <figcaption id="evidenceMatrixTitle">${editorialIcon("evidence")}<span>Evidence -> Record issue -> Requested correction</span></figcaption>
         <ol class="evidence-path-list">
           ${EVIDENCE_EXAMPLES.map(row => `
             <li>
@@ -399,9 +402,9 @@ function renderOrganizationSection() {
   ];
 
   return `
-    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" aria-labelledby="protestOrganizeTitle">
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="action" aria-labelledby="protestOrganizeTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Organizing the Protest", "What should the packet say?", "protestOrganizeTitle")}
+        ${sectionHeader("Building the Packet", "What should the packet say?", "protestOrganizeTitle")}
         ${paragraph("You do not need a complicated argument. You need a clean sequence the Board can follow.")}
       </div>
       <ol class="question-checklist">
@@ -421,13 +424,13 @@ function renderOrganizationSection() {
 
 function renderHearingSection() {
   return `
-    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" aria-labelledby="protestHearingTitle">
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="action" aria-labelledby="protestHearingTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("At the Hearing", "How do you say it out loud?", "protestHearingTitle")}
+        ${sectionHeader("Speaking to the Board", "How do you say it out loud?", "protestHearingTitle")}
         ${paragraph("You do not need to sound formal. Plain speech usually works better. You are simply walking the Board from the record to the evidence to the request.")}
       </div>
       <figure class="script-card" aria-labelledby="scriptCardTitle">
-        <figcaption id="scriptCardTitle">What to say at the hearing</figcaption>
+        <figcaption id="scriptCardTitle">${editorialIcon("hearing-board")}<span>What to say at the hearing</span></figcaption>
         <blockquote>
           <p>The property record shows __________________.</p>
           <p>My evidence shows __________________.</p>
@@ -444,15 +447,15 @@ function renderHearingSection() {
 
 function renderResourcesSection() {
   return `
-    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section resource-section" aria-labelledby="protestResourcesTitle">
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section resource-section" data-tone="action" aria-labelledby="protestResourcesTitle">
       <div class="editorial-narrow">
-        <p class="guided-kicker" id="protestResourcesTitle">Resources</p>
+        <p class="guided-kicker" id="protestResourcesTitle">Gathering Your Materials</p>
         <p>Here are the typical tools for checking the record, finding comparable sales, and filing the official protest form.</p>
       </div>
       <div class="resource-card-grid">
         ${RESOURCES.map(resource => `
           <article class="resource-card">
-            <a href="${escapeHtml(resource.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(resource.label)}</a>
+            <a href="${escapeHtml(resource.url)}" target="_blank" rel="noopener noreferrer">${editorialIcon(resource.icon)}<span>${escapeHtml(resource.label)}</span></a>
             <p>${escapeHtml(resource.description)}</p>
           </article>
         `).join("")}
@@ -460,7 +463,7 @@ function renderResourcesSection() {
       <div class="print-url-list" aria-label="Full resource URLs for print">
         ${RESOURCES.map(resource => `
           <div class="print-url">
-            ${resourceIcon(resource.icon)}
+            ${editorialIcon(resource.icon, "editorial-icon-sm")}
             <p>
               <span>${escapeHtml(resource.label)}</span>
               <code>${escapeHtml(resource.url)}</code>
@@ -473,10 +476,41 @@ function renderResourcesSection() {
   `;
 }
 
+function renderOneMoreThoughtSection() {
+  return `
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-labelledby="protestOneMoreThoughtTitle">
+      <div class="editorial-narrow">
+        ${sectionHeader("After the Hearing", "If today did not settle it", "protestOneMoreThoughtTitle")}
+        ${paragraph("If your protest was not successful today because you did not have enough evidence to support the adjustment you requested, that does not necessarily mean the conversation is over.")}
+        ${paragraph("The Board of Equalization can only act on the information in front of it. If you later gather stronger comparable properties, obtain additional documentation, or discover something in your property record that supports a specific correction, you may have another opportunity to present that information.")}
+      </div>
+      <aside class="meeting-schedule-card" aria-labelledby="gageBoardScheduleTitle">
+        <h3 id="gageBoardScheduleTitle">${editorialIcon("timeline")}<span>The next scheduled property protest hearings of the Gage County Board of Equalization are:</span></h3>
+        <p>${escapeHtml(BOARD_MEETING_LOCATION)}</p>
+        <ul>
+          ${BOARD_MEETINGS.map(meeting => `
+            <li>
+              <a href="${escapeHtml(meeting.calendarUrl)}" download aria-label="Add ${escapeHtml(meeting.dateLabel)} Gage County Board of Equalization meeting to calendar">
+                <span>${escapeHtml(meeting.dateLabel)}</span>
+                <strong>${escapeHtml(meeting.timeLabel)}</strong>
+                <em>Add to calendar</em>
+              </a>
+            </li>
+          `).join("")}
+        </ul>
+      </aside>
+      <div class="editorial-narrow">
+        ${paragraph("If you are considering appearing again, contact the County Clerk's Office beforehand to understand the procedures and whether any additional information or updated materials should be submitted in advance.")}
+        ${paragraph("Sometimes the most productive outcome from a first hearing is not an immediate adjustment. It is learning exactly what evidence the Board needs to evaluate your request.")}
+      </div>
+    </section>
+  `;
+}
+
 function renderClosingSection() {
   return `
-    <section class="tax-article-section tax-story-chapter tax-article-closing levy-article-narrow article-section" aria-labelledby="protestClosingTitle">
-      ${sectionHeader("The Larger Point", "A protest can improve the record", "protestClosingTitle")}
+    <section class="tax-article-section tax-story-chapter tax-article-closing levy-article-narrow article-section" data-tone="reflection" aria-labelledby="protestClosingTitle">
+      ${sectionHeader("Beyond Your Property", "A protest can improve the record", "protestClosingTitle")}
       ${paragraph("A protest is not an attack on the assessment system. At its best, it is one of the final quality-control steps before the assessment roll becomes final.")}
       ${paragraph("The homeowner may be the only person in the room who has lived with the property closely enough to notice the small mistake: the old outbuilding, the wrong fireplace count, the basement finish that was never completed, the condition rating that no longer fits.")}
       ${paragraph("Better records produce better models. Better models produce more uniform assessments. More uniform assessments reduce the need for future protests.")}
@@ -503,10 +537,12 @@ export function renderProtestEvidenceGuide() {
     <div class="comp-page-title levy-page-title article-hero">
       <p class="guided-kicker">Educational Guide</p>
       <h1>Before You Walk Into a Property Protest</h1>
-      <p>A plain-language guide for turning a property valuation protest into a clear, evidence-based request.</p>
+      <p>A plain language, cup-of-coffee-length guide for turning a property valuation protest into a clear, evidence-based request.</p>
       <div class="levy-author-byline">
         <p>By Max Quattromani</p>
+        <p>Gage County, June 24, 2026</p>
       </div>
+      <a class="article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download>Prefer paper? Download the printable guide.</a>
     </div>
   `;
 
@@ -522,6 +558,7 @@ export function renderProtestEvidenceGuide() {
       ${renderOrganizationSection()}
       ${renderHearingSection()}
       ${renderResourcesSection()}
+      ${renderOneMoreThoughtSection()}
       ${renderClosingSection()}
     </article>
   `;

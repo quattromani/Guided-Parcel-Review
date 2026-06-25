@@ -40,6 +40,26 @@
   --accent-primary: var(--color-blue);
   --accent-primary-dark: var(--color-blue-dark);
   --accent-primary-soft: var(--color-blue-soft);
+  --color-ink: 31 51 71;
+  --color-muted: 102 112 133;
+  --color-paper: 246 249 252;
+  --color-surface: 255 255 255;
+  --color-border: 212 222 232;
+  --color-information: 63 90 115;
+  --color-evidence: 83 112 92;
+  --color-comparison: 142 100 48;
+  --color-action: 62 73 122;
+  --color-reflection: 116 104 91;
+  --color-information-soft: 236 243 249;
+  --color-evidence-soft: 239 246 240;
+  --color-comparison-soft: 250 244 233;
+  --color-action-soft: 239 241 249;
+  --color-reflection-soft: 246 242 237;
+  --icon-xs: 16px;
+  --icon-sm: 20px;
+  --icon-md: 28px;
+  --icon-lg: 40px;
+  --icon-xl: 56px;
   --radius-container-lg: 0.5rem;
   --radius-container-md: var(--radius-container-lg);
   --radius-container-sm: var(--radius-container-lg);
@@ -4716,7 +4736,8 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   border-radius: 999px;
   color: rgb(var(--color-secondary));
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
+  justify-self: start;
   font-size: 0.8rem;
   font-weight: 800;
   gap: 0.55rem;
@@ -9229,6 +9250,35 @@ body:has(.levy-compression-page) #pageTitle {
   max-width: 46rem;
 }
 
+.article-print-cta {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgb(var(--color-secondary) / 0.42);
+  color: rgb(var(--color-secondary));
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--levy-heading-font);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.35;
+  margin-top: 1.05rem;
+  padding: 0 0 0.08rem;
+  text-align: left;
+}
+
+.article-print-cta:focus,
+.article-print-cta:hover {
+  border-bottom-color: rgb(var(--brand-ink));
+  color: rgb(var(--brand-ink));
+}
+
+.article-print-cta:focus-visible {
+  border-radius: 0.2rem;
+  outline: 2px solid rgb(var(--color-secondary) / 0.36);
+  outline-offset: 0.25rem;
+}
+
 .levy-author-byline {
   border-top: 1px solid rgb(var(--border-muted));
   color: rgb(var(--color-slate-600));
@@ -9236,16 +9286,21 @@ body:has(.levy-compression-page) #pageTitle {
   font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   gap: 0.12rem;
   margin-top: 0.85rem;
-  padding-top: 0.72rem;
+  padding-top: 0.85rem;
 }
 
 .levy-author-byline p {
   color: inherit;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.8125rem;
   font-weight: 420;
-  line-height: 1.58;
+  line-height: 1.38;
   margin: 0;
+}
+
+.comp-page-title .levy-author-byline p {
+  font-size: 0.8125rem;
+  line-height: 1.38;
 }
 
 body:has(.levy-compression-page) .comp-page-title h1 {
@@ -9603,9 +9658,37 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .editorial-guide {
-  --editorial-border: rgb(var(--border-muted));
-  --editorial-muted: rgb(248 250 252);
-  --editorial-blue-soft: rgb(239 246 255);
+  --editorial-accent: rgb(var(--color-information));
+  --editorial-accent-soft: rgb(var(--color-information-soft));
+  --editorial-border: rgb(var(--color-border));
+  --editorial-muted: rgb(var(--color-paper));
+  --editorial-surface: rgb(var(--color-surface));
+  --editorial-blue-soft: rgb(var(--color-information-soft));
+}
+
+.editorial-guide [data-tone="information"] {
+  --editorial-accent: rgb(var(--color-information));
+  --editorial-accent-soft: rgb(var(--color-information-soft));
+}
+
+.editorial-guide [data-tone="evidence"] {
+  --editorial-accent: rgb(var(--color-evidence));
+  --editorial-accent-soft: rgb(var(--color-evidence-soft));
+}
+
+.editorial-guide [data-tone="comparison"] {
+  --editorial-accent: rgb(var(--color-comparison));
+  --editorial-accent-soft: rgb(var(--color-comparison-soft));
+}
+
+.editorial-guide [data-tone="action"] {
+  --editorial-accent: rgb(var(--color-action));
+  --editorial-accent-soft: rgb(var(--color-action-soft));
+}
+
+.editorial-guide [data-tone="reflection"] {
+  --editorial-accent: rgb(var(--color-reflection));
+  --editorial-accent-soft: rgb(var(--color-reflection-soft));
 }
 
 .editorial-guide .article-section {
@@ -9632,6 +9715,46 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   margin: 0;
 }
 
+.editorial-icon {
+  color: currentColor;
+  display: inline-block;
+  flex: 0 0 auto;
+  fill: none;
+  height: var(--icon-md);
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  width: var(--icon-md);
+}
+
+.editorial-icon-sm {
+  height: var(--icon-sm);
+  width: var(--icon-sm);
+}
+
+.editorial-card-heading,
+.scorecard h3,
+.evidence-path-list h3,
+.meeting-schedule-card h3,
+.script-card figcaption {
+  align-items: center;
+  display: flex;
+  gap: 0.45rem;
+}
+
+.editorial-card-heading .editorial-icon,
+.scorecard h3 .editorial-icon,
+.evidence-path-list h3 .editorial-icon,
+.record-callout figcaption .editorial-icon,
+.evidence-matrix figcaption .editorial-icon,
+.script-card figcaption .editorial-icon,
+.meeting-schedule-card h3 .editorial-icon {
+  color: var(--editorial-accent);
+  height: var(--icon-sm);
+  width: var(--icon-sm);
+}
+
 .article-emphasis {
   color: rgb(var(--brand-ink));
   font-family: var(--levy-heading-font) !important;
@@ -9649,11 +9772,12 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .record-callout,
 .evidence-matrix,
 .script-card,
+.meeting-schedule-card,
 .resource-section {
-  background: #ffffff;
+  background: var(--editorial-surface);
   border: 1px solid var(--editorial-border);
   border-radius: 0.85rem;
-  box-shadow: 0 0.75rem 1.7rem rgb(31 73 112 / 0.045);
+  box-shadow: inset 0 0.16rem 0 var(--editorial-accent-soft), 0 0.75rem 1.7rem rgb(31 73 112 / 0.045);
   justify-self: center;
   margin: 0;
   padding: clamp(0.95rem, 2.4vw, 1.35rem);
@@ -9668,13 +9792,90 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .record-callout figcaption,
 .evidence-matrix figcaption,
 .script-card figcaption {
-  color: rgb(var(--color-secondary));
+  align-items: center;
+  color: var(--editorial-accent);
+  display: flex;
   font-family: var(--levy-heading-font);
   font-size: 0.78rem;
   font-weight: 900;
+  gap: 0.45rem;
   letter-spacing: 0.1em;
   line-height: 1.2;
   margin-bottom: 0.78rem;
+  text-transform: uppercase;
+}
+
+.meeting-schedule-card {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.meeting-schedule-card h3 {
+  font-size: 1rem;
+}
+
+.meeting-schedule-card > p {
+  color: rgb(var(--color-slate-600));
+  font-family: var(--levy-body-font);
+  font-size: 0.95rem;
+  line-height: 1.42;
+  margin: -0.18rem 0 0;
+}
+
+.meeting-schedule-card ul {
+  display: grid;
+  gap: 0.62rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.meeting-schedule-card li {
+  background: var(--editorial-muted);
+  border: 1px solid var(--editorial-border);
+  border-radius: 0.65rem;
+  margin: 0;
+}
+
+.meeting-schedule-card a {
+  align-items: baseline;
+  color: inherit;
+  display: grid;
+  gap: 0.45rem 1rem;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  padding: 0.82rem 0.9rem;
+  text-decoration: none;
+}
+
+.meeting-schedule-card a:focus,
+.meeting-schedule-card a:hover {
+  background: var(--editorial-accent-soft);
+  border-radius: 0.65rem;
+  outline: 2px solid color-mix(in srgb, var(--editorial-accent) 38%, transparent);
+  outline-offset: 2px;
+}
+
+.meeting-schedule-card span,
+.meeting-schedule-card strong,
+.meeting-schedule-card em {
+  color: rgb(var(--brand-ink));
+  font-family: var(--levy-body-font);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.meeting-schedule-card strong {
+  font-family: var(--levy-heading-font);
+  font-weight: 850;
+}
+
+.meeting-schedule-card em {
+  color: var(--editorial-accent);
+  font-family: var(--levy-heading-font);
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -9707,7 +9908,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .disconnect-visual article span,
 .process-step-heading span,
 .print-url span {
-  color: rgb(var(--color-secondary));
+  color: var(--editorial-accent);
   font-family: var(--levy-heading-font);
   font-size: 0.72rem;
   font-weight: 900;
@@ -9755,8 +9956,28 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   position: relative;
 }
 
+.process-strip li:nth-child(1) {
+  --editorial-accent: rgb(var(--color-information));
+  --editorial-accent-soft: rgb(var(--color-information-soft));
+}
+
+.process-strip li:nth-child(2) {
+  --editorial-accent: rgb(var(--color-comparison));
+  --editorial-accent-soft: rgb(var(--color-comparison-soft));
+}
+
+.process-strip li:nth-child(3) {
+  --editorial-accent: rgb(var(--color-evidence));
+  --editorial-accent-soft: rgb(var(--color-evidence-soft));
+}
+
+.process-strip li:nth-child(4) {
+  --editorial-accent: rgb(var(--color-action));
+  --editorial-accent-soft: rgb(var(--color-action-soft));
+}
+
 .process-strip li:not(:last-child)::after {
-  background: linear-gradient(90deg, rgb(var(--brand-ink) / 0.32), rgb(var(--brand-ink) / 0.08));
+  background: linear-gradient(90deg, var(--editorial-accent), rgb(var(--color-border)));
   content: "";
   height: 2px;
   left: calc(100% + 0.12rem);
@@ -9773,7 +9994,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
 .process-step-heading::before {
   align-items: center;
-  background: rgb(var(--brand-ink));
+  background: var(--editorial-accent);
   border-radius: 999px;
   color: #ffffff;
   content: counter(process-step);
@@ -9790,6 +10011,17 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .process-step-heading span {
   font-size: 0.82rem;
   letter-spacing: 0.11em;
+}
+
+.process-step-heading .editorial-icon {
+  background: var(--editorial-accent-soft);
+  border: 1px solid color-mix(in srgb, var(--editorial-accent) 28%, transparent);
+  border-radius: 0.45rem;
+  color: var(--editorial-accent);
+  height: var(--icon-lg);
+  margin-right: 0.1rem;
+  padding: 0.42rem;
+  width: var(--icon-lg);
 }
 
 .comparison-card > div,
@@ -9818,7 +10050,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
 .comparison-card li::before,
 .scorecard li::before {
-  background: rgb(var(--brand-ink) / 0.42);
+  background: var(--editorial-accent);
   border-radius: 999px;
   content: "";
   height: 0.42rem;
@@ -9827,10 +10059,13 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .decision-question {
-  background: var(--editorial-blue-soft);
-  border: 1px solid rgb(31 73 112 / 0.16);
+  align-items: center;
+  background: var(--editorial-accent-soft);
+  border: 1px solid color-mix(in srgb, var(--editorial-accent) 22%, transparent);
   border-radius: 0.7rem;
   color: rgb(var(--brand-ink));
+  display: flex;
+  gap: 0.6rem;
   font-family: var(--levy-heading-font);
   font-size: 1.25rem;
   font-weight: 800;
@@ -9855,7 +10090,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .decision-outcomes strong {
-  color: rgb(var(--color-secondary));
+  color: var(--editorial-accent);
   font-family: var(--levy-heading-font);
   font-size: 0.86rem;
   font-weight: 900;
@@ -9884,13 +10119,18 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
 .value-layer-top {
   align-items: baseline;
-  background: rgb(var(--brand-ink));
+  background: rgb(var(--color-ink));
   border-radius: 0.75rem;
   color: #ffffff;
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
   padding: 1rem;
+}
+
+.value-layer-top .editorial-icon {
+  height: var(--icon-md);
+  width: var(--icon-md);
 }
 
 .value-layer-top strong {
@@ -9916,7 +10156,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .value-layer-figure li {
-  background: var(--editorial-muted);
+  background: var(--editorial-accent-soft);
   border: 1px solid var(--editorial-border);
   border-radius: 0.55rem;
   color: rgb(var(--brand-ink));
@@ -9997,7 +10237,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .evidence-path-list h3 {
-  color: rgb(var(--color-secondary));
+  color: var(--editorial-accent);
   font-size: 0.68rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -10021,16 +10261,16 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .question-checklist h3 {
-  color: rgb(var(--color-secondary));
+  color: var(--editorial-accent);
   font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .script-card blockquote {
-  background: var(--editorial-muted);
+  background: var(--editorial-accent-soft);
   border: 1px solid var(--editorial-border);
-  border-left: 0.18rem solid rgb(var(--color-secondary));
+  border-left: 0.18rem solid var(--editorial-accent);
   border-radius: 0.7rem;
   display: grid;
   gap: 0.55rem;
@@ -10055,13 +10295,14 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
 .resource-card a {
   align-items: center;
-  background: rgb(var(--brand-ink));
+  background: rgb(var(--color-ink));
   border-radius: 0.5rem;
   color: #ffffff;
   display: inline-flex;
   font-family: var(--levy-heading-font);
   font-size: 0.88rem;
   font-weight: 800;
+  gap: 0.45rem;
   justify-content: center;
   line-height: 1.2;
   min-height: 2.65rem;
@@ -10072,7 +10313,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
 .resource-card a:focus,
 .resource-card a:hover {
-  background: rgb(var(--color-secondary));
+  background: var(--editorial-accent);
 }
 
 .print-url-list {
@@ -11178,6 +11419,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .record-callout,
   .evidence-matrix,
   .script-card,
+  .meeting-schedule-card,
   .resource-section {
     border-radius: 0.72rem;
     padding: 0.85rem;
@@ -11203,6 +11445,11 @@ body:has(.levy-compression-page) .comp-page-title h1 {
     left: 1.32rem;
     top: calc(100% + 0.1rem);
     width: 2px;
+  }
+
+  .meeting-schedule-card a {
+    align-items: start;
+    grid-template-columns: 1fr;
   }
 
   .value-layer-figure ul,
@@ -13090,8 +13337,8 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   }
 
   body:has(.levy-compression-page) .levy-author-byline p {
-    font-size: 1rem;
-    line-height: 1.58;
+    font-size: 0.8125rem;
+    line-height: 1.38;
   }
 
   .comp-story-question,
@@ -13169,6 +13416,11 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 @media print {
+  @page {
+    size: Letter;
+    margin: 0.55in 0.55in 0.6in;
+  }
+
   body:has(.protest-evidence-guide-page) {
     background: #ffffff;
     color: #111827;
@@ -13177,6 +13429,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   body:has(.protest-evidence-guide-page) .property-identity-bar,
   body:has(.protest-evidence-guide-page) .guided-path-shell,
   body:has(.protest-evidence-guide-page) .guide-review-header,
+  body:has(.protest-evidence-guide-page) .article-print-cta,
   body:has(.protest-evidence-guide-page) footer {
     display: none !important;
   }
@@ -13188,14 +13441,42 @@ body:has(.levy-compression-page) .comp-page-title h1 {
     width: 100% !important;
   }
 
+  body:has(.protest-evidence-guide-page) #pageTitle {
+    margin-bottom: 0.22in !important;
+  }
+
+  body:has(.protest-evidence-guide-page) .comp-page-title h1 {
+    font-size: 27pt;
+    line-height: 1.03;
+    max-width: 7.2in;
+  }
+
+  body:has(.protest-evidence-guide-page) .levy-page-title p:not(.guided-kicker) {
+    font-size: 11pt;
+    line-height: 1.34;
+    margin-top: 0.12in;
+    max-width: 6.8in;
+  }
+
+  body:has(.protest-evidence-guide-page) .levy-author-byline {
+    margin-top: 0.18in;
+    padding-top: 0.18in;
+  }
+
+  body:has(.protest-evidence-guide-page) .levy-author-byline p {
+    font-size: 8.75pt;
+    line-height: 1.22;
+  }
+
   .protest-evidence-guide-page {
     color: #111827;
     display: block;
+    font-size: 9.75pt;
+    line-height: 1.42;
     max-width: none;
     padding: 0;
   }
 
-  .protest-evidence-guide-page .tax-story-chapter,
   .concept-card,
   .comparison-card,
   .decision-panel,
@@ -13204,6 +13485,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .record-callout,
   .evidence-matrix,
   .script-card,
+  .meeting-schedule-card,
   .resource-section,
   .resource-card,
   .question-checklist li {
@@ -13212,6 +13494,48 @@ body:has(.levy-compression-page) .comp-page-title h1 {
     page-break-inside: avoid;
   }
 
+  .protest-evidence-guide-page .tax-story-chapter {
+    break-inside: auto;
+    padding: 0.16in 0 0.12in;
+    page-break-inside: auto;
+  }
+
+  .protest-evidence-guide-page .tax-story-chapter:last-child {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .protest-evidence-guide-page .tax-article-header {
+    break-after: avoid;
+    break-inside: avoid;
+    margin-bottom: 0.11in;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  .protest-evidence-guide-page .guided-kicker,
+  .protest-evidence-guide-page .tax-article-panel .guided-kicker {
+    font-size: 7.5pt;
+    letter-spacing: 0.11em;
+    line-height: 1.15;
+  }
+
+  .protest-evidence-guide-page .tax-article-header h2,
+  .protest-evidence-guide-page .tax-article-section > h2 {
+    font-size: 17pt;
+    line-height: 1.12;
+    margin-top: 0.04in;
+  }
+
+  .protest-evidence-guide-page .tax-article-header > p:not(.guided-kicker),
+  .protest-evidence-guide-page .tax-article-section > p:not(.guided-kicker),
+  .protest-evidence-guide-page .levy-article-copy p,
+  .protest-evidence-guide-page .editorial-narrow p {
+    font-size: 9.75pt;
+    line-height: 1.42;
+    margin-bottom: 0.08in;
+  }
+
   .concept-card,
   .comparison-card,
   .decision-panel,
@@ -13220,8 +13544,26 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .record-callout,
   .evidence-matrix,
   .script-card,
+  .meeting-schedule-card,
   .resource-section {
     border-color: #9ca3af;
+    border-radius: 8pt;
+    margin: 0.1in 0;
+    padding: 10pt;
+  }
+
+  .concept-card figcaption,
+  .comparison-card figcaption,
+  .decision-panel figcaption,
+  .scorecard figcaption,
+  .value-layer-figure figcaption,
+  .record-callout figcaption,
+  .evidence-matrix figcaption,
+  .script-card figcaption {
+    font-size: 7.2pt;
+    gap: 4pt;
+    letter-spacing: 0.09em;
+    margin-bottom: 7pt;
   }
 
   .value-layer-top,
@@ -13243,6 +13585,140 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
   .process-strip {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .resource-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .disconnect-visual article,
+  .process-strip li,
+  .comparison-card section,
+  .scorecard section,
+  .question-checklist li,
+  .resource-card {
+    border-radius: 6pt;
+    gap: 4pt;
+    padding: 7pt;
+  }
+
+  .process-strip li {
+    min-height: 0;
+  }
+
+  .process-strip li:not(:last-child)::after {
+    display: none;
+  }
+
+  .disconnect-visual article p,
+  .process-strip li p,
+  .comparison-card li,
+  .scorecard li,
+  .question-checklist p,
+  .resource-card p,
+  .note-box,
+  .record-callout dd,
+  .evidence-path-list p,
+  .decision-outcomes span {
+    font-size: 9pt;
+    line-height: 1.32;
+  }
+
+  .concept-diagram article p,
+  .script-card blockquote p {
+    font-size: 9.4pt;
+    line-height: 1.28;
+  }
+
+  .decision-question,
+  .value-layer-top {
+    border-radius: 6pt;
+    font-size: 11pt;
+    padding: 7pt;
+  }
+
+  .value-layer-top strong {
+    font-size: 12pt;
+  }
+
+  .value-layer-top span {
+    font-size: 9pt;
+  }
+
+  .value-layer-figure ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .value-layer-figure li,
+  .record-callout dt,
+  .question-checklist h3,
+  .evidence-path-list h3 {
+    font-size: 8pt;
+  }
+
+  .record-callout dl {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .record-callout div,
+  .decision-outcomes p,
+  .script-card blockquote,
+  .meeting-schedule-card li {
+    border-radius: 6pt;
+    padding: 7pt;
+  }
+
+  .evidence-path-list {
+    gap: 5pt;
+  }
+
+  .evidence-path-list li {
+    border-radius: 6pt;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .evidence-path-list section {
+    padding: 6pt;
+  }
+
+  .evidence-path-list section + section {
+    border-left: 1px solid var(--editorial-border);
+    border-top: 0;
+  }
+
+  .evidence-path-list section:not(:last-child)::after {
+    display: none;
+  }
+
+  .meeting-schedule-card,
+  .resource-card-grid,
+  .print-url-list {
+    gap: 7pt;
+  }
+
+  .meeting-schedule-card h3 {
+    font-size: 9.5pt;
+  }
+
+  .meeting-schedule-card > p,
+  .meeting-schedule-card span,
+  .meeting-schedule-card strong {
+    font-size: 9pt;
+    line-height: 1.28;
+  }
+
+  .meeting-schedule-card em {
+    display: none;
+  }
+
+  .meeting-schedule-card a {
+    padding: 0;
+  }
+
+  .resource-card a {
+    font-size: 8pt;
+    min-height: 0;
+    padding: 6pt;
   }
 
   .print-url code {

@@ -9,7 +9,11 @@ const types = {
   ".js": "text/javascript",
   ".css": "text/css",
   ".json": "application/json",
-  ".jpg": "image/jpeg"
+  ".jpg": "image/jpeg",
+  ".png": "image/png",
+  ".svg": "image/svg+xml",
+  ".pdf": "application/pdf",
+  ".ics": "text/calendar"
 };
 
 http.createServer((request, response) => {
