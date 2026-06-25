@@ -25,8 +25,9 @@
       const params = new URLSearchParams(window.location.search);
       const normalizedPath = window.location.pathname.endsWith("/") ? window.location.pathname : `${window.location.pathname}/`;
       if (
-        ["levy-compression", "protest-evidence-guide"].includes(params.get("article"))
+        ["levy-compression", "protest-evidence-guide", "protest-paradox", "assessment-up-protest-denied-taxes"].includes(params.get("article"))
         || normalizedPath.endsWith("/articles/before-you-walk-into-a-property-protest/")
+        || normalizedPath.endsWith("/articles/assessment-up-protest-denied-taxes/")
       ) {
         document.documentElement.classList.add("article-shell-route", "levy-compression-shell-route");
       }

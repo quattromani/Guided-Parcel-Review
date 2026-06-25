@@ -8,7 +8,8 @@ const articleAnalyticsContext = {
   propertyClass: "Agricultural"
 };
 
-const FACEBOOK_SHARE_URL = "https://quattromani.github.io/Guided-Parcel-Review/experiments/the-protest-paradox.html?utm_source=facebook&utm_medium=social&utm_campaign=the_protest_paradox";
+const canonicalArticleUrl = document.querySelector('link[rel="canonical"]')?.href || window.location.href;
+const FACEBOOK_SHARE_URL = `${canonicalArticleUrl}?utm_source=facebook&utm_medium=social&utm_campaign=the_protest_paradox`;
 
 let trackArticleInteractionEvent = () => {};
 

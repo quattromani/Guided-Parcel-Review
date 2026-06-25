@@ -769,7 +769,7 @@ function renderClosingSection() {
       <aside class="related-article-coda" aria-labelledby="relatedProtestParadoxTitle">
         <hr />
         <p id="relatedProtestParadoxTitle">Can't get enough longform reading about property assessments? Extremely relatable.</p>
-        <a href="experiments/the-protest-paradox.html" data-article-action="related_article" data-article-label="Assessment Up. Protest Denied. Taxes?">Read the companion case study: <span>Assessment Up. Protest Denied. Taxes?</span></a>
+        <a href="articles/assessment-up-protest-denied-taxes/" data-article-action="related_article" data-article-label="Assessment Up. Protest Denied. Taxes?">Read the companion case study: <span>Assessment Up. Protest Denied. Taxes?</span></a>
       </aside>
     </section>
   `;

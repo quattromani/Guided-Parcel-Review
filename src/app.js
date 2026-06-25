@@ -69,6 +69,10 @@ import {
   isProtestEvidenceGuideRequest,
   renderProtestEvidenceGuide
 } from "./routes/protest-evidence-guide.js";
+import {
+  isProtestParadoxRequest,
+  renderProtestParadox
+} from "./routes/protest-paradox.js";
 import { renderPropertyInviteIndex } from "./routes/property-invite-index.js";
 import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js";
 import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js";
@@ -157,6 +161,20 @@ async function main() {
       articleId: "protest-evidence-guide",
       articleTitle: "Before You Walk Into a Property Protest",
       county: "gage"
+    });
+    return;
+  }
+
+  if (isProtestParadoxRequest(searchParams)) {
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    setFooterResourcesVisible(false);
+    renderProtestParadox();
+    trackArticleView({
+      contentType: "case-study",
+      articleId: "protest-paradox",
+      articleTitle: "Assessment Up. Protest Denied. Taxes?",
+      county: "gage",
+      parcelId: "004817000"
     });
     return;
   }

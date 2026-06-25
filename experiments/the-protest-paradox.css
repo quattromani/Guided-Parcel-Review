@@ -93,7 +93,6 @@ h1 span {
 }
 
 .confidence-note,
-.closing-lines p,
 .return-callout p:not(.kicker) {
   color: var(--ink);
   font-family: var(--heading-font);
@@ -190,89 +189,6 @@ h1 span {
   min-width: 0;
 }
 
-.case-timeline {
-  display: grid;
-  gap: 0.72rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  justify-self: center;
-  width: min(100%, 64rem);
-}
-
-.story-timeline {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-}
-
-.case-timeline article {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-top: 3px solid rgb(31 73 112 / 0.22);
-  border-radius: 0.85rem;
-  box-shadow: 0 0.75rem 1.7rem rgb(31 73 112 / 0.045);
-  display: grid;
-  gap: 0.34rem;
-  justify-items: start;
-  min-width: 0;
-  padding: clamp(0.72rem, 1.8vw, 0.95rem);
-  position: relative;
-}
-
-.story-timeline .timeline-question {
-  background: var(--blue);
-  border-color: var(--blue);
-  grid-column: 1 / -1;
-  justify-items: center;
-  padding: 1rem;
-  text-align: center;
-}
-
-.story-timeline .timeline-question strong,
-.story-timeline .timeline-question p {
-  color: #ffffff;
-}
-
-.case-timeline article:not(:last-child)::after {
-  color: var(--blue);
-  content: "→";
-  font-family: var(--heading-font);
-  font-size: 1.4rem;
-  font-weight: 900;
-  position: absolute;
-  right: -0.95rem;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 2;
-}
-
-.story-timeline article:nth-last-child(2)::after {
-  content: "↓";
-  left: 50%;
-  right: auto;
-  top: calc(100% - 0.05rem);
-  transform: translateX(-50%);
-}
-
-.case-timeline strong {
-  color: var(--red);
-  font-family: var(--heading-font);
-  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
-  font-weight: 900;
-  line-height: 1;
-}
-
-.case-timeline p {
-  color: var(--ink);
-  font-family: var(--heading-font);
-  font-size: clamp(0.78rem, 1.12vw, 0.92rem);
-  font-weight: 800;
-  line-height: 1.25;
-  margin: 0;
-  overflow-wrap: normal;
-}
-
-.story-timeline p {
-  font-size: clamp(0.68rem, 0.95vw, 0.82rem);
-}
-
 .chapter {
   display: grid;
   gap: 1rem;
@@ -325,7 +241,6 @@ h1 span {
 
 .timeline-card,
 .value-change-card,
-.math-card,
 .lesson-card,
 .return-callout {
   border: 1px solid var(--line);
@@ -490,47 +405,14 @@ h1 span {
   width: fit-content;
 }
 
-.formula-stack {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-}
-
-.formula-stack span,
-.formula-stack strong,
-.formula-stack b {
-  font-family: var(--heading-font);
-  font-weight: 900;
-}
-
-.formula-stack span,
-.formula-stack strong {
-  background: rgb(31 73 112 / 0.055);
-  border: 1px solid rgb(31 73 112 / 0.12);
-  border-radius: 999px;
-  padding: 0.58rem 0.75rem;
-}
-
-.formula-stack strong {
-  background: var(--blue);
-  color: white;
-}
-
-.formula-stack b {
-  color: var(--muted);
-}
-
 .compression-grid,
-.framework-grid,
-.recipe-grid {
+.framework-grid {
   display: grid;
   gap: 0.75rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.compression-grid p,
-.math-card p {
+.compression-grid p {
   color: var(--muted);
   font-family: var(--heading-font);
   font-size: 0.92rem;
@@ -574,37 +456,11 @@ h1 span {
   width: 2rem;
 }
 
-.explanation-card {
-  outline: 1px solid rgb(31 73 112 / 0.08);
-}
-
-.explanation-card::after {
-  background: rgb(255 255 255 / 0.74);
-}
-
-.compact-lesson {
-  background: linear-gradient(135deg, #ffffff, var(--blue-soft));
-  border-left: 0.28rem solid var(--blue);
-}
-
-.compact-lesson .kicker {
-  color: var(--blue);
-}
-
-.compact-lesson p:not(.kicker) {
-  color: var(--ink);
-  font-family: var(--heading-font);
-  font-size: clamp(1rem, 2vw, 1.18rem);
-  font-weight: 850;
-  line-height: 1.3;
-}
-
 .section-subcopy {
   margin-top: clamp(0.65rem, 2vw, 1rem);
 }
 
-.framework-grid article,
-.recipe-grid article {
+.framework-grid article {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 0.85rem;
@@ -614,8 +470,7 @@ h1 span {
   padding: clamp(1rem, 2.3vw, 1.25rem);
 }
 
-.framework-grid span,
-.recipe-grid span {
+.framework-grid span {
   color: var(--muted);
   font-family: var(--heading-font);
   font-size: 0.72rem;
@@ -624,8 +479,7 @@ h1 span {
   text-transform: uppercase;
 }
 
-.framework-grid h3,
-.recipe-grid h3 {
+.framework-grid h3 {
   color: var(--ink);
   font-family: var(--heading-font);
   font-size: 1rem;
@@ -634,8 +488,7 @@ h1 span {
   margin: 0;
 }
 
-.framework-grid strong,
-.recipe-grid strong {
+.framework-grid strong {
   color: var(--red);
   font-family: var(--heading-font);
   font-size: clamp(1.5rem, 3vw, 2rem);
@@ -659,7 +512,6 @@ h1 span {
   line-height: 1.35;
 }
 
-.meter,
 .component-track {
   background: #e8eef5;
   border-radius: 999px;
@@ -667,41 +519,12 @@ h1 span {
   overflow: hidden;
 }
 
-.meter i,
 .component-track i {
   background: var(--green);
   border-radius: inherit;
   display: block;
   height: 100%;
   width: var(--w);
-}
-
-.meter.reverse i {
-  background: var(--red);
-}
-
-.math-card {
-  display: grid;
-  gap: 0.55rem;
-}
-
-.math-card > p:not(.kicker) {
-  color: var(--ink);
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.math-card code {
-  background: #f8fafc;
-  border: 1px solid var(--line);
-  border-radius: 0.55rem;
-  color: var(--blue);
-  font-family: var(--mono-font);
-  font-size: 0.86rem;
-  font-weight: 650;
-  line-height: 1.45;
-  padding: 0.72rem;
-  white-space: normal;
 }
 
 .component-bars {
@@ -800,59 +623,6 @@ h1 span {
   max-width: 68ch;
 }
 
-.participation-card {
-  background: linear-gradient(135deg, var(--gold-soft), #ffffff);
-  border: 1px solid rgb(169 120 43 / 0.22);
-  border-left: 0.28rem solid var(--gold);
-  border-radius: 0.85rem;
-  box-shadow: 0 0.75rem 1.7rem rgb(31 73 112 / 0.045);
-  display: grid;
-  gap: 0.65rem;
-  padding: clamp(1rem, 2.5vw, 1.25rem);
-}
-
-.your-turn-card {
-  border-left-color: var(--green);
-}
-
-.pause-card {
-  background: linear-gradient(135deg, #ffffff, var(--gold-soft));
-}
-
-.estimate-prep-card {
-  margin-top: 0.15rem;
-}
-
-.participation-card h3 {
-  color: var(--ink);
-  font-family: var(--heading-font);
-  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
-  font-weight: 850;
-  line-height: 1.15;
-  margin: 0;
-}
-
-.participation-card ol,
-.participation-card ul {
-  color: var(--ink);
-  display: grid;
-  font-family: var(--heading-font);
-  font-size: 0.98rem;
-  font-weight: 650;
-  gap: 0.38rem;
-  line-height: 1.35;
-  margin: 0;
-  padding-left: 1.35rem;
-}
-
-.participation-card p:not(.kicker) {
-  color: var(--ink);
-  font-family: var(--heading-font);
-  font-size: 0.95rem;
-  font-weight: 720;
-  line-height: 1.35;
-}
-
 .apply-transition {
   background:
     linear-gradient(135deg, rgb(31 73 112 / 0.96), rgb(47 96 139 / 0.96)),
@@ -884,10 +654,6 @@ h1 span {
   font-weight: 520;
   line-height: 1.48;
   max-width: 62ch;
-}
-
-.recipe-grid {
-  margin-top: 0.1rem;
 }
 
 .estimate-panel {
@@ -1294,20 +1060,6 @@ h1 span {
   outline-offset: 2px;
 }
 
-.calculator-hint {
-  color: rgb(235 243 250);
-  font-family: var(--heading-font);
-  font-size: 0.86rem;
-  font-weight: 650;
-  line-height: 1.35;
-  margin: -0.18rem 0 0;
-}
-
-.calculator-hint strong {
-  color: #ffffff;
-  font-weight: 900;
-}
-
 .calculator-results strong {
   color: #ffffff;
   font-size: clamp(1.25rem, 3vw, 1.7rem);
@@ -1339,49 +1091,6 @@ h1 span {
   box-shadow: 0 1rem 2.4rem rgb(31 73 112 / 0.1);
   margin-top: clamp(1.1rem, 3vw, 1.6rem);
   padding-bottom: clamp(1.2rem, 3vw, 1.7rem);
-}
-
-.lesson-columns {
-  display: grid;
-  gap: 0.85rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.lesson-columns article {
-  background: #f8fafc;
-  border: 1px solid var(--line);
-  border-radius: 0.85rem;
-  display: grid;
-  gap: 0.65rem;
-  padding: clamp(1rem, 2.4vw, 1.25rem);
-}
-
-.lesson-columns h3 {
-  color: var(--ink);
-  font-family: var(--heading-font);
-  font-size: 1.18rem;
-  font-weight: 900;
-  margin: 0;
-}
-
-.lesson-columns ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.lesson-columns li::before {
-  color: var(--green);
-  content: "✓";
-  font-family: var(--heading-font);
-  font-weight: 900;
-  margin-right: 0.45rem;
-}
-
-.closing-lines {
-  display: grid;
-  gap: 0.55rem;
-  border-left: 0.22rem solid var(--red);
-  padding-left: 1rem;
 }
 
 .question-callout {
@@ -1432,7 +1141,7 @@ h1 span {
   padding: 0 clamp(0.25rem, 1vw, 0.75rem);
 }
 
-.final-thought h3 {
+.final-thought h2 {
   color: var(--ink);
   font-family: var(--heading-font);
   font-size: clamp(1.5rem, 3vw, 2rem);
@@ -1464,23 +1173,6 @@ h1 span {
   font-family: var(--heading-font);
   font-weight: 700;
   margin-top: 0.9rem;
-}
-
-.closing-statement {
-  border-left: 0.22rem solid var(--red);
-  color: var(--ink);
-  font-family: var(--heading-font);
-  font-size: clamp(1.05rem, 2.2vw, 1.28rem);
-  font-weight: 760;
-  line-height: 1.35;
-  padding-left: 1rem;
-}
-
-.closing-lines p {
-  font-family: var(--heading-font);
-  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
-  font-weight: 760;
-  line-height: 1.28;
 }
 
 .source-note {
@@ -1537,7 +1229,6 @@ h1 span {
   .tax-kpi-grid,
   .compression-grid,
   .framework-grid,
-  .recipe-grid,
   .component-bars,
   .same-rate-grid,
   .estimate-grid,
@@ -1546,14 +1237,8 @@ h1 span {
   .calculator-heading,
   .case-calculator,
   .calculator-results,
-  .lesson-columns,
-  .learning-preview ul,
-  .case-timeline {
+  .learning-preview ul {
     grid-template-columns: 1fr;
-  }
-
-  .story-timeline .timeline-question {
-    grid-column: auto;
   }
 
   .case-calculator label,
@@ -1567,21 +1252,6 @@ h1 span {
     margin: -0.25rem 0;
   }
 
-  .story-timeline article:nth-last-child(2)::after {
-    left: 50%;
-    right: auto;
-    top: calc(100% - 0.04rem);
-    transform: translate(-50%, 0);
-  }
-
-  .case-timeline article:not(:last-child)::after {
-    content: "↓";
-    left: 50%;
-    right: auto;
-    top: calc(100% - 0.04rem);
-    transform: translate(-50%, 0);
-  }
-
   .arrow {
     justify-self: start;
     transform: rotate(90deg);
@@ -1589,5 +1259,229 @@ h1 span {
 
   .change-strip {
     grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  @page {
+    size: Letter;
+    margin: 0.55in 0.55in 0.6in;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #111827;
+    min-width: 0;
+  }
+
+  .case-shell {
+    max-width: none;
+    padding: 0;
+  }
+
+  .case-title {
+    break-after: avoid;
+    margin-bottom: 0.2in;
+    max-width: none;
+  }
+
+  h1 {
+    font-size: 28pt;
+    line-height: 1.02;
+    max-width: 7.2in;
+  }
+
+  .hero-subtitle {
+    font-size: 13pt;
+    line-height: 1.32;
+    max-width: 7in;
+  }
+
+  .hero-context,
+  .case-title > p:not(.hero-subtitle),
+  .chapter-copy p:not(.kicker),
+  .chapter > p,
+  .final-thought p,
+  .levy-callout p:not(.kicker),
+  .core-concept p:not(.kicker) {
+    font-size: 10pt;
+    line-height: 1.38;
+    max-width: none;
+  }
+
+  .article-actions,
+  .article-depth-markers {
+    display: none !important;
+  }
+
+  .learning-preview,
+  .timeline-card,
+  .value-change-card,
+  .tax-result-chapter,
+  .framework-grid article,
+  .component-bars article,
+  .calculator-card,
+  .estimate-part,
+  .estimate-part-body,
+  .estimate-insight,
+  .lesson-card,
+  .question-callout {
+    background: #ffffff !important;
+    border-color: #9ca3af !important;
+    break-inside: avoid;
+    color: #111827 !important;
+    page-break-inside: avoid;
+  }
+
+  .chapter {
+    break-inside: auto;
+    gap: 0.12in;
+    padding: 0.12in 0;
+  }
+
+  .chapter-copy h2,
+  .lesson-card h2,
+  .final-thought h2,
+  .estimate-part-header {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .chapter-copy h2,
+  .lesson-card h2,
+  .final-thought h2 {
+    font-size: 17pt;
+    line-height: 1.12;
+  }
+
+  .kicker,
+  .value-pair span,
+  .change-strip span,
+  .tax-kpi-grid span,
+  .compression-grid span,
+  .component-bars span,
+  .estimate-grid span,
+  .estimate-flow span,
+  .same-rate-grid span,
+  .calculator-results span,
+  .model-step-grid span {
+    color: #374151 !important;
+    font-size: 7.5pt;
+    letter-spacing: 0.08em;
+  }
+
+  .value-pair,
+  .tax-kpi-grid,
+  .compression-grid,
+  .framework-grid,
+  .component-bars,
+  .same-rate-grid,
+  .estimate-grid,
+  .model-step-grid,
+  .calculator-results {
+    gap: 6pt;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .estimate-flow {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .estimate-operator {
+    display: none;
+  }
+
+  .value-pair article,
+  .tax-kpi-grid article,
+  .compression-grid article,
+  .estimate-grid article,
+  .estimate-flow article,
+  .same-rate-grid article,
+  .model-step-grid article,
+  .calculator-results article {
+    background: #f9fafb !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+    min-height: 0;
+    padding: 7pt;
+  }
+
+  .value-pair strong,
+  .tax-kpi-grid strong,
+  .compression-grid strong,
+  .estimate-grid strong,
+  .estimate-flow strong,
+  .same-rate-grid strong,
+  .calculator-results strong,
+  .model-step-grid strong,
+  .question-callout .better-question strong {
+    color: #111827 !important;
+    font-size: 13pt;
+  }
+
+  .apply-transition,
+  .estimate-panel {
+    background: #ffffff !important;
+    border: 1px solid #9ca3af;
+    color: #111827 !important;
+  }
+
+  .apply-transition .kicker,
+  .apply-transition h2,
+  .apply-transition p,
+  .estimate-panel .kicker,
+  .estimate-panel h2,
+  .estimate-panel h3,
+  .estimate-panel h4,
+  .estimate-panel p,
+  .estimate-panel span,
+  .estimate-panel strong,
+  .estimate-panel small,
+  .estimate-panel code {
+    color: #111827 !important;
+  }
+
+  .case-calculator {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .case-calculator label,
+  .case-calculator .model-assumption {
+    color: #111827 !important;
+    grid-column: auto;
+  }
+
+  .case-calculator label small {
+    color: #4b5563 !important;
+  }
+
+  .case-calculator input {
+    background: #ffffff !important;
+    border-color: #9ca3af !important;
+    color: #111827 !important;
+    min-height: 0;
+  }
+
+  .levy-callout,
+  .core-concept,
+  .final-thought,
+  .article-sources {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .pie-anchor,
+  .component-track {
+    border: 1px solid #9ca3af;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
   }
 }
