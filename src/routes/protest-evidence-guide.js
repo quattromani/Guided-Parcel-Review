@@ -1,8 +1,8 @@
 import { escapeHtml } from "../utils/html.js";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js";
 
-const EDITORIAL_ICON_SPRITE = "/assets/icons/editorial/sprite.svg";
-const PRINTABLE_GUIDE_PDF = "/assets/guides/before-you-walk-into-a-property-protest.pdf";
+const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg";
+const PRINTABLE_GUIDE_PDF = "assets/guides/before-you-walk-into-a-property-protest.pdf";
 const ARTICLE_ID = "protest-evidence-guide";
 const ARTICLE_SLUG = "protest-evidence-guide";
 const ARTICLE_LEGACY_QUERY_VALUE = ARTICLE_SLUG;
@@ -15,7 +15,7 @@ const ARTICLE_DISPLAY_DATE = "June 25, 2026";
 const ARTICLE_PUBLISHED_DATE = "2026-06-25";
 const ARTICLE_MODIFIED_DATE = "2026-06-25";
 const ARTICLE_DESCRIPTION = "A plain language guide to preparing a property valuation protest with comparables, property record cards, evidence, and a specific correction request.";
-const ARTICLE_SOCIAL_IMAGE = "/assets/images/articles/before-you-walk-into-a-property-protest-hero.jpg";
+const ARTICLE_SOCIAL_IMAGE = "assets/images/articles/before-you-walk-into-a-property-protest-hero.jpg";
 const ARTICLE_HERO_IMAGE_ALT = "Homeowner reviewing a printed property record on a clipboard.";
 const ARTICLE_HERO_IMAGE_CREDIT = "Photo by RDNE Stock project on Pexels.";
 const ARTICLE_HERO_IMAGE_SOURCE = "https://www.pexels.com/photo/8292825/";
@@ -66,12 +66,12 @@ const BOARD_MEETINGS = [
   {
     dateLabel: "Monday, July 6, 2026",
     timeLabel: "1:00 p.m.",
-    calendarUrl: "/assets/calendar/gage-boe-2026-07-06.ics"
+    calendarUrl: "assets/calendar/gage-boe-2026-07-06.ics"
   },
   {
     dateLabel: "Friday, July 10, 2026",
     timeLabel: "1:00 p.m.",
-    calendarUrl: "/assets/calendar/gage-boe-2026-07-10.ics"
+    calendarUrl: "assets/calendar/gage-boe-2026-07-10.ics"
   }
 ];
 
