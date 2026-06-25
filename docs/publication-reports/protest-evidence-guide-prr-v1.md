@@ -377,7 +377,7 @@ Before you walk into a property protest, bring evidence the Board can verify. Th
 Thread version:
 
 1. A property protest is not mainly about proving taxes are too high. It is about showing evidence that the property record or assessed value should be corrected.
-2. Start with the record. The assessed value is the conclusion. The record is where the evidence starts.
+2. Start with the record. Today's assessed value is built from the information currently available about the property.
 3. Find 2 or 3 strong comparable properties. Three good comps are usually better than fifteen weak ones.
 4. Match every request to evidence: what you noticed, what the record says, and what correction you are asking for.
 5. The goal is not to become an appraiser. The goal is to become a good witness.
@@ -402,7 +402,7 @@ Keep title-safe content within the center 80 percent of a 1200 x 630 canvas. Avo
 
 Suggested pull quote:
 
-"The assessed value is not the evidence. It is the conclusion."
+"Today's assessed value reflects the information currently available about your property."
 
 Hashtags:
 
@@ -495,7 +495,7 @@ Key concepts:
 
 Definitions:
 
-- Assessed value: The valuation conclusion, not the evidence by itself.
+- Assessed value: The current result produced from available property record facts, market information, and valuation methods at the time of assessment.
 - Property record card: The source record where facts such as living area, condition, quality, basement, garage, fireplaces, outbuildings, and land size are listed.
 - Comparable property: A property that would reasonably compete with the subject property in the same market.
 - Evidence matrix: A structure connecting what the homeowner noticed, what the record says, and what correction is requested.
@@ -557,7 +557,7 @@ Suggested reusable diagrams:
 
 - The Disconnect.
 - Find -> Compare -> Document -> Request.
-- Assessed Value = Conclusion.
+- Current assessed value built from today's property record.
 - Evidence -> Record Issue -> Requested Correction.
 
 Suggested reusable components:
@@ -609,30 +609,37 @@ Reusable assets created or strengthened:
 - Schedule card component pattern.
 - Print-safe resource URL pattern.
 - Printable guide PDF.
-- Article hero/social image: `assets/images/articles/before-you-walk-into-a-property-protest-hero.jpg`.
+- Article hero/social poster image: `assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg`.
+- Article hero orientation video: `assets/videos/articles/before-you-walk-into-a-property-protest-summary.mp4`.
 - Hero image credit metadata: Photo by RDNE Stock project on Pexels.
 - PDF generation script.
 - Calendar files for scheduled hearings.
 - Article metadata and JSON-LD route pattern.
 - CSS-bound article depth marker pattern.
+- Gage County compatibility layer: extracted county palette, font stack, button/card conventions, and opt-in `data-county-theme="gage"` article theme.
 - Publication report pattern.
 
 New glossary terms:
 
 - Evidence-supported request.
 - Homeowner as witness.
-- Value as conclusion.
+- Current value as assembled from current information.
 - Record issue.
 - Requested correction.
 
 New editorial patterns:
 
 - Kicker as reader-position marker.
+- Text-first hero kicker with partial article-type underline.
+- Hero media as a calm click-to-play video orientation layer.
+- Aspect-correct 16:9 hero poster for video and social preview.
+- Themed decision-panel title treatment using component-level variables.
 - Print CTA as real downloadable PDF.
 - Standard article footer share CTA.
 - Invisible article-depth markers for reader completion measurement.
 - Screen-only action labels removed from print.
 - Publication metadata embedded in article hero.
+- County-compatible GES theme tokens that preserve educational roles while harmonizing with Gage County's public website.
 
 ## Part 15: Publication Readiness Report
 

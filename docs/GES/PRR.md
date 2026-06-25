@@ -40,9 +40,12 @@ Verify that the article follows the Guided Editorial System.
 Check:
 
 - Hero
+- Hero kicker treatment
+- Hero media or video
 - Narrative opening
 - Section kickers
 - Concept diagrams
+- Decision panels
 - Process strip
 - Comparison modules
 - Evidence modules
@@ -98,10 +101,19 @@ Prefer:
 - semantic color variables
 - spacing scale
 - typography scale
+- county compatibility tokens when an article is meant to sit beside a county website
 
 Remove dead CSS.
 
 Consolidate reusable styles.
+
+If a county compatibility layer is active, confirm:
+
+- the article opts in explicitly, such as `data-county-theme="gage"`
+- county colors are exposed as `--county-*` source tokens
+- GES teaching roles remain exposed as semantic `--ges-color-*` tokens
+- component styles use tokens rather than one-off county color values
+- the county theme harmonizes surfaces, borders, links, buttons, and utility actions without copying the county site wholesale
 
 ## 5. Component Review
 
@@ -112,8 +124,11 @@ Review naming.
 Examples:
 
 - `article-hero`
+- `hero-media`
+- `article-hero-video`
 - `hero-meta`
 - `hero-action`
+- `decision-panel`
 - `process-strip`
 - `comparison-card`
 - `concept-diagram`
@@ -126,6 +141,36 @@ Examples:
 Avoid page-specific names.
 
 Think publication-wide.
+
+For article heroes, confirm:
+
+- the kicker is text-first
+- decorative icons have been removed unless they teach
+- any article-type emphasis is restrained, such as a partial underline on the type word
+- there is no default left vertical rule unless the article has a specific editorial reason
+- metadata remains quiet and close to the title/deck
+- the print/PDF action is visible online and hidden cleanly in print
+
+For hero video, confirm:
+
+- the video is a calm orientation layer, not an ad or modal interruption
+- the poster matches the video aspect ratio
+- the video has a clear play affordance
+- native controls become available when playback begins
+- print hides the video without leaving blank space
+- social metadata uses the video and a clean poster image when appropriate
+
+For decision panels, confirm:
+
+- the panel answers one practical question
+- outcomes are text-labeled
+- connector lines and shapes align cleanly
+- the title treatment belongs to the component, not the surrounding narrative
+- thematic colors use component-level variables
+- quasi-judicial labels use the documented concrete-gray serif treatment when appropriate
+- yes/no/stop nodes use the documented semantic decision palette and remain text-labeled
+- any nested branch clarifies one necessary second test rather than turning the article into a full procedural chart
+- theme choices clarify the decision context rather than decorating it
 
 ## 6. Icon Review
 
@@ -147,6 +192,8 @@ Icons should only:
 
 Never decorate.
 
+Hero kickers should not use icons by default. If an icon appears in a hero, it must provide more orientation than a short text treatment would.
+
 ## 7. Color Review
 
 Verify semantic color usage.
@@ -164,6 +211,14 @@ Ensure colors communicate editorial roles rather than decoration.
 Reduce any unnecessary color.
 
 Keep the page calm.
+
+For county-compatible articles, also verify:
+
+- extracted county colors are documented with source pages
+- light civic blue uses dark text unless contrast has been checked
+- county-compatible action buttons remain readable in grayscale
+- resource URLs remain visible independent of button color
+- GES identity survives: information, evidence, comparison, action, and reflection remain functional roles
 
 ## 8. Responsive Review
 
@@ -268,6 +323,7 @@ Add only where genuinely useful.
 Verify:
 
 - optimized images
+- aspect-correct poster images
 - optimized SVGs
 - unused assets removed
 - consistent filenames

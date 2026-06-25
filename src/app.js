@@ -68,11 +68,11 @@ import {
 import {
   isProtestEvidenceGuideRequest,
   renderProtestEvidenceGuide
-} from "./routes/protest-evidence-guide.js";
+} from "./routes/protest-evidence-guide.js?v=ges-hero-standard";
 import {
   isProtestParadoxRequest,
   renderProtestParadox
-} from "./routes/protest-paradox.js";
+} from "./routes/protest-paradox.js?v=ges-hero-standard";
 import { renderPropertyInviteIndex } from "./routes/property-invite-index.js";
 import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js";
 import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js";

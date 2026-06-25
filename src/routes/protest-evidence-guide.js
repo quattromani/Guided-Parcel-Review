@@ -15,11 +15,16 @@ const ARTICLE_DISPLAY_DATE = "June 25, 2026";
 const ARTICLE_PUBLISHED_DATE = "2026-06-25";
 const ARTICLE_MODIFIED_DATE = "2026-06-25";
 const ARTICLE_DESCRIPTION = "A plain language guide to preparing a property valuation protest with comparables, property record cards, evidence, and a specific correction request.";
-const ARTICLE_SOCIAL_IMAGE = "assets/images/articles/before-you-walk-into-a-property-protest-hero.jpg";
+const ARTICLE_SOCIAL_IMAGE = "assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg";
+const ARTICLE_TLDR_VIDEO = "assets/videos/articles/before-you-walk-into-a-property-protest-summary.mp4";
 const ARTICLE_HERO_IMAGE_ALT = "Homeowner reviewing a printed property record on a clipboard.";
 const ARTICLE_HERO_IMAGE_CREDIT = "Photo by RDNE Stock project on Pexels.";
 const ARTICLE_HERO_IMAGE_SOURCE = "https://www.pexels.com/photo/8292825/";
 const ARTICLE_HERO_IMAGE_LICENSE = "https://www.pexels.com/license/";
+const GAGE_COUNTY_WEBSITE = "https://gagecountyne.gov/";
+const GAGE_COUNTY_ASSESSOR_PAGE = "https://gagecountyne.gov/county-assessor/";
+const GAGE_COUNTY_PROTESTS_PAGE = "https://gagecountyne.gov/county-assessor/property-valuation-protests/";
+const GAGE_COUNTY_PROPERTY_SEARCH_PAGE = "https://gagecountyne.gov/county-assessor/disclaimer-and-terms-of-service-assessors-online/";
 const ARTICLE_KEYWORDS = [
   "property valuation protest",
   "property record card",
@@ -30,6 +35,13 @@ const ARTICLE_KEYWORDS = [
   "property assessment evidence"
 ];
 const ARTICLE_DEPTH_MILESTONES = [25, 50, 75, 100];
+const ARTICLE_TLDR_TRANSCRIPT = [
+  "If you only have a minute, here is the heart of this guide.",
+  "A property protest is not mainly about saying the tax bill feels too high. The useful question is whether the record or assessed value can be corrected with evidence.",
+  "Start with two or three good comparable properties. Pull the property record cards. Compare facts, not just values.",
+  "Then connect what you found to one specific request: here is the evidence, here is the record issue, and here is the correction I am asking the Board to consider.",
+  "You do not need to become an appraiser. You need to become a good witness."
+];
 
 const RESOURCES = [
   {
@@ -79,7 +91,7 @@ const BOARD_MEETING_LOCATION = "Gage County Courthouse, Board of Supervisors Roo
 
 const HARD_REQUESTS = [
   "My house isn't worth this much.",
-  "This feels unfair.",
+  "This will make my taxes increase.",
   "Can someone make this make sense?"
 ];
 
@@ -256,6 +268,7 @@ function updateProtestEvidenceGuideMetadata() {
   const canonicalUrl = absoluteUrl(ARTICLE_CANONICAL_PATH);
   const imageUrl = absoluteUrl(ARTICLE_SOCIAL_IMAGE);
   const pdfUrl = absoluteUrl(PRINTABLE_GUIDE_PDF);
+  const videoUrl = absoluteUrl(ARTICLE_TLDR_VIDEO);
   const title = `${ARTICLE_TITLE} | Guided Parcel Review`;
 
   document.title = title;
@@ -274,6 +287,13 @@ function updateProtestEvidenceGuideMetadata() {
   setPropertyMeta("og:description", ARTICLE_DESCRIPTION);
   setPropertyMeta("og:url", canonicalUrl);
   setPropertyMeta("og:image", imageUrl);
+  setPropertyMeta("og:image:width", "1920");
+  setPropertyMeta("og:image:height", "1080");
+  setPropertyMeta("og:video", videoUrl);
+  setPropertyMeta("og:video:secure_url", videoUrl);
+  setPropertyMeta("og:video:type", "video/mp4");
+  setPropertyMeta("og:video:width", "1258");
+  setPropertyMeta("og:video:height", "708");
   setPropertyMeta("article:published_time", ARTICLE_PUBLISHED_DATE);
   setPropertyMeta("article:modified_time", ARTICLE_MODIFIED_DATE);
   setPropertyMeta("article:author", ARTICLE_AUTHOR);
@@ -293,6 +313,9 @@ function updateProtestEvidenceGuideMetadata() {
         description: ARTICLE_DESCRIPTION,
         isPartOf: {
           "@id": `${window.location.origin}/#website`
+        },
+        about: {
+          "@id": `${canonicalUrl}#gage-county`
         },
         primaryImageOfPage: {
           "@type": "ImageObject",
@@ -342,21 +365,60 @@ function updateProtestEvidenceGuideMetadata() {
         articleSection: "Property assessment education",
         keywords: ARTICLE_KEYWORDS,
         about: [
+          {
+            "@id": `${canonicalUrl}#gage-county`
+          },
           "Property valuation protest",
           "Property record verification",
           "Comparable property evidence",
           "Board of Equalization hearing preparation"
         ],
         spatialCoverage: {
-          "@type": "Place",
-          name: "Gage County, Nebraska"
+          "@id": `${canonicalUrl}#gage-county`
         },
-        associatedMedia: {
-          "@type": "MediaObject",
-          name: "Printable guide PDF",
-          contentUrl: pdfUrl,
-          encodingFormat: "application/pdf"
-        },
+        mentions: [
+          {
+            "@id": `${canonicalUrl}#gage-county`
+          },
+          {
+            "@type": "WebPage",
+            name: "Gage County Assessor",
+            url: GAGE_COUNTY_ASSESSOR_PAGE
+          },
+          {
+            "@type": "WebPage",
+            name: "Gage County Property Valuation Protests",
+            url: GAGE_COUNTY_PROTESTS_PAGE
+          },
+          {
+            "@type": "WebPage",
+            name: "Gage County property search information",
+            url: GAGE_COUNTY_PROPERTY_SEARCH_PAGE
+          }
+        ],
+        hasPart: [
+          {
+            "@id": `${canonicalUrl}#resource-list`
+          }
+        ],
+        associatedMedia: [
+          {
+            "@type": "MediaObject",
+            name: "Printable guide PDF",
+            contentUrl: pdfUrl,
+            encodingFormat: "application/pdf"
+          },
+          {
+            "@type": "VideoObject",
+            name: "Video orientation to the property protest guide",
+            description: "A short guided orientation summarizing how to turn a property valuation protest into an evidence-based request.",
+            contentUrl: videoUrl,
+            thumbnailUrl: imageUrl,
+            uploadDate: ARTICLE_PUBLISHED_DATE,
+            duration: "PT2M44S",
+            transcript: ARTICLE_TLDR_TRANSCRIPT.join(" ")
+          }
+        ],
         inLanguage: "en-US",
         mainEntityOfPage: {
           "@id": `${canonicalUrl}#webpage`
@@ -373,6 +435,28 @@ function updateProtestEvidenceGuideMetadata() {
         name: "Guided Parcel Review",
         url: window.location.origin,
         logo: imageUrl
+      },
+      {
+        "@type": ["GovernmentOrganization", "AdministrativeArea"],
+        "@id": `${canonicalUrl}#gage-county`,
+        name: "Gage County, Nebraska",
+        url: GAGE_COUNTY_WEBSITE,
+        areaServed: {
+          "@type": "AdministrativeArea",
+          name: "Gage County, Nebraska"
+        }
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${canonicalUrl}#resource-list`,
+        name: "Property protest preparation resources",
+        itemListElement: RESOURCES.map((resource, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: resource.label,
+          description: resource.description,
+          url: resource.url
+        }))
       },
       {
         "@type": "BreadcrumbList",
@@ -504,13 +588,26 @@ function renderBoardQuestionSection() {
         ${sectionHeader("Narrowing the Question", "What is the Board actually deciding?", "protestBoardTitle")}
         ${paragraph("The Board is not there to decide whether a tax bill feels heavy. It is not there to debate public budgets. It is not there to punish or defend the assessor.")}
       </div>
-      <p class="decision-panel-label" id="decisionPanelTitle">The Board's practical question</p>
       <figure class="decision-panel" aria-labelledby="decisionPanelTitle">
+        <figcaption class="decision-panel-label" id="decisionPanelTitle">The Board's practical question</figcaption>
         <p class="decision-question">Is there support for the requested correction?</p>
         <div class="decision-outcomes decision-branches" role="list" aria-label="Possible Board outcomes">
           <div class="decision-branch" data-decision-branch="yes" role="listitem">
             <strong class="decision-node"><span>Yes</span></strong>
             <span class="decision-result">What correction?</span>
+            <div class="decision-followup" role="group" aria-label="Uniformity check">
+              <p class="decision-followup-question">Would that correction keep the assessment uniform and proportionate?</p>
+              <div class="decision-followup-options">
+                <span>
+                  <strong class="decision-node decision-node-small"><span>Yes</span></strong>
+                  <span>Specific correction to review.</span>
+                </span>
+                <span>
+                  <strong class="decision-node decision-node-small" data-decision-node="no"><span>No</span></strong>
+                  <span>Recheck the record or comparable.</span>
+                </span>
+              </div>
+            </div>
           </div>
           <div class="decision-branch" data-decision-branch="no" role="listitem">
             <strong class="decision-node"><span>No</span></strong>
@@ -523,7 +620,7 @@ function renderBoardQuestionSection() {
         <span>This is a cognitive aid, not a guarantee of outcome. The Board still controls the decision under the applicable process.</span>
       </aside>
       <div class="editorial-narrow">
-        ${paragraph("That smaller question keeps the hearing focused on facts that can be checked instead of opinions that cannot be resolved. A good witness does not say, \"This is unfair.\" A good witness says, \"My property record shows two fireplaces. My home has one.\"")}
+        ${paragraph("Those two questions keep the hearing focused on facts that can be checked instead of opinions that cannot be resolved. A good witness does not say, \"This is unfair.\" A good witness says, \"My property record shows two fireplaces. My home has one.\"")}
       </div>
     </section>
   `;
@@ -560,11 +657,11 @@ function renderComparableSection() {
 function renderValueLayerFigure() {
   return `
     <figure class="value-layer-figure" aria-labelledby="valueLayerTitle">
-      <figcaption id="valueLayerTitle">Value is the conclusion. The record is where the evidence starts.</figcaption>
+      <figcaption id="valueLayerTitle">The current assessment is built from many smaller pieces of information.</figcaption>
       <div class="value-layer-top">
         ${editorialIcon("property-record")}
-        <strong>Assessed Value</strong>
-        <span>= conclusion</span>
+        <strong>Current Assessed Value</strong>
+        <span>Built from today's property record</span>
       </div>
       <ul>
         ${RECORD_FACTS.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
@@ -593,13 +690,13 @@ function renderRecordsSection() {
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="evidence" aria-labelledby="protestRecordsTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("Verifying the Record", "Why does the record matter more than the value?", "protestRecordsTitle")}
-        <p class="article-emphasis">The assessed value is not the evidence. It is the conclusion.</p>
+        ${sectionHeader("Verifying the Record", "How does the record shape today's value?", "protestRecordsTitle")}
+        <p class="article-emphasis">Today's assessed value reflects the information currently available about your property.</p>
       </div>
       ${renderValueLayerFigure()}
       <div class="editorial-narrow">
-        ${paragraph("Compare your property record with the records for your comparables. Do not stop at the total assessed value. Ask what facts are driving that value.")}
-        ${paragraph("Maybe your home and a comparable are similar, but your record shows more finished basement. Maybe the comparable has a larger garage. Maybe your condition rating is higher even though the homes appear similar. Those differences are where useful questions begin.")}
+        ${paragraph("The property record is often the most useful place to begin because it holds many of the facts used during valuation. Compare your record with the records for your comparables. Do not stop at the total assessed value. Ask which record facts help explain how each value was assembled.")}
+        ${paragraph("Maybe your home and a comparable are similar, but your record shows more finished basement. Maybe the comparable has a larger garage. Maybe your condition rating is higher even though the homes appear similar. Those differences do not automatically change the value, but they give the Board specific questions it can review.")}
       </div>
       ${renderRecordCallout()}
       <div class="editorial-narrow">
@@ -801,8 +898,7 @@ export function renderProtestEvidenceGuide() {
     <header class="comp-page-title levy-page-title article-hero" aria-labelledby="protestArticleTitle">
       <div class="article-hero-packet">
         <div class="hero-kicker-row">
-          ${editorialIcon("document", "editorial-icon-sm hero-kicker-icon")}
-          <p class="guided-kicker hero-kicker">Guide / Property Protest Prep</p>
+          <p class="guided-kicker hero-kicker"><span>Guide</span> / Property Protest Prep</p>
         </div>
         <h1 id="protestArticleTitle" class="hero-title">${ARTICLE_TITLE}</h1>
         <p class="hero-deck">${ARTICLE_SUBTITLE}</p>
@@ -814,14 +910,29 @@ export function renderProtestEvidenceGuide() {
           <a class="article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable guide PDF">Prefer paper? Download the printable guide.</a>
         </div>
       </div>
-      <figure class="article-hero-media hero-media">
-        <img src="${escapeHtml(ARTICLE_SOCIAL_IMAGE)}" alt="${escapeHtml(ARTICLE_HERO_IMAGE_ALT)}" title="${escapeHtml(ARTICLE_HERO_IMAGE_CREDIT)}" data-image-credit="${escapeHtml(ARTICLE_HERO_IMAGE_CREDIT)}" data-image-source="${escapeHtml(ARTICLE_HERO_IMAGE_SOURCE)}" loading="eager" decoding="async" />
+      <figure class="article-hero-media hero-media article-hero-video" data-hero-video>
+        <video
+          class="article-hero-video-player"
+          data-hero-video-player
+          src="${escapeHtml(ARTICLE_TLDR_VIDEO)}"
+          poster="${escapeHtml(ARTICLE_SOCIAL_IMAGE)}"
+          preload="metadata"
+          playsinline
+          aria-label="Video overview of the property protest guide"
+          title="${escapeHtml(ARTICLE_HERO_IMAGE_CREDIT)}"
+          data-image-credit="${escapeHtml(ARTICLE_HERO_IMAGE_CREDIT)}"
+          data-image-source="${escapeHtml(ARTICLE_HERO_IMAGE_SOURCE)}"
+        ></video>
+        <button class="article-hero-video-play" type="button" data-hero-video-play aria-label="Play the video summary">
+          <span class="article-hero-video-play-icon" aria-hidden="true"></span>
+        </button>
+        <figcaption class="levy-sr-only">${escapeHtml(ARTICLE_HERO_IMAGE_ALT)} The video provides a short overview of the article.</figcaption>
       </figure>
     </header>
   `;
 
   canvas.innerHTML = `
-    <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page editorial-guide tax-article-panel" aria-label="Property protest evidence guide">
+    <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page editorial-guide tax-article-panel" data-county-theme="gage" aria-label="Property protest evidence guide">
       ${renderArticleDepthMarkers()}
       ${renderOpeningSection()}
       ${renderProcessStrip()}
@@ -839,6 +950,67 @@ export function renderProtestEvidenceGuide() {
   `;
 
   installArticleAnalytics(canvas);
+  installHeroVideo(pageTitle);
+}
+
+function installHeroVideo(root) {
+  const wrapper = root.querySelector("[data-hero-video]");
+  if (!wrapper || wrapper.dataset.heroVideoReady === "true") return;
+  wrapper.dataset.heroVideoReady = "true";
+
+  const video = wrapper.querySelector("[data-hero-video-player]");
+  const playButton = wrapper.querySelector("[data-hero-video-play]");
+  if (!video || !playButton) return;
+
+  let playTracked = false;
+  let completeTracked = false;
+
+  const trackHeroVideo = (action, details = {}) => {
+    trackArticleInteraction(action, {
+      articleId: ARTICLE_ID,
+      detail: "hero video summary",
+      ...details
+    });
+  };
+
+  const syncVideoState = () => {
+    wrapper.classList.toggle("is-playing", !video.paused && !video.ended);
+    wrapper.classList.toggle("has-started", video.currentTime > 0 && !video.ended);
+    if (video.ended) wrapper.classList.remove("has-started", "is-playing");
+  };
+
+  playButton.addEventListener("click", async () => {
+    try {
+      await video.play();
+      video.controls = true;
+      if (!playTracked) {
+        playTracked = true;
+        trackHeroVideo("tldr_video_play", { placement: "hero" });
+      }
+    } catch {
+      video.controls = true;
+      video.focus({ preventScroll: true });
+    }
+    syncVideoState();
+  });
+
+  video.addEventListener("play", () => {
+    video.controls = true;
+    if (!playTracked) {
+      playTracked = true;
+      trackHeroVideo("tldr_video_play", { placement: "hero" });
+    }
+    syncVideoState();
+  });
+  video.addEventListener("pause", syncVideoState);
+  video.addEventListener("timeupdate", syncVideoState);
+  video.addEventListener("ended", () => {
+    if (!completeTracked) {
+      completeTracked = true;
+      trackHeroVideo("tldr_video_complete", { placement: "hero" });
+    }
+    syncVideoState();
+  });
 }
 
 function installArticleAnalytics(canvas) {

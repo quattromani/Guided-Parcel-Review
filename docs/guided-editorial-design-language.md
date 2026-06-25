@@ -34,7 +34,7 @@ Avoid condescension. Avoid slogans that pretend the topic is simpler than it is.
 
 Most readers do not need professional fluency. They need enough recognition to know what they are seeing.
 
-For example, a homeowner does not need to become an appraiser before a protest hearing. They need to recognize that the assessed value is a conclusion, and that the evidence begins with the record facts underneath it.
+For example, a homeowner does not need to become an appraiser before a protest hearing. They need to recognize that today's assessed value is built from available record facts, and that corrected or better-supported information may give the Board something specific to review.
 
 Recognition comes first. Reasoning comes after.
 
@@ -155,7 +155,7 @@ The strongest GEDL components create mental models that transfer to other topics
 
 Examples:
 
-- "Value is the conclusion; the record is where evidence starts."
+- "Today's value is built from the information currently available."
 - "Find -> Compare -> Document -> Request."
 - "Evidence -> Record issue -> Requested correction."
 
@@ -211,7 +211,7 @@ Concepts give shape to the problem. They name the mental model.
 
 Examples:
 
-- "The assessed value is not the evidence. It is the conclusion."
+- "The record helps explain how today's value was assembled."
 - "The Board needs something it can verify."
 
 ### Reference
@@ -275,8 +275,7 @@ HTML structure:
 <header class="article-hero">
   <div class="article-hero-packet">
     <div class="hero-kicker-row">
-      <svg class="editorial-icon editorial-icon-sm hero-kicker-icon" aria-hidden="true">...</svg>
-      <p class="hero-kicker section-kicker">Guide / Property Protest Prep</p>
+      <p class="hero-kicker section-kicker"><span>Guide</span> / Property Protest Prep</p>
     </div>
     <h1 class="hero-title">Before You Walk Into a Property Protest</h1>
     <p class="hero-deck">Short plain-language deck.</p>
@@ -289,7 +288,9 @@ HTML structure:
     </div>
   </div>
   <figure class="hero-media">
-    <img src="/assets/images/articles/example.jpg" alt="Reader reviewing a printed property record." />
+    <video class="article-hero-video-player" poster="/assets/images/articles/example-16x9.jpg" preload="metadata" playsinline></video>
+    <button class="article-hero-video-play" type="button" aria-label="Play the video summary"></button>
+    <figcaption class="sr-only">Reader reviewing a printed property record. The video provides a short overview of the article.</figcaption>
   </figure>
 </header>
 ```
@@ -300,7 +301,11 @@ Print: Keep with the opening section when possible. The printable PDF should inc
 
 Metadata rule: Authorship, location, and date should read as metadata, not body copy. Keep these lines visually quiet, roughly 12 to 13 px on screen, with modest line height. Use a location/date stamp when the article is tied to a county, hearing cycle, meeting schedule, or local procedural context. Dates may be updated before publication, but the document should always make its local moment clear.
 
-Field-packet rule: For civic process articles, the hero may use a restrained packet or record-jacket treatment: a small document-aware kicker, one quiet accent rule, compact metadata, and a paper/download pathway. The treatment should make the article feel prepared and document-aware without becoming a legal template, campaign flyer, or dashboard UI.
+Hero kicker rule: The hero kicker should be text-first and quiet. Avoid decorative icons in the kicker row. When the article type needs a small visual anchor, underline only the article-type word, such as `Guide`, with a partial underline of the same color and weight family. This creates recognition without adding a decorative object.
+
+Field-packet rule: For civic process articles, the hero may use a restrained packet or record-jacket treatment: a small document-aware kicker, compact metadata, and a paper/download pathway. Do not default to a left vertical rule. Use whitespace, metadata grouping, and the hero media edge to create the field-packet rhythm. The treatment should make the article feel prepared and document-aware without becoming a legal template, campaign flyer, or dashboard UI.
+
+Hero media rule: When an article has a short orientation video, the hero media region may become a video player instead of a static image. The player should use the article image as a poster, reserve the correct aspect ratio, show a calm play affordance, and avoid autoplay/modal behavior unless a future article has a specific editorial reason. Use a dedicated 16:9 poster crop when the video frame is 16:9 so the resting state fills the frame cleanly.
 
 Image credit rule: If a hero image uses third-party media and the credit is not shown as a visible caption, preserve the credit in machine-readable and inspectable places: image `title`, `data-image-credit`, source metadata, and JSON-LD `ImageObject` credit fields. Hidden crediting should not replace legally required visible attribution when a license requires it.
 
@@ -351,7 +356,7 @@ HTML structure:
 
 ```html
 <p class="section-kicker">Verifying the Record</p>
-<h2>Why does the record matter more than the value?</h2>
+<h2>How does the record shape today's value?</h2>
 ```
 
 Editorial rule: Prefer descriptive positioning over topic labels. Use the reader's current task, stage of reasoning, phase of preparation, or transition in thinking. For example, use "Finding Good Comparables" instead of "Comparable Properties," "Speaking to the Board" instead of "At the Hearing," and "Gathering Your Materials" instead of "Resources."
@@ -459,7 +464,7 @@ Use when: A governing body, user, or system is deciding between outcomes.
 
 Do not use when: The decision has many procedural exceptions that would make the box misleading.
 
-Typical size: One question plus 2 outcomes.
+Typical size: One question plus 2 outcomes. A single nested branch may be added when it clarifies a necessary second test, but avoid turning article diagrams into full procedural flowcharts.
 
 Cognitive role: Decision framing.
 
@@ -467,8 +472,8 @@ HTML structure:
 
 ```html
 <figure class="decision-panel">
-  <figcaption>The Board's practical question</figcaption>
-  <div class="decision-question">Does the evidence support a correction?</div>
+  <figcaption class="decision-panel-label">The Board's practical question</figcaption>
+  <p class="decision-question">Is there support for the requested correction?</p>
   <div class="decision-outcomes">...</div>
 </figure>
 ```
@@ -476,6 +481,12 @@ HTML structure:
 Accessibility: Include text for all outcomes.
 
 Print: Include a short note if the box is an educational simplification.
+
+Theme rule: A decision panel may carry a thematic title treatment when the decision frame benefits from it. The theme should come from component-level variables, such as `--decision-theme-bg`, `--decision-theme-ink`, `--decision-theme-highlight`, and `--decision-theme-shadow`, rather than one-off colors. For quasi-judicial decision trees, use a concrete-gray banner with enlarged serif all-caps text and subtle inset letter shadows so the label reads like civic stonework without using gavels, courthouse icons, or legal cliches. Other domains may use other themes only when they reinforce the decision context.
+
+Outcome palette rule: Decision nodes may use a small semantic palette when the color helps scanning: supported/yes, caution/no, and reserved stop/red. The colors should be component-level variables, not borrowed directly from unrelated article tone colors. Keep the saturation restrained enough for civic material, but strong enough that the decision path reads immediately. Never rely on color alone; each node must remain text-labeled.
+
+Nested branch rule: Use a second-level branch only when it protects the reader from an important misunderstanding. In a protest guide, the second-level test may show that evidence for a correction is not enough by itself; the requested correction should also preserve uniform and proportionate treatment. Keep nested labels short, and do not add more than one nested level without moving the topic into a separate article or tool.
 
 ### Reference Module
 
@@ -780,6 +791,9 @@ These rules govern every component and article.
 14. Treat publication metadata as context, not decoration.
 15. Preserve printable usefulness even when screen affordances disappear.
 16. If a click-only control does not make sense on paper, hide it in print and preserve the underlying information.
+17. Keep hero kickers text-first. Use a partial underline for article-type emphasis before reaching for icons.
+18. Let themed components carry meaning through restrained tokens, not decoration.
+19. Use video as a calm orientation layer only when it reduces uncertainty before the reader enters the article.
 
 ## VI. HTML5 Architecture
 
@@ -838,9 +852,12 @@ Do not skip heading levels for styling.
 Prefer reusable component names:
 
 - `article-hero`
+- `hero-media`
+- `article-hero-video`
 - `article-section`
 - `section-kicker`
 - `concept-diagram`
+- `decision-panel`
 - `process-strip`
 - `comparison-card`
 - `reference-module`
@@ -1036,6 +1053,78 @@ Accessibility and print:
 - Icons must remain legible in grayscale.
 - Resource URLs must remain visible independent of icon or color treatment.
 - Avoid hover-only icon meaning.
+
+### County Website Compatibility Layer
+
+GES may be published beside, within, or in support of an official county website. In those cases the article should still feel like a Guided Editorial System guide, but it should not visually fight the host civic environment.
+
+The Gage County compatibility layer was derived from the public county website at:
+
+- `https://gagecountyne.gov/`
+- `https://gagecountyne.gov/county-assessor/`
+- `https://gagecountyne.gov/county-assessor/property-valuation-protests/`
+- `https://gagecountyne.gov/county-assessor/disclaimer-and-terms-of-service-assessors-online/`
+
+Extracted county patterns:
+
+- Palette: muted teal `#567577`, light civic blue `#6dabc4`, warm concrete `#dcd3ce`, soft white-gray `#f6f6f6`, cool gray `#adb6be`, black text `#111111`, and white `#ffffff`.
+- Typography: Astra/WordPress system UI stack for body and UI; occasional `Acme` display treatment for outline buttons; `Poppins` in event/list modules; `Dancing Script` for the site title only.
+- Buttons: rounded 30px pill buttons for primary actions, plus a secondary outline/accent-button pattern with a strong left edge and compact 10px/20px padding.
+- Cards/modules: restrained white or near-white surfaces, light borders, modest radius, soft shadows, and simple civic hierarchy.
+- Spacing: WordPress block rhythm around 24px, with preset steps near `.44rem`, `.67rem`, `1rem`, `1.5rem`, `2.25rem`, and `3.38rem`.
+- Navigation and quick links: practical labels, dropdown arrows, compact action cards, and strong "find the thing" orientation.
+
+Adopted GES tokens:
+
+```css
+:root {
+  --county-color-primary: 86 117 119;
+  --county-color-secondary: 109 171 196;
+  --county-color-accent: 220 211 206;
+  --county-color-background: 246 246 246;
+  --county-color-surface: 255 255 255;
+  --county-color-border: 173 182 190;
+  --county-color-link: var(--county-color-primary);
+  --county-color-button: var(--county-color-secondary);
+  --county-color-button-text: 17 17 17;
+
+  --ges-color-information: var(--county-color-primary);
+  --ges-color-evidence: ...;
+  --ges-color-comparison: ...;
+  --ges-color-action: ...;
+  --ges-color-reflection: ...;
+}
+```
+
+Implementation rule:
+
+- County compatibility is an opt-in layer, not a replacement for GES. Use `data-county-theme="gage"` on an editorial article when the article is county-facing or meant to live beside county resources.
+- County tokens should influence surfaces, borders, links, buttons, utility actions, section accents, and civic document cues.
+- GES semantic roles still control information behavior: information, evidence, comparison, action, and reflection remain teaching roles, not color names.
+
+Typography compromise:
+
+The county site's system UI stack works well for navigation and forms. GES keeps its long-form editorial pairing of readable serif body text and clear sans-serif headings because the articles are longer than most county web pages. County compatibility should harmonize through metadata, buttons, surfaces, and spacing before changing the reading face.
+
+Rejected patterns:
+
+- Do not import the county site's full WordPress/Astra layout into GES.
+- Do not use the county logo or exact branding unless the article is officially adopted into the county site.
+- Do not use `Acme` for long-form body text. It may inspire short display treatments only when a component benefits from a civic/document feel.
+- Do not rely on the accessibility-widget blue as a brand color; it is a widget control color, not the county visual system.
+- Do not copy campaign-like hero imagery, dark gradients, or decorative civic cliches.
+
+Accessibility and print:
+
+- County-compatible colors must pass contrast in their actual component pairings.
+- Light civic blue should usually carry dark text, not white text.
+- Visible URLs remain mandatory for resource cards and printed handouts.
+- Cards, figures, tables, schedule blocks, and resource modules should keep `break-inside: avoid`.
+- Color cannot be the only signifier; labels, headings, borders, and structure must carry meaning in grayscale.
+
+Future guidance:
+
+Use the compatibility layer when a guide is about local county procedure, county records, county meetings, county resources, or a county-specific filing deadline. Do not use it for every GES article automatically. The layer should help the reader feel, "this belongs near the county record system," while still recognizing the publication's educational voice.
 
 ## VIII. Accessibility
 

@@ -621,8 +621,7 @@ export function renderProtestParadox() {
     <header class="comp-page-title levy-page-title article-hero" aria-labelledby="protestParadoxTitle">
       <div class="article-hero-packet">
         <div class="hero-kicker-row">
-          ${editorialIcon("market-chart", "editorial-icon-sm hero-kicker-icon")}
-          <p class="guided-kicker hero-kicker">Case Study / Levy Compression</p>
+          <p class="guided-kicker hero-kicker"><span>Case Study</span> / Levy Compression</p>
         </div>
         <h1 id="protestParadoxTitle" class="hero-title">${ARTICLE_TITLE}</h1>
         <p class="hero-deck">${ARTICLE_SUBTITLE}</p>
