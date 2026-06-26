@@ -1610,13 +1610,16 @@ Each reviewed article should produce a publication report stored with the projec
 
 Article analytics should measure useful reader actions without turning the article into an app.
 
+Use the shared visit analytics schema in [Visit Analytics Schema](visit-analytics-schema.md) for field names, Apps Script header handling, and reporting definitions.
+
 Recommended event vocabulary:
 
-- `article_open`
+- `article_view`
 - `scroll_25`
 - `scroll_50`
 - `scroll_75`
 - `scroll_complete`
+- `scroll_final`
 - `resource_click`
 - `gis_click`
 - `sales_map_click`
@@ -1627,6 +1630,14 @@ Recommended event vocabulary:
 - `copy_link`
 - `external_link`
 - `related_article`
+- `tldr_video_visible`
+- `tldr_video_tap`
+- `tldr_video_play`
+- `tldr_video_play_error`
+- `tldr_video_25`
+- `tldr_video_50`
+- `tldr_video_75`
+- `tldr_video_complete`
 
 Instrument only the events that answer real editorial or publication questions. Avoid noisy analytics that do not help the publication improve.
 

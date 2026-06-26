@@ -982,14 +982,36 @@ function installHeroVideo(root) {
   const playButton = wrapper.querySelector("[data-hero-video-play]");
   if (!video || !playButton) return;
 
+  const progressMilestones = new Set();
+  let visibleTracked = false;
   let playTracked = false;
   let completeTracked = false;
+
+  const videoMetrics = (details = {}) => {
+    const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 0;
+    const currentTime = Number.isFinite(video.currentTime) ? video.currentTime : 0;
+    const mediaPercent = duration ? Math.min(100, Math.round((currentTime / duration) * 100)) : "";
+
+    return {
+      placement: "hero",
+      mediaId: "hero_summary",
+      mediaType: "video",
+      mediaCurrentTime: Math.round(currentTime),
+      mediaDuration: duration ? Math.round(duration) : "",
+      mediaPercent,
+      mediaMuted: video.muted,
+      mediaPaused: video.paused,
+      mediaReadyState: video.readyState,
+      mediaNetworkState: video.networkState,
+      ...details
+    };
+  };
 
   const trackHeroVideo = (action, details = {}) => {
     trackArticleInteraction(action, {
       articleId: ARTICLE_ID,
       detail: "hero video summary",
-      ...details
+      ...videoMetrics(details)
     });
   };
 
@@ -999,17 +1021,34 @@ function installHeroVideo(root) {
     if (video.ended) wrapper.classList.remove("has-started", "is-playing");
   };
 
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(entries => {
+      const visibleEntry = entries.find(entry => entry.isIntersecting);
+      if (!visibleEntry || visibleTracked) return;
+      visibleTracked = true;
+      trackHeroVideo("tldr_video_visible", {
+        mediaPercent: 0
+      });
+      observer.disconnect();
+    }, {
+      threshold: 0.35
+    });
+    observer.observe(wrapper);
+  }
+
   playButton.addEventListener("click", async () => {
+    trackHeroVideo("tldr_video_tap");
     try {
       await video.play();
       video.controls = true;
-      if (!playTracked) {
-        playTracked = true;
-        trackHeroVideo("tldr_video_play", { placement: "hero" });
-      }
-    } catch {
+    } catch (error) {
       video.controls = true;
       video.focus({ preventScroll: true });
+      trackHeroVideo("tldr_video_play_error", {
+        errorName: error?.name || "",
+        errorMessage: error?.message || "Video play failed"
+      });
+      trackHeroVideo("tldr_video_controls_fallback");
     }
     syncVideoState();
   });
@@ -1018,16 +1057,29 @@ function installHeroVideo(root) {
     video.controls = true;
     if (!playTracked) {
       playTracked = true;
-      trackHeroVideo("tldr_video_play", { placement: "hero" });
+      trackHeroVideo("tldr_video_play");
     }
     syncVideoState();
   });
   video.addEventListener("pause", syncVideoState);
-  video.addEventListener("timeupdate", syncVideoState);
+  video.addEventListener("timeupdate", () => {
+    syncVideoState();
+    if (!Number.isFinite(video.duration) || video.duration <= 0) return;
+    const percent = Math.floor((video.currentTime / video.duration) * 100);
+    [25, 50, 75].forEach(milestone => {
+      if (percent < milestone || progressMilestones.has(milestone)) return;
+      progressMilestones.add(milestone);
+      trackHeroVideo(`tldr_video_${milestone}`, {
+        mediaPercent: milestone
+      });
+    });
+  });
   video.addEventListener("ended", () => {
     if (!completeTracked) {
       completeTracked = true;
-      trackHeroVideo("tldr_video_complete", { placement: "hero" });
+      trackHeroVideo("tldr_video_complete", {
+        mediaPercent: 100
+      });
     }
     syncVideoState();
   });

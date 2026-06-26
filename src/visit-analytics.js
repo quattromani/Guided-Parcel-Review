@@ -1,14 +1,19 @@
-const VISIT_ANALYTICS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyJvCITKM9RKIhxzghwySukOFXPK8fRmMx_sTOrbE19Xtq1RiAG3cBXP_oVwytoboz8/exec";
+const VISIT_ANALYTICS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzgUq0bAv6waiApy8HlDriWXiwRWpihcebR5cOQOO1IeuywGxqMylQaSZbsoFLW4bG0/exec";
 const VISIT_ANALYTICS_SECRET = "parcel-visits-2026-private-log";
+const VISIT_ANALYTICS_SCHEMA_VERSION = "visit-analytics.v2";
 const VISIT_ID_SESSION_KEY = "guidedParcelReview.visitId.v1";
 const HEARTBEAT_INTERVAL_MS = 30000;
+const INTERACTION_DEDUPE_WINDOW_MS = 1500;
 
 const analyticsState = {
   active: false,
   context: {},
   furthestStep: "",
   heartbeatTimer: null,
+  lastInteractionKey: "",
+  lastInteractionAt: 0,
   lastVisitEndAt: 0,
+  pageViewId: "",
   routeOrder: [],
   startTime: 0,
   stepStartTime: 0,
@@ -21,6 +26,7 @@ export function initVisitAnalytics(context = {}) {
   if (shouldSkipVisitAnalytics()) return;
 
   analyticsState.active = true;
+  analyticsState.pageViewId = pageViewId();
   analyticsState.startTime = Date.now();
   analyticsState.stepStartTime = analyticsState.startTime;
   trackVisitEvent("visit_start");
@@ -82,9 +88,14 @@ export function trackArticleView(context = {}) {
 
 export function trackArticleInteraction(action = "", details = {}) {
   if (!action) return;
+  const payload = {
+    ...details,
+    action,
+    detail: details.detail || action
+  };
+  if (isDuplicateInteraction(payload)) return;
   trackVisitEvent("article_interaction", {
-    detail: action,
-    ...details
+    ...payload
   });
 }
 
@@ -162,12 +173,19 @@ function trackVisitEvent(event, details = {}) {
   if (shouldSkipVisitAnalytics()) return;
   if (event === "visit_end" && Date.now() - analyticsState.lastVisitEndAt < 2000) return;
   if (event === "visit_end") analyticsState.lastVisitEndAt = Date.now();
+  if (!analyticsState.pageViewId) analyticsState.pageViewId = pageViewId();
+
+  const sourceContext = sourceAttributionContext();
+  const browserContext = browserContextFrom(navigator.userAgent || "", document.referrer || "");
 
   const payload = {
     secret: VISIT_ANALYTICS_SECRET,
+    schemaVersion: VISIT_ANALYTICS_SCHEMA_VERSION,
+    eventId: eventId(),
     timestamp: new Date().toISOString(),
     event,
     visitId: visitId(),
+    pageViewId: analyticsState.pageViewId,
     ...analyticsState.context,
     ...details,
     elapsedSeconds: secondsSince(analyticsState.startTime || Date.now()),
@@ -175,6 +193,10 @@ function trackVisitEvent(event, details = {}) {
     viewport: viewportBucket(),
     path: `${window.location.pathname}${window.location.search}${window.location.hash}`,
     referrer: document.referrer || "",
+    referrerHost: referrerHost(document.referrer || ""),
+    ...sourceContext,
+    browserContext,
+    isFacebookInApp: isFacebookInAppBrowser(navigator.userAgent || ""),
     userAgent: navigator.userAgent || ""
   };
 
@@ -216,6 +238,26 @@ function normalizeContext(context = {}) {
   };
 }
 
+function isDuplicateInteraction(details = {}) {
+  const now = Date.now();
+  const key = [
+    details.action || "",
+    details.detail || "",
+    details.articleId || "",
+    details.placement || "",
+    details.targetUrl || "",
+    details.mediaPercent || ""
+  ].join("|");
+
+  if (key && key === analyticsState.lastInteractionKey && now - analyticsState.lastInteractionAt < INTERACTION_DEDUPE_WINDOW_MS) {
+    return true;
+  }
+
+  analyticsState.lastInteractionKey = key;
+  analyticsState.lastInteractionAt = now;
+  return false;
+}
+
 function propertyContextFromManifestProperty(property = {}) {
   return {
     propertyId: property.id,
@@ -239,8 +281,22 @@ function visitId() {
   }
 }
 
+function pageViewId() {
+  return `page-${randomIdPart()}`;
+}
+
+function eventId() {
+  return `event-${randomIdPart()}`;
+}
+
 function randomVisitId() {
-  return `visit-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  return `visit-${randomIdPart()}`;
+}
+
+function randomIdPart() {
+  return globalThis.crypto?.randomUUID
+    ? globalThis.crypto.randomUUID()
+    : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
 function inviteToken() {
@@ -252,6 +308,40 @@ function viewportBucket() {
   if (width < 700) return "mobile";
   if (width < 1100) return "tablet";
   return "desktop";
+}
+
+function sourceAttributionContext() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    utmSource: params.get("utm_source") || "",
+    utmMedium: params.get("utm_medium") || "",
+    utmCampaign: params.get("utm_campaign") || "",
+    utmContent: params.get("utm_content") || "",
+    utmTerm: params.get("utm_term") || "",
+    fbclidPresent: params.has("fbclid")
+  };
+}
+
+function referrerHost(referrer) {
+  if (!referrer) return "";
+  try {
+    return new URL(referrer).hostname;
+  } catch {
+    return "";
+  }
+}
+
+function browserContextFrom(userAgent, referrer) {
+  const referrerHostname = referrerHost(referrer);
+  if (isFacebookInAppBrowser(userAgent)) return "facebook-in-app";
+  if (/\bInstagram\b/i.test(userAgent)) return "instagram-in-app";
+  if (/\bLine\/|Twitter|TikTok|LinkedInApp\b/i.test(userAgent)) return "social-in-app";
+  if (/(^|\.)facebook\.com$|(^|\.)fb\.com$|(^|\.)instagram\.com$/i.test(referrerHostname)) return "facebook-referral";
+  return "browser";
+}
+
+function isFacebookInAppBrowser(userAgent) {
+  return /\bFBAN|FBAV\b/i.test(userAgent);
 }
 
 function shouldSkipVisitAnalytics() {
