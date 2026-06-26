@@ -352,6 +352,7 @@ Use these names as the mature GES component vocabulary. Each component should ha
 | Article Hero / Guide Hero | Orient the reader to title, promise, author context, and media. | Every standalone GES guide. | The guide is embedded in an app workflow. | One `h1`; media has labels/captions. | Preserve title, metadata, and media context. | `article-hero`, `guide-hero`, `hero-title`, `hero-deck` |
 | Hero Media | Carries the primary image or orientation video. | Media reduces uncertainty before reading. | The image is decorative or generic. | Alt/caption text; video controls reachable. | Hide dead controls, keep media context. | `hero-media`, `article-hero-media`, `article-hero-video` |
 | TL;DR Video Orientation | Gives a calm pre-reading summary. | A short video helps readers decide how to proceed. | The video repeats the article without orientation value. | Button label, native controls after play, transcript in source/metadata. | Do not require video for comprehension. | `article-hero-video`, `article-hero-video-player` |
+| Guide Utility Area | Presents consumption choices such as reading time, printable guide, audio version, transcript, or future translations. | A guide offers length or format choices. | The controls would compete with the article opening. | Clear labels; keyboard-accessible links and controls. | Keep reading time if useful; hide controls that do not work on paper. | `guide-utility`, `guide-length`, `guide-formats`, `format-control` |
 | Section Kicker | Places the reader in the learning journey. | Major guide sections. | It duplicates the heading. | Must not replace a real heading. | Legible in grayscale. | `section-kicker`, `guided-kicker` |
 | Concept Diagram | Teaches a mental model. | Relationships are clearer visually. | It only restates prose. | Text remains selectable and ordered. | Borders/labels carry meaning. | `concept-diagram`, `concept-card` |
 | Process Strip | Shows a short workflow. | Steps are sequential. | Items are independent checks. | Use an ordered list. | Avoid breaking inside the strip. | `process-strip`, `process-step-heading` |
@@ -365,8 +366,9 @@ Use these names as the mature GES component vocabulary. Each component should ha
 | Resource Cards | Link to official tools and sources. | Resource is necessary or strongly useful. | The link is merely extra reading. | Meaningful link text. | Full URLs visible nearby. | `resource-card`, `resource-card-grid`, `print-url` |
 | Post-Hearing Note | Gives time-sensitive after-action context. | A public meeting, deadline, or follow-up affects action. | Dates are speculative or stale. | Dates/times in visible text. | Hide click-only calendar labels. | `meeting-schedule-card`, `important-inline-note` |
 | Closing Reflection | Connects action to civic meaning. | The guide should end with why the action matters. | The page is purely procedural. | End with real text. | Do not add dead controls after final line. | `closing-reflection`, `tax-article-closing` |
+| Continuation Module | Provides a natural transition from one guide to the next. | Educational guides, field guides, explainers, and civic education. | Marketing pages, landing pages, or announcements. | Real text invitation; no placeholder links. | Appears before sources so the reading journey concludes before the appendix. | `continuation-module` |
 | Print/PDF Link | Offers a paper pathway. | The guide is likely to be printed or shared. | No maintained PDF exists. | Link text names the artifact. | Hide the CTA inside generated PDFs. | `article-print-cta`, `hero-utility-button` |
-| Footer Utility | Handles sharing and related guide pathways. | The guide benefits from sharing or companion reading. | It distracts from the final reflection. | Button status uses `aria-live`. | Hide interactive-only utilities. | `article-share-footer`, `related-article-coda` |
+| Footer Utility | Handles publication utilities such as sharing. | The guide benefits from lightweight sharing or format utilities. | It distracts from the continuation or source appendix. | Button status uses `aria-live`. | Hide interactive-only utilities. | `article-share-footer` |
 
 ### Article Hero
 
@@ -403,15 +405,27 @@ Accessibility: One `h1` per article.
 
 Print: Keep with the opening section when possible. The printable PDF should include the same author and location/date stamp. Hide the web print/download CTA inside the printed PDF because it has already served its purpose.
 
-Article entry rule: Publication metadata and format choices belong inside the opening article section, above the first section kicker. The reader should first understand what the guide is, then see the cover media, then enter the article through a compact attribution and format panel. Stack the metadata in reader-order: author, publication date plus topical/location tags, reading time, then format choices. Finish the panel with a gentle divider so the first kicker feels like the beginning of the reading experience. Keep utility controls compact and sibling-like: paper/PDF, audio, and similar format options should use matched buttons with clear icons and accessible labels. Audio uses native controls with `preload="none"` unless there is a specific reason to preload metadata.
+Article entry rule: Publication metadata and consumption choices belong inside the opening article section, above the first section kicker. The reader should first understand what the guide is, then see the cover media, then enter the article through a compact attribution and utility panel. Stack the entry in reader-order: author, credential or role when relevant, publication date, guide length, available formats, then guide content. Finish the panel with a gentle divider so the first kicker feels like the beginning of the reading experience. Keep utility controls compact and sibling-like: paper/PDF, audio, and similar format options should use matched controls with clear icons and accessible labels. Audio uses native controls with `preload="none"` unless there is a specific reason to preload metadata.
 
-Tag rule: Tags in the entry panel should be small, muted pills rather than category headlines or filter UI. Keep the first tag on the same line as the publication date, separated by a quiet bullet, so the metadata does not overstack. Use tags to name the local or topical context, such as `Gage County`, and allow future articles to add additional conceptual tags without disturbing the author/date/reading-time rhythm.
+Article entry typography rule: The author block, credential, date, guide length, and utility controls should use one editorial sans-serif system. This area establishes identity and consumption choices. Reserve the publication's reading serif for long-form prose, reflection, narrative paragraphs, and other reading content after the guide begins.
 
-Reading-time rule: A concise reading-time line belongs inside the article-entry panel, under author/date/tag metadata and above format choices. This keeps the reader's basic decisions together: who prepared it, when/local context, how long it takes, and whether to read, print, or listen. It is a static publication value, not a client-side calculation. Update it during the publication/PDF regeneration pass so the article remains fast, stable, and print-consistent. Mark it up with a `<time>` element and include `wordCount` and `timeRequired` in structured data when available.
+Tag rule: Article tags should be small, muted pills rather than category headlines or filter UI. Place them under the hero deck so local or topical context is visible before the cover media and before the reader enters the article. Use tags to name the local or topical context, such as `Gage County`, and allow future articles to add additional conceptual tags without disturbing the author/date/reading-time rhythm.
+
+Reading-time rule: Reading time belongs with consumption choices, not author identity. Use plain-language time estimates such as `About a 10-minute read` or `About a 1-minute read`. Word count should usually remain hidden from the visible UI, while staying available in structured data when useful. Store raw reading metadata in data attributes and render a polished fallback phrase server-side so the guide degrades gracefully without JavaScript.
 
 Article source artifact rule: Every mature GES article should have a portable source artifact that owns its editorial content and publication metadata. The route or renderer should own component behavior, semantic markup, analytics hooks, and layout assembly; the source artifact should own the title, subtitle, author, date, location, reading-time values, media references, resource links, section kickers, headings, paragraphs, example rows, script lines, and component data. This keeps long-form writing from becoming trapped inside route code and makes future refactors, PDF regeneration, metadata review, and article reuse much easier.
 
 Structured source is preferred for GES articles because the articles are component-driven. Markdown is appropriate for purely narrative essays, but guides with process strips, comparison cards, decision trees, evidence matrices, record callouts, resource cards, audio, video, and print metadata should use a data-plus-prose artifact that can feed reusable components. The renderer may still output ordinary semantic HTML; the source artifact is the editorial manuscript and component brief.
+
+### Guide Utility Area
+
+Purpose: Present consumption choices such as reading time, printable guide, audio version, transcript, or future translations.
+
+Rules: Reading time belongs with consumption choices, not author identity. Word count should usually remain hidden. Utility controls are secondary, and utility should never compete with learning. Use plain-language time estimates and support graceful degradation.
+
+Reading-time language helper: Store raw values in HTML data attributes such as `data-reading-minutes`, `data-word-count`, and `data-length-label`. Render a sensible fallback phrase in the markup, then let a tiny isolated helper refine the visible phrase when JavaScript is available. If minutes are missing, hide the reading-time utility text gracefully. Do not introduce dependencies or global variables for this helper.
+
+Print: Keep reading time only if useful. Hide audio controls and click-only format controls when they do not make sense on paper. Preserve visible URLs only where they help the printed artifact.
 
 Article entry HTML:
 
@@ -423,26 +437,26 @@ Article entry HTML:
         <p>Prepared by Max Quattromani</p>
         <div class="article-entry-context">
           <p>June 25, 2026</p>
-          <ul class="article-entry-tags" aria-label="Article tags">
-            <li>Gage County</li>
-          </ul>
         </div>
-        <p class="article-reading-time" aria-label="Estimated reading time">
-          <span>Reading time:</span>
-          <time datetime="PT10M">10 min</time>
-          <span>(2,070 words)</span>
-        </p>
       </div>
-      <div class="hero-utility" aria-label="Article format options">
-        <a class="hero-utility-button article-print-cta" href="/assets/guides/example.pdf" download>Prefer paper? Download the printable guide.</a>
-        <details class="hero-audio">
-          <summary class="hero-utility-button article-audio-cta">Prefer audio? Listen to the article.</summary>
-          <div class="hero-audio-panel">
-            <audio controls preload="none" src="/assets/audio/articles/example.mp3"></audio>
-            <a href="/assets/audio/articles/example.mp3" download>Download MP3</a>
+      <section class="guide-utility" aria-label="Guide options">
+        <div class="guide-length" aria-label="Estimated guide length" data-guide-length data-reading-minutes="10" data-word-count="2070" data-length-label="cup-of-coffee">
+          <p class="guide-length-label" data-guide-length-label>About a 10-minute read</p>
+        </div>
+        <div class="guide-formats" aria-label="Available formats">
+          <p class="guide-utility-label">Available formats</p>
+          <div class="format-control">
+            <a class="format-control-item article-print-cta" href="/assets/guides/example.pdf" download>Printable guide</a>
+            <details class="hero-audio">
+              <summary class="format-control-item article-audio-cta">Audio version</summary>
+              <div class="hero-audio-panel">
+                <audio controls preload="none" src="/assets/audio/articles/example.mp3"></audio>
+                <a href="/assets/audio/articles/example.mp3" download>Download MP3</a>
+              </div>
+            </details>
           </div>
-        </details>
-      </div>
+        </div>
+      </section>
     </div>
     <p class="section-kicker">In the Hearing Room</p>
     <h2>The pattern shows up quickly</h2>
@@ -968,7 +982,34 @@ HTML structure:
 
 Accessibility: End with real text, not a visual-only flourish.
 
-Print: Do not add anything after the final intended line.
+Print: Keep as the final reflective section before the continuation module.
+
+### Continuation Module
+
+Purpose: Provide a natural transition from one guide to the next. The reader has completed the guide, and the publication gently answers: where do I go from here?
+
+Use when: Educational guides, field guides, explainers, and civic education.
+
+Do not use when: Marketing pages, landing pages, announcements, or conversion-focused pages.
+
+Typical size: One understated heading and 1 to 2 short paragraphs. Add links only when real next guides exist; never invent placeholder links.
+
+Cognitive role: Continuity and curiosity, not recommendation.
+
+Design principles: Reflective, understated, editorial, generous whitespace, and invitation rather than promotion. Avoid "Related Articles," "You Might Also Like," "Recommended Reading," and recommendation-engine language. A real next-guide link may use a humane editorial line when it fits the publication voice; keep the link text descriptive and avoid large CTA treatment.
+
+HTML structure:
+
+```html
+<aside class="continuation-module" aria-labelledby="continuationTitle">
+  <h3 id="continuationTitle">Continue Exploring</h3>
+  <p>More educational guides will be added here over time.</p>
+</aside>
+```
+
+Accessibility: Use real text and meaningful links when links exist. Do not hide continuation copy from assistive technology.
+
+Print: Keep before supporting authority, sources, and publication footer. The standard ending order is closing reflection, continuation module, supporting authority or sources, then publication footer.
 
 ## V. Editorial Grammar
 
@@ -1007,6 +1048,9 @@ GEDL uses semantic HTML so articles can survive years of development.
   <section class="article-section">...</section>
   <section class="article-section resource-section">...</section>
   <section class="article-section closing-reflection">...</section>
+  <aside class="continuation-module">...</aside>
+  <aside class="article-sources-used">...</aside>
+  <footer class="article-share-footer">...</footer>
 </article>
 ```
 
@@ -1057,7 +1101,12 @@ Prefer reusable component names:
 - `article-hero-video`
 - `article-entry-panel`
 - `article-entry-meta`
-- `article-reading-time`
+- `guide-utility`
+- `guide-length`
+- `guide-length-label`
+- `guide-formats`
+- `format-control`
+- `format-control-item`
 - `hero-utility`
 - `hero-audio`
 - `hero-audio-panel`

@@ -1,6 +1,8 @@
 import { escapeHtml } from "../utils/html.js";
 import { loadPropertyManifest } from "../data-service.js";
 
+const ARTICLE_AUTHOR_IMAGE = "assets/images/articles/max-quattromani-author.jpg";
+
 const DEFAULTS = {
   taxesPaid: "",
   assessed2025: "",
@@ -710,7 +712,10 @@ export function renderLevyCompressionPost() {
       <h1>Your Assessment Went Up. Does That Mean Your Tax Bill Will Go Up Just as Much?</h1>
       <p>A plain-language guide for homeowners worried about rising valuations.</p>
       <div class="levy-author-byline">
-        <p>By Max Quattromani</p>
+        <div class="article-author-attribution">
+          <img class="article-author-photo" src="${ARTICLE_AUTHOR_IMAGE}" alt="" loading="lazy" decoding="async" />
+          <p>By Max Quattromani</p>
+        </div>
       </div>
     </div>
   `;

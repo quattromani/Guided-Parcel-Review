@@ -9,6 +9,7 @@ const ARTICLE_CANONICAL_PATH = "articles/assessment-up-protest-denied-taxes/";
 const ARTICLE_TITLE = "Assessment Up. Protest Denied. Taxes?";
 const ARTICLE_SUBTITLE = "A case study showing why property taxes can fall after an assessment increase, and how levy compression changes the tax impact of a valuation notice.";
 const ARTICLE_AUTHOR = "Max Quattromani";
+const ARTICLE_AUTHOR_IMAGE = "assets/images/articles/max-quattromani-author.jpg";
 const ARTICLE_LOCATION = "Gage County";
 const ARTICLE_DISPLAY_DATE = "June 23, 2026";
 const ARTICLE_PUBLISHED_DATE = "2026-06-23";
@@ -120,6 +121,7 @@ function updateMetadata() {
   const canonicalUrl = absoluteUrl(ARTICLE_CANONICAL_PATH);
   const imageUrl = absoluteUrl(ARTICLE_SOCIAL_IMAGE);
   const pdfUrl = absoluteUrl(PRINTABLE_GUIDE_PDF);
+  const authorImageUrl = absoluteUrl(ARTICLE_AUTHOR_IMAGE);
 
   document.title = `${ARTICLE_TITLE} | Guided Parcel Review`;
   setCanonicalLink(canonicalUrl);
@@ -175,7 +177,8 @@ function updateMetadata() {
         image: imageUrl,
         author: {
           "@type": "Person",
-          name: ARTICLE_AUTHOR
+          name: ARTICLE_AUTHOR,
+          image: authorImageUrl
         },
         publisher: {
           "@type": "Organization",
@@ -626,7 +629,10 @@ export function renderProtestParadox() {
         <h1 id="protestParadoxTitle" class="hero-title">${ARTICLE_TITLE}</h1>
         <p class="hero-deck">${ARTICLE_SUBTITLE}</p>
         <div class="hero-meta" aria-label="Article information">
-          <p>Prepared by ${ARTICLE_AUTHOR}</p>
+          <div class="article-author-attribution">
+            <img class="article-author-photo" src="${ARTICLE_AUTHOR_IMAGE}" alt="" loading="lazy" decoding="async" />
+            <p>Prepared by ${ARTICLE_AUTHOR}</p>
+          </div>
           <p>${ARTICLE_DISPLAY_DATE} · ${ARTICLE_LOCATION}</p>
         </div>
         <div class="hero-action">

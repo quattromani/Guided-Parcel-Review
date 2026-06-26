@@ -13,6 +13,8 @@ const ARTICLE_TITLE = articleSource.title;
 const ARTICLE_SUBTITLE = articleSource.subtitle;
 const ARTICLE_AUTHOR = articleSource.author;
 const ARTICLE_AUTHOR_EMAIL = articleSource.authorEmail;
+const ARTICLE_AUTHOR_IMAGE = articleSource.assets.authorImage;
+const ARTICLE_AUTHOR_TITLE = "Nebraska Certified Assessor";
 const ARTICLE_LOCATION = articleSource.location;
 const ARTICLE_TAGS = articleSource.tags ?? [ARTICLE_LOCATION].filter(Boolean);
 const ARTICLE_DISPLAY_DATE = articleSource.displayDate;
@@ -27,6 +29,7 @@ const ARTICLE_WORD_COUNT = articleSource.reading.wordCount;
 const ARTICLE_READING_TIME_MINUTES = articleSource.reading.minutes;
 const ARTICLE_READING_TIME = `PT${ARTICLE_READING_TIME_MINUTES}M`;
 const ARTICLE_WORD_COUNT_LABEL = ARTICLE_WORD_COUNT.toLocaleString("en-US");
+const ARTICLE_LENGTH_LABEL = articleSource.reading.lengthLabel ?? "cup-of-coffee";
 const ARTICLE_HERO_IMAGE_ALT = articleSource.assets.heroImageAlt;
 const ARTICLE_HERO_IMAGE_CREDIT = articleSource.assets.heroImageCredit;
 const ARTICLE_HERO_IMAGE_SOURCE = articleSource.assets.heroImageSource;
@@ -57,8 +60,13 @@ const EVIDENCE_COLUMNS = articleSource.evidenceColumns;
 const ORGANIZATION_STEPS = articleSource.organizationSteps;
 const ARTICLE_AUTHOR_MAILTO = `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeURIComponent(`Re: ${ARTICLE_TITLE}`)}`;
 
-function paragraph(text) {
-  return `<p>${escapeHtml(text)}</p>`;
+function paragraph(item) {
+  if (item && typeof item === "object") {
+    const text = escapeHtml(item.text ?? "");
+    return `<p>${item.emphasis ? `<strong>${text}</strong>` : text}</p>`;
+  }
+
+  return `<p>${escapeHtml(item)}</p>`;
 }
 
 function paragraphs(items = []) {
@@ -139,19 +147,11 @@ function renderSourcesUsedBlock() {
   const sourceCategories = uniqueValues(sourceItems.map(citationCategoryForItem));
 
   return `
-    <aside class="article-sources-used" aria-labelledby="articleSourcesUsedTitle" data-source-ids="${escapeHtml(sourceIds.join(" "))}" data-source-categories="${escapeHtml(sourceCategories.join(" "))}">
-      <h3 id="articleSourcesUsedTitle">${escapeHtml(ARTICLE_SOURCES_USED.title)}</h3>
+    <aside class="article-sources-used" aria-label="${escapeHtml(ARTICLE_SOURCES_USED.title)}" data-source-ids="${escapeHtml(sourceIds.join(" "))}" data-source-categories="${escapeHtml(sourceCategories.join(" "))}">
       <p>${escapeHtml(ARTICLE_SOURCES_USED.intro)}</p>
-      <div>
-        ${ARTICLE_SOURCES_USED.groups.map(group => `
-          <section>
-            <h4>${escapeHtml(group.heading)}</h4>
-            <ul>
-              ${group.items.map(item => `<li>${renderExternalSourceLink(item)}</li>`).join("")}
-            </ul>
-          </section>
-        `).join("")}
-      </div>
+      <ul>
+        ${sourceItems.map(item => `<li>${renderExternalSourceLink(item)}</li>`).join("")}
+      </ul>
     </aside>
   `;
 }
@@ -245,6 +245,7 @@ function updateProtestEvidenceGuideMetadata() {
   const pdfUrl = absoluteUrl(PRINTABLE_GUIDE_PDF);
   const videoUrl = absoluteUrl(ARTICLE_TLDR_VIDEO);
   const audioUrl = absoluteUrl(ARTICLE_AUDIO_READ);
+  const authorImageUrl = absoluteUrl(ARTICLE_AUTHOR_IMAGE);
   const title = `${ARTICLE_TITLE} | Guided Parcel Review`;
 
   document.title = title;
@@ -417,7 +418,8 @@ function updateProtestEvidenceGuideMetadata() {
       {
         "@type": "Person",
         "@id": `${canonicalUrl}#author`,
-        name: ARTICLE_AUTHOR
+        name: ARTICLE_AUTHOR,
+        image: authorImageUrl
       },
       {
         "@type": "Organization",
@@ -843,6 +845,7 @@ function renderClosingSection() {
     <section class="tax-article-section tax-story-chapter tax-article-closing levy-article-narrow article-section" data-tone="reflection" aria-labelledby="protestClosingTitle">
       ${sectionHeader(section.kicker, section.title, "protestClosingTitle")}
       ${paragraphs(section.paragraphs)}
+      ${renderContinuationModule(section.continuation)}
       ${renderSourceNote(ARTICLE_SOURCE_NOTES.closing)}
       ${renderSourcesUsedBlock()}
       <aside class="article-share-footer" aria-labelledby="shareArticleTitle">
@@ -853,12 +856,24 @@ function renderClosingSection() {
         </button>
         <span data-share-status role="status" aria-live="polite"></span>
       </aside>
-      <aside class="related-article-coda" aria-labelledby="relatedProtestParadoxTitle">
-        <hr />
-        <p id="relatedProtestParadoxTitle">${escapeHtml(section.relatedPrompt)}</p>
-        <a href="${escapeHtml(section.relatedHref)}" data-article-action="related_article" data-article-label="${escapeHtml(section.relatedTitle)}">${escapeHtml(section.relatedLabel)} <span>${escapeHtml(section.relatedTitle)}</span></a>
-      </aside>
     </section>
+  `;
+}
+
+function renderContinuationModule(module) {
+  if (!module?.paragraphs?.length) return "";
+
+  return `
+    <aside class="continuation-module" aria-labelledby="protestContinuationTitle">
+      <h3 id="protestContinuationTitle">${escapeHtml(module.title)}</h3>
+      ${paragraphs(module.paragraphs)}
+      ${module.link ? `
+        <p class="continuation-link">
+          <span>${escapeHtml(module.link.label)}</span>
+          <a href="${escapeHtml(module.link.href)}" data-article-action="continuation_article" data-article-label="${escapeHtml(module.link.title)}">${escapeHtml(module.link.title)}</a>
+        </p>
+      ` : ""}
+    </aside>
   `;
 }
 
@@ -892,6 +907,7 @@ export function renderProtestEvidenceGuide() {
         </div>
         <h1 id="protestArticleTitle" class="hero-title">${ARTICLE_TITLE}</h1>
         <p class="hero-deck">${ARTICLE_SUBTITLE}</p>
+        ${renderArticleTags()}
       </div>
       <figure class="article-hero-media hero-media article-hero-video" data-hero-video>
         <video
@@ -936,38 +952,23 @@ export function renderProtestEvidenceGuide() {
   installHeroVideo(pageTitle);
   installHeroAudio(canvas);
   installHeroUtilityTracking(canvas);
+  installGuideUtilityLanguage(canvas);
 }
 
 function renderArticleEntryPanel() {
   return `
     <div class="article-entry-panel">
       <div class="article-entry-meta" aria-label="Article information">
-        <p>Prepared by <a href="${escapeHtml(ARTICLE_AUTHOR_MAILTO)}" data-article-action="author_email" data-article-label="${escapeHtml(ARTICLE_TITLE)}">${escapeHtml(ARTICLE_AUTHOR)}</a></p>
-        <div class="article-entry-context">
-          <p>${ARTICLE_DISPLAY_DATE}</p>
-          ${renderArticleTags()}
-        </div>
-        ${renderArticleReadingTime()}
-      </div>
-      <div class="hero-utility" aria-label="Article format options">
-        <a class="hero-utility-button article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable guide PDF">
-          ${editorialIcon("document")}
-          <span>Prefer paper? Download the printable guide.</span>
-        </a>
-        <details class="hero-audio" data-hero-audio>
-          <summary class="hero-utility-button article-audio-cta">
-            ${editorialIcon("audio")}
-            <span>Prefer audio? Listen to the article.</span>
-          </summary>
-          <div class="hero-audio-panel">
-            <p>Full audio version of this guide.</p>
-            <audio class="hero-audio-player" data-hero-audio-player controls preload="none" src="${escapeHtml(ARTICLE_AUDIO_READ)}">
-              <a href="${escapeHtml(ARTICLE_AUDIO_READ)}">Download the MP3 audio version.</a>
-            </audio>
-            <a class="hero-audio-download" href="${escapeHtml(ARTICLE_AUDIO_READ)}" download data-article-action="audio_article_download" data-article-label="Audio article MP3">Download MP3</a>
+        <div class="article-author-attribution">
+          <img class="article-author-photo" src="${escapeHtml(ARTICLE_AUTHOR_IMAGE)}" alt="" loading="lazy" decoding="async" />
+          <div class="article-author-copy">
+            <p class="article-author-name"><a href="${escapeHtml(ARTICLE_AUTHOR_MAILTO)}" data-article-action="author_email" data-article-label="${escapeHtml(ARTICLE_TITLE)}">${escapeHtml(ARTICLE_AUTHOR)}</a></p>
+            <p class="article-author-title">${escapeHtml(ARTICLE_AUTHOR_TITLE)}</p>
+            <p class="article-entry-date">${ARTICLE_DISPLAY_DATE}</p>
           </div>
-        </details>
+        </div>
       </div>
+      ${renderGuideUtility()}
     </div>
   `;
 }
@@ -983,14 +984,54 @@ function renderArticleTags() {
         </ul>`;
 }
 
-function renderArticleReadingTime() {
+function formatGuideLengthText(minutes) {
+  const numericMinutes = Number.parseInt(minutes, 10);
+  if (!Number.isFinite(numericMinutes) || numericMinutes < 1) return "";
+  return `About a ${numericMinutes}-minute read`;
+}
+
+function renderGuideUtility() {
   return `
-    <p class="article-reading-time" aria-label="Estimated reading time">
-      <span>Reading time:</span>
-      <time datetime="${ARTICLE_READING_TIME}">${ARTICLE_READING_TIME_MINUTES} min</time>
-      <span>(${ARTICLE_WORD_COUNT_LABEL} words)</span>
-    </p>
+    <section class="guide-utility" aria-label="Guide options">
+      <div class="guide-length" aria-label="Estimated guide length" data-guide-length data-reading-minutes="${escapeHtml(ARTICLE_READING_TIME_MINUTES)}" data-word-count="${escapeHtml(ARTICLE_WORD_COUNT)}" data-length-label="${escapeHtml(ARTICLE_LENGTH_LABEL)}">
+        <p class="guide-length-label" data-guide-length-label>${escapeHtml(formatGuideLengthText(ARTICLE_READING_TIME_MINUTES))}</p>
+      </div>
+      <div class="guide-formats hero-utility" aria-label="Available formats">
+        <p class="guide-utility-label">Available formats</p>
+        <div class="format-control">
+          <a class="format-control-item hero-utility-button article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable guide PDF">
+            ${editorialIcon("document")}
+            <span>Printable guide</span>
+          </a>
+          <details class="hero-audio format-control-item-shell" data-hero-audio>
+            <summary class="format-control-item hero-utility-button article-audio-cta">
+              ${editorialIcon("audio")}
+              <span>Audio version</span>
+            </summary>
+            <div class="hero-audio-panel">
+              <p>Full audio version of this guide.</p>
+              <audio class="hero-audio-player" data-hero-audio-player controls preload="none" src="${escapeHtml(ARTICLE_AUDIO_READ)}">
+                <a href="${escapeHtml(ARTICLE_AUDIO_READ)}">Download the MP3 audio version.</a>
+              </audio>
+              <a class="hero-audio-download" href="${escapeHtml(ARTICLE_AUDIO_READ)}" download data-article-action="audio_article_download" data-article-label="Audio article MP3">Download MP3</a>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
   `;
+}
+
+function installGuideUtilityLanguage(root) {
+  root.querySelectorAll("[data-guide-length]").forEach(lengthElement => {
+    const label = lengthElement.querySelector("[data-guide-length-label]");
+    const text = formatGuideLengthText(lengthElement.dataset.readingMinutes);
+    if (!text) {
+      lengthElement.hidden = true;
+      return;
+    }
+    if (label) label.textContent = text;
+  });
 }
 
 function installHeroVideo(root) {

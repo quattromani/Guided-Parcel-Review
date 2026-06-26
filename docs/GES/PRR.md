@@ -324,7 +324,7 @@ Ensure everything reflects the latest revision.
 
 ## 13. Internal Linking
 
-Review opportunities for:
+Review opportunities for the Continuation Module:
 
 - existing related articles
 - future companion articles
@@ -337,6 +337,8 @@ Review opportunities for:
 Do not force links.
 
 Add only where genuinely useful.
+
+The continuation should appear before supporting authority and sources. When no real next guide is ready, use a short, intentional note that learning will continue as the publication grows rather than placeholder links.
 
 ## 14. Asset Audit
 

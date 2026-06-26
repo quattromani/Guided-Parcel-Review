@@ -24,9 +24,11 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
   ],
   reading: {
     wordCount: 2070,
-    minutes: 10
+    minutes: 10,
+    lengthLabel: "cup-of-coffee"
   },
   assets: {
+    authorImage: "assets/images/articles/max-quattromani-author.jpg",
     printableGuidePdf: "assets/guides/before-you-walk-into-a-property-protest.pdf",
     socialImage: "assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg",
     tldrVideo: "assets/videos/articles/before-you-walk-into-a-property-protest-summary.mp4",
@@ -315,9 +317,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
       kicker: "In the Hearing Room",
       title: "The pattern shows up quickly",
       paragraphs: [
-        "Spend a day observing property protest hearings and a rhythm starts to appear. Homeowners come forward one after another. Most are sincere. Most have paid attention to their home. Most believe something about the assessment is wrong.",
-        "Then the Board asks the practical question that sits underneath almost every hearing: what can we verify?",
-        "That is where many protests lose their footing. The homeowner may be right that something feels off. But without photographs, measurements, repair estimates, record cards, or comparable properties, the Board has little it can act on."
+        "Spend a day observing property protest hearings and a pattern begins to emerge. Homeowners come forward one after another. Most sincerely believe something about their assessment is wrong.",
+        "Then the Board asks the practical question beneath nearly every hearing:",
+        { text: "What can we verify?", emphasis: true },
+        "That is where many protests lose their footing. A homeowner may be right that something feels off, but without photographs, measurements, property records, comparable properties, or other supporting evidence, the Board has little it can act on."
       ],
       pullQuote: "Don't walk into a protest asking for justice. Walk in asking for the record to be corrected.",
       closingParagraph: "That is a narrower request. It is also a stronger one. A property protest is not mainly about proving that taxes are too high. It is about showing, with specific evidence, that the property record or assessed value should be corrected."
@@ -423,12 +426,19 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
         "Better records produce better models. Better models produce more uniform assessments. More uniform assessments reduce the need for future protests.",
         "Accuracy compounds."
       ],
+      continuation: {
+        title: "Continue Exploring",
+        paragraphs: [
+          "Can't get enough longform reading about property assessments? Extremely relatable."
+        ],
+        link: {
+          label: "Read the companion case study:",
+          title: "Assessment Up. Protest Denied. Taxes?",
+          href: "articles/assessment-up-protest-denied-taxes/"
+        }
+      },
       sharePrompt: "Know someone staring at a valuation notice with one eyebrow raised?",
-      shareButton: "Share this guide",
-      relatedPrompt: "Can't get enough longform reading about property assessments? Extremely relatable.",
-      relatedLabel: "Read the companion case study:",
-      relatedTitle: "Assessment Up. Protest Denied. Taxes?",
-      relatedHref: "articles/assessment-up-protest-denied-taxes/"
+      shareButton: "Share this guide"
     }
   }
 };
