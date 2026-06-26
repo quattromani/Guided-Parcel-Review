@@ -316,6 +316,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     opening: {
       kicker: "In the Hearing Room",
       title: "The pattern shows up quickly",
+      marginInsight: {
+        label: "Key idea",
+        text: "Facts become evidence when someone else can verify them."
+      },
       paragraphs: [
         "Spend a day observing property protest hearings and a pattern begins to emerge. Homeowners come forward one after another. Most sincerely believe something about their assessment is wrong.",
         "Then the Board asks the practical question beneath nearly every hearing:",
@@ -327,11 +331,18 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     },
     process: {
       kicker: "Before You Begin",
-      title: "The whole process in four moves"
+      title: "The whole process in four moves",
+      marginInsight: {
+        text: "Find. Compare. Document. Request."
+      }
     },
     whyProtestsFail: {
       kicker: "Finding the Disconnect",
       title: "Why do sincere protests fail?",
+      marginInsight: {
+        label: "Why it matters",
+        text: "Sincerity explains concern. Evidence supports correction."
+      },
       paragraphs: [
         "Usually not because the homeowner is careless. More often, the protest asks the Board to solve the wrong problem.",
         "\"Just look at my house\" may be an honest reaction. So is \"there is no way it is worth that.\" But a hearing cannot inspect a feeling. It needs something it can compare, measure, confirm, or correct."
@@ -341,6 +352,9 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     boardQuestion: {
       kicker: "Narrowing the Question",
       title: "What is the Board actually deciding?",
+      marginInsight: {
+        text: "The practical question is whether the requested correction is supported."
+      },
       intro: "The Board is not there to decide whether a tax bill feels heavy. It is not there to debate public budgets. It is not there to punish or defend the assessor.",
       contextLabel: "Board Review",
       label: "The Board's Practical Question",
@@ -365,6 +379,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     records: {
       kicker: "Verifying the Record",
       title: "How does the property record shape the current assessment?",
+      companion: "The record is where the evidence begins.",
+      marginInsight: {
+        text: "The current assessment begins with the facts in the record."
+      },
       emphasis: "The current assessed value reflects the information presently available about your property.",
       layerCaption: "The current assessment is built from many smaller pieces of information.",
       paragraphs: [

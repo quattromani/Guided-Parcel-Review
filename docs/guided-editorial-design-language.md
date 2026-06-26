@@ -354,6 +354,7 @@ Use these names as the mature GES component vocabulary. Each component should ha
 | TL;DR Video Orientation | Gives a calm pre-reading summary. | A short video helps readers decide how to proceed. | The video repeats the article without orientation value. | Button label, native controls after play, transcript in source/metadata. | Do not require video for comprehension. | `article-hero-video`, `article-hero-video-player` |
 | Guide Utility Area | Presents consumption choices such as reading time, printable guide, audio version, transcript, or future translations. | A guide offers length or format choices. | The controls would compete with the article opening. | Clear labels; keyboard-accessible links and controls. | Keep reading time if useful; hide controls that do not work on paper. | `guide-utility`, `guide-length`, `guide-formats`, `format-control` |
 | Section Kicker | Places the reader in the learning journey. | Major guide sections. | It duplicates the heading. | Must not replace a real heading. | Legible in grayscale. | `section-kicker`, `guided-kicker` |
+| Margin Insight | Gives a restrained orientation cue beside or below selected long-form sections. | A conceptually important section needs a skimmable handle. | It repeats the heading, competes with a visual, or creates a second reading path. | Supplemental text remains in source order; decorative icons are hidden if used. | Use text and simple rules only. | `ges-margin-insight`, `ges-margin-insight__label`, `ges-margin-insight__text`, `ges-section-companion` |
 | Concept Diagram | Teaches a mental model. | Relationships are clearer visually. | It only restates prose. | Text remains selectable and ordered. | Borders/labels carry meaning. | `concept-diagram`, `concept-card` |
 | Process Strip | Shows a short workflow. | Steps are sequential. | Items are independent checks. | Use an ordered list. | Avoid breaking inside the strip. | `process-strip`, `process-step-heading` |
 | Comparison Module | Contrasts weak and strong choices. | Reader must distinguish similar options. | There is no meaningful contrast. | Labels, not color alone. | Keep paired sides together. | `comparison-card`, `comparison-module` |
@@ -528,6 +529,55 @@ Editorial rule: Prefer descriptive positioning over topic labels. Use the reader
 Accessibility: Kicker should not replace the heading unless no heading is needed and the section remains labelled.
 
 Print: Must remain legible in grayscale.
+
+### Margin Insight
+
+Purpose: A restrained orientation cue for long-form educational sections. It helps a skimmer find the section's central idea without replacing the article text.
+
+Use when: A section is conceptually important, the guide is long enough that reorientation helps, a skimmer needs a quick handle, and the insight clarifies the section's utility.
+
+Do not use when: The section is already short, the visual component already teaches the point, the insight merely repeats the heading, it would create a second competing reading path, or it makes the article feel like a social media carousel.
+
+Typical size: One sentence or phrase, usually 6 to 14 words. Use sparingly, normally 4 to 6 placements in a long guide rather than every section.
+
+Cognitive role: Quiet wayfinding. A Margin Insight orients the reader, reinforces the section's central idea, and helps the reader decide whether to enter the full section.
+
+HTML structure:
+
+```html
+<header class="tax-article-header editorial-section-header ges-section-header--with-insight">
+  <div class="ges-section-heading">
+    <p class="guided-kicker">Verifying the Record</p>
+    <h2 id="record-title">How does the property record shape the current assessment?</h2>
+    <p class="ges-section-companion">The record is where the evidence begins.</p>
+  </div>
+  <aside class="ges-margin-insight" aria-label="Margin insight">
+    <p class="ges-margin-insight__text">The current assessment begins with the facts in the record.</p>
+  </aside>
+</header>
+```
+
+Layout: On desktop, place the insight as a quiet right-side companion only when the layout has enough width. Do not convert the whole article into a persistent two-column layout. On tablet and mobile, collapse it into the normal reading column directly below the heading, companion line, or first short paragraph. Keep the main article text as the primary reading path.
+
+Visual rule: Use muted text, small type, and a subtle left rule or top hairline. Avoid colored boxes, all-side borders, heavy card treatments, exclamation icons, emoji, and decorative callout styling. Default to no icon.
+
+Writing rules: No bullets. No hype. No "remember this!" language. Prefer procedural clarity and plain language. Avoid legal overstatement, persuasive campaign tone, and conclusory claims that imply a protest will succeed.
+
+Kicker companion: A short `ges-section-companion` line may appear near the kicker or heading when it improves wayfinding. Use it with the same restraint as Margin Insight; do not add companion lines to every section automatically.
+
+Decision tree:
+
+1. Does this section need orientation?
+2. Can the insight be stated in one useful sentence?
+3. Does it help the reader continue, rather than replace the reading?
+4. Does it fit the visual rhythm?
+5. Would removing it make the article less usable?
+
+If yes, add it. If no, leave the section alone.
+
+Accessibility: The insight is meaningful supplemental text, so do not hide it from assistive technology. Keep source order logical for mobile. If a future variant uses a decorative icon, hide only the icon with `aria-hidden="true"`.
+
+Print: Include Margin Insights only when compact and useful. Avoid backgrounds and rely on text, spacing, and simple rules that print cleanly.
 
 ### Concept Diagram
 

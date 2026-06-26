@@ -490,11 +490,30 @@ function updateProtestEvidenceGuideMetadata() {
   });
 }
 
-function sectionHeader(kicker, title, id) {
+function renderMarginInsight(insight) {
+  if (!insight?.text) return "";
+
   return `
-    <header class="tax-article-header editorial-section-header">
-      <p class="guided-kicker">${escapeHtml(kicker)}</p>
-      <h2 id="${escapeHtml(id)}">${escapeHtml(title)}</h2>
+    <aside class="ges-margin-insight" aria-label="${escapeHtml(insight.label ?? "Margin insight")}">
+      ${insight.label ? `<p class="ges-margin-insight__label">${escapeHtml(insight.label)}</p>` : ""}
+      <p class="ges-margin-insight__text">${escapeHtml(insight.text)}</p>
+    </aside>
+  `;
+}
+
+function sectionHeader(kicker, title, id, options = {}) {
+  const companion = options.companion ? `<p class="ges-section-companion">${escapeHtml(options.companion)}</p>` : "";
+  const insight = renderMarginInsight(options.marginInsight);
+  const classes = ["tax-article-header", "editorial-section-header", insight ? "ges-section-header--with-insight" : ""].filter(Boolean).join(" ");
+
+  return `
+    <header class="${classes}">
+      <div class="ges-section-heading">
+        <p class="guided-kicker">${escapeHtml(kicker)}</p>
+        <h2 id="${escapeHtml(id)}">${escapeHtml(title)}</h2>
+        ${companion}
+      </div>
+      ${insight}
     </header>
   `;
 }
@@ -522,7 +541,7 @@ function renderProcessStrip() {
   const section = ARTICLE_SECTIONS.process;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section article-section-visual" data-tone="information" aria-labelledby="processTitle">
-      ${sectionHeader(section.kicker, section.title, "processTitle")}
+      ${sectionHeader(section.kicker, section.title, "processTitle", section)}
       <ol class="process-strip" aria-label="Property protest preparation process">
         ${PROCESS_STEPS.map(([verb, detail, icon]) => `
           <li>
@@ -543,9 +562,9 @@ function renderOpeningSection() {
   const section = ARTICLE_SECTIONS.opening;
   return `
     <section class="tax-article-section tax-story-chapter tax-article-opening levy-wide-panel article-section" data-tone="reflection" aria-labelledby="protestOpeningTitle">
-      <div class="editorial-narrow">
+      <div class="editorial-narrow ges-section-lead">
         ${renderArticleEntryPanel()}
-        ${sectionHeader(section.kicker, section.title, "protestOpeningTitle")}
+        ${sectionHeader(section.kicker, section.title, "protestOpeningTitle", section)}
         ${paragraphs(section.paragraphs)}
       </div>
       ${renderDisconnectFigure()}
@@ -563,8 +582,8 @@ function renderWhyProtestsFailSection() {
   const section = ARTICLE_SECTIONS.whyProtestsFail;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" aria-labelledby="protestFailTitle">
-      <div class="editorial-narrow">
-        ${sectionHeader(section.kicker, section.title, "protestFailTitle")}
+      <div class="editorial-narrow ges-section-lead">
+        ${sectionHeader(section.kicker, section.title, "protestFailTitle", section)}
         ${paragraphs(section.paragraphs)}
       </div>
       <figure class="comparison-card" aria-labelledby="requestCompareTitle">
@@ -592,8 +611,8 @@ function renderBoardQuestionSection() {
   const section = ARTICLE_SECTIONS.boardQuestion;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" aria-labelledby="protestBoardTitle">
-      <div class="editorial-narrow">
-        ${sectionHeader(section.kicker, section.title, "protestBoardTitle")}
+      <div class="editorial-narrow ges-section-lead">
+        ${sectionHeader(section.kicker, section.title, "protestBoardTitle", section)}
         ${paragraph(section.intro)}
       </div>
       <figure class="decision-panel" aria-labelledby="decisionPanelTitle">
@@ -687,8 +706,8 @@ function renderRecordsSection() {
   const section = ARTICLE_SECTIONS.records;
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="evidence" aria-labelledby="protestRecordsTitle">
-      <div class="editorial-narrow">
-        ${sectionHeader(section.kicker, section.title, "protestRecordsTitle")}
+      <div class="editorial-narrow ges-section-lead">
+        ${sectionHeader(section.kicker, section.title, "protestRecordsTitle", section)}
         <p class="article-emphasis">${escapeHtml(section.emphasis)}</p>
       </div>
       ${renderAssessmentBuildPanel()}

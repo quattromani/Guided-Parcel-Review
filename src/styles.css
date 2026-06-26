@@ -10164,6 +10164,89 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   gap: 0.5rem;
 }
 
+.ges-section-heading {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.ges-section-companion {
+  color: rgb(var(--color-slate-600));
+  font-family: var(--levy-heading-font);
+  font-size: 0.92rem;
+  font-weight: 560;
+  line-height: 1.38;
+  margin: -0.08rem 0 0;
+}
+
+.editorial-narrow.ges-section-lead {
+  width: min(100%, 46rem);
+}
+
+.ges-section-header--with-insight {
+  align-items: start;
+  display: grid;
+  gap: 0.7rem;
+  justify-self: center;
+  width: 100%;
+}
+
+.ges-margin-insight {
+  border-top: 1px solid rgb(var(--color-slate-300) / 0.72);
+  color: rgb(var(--color-slate-600));
+  display: grid;
+  gap: 0.24rem;
+  margin: 0;
+  padding-top: 0.62rem;
+}
+
+.ges-margin-insight__label,
+.ges-margin-insight__text {
+  margin: 0;
+}
+
+.ges-margin-insight__label {
+  color: rgb(var(--color-secondary));
+  font-family: var(--levy-heading-font);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  line-height: 1.18;
+  text-transform: uppercase;
+}
+
+.ges-margin-insight__text {
+  color: inherit;
+  font-family: var(--levy-heading-font);
+  font-size: 0.88rem;
+  font-weight: 560;
+  line-height: 1.38;
+}
+
+@media (min-width: 960px) {
+  .editorial-narrow.ges-section-lead {
+    justify-items: start;
+    width: min(100%, 64rem);
+  }
+
+  .editorial-narrow.ges-section-lead > :not(.ges-section-header--with-insight) {
+    width: min(100%, 46rem);
+  }
+
+  .ges-section-header--with-insight {
+    column-gap: clamp(1.4rem, 3vw, 2.35rem);
+    grid-template-columns: minmax(0, 46rem) minmax(10.5rem, 14rem);
+    width: min(100%, 64rem);
+  }
+
+  .ges-margin-insight {
+    border-left: 1px solid rgb(var(--color-slate-300) / 0.72);
+    border-top: 0;
+    margin-top: 0.18rem;
+    padding-left: 0.75rem;
+    padding-top: 0;
+  }
+}
+
 .editorial-guide h3 {
   color: rgb(var(--brand-ink));
   font-family: var(--levy-heading-font);
@@ -14668,6 +14751,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .article-source-note,
   .article-sources-used,
   .decision-disclaimer,
+  .ges-margin-insight,
   .continuation-module,
   .question-checklist li {
     break-inside: avoid;
@@ -14692,6 +14776,35 @@ body:has(.levy-compression-page) .comp-page-title h1 {
     margin-bottom: 0.11in;
     page-break-after: avoid;
     page-break-inside: avoid;
+  }
+
+  .protest-evidence-guide-page .ges-section-header--with-insight {
+    display: grid;
+    gap: 0.07in;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .protest-evidence-guide-page .ges-margin-insight {
+    border-left: 0;
+    border-top: 0.5pt solid #9ca3af;
+    color: #4b5563;
+    margin-top: 0;
+    padding-left: 0;
+    padding-top: 0.06in;
+  }
+
+  .protest-evidence-guide-page .ges-margin-insight__label {
+    color: #374151;
+    font-size: 6.8pt;
+    letter-spacing: 0.08em;
+  }
+
+  .protest-evidence-guide-page .ges-margin-insight__text,
+  .protest-evidence-guide-page .ges-section-companion {
+    color: #4b5563;
+    font-size: 8.4pt;
+    line-height: 1.28;
   }
 
   .protest-evidence-guide-page .guided-kicker,
