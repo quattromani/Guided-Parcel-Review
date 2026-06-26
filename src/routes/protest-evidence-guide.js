@@ -35,6 +35,9 @@ const GAGE_COUNTY_WEBSITE = articleSource.references.gageCountyWebsite;
 const GAGE_COUNTY_ASSESSOR_PAGE = articleSource.references.gageCountyAssessorPage;
 const GAGE_COUNTY_PROTESTS_PAGE = articleSource.references.gageCountyProtestsPage;
 const GAGE_COUNTY_PROPERTY_SEARCH_PAGE = articleSource.references.gageCountyPropertySearchPage;
+const ARTICLE_REFERENCES = articleSource.references;
+const ARTICLE_SOURCE_NOTES = articleSource.sourceNotes ?? {};
+const ARTICLE_SOURCES_USED = articleSource.sourcesUsed;
 const ARTICLE_KEYWORDS = articleSource.keywords;
 const ARTICLE_DEPTH_MILESTONES = [25, 50, 75, 100];
 const ARTICLE_TLDR_TRANSCRIPT = articleSource.tldrTranscript;
@@ -67,6 +70,71 @@ function listMarkup(items) {
     <ul>
       ${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
     </ul>
+  `;
+}
+
+function renderExternalSourceLink(item) {
+  const url = item.urlKey ? ARTICLE_REFERENCES[item.urlKey] : item.url;
+  if (!url) return `<span>${escapeHtml(item.label)}</span>`;
+
+  return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.label)}</a>`;
+}
+
+function citationIdForItem(item) {
+  if (item.sourceId) return item.sourceId;
+  if (item.urlKey) return item.urlKey;
+
+  return item.label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function citationCategoryForItem(item) {
+  if (item.category) return item.category;
+  if (item.urlKey?.startsWith("nebraska") || item.urlKey?.startsWith("title350")) return "legal-authority";
+  if (/\b(IAAO|PAD|Property Assessment Division|Reports & Opinions)\b/.test(item.label)) return "assessment-guidance";
+  return "practice-basis";
+}
+
+function uniqueValues(values) {
+  return [...new Set(values.filter(Boolean))];
+}
+
+function renderSourceNote(note) {
+  if (!note?.items?.length) return "";
+  const sourceIds = uniqueValues(note.items.map(citationIdForItem));
+  const sourceCategories = uniqueValues(note.items.map(citationCategoryForItem));
+
+  return `
+    <aside class="article-source-note" aria-label="${escapeHtml(note.label)}" data-source-label="${escapeHtml(note.label)}" data-source-ids="${escapeHtml(sourceIds.join(" "))}" data-source-categories="${escapeHtml(sourceCategories.join(" "))}">
+      <strong>${escapeHtml(note.label)}</strong>
+      <p>${note.items.map(renderExternalSourceLink).join("; ")}.</p>
+    </aside>
+  `;
+}
+
+function renderSourcesUsedBlock() {
+  if (!ARTICLE_SOURCES_USED?.groups?.length) return "";
+  const sourceItems = ARTICLE_SOURCES_USED.groups.flatMap(group => group.items);
+  const sourceIds = uniqueValues(sourceItems.map(citationIdForItem));
+  const sourceCategories = uniqueValues(sourceItems.map(citationCategoryForItem));
+
+  return `
+    <aside class="article-sources-used" aria-labelledby="articleSourcesUsedTitle" data-source-ids="${escapeHtml(sourceIds.join(" "))}" data-source-categories="${escapeHtml(sourceCategories.join(" "))}">
+      <h3 id="articleSourcesUsedTitle">${escapeHtml(ARTICLE_SOURCES_USED.title)}</h3>
+      <p>${escapeHtml(ARTICLE_SOURCES_USED.intro)}</p>
+      <div>
+        ${ARTICLE_SOURCES_USED.groups.map(group => `
+          <section>
+            <h4>${escapeHtml(group.heading)}</h4>
+            <ul>
+              ${group.items.map(item => `<li>${renderExternalSourceLink(item)}</li>`).join("")}
+            </ul>
+          </section>
+        `).join("")}
+      </div>
+    </aside>
   `;
 }
 
@@ -414,6 +482,7 @@ function renderProcessStrip() {
           </li>
         `).join("")}
       </ol>
+      ${renderSourceNote(ARTICLE_SOURCE_NOTES.process)}
     </section>
   `;
 }
@@ -461,6 +530,7 @@ function renderWhyProtestsFailSection() {
       </figure>
       <div class="editorial-narrow">
         ${paragraph(section.closingParagraph)}
+        ${renderSourceNote(ARTICLE_SOURCE_NOTES.whyProtestsFail)}
       </div>
     </section>
   `;
@@ -495,6 +565,7 @@ function renderBoardQuestionSection() {
       </aside>
       <div class="editorial-narrow">
         ${paragraph(section.closingParagraph)}
+        ${renderSourceNote(ARTICLE_SOURCE_NOTES.boardQuestion)}
       </div>
     </section>
   `;
@@ -523,6 +594,7 @@ function renderComparableSection() {
       </figure>
       <div class="editorial-narrow">
         ${paragraphs(section.paragraphs)}
+        ${renderSourceNote(ARTICLE_SOURCE_NOTES.comparables)}
       </div>
     </section>
   `;
@@ -576,6 +648,7 @@ function renderRecordsSection() {
       ${renderRecordCallout()}
       <div class="editorial-narrow">
         ${paragraph(section.caution)}
+        ${renderSourceNote(ARTICLE_SOURCE_NOTES.records)}
       </div>
     </section>
   `;
@@ -606,6 +679,7 @@ function renderEvidenceSection() {
       </figure>
       <div class="editorial-narrow">
         ${paragraph(section.closingParagraph)}
+        ${renderSourceNote(ARTICLE_SOURCE_NOTES.evidence)}
       </div>
     </section>
   `;
@@ -631,6 +705,9 @@ function renderOrganizationSection() {
       <aside class="guided-transition protest-guide-takeaway pull-quote">
         <p>${escapeHtml(section.pullQuote)}</p>
       </aside>
+      <div class="editorial-narrow">
+        ${renderSourceNote(ARTICLE_SOURCE_NOTES.organization)}
+      </div>
     </section>
   `;
 }
@@ -715,6 +792,7 @@ function renderOneMoreThoughtSection() {
       </aside>
       <div class="editorial-narrow">
         ${paragraph(section.closingParagraph)}
+        ${renderSourceNote(ARTICLE_SOURCE_NOTES.afterHearing)}
       </div>
     </section>
   `;
@@ -726,6 +804,8 @@ function renderClosingSection() {
     <section class="tax-article-section tax-story-chapter tax-article-closing levy-article-narrow article-section" data-tone="reflection" aria-labelledby="protestClosingTitle">
       ${sectionHeader(section.kicker, section.title, "protestClosingTitle")}
       ${paragraphs(section.paragraphs)}
+      ${renderSourceNote(ARTICLE_SOURCE_NOTES.closing)}
+      ${renderSourcesUsedBlock()}
       <aside class="article-share-footer" aria-labelledby="shareArticleTitle">
         <p id="shareArticleTitle">${escapeHtml(section.sharePrompt)}</p>
         <button type="button" data-article-share data-article-action="share_article" data-article-label="${ARTICLE_TITLE}">

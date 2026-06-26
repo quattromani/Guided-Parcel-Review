@@ -10670,6 +10670,113 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   text-transform: uppercase;
 }
 
+.article-source-note {
+  background: color-mix(in srgb, var(--editorial-accent-soft) 54%, #ffffff);
+  border-left: 0.16rem solid color-mix(in srgb, var(--editorial-accent) 58%, rgb(var(--border-muted)));
+  border-radius: 0.55rem;
+  color: rgb(var(--color-slate-600));
+  display: grid;
+  gap: 0.24rem;
+  justify-self: center;
+  margin-top: 0.25rem;
+  padding: 0.58rem 0.72rem;
+  width: min(100%, 46rem);
+}
+
+.article-source-note strong {
+  color: color-mix(in srgb, var(--editorial-accent) 86%, rgb(var(--brand-ink)));
+  font-family: var(--levy-heading-font);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.article-source-note p {
+  color: rgb(var(--color-slate-600));
+  font-family: var(--levy-body-font);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.article-source-note a,
+.article-sources-used a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 34%, transparent);
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.17em;
+}
+
+.article-source-note a:focus,
+.article-source-note a:hover,
+.article-sources-used a:focus,
+.article-sources-used a:hover {
+  color: rgb(var(--brand-ink));
+  text-decoration-color: currentColor;
+}
+
+.article-sources-used {
+  background: rgb(var(--color-paper));
+  border: 1px solid var(--editorial-border);
+  border-left: 0.18rem solid color-mix(in srgb, var(--editorial-accent) 54%, rgb(var(--border-muted)));
+  border-radius: 0.7rem;
+  display: grid;
+  gap: 0.72rem;
+  margin-top: 1.2rem;
+  padding: clamp(0.82rem, 2vw, 1.05rem);
+}
+
+.article-sources-used h3,
+.article-sources-used h4 {
+  color: rgb(var(--brand-ink));
+  font-family: var(--levy-heading-font);
+  margin: 0;
+}
+
+.article-sources-used h3 {
+  font-size: 1rem;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.article-sources-used h4 {
+  color: rgb(var(--color-slate-600));
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.article-sources-used > p,
+.article-sources-used li {
+  color: rgb(var(--color-slate-600));
+  font-family: var(--levy-body-font);
+  font-size: 0.86rem;
+  line-height: 1.48;
+  margin: 0;
+}
+
+.article-sources-used > div {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.article-sources-used section {
+  display: grid;
+  gap: 0.36rem;
+}
+
+.article-sources-used ul {
+  display: grid;
+  gap: 0.34rem;
+  margin: 0;
+  padding-left: 1.05rem;
+}
+
 .assessment-build-panel {
   display: grid;
   gap: 0.85rem;
@@ -14292,6 +14399,8 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .meeting-schedule-card,
   .resource-section,
   .resource-card,
+  .article-source-note,
+  .article-sources-used,
   .decision-disclaimer,
   .related-article-coda,
   .question-checklist li {

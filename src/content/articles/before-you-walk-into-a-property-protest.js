@@ -11,7 +11,7 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
   tags: ["Gage County"],
   displayDate: "June 25, 2026",
   publishedDate: "2026-06-25T17:33:00-05:00",
-  modifiedDate: "2026-06-25T17:33:00-05:00",
+  modifiedDate: "2026-06-26T09:00:00-05:00",
   description: "A plain language guide to preparing a property valuation protest with comparables, property record cards, evidence, and a specific correction request.",
   keywords: [
     "property valuation protest",
@@ -41,7 +41,111 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     gageCountyWebsite: "https://gagecountyne.gov/",
     gageCountyAssessorPage: "https://gagecountyne.gov/county-assessor/",
     gageCountyProtestsPage: "https://gagecountyne.gov/county-assessor/property-valuation-protests/",
-    gageCountyPropertySearchPage: "https://gagecountyne.gov/county-assessor/disclaimer-and-terms-of-service-assessors-online/"
+    gageCountyPropertySearchPage: "https://gagecountyne.gov/county-assessor/disclaimer-and-terms-of-service-assessors-online/",
+    nebraskaConstitutionArticleViii: "https://nebraskalegislature.gov/laws/articles.php?article=VIII-1",
+    nebraskaRevisedStatutesChapter77: "https://nebraskalegislature.gov/laws/browse-chapters.php?chapter=77",
+    nebraskaStatute77112: "https://nebraskalegislature.gov/laws/statutes.php?statute=77-112",
+    nebraskaStatute771301: "https://nebraskalegislature.gov/laws/statutes.php?statute=77-1301",
+    nebraskaStatute771303: "https://nebraskalegislature.gov/laws/statutes.php?statute=77-1303",
+    nebraskaStatute771311: "https://nebraskalegislature.gov/laws/statutes.php?statute=77-1311",
+    nebraskaStatute771501: "https://nebraskalegislature.gov/laws/statutes.php?statute=77-1501",
+    nebraskaStatute771502: "https://nebraskalegislature.gov/laws/statutes.php?statute=77-1502",
+    nebraskaStatute771504: "https://nebraskalegislature.gov/laws/statutes.php?statute=77-1504",
+    nebraskaStatute77201: "https://nebraskalegislature.gov/laws/statutes.php?statute=77-201",
+    nebraskaStatute775013: "https://nebraskalegislature.gov/laws/statutes.php?statute=77-5013",
+    title350Chapter10: "https://revenue.nebraska.gov/about/legal-information/regulations/chapter-10-real-property"
+  },
+  sourceNotes: {
+    process: {
+      label: "Authority",
+      items: [
+        { label: "Neb. Rev. Stat. § 77-1301", urlKey: "nebraskaStatute771301" },
+        { label: "§ 77-1502", urlKey: "nebraskaStatute771502" },
+        { label: "§ 77-1504", urlKey: "nebraskaStatute771504" },
+        { label: "Title 350, Ch. 10, Real Property Regulations", urlKey: "title350Chapter10" }
+      ]
+    },
+    whyProtestsFail: {
+      label: "Authority / practice basis",
+      items: [
+        { label: "Neb. Rev. Stat. § 77-1502", urlKey: "nebraskaStatute771502" },
+        { label: "Title 350, Ch. 10, Protest Procedures", urlKey: "title350Chapter10" },
+        { label: "Neb. Rev. Stat. § 77-201 actual-value framework", urlKey: "nebraskaStatute77201" }
+      ]
+    },
+    boardQuestion: {
+      label: "Authority",
+      items: [
+        { label: "Neb. Const. art. VIII, § 1", urlKey: "nebraskaConstitutionArticleViii" },
+        { label: "Neb. Rev. Stat. § 77-1501", urlKey: "nebraskaStatute771501" },
+        { label: "§ 77-1502", urlKey: "nebraskaStatute771502" },
+        { label: "§ 77-1504", urlKey: "nebraskaStatute771504" }
+      ]
+    },
+    comparables: {
+      label: "Legal / appraisal basis",
+      items: [
+        { label: "Neb. Rev. Stat. § 77-112", urlKey: "nebraskaStatute77112" },
+        { label: "IAAO Course 101, Sales Comparison Approach", sourceId: "iaaoCourse101SalesComparison", category: "assessment-guidance" }
+      ]
+    },
+    records: {
+      label: "Authority",
+      items: [
+        { label: "Title 350, Ch. 10, Property Record File / Property Record Card provisions", urlKey: "title350Chapter10" },
+        { label: "Neb. Rev. Stat. § 77-1303", urlKey: "nebraskaStatute771303" },
+        { label: "§ 77-1311", urlKey: "nebraskaStatute771311" }
+      ]
+    },
+    evidence: {
+      label: "Authority",
+      items: [
+        { label: "Neb. Rev. Stat. § 77-1502", urlKey: "nebraskaStatute771502" },
+        { label: "Title 350, Ch. 10, Protest Procedures", urlKey: "title350Chapter10" }
+      ]
+    },
+    organization: {
+      label: "Practice basis",
+      items: [
+        { label: "Title 350, Ch. 10, Protest Procedures", urlKey: "title350Chapter10" },
+        { label: "IAAO appraisal guidance", sourceId: "iaaoAppraisalGuidance", category: "assessment-guidance" }
+      ]
+    },
+    afterHearing: {
+      label: "Authority",
+      items: [
+        { label: "Neb. Rev. Stat. § 77-1504", urlKey: "nebraskaStatute771504" },
+        { label: "§ 77-5013", urlKey: "nebraskaStatute775013" }
+      ]
+    },
+    closing: {
+      label: "Authority / principle",
+      items: [
+        { label: "Neb. Const. art. VIII, § 1", urlKey: "nebraskaConstitutionArticleViii" },
+        { label: "Title 350, Ch. 10, Real Property Regulations", urlKey: "title350Chapter10" }
+      ]
+    }
+  },
+  sourcesUsed: {
+    title: "Sources Used",
+    intro: "This guide is based on Nebraska property tax law, Nebraska Department of Revenue Property Assessment Division regulations, and generally accepted assessment guidance.",
+    groups: [
+      {
+        heading: "Legal authority",
+        items: [
+          { label: "Nebraska Constitution, Article VIII, § 1 — uniform and proportionate taxation.", urlKey: "nebraskaConstitutionArticleViii" },
+          { label: "Nebraska Revised Statutes, Chapter 77 — property valuation, assessment, equalization, protest, and appeal procedures.", urlKey: "nebraskaRevisedStatutesChapter77" },
+          { label: "Title 350, Nebraska Administrative Code, Chapter 10 — Property Assessment Division Real Property Regulations.", urlKey: "title350Chapter10" }
+        ]
+      },
+      {
+        heading: "Assessment guidance",
+        items: [
+          { label: "IAAO Course 101, Fundamentals of Real Property Appraisal — sales comparison, cost approach, depreciation, and appraisal process.", sourceId: "iaaoCourse101Fundamentals", category: "assessment-guidance" },
+          { label: "Nebraska Property Assessment Division Reports & Opinions — used only as assessment-practice context, not as controlling legal authority.", sourceId: "nebraskaPadReportsOpinions", category: "assessment-guidance" }
+        ]
+      }
+    ]
   },
   tldrTranscript: [
     "If you only have a minute, here is the heart of this guide.",
@@ -282,7 +386,7 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
       kicker: "Gathering Your Materials",
       title: "Where do you find the materials?",
       intro: "Here are the typical tools for checking the record, finding comparable sales, and filing the official protest form.",
-      note: "This guide is general educational guidance. It is not legal advice, not an appraisal, and not a guarantee of any outcome. Local deadlines, filing rules, hearing procedures, and Board decisions still control."
+      note: "This guide is general educational guidance. It is not an appraisal and not a guarantee of any outcome. Local deadlines, filing rules, hearing procedures, and Board decisions still control."
     },
     afterHearing: {
       kicker: "After the Hearing",
