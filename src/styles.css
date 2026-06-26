@@ -9343,12 +9343,12 @@ body:has(.protest-evidence-guide-page[data-county-theme="gage"]) .article-hero {
   margin: 0;
 }
 
-.article-hero .hero-kicker span {
+.article-hero .hero-kicker:not(.hero-brand-kicker) span {
   display: inline-block;
   position: relative;
 }
 
-.article-hero .hero-kicker span::after {
+.article-hero .hero-kicker:not(.hero-brand-kicker) span::after {
   background: currentColor;
   bottom: -0.18rem;
   content: "";
@@ -9356,6 +9356,28 @@ body:has(.protest-evidence-guide-page[data-county-theme="gage"]) .article-hero {
   left: 0;
   position: absolute;
   width: 75%;
+}
+
+.article-hero .hero-brand-kicker {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.55rem;
+}
+
+.article-hero .hero-brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  height: 1.75rem;
+  width: 1.79rem;
+}
+
+.article-hero .hero-kicker-divider {
+  color: rgb(var(--color-slate-500));
+  font-weight: 700;
+}
+
+.article-hero .hero-kicker-text {
+  transform: translateY(0.01rem);
 }
 
 .article-hero .hero-title {

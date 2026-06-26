@@ -932,7 +932,11 @@ export function renderProtestEvidenceGuide() {
     <header class="comp-page-title levy-page-title article-hero" aria-labelledby="protestArticleTitle">
       <div class="article-hero-packet">
         <div class="hero-kicker-row">
-          <p class="guided-kicker hero-kicker"><span>Guide</span> / Property Protest Prep</p>
+          <p class="guided-kicker hero-kicker hero-brand-kicker">
+            <img class="hero-brand-mark" src="assets/brand/civic-house-mark.svg" alt="Guided Parcel Review" width="28" height="28" decoding="async" />
+            <span class="hero-kicker-divider" aria-hidden="true">/</span>
+            <span class="hero-kicker-text">Property Protest Prep</span>
+          </p>
         </div>
         <h1 id="protestArticleTitle" class="hero-title">${ARTICLE_TITLE}</h1>
         <p class="hero-deck">${ARTICLE_SUBTITLE}</p>
