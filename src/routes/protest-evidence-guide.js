@@ -65,6 +65,25 @@ function paragraphs(items = []) {
   return items.map(paragraph).join("");
 }
 
+function cautionParagraph(text) {
+  const [lead, ...rest] = text.split(":");
+  if (!rest.length) return paragraph(text);
+
+  return `
+    <p class="article-caution-note">
+      <span><strong>${escapeHtml(`${lead}:`)}</strong> ${escapeHtml(rest.join(":").trim())}</span>
+    </p>
+  `;
+}
+
+function labeledNote(label, text, className = "") {
+  return `
+    <p class="article-caution-note article-guidance-note ${escapeHtml(className)}">
+      <span><strong>${escapeHtml(`${label}:`)}</strong> ${escapeHtml(text)}</span>
+    </p>
+  `;
+}
+
 function listMarkup(items) {
   return `
     <ul>
@@ -647,7 +666,7 @@ function renderRecordsSection() {
       </div>
       ${renderRecordCallout()}
       <div class="editorial-narrow">
-        ${paragraph(section.caution)}
+        ${cautionParagraph(section.caution)}
         ${renderSourceNote(ARTICLE_SOURCE_NOTES.records)}
       </div>
     </section>
@@ -761,7 +780,7 @@ function renderResourcesSection() {
           </div>
         `).join("")}
       </div>
-      <p class="note-box resource-note">${escapeHtml(section.note)}</p>
+      ${labeledNote(section.noteLabel, section.note, "resource-note")}
     </section>
   `;
 }

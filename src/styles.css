@@ -10106,6 +10106,53 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   margin: 0;
 }
 
+.article-caution-note {
+  align-items: start;
+  background: color-mix(in srgb, var(--editorial-accent-soft) 48%, #ffffff);
+  border-left: 0.18rem solid color-mix(in srgb, var(--editorial-accent) 68%, rgb(var(--border-muted)));
+  border-radius: 0.62rem;
+  color: rgb(var(--brand-ink));
+  display: grid;
+  gap: 0.28rem 0.62rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  margin: 0.18rem 0 0;
+  padding: 0.72rem 0.82rem;
+}
+
+.article-caution-note::before {
+  align-items: center;
+  background: var(--editorial-accent);
+  border-radius: 999px;
+  color: #ffffff;
+  content: "!";
+  display: inline-flex;
+  font-family: var(--levy-heading-font);
+  font-size: 0.72rem;
+  font-weight: 900;
+  height: 1.28rem;
+  justify-content: center;
+  line-height: 1;
+  margin-top: 0.12rem;
+  width: 1.28rem;
+}
+
+.article-caution-note strong {
+  color: rgb(var(--brand-ink));
+  font-weight: 850;
+}
+
+.article-guidance-note {
+  background: color-mix(in srgb, var(--color-information-soft) 46%, #ffffff);
+  border-left-color: color-mix(in srgb, rgb(var(--color-information)) 58%, rgb(var(--border-muted)));
+}
+
+.article-guidance-note::before {
+  background: rgb(var(--color-information));
+  content: "i";
+  font-family: var(--levy-heading-font);
+  font-style: italic;
+}
+
 .concept-card,
 .comparison-card,
 .decision-panel,

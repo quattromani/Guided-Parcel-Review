@@ -386,6 +386,7 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
       kicker: "Gathering Your Materials",
       title: "Where do you find the materials?",
       intro: "Here are the typical tools for checking the record, finding comparable sales, and filing the official protest form.",
+      noteLabel: "Guidance note",
       note: "This guide is general educational guidance. It is not an appraisal and not a guarantee of any outcome. Local deadlines, filing rules, hearing procedures, and Board decisions still control."
     },
     afterHearing: {
