@@ -127,7 +127,6 @@ function renderSourceNote(note) {
 
   return `
     <aside class="article-source-note" aria-label="${escapeHtml(note.label)}" data-source-label="${escapeHtml(note.label)}" data-source-ids="${escapeHtml(sourceIds.join(" "))}" data-source-categories="${escapeHtml(sourceCategories.join(" "))}">
-      <strong>${escapeHtml(note.label)}</strong>
       <p>${note.items.map(renderExternalSourceLink).join("; ")}.</p>
     </aside>
   `;
@@ -155,6 +154,20 @@ function renderSourcesUsedBlock() {
       </div>
     </aside>
   `;
+}
+
+function boardMeetingIsPast(meeting, now = new Date()) {
+  if (!meeting.endsAt) return false;
+  const endDate = new Date(meeting.endsAt);
+  return !Number.isNaN(endDate.getTime()) && endDate <= now;
+}
+
+function hasUpcomingBoardMeeting(meetings = [], now = new Date()) {
+  return meetings.some(meeting => {
+    if (!meeting.endsAt) return true;
+    const endDate = new Date(meeting.endsAt);
+    return Number.isNaN(endDate.getTime()) || endDate > now;
+  });
 }
 
 function editorialIcon(name, className = "") {
@@ -564,7 +577,10 @@ function renderBoardQuestionSection() {
         ${paragraph(section.intro)}
       </div>
       <figure class="decision-panel" aria-labelledby="decisionPanelTitle">
-        <figcaption class="decision-panel-label" id="decisionPanelTitle">${escapeHtml(section.label)}</figcaption>
+        <figcaption class="decision-panel-label" id="decisionPanelTitle">
+          <span class="decision-panel-context">${escapeHtml(section.contextLabel ?? "Board Review")}</span>
+          <span class="decision-panel-title">${escapeHtml(section.label)}</span>
+        </figcaption>
         <p class="decision-question">${escapeHtml(section.question)}</p>
         <div class="decision-outcomes decision-branches" role="list" aria-label="Possible Board outcomes">
           <div class="decision-branch" data-decision-branch="yes" role="listitem">
@@ -623,12 +639,7 @@ function renderAssessmentBuildPanel() {
   const section = ARTICLE_SECTIONS.records;
   return `
     <figure class="assessment-build-panel" aria-labelledby="assessmentBuildTitle">
-      <figcaption id="assessmentBuildTitle">${escapeHtml(section.layerCaption)}</figcaption>
-      <div class="assessment-build-header">
-        ${editorialIcon("property-record")}
-        <strong>${escapeHtml(section.layerTitle)}</strong>
-        <span>${escapeHtml(section.layerSubtitle)}</span>
-      </div>
+      <figcaption id="assessmentBuildTitle">${editorialIcon("measurement")}<span>${escapeHtml(section.layerCaption)}</span></figcaption>
       <ul>
         ${RECORD_FACTS.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
       </ul>
@@ -682,7 +693,7 @@ function renderEvidenceSection() {
         ${paragraph(section.intro)}
       </div>
       <figure class="evidence-matrix" aria-labelledby="evidenceMatrixTitle">
-        <figcaption id="evidenceMatrixTitle">${editorialIcon("evidence")}<span>Evidence -> Record issue -> Requested correction</span></figcaption>
+        <figcaption id="evidenceMatrixTitle">${editorialIcon("evidence")}<span>Evidence to record issue to requested correction</span></figcaption>
         <ol class="evidence-path-list">
           ${EVIDENCE_EXAMPLES.map(row => `
             <li>
@@ -787,28 +798,37 @@ function renderResourcesSection() {
 
 function renderOneMoreThoughtSection() {
   const section = ARTICLE_SECTIONS.afterHearing;
+  const now = new Date();
+  const meetingSchedule = hasUpcomingBoardMeeting(BOARD_MEETINGS, now) ? `
+      <aside class="meeting-schedule-card" aria-labelledby="gageBoardScheduleTitle">
+        <h3 id="gageBoardScheduleTitle">${editorialIcon("timeline")}<span>${escapeHtml(section.scheduleTitle)}</span></h3>
+        <p>${escapeHtml(BOARD_MEETING_LOCATION)}</p>
+        <ul>
+          ${BOARD_MEETINGS.map(meeting => {
+            const isPast = boardMeetingIsPast(meeting, now);
+            return `
+            <li class="${isPast ? "meeting-date-past" : ""}">
+              <a href="${escapeHtml(meeting.calendarUrl)}" download aria-label="${isPast ? "Past hearing: " : "Add "}${escapeHtml(meeting.dateLabel)} at ${escapeHtml(meeting.timeLabel)} Central Time${isPast ? "" : " to calendar"}" data-article-action="calendar_download" data-article-label="${escapeHtml(meeting.dateLabel)}">
+                <span>${escapeHtml(meeting.dateLabel)}</span>
+                <strong>${escapeHtml(meeting.timeLabel)}</strong>
+                <em>${isPast ? "Past hearing" : "Add to calendar"}</em>
+                <code class="print-calendar-url">${escapeHtml(meeting.calendarUrl)}</code>
+              </a>
+            </li>
+          `;
+          }).join("")}
+        </ul>
+        <p class="important-inline-note">${escapeHtml(section.scheduleNote)}</p>
+      </aside>
+  ` : "";
+
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-labelledby="protestOneMoreThoughtTitle">
       <div class="editorial-narrow">
         ${sectionHeader(section.kicker, section.title, "protestOneMoreThoughtTitle")}
         ${paragraphs(section.paragraphs)}
       </div>
-      <aside class="meeting-schedule-card" aria-labelledby="gageBoardScheduleTitle">
-        <h3 id="gageBoardScheduleTitle">${editorialIcon("timeline")}<span>${escapeHtml(section.scheduleTitle)}</span></h3>
-        <p>${escapeHtml(BOARD_MEETING_LOCATION)}</p>
-        <ul>
-          ${BOARD_MEETINGS.map(meeting => `
-            <li>
-              <a href="${escapeHtml(meeting.calendarUrl)}" download aria-label="Add ${escapeHtml(meeting.dateLabel)} Gage County Board of Equalization meeting to calendar" data-article-action="calendar_download" data-article-label="${escapeHtml(meeting.dateLabel)}">
-                <span>${escapeHtml(meeting.dateLabel)}</span>
-                <strong>${escapeHtml(meeting.timeLabel)}</strong>
-                <em>Add to calendar</em>
-              </a>
-            </li>
-          `).join("")}
-        </ul>
-        <p class="important-inline-note">${escapeHtml(section.scheduleNote)}</p>
-      </aside>
+      ${meetingSchedule}
       <div class="editorial-narrow">
         ${paragraph(section.closingParagraph)}
         ${renderSourceNote(ARTICLE_SOURCE_NOTES.afterHearing)}

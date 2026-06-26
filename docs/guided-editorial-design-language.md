@@ -97,6 +97,22 @@ The reader should feel the floor under them. Repeated editorial structures make 
 
 When a process strip, comparison card, evidence matrix, or script card appears, the reader should quickly understand what kind of thinking the component is asking for.
 
+### Institutional Authority
+
+Institutional authority should be communicated through typography, proportion, spacing, hierarchy, and editorial restraint.
+
+Never use imitation of physical materials as a shortcut for civic seriousness. Avoid faux stone, faux engraving, faux metal, bevels, embossing, and ornamental courthouse aesthetics.
+
+GES should feel like a thoughtfully prepared civic publication, not an imitation of a courthouse. The publication earns authority through clarity rather than decoration.
+
+### Supporting Authority
+
+Supporting authority should never compete with the lesson. Citations exist to provide provenance, not visual emphasis.
+
+For section-level legal or assessment citations, use quiet footnote-style references immediately below the content they support. Do not add visible kicker labels such as "Authority," "Practice basis," or "Legal basis" unless the surrounding context would otherwise be ambiguous. Preserve meaningful link text and accessible labels, but keep the visual treatment muted, compact, and slightly smaller than body copy.
+
+Avoid cards, colored backgrounds, icons, callouts, borders, and excessive whitespace for routine supporting citations. A thin neutral divider may be used only when needed to separate citations from dense preceding content. If removing the heading makes the page cleaner while the citations remain understandable, prefer the simpler treatment.
+
 ### Accuracy Compounds
 
 Accuracy is both an editorial value and a civic value. Better explanations lead to better reader action. Better reader action leads to better records. Better records support better models. Better models support more uniform outcomes.
@@ -341,7 +357,7 @@ Use these names as the mature GES component vocabulary. Each component should ha
 | Process Strip | Shows a short workflow. | Steps are sequential. | Items are independent checks. | Use an ordered list. | Avoid breaking inside the strip. | `process-strip`, `process-step-heading` |
 | Comparison Module | Contrasts weak and strong choices. | Reader must distinguish similar options. | There is no meaningful contrast. | Labels, not color alone. | Keep paired sides together. | `comparison-card`, `comparison-module` |
 | Decision Diagram | Frames the question behind an outcome. | A decision path reduces uncertainty. | Exceptions would make it misleading. | List/outcome labels remain text. | Include simplification note when needed. | `decision-panel`, `decision-diagram` |
-| Assessment Build Panel | Shows how the current assessed value is shaped by current record facts and related valuation information. | Readers need to connect record review to value review. | The language implies the value is final or beyond review. | Figcaption and text labels explain every part. | Works as a worksheet-like record label. | `assessment-build-panel`, `assessment-build-header` |
+| Assessment Build Panel | Shows how the current assessed value is shaped by current record facts and related valuation information. | Readers need to connect record review to value review. | The language implies the value is final or beyond review. | Figcaption and text labels explain every part. | Works as a worksheet-like reference list. | `assessment-build-panel` |
 | Record Callout | Points attention to record fields. | Readers need to inspect facts or source rows. | Real or simplified fields would be misleading. | Use `dl` for fields and meanings. | Avoid faint highlights only. | `record-callout` |
 | Evidence Matrix | Connects observation, record issue, and requested correction. | Evidence needs to become action. | The relationship is not action-oriented. | Preserve sequence in DOM order. | Keep each row together. | `evidence-matrix`, `evidence-path-list` |
 | Packet/Preparation Module | Helps readers gather materials. | Multiple independent preparation checks are needed. | Steps are strictly sequential. | Use lists/cards with headings. | Keep as a physical prep checklist. | `question-checklist`, `preparation-module` |
@@ -607,7 +623,10 @@ HTML structure:
 
 ```html
 <figure class="decision-panel">
-  <figcaption class="decision-panel-label">The Board's practical question</figcaption>
+  <figcaption class="decision-panel-label">
+    <span class="decision-panel-context">Board Review</span>
+    <span class="decision-panel-title">The Board's Practical Question</span>
+  </figcaption>
   <p class="decision-question">Is there support for the requested correction?</p>
   <div class="decision-outcomes">...</div>
 </figure>
@@ -617,7 +636,9 @@ Accessibility: Include text for all outcomes.
 
 Print: Include a short note if the box is an educational simplification.
 
-Theme rule: A decision panel may carry a thematic title treatment when the decision frame benefits from it. The theme should come from component-level variables, such as `--decision-theme-bg`, `--decision-theme-ink`, `--decision-theme-highlight`, and `--decision-theme-shadow`, rather than one-off colors. For quasi-judicial decision trees, use a concrete-gray banner with enlarged serif all-caps text and subtle inset letter shadows so the label reads like civic stonework without using gavels, courthouse icons, or legal cliches. Other domains may use other themes only when they reinforce the decision context.
+Header rule: A decision diagram header should orient the reader, not dominate the component. Use a quiet contextual label, such as `Board Review`, to place the reader in the learning journey. Use a restrained title to name the reasoning frame. The governing question should receive the greatest visual emphasis and should flow naturally into the decision branches.
+
+Institutional authority rule: Use typography, spacing, proportion, and hierarchy to create authority. Do not use faux stone, faux engraving, faux metal, bevels, embossing, marble effects, courthouse-facade aesthetics, or cinematic legal styling. A decision diagram should feel closer to a judicial caption, published finding, court opinion, or government report than a monument.
 
 Outcome palette rule: Decision nodes may use a small semantic palette when the color helps scanning: supported/yes, caution/no, and reserved stop/red. The colors should be component-level variables, not borrowed directly from unrelated article tone colors. Keep the saturation restrained enough for civic material, but strong enough that the decision path reads immediately. Never rely on color alone; each node must remain text-labeled.
 
@@ -728,9 +749,8 @@ Do not use when: The article needs a formal valuation formula, a certified appra
 
 Key language:
 
-- Current Assessed Value
-- Built from today's property record
 - How does the record shape today's value?
+- The current assessment is built from many smaller pieces of information.
 
 Avoid deterministic language:
 
@@ -740,18 +760,16 @@ Avoid deterministic language:
 
 Tone: Invite the reader into the reasoning process. The component should make the current value feel inspectable and reviewable, not locked.
 
-Styling: The header should feel like a record label or worksheet header. It should not become a large generic dark banner. Use a compact label, a restrained accent edge, and grouped field chips or rows.
+Styling: Keep the caption quiet and let the grouped field chips or rows carry the reference work. The caption may use the same restrained icon-plus-label treatment as nearby record modules, but choose an icon that signals property characteristics, measurement, or review rather than repeating a document/record icon used immediately nearby. Do not add a secondary component bar or rule between the caption and fields unless the surrounding layout truly needs separation.
 
 HTML structure:
 
 ```html
 <figure class="assessment-build-panel" aria-labelledby="assessment-build-title">
-  <figcaption id="assessment-build-title">How does the record shape today's value?</figcaption>
-  <div class="assessment-build-header">
+  <figcaption id="assessment-build-title">
     <svg class="editorial-icon" aria-hidden="true">...</svg>
-    <strong>Current Assessed Value</strong>
-    <span>Built from today's property record</span>
-  </div>
+    <span>The current assessment is built from many smaller pieces of information.</span>
+  </figcaption>
   <ul>
     <li>Living area</li>
     <li>Condition</li>
@@ -1052,7 +1070,6 @@ Prefer reusable component names:
 - `decision-diagram`
 - `decision-panel`
 - `assessment-build-panel`
-- `assessment-build-header`
 - `reference-module`
 - `evidence-matrix`
 - `record-callout`

@@ -176,7 +176,7 @@ For decision panels, confirm:
 - connector lines and shapes align cleanly
 - the title treatment belongs to the component, not the surrounding narrative
 - thematic colors use component-level variables
-- quasi-judicial labels use the documented concrete-gray serif treatment when appropriate
+- quasi-judicial labels use the documented judicial-caption treatment rather than faux material effects
 - yes/no/stop nodes use the documented semantic decision palette and remain text-labeled
 - any nested branch clarifies one necessary second test rather than turning the article into a full procedural chart
 - theme choices clarify the decision context rather than decorating it
@@ -184,10 +184,10 @@ For decision panels, confirm:
 For assessment build panels, confirm:
 
 - the component explains how the current assessed value is shaped by today's property record and related valuation information
-- agency-friendly language is used, such as "Current Assessed Value," "Built from today's property record," and "How does the record shape today's value?"
+- agency-friendly language is used, such as "How does the record shape today's value?" and "The current assessment is built from many smaller pieces of information."
 - deterministic language is avoided, including "assessed value = conclusion," "the value is the conclusion," or "final answer"
 - the component invites review rather than implying the assessment is beyond review
-- the header feels like a compact record label or worksheet header, not a generic dark banner
+- the caption flows into the field list with a simple divider and rhythm, not a secondary component bar
 
 ## 6. Icon Review
 

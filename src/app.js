@@ -68,7 +68,7 @@ import {
 import {
   isProtestEvidenceGuideRequest,
   renderProtestEvidenceGuide
-} from "./routes/protest-evidence-guide.js?v=ges-hero-standard";
+} from "./routes/protest-evidence-guide.js?v=protest-guide-20260626b";
 import {
   isProtestParadoxRequest,
   renderProtestParadox

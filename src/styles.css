@@ -10088,6 +10088,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .editorial-card-heading .editorial-icon,
 .scorecard h3 .editorial-icon,
 .evidence-path-list h3 .editorial-icon,
+.assessment-build-panel figcaption .editorial-icon,
 .record-callout figcaption .editorial-icon,
 .evidence-matrix figcaption .editorial-icon,
 .script-card figcaption .editorial-icon,
@@ -10210,38 +10211,47 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .decision-panel .decision-panel-label {
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.34), rgb(0 0 0 / 0.035)),
-    var(--decision-theme-bg);
   align-items: center;
-  border-bottom: 1px solid rgb(255 255 255 / 0.58);
-  border-radius: 0.62rem 0.62rem 0 0;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), inset 0 -1px 0 rgb(81 88 96 / 0.28);
-  color: var(--decision-theme-ink);
-  display: flex;
-  font-family: var(--levy-body-font);
-  font-size: clamp(1.05rem, 2.2vw, 1.28rem);
-  font-weight: 760;
-  justify-content: center;
-  letter-spacing: 0.16em;
-  line-height: 1.15;
-  margin: calc(clamp(0.95rem, 2.4vw, 1.35rem) * -1) calc(clamp(0.95rem, 2.4vw, 1.35rem) * -1) 1.15rem;
-  padding: 0.98rem clamp(1rem, 2.7vw, 1.55rem);
-  text-align: center;
-  text-shadow:
-    0 1px 0 var(--decision-theme-highlight),
-    0 -1px 0 var(--decision-theme-shadow),
-    1px 0 0 rgb(255 255 255 / 0.22),
-    -1px 0 0 rgb(36 42 48 / 0.18);
-  text-transform: uppercase;
+  border-bottom: 1px solid var(--editorial-border);
+  color: rgb(var(--brand-ink));
+  display: grid;
+  gap: 0.24rem;
+  font-family: var(--levy-heading-font);
+  justify-content: stretch;
+  letter-spacing: 0;
+  line-height: 1.2;
+  margin: 0 0 1.15rem;
+  padding: 0 0 0.9rem;
+  text-align: left;
+  text-shadow: none;
+  text-transform: none;
   width: auto;
 }
 
+.decision-panel-context,
+.decision-panel-title {
+  display: block;
+}
+
+.decision-panel-context {
+  color: rgb(var(--color-secondary));
+  font-family: var(--levy-heading-font);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.decision-panel-title {
+  color: rgb(var(--brand-ink));
+  font-family: var(--levy-body-font);
+  font-size: clamp(1.02rem, 1.9vw, 1.18rem);
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .decision-panel {
-  --decision-theme-bg: #c2c5c7;
-  --decision-theme-highlight: rgb(255 255 255 / 0.82);
-  --decision-theme-ink: #565b60;
-  --decision-theme-shadow: rgb(64 69 74 / 0.58);
   --decision-outcome-no: #9a7429;
   --decision-outcome-no-border: #d0ad60;
   --decision-outcome-no-soft: #f4ecd9;
@@ -10301,6 +10311,26 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   border-radius: 0.65rem;
   outline: 2px solid color-mix(in srgb, var(--editorial-accent) 38%, transparent);
   outline-offset: 2px;
+}
+
+.meeting-schedule-card .meeting-date-past {
+  background: transparent;
+}
+
+.meeting-schedule-card .meeting-date-past a {
+  color: rgb(var(--color-slate-500));
+  opacity: 0.68;
+}
+
+.meeting-schedule-card .meeting-date-past a:focus,
+.meeting-schedule-card .meeting-date-past a:hover {
+  opacity: 1;
+}
+
+.meeting-schedule-card .meeting-date-past span,
+.meeting-schedule-card .meeting-date-past strong,
+.meeting-schedule-card .meeting-date-past em {
+  color: inherit;
 }
 
 .important-inline-note {
@@ -10522,6 +10552,10 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   padding: 0;
 }
 
+.scorecard ul {
+  padding-left: calc(var(--icon-sm) + 0.45rem);
+}
+
 .comparison-card li,
 .scorecard li {
   align-items: start;
@@ -10718,39 +10752,25 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .article-source-note {
-  background: color-mix(in srgb, var(--editorial-accent-soft) 54%, #ffffff);
-  border-left: 0.16rem solid color-mix(in srgb, var(--editorial-accent) 58%, rgb(var(--border-muted)));
-  border-radius: 0.55rem;
-  color: rgb(var(--color-slate-600));
-  display: grid;
-  gap: 0.24rem;
+  color: rgb(var(--color-slate-500));
   justify-self: center;
-  margin-top: 0.25rem;
-  padding: 0.58rem 0.72rem;
+  margin-top: 0.12rem;
   width: min(100%, 46rem);
 }
 
-.article-source-note strong {
-  color: color-mix(in srgb, var(--editorial-accent) 86%, rgb(var(--brand-ink)));
-  font-family: var(--levy-heading-font);
-  font-size: 0.68rem;
-  font-weight: 900;
-  letter-spacing: 0.09em;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
 .article-source-note p {
-  color: rgb(var(--color-slate-600));
+  color: inherit;
   font-family: var(--levy-body-font);
-  font-size: 0.82rem;
-  line-height: 1.45;
+  font-size: 0.76rem;
+  font-weight: 420 !important;
+  line-height: 1.38;
   margin: 0;
 }
 
 .article-source-note a,
 .article-sources-used a {
   color: inherit;
+  font-weight: 420 !important;
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, currentColor 34%, transparent);
   text-decoration-thickness: 0.06em;
@@ -10766,14 +10786,11 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .article-sources-used {
-  background: rgb(var(--color-paper));
-  border: 1px solid var(--editorial-border);
-  border-left: 0.18rem solid color-mix(in srgb, var(--editorial-accent) 54%, rgb(var(--border-muted)));
-  border-radius: 0.7rem;
+  border-top: 1px solid var(--editorial-border);
   display: grid;
-  gap: 0.72rem;
-  margin-top: 1.2rem;
-  padding: clamp(0.82rem, 2vw, 1.05rem);
+  gap: 0.64rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
 }
 
 .article-sources-used h3,
@@ -10784,7 +10801,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .article-sources-used h3 {
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 850;
   line-height: 1.25;
 }
@@ -10802,7 +10819,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .article-sources-used li {
   color: rgb(var(--color-slate-600));
   font-family: var(--levy-body-font);
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   line-height: 1.48;
   margin: 0;
 }
@@ -10824,49 +10841,13 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   padding-left: 1.05rem;
 }
 
+.print-calendar-url {
+  display: none;
+}
+
 .assessment-build-panel {
   display: grid;
-  gap: 0.85rem;
-}
-
-.assessment-build-header {
-  align-items: center;
-  background: linear-gradient(180deg, #fbfdfc, #f3f8f4);
-  border: 1px solid rgb(var(--county-color-border-soft, var(--border-muted)));
-  border-left: 0.24rem solid var(--editorial-accent);
-  border-radius: 0.6rem;
-  color: rgb(var(--brand-ink));
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 0.65rem;
-  padding: 0.58rem 0.7rem;
-}
-
-.assessment-build-header .editorial-icon {
-  color: var(--editorial-accent);
-  flex: 0 0 auto;
-  height: var(--icon-sm);
-  width: var(--icon-sm);
-}
-
-.assessment-build-header strong {
-  background: rgb(var(--color-ink));
-  border-radius: 0.34rem;
-  color: #ffffff;
-  font-family: var(--levy-heading-font);
-  font-size: 0.92rem;
-  font-weight: 850;
-  letter-spacing: 0.01em;
-  line-height: 1.1;
-  padding: 0.34rem 0.5rem;
-}
-
-.assessment-build-header span {
-  color: rgb(var(--brand-muted));
-  font-family: var(--levy-body-font);
-  font-size: 0.9rem;
-  font-weight: 700;
-  line-height: 1.25;
+  gap: 0.72rem;
 }
 
 .assessment-build-panel ul {
@@ -10947,15 +10928,28 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .evidence-path-list section:not(:last-child)::after {
-  color: rgb(var(--brand-ink) / 0.58);
-  content: "->";
-  font-family: var(--levy-mono-font);
-  font-size: 0.75rem;
-  font-weight: 700;
+  border-color: rgb(var(--brand-ink) / 0.46);
+  border-style: solid;
+  border-width: 1.5px 1.5px 0 0;
+  content: "";
+  height: 0.45rem;
   position: absolute;
-  right: -0.58rem;
+  right: -0.52rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 0.45rem;
+  z-index: 1;
+}
+
+.evidence-path-list section:not(:last-child)::before {
+  background: rgb(var(--brand-ink) / 0.38);
+  content: "";
+  height: 1.5px;
+  position: absolute;
+  right: -0.48rem;
   top: 50%;
   transform: translateY(-50%);
+  width: 0.86rem;
   z-index: 1;
 }
 
@@ -12384,10 +12378,20 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
   .evidence-path-list section:not(:last-child)::after {
     bottom: -0.52rem;
-    left: 0.78rem;
+    left: 50%;
     right: auto;
     top: auto;
-    transform: none;
+    transform: translateX(-50%) rotate(135deg);
+  }
+
+  .evidence-path-list section:not(:last-child)::before {
+    bottom: -0.52rem;
+    height: 0.86rem;
+    left: 50%;
+    right: auto;
+    top: auto;
+    transform: translateX(-50%);
+    width: 1.5px;
   }
 
   .levy-basic-list {
@@ -14269,8 +14273,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
   .decision-question::after,
   .decision-outcomes::before,
-  .decision-branch::before,
-  .decision-followup-question::before {
+  .decision-branch::before {
     display: none;
   }
 
@@ -14292,10 +14295,26 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .decision-followup-question {
     font-size: 0.9rem;
     grid-column: 1 / -1;
-    margin: 0.25rem 0 0 3.35rem;
+    margin: 0.05rem 0 0 4.7rem;
     max-width: none;
-    padding: 0.5rem 0.6rem;
+    padding: 0.38rem 0.6rem 0.32rem;
     text-align: left;
+  }
+
+  .decision-followup-question::before {
+    background: none;
+    border-color: color-mix(in srgb, var(--editorial-accent) 62%, rgb(var(--border-muted)));
+    border-radius: 0 0 0 0.55rem;
+    border-style: solid;
+    border-width: 0 0 2px 2px;
+    content: "";
+    display: block;
+    height: 1.18rem;
+    left: -1.45rem;
+    position: absolute;
+    top: -0.66rem;
+    transform: none;
+    width: 1.25rem;
   }
 }
 
@@ -14535,22 +14554,6 @@ body:has(.levy-compression-page) .comp-page-title h1 {
     color: #ffffff !important;
   }
 
-  .assessment-build-header {
-    background: #f7faf8 !important;
-    border-color: #9ca3af !important;
-    border-left-color: #4b6357 !important;
-    color: #111827 !important;
-  }
-
-  .assessment-build-header .editorial-icon {
-    color: #4b6357 !important;
-  }
-
-  .assessment-build-header strong {
-    background: #111827 !important;
-    color: #ffffff !important;
-  }
-
   .disconnect-visual > div,
   .process-strip,
   .comparison-card > div,
@@ -14626,19 +14629,10 @@ body:has(.levy-compression-page) .comp-page-title h1 {
     line-height: 1.28;
   }
 
-  .decision-question,
-  .assessment-build-header {
+  .decision-question {
     border-radius: 6pt;
     font-size: 11pt;
     padding: 6pt 7pt;
-  }
-
-  .assessment-build-header strong {
-    font-size: 9pt;
-  }
-
-  .assessment-build-header span {
-    font-size: 8.4pt;
   }
 
   .assessment-build-panel ul {
@@ -14713,6 +14707,20 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
   .meeting-schedule-card a {
     padding: 0;
+  }
+
+  .print-calendar-url {
+    color: #374151;
+    display: block;
+    font-size: 7.5pt;
+    grid-column: 1 / -1;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .article-source-note,
+  .article-sources-used {
+    margin-top: 0.08in;
   }
 
   .resource-card a {

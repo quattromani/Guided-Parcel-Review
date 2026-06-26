@@ -11,7 +11,7 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
   tags: ["Gage County"],
   displayDate: "June 25, 2026",
   publishedDate: "2026-06-25T17:33:00-05:00",
-  modifiedDate: "2026-06-26T09:00:00-05:00",
+  modifiedDate: "2026-06-26T12:00:00-05:00",
   description: "A plain language guide to preparing a property valuation protest with comparables, property record cards, evidence, and a specific correction request.",
   keywords: [
     "property valuation protest",
@@ -127,7 +127,7 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     }
   },
   sourcesUsed: {
-    title: "Sources Used",
+    title: "Sources",
     intro: "This guide is based on Nebraska property tax law, Nebraska Department of Revenue Property Assessment Division regulations, and generally accepted assessment guidance.",
     groups: [
       {
@@ -187,15 +187,29 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     {
       dateLabel: "Monday, July 6, 2026",
       timeLabel: "1:00 p.m.",
+      endsAt: "2026-07-06T14:00:00-05:00",
       calendarUrl: "assets/calendar/gage-boe-2026-07-06.ics"
     },
     {
-      dateLabel: "Friday, July 10, 2026",
+      dateLabel: "Wednesday, July 8, 2026",
       timeLabel: "1:00 p.m.",
-      calendarUrl: "assets/calendar/gage-boe-2026-07-10.ics"
+      endsAt: "2026-07-08T14:00:00-05:00",
+      calendarUrl: "assets/calendar/gage-boe-2026-07-08.ics"
+    },
+    {
+      dateLabel: "Monday, July 20, 2026",
+      timeLabel: "1:00 p.m.",
+      endsAt: "2026-07-20T14:00:00-05:00",
+      calendarUrl: "assets/calendar/gage-boe-2026-07-20.ics"
+    },
+    {
+      dateLabel: "Wednesday, July 22, 2026",
+      timeLabel: "1:00 p.m.",
+      endsAt: "2026-07-22T14:00:00-05:00",
+      calendarUrl: "assets/calendar/gage-boe-2026-07-22.ics"
     }
   ],
-  boardMeetingLocation: "Gage County Courthouse, Board of Supervisors Room, 612 Grant Street, Beatrice, NE 68310",
+  boardMeetingLocation: "Gage County Courthouse, 612 Grant Street, Beatrice, NE 68310",
   disconnectFigure: [
     ["Homeowner thinks", "My value is too high.", "observe"],
     ["Board needs", "What should change?", "equalization"],
@@ -325,7 +339,8 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
       kicker: "Narrowing the Question",
       title: "What is the Board actually deciding?",
       intro: "The Board is not there to decide whether a tax bill feels heavy. It is not there to debate public budgets. It is not there to punish or defend the assessor.",
-      label: "The Board's practical question",
+      contextLabel: "Board Review",
+      label: "The Board's Practical Question",
       question: "Is there support for the requested correction?",
       yesNode: "Yes",
       yesResult: "What correction?",
@@ -349,8 +364,6 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
       title: "How does the record shape today's value?",
       emphasis: "Today's assessed value reflects the information currently available about your property.",
       layerCaption: "The current assessment is built from many smaller pieces of information.",
-      layerTitle: "Current Assessed Value",
-      layerSubtitle: "Built from today's property record",
       paragraphs: [
         "The property record is often the most useful place to begin because it holds many of the facts used during valuation. Compare your record with the records for your comparables. Do not stop at the total assessed value. Ask which record facts help explain how each value was assembled.",
         "Maybe your home and a comparable are similar, but your record shows more finished basement. Maybe the comparable has a larger garage. Maybe your condition rating is higher even though the homes appear similar. Those differences do not automatically change the value, but they give the Board specific questions it can review."
