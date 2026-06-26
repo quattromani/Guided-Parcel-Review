@@ -9772,15 +9772,6 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   padding: var(--levy-section-padding-y) clamp(1rem, 2.5vw, 1.45rem) !important;
 }
 
-.protest-evidence-guide-page .protest-guide-panel {
-  background: #ffffff;
-  border: 1px solid rgb(var(--border-muted));
-  border-top: 3px solid rgb(31 73 112 / 0.18);
-  border-radius: 0.85rem;
-  box-shadow: 0 0.75rem 1.7rem rgb(31 73 112 / 0.045);
-  padding: var(--levy-section-padding-y) clamp(1rem, 2.5vw, 1.45rem) !important;
-}
-
 .protest-evidence-guide-page .protest-guide-takeaway {
   margin: clamp(1.25rem, 2.5vw, 1.9rem) 0;
   max-width: 50rem;
@@ -9791,236 +9782,6 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .protest-evidence-guide-page .protest-guide-takeaway p {
   font-family: var(--levy-heading-font);
   max-width: 48rem;
-}
-
-.protest-evidence-guide-page .protest-guide-question-line {
-  margin-top: -0.15rem;
-}
-
-.protest-evidence-guide-page .protest-guide-question-line strong {
-  color: rgb(var(--brand-ink));
-  font-family: var(--levy-heading-font);
-  font-size: 1.12rem;
-  font-weight: 760;
-  line-height: 1.42;
-}
-
-.protest-guide-numbered-list {
-  gap: 0.48rem;
-}
-
-.protest-guide-step-grid,
-.protest-guide-resource-grid {
-  display: grid;
-  gap: 0.85rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.protest-guide-resource-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.protest-guide-step-grid article,
-.protest-guide-resource-card {
-  background: rgb(248 250 252);
-  border: 1px solid rgb(var(--border-muted));
-  border-radius: 0.65rem;
-  display: grid;
-  gap: 0.55rem;
-  padding: 0.95rem;
-}
-
-.protest-guide-step-grid span {
-  color: rgb(var(--color-secondary));
-  font-family: var(--levy-heading-font);
-  font-size: 0.76rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
-.protest-guide-step-grid p,
-.protest-guide-resource-card p {
-  color: rgb(var(--brand-ink));
-  font-family: var(--levy-body-font);
-  font-size: 1rem;
-  line-height: 1.55;
-  margin: 0;
-}
-
-.protest-guide-chip-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  list-style: none;
-  margin: 0;
-  max-width: 48rem;
-  padding: 0;
-}
-
-.protest-guide-chip-list li {
-  background: rgb(239 246 255);
-  border: 1px solid rgb(31 73 112 / 0.14);
-  border-radius: 999px;
-  color: rgb(var(--brand-ink));
-  font-family: var(--levy-heading-font);
-  font-size: 0.84rem;
-  font-weight: 700;
-  line-height: 1.2;
-  padding: 0.38rem 0.62rem;
-}
-
-.protest-guide-evidence-table {
-  border: 1px solid rgb(var(--border-muted));
-  border-radius: 0.72rem;
-  display: grid;
-  overflow: hidden;
-}
-
-.protest-guide-evidence-table > div {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.protest-guide-evidence-table span {
-  border-top: 1px solid rgb(var(--border-muted));
-  color: rgb(var(--brand-ink));
-  font-family: var(--levy-body-font);
-  font-size: 0.96rem;
-  line-height: 1.48;
-  padding: 0.8rem;
-}
-
-.protest-guide-evidence-table span + span {
-  border-left: 1px solid rgb(var(--border-muted));
-}
-
-.protest-guide-evidence-table .protest-guide-evidence-header span {
-  background: rgb(31 73 112 / 0.08);
-  border-top: 0;
-  font-family: var(--levy-heading-font);
-  font-size: 0.78rem;
-  font-weight: 850;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.protest-guide-script {
-  background: rgb(248 250 252);
-  border: 1px solid rgb(var(--border-muted));
-  border-left: 0.18rem solid rgb(var(--color-secondary));
-  border-radius: 0.65rem;
-  color: rgb(var(--brand-ink));
-  display: grid;
-  font-family: var(--levy-heading-font);
-  font-size: 1.1rem;
-  font-weight: 650;
-  gap: 0.45rem;
-  line-height: 1.45;
-  margin: 0;
-  padding: 1rem;
-}
-
-.protest-guide-script p {
-  margin: 0;
-}
-
-.protest-guide-resource-icon {
-  align-items: center;
-  background: rgb(239 246 255);
-  border: 1px solid rgb(31 73 112 / 0.14);
-  border-radius: 0.62rem;
-  color: rgb(var(--brand-ink));
-  display: inline-flex;
-  height: 2.45rem;
-  justify-content: center;
-  width: 2.45rem;
-}
-
-.protest-guide-resource-icon svg {
-  fill: none;
-  height: 1.28rem;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
-  width: 1.28rem;
-}
-
-.protest-guide-resource-card a {
-  align-items: center;
-  background: rgb(var(--brand-ink));
-  border-radius: 0.5rem;
-  color: #ffffff;
-  display: inline-flex;
-  font-family: var(--levy-heading-font);
-  font-size: 0.9rem;
-  font-weight: 800;
-  justify-content: center;
-  line-height: 1.2;
-  min-height: 2.65rem;
-  padding: 0.65rem 0.75rem;
-  text-align: center;
-  text-decoration: none;
-}
-
-.protest-guide-resource-card a:focus,
-.protest-guide-resource-card a:hover {
-  background: rgb(var(--color-secondary));
-}
-
-.protest-guide-url-list {
-  border-top: 1px solid rgb(var(--border-muted));
-  display: grid;
-  gap: 0.72rem;
-  margin-top: 0.2rem;
-  padding-top: 0.95rem;
-}
-
-.protest-guide-url-row {
-  align-items: start;
-  display: grid;
-  gap: 0.72rem;
-  grid-template-columns: auto minmax(0, 1fr);
-}
-
-.protest-guide-url-row p {
-  display: grid;
-  gap: 0.2rem;
-  margin: 0;
-  min-width: 0;
-}
-
-.protest-guide-url-list span {
-  color: rgb(var(--color-slate-600));
-  font-family: var(--levy-heading-font);
-  font-size: 0.72rem;
-  font-weight: 850;
-  letter-spacing: 0.08em;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
-.protest-guide-url-list code {
-  color: rgb(var(--color-slate-600));
-  display: block;
-  font-family: var(--levy-mono-font);
-  font-size: 0.82rem;
-  line-height: 1.38;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.protest-guide-resource-note {
-  border-top: 1px solid rgb(var(--border-muted));
-  color: rgb(var(--brand-ink));
-  font-family: var(--levy-body-font);
-  font-size: 1rem;
-  line-height: 1.58;
-  margin: 0;
-  max-width: 68ch;
-  padding-top: 1rem;
 }
 
 .protest-paradox-page .process-strip strong,
@@ -10349,7 +10110,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .comparison-card,
 .decision-panel,
 .scorecard,
-.value-layer-figure,
+.assessment-build-panel,
 .record-callout,
 .evidence-matrix,
 .script-card,
@@ -10369,7 +10130,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .editorial-guide[data-county-theme="gage"] .comparison-card,
 .editorial-guide[data-county-theme="gage"] .decision-panel,
 .editorial-guide[data-county-theme="gage"] .scorecard,
-.editorial-guide[data-county-theme="gage"] .value-layer-figure,
+.editorial-guide[data-county-theme="gage"] .assessment-build-panel,
 .editorial-guide[data-county-theme="gage"] .record-callout,
 .editorial-guide[data-county-theme="gage"] .evidence-matrix,
 .editorial-guide[data-county-theme="gage"] .script-card,
@@ -10384,7 +10145,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .comparison-card figcaption,
 .decision-panel figcaption,
 .scorecard figcaption,
-.value-layer-figure figcaption,
+.assessment-build-panel figcaption,
 .record-callout figcaption,
 .evidence-matrix figcaption,
 .script-card figcaption {
@@ -10909,12 +10670,12 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   text-transform: uppercase;
 }
 
-.value-layer-figure {
+.assessment-build-panel {
   display: grid;
   gap: 0.85rem;
 }
 
-.value-layer-top {
+.assessment-build-header {
   align-items: center;
   background: linear-gradient(180deg, #fbfdfc, #f3f8f4);
   border: 1px solid rgb(var(--county-color-border-soft, var(--border-muted)));
@@ -10927,14 +10688,14 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   padding: 0.58rem 0.7rem;
 }
 
-.value-layer-top .editorial-icon {
+.assessment-build-header .editorial-icon {
   color: var(--editorial-accent);
   flex: 0 0 auto;
   height: var(--icon-sm);
   width: var(--icon-sm);
 }
 
-.value-layer-top strong {
+.assessment-build-header strong {
   background: rgb(var(--color-ink));
   border-radius: 0.34rem;
   color: #ffffff;
@@ -10946,7 +10707,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   padding: 0.34rem 0.5rem;
 }
 
-.value-layer-top span {
+.assessment-build-header span {
   color: rgb(var(--brand-muted));
   font-family: var(--levy-body-font);
   font-size: 0.9rem;
@@ -10954,7 +10715,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   line-height: 1.25;
 }
 
-.value-layer-figure ul {
+.assessment-build-panel ul {
   display: grid;
   gap: 0.5rem;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -10963,7 +10724,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   padding: 0;
 }
 
-.value-layer-figure li {
+.assessment-build-panel li {
   background: var(--editorial-accent-soft);
   border: 1px solid var(--editorial-border);
   border-radius: 0.55rem;
@@ -12409,25 +12170,11 @@ body:has(.levy-compression-page) .comp-page-title h1 {
     padding: 0.8rem;
   }
 
-  .protest-evidence-guide-page .protest-guide-panel {
-    padding: 0.85rem !important;
-  }
-
-  .protest-guide-step-grid,
-  .protest-guide-resource-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .protest-guide-step-grid article,
-  .protest-guide-resource-card {
-    padding: 0.8rem;
-  }
-
   .concept-card,
   .comparison-card,
   .decision-panel,
   .scorecard,
-  .value-layer-figure,
+  .assessment-build-panel,
   .record-callout,
   .evidence-matrix,
   .script-card,
@@ -12467,7 +12214,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
     grid-template-columns: 1fr;
   }
 
-  .value-layer-figure ul,
+  .assessment-build-panel ul,
   .record-callout dl {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -12487,39 +12234,6 @@ body:has(.levy-compression-page) .comp-page-title h1 {
     right: auto;
     top: auto;
     transform: none;
-  }
-
-  .protest-guide-evidence-table {
-    gap: 0;
-  }
-
-  .protest-guide-evidence-table .protest-guide-evidence-header {
-    display: none;
-  }
-
-  .protest-guide-evidence-table > div {
-    border-top: 1px solid rgb(var(--border-muted));
-    grid-template-columns: 1fr;
-  }
-
-  .protest-guide-evidence-table > div:first-of-type + div {
-    border-top: 0;
-  }
-
-  .protest-guide-evidence-table span {
-    border-left: 0 !important;
-    border-top: 1px solid rgb(var(--border-muted));
-    padding: 0.7rem 0.78rem;
-  }
-
-  .protest-guide-evidence-table div:not(.protest-guide-evidence-header) span:first-child {
-    border-top: 0;
-    font-weight: 700;
-  }
-
-  .protest-guide-script {
-    font-size: 1rem;
-    padding: 0.85rem;
   }
 
   .levy-basic-list {
@@ -14571,7 +14285,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .comparison-card,
   .decision-panel,
   .scorecard,
-  .value-layer-figure,
+  .assessment-build-panel,
   .record-callout,
   .evidence-matrix,
   .script-card,
@@ -14632,7 +14346,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .comparison-card,
   .decision-panel,
   .scorecard,
-  .value-layer-figure,
+  .assessment-build-panel,
   .record-callout,
   .evidence-matrix,
   .script-card,
@@ -14649,7 +14363,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .decision-panel figcaption,
   .decision-panel-label,
   .scorecard figcaption,
-  .value-layer-figure figcaption,
+  .assessment-build-panel figcaption,
   .record-callout figcaption,
   .evidence-matrix figcaption,
   .script-card figcaption {
@@ -14665,18 +14379,18 @@ body:has(.levy-compression-page) .comp-page-title h1 {
     color: #ffffff !important;
   }
 
-  .value-layer-top {
+  .assessment-build-header {
     background: #f7faf8 !important;
     border-color: #9ca3af !important;
     border-left-color: #4b6357 !important;
     color: #111827 !important;
   }
 
-  .value-layer-top .editorial-icon {
+  .assessment-build-header .editorial-icon {
     color: #4b6357 !important;
   }
 
-  .value-layer-top strong {
+  .assessment-build-header strong {
     background: #111827 !important;
     color: #ffffff !important;
   }
@@ -14757,25 +14471,25 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   }
 
   .decision-question,
-  .value-layer-top {
+  .assessment-build-header {
     border-radius: 6pt;
     font-size: 11pt;
     padding: 6pt 7pt;
   }
 
-  .value-layer-top strong {
+  .assessment-build-header strong {
     font-size: 9pt;
   }
 
-  .value-layer-top span {
+  .assessment-build-header span {
     font-size: 8.4pt;
   }
 
-  .value-layer-figure ul {
+  .assessment-build-panel ul {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .value-layer-figure li,
+  .assessment-build-panel li,
   .record-callout dt,
   .question-checklist h3,
   .evidence-path-list h3 {

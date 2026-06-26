@@ -2,7 +2,8 @@
 
 Review date: June 25, 2026  
 Review pass: PRR v1.0  
-Recommendation: Ready to Publish
+Recommendation: Published
+Published at: June 25, 2026, 5:33 p.m. CDT
 
 ## Executive Summary
 
@@ -10,10 +11,10 @@ This article is publication-ready. It meets the Guided Editorial System standard
 
 The article should be treated as an early reference implementation for long-form GES guides. It created reusable patterns for evidence matrices, print-first resource handling, schedule cards, route metadata, PDF generation, and publication reporting.
 
-Outstanding pre-publication checks:
+Publication follow-up checks:
 
-- Verify the production canonical origin before launch.
-- Reconfirm Gage County hearing dates and procedures immediately before publishing.
+- Verify the production canonical origin after launch.
+- Reconfirm Gage County hearing dates and procedures if the guide is redistributed after publication.
 - Consider a dedicated 1200 x 630 social crop if the current article photo needs a more precise preview composition.
 
 ## Part 1: Editorial Quality Review
@@ -39,7 +40,7 @@ Weaknesses:
 Recommended refinements:
 
 - Do not substantially rewrite the article.
-- Reconfirm the meeting dates and local procedures immediately before publication.
+- Reconfirm the meeting dates and local procedures before future redistribution.
 - Add more internal links as companion articles are built.
 - Create a dedicated social preview graphic after the first publication wave.
 
@@ -55,7 +56,8 @@ Components present:
 - Concept Diagram
 - Process Strip
 - Comparison Card
-- Decision Box
+- Decision Diagram
+- Assessment Build Panel
 - Reference Module
 - Evidence Matrix
 - Record Callout
@@ -237,7 +239,7 @@ Other metadata implemented:
 
 Canonical URL:
 
-Runtime canonical uses the current site base with `/articles/before-you-walk-into-a-property-protest/`. Verify production origin before publication.
+Runtime canonical uses the current site base with `/articles/before-you-walk-into-a-property-protest/`. Verify production origin after publication.
 
 Robots recommendation:
 
@@ -418,11 +420,11 @@ Hashtags:
 - Title: Before You Walk Into a Property Protest
 - Subtitle: A plain language, cup-of-coffee-length guide for turning a property valuation protest into a clear, evidence-based request.
 - Version: 1.0
-- Publication Date: June 25, 2026
-- Revision Date: June 25, 2026
+- Publication Date: June 25, 2026, 5:33 p.m. CDT
+- Revision Date: June 25, 2026, 5:33 p.m. CDT
 - Author: Max Quattromani
-- Reading Time: 8 minutes
-- Word Count: approximately 1,700
+- Reading Time: 10 minutes
+- Word Count: approximately 2,070
 - Visual Count: 14 editorial/reference components
 - Component Count: 15 GES components
 - Difficulty: Beginner to moderate
@@ -477,7 +479,7 @@ Recommended KPIs:
 - Requires annual review: Yes.
 - Requires statute review: Yes if legal/procedural discussion expands.
 - Requires data refresh: Yes, meeting dates and official links.
-- Recommended review interval: Annually before protest season, plus immediately before publication if local meeting dates are included.
+- Recommended review interval: Annually before protest season, plus before future redistribution if local meeting dates are included.
 
 ## Part 12: Internal Knowledge Graph
 
@@ -657,8 +659,8 @@ Overall Publication Readiness: 95/100
 
 Outstanding issues:
 
-- Verify production canonical origin before publication.
-- Reconfirm Gage County hearing dates and procedures immediately before publication.
+- Verify production canonical origin after publication.
+- Reconfirm Gage County hearing dates and procedures before any future redistribution.
 - Consider a dedicated 1200 x 630 social crop from the article photo.
 - Track inherited app-shell ARIA cleanup separately.
 
@@ -669,4 +671,4 @@ Recommended improvements:
 - Promote route metadata helpers to shared article infrastructure.
 - Promote PDF generation into a standard publication command.
 
-Publication Recommendation: Ready to Publish.
+Publication Recommendation: Published; continue scheduled maintenance.

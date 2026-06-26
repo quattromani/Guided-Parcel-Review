@@ -37,6 +37,8 @@ Do not rewrite simply to rewrite.
 
 Verify that the article follows the Guided Editorial System.
 
+Apply the GES Decision Tree from `docs/guided-editorial-design-language.md` before preserving any visual, paragraph, or component that feels questionable. The controlling rule is: if a change makes the page prettier but not clearer, do not make it.
+
 Check:
 
 - Hero
@@ -46,6 +48,7 @@ Check:
 - Section kickers
 - Concept diagrams
 - Decision panels
+- Assessment Build Panel
 - Process strip
 - Comparison modules
 - Evidence modules
@@ -134,6 +137,7 @@ Examples:
 - `hero-utility`
 - `hero-audio`
 - `decision-panel`
+- `assessment-build-panel`
 - `process-strip`
 - `comparison-card`
 - `concept-diagram`
@@ -176,6 +180,14 @@ For decision panels, confirm:
 - yes/no/stop nodes use the documented semantic decision palette and remain text-labeled
 - any nested branch clarifies one necessary second test rather than turning the article into a full procedural chart
 - theme choices clarify the decision context rather than decorating it
+
+For assessment build panels, confirm:
+
+- the component explains how the current assessed value is shaped by today's property record and related valuation information
+- agency-friendly language is used, such as "Current Assessed Value," "Built from today's property record," and "How does the record shape today's value?"
+- deterministic language is avoided, including "assessed value = conclusion," "the value is the conclusion," or "final answer"
+- the component invites review rather than implying the assessment is beyond review
+- the header feels like a compact record label or worksheet header, not a generic dark banner
 
 ## 6. Icon Review
 
@@ -354,6 +366,20 @@ Look for:
 - development experiments
 
 Remove anything not intended for production.
+
+Run the Code Drift Cleanup Checklist from `docs/guided-editorial-design-language.md`:
+
+- remove unused classes
+- remove abandoned CSS variables
+- consolidate component naming
+- delete commented-out experiments
+- verify semantic headings
+- verify print output
+- verify mobile layout
+- verify metadata
+- verify asset usage
+- verify accessibility
+- verify no component exists only because it was convenient during experimentation
 
 ## 16. Publication Polish
 

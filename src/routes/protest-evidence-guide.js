@@ -528,12 +528,12 @@ function renderComparableSection() {
   `;
 }
 
-function renderValueLayerFigure() {
+function renderAssessmentBuildPanel() {
   const section = ARTICLE_SECTIONS.records;
   return `
-    <figure class="value-layer-figure" aria-labelledby="valueLayerTitle">
-      <figcaption id="valueLayerTitle">${escapeHtml(section.layerCaption)}</figcaption>
-      <div class="value-layer-top">
+    <figure class="assessment-build-panel" aria-labelledby="assessmentBuildTitle">
+      <figcaption id="assessmentBuildTitle">${escapeHtml(section.layerCaption)}</figcaption>
+      <div class="assessment-build-header">
         ${editorialIcon("property-record")}
         <strong>${escapeHtml(section.layerTitle)}</strong>
         <span>${escapeHtml(section.layerSubtitle)}</span>
@@ -569,7 +569,7 @@ function renderRecordsSection() {
         ${sectionHeader(section.kicker, section.title, "protestRecordsTitle")}
         <p class="article-emphasis">${escapeHtml(section.emphasis)}</p>
       </div>
-      ${renderValueLayerFigure()}
+      ${renderAssessmentBuildPanel()}
       <div class="editorial-narrow">
         ${paragraphs(section.paragraphs)}
       </div>
@@ -1025,16 +1025,15 @@ async function shareArticle(button) {
   const shareUrl = absoluteUrl(ARTICLE_CANONICAL_PATH);
   const status = button.closest(".article-share-footer")?.querySelector("[data-share-status]");
   const label = button.querySelector("[data-share-button-label]");
+  const shareText = `${ARTICLE_TITLE}\n\n${ARTICLE_DESCRIPTION}\n\n${shareUrl}`;
   const shareData = {
-    title: ARTICLE_TITLE,
-    text: ARTICLE_DESCRIPTION,
-    url: shareUrl
+    text: shareText
   };
 
   try {
     if (navigator.share) {
       await navigator.share(shareData);
-      status.textContent = "Shared.";
+      if (status) status.textContent = "Shared.";
       showShareConfirmation(button, label, "Shared");
       trackArticleInteraction("share_article", {
         articleId: ARTICLE_ID,
@@ -1044,8 +1043,8 @@ async function shareArticle(button) {
       return;
     }
 
-    await copyTextToClipboard(shareUrl);
-    status.textContent = "Link copied.";
+    await copyTextToClipboard(shareText);
+    if (status) status.textContent = "Share text copied with the link.";
     showShareConfirmation(button, label, "Copied");
     trackArticleInteraction("copy_link", {
       articleId: ARTICLE_ID,
@@ -1054,7 +1053,7 @@ async function shareArticle(button) {
     });
   } catch (error) {
     if (error?.name === "AbortError") return;
-    status.textContent = "Copy this page URL from your browser.";
+    if (status) status.textContent = "Copy this page URL from your browser.";
   }
 }
 

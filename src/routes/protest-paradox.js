@@ -758,16 +758,15 @@ function installArticleAnalytics(canvas) {
 async function shareArticle(button) {
   const shareUrl = absoluteUrl(ARTICLE_CANONICAL_PATH);
   const status = button.closest(".article-share-footer")?.querySelector("[data-share-status]");
+  const shareText = `${ARTICLE_TITLE}\n\n${ARTICLE_DESCRIPTION}\n\n${shareUrl}`;
   const shareData = {
-    title: ARTICLE_TITLE,
-    text: ARTICLE_DESCRIPTION,
-    url: shareUrl
+    text: shareText
   };
 
   try {
     if (navigator.share) {
       await navigator.share(shareData);
-      status.textContent = "Shared.";
+      if (status) status.textContent = "Shared.";
       trackArticleInteraction("share_article", {
         articleId: ARTICLE_ID,
         detail: ARTICLE_TITLE,
@@ -776,8 +775,8 @@ async function shareArticle(button) {
       return;
     }
 
-    await copyTextToClipboard(shareUrl);
-    status.textContent = "Link copied.";
+    await copyTextToClipboard(shareText);
+    if (status) status.textContent = "Share text copied with the link.";
     trackArticleInteraction("copy_link", {
       articleId: ARTICLE_ID,
       detail: ARTICLE_TITLE,
@@ -785,7 +784,7 @@ async function shareArticle(button) {
     });
   } catch (error) {
     if (error?.name === "AbortError") return;
-    status.textContent = "Copy this page URL from your browser.";
+    if (status) status.textContent = "Copy this page URL from your browser.";
   }
 }
 

@@ -1,12 +1,22 @@
-# Guided Editorial Design Language v0.1
+# Guided Editorial System v0.1
 
-Guided Editorial Design Language, or GEDL, is the publishing language for long-form civic education in Guided Parcel Review.
+Guided Editorial System, or GES, is the publishing language for long-form civic education in Guided Parcel Review. Earlier notes may use GEDL, or Guided Editorial Design Language; treat GEDL as the design-language layer inside the broader GES publishing system.
 
 It is not a visual style guide. A visual style guide describes how things look. GEDL describes how information behaves.
 
 The purpose of GEDL is to help readers move from uncertainty toward confident action. Every future article should feel like it belongs to the same publication, whether the subject is property protests, levy compression, equalization, agricultural valuation, exemptions, tax credits, appraisal methodology, or Guided Parcel Review itself. That recognition should come from how the article thinks, not from logos or decoration.
 
 The design language should become invisible. Learning should become recognizable.
+
+## Mission And North Star
+
+Every article should look like it was prepared by someone who respected both the reader's intelligence and the reader's time.
+
+Complex civic processes can be understood without being oversimplified.
+
+These two statements guide editorial judgment, component design, publication readiness, and cleanup work. If a visual treatment, paragraph, interaction, or component does not support one of them, it should be revised or removed.
+
+GES guides are not ordinary blog posts. They are guides, civic guides, educational guides, field guides, or GES guides. Avoid treating them as casual posts or marketing articles in naming, metadata, templates, and review language. When older code uses blog-oriented terminology, migrate toward `guide`, `editorial-guide`, or a more specific component name when doing related work.
 
 ## I. Philosophy
 
@@ -185,6 +195,40 @@ Key ideas should recur in different forms:
 
 This helps the reader retrieve the idea later, including in a hearing, phone call, or meeting.
 
+## GES Decision Tree
+
+Use this decision tree before adding, revising, or preserving an editorial/design choice.
+
+1. Does this reduce uncertainty for the reader?
+   - If yes, continue.
+   - If no, remove or revise.
+2. Does this preserve accuracy?
+   - If yes, continue.
+   - If no, reject.
+3. Does this respect the reader's intelligence?
+   - If yes, continue.
+   - If no, rewrite or redesign.
+4. Does this respect the reader's time?
+   - If yes, continue.
+   - If no, compress, clarify, or convert to a visual.
+5. Does this visual teach, orient, or help the reader act?
+   - If yes, keep.
+   - If it merely decorates, remove.
+6. Does this component belong to an existing GES pattern?
+   - If yes, use the pattern.
+   - If no, ask whether a new reusable pattern is justified.
+7. Does this still work when printed?
+   - If yes, continue.
+   - If no, revise.
+8. Does this still work for screen readers and keyboard users?
+   - If yes, continue.
+   - If no, revise.
+9. Does this make future articles easier to build or maintain?
+   - If yes, document it.
+   - If no, avoid one-off implementation.
+
+Final rule: If a change makes the page prettier but not clearer, do not make it.
+
 ## III. Editorial Rhythm
 
 GEDL articles should alternate modes of attention.
@@ -251,11 +295,62 @@ Bad visual relief:
 - creates a poster-like tone
 - makes the page feel like a slide deck
 
+## Mature GES Aesthetic
+
+GES should feel:
+
+- civic
+- calm
+- editorial
+- prepared
+- trustworthy
+- field-guide-like
+- print-conscious
+- professional
+- lightly county-compatible
+
+GES should not feel:
+
+- governmental in a bureaucratic way
+- campaign-like
+- SaaS-dashboard-like
+- Instagram-explainer-like
+- legal-stock-template-like
+- decorative
+- overly branded
+
+The aesthetic sits between civic trust, editorial pacing, software precision, and educational clarity. That balance matters more than any single color, card treatment, hero style, or type pairing. County compatibility should make a guide feel locally plausible without making it look like generic government output.
+
 ## IV. Editorial Components
 
 Future articles should be assembled from reusable editorial components rather than invented layouts.
 
 Each component below includes purpose, usage, cognitive role, semantic structure, accessibility, print notes, and an example.
+
+### Established Component Set
+
+Use these names as the mature GES component vocabulary. Each component should have a clear purpose, an accessibly labelled structure, print-safe behavior, and reusable class names.
+
+| Component | Purpose | Use When | Do Not Use When | Accessibility | Print | Classes |
+| --- | --- | --- | --- | --- | --- | --- |
+| Article Hero / Guide Hero | Orient the reader to title, promise, author context, and media. | Every standalone GES guide. | The guide is embedded in an app workflow. | One `h1`; media has labels/captions. | Preserve title, metadata, and media context. | `article-hero`, `guide-hero`, `hero-title`, `hero-deck` |
+| Hero Media | Carries the primary image or orientation video. | Media reduces uncertainty before reading. | The image is decorative or generic. | Alt/caption text; video controls reachable. | Hide dead controls, keep media context. | `hero-media`, `article-hero-media`, `article-hero-video` |
+| TL;DR Video Orientation | Gives a calm pre-reading summary. | A short video helps readers decide how to proceed. | The video repeats the article without orientation value. | Button label, native controls after play, transcript in source/metadata. | Do not require video for comprehension. | `article-hero-video`, `article-hero-video-player` |
+| Section Kicker | Places the reader in the learning journey. | Major guide sections. | It duplicates the heading. | Must not replace a real heading. | Legible in grayscale. | `section-kicker`, `guided-kicker` |
+| Concept Diagram | Teaches a mental model. | Relationships are clearer visually. | It only restates prose. | Text remains selectable and ordered. | Borders/labels carry meaning. | `concept-diagram`, `concept-card` |
+| Process Strip | Shows a short workflow. | Steps are sequential. | Items are independent checks. | Use an ordered list. | Avoid breaking inside the strip. | `process-strip`, `process-step-heading` |
+| Comparison Module | Contrasts weak and strong choices. | Reader must distinguish similar options. | There is no meaningful contrast. | Labels, not color alone. | Keep paired sides together. | `comparison-card`, `comparison-module` |
+| Decision Diagram | Frames the question behind an outcome. | A decision path reduces uncertainty. | Exceptions would make it misleading. | List/outcome labels remain text. | Include simplification note when needed. | `decision-panel`, `decision-diagram` |
+| Assessment Build Panel | Shows how the current assessed value is shaped by current record facts and related valuation information. | Readers need to connect record review to value review. | The language implies the value is final or beyond review. | Figcaption and text labels explain every part. | Works as a worksheet-like record label. | `assessment-build-panel`, `assessment-build-header` |
+| Record Callout | Points attention to record fields. | Readers need to inspect facts or source rows. | Real or simplified fields would be misleading. | Use `dl` for fields and meanings. | Avoid faint highlights only. | `record-callout` |
+| Evidence Matrix | Connects observation, record issue, and requested correction. | Evidence needs to become action. | The relationship is not action-oriented. | Preserve sequence in DOM order. | Keep each row together. | `evidence-matrix`, `evidence-path-list` |
+| Packet/Preparation Module | Helps readers gather materials. | Multiple independent preparation checks are needed. | Steps are strictly sequential. | Use lists/cards with headings. | Keep as a physical prep checklist. | `question-checklist`, `preparation-module` |
+| Script Card | Prepares a spoken or written request. | Reader must speak, file, ask, or explain. | It sounds like guaranteed results or legal advice. | Selectable text; no image-only script. | Useful as a handout reference. | `script-card` |
+| Resource Cards | Link to official tools and sources. | Resource is necessary or strongly useful. | The link is merely extra reading. | Meaningful link text. | Full URLs visible nearby. | `resource-card`, `resource-card-grid`, `print-url` |
+| Post-Hearing Note | Gives time-sensitive after-action context. | A public meeting, deadline, or follow-up affects action. | Dates are speculative or stale. | Dates/times in visible text. | Hide click-only calendar labels. | `meeting-schedule-card`, `important-inline-note` |
+| Closing Reflection | Connects action to civic meaning. | The guide should end with why the action matters. | The page is purely procedural. | End with real text. | Do not add dead controls after final line. | `closing-reflection`, `tax-article-closing` |
+| Print/PDF Link | Offers a paper pathway. | The guide is likely to be printed or shared. | No maintained PDF exists. | Link text names the artifact. | Hide the CTA inside generated PDFs. | `article-print-cta`, `hero-utility-button` |
+| Footer Utility | Handles sharing and related guide pathways. | The guide benefits from sharing or companion reading. | It distracts from the final reflection. | Button status uses `aria-live`. | Hide interactive-only utilities. | `article-share-footer`, `related-article-coda` |
 
 ### Article Hero
 
@@ -496,7 +591,7 @@ Accessibility: Do not rely on red/green alone. Use text labels.
 
 Print: Keep both columns together when possible.
 
-### Decision Box
+### Decision Diagram
 
 Purpose: Show what kind of evidence moves a decision.
 
@@ -622,6 +717,52 @@ HTML structure:
 Accessibility: Use `dl` when pairing fields with actions or meanings.
 
 Print: Avoid faint highlight-only treatments.
+
+### Assessment Build Panel
+
+Purpose: Explain how a current assessed value is shaped by today's property record and related valuation information.
+
+Use when: The reader needs to understand why record facts matter before comparing, documenting, or requesting a correction.
+
+Do not use when: The article needs a formal valuation formula, a certified appraisal method, or a legal conclusion. Do not use it to imply the assessment is beyond review.
+
+Key language:
+
+- Current Assessed Value
+- Built from today's property record
+- How does the record shape today's value?
+
+Avoid deterministic language:
+
+- Assessed value = conclusion
+- The value is the conclusion
+- Final answer
+
+Tone: Invite the reader into the reasoning process. The component should make the current value feel inspectable and reviewable, not locked.
+
+Styling: The header should feel like a record label or worksheet header. It should not become a large generic dark banner. Use a compact label, a restrained accent edge, and grouped field chips or rows.
+
+HTML structure:
+
+```html
+<figure class="assessment-build-panel" aria-labelledby="assessment-build-title">
+  <figcaption id="assessment-build-title">How does the record shape today's value?</figcaption>
+  <div class="assessment-build-header">
+    <svg class="editorial-icon" aria-hidden="true">...</svg>
+    <strong>Current Assessed Value</strong>
+    <span>Built from today's property record</span>
+  </div>
+  <ul>
+    <li>Living area</li>
+    <li>Condition</li>
+    <li>Quality</li>
+  </ul>
+</figure>
+```
+
+Accessibility: Use a figure and figcaption. Keep all labels as text. Do not communicate field importance with color alone.
+
+Print: The panel should remain useful as a worksheet reference. Keep the header compact, preserve borders in grayscale, and avoid splitting the field list across pages when practical.
 
 ### Example Card
 
@@ -891,6 +1032,8 @@ Do not skip heading levels for styling.
 
 Prefer reusable component names:
 
+- `ges-guide`
+- `guide-hero`
 - `article-hero`
 - `hero-media`
 - `article-hero-video`
@@ -903,9 +1046,13 @@ Prefer reusable component names:
 - `article-section`
 - `section-kicker`
 - `concept-diagram`
-- `decision-panel`
 - `process-strip`
+- `comparison-module`
 - `comparison-card`
+- `decision-diagram`
+- `decision-panel`
+- `assessment-build-panel`
+- `assessment-build-header`
 - `reference-module`
 - `evidence-matrix`
 - `record-callout`
@@ -920,6 +1067,8 @@ Prefer reusable component names:
 - `meeting-schedule-card`
 
 Avoid names that only make sense in one article unless the component truly cannot be reused.
+
+Current compatibility note: `editorial-guide`, `article-hero`, and `decision-panel` remain active class names because current routes and print styles use them. New work may add `ges-guide`, `guide-hero`, `comparison-module`, or `decision-diagram` aliases when extracting shared components, but do not leave duplicate naming systems active without a compatibility reason.
 
 ### Article Source Artifacts
 
@@ -1273,6 +1422,22 @@ Generated PDFs should be visually verified as rendered pages before publication.
 ## X. Refactoring Framework
 
 GEDL should make legacy article refactors repeatable.
+
+### Code Drift Cleanup Checklist
+
+Use this checklist after rapid iteration, before PRR, and before publication commits:
+
+- Remove unused classes.
+- Remove abandoned CSS variables.
+- Consolidate component naming.
+- Delete commented-out experiments.
+- Verify semantic headings.
+- Verify print output.
+- Verify mobile layout.
+- Verify metadata.
+- Verify asset usage.
+- Verify accessibility.
+- Verify no component exists only because it was convenient during experimentation.
 
 ### Audit Checklist
 
