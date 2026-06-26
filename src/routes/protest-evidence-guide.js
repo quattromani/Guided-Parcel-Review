@@ -2,7 +2,7 @@ import { escapeHtml } from "../utils/html.js";
 import { beforeYouWalkIntoPropertyProtestArticle as articleSource } from "../content/articles/before-you-walk-into-a-property-protest.js";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js";
 
-const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg";
+const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg?v=20260626t";
 const ARTICLE_SECTIONS = articleSource.sections;
 const PRINTABLE_GUIDE_PDF = articleSource.assets.printableGuidePdf;
 const ARTICLE_ID = articleSource.id;
@@ -57,6 +57,23 @@ const RECORD_FACTS = articleSource.recordFacts;
 const RECORD_CALLOUT_ROWS = articleSource.recordCalloutRows;
 const EVIDENCE_EXAMPLES = articleSource.evidenceExamples;
 const EVIDENCE_COLUMNS = articleSource.evidenceColumns;
+const EVIDENCE_HEADER_STEPS = [
+  {
+    icon: "observe",
+    label: EVIDENCE_COLUMNS[0],
+    description: "Your evidence or observation"
+  },
+  {
+    icon: "property-record",
+    label: EVIDENCE_COLUMNS[1],
+    description: "What the property record shows"
+  },
+  {
+    icon: "request",
+    label: EVIDENCE_COLUMNS[2],
+    description: "The correction you're requesting"
+  }
+];
 const ORGANIZATION_STEPS = articleSource.organizationSteps;
 const ARTICLE_AUTHOR_MAILTO = `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeURIComponent(`Re: ${ARTICLE_TITLE}`)}`;
 
@@ -79,6 +96,7 @@ function cautionParagraph(text) {
 
   return `
     <p class="article-caution-note">
+      ${editorialIcon("adjustments", "article-caution-icon")}
       <span><strong>${escapeHtml(`${lead}:`)}</strong> ${escapeHtml(rest.join(":").trim())}</span>
     </p>
   `;
@@ -597,7 +615,7 @@ function renderBoardQuestionSection() {
         </div>
       </figure>
       <aside class="decision-disclaimer" aria-label="Decision diagram note">
-        <strong>Note</strong>
+        ${editorialIcon("equalization", "decision-disclaimer-icon")}
         <span>${escapeHtml(section.disclaimer)}</span>
       </aside>
       <div class="editorial-narrow">
@@ -695,15 +713,26 @@ function renderEvidenceSection() {
         ${paragraph(section.intro)}
       </div>
       <figure class="evidence-matrix" aria-labelledby="evidenceMatrixTitle">
-        <figcaption id="evidenceMatrixTitle">${editorialIcon("evidence")}<span>Evidence to record issue to requested correction</span></figcaption>
+        <figcaption id="evidenceMatrixTitle">${editorialIcon("evidence")}<span>Evidence Translation Matrix</span></figcaption>
+        <div class="evidence-matrix-header" aria-hidden="true">
+          ${EVIDENCE_HEADER_STEPS.map((step, index) => `
+            <div class="evidence-matrix-step">
+              ${editorialIcon(step.icon)}
+              <span>
+                <strong>${escapeHtml(step.label)}</strong>
+                <em>${escapeHtml(step.description)}</em>
+              </span>
+            </div>
+            ${index < EVIDENCE_HEADER_STEPS.length - 1 ? `<span class="evidence-matrix-arrow" aria-hidden="true"></span>` : ""}
+          `).join("")}
+        </div>
         <ol class="evidence-path-list">
           ${EVIDENCE_EXAMPLES.map(row => `
             <li>
               ${row.map((cell, index) => `
-                <section>
-                  <h3>${escapeHtml(EVIDENCE_COLUMNS[index])}</h3>
+                <div data-evidence-column="${escapeHtml(EVIDENCE_COLUMNS[index])}" aria-label="${escapeHtml(EVIDENCE_COLUMNS[index])}">
                   <p>${escapeHtml(cell)}</p>
-                </section>
+                </div>
               `).join("")}
             </li>
           `).join("")}
@@ -997,7 +1026,6 @@ function renderGuideUtility() {
         <p class="guide-length-label" data-guide-length-label>${escapeHtml(formatGuideLengthText(ARTICLE_READING_TIME_MINUTES))}</p>
       </div>
       <div class="guide-formats hero-utility" aria-label="Available formats">
-        <p class="guide-utility-label">Available formats</p>
         <div class="format-control">
           <a class="format-control-item hero-utility-button article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable guide PDF">
             ${editorialIcon("document")}

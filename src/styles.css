@@ -9383,7 +9383,7 @@ body:has(.protest-evidence-guide-page[data-county-theme="gage"]) .article-hero {
 .article-author-attribution {
   align-items: center;
   display: inline-flex;
-  gap: 0.54rem;
+  gap: var(--article-avatar-gap);
   min-width: 0;
 }
 
@@ -9400,10 +9400,10 @@ body:has(.protest-evidence-guide-page[data-county-theme="gage"]) .article-hero {
   box-shadow: 0 0 0 1px rgb(var(--border-muted) / 0.75), 0 0.34rem 0.9rem rgb(15 23 42 / 0.12);
   display: block;
   flex: 0 0 auto;
-  height: 2.35rem;
+  height: var(--article-avatar-size);
   object-fit: cover;
   object-position: 50% 24%;
-  width: 2.35rem;
+  width: var(--article-avatar-size);
 }
 
 .article-entry-panel .article-entry-meta p,
@@ -9484,6 +9484,9 @@ body:has(.protest-evidence-guide-page[data-county-theme="gage"]) .article-hero {
 }
 
 .article-entry-panel {
+  --article-avatar-gap: 0.54rem;
+  --article-avatar-size: 2.35rem;
+  --article-meta-text-offset: calc(var(--article-avatar-size) + var(--article-avatar-gap));
   display: grid;
   gap: 0.55rem;
 }
@@ -9544,6 +9547,19 @@ body:has(.protest-evidence-guide-page[data-county-theme="gage"]) .article-hero {
 
 .guide-formats.hero-utility {
   display: grid;
+}
+
+@media (max-width: 520px) {
+  .article-entry-panel {
+    --article-avatar-gap: 0.46rem;
+    --article-avatar-size: 2.1rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .article-author-attribution {
+    margin-left: calc(-1 * var(--article-meta-text-offset));
+  }
 }
 
 .hero-utility-button {
@@ -10155,7 +10171,6 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
 .editorial-card-heading,
 .scorecard h3,
-.evidence-path-list h3,
 .meeting-schedule-card h3,
 .script-card figcaption {
   align-items: center;
@@ -10165,7 +10180,6 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
 .editorial-card-heading .editorial-icon,
 .scorecard h3 .editorial-icon,
-.evidence-path-list h3 .editorial-icon,
 .assessment-build-panel figcaption .editorial-icon,
 .record-callout figcaption .editorial-icon,
 .evidence-matrix figcaption .editorial-icon,
@@ -10187,8 +10201,8 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 
 .article-caution-note {
   align-items: start;
-  background: color-mix(in srgb, var(--editorial-accent-soft) 48%, #ffffff);
-  border-left: 0.18rem solid color-mix(in srgb, var(--editorial-accent) 68%, rgb(var(--border-muted)));
+  background: color-mix(in srgb, rgb(var(--color-yellow-soft)) 72%, #ffffff);
+  border-left: 0.18rem solid rgb(var(--color-yellow) / 0.72);
   border-radius: 0.62rem;
   color: rgb(var(--brand-ink));
   display: grid;
@@ -10198,21 +10212,18 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   padding: 0.72rem 0.82rem;
 }
 
-.article-caution-note::before {
+.article-caution-icon {
   align-items: center;
-  background: var(--editorial-accent);
+  background: rgb(var(--color-yellow) / 0.14);
+  border: 1px solid rgb(var(--color-yellow) / 0.34);
   border-radius: 999px;
-  color: #ffffff;
-  content: "!";
+  box-sizing: content-box;
+  color: rgb(var(--color-yellow));
   display: inline-flex;
-  font-family: var(--levy-heading-font);
-  font-size: 0.72rem;
-  font-weight: 900;
-  height: 1.28rem;
-  justify-content: center;
-  line-height: 1;
-  margin-top: 0.12rem;
-  width: 1.28rem;
+  height: 1rem;
+  margin-top: 0.1rem;
+  padding: 0.18rem;
+  width: 1rem;
 }
 
 .article-caution-note strong {
@@ -10226,10 +10237,21 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .article-guidance-note::before {
+  align-items: center;
   background: rgb(var(--color-information));
+  border-radius: 999px;
+  color: #ffffff;
   content: "i";
+  display: inline-flex;
   font-family: var(--levy-heading-font);
+  font-size: 0.72rem;
+  font-weight: 900;
   font-style: italic;
+  height: 1.28rem;
+  justify-content: center;
+  line-height: 1;
+  margin-top: 0.12rem;
+  width: 1.28rem;
 }
 
 .concept-card,
@@ -10245,7 +10267,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   background: var(--editorial-surface);
   border: 1px solid var(--editorial-border);
   border-radius: 0.85rem;
-  box-shadow: inset 0 0.16rem 0 var(--editorial-accent-soft), 0 0.75rem 1.7rem rgb(31 73 112 / 0.045);
+  box-shadow: none;
   justify-self: center;
   margin: 0;
   padding: clamp(0.95rem, 2.4vw, 1.35rem);
@@ -10264,7 +10286,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 .editorial-guide[data-county-theme="gage"] .resource-section {
   border-color: rgb(var(--county-color-border-soft));
   border-radius: var(--county-radius-card);
-  box-shadow: inset 0 0.14rem 0 var(--editorial-accent-soft), var(--county-compatible-shadow);
+  box-shadow: none;
 }
 
 .concept-card figcaption,
@@ -10805,28 +10827,35 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .decision-disclaimer {
-  align-items: baseline;
-  border-left: 0.18rem solid color-mix(in srgb, var(--editorial-accent) 64%, rgb(var(--border-muted)));
+  align-items: start;
   color: rgb(var(--color-slate-600));
-  display: flex;
-  flex-wrap: wrap;
-  font-family: var(--levy-body-font);
-  font-size: 0.94rem;
-  gap: 0.35rem;
+  display: grid;
+  font-family: var(--levy-heading-font);
+  font-size: 0.82rem;
+  gap: 0.38rem;
+  grid-template-columns: auto minmax(0, 1fr);
   justify-self: center;
-  line-height: 1.45;
-  margin: -0.45rem 0 0;
-  padding: 0.08rem 0 0.08rem 0.72rem;
+  line-height: 1.42;
+  margin: -0.34rem 0 0;
+  padding: 0;
   width: min(100%, 64rem);
 }
 
-.decision-disclaimer strong {
-  color: var(--editorial-accent);
-  font-family: var(--levy-heading-font);
-  font-size: 0.74rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.decision-disclaimer-icon {
+  background: rgb(255 255 255 / 0.86);
+  border: 1px solid rgb(var(--border-muted));
+  border-radius: 999px;
+  box-sizing: content-box;
+  color: rgb(var(--color-slate-500));
+  height: 0.92rem;
+  margin-top: -0.02rem;
+  padding: 0.22rem;
+  width: 0.92rem;
+}
+
+.decision-disclaimer span {
+  color: rgb(var(--color-slate-600));
+  font-weight: 430;
 }
 
 .article-source-note {
@@ -10945,73 +10974,124 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   color: rgb(var(--color-slate-600));
 }
 
+.evidence-matrix-header,
+.evidence-path-list li {
+  display: grid;
+}
+
+.evidence-matrix-header {
+  align-items: center;
+  border-bottom: 1px solid var(--editorial-border);
+  gap: 0.9rem;
+  grid-template-columns: minmax(0, 1fr) 2.4rem minmax(0, 1fr) 2.4rem minmax(0, 1fr);
+  margin: 0.1rem 0 0;
+  padding: 0.62rem 0 1.05rem;
+}
+
+.evidence-matrix-step {
+  align-items: start;
+  color: var(--editorial-accent);
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.evidence-matrix-step .editorial-icon {
+  color: var(--editorial-accent);
+  height: 1.45rem;
+  margin-top: 0.03rem;
+  width: 1.45rem;
+}
+
+.evidence-matrix-step span {
+  display: grid;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.evidence-matrix-step strong {
+  color: var(--editorial-accent);
+  font-family: var(--levy-heading-font);
+  font-size: 0.92rem;
+  font-weight: 860;
+  letter-spacing: 0.06em;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.evidence-matrix-step em {
+  color: rgb(var(--brand-ink));
+  font-family: var(--levy-heading-font);
+  font-size: 0.94rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.evidence-matrix-arrow {
+  align-self: center;
+  border-top: 2px solid rgb(var(--color-slate-500) / 0.55);
+  display: block;
+  position: relative;
+}
+
+.evidence-matrix-arrow::after {
+  border-color: rgb(var(--color-slate-500) / 0.62);
+  border-style: solid;
+  border-width: 2px 2px 0 0;
+  content: "";
+  height: 0.58rem;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 0.58rem;
+}
+
 .evidence-path-list {
   display: grid;
-  gap: 0.7rem;
+  gap: 0;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .evidence-path-list li {
-  background: var(--editorial-muted);
-  border: 1px solid var(--editorial-border);
-  border-radius: 0.7rem;
-  display: grid;
-  gap: 0;
+  border-bottom: 1px solid var(--editorial-border);
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  overflow: hidden;
 }
 
-.evidence-path-list section {
-  display: grid;
-  gap: 0.28rem;
-  padding: 0.78rem;
-  position: relative;
+.evidence-path-list li:last-child {
+  border-bottom: 0;
 }
 
-.evidence-path-list section + section {
+.evidence-path-list div {
+  padding: 1.02rem 1.18rem;
+}
+
+.evidence-path-list div:nth-child(1) {
+  grid-column: 1;
+  padding-left: 0;
+}
+
+.evidence-path-list div:nth-child(2) {
+  grid-column: 2;
+}
+
+.evidence-path-list div:nth-child(3) {
+  grid-column: 3;
+  padding-right: 0;
+}
+
+.evidence-path-list div + div {
   border-left: 1px solid var(--editorial-border);
-}
-
-.evidence-path-list section:not(:last-child)::after {
-  border-color: rgb(var(--brand-ink) / 0.46);
-  border-style: solid;
-  border-width: 1.5px 1.5px 0 0;
-  content: "";
-  height: 0.45rem;
-  position: absolute;
-  right: -0.52rem;
-  top: 50%;
-  transform: translateY(-50%) rotate(45deg);
-  width: 0.45rem;
-  z-index: 1;
-}
-
-.evidence-path-list section:not(:last-child)::before {
-  background: rgb(var(--brand-ink) / 0.38);
-  content: "";
-  height: 1.5px;
-  position: absolute;
-  right: -0.48rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0.86rem;
-  z-index: 1;
-}
-
-.evidence-path-list h3 {
-  color: var(--editorial-accent);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .evidence-path-list p {
   color: rgb(var(--brand-ink));
   font-family: var(--levy-body-font);
-  font-size: 0.95rem;
-  line-height: 1.44;
+  font-size: 1.08rem;
+  line-height: 1.34;
   margin: 0;
 }
 
@@ -12423,27 +12503,73 @@ body:has(.levy-compression-page) .comp-page-title h1 {
     grid-template-columns: 1fr;
   }
 
-  .evidence-path-list section + section {
-    border-left: 0;
-    border-top: 1px solid rgb(var(--border-muted));
+  .evidence-matrix-header {
+    gap: 0.32rem;
+    grid-template-columns: 1fr;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.78rem;
   }
 
-  .evidence-path-list section:not(:last-child)::after {
-    bottom: -0.52rem;
+  .evidence-matrix-step {
+    gap: 0.46rem;
+  }
+
+  .evidence-matrix-step .editorial-icon {
+    height: 1.18rem;
+    width: 1.18rem;
+  }
+
+  .evidence-matrix-step strong {
+    font-size: 0.76rem;
+  }
+
+  .evidence-matrix-step em {
+    font-size: 0.86rem;
+  }
+
+  .evidence-matrix-arrow {
+    border-left: 2px solid rgb(var(--color-slate-500) / 0.42);
+    border-top: 0;
+    height: 0.75rem;
+    justify-self: start;
+    margin-left: 0.32rem;
+    width: 0;
+  }
+
+  .evidence-matrix-arrow::after {
+    bottom: 0;
     left: 50%;
     right: auto;
     top: auto;
     transform: translateX(-50%) rotate(135deg);
   }
 
-  .evidence-path-list section:not(:last-child)::before {
-    bottom: -0.52rem;
-    height: 0.86rem;
-    left: 50%;
-    right: auto;
-    top: auto;
-    transform: translateX(-50%);
-    width: 1.5px;
+  .evidence-path-list li {
+    padding: 0.24rem 0;
+  }
+
+  .evidence-path-list div,
+  .evidence-path-list div:nth-child(1),
+  .evidence-path-list div:nth-child(2),
+  .evidence-path-list div:nth-child(3) {
+    grid-column: 1;
+    padding: 0.48rem 0;
+  }
+
+  .evidence-path-list div + div {
+    border-left: 0;
+    border-top: 1px solid rgb(var(--border-muted) / 0.78);
+    padding-top: 0.52rem;
+  }
+
+  .evidence-path-list div:not(:last-child)::after {
+    color: rgb(var(--brand-ink) / 0.42);
+    content: "\2193";
+    display: block;
+    font-family: var(--levy-heading-font);
+    font-size: 0.78rem;
+    line-height: 1;
+    margin-top: 0.34rem;
   }
 
   .levy-basic-list {
@@ -14694,7 +14820,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   .assessment-build-panel li,
   .record-callout dt,
   .question-checklist h3,
-  .evidence-path-list h3 {
+  .evidence-matrix-header {
     font-size: 8pt;
   }
 
@@ -14711,25 +14837,29 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   }
 
   .evidence-path-list {
-    gap: 5pt;
+    gap: 0;
   }
 
   .evidence-path-list li {
-    border-radius: 6pt;
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .evidence-path-list section {
-    padding: 6pt;
+  .evidence-path-list div {
+    padding: 7pt 8pt;
   }
 
-  .evidence-path-list section + section {
-    border-left: 1px solid var(--editorial-border);
-    border-top: 0;
+  .evidence-path-list div:nth-child(1) {
+    grid-column: 1;
+    padding-left: 0;
   }
 
-  .evidence-path-list section:not(:last-child)::after {
-    display: none;
+  .evidence-path-list div:nth-child(2) {
+    grid-column: 2;
+  }
+
+  .evidence-path-list div:nth-child(3) {
+    grid-column: 3;
+    padding-right: 0;
   }
 
   .meeting-schedule-card,

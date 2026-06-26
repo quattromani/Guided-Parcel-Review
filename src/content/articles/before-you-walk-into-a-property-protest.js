@@ -8,7 +8,7 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
   author: "Max Quattromani",
   authorEmail: "max@maxquatrromani.com",
   location: "Gage County",
-  tags: ["Gage County"],
+  tags: ["Gage County", "Property Assessment", "Property Protest"],
   displayDate: "June 25, 2026",
   publishedDate: "2026-06-25T17:33:00-05:00",
   modifiedDate: "2026-06-26T12:00:00-05:00",
@@ -364,8 +364,8 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     },
     records: {
       kicker: "Verifying the Record",
-      title: "How does the record shape today's value?",
-      emphasis: "Today's assessed value reflects the information currently available about your property.",
+      title: "How does the property record shape the current assessment?",
+      emphasis: "The current assessed value reflects the information presently available about your property.",
       layerCaption: "The current assessment is built from many smaller pieces of information.",
       paragraphs: [
         "The property record is often the most useful place to begin because it holds many of the facts used during valuation. Compare your record with the records for your comparables. Do not stop at the total assessed value. Ask which record facts help explain how each value was assembled.",

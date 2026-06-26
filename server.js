@@ -6,9 +6,11 @@ const root = process.cwd();
 const port = Number(process.env.PORT || 4173);
 const types = {
   ".html": "text/html",
+  ".ico": "image/x-icon",
   ".js": "text/javascript",
   ".css": "text/css",
   ".json": "application/json",
+  ".webmanifest": "application/manifest+json",
   ".jpg": "image/jpeg",
   ".png": "image/png",
   ".svg": "image/svg+xml",

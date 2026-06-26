@@ -360,7 +360,7 @@ Use these names as the mature GES component vocabulary. Each component should ha
 | Decision Diagram | Frames the question behind an outcome. | A decision path reduces uncertainty. | Exceptions would make it misleading. | List/outcome labels remain text. | Include simplification note when needed. | `decision-panel`, `decision-diagram` |
 | Assessment Build Panel | Shows how the current assessed value is shaped by current record facts and related valuation information. | Readers need to connect record review to value review. | The language implies the value is final or beyond review. | Figcaption and text labels explain every part. | Works as a worksheet-like reference list. | `assessment-build-panel` |
 | Record Callout | Points attention to record fields. | Readers need to inspect facts or source rows. | Real or simplified fields would be misleading. | Use `dl` for fields and meanings. | Avoid faint highlights only. | `record-callout` |
-| Evidence Matrix | Connects observation, record issue, and requested correction. | Evidence needs to become action. | The relationship is not action-oriented. | Preserve sequence in DOM order. | Keep each row together. | `evidence-matrix`, `evidence-path-list` |
+| Evidence Translation Matrix | Connects observation, record issue, and requested correction. | Evidence needs to become action through repeated examples. | The relationship is not action-oriented. | Teach the sequence once, then preserve each example row in DOM order. | Keep each row together. | `evidence-matrix`, `evidence-matrix-header`, `evidence-path-list` |
 | Packet/Preparation Module | Helps readers gather materials. | Multiple independent preparation checks are needed. | Steps are strictly sequential. | Use lists/cards with headings. | Keep as a physical prep checklist. | `question-checklist`, `preparation-module` |
 | Script Card | Prepares a spoken or written request. | Reader must speak, file, ask, or explain. | It sounds like guaranteed results or legal advice. | Selectable text; no image-only script. | Useful as a handout reference. | `script-card` |
 | Resource Cards | Link to official tools and sources. | Resource is necessary or strongly useful. | The link is merely extra reading. | Meaningful link text. | Full URLs visible nearby. | `resource-card`, `resource-card-grid`, `print-url` |
@@ -444,7 +444,6 @@ Article entry HTML:
           <p class="guide-length-label" data-guide-length-label>About a 10-minute read</p>
         </div>
         <div class="guide-formats" aria-label="Available formats">
-          <p class="guide-utility-label">Available formats</p>
           <div class="format-control">
             <a class="format-control-item article-print-cta" href="/assets/guides/example.pdf" download>Printable guide</a>
             <details class="hero-audio">
@@ -683,11 +682,11 @@ Accessibility: Prefer lists or definition lists over visual-only layouts.
 
 Print: Avoid page breaks inside criteria groups.
 
-### Evidence Matrix
+### Evidence Translation Matrix
 
 Purpose: Connect observation to record issue to requested action.
 
-Use when: The reader needs to understand how evidence becomes a request.
+Use when: The reader needs to understand how evidence becomes a request through repeated examples.
 
 Do not use when: The relationship is not action-oriented.
 
@@ -699,27 +698,49 @@ HTML structure:
 
 ```html
 <figure class="evidence-matrix">
-  <figcaption>Evidence -> Record issue -> Requested correction</figcaption>
+  <figcaption>Evidence Translation Matrix</figcaption>
+  <div class="evidence-matrix-header" aria-hidden="true">
+    <div class="evidence-matrix-step">
+      <svg class="editorial-icon"><use href="assets/icons/editorial/sprite.svg#icon-observe"></use></svg>
+      <span>
+        <strong>What you noticed</strong>
+        <em>Your evidence or observation</em>
+      </span>
+    </div>
+    <span class="evidence-matrix-arrow"></span>
+    <div class="evidence-matrix-step">
+      <svg class="editorial-icon"><use href="assets/icons/editorial/sprite.svg#icon-property-record"></use></svg>
+      <span>
+        <strong>What the record says</strong>
+        <em>What the property record shows</em>
+      </span>
+    </div>
+    <span class="evidence-matrix-arrow"></span>
+    <div class="evidence-matrix-step">
+      <svg class="editorial-icon"><use href="assets/icons/editorial/sprite.svg#icon-request"></use></svg>
+      <span>
+        <strong>What to ask for</strong>
+        <em>The correction you're requesting</em>
+      </span>
+    </div>
+  </div>
   <ol class="evidence-path-list">
     <li>
-      <section>
-        <h3>What you noticed</h3>
+      <div aria-label="What you noticed">
         <p>Photos show sealed fireplace</p>
-      </section>
-      <section>
-        <h3>What the record says</h3>
+      </div>
+      <div aria-label="What the record says">
         <p>record lists functional fireplace</p>
-      </section>
-      <section>
-        <h3>What to ask for</h3>
+      </div>
+      <div aria-label="What to ask for">
         <p>request fireplace correction</p>
-      </section>
+      </div>
     </li>
   </ol>
 </figure>
 ```
 
-Accessibility: Preserve the sequence in DOM order. Use text headings for each step.
+Accessibility: Preserve the sequence in DOM order. The header teaches the workflow once; row cells should retain accessible labels so screen readers can identify the step without repeating visual headings.
 
 Print: Keep each row together when possible.
 
