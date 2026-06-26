@@ -207,7 +207,7 @@ function sendPayload(payload) {
   const body = JSON.stringify(payload);
 
   if (navigator.sendBeacon) {
-    const blob = new Blob([body], { type: "text/plain;charset=UTF-8" });
+    const blob = new Blob([body], { type: "text/plain" });
     if (navigator.sendBeacon(VISIT_ANALYTICS_ENDPOINT, blob)) return;
   }
 
@@ -216,7 +216,7 @@ function sendPayload(payload) {
     mode: "no-cors",
     keepalive: true,
     headers: {
-      "Content-Type": "text/plain;charset=UTF-8"
+      "Content-Type": "text/plain"
     },
     body
   }).catch(() => {
