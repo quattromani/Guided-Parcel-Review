@@ -1,3 +1,5 @@
+import { versionedAssetUrl } from "../asset-version.js?v=db3aed6";
+
 const GES_STYLESHEET_ID = "ges-design-system-stylesheet";
 
 export function ensureGesStylesheet() {
@@ -7,6 +9,6 @@ export function ensureGesStylesheet() {
   const link = document.createElement("link");
   link.id = GES_STYLESHEET_ID;
   link.rel = "stylesheet";
-  link.href = new URL("./index.css?v=ges-1.0.0-20260627e", import.meta.url).href;
+  link.href = versionedAssetUrl("./index.css", import.meta.url);
   document.head.append(link);
 }

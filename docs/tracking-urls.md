@@ -11,6 +11,14 @@ Guided Parcel Review supports repeatable, first-party tracking URLs through quer
 
 Legacy `invite` links still work. If `gpr_track` is missing, `invite` is also recorded as `trackingId`.
 
+## Max Home Link
+
+Use this for the Home Screen shortcut:
+
+```text
+https://quattromani.github.io/Guided-Parcel-Review/home/?invite=max-home-screen-20260627&gpr_track=max-home-screen-20260627&gpr_person=max-quattromani&gpr_label=max-home-screen&utm_source=max&utm_medium=home-screen&utm_campaign=project-home
+```
+
 ## Max Review Link
 
 ```text
@@ -37,11 +45,11 @@ Every visit event includes:
 
 These fields are appended to the Google Sheet by `apps-script/visit-analytics/Code.gs`.
 
-## Internal Project Navigation
+## Project Navigation
 
-Tracked Max review URLs that include `gpr_person=max-quattromani` unlock the GES project navigation utility. The utility uses the house mark as a button and propagates the current tracking context across internal project-page links, including `gpr_track`, `gpr_person`, `gpr_label`, UTM fields, and legacy `invite` when present.
+The shared project header is available on every body-bearing project page. It uses the house mark as a button and propagates the current context across internal project-page links, including `property`, `view`, `gpr_track`, `gpr_person`, `gpr_label`, UTM fields, and legacy `invite` when present.
 
-Menu and tool access are separate. Future trusted reviewers can be added to the project-navigation allow-list in `src/ges/internal-permissions.js` without granting them the Field Kit. The Field Kit utility belt is owner-only and remains limited to `gpr_person=max-quattromani`.
+Menu and tool access are separate. The project navigation is public; the Field Kit utility belt remains owner-only and limited to `gpr_person=max-quattromani`.
 
 ## Privacy Rule
 

@@ -4,7 +4,7 @@ import {
   formatCurrency,
   formatPercent,
   summarizeSession
-} from "./calculations.js";
+} from "./calculations.js?v=db3aed6";
 import {
   createRecord,
   createSession,
@@ -18,14 +18,14 @@ import {
   updateConfig,
   updateRecord,
   updateSession
-} from "./storage.js";
+} from "./storage.js?v=db3aed6";
 import {
   exportActiveSessionCsv,
   exportActiveSessionJson,
   exportAllJson,
   importJsonFile
-} from "./export.js";
-import { syncUnsyncedRecords } from "./sync.js";
+} from "./export.js?v=db3aed6";
+import { syncUnsyncedRecords } from "./sync.js?v=db3aed6";
 
 const propertyClasses = ["Residential", "Agricultural", "Commercial", "Industrial", "Exempt/Other", "Unknown"];
 const outcomes = ["", "Pending", "Denied", "Approved", "Modified", "Withdrawn", "Tabled", "Continued", "Unknown"];

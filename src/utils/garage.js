@@ -1,4 +1,4 @@
-import { formatNullableMoney } from "../format.js";
+import { formatNullableMoney } from "../format.js?v=db3aed6";
 
 function money(value) {
   return value === null || value === undefined ? null : formatNullableMoney(value);

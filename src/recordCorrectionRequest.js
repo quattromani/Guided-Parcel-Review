@@ -306,4 +306,4 @@ function formatSubmittedAt(iso) {
     timeZoneName: "short"
   }).format(new Date(iso));
 }
-import { copy, copyArray, copyObject, copyTemplate } from "./content/site-copy.js";
+import { copy, copyArray, copyObject, copyTemplate } from "./content/site-copy.js?v=db3aed6";

@@ -9,9 +9,9 @@ import {
   tableMatchCounts,
   tableRowGroups,
   textLabel
-} from "../domain/comparison-review.js";
-import { escapeHtml } from "../utils/html.js";
-import { rankComparableCandidates } from "./comparable-candidate-review.js";
+} from "../domain/comparison-review.js?v=db3aed6";
+import { escapeHtml } from "../utils/html.js?v=db3aed6";
+import { rankComparableCandidates } from "./comparable-candidate-review.js?v=db3aed6";
 
 async function loadJson(path, label) {
   const response = await fetch(path);

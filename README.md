@@ -155,3 +155,30 @@ Do not move dynamic values into copy files. Property values, parcel facts, tax a
 ## Deployment
 
 The project is a static site and can be served by GitHub Pages or any static host. The repository includes `.nojekyll` so GitHub Pages serves files directly.
+
+Before deployment, run the asset versioning pass so local CSS and JavaScript URLs change deterministically with the release:
+
+```bash
+node scripts/apply-asset-version.mjs
+node scripts/apply-asset-version.mjs --check
+```
+
+By default, the script uses the current git short hash. To force a manual release label, use `--version`:
+
+```bash
+node scripts/apply-asset-version.mjs --version 20260627-01
+```
+
+The pass updates checked-in HTML, browser module imports, CSS `@import` URLs, and `src/asset-version.js`. It does not add cache-prevention meta tags or random per-load values.
+
+Standalone pages should load the shared project header instead of creating page-local nav or theme controls:
+
+```html
+<script type="module" src="../src/ges/global-header.js?v=20260627-01"></script>
+```
+
+Use the correct relative path for the page location. The module auto-installs the sticky house-logo navigation header, visual mode switcher, and internal-link parameter preservation. Run the header audit before handoff:
+
+```bash
+node scripts/audit-global-header.mjs
+```

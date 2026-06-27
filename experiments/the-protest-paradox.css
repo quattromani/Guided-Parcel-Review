@@ -90,6 +90,7 @@ h1 span {
   font-weight: 420;
   line-height: 1.64;
   max-width: 68ch;
+  text-indent: var(--prose-first-line-indent, 1.35em);
 }
 
 .confidence-note,
@@ -100,6 +101,7 @@ h1 span {
   font-weight: 420;
   line-height: 1.64;
   max-width: 68ch;
+  text-indent: var(--prose-first-line-indent, 1.35em);
 }
 
 .hero-subtitle {
@@ -109,6 +111,7 @@ h1 span {
   font-weight: 500;
   line-height: 1.42;
   max-width: 58rem;
+  text-indent: var(--prose-first-line-indent, 1.35em);
 }
 
 .hero-context {
@@ -117,6 +120,7 @@ h1 span {
   font-weight: 520;
   line-height: 1.6;
   max-width: 54rem;
+  text-indent: var(--prose-first-line-indent, 1.35em);
 }
 
 .case-title aside {

@@ -1,4 +1,4 @@
-import { escapeHtml } from "../utils/html.js";
+import { escapeHtml } from "../utils/html.js?v=db3aed6";
 
 export function renderMarginInsight(insight) {
   if (!insight?.text) return "";

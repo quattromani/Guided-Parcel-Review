@@ -1,10 +1,10 @@
-import { formatNullableLevy, formatNullableMoney } from "../format.js";
+import { formatNullableLevy, formatNullableMoney } from "../format.js?v=db3aed6";
 import {
   finalizedTaxStatements,
   statementGrossLevy,
   statementTotalCredits
-} from "../render.js";
-import { escapeHtml } from "../utils/html.js";
+} from "../render.js?v=db3aed6";
+import { escapeHtml } from "../utils/html.js?v=db3aed6";
 
 const percentOneDecimal = new Intl.NumberFormat("en-US", {
   style: "percent",

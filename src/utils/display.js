@@ -1,4 +1,4 @@
-import { hasValue } from "../calculations/history.js";
+import { hasValue } from "../calculations/history.js?v=db3aed6";
 
 const integer = new Intl.NumberFormat("en-US");
 

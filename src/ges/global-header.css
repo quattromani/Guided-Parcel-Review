@@ -1,0 +1,236 @@
+@import url("./project-nav.css?v=db3aed6");
+
+:root {
+  --gpr-global-header-height: 3.35rem;
+}
+
+.gpr-global-header {
+  --gpr-global-header-surface: var(--ges-color-surface, var(--county-color-surface, 255 255 255));
+  --gpr-global-header-muted: var(--ges-color-surface-muted, var(--color-slate-50, 248 250 252));
+  --gpr-global-header-text: var(--ges-color-text, var(--color-slate-700, 31 51 71));
+  --gpr-global-header-secondary: var(--ges-color-text-secondary, var(--color-slate-600, 71 85 105));
+  --gpr-global-header-border: var(--ges-color-border-subtle, var(--border-muted, 215 222 226));
+  --gpr-global-header-strong: var(--ges-color-border-strong, var(--county-color-border, 173 182 190));
+  --gpr-global-header-focus: var(--ges-color-focus, var(--ges-color-action, 62 73 122));
+  --gpr-global-header-shadow: var(--ges-color-shadow, 0 0 0);
+  background: rgb(var(--gpr-global-header-surface) / 0.94);
+  border-bottom: 1px solid rgb(var(--gpr-global-header-border) / 0.82);
+  box-shadow: 0 0.35rem 1.2rem rgb(var(--gpr-global-header-shadow) / 0.06);
+  color: rgb(var(--gpr-global-header-text));
+  inset-block-start: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  z-index: 80;
+}
+
+html[data-ges-theme-resolved="dark"] .gpr-global-header {
+  --gpr-global-header-surface: 25 43 58;
+  --gpr-global-header-muted: 22 39 54;
+  --gpr-global-header-text: 232 237 240;
+  --gpr-global-header-secondary: 193 204 209;
+  --gpr-global-header-border: 49 72 88;
+  --gpr-global-header-strong: 77 101 116;
+  --gpr-global-header-focus: 139 151 188;
+  --gpr-global-header-shadow: 0 0 0;
+}
+
+html[data-gpr-global-header="enabled"] body {
+  padding-top: var(--gpr-global-header-height);
+}
+
+@supports (backdrop-filter: blur(14px)) {
+  .gpr-global-header {
+    backdrop-filter: blur(14px);
+  }
+}
+
+.gpr-global-header__inner {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  min-height: var(--gpr-global-header-height);
+  margin: 0 auto;
+  padding: 0.42rem clamp(0.85rem, 3vw, 1.5rem);
+  width: min(100%, 82rem);
+}
+
+.gpr-global-header__brand,
+.gpr-global-header__actions {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.gpr-global-header .ges-project-nav {
+  z-index: 90;
+}
+
+.gpr-global-header .ges-project-nav__trigger {
+  align-items: center;
+  background: rgb(var(--gpr-global-header-muted) / 0.72);
+  border: 1px solid rgb(var(--gpr-global-header-border) / 0.88);
+  border-radius: 999px;
+  box-shadow: 0 0.18rem 0.65rem rgb(var(--gpr-global-header-shadow) / 0.08);
+  display: inline-flex;
+  height: 2.38rem;
+  justify-content: center;
+  width: 2.38rem;
+}
+
+.gpr-global-header .ges-project-nav__trigger:hover,
+.gpr-global-header .ges-project-nav__trigger[aria-expanded="true"] {
+  background: rgb(var(--gpr-global-header-surface));
+  border-color: rgb(var(--gpr-global-header-strong) / 0.75);
+}
+
+.gpr-global-header .hero-brand-mark {
+  display: block;
+  height: 1.65rem;
+  position: relative;
+  width: 1.7rem;
+}
+
+.gpr-global-header .hero-brand-mark__image {
+  display: block;
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.gpr-global-header .hero-brand-mark__image--dark {
+  filter: brightness(0) invert(1);
+  opacity: 0;
+}
+
+html[data-ges-theme-resolved="dark"] .gpr-global-header .hero-brand-mark__image--light {
+  opacity: 0;
+}
+
+html[data-ges-theme-resolved="dark"] .gpr-global-header .hero-brand-mark__image--dark {
+  opacity: 1;
+}
+
+.gpr-global-header .ges-project-nav__menu {
+  max-height: min(34rem, calc(100vh - var(--gpr-global-header-height) - 1rem));
+  z-index: 100;
+}
+
+.gpr-global-header .ges-page-utility {
+  display: flex;
+  justify-content: flex-end;
+  width: auto;
+}
+
+.gpr-global-header .ges-theme-toggle {
+  align-items: center;
+  background: rgb(var(--gpr-global-header-muted) / 0.72);
+  border: 1px solid rgb(var(--gpr-global-header-border) / 0.88);
+  border-radius: 999px;
+  box-shadow: 0 0.18rem 0.65rem rgb(var(--gpr-global-header-shadow) / 0.08);
+  display: inline-flex;
+  gap: 0.12rem;
+  padding: 0.16rem;
+}
+
+.gpr-global-header .ges-theme-toggle__button {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  color: rgb(var(--gpr-global-header-secondary));
+  cursor: pointer;
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  padding: 0;
+  width: 2rem;
+}
+
+.gpr-global-header .ges-theme-toggle__button svg {
+  fill: none;
+  height: 1.12rem;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.85;
+  width: 1.12rem;
+}
+
+.gpr-global-header .ges-theme-toggle__button[data-active] {
+  background: rgb(var(--gpr-global-header-surface));
+  box-shadow:
+    0 0 0 1px rgb(var(--gpr-global-header-strong) / 0.55),
+    0 0.32rem 0.78rem rgb(var(--gpr-global-header-shadow) / 0.1);
+  color: rgb(var(--gpr-global-header-text));
+}
+
+.gpr-global-header .levy-sr-only,
+.gpr-global-header .ges-sr-only {
+  clip: rect(0 0 0 0);
+  border: 0;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+body:has(.gpr-global-header) .guide-review-header {
+  top: var(--gpr-global-header-height);
+}
+
+@media (min-width: 1024px) {
+  body:has(.gpr-global-header) .boe-left-column {
+    top: calc(var(--gpr-global-header-height) + 1rem);
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --gpr-global-header-height: 3.15rem;
+  }
+
+  .gpr-global-header__inner {
+    padding-inline: 0.72rem;
+  }
+
+  .gpr-global-header .ges-project-nav__trigger {
+    height: 2.18rem;
+    width: 2.18rem;
+  }
+
+  .gpr-global-header .hero-brand-mark {
+    height: 1.48rem;
+    width: 1.52rem;
+  }
+
+  .gpr-global-header .ges-project-nav__menu {
+    left: 0;
+    max-height: calc(100vh - var(--gpr-global-header-height) - 1rem);
+    min-width: min(22rem, calc(100vw - 1.4rem));
+    position: fixed;
+    top: calc(var(--gpr-global-header-height) + 0.42rem);
+    width: calc(100vw - 1.4rem);
+  }
+
+  .gpr-global-header .ges-theme-toggle__button {
+    height: 1.86rem;
+    width: 1.86rem;
+  }
+}
+
+@media print {
+  html[data-gpr-global-header="enabled"] body {
+    padding-top: 0;
+  }
+
+  .gpr-global-header {
+    display: none !important;
+  }
+}

@@ -1,4 +1,4 @@
-import { copyObject } from "./site-copy.js";
+import { copyObject } from "./site-copy.js?v=db3aed6";
 
 const fallbackResourcesByView = {
   "your-property": {

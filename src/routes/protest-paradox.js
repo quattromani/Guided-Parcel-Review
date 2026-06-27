@@ -1,15 +1,14 @@
-import { escapeHtml } from "../utils/html.js";
-import { installGesThemeToggle, renderGesThemeToggle } from "../ges-theme.js";
+import { escapeHtml } from "../utils/html.js?v=db3aed6";
 import {
   installGuideUtilityLanguage,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderArticleTags as renderGesArticleTags,
   renderPageCrease,
   renderSectionHeader as sectionHeader
-} from "../ges/article-components.js";
-import { createGesArticleShell } from "../ges/shell.js";
-import { assessmentUpProtestDeniedTaxesArticle as articleSource } from "../content/articles/assessment-up-protest-denied-taxes.js";
-import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js";
+} from "../ges/article-components.js?v=db3aed6";
+import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
+import { assessmentUpProtestDeniedTaxesArticle as articleSource } from "../content/articles/assessment-up-protest-denied-taxes.js?v=db3aed6";
+import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=db3aed6";
 
 const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg";
 const ARTICLE_SECTIONS = articleSource.sections;
@@ -651,7 +650,6 @@ export function renderProtestParadox() {
     routeName: "protest-paradox"
   });
   if (!shell?.coverRegion) return;
-  const pageTitle = shell.coverRegion;
   const canvas = shell.bodyRegion;
 
   updateMetadata();
@@ -659,13 +657,8 @@ export function renderProtestParadox() {
   shell.setCover(`
     <header class="comp-page-title levy-page-title article-hero" aria-labelledby="protestParadoxTitle">
       <div class="article-hero-packet">
-        ${renderGesThemeToggle()}
         <div class="hero-kicker-row">
           <p class="guided-kicker hero-kicker hero-brand-kicker">
-            <span class="hero-brand-mark" role="img" aria-label="Guided Parcel Review">
-              <img class="hero-brand-mark__image hero-brand-mark__image--light" src="assets/brand/civic-house-mark.svg" alt="" width="28" height="28" decoding="async" />
-              <img class="hero-brand-mark__image hero-brand-mark__image--dark" src="assets/brand/civic-house-mark.svg" alt="" width="28" height="28" decoding="async" />
-            </span>
             <span class="hero-kicker-text">
               <span class="hero-kicker-label">Article</span>
               <span class="hero-kicker-divider" aria-hidden="true">/</span>
@@ -682,8 +675,6 @@ export function renderProtestParadox() {
       </figure>
     </header>
   `);
-
-  installGesThemeToggle(pageTitle);
 
   shell.setBody(`
     <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page protest-paradox-page editorial-guide tax-article-panel" data-county-theme="gage" aria-label="Assessment increase and levy compression case study">

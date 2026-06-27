@@ -1,5 +1,5 @@
-import { guidedSnapshotFromMipsRecordCard } from "./adapters/mips/record-card.js";
-import { developmentFeatureSampleStartPropertyId } from "./development-feature.js";
+import { guidedSnapshotFromMipsRecordCard } from "./adapters/mips/record-card.js?v=db3aed6";
+import { developmentFeatureSampleStartPropertyId } from "./development-feature.js?v=db3aed6";
 
 async function loadJson(path, label) {
   const response = await fetch(path);

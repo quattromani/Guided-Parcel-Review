@@ -117,6 +117,8 @@ export function installGesThemeToggle(root = document) {
   applyGesTheme();
 
   root.querySelectorAll("[data-ges-theme-option]").forEach((button) => {
+    if (button.dataset.gesThemeToggleReady === "true") return;
+    button.dataset.gesThemeToggleReady = "true";
     button.addEventListener("click", () => setGesTheme(button.dataset.gesThemeOption));
   });
 

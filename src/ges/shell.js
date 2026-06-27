@@ -1,4 +1,4 @@
-import { ensureGesStylesheet } from "./loader.js";
+import { ensureGesStylesheet } from "./loader.js?v=db3aed6";
 
 const DEFAULT_COVER_SELECTOR = '[data-ges-shell-region="cover"], [data-ges-shell-region="title"], #pageTitle';
 const DEFAULT_BODY_SELECTOR = '[data-ges-shell-region="body"], [data-ges-shell-region="content"], .mobile-review-canvas';

@@ -1,17 +1,17 @@
-import { calculateEtr, formatNullableMoney, formatNullablePercent, moneyCents } from "../format.js";
-import { latestKnown, percentChange, previousKnown, sortHistoryAscending } from "../calculations/history.js";
+import { calculateEtr, formatNullableMoney, formatNullablePercent, moneyCents } from "../format.js?v=db3aed6";
+import { latestKnown, percentChange, previousKnown, sortHistoryAscending } from "../calculations/history.js?v=db3aed6";
 import {
   displayAddress,
   displayMailingAddress
-} from "../utils/address.js";
-import { garageSummary as sharedGarageSummary } from "../domain/property-record-facts.js";
+} from "../utils/address.js?v=db3aed6";
+import { garageSummary as sharedGarageSummary } from "../domain/property-record-facts.js?v=db3aed6";
 import {
   getClassMarketStats,
   getParcelMarketClass,
   getParcelMarketGroupId,
   getSelectedMarketGroup
-} from "../market-stats.js";
-import { compactParts, fileSafe, formatSquareFeet } from "../utils/display.js";
+} from "../market-stats.js?v=db3aed6";
+import { compactParts, fileSafe, formatSquareFeet } from "../utils/display.js?v=db3aed6";
 import {
   addReportPage,
   createReportContext,
@@ -25,7 +25,7 @@ import {
   drawText,
   drawVerticalRule,
   drawWrappedText
-} from "./pdf-report-kit.js";
+} from "./pdf-report-kit.js?v=db3aed6";
 
 const integer = new Intl.NumberFormat("en-US");
 

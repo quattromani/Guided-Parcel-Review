@@ -108,6 +108,7 @@
   line-height: var(--ges-line-copy);
   margin: 0;
   max-width: 68ch;
+  text-indent: var(--prose-first-line-indent, 1.35em);
 }
 
 .ges-caption,
@@ -146,4 +147,14 @@
   font-family: var(--ges-font-ui);
   font-size: var(--ges-type-xs);
   line-height: var(--ges-line-compact);
+}
+
+.ges-caption,
+.ges-meta,
+.ges-utility-text,
+.article-entry-meta p,
+.article-source-note p,
+.article-sources-used li,
+.figcaption {
+  text-indent: 0;
 }

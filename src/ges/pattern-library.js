@@ -1,5 +1,7 @@
-import { installGesThemeToggle } from "../ges-theme.js";
+import { installGesThemeToggle } from "../ges-theme.js?v=db3aed6";
+import { initGlobalHeader } from "./global-header.js?v=db3aed6";
 
+initGlobalHeader();
 installGesThemeToggle(document);
 
 document.querySelectorAll("[data-ges-density]").forEach((button) => {

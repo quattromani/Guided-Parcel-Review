@@ -1,6 +1,6 @@
-import { escapeHtml } from "../utils/html.js";
-import { loadPropertyManifest } from "../data-service.js";
-import { createGesArticleShell } from "../ges/shell.js";
+import { escapeHtml } from "../utils/html.js?v=db3aed6";
+import { loadPropertyManifest } from "../data-service.js?v=db3aed6";
+import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
 
 const ARTICLE_AUTHOR_IMAGE = "assets/images/articles/max-quattromani-author.jpg";
 

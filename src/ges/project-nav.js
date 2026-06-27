@@ -2,7 +2,7 @@ import {
   hasInternalMenuPermission,
   INTERNAL_OWNER_PERSON,
   INTERNAL_PERMISSION_PARAM_NAME
-} from "./internal-permissions.js";
+} from "./internal-permissions.js?v=db3aed6";
 
 export const INTERNAL_TRACKING_PARAM = Object.freeze({
   name: INTERNAL_PERMISSION_PARAM_NAME,
@@ -10,6 +10,10 @@ export const INTERNAL_TRACKING_PARAM = Object.freeze({
 });
 
 export const TRACKING_CONTEXT_PARAM_NAMES = Object.freeze([
+  "property",
+  "view",
+  "orientation",
+  "developmentFeature",
   "invite",
   "gpr_track",
   "gpr_person",
@@ -25,6 +29,10 @@ export const INTERNAL_PROJECT_NAV_SECTIONS = Object.freeze([
   {
     title: "Parcel Review",
     links: [
+      {
+        label: "Project home",
+        href: "home/"
+      },
       {
         label: "Guided Parcel Review main guide",
         href: "index.html"
@@ -118,10 +126,8 @@ export const INTERNAL_PROJECT_NAV_SECTIONS = Object.freeze([
 ]);
 
 const PROJECT_REPOSITORY_PATH = "/Guided-Parcel-Review/";
-const PROJECT_NAV_OBSERVER_KEY = "__gesProjectNavObserver";
-const PROJECT_NAV_INITIALIZED_KEY = "__gesProjectNavInitialized";
 const PROJECT_NAV_ID_PREFIX = "gesProjectNav";
-const PROJECT_NAV_INSTANCE_SELECTOR = "[data-ges-project-nav-instance]";
+const TRACKING_LINK_ENHANCER_KEY = "__gprTrackingLinkEnhancerInstalled";
 const NON_PAGE_EXTENSIONS = new Set([
   ".aac",
   ".avif",
@@ -232,7 +238,18 @@ function formatProjectHref(url, locationUrl) {
   }
 
   const relativePath = url.pathname.slice(projectBase.length) || "index.html";
-  return `${relativePath}${url.search}${url.hash}`;
+  return `${projectBase}${relativePath}${url.search}${url.hash}`;
+}
+
+function projectRootHref(value) {
+  const locationUrl = parseUrl(currentLocationHref());
+  if (!locationUrl) return value;
+
+  const projectBaseUrl = new URL(projectBasePath(locationUrl), locationUrl.origin);
+  const targetUrl = parseUrl(value, projectBaseUrl.href);
+  if (!targetUrl) return value;
+
+  return formatProjectHref(targetUrl, locationUrl);
 }
 
 export function hasInternalTrackingParam(source = currentLocationHref()) {
@@ -275,7 +292,7 @@ export function appendTrackingParam(url, options = {}) {
 }
 
 export function enhanceInternalNavLinks(container, options = {}) {
-  if (!container || !hasInternalTrackingParam(options.currentUrl || currentLocationHref())) return;
+  if (!container) return;
 
   const links = [
     ...(container.matches?.("a[href]") ? [container] : []),
@@ -290,11 +307,50 @@ export function enhanceInternalNavLinks(container, options = {}) {
   });
 }
 
+function enhanceLinkElement(link, options = {}) {
+  if (!link || link.hasAttribute("download")) return;
+  const href = link.getAttribute("href");
+  if (!href) return;
+  link.setAttribute("href", appendTrackingParam(href, options));
+}
+
+export function installTrackingContextLinkEnhancer(container = document, options = {}) {
+  if (!container || container[TRACKING_LINK_ENHANCER_KEY]) return;
+  container[TRACKING_LINK_ENHANCER_KEY] = true;
+  enhanceInternalNavLinks(container, options);
+
+  container.addEventListener?.("click", event => {
+    const link = event.target?.closest?.("a[href]");
+    if (!link || !container.contains?.(link)) return;
+    enhanceLinkElement(link, options);
+  }, true);
+
+  const ownerWindow = container.defaultView || container.ownerDocument?.defaultView;
+  const MutationObserverCtor = ownerWindow?.MutationObserver;
+  if (!MutationObserverCtor || !container.querySelectorAll) return;
+
+  const observer = new MutationObserverCtor(records => {
+    records.forEach(record => {
+      record.addedNodes.forEach(node => {
+        if (node.nodeType !== 1) return;
+        enhanceInternalNavLinks(node, options);
+      });
+    });
+  });
+
+  observer.observe(container.body || container, {
+    childList: true,
+    subtree: true
+  });
+}
+
 function defaultHouseMarkMarkup() {
+  const logoHref = projectRootHref("assets/brand/civic-house-mark.svg");
+
   return `
     <span class="hero-brand-mark" aria-hidden="true">
-      <img class="hero-brand-mark__image hero-brand-mark__image--light" src="assets/brand/civic-house-mark.svg" alt="" width="28" height="28" decoding="async" />
-      <img class="hero-brand-mark__image hero-brand-mark__image--dark" src="assets/brand/civic-house-mark.svg" alt="" width="28" height="28" decoding="async" />
+      <img class="hero-brand-mark__image hero-brand-mark__image--light" src="${escapeHtml(logoHref)}" alt="" width="28" height="28" decoding="async" />
+      <img class="hero-brand-mark__image hero-brand-mark__image--dark" src="${escapeHtml(logoHref)}" alt="" width="28" height="28" decoding="async" />
     </span>
   `;
 }
@@ -319,7 +375,7 @@ function projectNavMenuMarkup(menuId) {
       <span id="${drawerId}" class="ges-project-nav__drawer-panel" role="group" aria-labelledby="${triggerId}" aria-hidden="${open ? "false" : "true"}"${open ? " data-open" : ""}>
         <span class="ges-project-nav__link-stack">
         ${section.links.map(link => `
-          <a class="ges-project-nav__link" href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>
+          <a class="ges-project-nav__link" href="${escapeHtml(projectRootHref(link.href))}">${escapeHtml(link.label)}</a>
         `).join("")}
         </span>
       </span>
@@ -431,7 +487,7 @@ function installProjectNavBehavior(nav) {
   });
 }
 
-function buildProjectNav({
+export function buildProjectNav({
   triggerMarkup = defaultHouseMarkMarkup(),
   triggerClass = "",
   standalone = false
@@ -454,71 +510,4 @@ function buildProjectNav({
   initProjectNavDrawers(wrapper);
   installProjectNavBehavior(wrapper);
   return wrapper;
-}
-
-function enhanceBrandMark(mark) {
-  if (!mark || mark.closest(PROJECT_NAV_INSTANCE_SELECTOR)) return false;
-
-  const classNames = [...mark.classList].filter(className => className !== "hero-brand-mark");
-  const nav = buildProjectNav({
-    triggerMarkup: mark.innerHTML,
-    triggerClass: ["hero-brand-mark", ...classNames].join(" ")
-  });
-
-  mark.replaceWith(nav);
-  return true;
-}
-
-function installFallbackProjectNav(root = document) {
-  const pageTitle = root.getElementById?.("pageTitle") ?? document.getElementById("pageTitle");
-  if (!pageTitle) return false;
-  if (pageTitle.querySelector(PROJECT_NAV_INSTANCE_SELECTOR) || pageTitle.querySelector(".hero-brand-mark")) return false;
-
-  const target = pageTitle.querySelector(".article-hero-packet, .comp-page-title, .page-title-shell");
-  if (!target) return false;
-
-  const nav = buildProjectNav({ standalone: true });
-  nav.dataset.gesProjectNavFallback = "";
-  target.prepend(nav);
-  return true;
-}
-
-function enhanceProjectNavTargets(root = document) {
-  let enhanced = false;
-  root.querySelectorAll?.(".hero-brand-mark").forEach(mark => {
-    enhanced = enhanceBrandMark(mark) || enhanced;
-  });
-
-  return installFallbackProjectNav(document) || enhanced;
-}
-
-export function initGesProjectNav(root = document) {
-  if (typeof document === "undefined" || typeof window === "undefined") return null;
-  if (!hasInternalTrackingParam()) return null;
-  if (window[PROJECT_NAV_INITIALIZED_KEY]) {
-    enhanceProjectNavTargets(root);
-    return window[PROJECT_NAV_OBSERVER_KEY] ?? null;
-  }
-
-  window[PROJECT_NAV_INITIALIZED_KEY] = true;
-  document.documentElement.dataset.gesProjectNavMode = "enabled";
-
-  enhanceProjectNavTargets(root);
-
-  const observer = new MutationObserver(mutations => {
-    mutations.forEach(mutation => {
-      mutation.addedNodes.forEach(node => {
-        if (node.nodeType !== Node.ELEMENT_NODE) return;
-        enhanceProjectNavTargets(node);
-      });
-    });
-  });
-
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-
-  window[PROJECT_NAV_OBSERVER_KEY] = observer;
-  return observer;
 }

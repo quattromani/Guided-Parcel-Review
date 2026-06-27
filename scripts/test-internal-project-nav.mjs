@@ -24,6 +24,7 @@ function countParam(url, name) {
 const baseUrl = process.argv[2] || "http://127.0.0.1:4186";
 const artifactDir = process.argv[3] || "/private/tmp/gpr-internal-nav-test";
 const trackingQuery = "?invite=max-protest-guide-20260627&gpr_track=max-protest-guide-20260627&gpr_person=max-quattromani&gpr_label=max-internal-review&utm_source=max&utm_medium=tracked-link&utm_campaign=protest-guide-review";
+const propertyTrackingQuery = `${trackingQuery}&property=residential-011312000&view=property`;
 const articlePath = "/articles/before-you-walk-into-a-property-protest/";
 const chromePath = process.env.CHROME_EXECUTABLE_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const { chromium } = await loadPlaywright();
@@ -56,12 +57,12 @@ async function waitForApp(page) {
 try {
   {
     const { context, page } = await newPage();
-    await page.goto(`${baseUrl}/index.html${trackingQuery}`, { waitUntil: "domcontentloaded" });
+    await page.goto(`${baseUrl}/index.html${propertyTrackingQuery}`, { waitUntil: "domcontentloaded" });
     await waitForApp(page);
 
-    const helperResults = await page.evaluate(async ({ baseUrl, trackingQuery }) => {
+    const helperResults = await page.evaluate(async ({ baseUrl, propertyTrackingQuery }) => {
       const projectNav = await import("/src/ges/project-nav.js");
-      const currentUrl = `${baseUrl}/index.html${trackingQuery}`;
+      const currentUrl = `${baseUrl}/index.html${propertyTrackingQuery}`;
       const options = {
         currentUrl,
         baseUrl: `${baseUrl}/index.html`
@@ -80,13 +81,15 @@ try {
         internalProject: projectNav.isInternalProjectUrl("boe-tracker/", options),
         externalProject: projectNav.isInternalProjectUrl("https://example.com/project", options)
       };
-    }, { baseUrl, trackingQuery });
+    }, { baseUrl, propertyTrackingQuery });
 
     assert.equal(helperResults.hasPresent, true, "internal mode should detect approved Max tracking parameter");
     assert.equal(helperResults.hasAbsent, false, "internal mode should reject other gpr_person values");
-    assert.match(helperResults.noQuery, /^articles\/before-you-walk-into-a-property-protest\/\?/);
+    assert.match(helperResults.noQuery, /^\/articles\/before-you-walk-into-a-property-protest\/\?/);
     assert.match(helperResults.noQuery, /gpr_person=max-quattromani/);
-    assert.match(helperResults.existingQuery, /^index\.html\?article=levy-compression&/);
+    assert.match(helperResults.noQuery, /property=residential-011312000/);
+    assert.match(helperResults.noQuery, /view=property/);
+    assert.match(helperResults.existingQuery, /^\/index\.html\?article=levy-compression&/);
     assert.match(helperResults.hash, /#calculatorTitle$/);
     assert.match(helperResults.hash, /gpr_person=max-quattromani/);
     assert.equal(helperResults.external, "https://example.com/project");
@@ -102,14 +105,15 @@ try {
     const { context, page } = await newPage();
     await page.goto(`${baseUrl}${articlePath}`, { waitUntil: "domcontentloaded" });
     await waitForApp(page);
-    await page.waitForSelector(".hero-brand-mark", { timeout: 10000 });
-    assert.equal(await page.locator(".ges-project-nav__trigger").count(), 0, "public article should not get project nav trigger");
+    await page.locator(".gpr-global-header .ges-project-nav__trigger").first().waitFor({ timeout: 10000 });
+    assert.equal(await page.locator(".gpr-global-header").count(), 1, "public article should get the shared global header");
+    assert.equal(await page.locator(".gpr-global-header .ges-theme-toggle").count(), 1, "public article should get the shared visual mode switcher");
     await context.close();
   }
 
   {
     const { context, page } = await newPage();
-    await page.goto(`${baseUrl}${articlePath}${trackingQuery}`, { waitUntil: "domcontentloaded" });
+    await page.goto(`${baseUrl}${articlePath}${propertyTrackingQuery}`, { waitUntil: "domcontentloaded" });
     await waitForApp(page);
     const trigger = page.locator(".ges-project-nav__trigger").first();
     const menu = page.locator(".ges-project-nav__menu").first();
@@ -138,6 +142,8 @@ try {
     const hrefs = await page.locator(".ges-project-nav__link").evaluateAll(links => links.map(link => link.getAttribute("href")));
     assert.ok(hrefs.every(href => href.includes("gpr_person=max-quattromani")), "all dropdown links preserve gpr_person");
     assert.ok(hrefs.every(href => href.includes("gpr_track=max-protest-guide-20260627")), "all dropdown links preserve gpr_track");
+    assert.ok(hrefs.every(href => href.includes("property=residential-011312000")), "all dropdown links preserve selected property");
+    assert.ok(hrefs.every(href => href.includes("view=property")), "all dropdown links preserve direct property view");
 
     await page.keyboard.press("Escape");
     assert.equal(await trigger.getAttribute("aria-expanded"), "false", "Escape should close the menu");
@@ -160,6 +166,8 @@ try {
     await page.evaluate(() => localStorage.setItem("ges-theme-preference", "dark"));
     await page.reload({ waitUntil: "domcontentloaded" });
     await waitForApp(page);
+    await page.locator("[data-ges-theme-option=\"dark\"]").first().click();
+    assert.equal(await page.locator("[data-ges-theme-option=\"dark\"]").first().getAttribute("aria-pressed"), "true");
     await page.locator(".ges-project-nav__trigger").first().click();
 
     const colors = await page.locator(".ges-project-nav__menu").first().evaluate(element => {
@@ -201,12 +209,12 @@ try {
     const { context, page } = await newPage();
     await page.goto(`${baseUrl}/index.html${trackingQuery}`, { waitUntil: "domcontentloaded" });
     await waitForApp(page);
-    await page.locator(".ges-project-nav__trigger").first().waitFor({ timeout: 10000 });
-    assert.equal(await page.locator(".ges-project-nav--standalone").count(), 1, "main guide should get an internal-only house trigger");
+    await page.locator(".gpr-global-header .ges-project-nav__trigger").first().waitFor({ timeout: 10000 });
+    assert.equal(await page.locator(".gpr-global-header").count(), 1, "main guide should get the shared global header");
     await context.close();
   }
 } finally {
   await browser.close();
 }
 
-console.log(`Internal project nav checks passed. Screenshots: ${artifactDir}`);
+console.log(`Global project nav checks passed. Screenshots: ${artifactDir}`);

@@ -1,5 +1,5 @@
-@import url("./ges/project-nav.css");
-@import url("./ges/field-kit.css");
+@import url("./ges/project-nav.css?v=db3aed6");
+@import url("./ges/field-kit.css?v=db3aed6");
 
 :root {
   --color-slate-700: 31 51 71;
@@ -109,6 +109,7 @@
   --surface-pad-spacious: 1.5rem;
   --surface-shadow: 0 1px 2px rgb(var(--brand-ink) / 0.05), inset 0 0 0 1px rgb(var(--border-muted));
   --surface-muted-shadow: inset 0 0 0 1px rgb(var(--border-muted));
+  --prose-first-line-indent: 1.35em;
 }
 
 /*
@@ -507,12 +508,13 @@ body.property-switcher-guidance-active .property-switcher-empty .property-switch
   margin: 0.25rem 0 0;
 }
 
-.guided-start-copy p {
+.guided-start-copy p:not(.guided-kicker) {
   color: rgb(var(--color-slate-600));
   font-size: 1rem;
   line-height: 1.65;
   margin: 0.75rem 0 0;
   max-width: 42rem;
+  text-indent: var(--prose-first-line-indent);
 }
 
 .guided-start-callout {
@@ -8446,6 +8448,7 @@ footer > [data-footer-resource-shell] {
   line-height: 1.45;
   margin: 0;
   max-width: 44rem;
+  text-indent: var(--prose-first-line-indent);
 }
 
 .tax-prediction-kpis {
@@ -8767,6 +8770,7 @@ footer > [data-footer-resource-shell] {
   line-height: 1.55;
   margin: 0;
   max-width: 43rem;
+  text-indent: var(--prose-first-line-indent);
 }
 
 .tax-article-source-line,
@@ -8804,6 +8808,13 @@ footer > [data-footer-resource-shell] {
   line-height: 1.62;
   margin: 0;
   max-width: 46rem;
+  text-indent: var(--prose-first-line-indent);
+}
+
+.tax-article-source-line,
+.tax-article-final-source,
+.article-source-note p {
+  text-indent: 0;
 }
 
 .tax-article-opening blockquote {
@@ -8899,6 +8910,7 @@ footer > [data-footer-resource-shell] {
   font-weight: 620;
   line-height: 1.45;
   margin: 0;
+  text-indent: var(--prose-first-line-indent);
 }
 
 .tax-essay-observations p:last-child {
@@ -10207,6 +10219,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   font-weight: 400;
   line-height: 1.64;
   max-width: 68ch;
+  text-indent: var(--prose-first-line-indent);
 }
 
 .levy-compression-page .tax-article-opening blockquote {
@@ -10231,12 +10244,12 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .levy-compression-page .tax-article-closing > p {
-  text-indent: 1.35em;
+  text-indent: var(--prose-first-line-indent);
 }
 
 .levy-compression-page .tax-article-closing > p + p,
 .levy-compression-page .tax-article-closing > .article-source-note + p {
-  text-indent: 1.35em;
+  text-indent: var(--prose-first-line-indent);
 }
 
 .levy-compression-page .tax-article-closing .article-source-note p {
@@ -11142,6 +11155,7 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   font-weight: 400;
   line-height: 1.64;
   max-width: 68ch;
+  text-indent: var(--prose-first-line-indent);
 }
 
 .process-strip {

@@ -1,4 +1,4 @@
-import { escapeHtml } from "../utils/html.js";
+import { escapeHtml } from "../utils/html.js?v=db3aed6";
 
 function numericValue(value) {
   return Number.isFinite(Number(value)) ? Number(value) : 0;
