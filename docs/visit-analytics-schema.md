@@ -30,9 +30,33 @@ The v2 payload keeps the old fields but adds stable identifiers and named fields
 
 - `path`, `referrer`, `referrerHost`: page and inbound source.
 - `utmSource`, `utmMedium`, `utmCampaign`, `utmContent`, `utmTerm`: campaign attribution when present.
+- `trackingId`, `trackingPerson`, `trackingLabel`: first-party tracking URL attribution from `gpr_track`, `gpr_person`, and `gpr_label`.
 - `fbclidPresent`: whether the inbound URL carried a Facebook click ID.
 - `browserContext`: `browser`, `facebook-in-app`, `facebook-referral`, `instagram-in-app`, or `social-in-app`.
 - `isFacebookInApp`: boolean for quick filtering of Facebook in-app browser behavior.
+
+## Tracking URLs
+
+Use first-party tracking URLs when a shared link needs to be attributable to a known person, list, or distribution path without cookies or fingerprinting. The URL parameters are captured on every event for that page view, including article views, scroll depth, resource clicks, heartbeats, and visit end.
+
+- `gpr_track`: stable link token. Required for a tracking URL.
+- `gpr_person`: known person or recipient slug. Use a stable, non-sensitive slug such as `max-quattromani`.
+- `gpr_label`: optional human-readable label for the link purpose.
+- `invite`: legacy token. If `gpr_track` is absent, `invite` also populates `trackingId`.
+
+Recommended pairing with UTM fields:
+
+```text
+?invite=max-protest-guide-20260627&gpr_track=max-protest-guide-20260627&gpr_person=max-quattromani&gpr_label=max-internal-review&utm_source=max&utm_medium=tracked-link&utm_campaign=protest-guide-review
+```
+
+Specific Max review link:
+
+```text
+https://quattromani.github.io/Guided-Parcel-Review/articles/before-you-walk-into-a-property-protest/?invite=max-protest-guide-20260627&gpr_track=max-protest-guide-20260627&gpr_person=max-quattromani&gpr_label=max-internal-review&utm_source=max&utm_medium=tracked-link&utm_campaign=protest-guide-review
+```
+
+Do not put private facts, email addresses, phone numbers, parcel IDs, or sensitive audience labels in tracking URL parameters. Treat these values as spreadsheet-visible attribution labels, not secrets.
 
 ## Article Metrics
 

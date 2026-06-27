@@ -225,10 +225,15 @@ function sendPayload(payload) {
 }
 
 function normalizeContext(context = {}) {
+  const tracking = trackingUrlContext();
+
   return {
     propertyId: context.propertyId || context.id || "",
     parcelId: context.parcelId || "",
-    invite: inviteToken(),
+    invite: context.invite || tracking.invite,
+    trackingId: context.trackingId || tracking.trackingId,
+    trackingPerson: context.trackingPerson || tracking.trackingPerson,
+    trackingLabel: context.trackingLabel || tracking.trackingLabel,
     propertyClass: context.propertyClass || "",
     county: context.county || "",
     contentType: context.contentType || "",
@@ -299,8 +304,17 @@ function randomIdPart() {
     : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-function inviteToken() {
-  return new URLSearchParams(window.location.search).get("invite") || "";
+function trackingUrlContext() {
+  const params = new URLSearchParams(window.location.search);
+  const legacyInvite = params.get("invite") || "";
+  const trackingId = params.get("gpr_track") || legacyInvite;
+
+  return {
+    invite: legacyInvite,
+    trackingId,
+    trackingPerson: params.get("gpr_person") || "",
+    trackingLabel: params.get("gpr_label") || ""
+  };
 }
 
 function viewportBucket() {
