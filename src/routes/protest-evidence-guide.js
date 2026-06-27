@@ -1,5 +1,12 @@
 import { escapeHtml } from "../utils/html.js";
 import { installGesThemeToggle, renderGesThemeToggle } from "../ges-theme.js";
+import {
+  installGuideUtilityLanguage,
+  renderArticleEntryPanel as renderGesArticleEntryPanel,
+  renderArticleTags as renderGesArticleTags,
+  renderSectionHeader as sectionHeader
+} from "../ges/article-components.js";
+import { createGesArticleShell } from "../ges/shell.js";
 import { beforeYouWalkIntoPropertyProtestArticle as articleSource } from "../content/articles/before-you-walk-into-a-property-protest.js";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js";
 
@@ -493,34 +500,6 @@ function updateProtestEvidenceGuideMetadata() {
   });
 }
 
-function renderMarginInsight(insight) {
-  if (!insight?.text) return "";
-
-  return `
-    <aside class="ges-margin-insight" aria-label="${escapeHtml(insight.label ?? "Margin insight")}">
-      ${insight.label ? `<p class="ges-margin-insight__label">${escapeHtml(insight.label)}</p>` : ""}
-      <p class="ges-margin-insight__text">${escapeHtml(insight.text)}</p>
-    </aside>
-  `;
-}
-
-function sectionHeader(kicker, title, id, options = {}) {
-  const companion = options.companion ? `<p class="ges-section-companion">${escapeHtml(options.companion)}</p>` : "";
-  const insight = renderMarginInsight(options.marginInsight);
-  const classes = ["tax-article-header", "editorial-section-header", insight ? "ges-section-header--with-insight" : ""].filter(Boolean).join(" ");
-
-  return `
-    <header class="${classes}">
-      <div class="ges-section-heading">
-        <p class="guided-kicker">${escapeHtml(kicker)}</p>
-        <h2 id="${escapeHtml(id)}">${escapeHtml(title)}</h2>
-        ${companion}
-      </div>
-      ${insight}
-    </header>
-  `;
-}
-
 function renderDisconnectFigure() {
   return `
     <figure class="concept-card concept-diagram disconnect-visual" aria-labelledby="disconnectTitle">
@@ -939,17 +918,17 @@ function normalizedPathname() {
 }
 
 export function renderProtestEvidenceGuide() {
-  const pageTitle = document.getElementById("pageTitle");
-  const canvas = document.querySelector(".mobile-review-canvas");
-  if (!canvas) return;
+  const shell = createGesArticleShell({
+    htmlClasses: ["levy-compression-shell-route"],
+    routeName: "protest-evidence-guide"
+  });
+  if (!shell?.coverRegion) return;
+  const pageTitle = shell.coverRegion;
+  const canvas = shell.bodyRegion;
 
   updateProtestEvidenceGuideMetadata();
-  document.documentElement.classList.add("article-shell-route", "levy-compression-shell-route");
-  document.querySelector(".guide-review-header")?.classList.add("hidden");
-  document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("hidden"));
-  document.querySelector("[data-footer-resource-shell]")?.classList.add("hidden");
 
-  pageTitle.innerHTML = `
+  shell.setCover(`
     <header class="comp-page-title levy-page-title article-hero" aria-labelledby="protestArticleTitle">
       <div class="article-hero-packet">
         ${renderGesThemeToggle()}
@@ -989,11 +968,11 @@ export function renderProtestEvidenceGuide() {
         <figcaption class="levy-sr-only">${escapeHtml(ARTICLE_HERO_IMAGE_ALT)} The video provides a short overview of the article.</figcaption>
       </figure>
     </header>
-  `;
+  `);
 
   installGesThemeToggle(pageTitle);
 
-  canvas.innerHTML = `
+  shell.setBody(`
     <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page editorial-guide tax-article-panel" data-county-theme="gage" aria-label="Property protest evidence guide">
       ${renderArticleDepthMarkers()}
       ${renderOpeningSection()}
@@ -1009,7 +988,7 @@ export function renderProtestEvidenceGuide() {
       ${renderOneMoreThoughtSection()}
       ${renderClosingSection()}
     </article>
-  `;
+  `);
 
   installArticleAnalytics(canvas);
   installHeroVideo(pageTitle);
@@ -1019,81 +998,25 @@ export function renderProtestEvidenceGuide() {
 }
 
 function renderArticleEntryPanel() {
-  return `
-    <div class="article-entry-panel">
-      <div class="article-entry-meta" aria-label="Article information">
-        <div class="article-author-attribution">
-          <img class="article-author-photo" src="${escapeHtml(ARTICLE_AUTHOR_IMAGE)}" alt="" loading="lazy" decoding="async" />
-          <div class="article-author-copy">
-            <p class="article-author-name"><a href="${escapeHtml(ARTICLE_AUTHOR_MAILTO)}" data-article-action="author_email" data-article-label="${escapeHtml(ARTICLE_TITLE)}">${escapeHtml(ARTICLE_AUTHOR)}</a></p>
-            <p class="article-author-title">${escapeHtml(ARTICLE_AUTHOR_TITLE)}</p>
-            <p class="article-entry-date">${ARTICLE_DISPLAY_DATE}</p>
-          </div>
-        </div>
-      </div>
-      ${renderGuideUtility()}
-    </div>
-  `;
+  return renderGesArticleEntryPanel({
+    articleTitle: ARTICLE_TITLE,
+    authorImage: ARTICLE_AUTHOR_IMAGE,
+    authorMailto: ARTICLE_AUTHOR_MAILTO,
+    authorName: ARTICLE_AUTHOR,
+    authorTitle: ARTICLE_AUTHOR_TITLE,
+    displayDate: ARTICLE_DISPLAY_DATE,
+    icon: editorialIcon,
+    printableLabel: "Printable guide",
+    printableUrl: PRINTABLE_GUIDE_PDF,
+    audioUrl: ARTICLE_AUDIO_READ,
+    readingMinutes: ARTICLE_READING_TIME_MINUTES,
+    wordCount: ARTICLE_WORD_COUNT,
+    lengthLabel: ARTICLE_LENGTH_LABEL
+  });
 }
 
 function renderArticleTags() {
-  if (!ARTICLE_TAGS.length) {
-    return "";
-  }
-
-  return `
-        <ul class="article-entry-tags" aria-label="Article tags">
-          ${ARTICLE_TAGS.map((tag) => `<li>${escapeHtml(tag)}</li>`).join("")}
-        </ul>`;
-}
-
-function formatGuideLengthText(minutes) {
-  const numericMinutes = Number.parseInt(minutes, 10);
-  if (!Number.isFinite(numericMinutes) || numericMinutes < 1) return "";
-  return `About a ${numericMinutes}-minute read`;
-}
-
-function renderGuideUtility() {
-  return `
-    <section class="guide-utility" aria-label="Guide options">
-      <div class="guide-length" aria-label="Estimated guide length" data-guide-length data-reading-minutes="${escapeHtml(ARTICLE_READING_TIME_MINUTES)}" data-word-count="${escapeHtml(ARTICLE_WORD_COUNT)}" data-length-label="${escapeHtml(ARTICLE_LENGTH_LABEL)}">
-        <p class="guide-length-label" data-guide-length-label>${escapeHtml(formatGuideLengthText(ARTICLE_READING_TIME_MINUTES))}</p>
-      </div>
-      <div class="guide-formats hero-utility" aria-label="Available formats">
-        <div class="format-control">
-          <a class="format-control-item hero-utility-button article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable guide PDF">
-            ${editorialIcon("document")}
-            <span>Printable guide</span>
-          </a>
-          <details class="hero-audio format-control-item-shell" data-hero-audio>
-            <summary class="format-control-item hero-utility-button article-audio-cta">
-              ${editorialIcon("audio")}
-              <span>Audio version</span>
-            </summary>
-            <div class="hero-audio-panel">
-              <p>Full audio version of this guide.</p>
-              <audio class="hero-audio-player" data-hero-audio-player controls preload="none" src="${escapeHtml(ARTICLE_AUDIO_READ)}">
-                <a href="${escapeHtml(ARTICLE_AUDIO_READ)}">Download the MP3 audio version.</a>
-              </audio>
-              <a class="hero-audio-download" href="${escapeHtml(ARTICLE_AUDIO_READ)}" download data-article-action="audio_article_download" data-article-label="Audio article MP3">Download MP3</a>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-function installGuideUtilityLanguage(root) {
-  root.querySelectorAll("[data-guide-length]").forEach(lengthElement => {
-    const label = lengthElement.querySelector("[data-guide-length-label]");
-    const text = formatGuideLengthText(lengthElement.dataset.readingMinutes);
-    if (!text) {
-      lengthElement.hidden = true;
-      return;
-    }
-    if (label) label.textContent = text;
-  });
+  return renderGesArticleTags(ARTICLE_TAGS);
 }
 
 function installHeroVideo(root) {

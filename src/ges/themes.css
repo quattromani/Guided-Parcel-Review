@@ -1,0 +1,160 @@
+html[data-ges-theme-resolved="dark"].article-shell-route,
+html[data-ges-theme-resolved="dark"].ges-pattern-library-route {
+  color-scheme: dark;
+  --ges-color-page: 18 33 47;
+  --ges-color-page-warm: 23 38 50;
+  --ges-color-surface: 25 43 58;
+  --ges-color-surface-elevated: 31 52 68;
+  --ges-color-surface-muted: 22 39 54;
+  --ges-color-text: 232 237 240;
+  --ges-color-text-secondary: 193 204 209;
+  --ges-color-text-muted: 146 160 166;
+  --ges-color-border-subtle: 49 72 88;
+  --ges-color-border-strong: 77 101 116;
+  --ges-color-civic-blue: 129 163 170;
+  --ges-color-civic-blue-soft: 28 58 72;
+  --ges-color-evidence-green: 138 162 132;
+  --ges-color-evidence-green-soft: 30 58 49;
+  --ges-color-caution-amber: 174 145 92;
+  --ges-color-caution-amber-soft: 58 50 34;
+  --ges-color-process-blue: 139 151 188;
+  --ges-color-process-blue-soft: 31 45 76;
+  --ges-color-reflection: 164 151 133;
+  --ges-color-reflection-soft: 49 45 41;
+  --ges-color-link: var(--ges-color-civic-blue);
+  --ges-color-focus: 139 151 188;
+  --ges-color-selection: 45 75 87;
+  --ges-shadow-surface: 0 var(--ges-rule-width) var(--ges-rule-width) rgb(var(--ges-color-shadow) / 0.18), inset 0 0 0 var(--ges-border-width) rgb(var(--ges-color-border-subtle) / 0.88);
+  --ges-shadow-card: 0 0.9rem 2rem rgb(var(--ges-color-shadow) / 0.22);
+  --ges-shadow-media: 0 1.2rem 3rem rgb(var(--ges-color-shadow) / 0.35);
+}
+
+html[data-ges-theme-resolved="dark"].article-shell-route body,
+html[data-ges-theme-resolved="dark"].article-shell-route body > main,
+html[data-ges-theme-resolved="dark"].article-shell-route #pageTitle,
+html[data-ges-theme-resolved="dark"].ges-pattern-library-route body {
+  background: rgb(var(--ges-color-page));
+  color: rgb(var(--ges-color-text));
+}
+
+html[data-ges-theme-resolved="dark"] :where(.editorial-guide, .ges-guide, .ges-pattern-library) {
+  --color-slate-700: var(--ges-color-text);
+  --color-slate-600: var(--ges-color-text-secondary);
+  --color-slate-500: var(--ges-color-text-muted);
+  --color-slate-400: 113 133 145;
+  --color-slate-300: var(--ges-color-border-strong);
+  --color-slate-200: var(--ges-color-border-subtle);
+  --color-slate-100: var(--ges-color-page);
+  --color-slate-50: var(--ges-color-surface-muted);
+  --county-color-background: var(--ges-color-page);
+  --county-color-surface: var(--ges-color-surface);
+  --county-color-border: var(--ges-color-border-strong);
+  --county-color-border-soft: var(--ges-color-border-subtle);
+  --county-color-primary: var(--ges-color-civic-blue);
+  --county-color-primary-soft: var(--ges-color-civic-blue-soft);
+  --county-color-secondary: var(--ges-color-civic-blue);
+  --county-color-secondary-soft: var(--ges-color-civic-blue-soft);
+  --county-color-accent: var(--ges-color-caution-amber);
+  --county-color-accent-soft: var(--ges-color-caution-amber-soft);
+  --county-color-button: var(--ges-color-civic-blue);
+  --county-color-button-text: 15 19 24;
+  --county-color-ink: var(--ges-color-text);
+  --county-color-muted: var(--ges-color-text-muted);
+  --color-blue: var(--ges-color-process-blue);
+  --color-blue-dark: var(--ges-color-civic-blue);
+  --color-blue-soft: var(--ges-color-process-blue-soft);
+  --color-green: var(--ges-color-evidence-green);
+  --color-green-dark: 157 183 151;
+  --color-green-soft: var(--ges-color-evidence-green-soft);
+  --color-yellow: var(--ges-color-caution-amber);
+  --color-yellow-soft: var(--ges-color-caution-amber-soft);
+  --ges-color-information: var(--ges-color-civic-blue);
+  --ges-color-information-soft: var(--ges-color-civic-blue-soft);
+  --ges-color-evidence: var(--ges-color-evidence-green);
+  --ges-color-evidence-soft: var(--ges-color-evidence-green-soft);
+  --ges-color-comparison: var(--ges-color-caution-amber);
+  --ges-color-comparison-soft: var(--ges-color-caution-amber-soft);
+  --ges-color-action: var(--ges-color-process-blue);
+  --ges-color-action-soft: var(--ges-color-process-blue-soft);
+  --table-header-bg: var(--ges-color-surface-muted);
+  --table-header-rule: var(--ges-color-border-strong);
+  --table-total-bg: var(--ges-color-surface-elevated);
+  --table-total-rule: var(--ges-color-border-strong);
+}
+
+html[data-ges-theme-resolved="dark"] .article-hero .hero-brand-mark__image--light {
+  opacity: 0;
+}
+
+html[data-ges-theme-resolved="dark"] .article-hero .hero-brand-mark__image--dark {
+  opacity: 0.58;
+}
+
+html[data-ges-theme-resolved="dark"] .ges-theme-toggle {
+  background: rgb(var(--ges-color-surface-muted) / 0.84);
+  border-color: rgb(var(--ges-color-border-strong) / 0.46);
+}
+
+html[data-ges-theme-resolved="dark"] .ges-theme-toggle__button[data-active] {
+  background: rgb(var(--ges-color-surface-elevated));
+  box-shadow: 0 0 0 var(--ges-border-width) rgb(var(--ges-color-border-strong) / 0.38), 0 0.28rem 0.78rem rgb(var(--ges-color-shadow) / 0.22);
+}
+
+html[data-ges-theme-resolved="dark"] :where(
+  .concept-card,
+  .comparison-card,
+  .decision-panel,
+  .scorecard,
+  .assessment-build-panel,
+  .record-callout,
+  .evidence-matrix,
+  .script-card,
+  .meeting-schedule-card,
+  .resource-section,
+  .ges-stat-card,
+  .protest-paradox-timeline-card,
+  .article-entry-panel,
+  .guide-utility,
+  .continuation-module,
+  .article-sources-used,
+  .article-source-note
+) {
+  border-color: rgb(var(--ges-color-border-subtle) / 0.82);
+}
+
+html[data-ges-theme-resolved="dark"] :where(
+  .disconnect-visual article,
+  .process-strip li,
+  .comparison-card section,
+  .scorecard section,
+  .record-callout div,
+  .assessment-build-panel li,
+  .evidence-path-list li,
+  .script-card blockquote,
+  .meeting-schedule-card li,
+  .resource-card,
+  .question-checklist li,
+  .note-box
+) {
+  background: rgb(var(--ges-color-surface-muted));
+  border-color: rgb(var(--ges-color-border-subtle) / 0.76);
+}
+
+html[data-ges-theme-resolved="dark"] input,
+html[data-ges-theme-resolved="dark"] textarea,
+html[data-ges-theme-resolved="dark"] select {
+  background: rgb(var(--ges-color-surface-elevated));
+  border-color: rgb(var(--ges-color-border-strong));
+  color: rgb(var(--ges-color-text));
+}
+
+html[data-ges-theme-resolved="dark"] .ges-page-crease {
+  background: linear-gradient(180deg, rgb(var(--ges-color-shadow) / 0.48) 0 var(--ges-rule-width), rgb(var(--ges-color-highlight) / 0.08) var(--ges-rule-width) var(--ges-rule-width-strong));
+  box-shadow: 0 calc(-1 * var(--ges-rule-width)) 0 rgb(var(--ges-color-highlight) / 0.025);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-ges-theme]) {
+    color-scheme: dark;
+  }
+}

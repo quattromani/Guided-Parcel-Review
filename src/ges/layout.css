@@ -1,0 +1,220 @@
+.ges-guide,
+.editorial-guide,
+.ges-pattern-library {
+  background: transparent;
+  display: grid;
+  gap: var(--ges-current-section-space, var(--ges-section-space));
+  margin-inline: auto;
+  max-width: var(--ges-width-cover);
+  padding-block: var(--ges-space-xs) var(--ges-section-space);
+  width: min(100%, var(--ges-width-cover));
+}
+
+.ges-pattern-library {
+  padding-inline: var(--ges-gutter);
+}
+
+.ges-reading,
+.editorial-narrow,
+.levy-article-narrow {
+  justify-self: center;
+  width: min(100%, var(--ges-width-reading));
+}
+
+.ges-wide,
+.levy-wide-panel {
+  justify-self: center;
+  width: min(100%, var(--ges-width-wide));
+}
+
+.ges-cover-width,
+.levy-compression-page {
+  justify-self: center;
+  width: min(100%, var(--ges-width-cover));
+}
+
+.ges-full-bleed {
+  margin-inline: calc(50% - 50vw);
+  width: 100vw;
+}
+
+.article-shell-route,
+.article-shell-route body {
+  overflow-x: hidden;
+}
+
+.article-shell-route :where(main, #pageTitle, .mobile-review-canvas, .article-hero, .article-hero-packet, .editorial-guide, .tax-article-panel, .levy-compression-page, .protest-evidence-guide-page, .article-section, .tax-story-chapter, .levy-wide-panel, .levy-article-narrow) {
+  max-inline-size: 100%;
+  min-width: 0;
+}
+
+.article-section,
+.tax-story-chapter,
+.ges-section {
+  display: grid;
+  gap: var(--ges-current-component-gap, var(--ges-component-space));
+}
+
+.tax-story-chapter,
+.levy-compression-page .tax-story-chapter {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: var(--ges-current-section-space, var(--ges-section-space)) 0;
+}
+
+.article-section-visual {
+  padding-block-start: var(--ges-section-space-compact);
+}
+
+.ges-stack {
+  display: grid;
+  gap: var(--ges-stack-gap, var(--ges-space-md));
+}
+
+.ges-stack-compact {
+  --ges-stack-gap: var(--ges-space-sm);
+}
+
+.ges-stack-generous {
+  --ges-stack-gap: var(--ges-space-lg);
+}
+
+.ges-cluster {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ges-space-xs) var(--ges-space-sm);
+}
+
+.ges-grid {
+  display: grid;
+  gap: var(--ges-current-component-gap, var(--ges-component-space));
+  grid-template-columns: repeat(var(--ges-grid-columns, 2), minmax(0, 1fr));
+}
+
+.ges-grid-3 {
+  --ges-grid-columns: 3;
+}
+
+.ges-grid-4 {
+  --ges-grid-columns: 4;
+}
+
+.ges-section-lead,
+.editorial-narrow.ges-section-lead {
+  justify-items: start;
+  width: min(100%, var(--ges-width-reading));
+}
+
+.ges-section-header--with-insight {
+  align-items: start;
+  display: grid;
+  gap: var(--ges-space-sm);
+  justify-self: center;
+  width: 100%;
+}
+
+.ges-section-heading {
+  display: grid;
+  gap: var(--ges-space-xs);
+}
+
+@media (min-width: 60rem) {
+  .editorial-narrow.ges-section-lead,
+  .ges-section-lead {
+    width: min(100%, var(--ges-width-wide));
+  }
+
+  .editorial-narrow.ges-section-lead > :not(.ges-section-header--with-insight),
+  .ges-section-lead > :not(.ges-section-header--with-insight) {
+    width: min(100%, var(--ges-width-reading));
+  }
+
+  .ges-section-header--with-insight {
+    column-gap: clamp(1.4rem, 3vw, 2.35rem);
+    grid-template-columns: minmax(0, var(--ges-width-reading)) minmax(10.5rem, var(--ges-width-margin-insight));
+    width: min(100%, var(--ges-width-wide));
+  }
+}
+
+@media (max-width: 48rem) {
+  .ges-guide,
+  .editorial-guide,
+  .ges-pattern-library {
+    gap: var(--ges-section-space-compact);
+  }
+
+  .ges-grid,
+  .ges-grid-3,
+  .ges-grid-4,
+  .protest-paradox-three-up,
+  .protest-paradox-four-up,
+  .protest-paradox-result-grid,
+  .ges-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .article-shell-route #pageTitle,
+  .article-shell-route .mobile-review-canvas,
+  .article-shell-route .article-hero,
+  .article-shell-route .article-hero-packet,
+  .article-shell-route .editorial-guide,
+  .article-shell-route .tax-article-panel,
+  .article-shell-route .levy-compression-page,
+  .article-shell-route .protest-evidence-guide-page,
+  .article-shell-route .article-section,
+  .article-shell-route .tax-story-chapter,
+  .article-shell-route .levy-wide-panel,
+  .article-shell-route .levy-article-narrow {
+    inline-size: 100%;
+    max-inline-size: calc(100vw - (2 * var(--ges-space-sm)));
+  }
+
+  html.article-shell-route body #pageTitle,
+  html.article-shell-route body .mobile-review-canvas {
+    margin-inline: auto;
+    max-inline-size: 100vw;
+    overflow-x: hidden;
+    padding-inline: var(--ges-space-sm);
+    width: 100%;
+  }
+
+  html.article-shell-route body :where(.article-hero, .article-hero-packet, .article-entry-panel, .editorial-guide, .tax-article-panel, .levy-compression-page, .protest-evidence-guide-page, .article-section, .tax-story-chapter, .levy-wide-panel, .levy-article-narrow) {
+    max-inline-size: 100%;
+    min-width: 0;
+  }
+
+  html.article-shell-route body :where(.article-hero .hero-title, .article-hero .hero-deck, .article-entry-tags, .ges-section-heading, .tax-story-chapter p, .tax-story-chapter li) {
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
+    text-wrap: wrap;
+  }
+
+  html.article-shell-route body .article-hero .hero-title,
+  html.article-shell-route body .article-hero .hero-deck,
+  html.article-shell-route body .article-hero .article-hero-media,
+  html.article-shell-route body .tax-story-chapter p,
+  html.article-shell-route body .tax-story-chapter li,
+  html.article-shell-route body .ges-section-heading,
+  html.article-shell-route body .ges-margin-insight p {
+    justify-self: start;
+    max-width: min(100%, 20rem);
+    max-inline-size: min(100%, 20rem);
+    width: min(100%, 20rem);
+  }
+
+  html.article-shell-route body .levy-compression-page .tax-story-chapter p,
+  html.article-shell-route body .levy-compression-page .tax-story-chapter li,
+  html.article-shell-route body .levy-compression-page .editorial-narrow > p,
+  html.article-shell-route body .protest-evidence-guide-page .tax-story-chapter p,
+  html.article-shell-route body .protest-evidence-guide-page .tax-story-chapter li,
+  html.article-shell-route body .protest-evidence-guide-page .editorial-narrow > p {
+    justify-self: start;
+    max-width: min(100%, 20rem);
+    max-inline-size: min(100%, 20rem);
+    overflow-wrap: anywhere;
+    text-wrap: wrap;
+    width: min(100%, 20rem);
+  }
+}

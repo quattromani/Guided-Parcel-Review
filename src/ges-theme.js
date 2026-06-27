@@ -1,6 +1,6 @@
 const GES_THEME_STORAGE_KEY = "ges-theme-preference";
 const GES_THEME_OPTIONS = ["light", "dark"];
-const GES_MOBILE_THEME_QUERY = "(max-width: 640px)";
+const GES_SYSTEM_THEME_QUERY = "(prefers-color-scheme: dark)";
 let mediaListenerInstalled = false;
 
 function safeStorage() {
@@ -12,7 +12,7 @@ function safeStorage() {
 }
 
 function normalizeTheme(value) {
-  return GES_THEME_OPTIONS.includes(value) ? value : "light";
+  return GES_THEME_OPTIONS.includes(value) ? value : systemTheme();
 }
 
 function storedTheme() {
@@ -21,36 +21,38 @@ function storedTheme() {
   return GES_THEME_OPTIONS.includes(value) ? value : null;
 }
 
-function defaultTheme() {
-  return window.matchMedia?.(GES_MOBILE_THEME_QUERY).matches ? "dark" : "light";
+function systemTheme() {
+  return window.matchMedia?.(GES_SYSTEM_THEME_QUERY).matches ? "dark" : "light";
 }
 
 function selectedTheme() {
-  return storedTheme() ?? defaultTheme();
+  return storedTheme() ?? "system";
 }
 
 function resolvedTheme(theme = selectedTheme()) {
+  if (theme === "system") return systemTheme();
   return normalizeTheme(theme);
 }
 
-function setPressedState(theme) {
+function setPressedState(theme, resolved) {
   document.querySelectorAll("[data-ges-theme-option]").forEach((button) => {
-    const isActive = button.dataset.gesThemeOption === theme;
+    const isActive = button.dataset.gesThemeOption === (theme === "system" ? resolved : theme);
     button.setAttribute("aria-pressed", isActive ? "true" : "false");
     button.toggleAttribute("data-active", isActive);
   });
 }
 
 export function applyGesTheme(theme = selectedTheme()) {
-  const selected = normalizeTheme(theme);
+  const selected = theme === "system" ? "system" : normalizeTheme(theme);
   const resolved = resolvedTheme(selected);
 
   document.documentElement.dataset.gesTheme = selected;
   document.documentElement.dataset.gesThemeResolved = resolved;
-  setPressedState(selected);
+  setPressedState(selected, resolved);
 }
 
 export function setGesTheme(theme) {
+  if (!GES_THEME_OPTIONS.includes(theme)) return;
   const selected = normalizeTheme(theme);
   const storage = safeStorage();
 
@@ -120,17 +122,17 @@ export function installGesThemeToggle(root = document) {
 
   if (mediaListenerInstalled || !window.matchMedia) return;
 
-  const mobileThemeMedia = window.matchMedia(GES_MOBILE_THEME_QUERY);
+  const systemThemeMedia = window.matchMedia(GES_SYSTEM_THEME_QUERY);
   const handleDefaultThemeChange = () => {
     if (!storedTheme()) {
-      applyGesTheme();
+      applyGesTheme("system");
     }
   };
 
-  if (mobileThemeMedia.addEventListener) {
-    mobileThemeMedia.addEventListener("change", handleDefaultThemeChange);
-  } else if (mobileThemeMedia.addListener) {
-    mobileThemeMedia.addListener(handleDefaultThemeChange);
+  if (systemThemeMedia.addEventListener) {
+    systemThemeMedia.addEventListener("change", handleDefaultThemeChange);
+  } else if (systemThemeMedia.addListener) {
+    systemThemeMedia.addListener(handleDefaultThemeChange);
   }
 
   mediaListenerInstalled = true;

@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en" class="ges-pattern-library-route">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GES 1.0 Pattern Library | Guided Parcel Review</title>
+  <meta name="description" content="Guided Editorial System 1.0 pattern library for civic editorial articles, guides, explainers, and tools." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700;800;900&family=IBM+Plex+Serif:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    (() => {
+      const key = "ges-theme-preference";
+      let stored = null;
+      try {
+        stored = window.localStorage.getItem(key);
+      } catch {}
+      const selected = stored === "light" || stored === "dark" ? stored : "system";
+      const system = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.gesTheme = selected;
+      document.documentElement.dataset.gesThemeResolved = selected === "system" ? system : selected;
+    })();
+  </script>
+  <link rel="stylesheet" href="../src/ges/index.css?v=ges-1.0.0-20260627e" />
+  <style>
+    .ges-pattern-library-shell {
+      background: rgb(var(--ges-color-page));
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .ges-pattern-library {
+      gap: var(--ges-section-space);
+      max-width: 78rem;
+      min-width: 0;
+      padding-block: var(--ges-space-lg) var(--ges-section-space-immersive);
+    }
+
+    .ges-pattern-hero {
+      display: grid;
+      gap: var(--ges-space-md);
+      min-width: 0;
+      width: min(100%, var(--ges-width-wide));
+    }
+
+    .ges-pattern-library :where(h1, h2, h3, p, a, button, code) {
+      overflow-wrap: anywhere;
+    }
+
+    .ges-pattern-nav {
+      align-items: center;
+      border-block: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--ges-space-sm);
+      padding-block: var(--ges-space-sm);
+    }
+
+    .ges-pattern-nav a,
+    .ges-pattern-nav button {
+      background: rgb(var(--ges-color-surface));
+      border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+      border-radius: var(--ges-radius-pill);
+      color: rgb(var(--ges-color-text-secondary));
+      font: inherit;
+      font-size: var(--ges-type-sm);
+      font-weight: var(--ges-weight-semibold);
+      max-width: 100%;
+      padding: 0.5rem 0.72rem;
+      text-decoration: none;
+      white-space: normal;
+    }
+
+    .ges-pattern-section {
+      display: grid;
+      gap: var(--ges-space-lg);
+      min-width: 0;
+      width: min(100%, var(--ges-width-wide));
+    }
+
+    .ges-pattern-section > header {
+      display: grid;
+      gap: var(--ges-space-xs);
+      min-width: 0;
+      width: min(100%, var(--ges-width-reading));
+    }
+
+    .ges-token-grid,
+    .ges-guidance-grid {
+      display: grid;
+      gap: var(--ges-space-sm);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ges-token-card,
+    .ges-guidance-card,
+    .ges-base-demo,
+    .ges-sandbox {
+      background: rgb(var(--ges-color-surface));
+      border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+      border-radius: var(--ges-radius-lg);
+      display: grid;
+      gap: var(--ges-space-sm);
+      min-width: 0;
+      padding: var(--ges-card-padding);
+    }
+
+    .ges-token-swatch {
+      background: rgb(var(--swatch));
+      border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+      border-radius: var(--ges-radius-md);
+      min-height: 4.5rem;
+    }
+
+    .ges-token-card code,
+    .ges-guidance-card code {
+      max-width: 100%;
+      width: fit-content;
+    }
+
+    .ges-specimen-large {
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading);
+      font-size: var(--ges-type-4xl);
+      font-weight: var(--ges-weight-bold);
+      line-height: var(--ges-line-tight);
+      margin: 0;
+    }
+
+    .ges-space-demo {
+      align-items: end;
+      display: flex;
+      gap: var(--ges-space-sm);
+    }
+
+    .ges-space-demo span {
+      background: rgb(var(--ges-color-civic-blue-soft));
+      border: var(--ges-border-width) solid rgb(var(--ges-color-civic-blue) / 0.24);
+      display: block;
+      width: 2.5rem;
+    }
+
+    .ges-space-demo span:nth-child(1) { height: var(--ges-space-xs); }
+    .ges-space-demo span:nth-child(2) { height: var(--ges-space-md); }
+    .ges-space-demo span:nth-child(3) { height: var(--ges-space-xl); }
+    .ges-space-demo span:nth-child(4) { height: var(--ges-space-2xl); }
+
+    .ges-sandbox-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--ges-space-xs);
+    }
+
+    .ges-sandbox-controls button[data-active] {
+      background: rgb(var(--ges-color-civic-blue));
+      color: rgb(var(--ges-color-surface));
+    }
+
+    @media (max-width: 56rem) {
+      .ges-token-grid,
+      .ges-guidance-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 35rem) {
+      html.ges-pattern-library-route {
+        overflow-x: hidden;
+      }
+
+      .ges-pattern-library {
+        max-width: 100vw;
+        padding-inline: var(--ges-space-sm);
+      }
+
+      .ges-pattern-hero,
+      .ges-pattern-nav,
+      .ges-pattern-section,
+      .ges-pattern-section > header,
+      .ges-token-card,
+      .ges-guidance-card,
+      .ges-base-demo,
+      .ges-sandbox {
+        inline-size: 100%;
+        max-inline-size: calc(100vw - (2 * var(--ges-space-sm)));
+      }
+
+      .ges-pattern-hero,
+      .ges-pattern-section > header {
+        inline-size: min(100%, 20rem);
+      }
+
+      .ges-pattern-library :where(h1, h2, h3, p) {
+        overflow-wrap: anywhere;
+        text-wrap: wrap;
+      }
+
+      .ges-publication-title {
+        font-size: clamp(1.3rem, 8vw, 1.65rem);
+      }
+    }
+  </style>
+</head>
+<body class="ges-pattern-library-shell">
+  <main class="ges-pattern-library ges-guide" data-density="standard" data-density-target>
+    <header class="ges-pattern-hero">
+      <div class="ges-page-utility" aria-label="Pattern library display options">
+        <div class="ges-theme-toggle" role="group" aria-label="Color theme">
+          <button type="button" class="ges-theme-toggle__button" data-ges-theme-option="light" aria-pressed="false" aria-label="Use light theme" title="Use light theme">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M2 12h2"></path><path d="M20 12h2"></path></svg>
+            <span class="ges-sr-only">Use light theme</span>
+          </button>
+          <button type="button" class="ges-theme-toggle__button" data-ges-theme-option="dark" aria-pressed="false" aria-label="Use dark theme" title="Use dark theme">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 14.2A7.2 7.2 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"></path></svg>
+            <span class="ges-sr-only">Use dark theme</span>
+          </button>
+        </div>
+      </div>
+      <p class="guided-kicker">Guided Editorial System 1.0</p>
+      <h1 class="ges-publication-title">A civic editorial design system for guides, explainers, tools, and public field notes.</h1>
+      <p class="prose">GES reduces cognitive friction without reducing intellectual depth. Its components teach, orient, reassure, clarify, verify, or help the reader act.</p>
+      <nav class="ges-pattern-nav" aria-label="Pattern library sections">
+        <a href="#tokens">Tokens</a>
+        <a href="#base">Base Elements</a>
+        <a href="#patterns">Editorial Patterns</a>
+        <a href="#components">Specialized Components</a>
+        <a href="#guidance">Guidance</a>
+        <a href="#sample">Sample Slice</a>
+        <a href="#sandbox">Sandbox</a>
+        <button type="button" data-print-pattern-library>Print</button>
+      </nav>
+    </header>
+
+    <section id="principles" class="ges-pattern-section">
+      <header>
+        <p class="guided-kicker">Introduction</p>
+        <h2>Principles</h2>
+        <p class="ges-section-companion">Calm over clever. Information before decoration. Readers should never feel lost.</p>
+      </header>
+      <ol class="process-strip" aria-label="GES core functions">
+        <li><div class="process-step-heading"><span>Teach</span></div><p>Reveal the model behind the civic process.</p></li>
+        <li><div class="process-step-heading"><span>Orient</span></div><p>Show where the reader is and what comes next.</p></li>
+        <li><div class="process-step-heading"><span>Verify</span></div><p>Connect claims to records, evidence, and sources.</p></li>
+        <li><div class="process-step-heading"><span>Act</span></div><p>Turn understanding into a specific next step.</p></li>
+      </ol>
+    </section>
+
+    <section id="tokens" class="ges-pattern-section">
+      <header>
+        <p class="guided-kicker">Design Tokens</p>
+        <h2>Values with editorial jobs</h2>
+        <p class="ges-section-companion">Tokens own colors, spacing, typography, shape, elevation, motion, and widths.</p>
+      </header>
+      <div class="ges-token-grid">
+        <article class="ges-token-card"><span class="ges-token-swatch" style="--swatch: var(--ges-color-page)"></span><h3>Page</h3><code>--ges-color-page</code></article>
+        <article class="ges-token-card"><span class="ges-token-swatch" style="--swatch: var(--ges-color-surface)"></span><h3>Surface</h3><code>--ges-color-surface</code></article>
+        <article class="ges-token-card"><span class="ges-token-swatch" style="--swatch: var(--ges-color-text)"></span><h3>Text</h3><code>--ges-color-text</code></article>
+        <article class="ges-token-card"><span class="ges-token-swatch" style="--swatch: var(--ges-color-civic-blue)"></span><h3>Civic Blue</h3><code>--ges-color-civic-blue</code></article>
+        <article class="ges-token-card"><span class="ges-token-swatch" style="--swatch: var(--ges-color-evidence-green)"></span><h3>Evidence Green</h3><code>--ges-color-evidence-green</code></article>
+        <article class="ges-token-card"><span class="ges-token-swatch" style="--swatch: var(--ges-color-caution-amber)"></span><h3>Caution Amber</h3><code>--ges-color-caution-amber</code></article>
+      </div>
+      <div class="ges-token-grid">
+        <article class="ges-token-card"><p class="ges-specimen-large">Narrative heading</p><code>--ges-type-4xl</code><p>Used for reading-mode section titles, not every headline.</p></article>
+        <article class="ges-token-card"><p class="prose">Readable body copy uses a calm serif face, a narrow measure, and generous line height.</p><code>--ges-font-body</code></article>
+        <article class="ges-token-card"><div class="ges-space-demo" aria-label="Spacing scale"><span></span><span></span><span></span><span></span></div><code>--ges-space-xs to --ges-space-2xl</code></article>
+        <article class="ges-token-card"><h3>Radius</h3><p>Small, medium, large, pill, and media radii.</p><code>--ges-radius-md</code></article>
+        <article class="ges-token-card"><h3>Elevation</h3><p>Subtle surfaces and media only. Avoid decorative shadow stacks.</p><code>--ges-shadow-card</code></article>
+        <article class="ges-token-card"><h3>Widths</h3><p>Reading, wide component, cover, full bleed, and margin insight widths.</p><code>--ges-width-reading</code></article>
+      </div>
+    </section>
+
+    <section id="base" class="ges-pattern-section">
+      <header>
+        <p class="guided-kicker">Base HTML</p>
+        <h2>Ordinary elements should already feel authored</h2>
+        <p class="ges-section-companion">These examples use native tags before component classes.</p>
+      </header>
+      <article class="ges-base-demo">
+        <h1>H1 Publication Example</h1>
+        <h2>H2 Narrative Section</h2>
+        <h3>H3 Component Heading</h3>
+        <p>Body copy explains a civic process in plain language while preserving nuance. <a href="#base">Links</a> are visible but quiet. <strong>Strong text</strong> names importance. <em>Emphasis</em> stays restrained. <mark>Marked text</mark> should be rare.</p>
+        <blockquote>
+          A clear protest is not louder. It is easier to verify.
+          <cite>GES example citation</cite>
+        </blockquote>
+        <ul><li>Unordered list item</li><li>Second list item</li></ul>
+        <ol><li>Ordered first step</li><li>Ordered second step</li></ol>
+        <dl><div><dt>Evidence</dt><dd>Something a reader can show and someone else can verify.</dd></div></dl>
+        <figure>
+          <img src="../assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg" alt="Person reviewing property records on a clipboard." />
+          <figcaption>Figure captions explain media context and source responsibility.</figcaption>
+        </figure>
+        <div class="ges-table-scroll">
+          <table>
+            <caption>Standard table</caption>
+            <thead><tr><th scope="col">Evidence</th><th scope="col">Record</th><th scope="col">Request</th></tr></thead>
+            <tbody><tr><td>Photo</td><td>Record lists two fireplaces</td><td>Review fireplace count</td></tr><tr><td>Measurement</td><td>Living area appears overstated</td><td>Review square footage</td></tr></tbody>
+          </table>
+        </div>
+        <pre><code>const component = "evidence-matrix";</code></pre>
+        <p><kbd>Tab</kbd> reaches controls. <samp>Printed URLs remain visible.</samp></p>
+        <details><summary>Details and summary</summary><p>Use disclosure only for supplemental material, not essential steps.</p></details>
+        <form class="ges-form-grid">
+          <label class="ges-control">Input <input type="text" value="Parcel record note" /></label>
+          <label class="ges-control">Select <select><option>Informational</option><option>Caution</option></select></label>
+          <label class="ges-control">Textarea <textarea>Describe what the record says.</textarea></label>
+          <label class="ges-checkbox"><input type="checkbox" checked /> Checkbox</label>
+          <label class="ges-radio"><input type="radio" checked /> Radio</label>
+          <label class="ges-toggle"><input type="checkbox" checked /> Toggle</label>
+          <button class="ges-button" type="button">Button</button>
+        </form>
+        <hr />
+        <p><small>Small text is for captions, metadata, utility text, and source notes.</small></p>
+      </article>
+    </section>
+
+    <section id="patterns" class="ges-pattern-section editorial-guide" data-county-theme="gage">
+      <header>
+        <p class="guided-kicker">Editorial Patterns</p>
+        <h2>Reusable reading grammar</h2>
+      </header>
+      <header class="article-hero" aria-labelledby="coverDemoTitle">
+        <div class="article-hero-packet">
+          <p class="guided-kicker hero-kicker hero-brand-kicker"><span class="hero-brand-mark" role="img" aria-label="Guided Parcel Review"><img class="hero-brand-mark__image hero-brand-mark__image--light" src="../assets/brand/civic-house-mark.svg" alt="" /><img class="hero-brand-mark__image hero-brand-mark__image--dark" src="../assets/brand/civic-house-mark.svg" alt="" /></span><span class="hero-kicker-text"><span>Article</span><span>/</span><span class="hero-kicker-subject">Property Protest Prep</span></span></p>
+          <h1 id="coverDemoTitle" class="hero-title">Before You Walk Into a Property Protest</h1>
+          <p class="hero-deck">A calm field-guide cover introduces the topic, not the entire argument.</p>
+          <ul class="article-entry-tags"><li>Gage County</li><li>Property Assessment</li><li>Evidence</li></ul>
+        </div>
+        <figure class="article-hero-media hero-media"><img src="../assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg" alt="Person reviewing property records on a clipboard." /></figure>
+      </header>
+      <div class="editorial-narrow">
+        <div class="article-entry-panel">
+          <div class="article-entry-meta"><div class="article-author-attribution"><img class="article-author-photo" src="../assets/images/articles/max-quattromani-author.jpg" alt="" /><div class="article-author-copy"><p class="article-author-name"><a href="mailto:max@example.com"><span class="article-author-name-text">Max Quattromani</span><span class="article-author-email-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 6h16v12H4Z"></path><path d="m4 7 8 6 8-6"></path></svg></span></a></p><p>Nebraska Certified Assessor</p><p>June 25, 2026</p></div></div></div>
+          <section class="guide-utility" aria-label="Guide options"><div class="guide-length"><p class="guide-length-label">About a 10-minute read</p></div><div class="format-control"><a class="format-control-item" href="#patterns">Printable guide</a><a class="format-control-item" href="#patterns">Audio version</a></div></section>
+        </div>
+        <header class="tax-article-header editorial-section-header ges-section-header--with-insight">
+          <div class="ges-section-heading"><p class="guided-kicker">Verifying The Record</p><h2 id="sectionHeaderDemo">How does the property record shape the current assessment?</h2><p class="ges-section-companion">The record is where the evidence begins.</p></div>
+          <aside class="ges-margin-insight"><p class="ges-margin-insight__text">The current assessment begins with record facts.</p></aside>
+        </header>
+        <p class="prose">A Margin Insight orients the reader. It does not summarize the article or replace the reading path.</p>
+        <p class="article-caution-note"><svg class="editorial-icon article-caution-icon" aria-hidden="true"><use href="../assets/icons/editorial/sprite.svg#icon-adjustments"></use></svg><span><strong>Calibration:</strong> Do not correct one record by copying another record's mistake.</span></p>
+        <aside class="article-source-note"><p><a href="#patterns">Neb. Rev. Stat. section 77-1502</a>; <a href="#patterns">Title 350, Ch. 10</a>.</p></aside>
+        <aside class="continuation-module"><h3>Need the hearing-side version?</h3><p class="continuation-link"><span>Read next:</span><a href="../articles/before-you-walk-into-a-property-protest/">Before You Walk Into a Property Protest</a></p></aside>
+      </div>
+      <section class="resource-section" aria-labelledby="resourceDemoTitle">
+        <div class="editorial-narrow"><p class="guided-kicker">Resource Panel</p><h2 id="resourceDemoTitle">Where to find official materials</h2></div>
+        <div class="resource-card-grid">
+          <article class="resource-card"><a href="#patterns">Property lookup</a><p>Find property record cards.</p></article>
+          <article class="resource-card"><a href="#patterns">Sales map</a><p>Find recent sales context.</p></article>
+          <article class="resource-card"><a href="#patterns">Form 422</a><p>Use the official protest form.</p></article>
+        </div>
+      </section>
+    </section>
+
+    <section id="components" class="ges-pattern-section editorial-guide">
+      <header>
+        <p class="guided-kicker">Specialized Components</p>
+        <h2>Components that teach or help readers act</h2>
+      </header>
+      <ol class="process-strip" aria-label="Four-step process">
+        <li><div class="process-step-heading"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-observe"></use></svg><span>Find</span></div><p>2-3 good comparable properties.</p></li>
+        <li><div class="process-step-heading"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-compare"></use></svg><span>Compare</span></div><p>The property records.</p></li>
+        <li><div class="process-step-heading"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-document"></use></svg><span>Document</span></div><p>The specific difference.</p></li>
+        <li><div class="process-step-heading"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-request"></use></svg><span>Request</span></div><p>One clear correction.</p></li>
+      </ol>
+      <figure class="decision-panel" aria-labelledby="decisionDemoTitle">
+        <figcaption class="decision-panel-label" id="decisionDemoTitle"><span class="decision-panel-context">Board Review</span><span class="decision-panel-title">The Board's Practical Question</span></figcaption>
+        <p class="decision-question">Is there support for the requested correction?</p>
+        <div class="decision-outcomes" role="list"><div class="decision-branch" data-decision-branch="yes" role="listitem"><strong class="decision-node"><span>Yes</span></strong><span class="decision-result">What correction?</span><p class="decision-followup-question">Does it preserve equalization?</p></div><div class="decision-branch" data-decision-branch="no" role="listitem"><strong class="decision-node"><span>No</span></strong><span class="decision-result">Current record likely remains.</span></div></div>
+      </figure>
+      <figure class="evidence-matrix" aria-labelledby="matrixDemoTitle">
+        <figcaption id="matrixDemoTitle"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-evidence"></use></svg><span>Evidence Translation Matrix</span></figcaption>
+        <div class="evidence-matrix-header" aria-hidden="true"><div class="evidence-matrix-step"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-observe"></use></svg><span><strong>Evidence</strong><em>Your observation</em></span></div><span class="evidence-matrix-arrow"></span><div class="evidence-matrix-step"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-property-record"></use></svg><span><strong>Record</strong><em>What the record says</em></span></div><span class="evidence-matrix-arrow"></span><div class="evidence-matrix-step"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-request"></use></svg><span><strong>Request</strong><em>The correction</em></span></div></div>
+        <ol class="evidence-path-list"><li><div><p>Photos show sealed fireplace.</p></div><div><p>Record lists functional fireplace.</p></div><div><p>Request fireplace correction.</p></div></li><li><div><p>Measurements show smaller living area.</p></div><div><p>Record shows larger square footage.</p></div><div><p>Request square-footage review.</p></div></li></ol>
+      </figure>
+      <figure class="comparison-card" aria-labelledby="comparisonDemoTitle">
+        <figcaption id="comparisonDemoTitle">Comparison grid</figcaption>
+        <div><section><h3>Hard to act on</h3><ul><li>My house is not worth this much.</li><li>This will make my taxes increase.</li></ul></section><section><h3>Easier to evaluate</h3><ul><li>My record lists two fireplaces, but I have one.</li><li>My condition rating appears inconsistent with comparable records.</li></ul></section></div>
+      </figure>
+      <figure class="script-card" aria-labelledby="scriptDemoTitle"><figcaption id="scriptDemoTitle">Script card</figcaption><blockquote><p>The property record shows ______.</p><p>My evidence shows ______.</p><p>I am requesting ______.</p></blockquote></figure>
+      <figure class="ges-media-block"><video controls preload="metadata" poster="../assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg"></video><figcaption>Media blocks reserve aspect ratio and keep captions readable.</figcaption></figure>
+      <div class="ges-table-scroll"><table class="ges-compact-table"><caption>Compact table</caption><thead><tr><th>Type</th><th>Use</th><th>Print</th></tr></thead><tbody><tr><td>Standard</td><td>Data comparison</td><td>Keep headers</td></tr><tr><td>Citation</td><td>Source list</td><td>Show URLs</td></tr></tbody></table></div>
+    </section>
+
+    <section id="guidance" class="ges-pattern-section">
+      <header>
+        <p class="guided-kicker">Component Guidance</p>
+        <h2>When to use patterns</h2>
+      </header>
+      <div class="ges-guidance-grid">
+        <article class="ges-guidance-card"><h3>Article Cover</h3><p>Purpose: introduce the guide calmly. Use for standalone articles. Do not use inside app task surfaces. Accessibility: one H1; media has alt/caption. Print: preserve title and metadata.</p><code>article-hero</code></article>
+        <article class="ges-guidance-card"><h3>Margin Insight</h3><p>Purpose: orient skimmers. Use sparingly, usually 6-14 words. Do not use as a summary, pull quote, or hype callout. Mobile: collapses under the heading. Print: simple rule and text.</p><code>ges-margin-insight</code></article>
+        <article class="ges-guidance-card"><h3>Process Strip</h3><p>Purpose: show workflow. Use for ordered steps. Do not use for independent checks. Accessibility: ordered list. Print: avoid breaking inside.</p><code>process-strip</code></article>
+        <article class="ges-guidance-card"><h3>Decision Tree</h3><p>Purpose: frame a practical question. Use when a binary branch clarifies the reader's next thought. Do not use for full legal procedure. Accessibility: text labels carry meaning.</p><code>decision-panel</code></article>
+        <article class="ges-guidance-card"><h3>Evidence Matrix</h3><p>Purpose: translate observation into requested correction. Do not repeat labels in every row. Mobile: rows stack in source order. Print: keep rows together.</p><code>evidence-matrix</code></article>
+        <article class="ges-guidance-card"><h3>Practical Note</h3><p>Purpose: clarify, caution, calibrate, or explain procedure. Icons must be semantic. Do not use generic attention styling for routine prose.</p><code>ges-practical-note</code></article>
+        <article class="ges-guidance-card"><h3>Authority Citation</h3><p>Purpose: support trust without interrupting reading. Use muted treatment. Do not put routine citations in loud cards.</p><code>article-source-note</code></article>
+        <article class="ges-guidance-card"><h3>Resource Panel</h3><p>Purpose: link official forms, maps, and records. Use meaningful link text and visible print URLs. Do not use for loose extra reading.</p><code>resource-section</code></article>
+        <article class="ges-guidance-card"><h3>Continuation Module</h3><p>Purpose: preserve the reading journey before sources. Use even with one linked next step. Do not bury it under citations.</p><code>continuation-module</code></article>
+      </div>
+    </section>
+
+    <section id="sample" class="ges-pattern-section editorial-guide" data-density="standard">
+      <header>
+        <p class="guided-kicker">Sample Article Slice</p>
+        <h2>Real rhythm, not isolated cards</h2>
+      </header>
+      <div class="editorial-narrow ges-section-lead">
+        <header class="tax-article-header editorial-section-header ges-section-header--with-insight">
+          <div class="ges-section-heading"><p class="guided-kicker">Finding The Disconnect</p><h2>Why do sincere protests fail?</h2></div>
+          <aside class="ges-margin-insight"><p class="ges-margin-insight__text">Sincerity explains concern. Evidence supports correction.</p></aside>
+        </header>
+        <p class="prose">Usually not because the homeowner is careless. More often, the protest asks the Board to solve the wrong problem.</p>
+        <p class="prose">A hearing cannot inspect a feeling. It needs something it can compare, measure, confirm, or correct.</p>
+      </div>
+      <figure class="comparison-card"><figcaption>Sincerity is not the same thing as usable evidence</figcaption><div><section><h3>Hard for the Board to act on</h3><ul><li>Just look at my house.</li><li>There is no way it is worth that.</li></ul></section><section><h3>Easier for the Board to evaluate</h3><ul><li>The record lists two fireplaces, but I have one.</li><li>The basement finish appears overstated.</li></ul></section></div></figure>
+      <div class="editorial-narrow"><p class="prose">This is where the homeowner's role changes. You do not need to become an appraiser. You need to become a good witness.</p></div>
+    </section>
+
+    <section id="sandbox" class="ges-pattern-section">
+      <header>
+        <p class="guided-kicker">Editorial Sandbox</p>
+        <h2>Stress-test density and theme</h2>
+      </header>
+      <div class="ges-sandbox-controls" aria-label="Density controls">
+        <button type="button" data-ges-density="compact" aria-pressed="false">Compact</button>
+        <button type="button" data-ges-density="standard" aria-pressed="true" data-active>Standard</button>
+        <button type="button" data-ges-density="immersive" aria-pressed="false">Immersive</button>
+      </div>
+      <article class="ges-sandbox editorial-guide" data-density="standard" data-density-target>
+        <div class="editorial-narrow"><p class="guided-kicker">Sandbox Mix</p><h2>Components should disappear into the reading experience</h2><p class="prose">Change density and theme, then print this page. Spacing should change rhythm without creating new component behavior.</p></div>
+        <ol class="process-strip"><li><div class="process-step-heading"><span>Read</span></div><p>Follow the section.</p></li><li><div class="process-step-heading"><span>Check</span></div><p>Find the evidence.</p></li><li><div class="process-step-heading"><span>Act</span></div><p>Make one request.</p></li></ol>
+      </article>
+    </section>
+  </main>
+  <script type="module" src="../src/ges/pattern-library.js?v=ges-1.0.0-20260627e"></script>
+</body>
+</html>

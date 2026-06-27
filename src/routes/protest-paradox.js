@@ -1,5 +1,13 @@
 import { escapeHtml } from "../utils/html.js";
 import { installGesThemeToggle, renderGesThemeToggle } from "../ges-theme.js";
+import {
+  installGuideUtilityLanguage,
+  renderArticleEntryPanel as renderGesArticleEntryPanel,
+  renderArticleTags as renderGesArticleTags,
+  renderPageCrease,
+  renderSectionHeader as sectionHeader
+} from "../ges/article-components.js";
+import { createGesArticleShell } from "../ges/shell.js";
 import { assessmentUpProtestDeniedTaxesArticle as articleSource } from "../content/articles/assessment-up-protest-denied-taxes.js";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js";
 
@@ -226,38 +234,6 @@ function renderSourceNote(note) {
   `;
 }
 
-function renderMarginInsight(insight) {
-  if (!insight?.text) return "";
-
-  return `
-    <aside class="ges-margin-insight" aria-label="${escapeHtml(insight.label ?? "Margin insight")}">
-      ${insight.label ? `<p class="ges-margin-insight__label">${escapeHtml(insight.label)}</p>` : ""}
-      <p class="ges-margin-insight__text">${escapeHtml(insight.text)}</p>
-    </aside>
-  `;
-}
-
-function renderPageCrease() {
-  return `<hr class="ges-page-crease" />`;
-}
-
-function sectionHeader(kicker, title, id, options = {}) {
-  const companion = options.companion ? `<p class="ges-section-companion">${escapeHtml(options.companion)}</p>` : "";
-  const insight = renderMarginInsight(options.marginInsight);
-  const classes = ["tax-article-header", "editorial-section-header", insight ? "ges-section-header--with-insight" : ""].filter(Boolean).join(" ");
-
-  return `
-    <header class="${classes}">
-      <div class="ges-section-heading">
-        <p class="guided-kicker">${escapeHtml(kicker)}</p>
-        <h2 id="${escapeHtml(id)}">${escapeHtml(title)}</h2>
-        ${companion}
-      </div>
-      ${insight}
-    </header>
-  `;
-}
-
 function renderArticleDepthMarkers() {
   return `
     <div class="article-depth-markers" aria-hidden="true">
@@ -358,55 +334,24 @@ function renderStatCard(label, value, detail = "", outputName = "") {
 }
 
 function renderArticleTags() {
-  if (!ARTICLE_TAGS.length) return "";
-
-  return `
-        <ul class="article-entry-tags" aria-label="Article tags">
-          ${ARTICLE_TAGS.map((tag) => `<li>${escapeHtml(tag)}</li>`).join("")}
-        </ul>`;
-}
-
-function formatGuideLengthText(minutes) {
-  const numericMinutes = Number.parseInt(minutes, 10);
-  if (!Number.isFinite(numericMinutes) || numericMinutes < 1) return "";
-  const article = /^[8]|^11|^18/.test(String(numericMinutes)) ? "an" : "a";
-  return `About ${article} ${numericMinutes}-minute read`;
-}
-
-function renderGuideUtility() {
-  return `
-    <section class="guide-utility" aria-label="Guide options">
-      <div class="guide-length" aria-label="Estimated guide length" data-guide-length data-reading-minutes="${escapeHtml(ARTICLE_READING_TIME_MINUTES)}" data-word-count="${escapeHtml(ARTICLE_WORD_COUNT)}" data-length-label="${escapeHtml(ARTICLE_LENGTH_LABEL)}">
-        <p class="guide-length-label" data-guide-length-label>${escapeHtml(formatGuideLengthText(ARTICLE_READING_TIME_MINUTES))}</p>
-      </div>
-      <div class="guide-formats hero-utility" aria-label="Available formats">
-        <div class="format-control">
-          <a class="format-control-item hero-utility-button article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable case study PDF">
-            ${editorialIcon("document")}
-            <span>Printable case study</span>
-          </a>
-        </div>
-      </div>
-    </section>
-  `;
+  return renderGesArticleTags(ARTICLE_TAGS);
 }
 
 function renderArticleEntryPanel() {
-  return `
-    <div class="article-entry-panel">
-      <div class="article-entry-meta" aria-label="Article information">
-        <div class="article-author-attribution">
-          <img class="article-author-photo" src="${escapeHtml(ARTICLE_AUTHOR_IMAGE)}" alt="" loading="lazy" decoding="async" />
-          <div class="article-author-copy">
-            <p class="article-author-name"><a href="${escapeHtml(ARTICLE_AUTHOR_MAILTO)}" data-article-action="author_email" data-article-label="${escapeHtml(ARTICLE_TITLE)}">${escapeHtml(ARTICLE_AUTHOR)}</a></p>
-            <p class="article-author-title">${escapeHtml(ARTICLE_AUTHOR_TITLE)}</p>
-            <p class="article-entry-date">${escapeHtml(ARTICLE_DISPLAY_DATE)}</p>
-          </div>
-        </div>
-      </div>
-      ${renderGuideUtility()}
-    </div>
-  `;
+  return renderGesArticleEntryPanel({
+    articleTitle: ARTICLE_TITLE,
+    authorImage: ARTICLE_AUTHOR_IMAGE,
+    authorMailto: ARTICLE_AUTHOR_MAILTO,
+    authorName: ARTICLE_AUTHOR,
+    authorTitle: ARTICLE_AUTHOR_TITLE,
+    displayDate: ARTICLE_DISPLAY_DATE,
+    icon: editorialIcon,
+    printableLabel: "Printable case study",
+    printableUrl: PRINTABLE_GUIDE_PDF,
+    readingMinutes: ARTICLE_READING_TIME_MINUTES,
+    wordCount: ARTICLE_WORD_COUNT,
+    lengthLabel: ARTICLE_LENGTH_LABEL
+  });
 }
 
 function renderLearningSection() {
@@ -701,17 +646,17 @@ export function isProtestParadoxRequest(searchParams = new URLSearchParams(windo
 }
 
 export function renderProtestParadox() {
-  const pageTitle = document.getElementById("pageTitle");
-  const canvas = document.querySelector(".mobile-review-canvas");
-  if (!canvas) return;
+  const shell = createGesArticleShell({
+    htmlClasses: ["levy-compression-shell-route"],
+    routeName: "protest-paradox"
+  });
+  if (!shell?.coverRegion) return;
+  const pageTitle = shell.coverRegion;
+  const canvas = shell.bodyRegion;
 
   updateMetadata();
-  document.documentElement.classList.add("article-shell-route", "levy-compression-shell-route");
-  document.querySelector(".guide-review-header")?.classList.add("hidden");
-  document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("hidden"));
-  document.querySelector("[data-footer-resource-shell]")?.classList.add("hidden");
 
-  pageTitle.innerHTML = `
+  shell.setCover(`
     <header class="comp-page-title levy-page-title article-hero" aria-labelledby="protestParadoxTitle">
       <div class="article-hero-packet">
         ${renderGesThemeToggle()}
@@ -736,11 +681,11 @@ export function renderProtestParadox() {
         <img src="${escapeHtml(ARTICLE_SOCIAL_IMAGE)}" alt="${escapeHtml(ARTICLE_HERO_IMAGE_ALT)}" loading="eager" decoding="async" />
       </figure>
     </header>
-  `;
+  `);
 
   installGesThemeToggle(pageTitle);
 
-  canvas.innerHTML = `
+  shell.setBody(`
     <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page protest-paradox-page editorial-guide tax-article-panel" data-county-theme="gage" aria-label="Assessment increase and levy compression case study">
       ${renderArticleDepthMarkers()}
       ${renderLearningSection()}
@@ -752,9 +697,10 @@ export function renderProtestParadox() {
       ${renderCalculatorSection()}
       ${renderClosingSection()}
     </article>
-  `;
+  `);
 
   installCalculator(canvas);
+  installGuideUtilityLanguage(canvas);
   installArticleAnalytics(canvas);
 }
 

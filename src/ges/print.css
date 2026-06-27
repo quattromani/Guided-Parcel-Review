@@ -1,0 +1,357 @@
+@media print {
+  :root {
+    --ges-print-page: 255 255 255;
+    --ges-print-text: 17 24 39;
+    --ges-print-secondary: 55 65 81;
+    --ges-print-muted: 75 85 99;
+    --ges-print-rule: 156 163 175;
+    --ges-print-card: 248 250 252;
+    --ges-print-border: 203 213 225;
+  }
+
+  @page {
+    size: Letter;
+    margin: 0.55in 0.55in 0.6in;
+  }
+
+  html[data-ges-theme-resolved] {
+    color-scheme: light;
+  }
+
+  body {
+    background: rgb(var(--ges-print-page));
+    color: rgb(var(--ges-print-text));
+    font-size: 10pt;
+    line-height: 1.42;
+  }
+
+  body:has(.editorial-guide),
+  body:has(.ges-guide),
+  body:has(.ges-pattern-library) {
+    background: rgb(var(--ges-print-page));
+    color: rgb(var(--ges-print-text));
+  }
+
+  .ges-page-utility,
+  .article-hero-media,
+  .hero-utility,
+  .hero-action,
+  .article-print-cta,
+  .article-share-footer,
+  .article-depth-markers,
+  .ges-pattern-nav,
+  .ges-sandbox-controls,
+  footer[aria-label="Site footer"] {
+    display: none;
+  }
+
+  .ges-guide,
+  .editorial-guide,
+  .ges-pattern-library,
+  .tax-story-chapter,
+  .article-section {
+    background: rgb(var(--ges-print-page));
+    box-shadow: none;
+    color: rgb(var(--ges-print-text));
+    display: block;
+    max-width: none;
+    padding: 0;
+    width: 100%;
+  }
+
+  .article-hero,
+  .article-hero-packet,
+  .article-entry-panel {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .article-hero .hero-title {
+    color: rgb(var(--ges-print-text));
+    font-size: 20pt;
+    line-height: 1.12;
+    max-width: 7.2in;
+  }
+
+  .article-hero .hero-deck {
+    color: rgb(var(--ges-print-secondary));
+    font-size: 11pt;
+    line-height: 1.34;
+    margin-top: 0.12in;
+    max-width: 6.8in;
+  }
+
+  .article-entry-panel {
+    border-block-color: rgb(var(--ges-print-rule));
+    margin-block: 0.16in 0.2in;
+    padding-block: 0.12in;
+  }
+
+  .article-entry-meta p,
+  .guide-length-label {
+    color: rgb(var(--ges-print-secondary));
+    font-size: 8.75pt;
+    line-height: 1.22;
+  }
+
+  .tax-article-header,
+  .editorial-section-header,
+  .ges-section-header--with-insight {
+    break-after: avoid;
+    break-inside: avoid;
+    display: grid;
+    gap: 0.07in;
+    grid-template-columns: 1fr;
+    margin-bottom: 0.11in;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  .guided-kicker,
+  .section-kicker,
+  .ges-kicker {
+    color: rgb(var(--ges-print-secondary));
+    font-size: 7.5pt;
+    letter-spacing: 0.11em;
+    line-height: 1.15;
+  }
+
+  .tax-article-header h2,
+  .tax-article-section > h2,
+  .ges-narrative-title {
+    color: rgb(var(--ges-print-text));
+    font-size: 25pt;
+    line-height: 1.05;
+    margin-top: 0.04in;
+  }
+
+  .prose,
+  .ges-prose,
+  .levy-compression-page p.prose,
+  .levy-compression-page p.ges-prose {
+    color: rgb(var(--ges-print-text));
+    font-size: 9.75pt;
+    line-height: 1.42;
+    margin-bottom: 0.08in;
+    max-width: none;
+  }
+
+  .ges-margin-insight {
+    border-left: 0;
+    border-top: var(--ges-print-rule-width) solid rgb(var(--ges-print-rule));
+    color: rgb(var(--ges-print-muted));
+    margin-top: 0;
+    padding-left: 0;
+    padding-top: 0.06in;
+  }
+
+  .ges-margin-insight__label {
+    color: rgb(var(--ges-print-secondary));
+    font-size: 6.8pt;
+    letter-spacing: 0.08em;
+  }
+
+  .ges-margin-insight__text,
+  .ges-section-companion {
+    color: rgb(var(--ges-print-muted));
+    font-size: 8.4pt;
+    line-height: 1.28;
+  }
+
+  .concept-card,
+  .comparison-card,
+  .decision-panel,
+  .scorecard,
+  .assessment-build-panel,
+  .record-callout,
+  .evidence-matrix,
+  .script-card,
+  .meeting-schedule-card,
+  .resource-section,
+  .resource-card,
+  .article-source-note,
+  .article-sources-used,
+  .decision-disclaimer,
+  .ges-margin-insight,
+  .continuation-module,
+  .question-checklist li,
+  .ges-stat-card {
+    break-inside: avoid;
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
+
+  .concept-card,
+  .comparison-card,
+  .decision-panel,
+  .scorecard,
+  .assessment-build-panel,
+  .record-callout,
+  .evidence-matrix,
+  .script-card,
+  .meeting-schedule-card,
+  .resource-section {
+    border-color: rgb(var(--ges-print-rule));
+    border-radius: 8pt;
+    margin: 0.1in 0;
+    padding: 10pt;
+  }
+
+  .concept-card figcaption,
+  .comparison-card figcaption,
+  .decision-panel figcaption,
+  .decision-panel-label,
+  .scorecard figcaption,
+  .assessment-build-panel figcaption,
+  .record-callout figcaption,
+  .evidence-matrix figcaption,
+  .script-card figcaption {
+    color: rgb(var(--ges-print-secondary));
+    font-size: 7.2pt;
+    gap: 4pt;
+    letter-spacing: 0.09em;
+    margin-bottom: 7pt;
+  }
+
+  .disconnect-visual > div,
+  .process-strip,
+  .comparison-card > div,
+  .scorecard > div,
+  .decision-outcomes,
+  .question-checklist,
+  .resource-card-grid,
+  .ges-stat-grid,
+  .protest-paradox-three-up,
+  .protest-paradox-four-up,
+  .protest-paradox-result-grid {
+    gap: 7pt;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .process-strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .resource-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .disconnect-visual article,
+  .process-strip li,
+  .comparison-card section,
+  .scorecard section,
+  .question-checklist li,
+  .resource-card,
+  .ges-stat-card {
+    background: rgb(var(--ges-print-card));
+    border-color: rgb(var(--ges-print-border));
+    border-radius: 6pt;
+    gap: 4pt;
+    padding: 7pt;
+  }
+
+  .process-strip li {
+    min-height: 0;
+  }
+
+  .process-strip li:not(:last-child)::after,
+  .decision-question::after,
+  .decision-outcomes::before {
+    display: none;
+  }
+
+  .process-step-heading::before,
+  .resource-card a {
+    background: rgb(var(--ges-print-text));
+    color: rgb(var(--ges-print-page));
+  }
+
+  .disconnect-visual article p,
+  .process-strip li p,
+  .comparison-card li,
+  .scorecard li,
+  .question-checklist p,
+  .resource-card p,
+  .note-box,
+  .decision-disclaimer,
+  .record-callout dd,
+  .evidence-path-list p,
+  .decision-result {
+    color: rgb(var(--ges-print-text));
+    font-size: 9pt;
+    line-height: 1.32;
+  }
+
+  .assessment-build-panel ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .record-callout dl {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .record-callout div,
+  .decision-branch,
+  .script-card blockquote,
+  .meeting-schedule-card li {
+    border-radius: 6pt;
+    padding: 7pt;
+  }
+
+  .evidence-path-list li {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .evidence-path-list div,
+  .evidence-path-list section {
+    padding: 7pt 8pt;
+  }
+
+  .evidence-path-list div + div,
+  .evidence-path-list section + section {
+    border-left: var(--ges-print-rule-width) solid rgb(var(--ges-print-rule));
+    border-top: 0;
+  }
+
+  .meeting-schedule-card,
+  .resource-card-grid,
+  .print-url-list {
+    gap: 7pt;
+  }
+
+  .print-url-list {
+    display: grid;
+  }
+
+  .print-url {
+    align-items: start;
+    display: grid;
+    gap: 5pt;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .print-url p,
+  .print-url code {
+    color: rgb(var(--ges-print-text));
+    font-size: 8pt;
+    overflow-wrap: anywhere;
+  }
+
+  .meeting-schedule-card em {
+    display: none;
+  }
+
+  .print-calendar-url {
+    color: rgb(var(--ges-print-secondary));
+    display: block;
+    font-size: 7.5pt;
+    grid-column: 1 / -1;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

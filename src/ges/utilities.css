@@ -1,0 +1,82 @@
+.ges-sr-only,
+.levy-sr-only {
+  block-size: 1px;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.ges-hidden {
+  display: none;
+}
+
+.ges-wrap-anywhere {
+  overflow-wrap: anywhere;
+}
+
+.ges-nowrap {
+  white-space: nowrap;
+}
+
+.ges-muted {
+  color: rgb(var(--ges-color-text-muted));
+}
+
+.ges-secondary {
+  color: rgb(var(--ges-color-text-secondary));
+}
+
+.ges-text-balance {
+  text-wrap: balance;
+}
+
+.ges-flow > * + * {
+  margin-top: var(--ges-flow-space, var(--ges-space-md));
+}
+
+.ges-flow-compact {
+  --ges-flow-space: var(--ges-space-sm);
+}
+
+.ges-flow-generous {
+  --ges-flow-space: var(--ges-space-lg);
+}
+
+.ges-inset {
+  padding: var(--ges-current-card-padding, var(--ges-card-padding));
+}
+
+.ges-quiet-rule,
+.ges-page-crease {
+  background:
+    linear-gradient(
+      180deg,
+      rgb(var(--ges-color-border-strong) / 0.62) 0 var(--ges-rule-width),
+      rgb(var(--ges-color-surface) / 0.86) var(--ges-rule-width) var(--ges-rule-width-strong)
+    );
+  border: 0;
+  box-shadow: 0 calc(-1 * var(--ges-rule-width)) 0 rgb(var(--ges-color-text) / 0.03);
+  height: var(--ges-rule-width-strong);
+  margin: 0 auto var(--ges-section-space-compact);
+  width: min(100%, var(--ges-width-wide));
+}
+
+.ges-table-scroll {
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-md);
+  overflow-x: auto;
+}
+
+.ges-button-reset {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  padding: 0;
+}

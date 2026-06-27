@@ -33,6 +33,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700;800;900&family=IBM+Plex+Serif:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <script>
+    (() => {
+      const key = "ges-theme-preference";
+      let stored = null;
+      try {
+        stored = window.localStorage.getItem(key);
+      } catch {}
+      const selected = stored === "light" || stored === "dark" ? stored : "system";
+      const system = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.gesTheme = selected;
+      document.documentElement.dataset.gesThemeResolved = selected === "system" ? system : selected;
+    })();
+  </script>
+  <script>
     window.tailwind = {
       config: {
         theme: {
@@ -50,11 +63,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="src/styles.css?v=county-compat-layer" />
+  <link id="ges-design-system-stylesheet" rel="stylesheet" href="src/ges/index.css?v=ges-1.0.0-20260627e" />
 </head>
 <body class="bg-slate-100 text-slate-700">
-  <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
-    <section id="pageTitle" class="mb-4 px-1"></section>
-    <div class="mobile-review-canvas"></div>
+  <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8" data-ges-shell="article">
+    <section id="pageTitle" class="mb-4 px-1" data-ges-shell-region="cover"></section>
+    <div class="mobile-review-canvas" data-ges-shell-region="body"></div>
   </main>
 
   <script type="module" src="src/app.js?v=county-compat-layer"></script>

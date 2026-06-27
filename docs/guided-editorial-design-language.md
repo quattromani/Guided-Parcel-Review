@@ -1,5 +1,7 @@
 # Guided Editorial System v0.1
 
+> GES 1.0 operational documentation now lives in `docs/ges/`. This file remains as historical design-language source material and long-form rationale.
+
 Guided Editorial System, or GES, is the publishing language for long-form civic education in Guided Parcel Review. Earlier notes may use GEDL, or Guided Editorial Design Language; treat GEDL as the design-language layer inside the broader GES publishing system.
 
 It is not a visual style guide. A visual style guide describes how things look. GEDL describes how information behaves.

@@ -75,6 +75,9 @@ The frontend should consume static app-ready JSON only. It should not scrape PAD
 - `index.html` defines the static shell, guided-panel mount points, CDN scripts, and stylesheet.
 - `server.js` is a tiny local static server for JSON-backed browser testing.
 - `src/app.js` boots the app, loads shared datasets, initializes charts, guided navigation, footer resources, reports, and lazy tax-district rendering.
+- `src/ges/` contains Guided Editorial System 1.0: tokens, base HTML rules, typography, layout primitives, utilities, components, shell helpers, theme tokens, print rules, and shared article helpers.
+- `ges/index.html` is the live GES pattern library. Serve locally and open `/ges/`.
+- `docs/ges/` is the GES 1.0 design bible for future article and component work.
 - `src/data-service.js` loads the manifest, selected property record, county/state datasets, standards, forms, and calendar data.
 - `src/adapters/mips/` maps the current MIPS/GWorks record-card handoff shape into the guided snapshot model.
 - `src/domain/`, `src/data/`, and `src/calculations/` contain normalization, view-model, review-signal, history, and tax helpers that should stay independent of DOM rendering where practical.

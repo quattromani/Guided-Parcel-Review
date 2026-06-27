@@ -1,0 +1,149 @@
+:where(.editorial-guide, .ges-guide, .ges-pattern-library) {
+  font-family: var(--ges-font-ui);
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library) :where(h1, h2, h3, h4, h5, h6) {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-weight: var(--ges-weight-bold);
+  letter-spacing: 0;
+  line-height: var(--ges-line-heading);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library) h1 {
+  font-size: clamp(var(--ges-type-2xl), 4vw, var(--ges-type-3xl));
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library) h2 {
+  font-size: clamp(var(--ges-type-2xl), 5vw, var(--ges-type-4xl));
+  line-height: var(--ges-line-tight);
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library) h3 {
+  font-size: var(--ges-type-xl);
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library) h4 {
+  font-size: var(--ges-type-lg);
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library) h5,
+:where(.editorial-guide, .ges-guide, .ges-pattern-library) h6 {
+  font-size: var(--ges-type-md);
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library) :where(p, li, dd) {
+  overflow-wrap: anywhere;
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library) :where(p, li) {
+  color: rgb(var(--ges-color-text-secondary));
+  font-size: var(--ges-type-md);
+  line-height: var(--ges-line-copy);
+}
+
+.ges-publication-title,
+.article-hero .hero-title {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-size: clamp(1.45rem, 3.2vw, 2rem);
+  font-weight: var(--ges-weight-bold);
+  line-height: 1.08;
+}
+
+.ges-narrative-title,
+.tax-article-header h2,
+.tax-article-section > h2 {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-size: clamp(2.05rem, 5.6vw, 3rem);
+  font-weight: var(--ges-weight-bold);
+  line-height: var(--ges-line-tight);
+}
+
+.ges-component-heading,
+.editorial-guide h3,
+.ges-pattern-library h3 {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-size: var(--ges-type-md);
+  font-weight: var(--ges-weight-bold);
+  line-height: 1.28;
+}
+
+.guided-kicker,
+.section-kicker,
+.ges-kicker,
+.ges-eyebrow {
+  color: rgb(var(--ges-color-civic-blue));
+  font-family: var(--ges-font-heading);
+  font-size: var(--ges-type-xs);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: var(--ges-letter-kicker);
+  line-height: var(--ges-line-compact);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.ges-section-companion,
+.ges-companion-line {
+  color: rgb(var(--ges-color-text-secondary));
+  font-family: var(--ges-font-heading);
+  font-size: var(--ges-type-sm);
+  font-weight: var(--ges-weight-medium);
+  line-height: var(--ges-line-compact);
+  margin: 0;
+}
+
+.prose,
+.ges-prose,
+.levy-compression-page p.prose,
+.levy-compression-page p.ges-prose {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-body);
+  font-size: clamp(1.03rem, 1.4vw, 1.12rem);
+  font-weight: var(--ges-weight-regular);
+  line-height: var(--ges-line-copy);
+  margin: 0;
+  max-width: 68ch;
+}
+
+.ges-caption,
+.ges-meta,
+.ges-utility-text,
+.article-entry-meta p,
+.article-source-note p,
+.article-sources-used li,
+.figcaption {
+  font-family: var(--ges-font-ui);
+  line-height: var(--ges-line-compact);
+}
+
+.ges-caption {
+  color: rgb(var(--ges-color-text-muted));
+  font-size: var(--ges-type-sm);
+}
+
+.ges-meta,
+.article-entry-meta p {
+  color: rgb(var(--ges-color-text-secondary));
+  font-size: 0.8125rem;
+  font-weight: var(--ges-weight-medium);
+}
+
+.ges-utility-text {
+  color: rgb(var(--ges-color-text-muted));
+  font-size: var(--ges-type-xs);
+  font-weight: var(--ges-weight-semibold);
+}
+
+.ges-citation-text,
+.article-source-note,
+.article-sources-used {
+  color: rgb(var(--ges-color-text-muted));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-xs);
+  line-height: var(--ges-line-compact);
+}

@@ -1,0 +1,322 @@
+html {
+  accent-color: rgb(var(--ges-color-focus));
+  background: rgb(var(--ges-color-page));
+  color: rgb(var(--ges-color-text));
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+}
+
+body {
+  background: rgb(var(--ges-color-page));
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-ui);
+  line-height: var(--ges-line-copy);
+  margin: 0;
+  min-width: var(--ges-min-viewport);
+}
+
+::selection {
+  background: rgb(var(--ges-color-selection));
+  color: rgb(var(--ges-color-text));
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:where(main, article, section, header, footer, nav, aside, div, figure, form, fieldset, dl) {
+  min-width: 0;
+}
+
+:where(img, picture, video, audio, canvas, svg, iframe) {
+  max-width: 100%;
+}
+
+:where(img, video) {
+  display: block;
+  height: auto;
+}
+
+main {
+  display: block;
+}
+
+article {
+  color: rgb(var(--ges-color-text));
+}
+
+section {
+  scroll-margin-top: var(--ges-space-xl);
+}
+
+header,
+footer,
+nav,
+aside {
+  color: inherit;
+}
+
+a {
+  color: rgb(var(--ges-color-link));
+  text-decoration-color: rgb(var(--ges-color-link) / 0.34);
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0.16em;
+}
+
+a:hover {
+  color: rgb(var(--ges-color-text));
+  text-decoration-color: currentColor;
+}
+
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: var(--ges-focus-ring-width) solid rgb(var(--ges-color-focus) / 0.32);
+  outline-offset: var(--ges-focus-ring-offset);
+}
+
+strong {
+  color: rgb(var(--ges-color-text));
+  font-weight: var(--ges-weight-bold);
+}
+
+em {
+  font-style: italic;
+}
+
+small {
+  color: rgb(var(--ges-color-text-muted));
+  font-size: var(--ges-type-sm);
+  line-height: var(--ges-line-compact);
+}
+
+mark {
+  background: rgb(var(--ges-color-caution-soft));
+  border-radius: var(--ges-radius-xs);
+  color: rgb(var(--ges-color-text));
+  padding: 0.04em 0.2em;
+}
+
+p,
+blockquote,
+ul,
+ol,
+dl,
+figure,
+pre,
+table,
+details,
+hr {
+  margin-block: 0;
+}
+
+p + p,
+p + ul,
+p + ol,
+ul + p,
+ol + p {
+  margin-top: var(--ges-space-md);
+}
+
+ul,
+ol {
+  padding-left: 1.35rem;
+}
+
+li + li {
+  margin-top: var(--ges-space-2xs);
+}
+
+dl {
+  display: grid;
+  gap: var(--ges-space-sm);
+}
+
+dt {
+  color: rgb(var(--ges-color-text));
+  font-weight: var(--ges-weight-semibold);
+}
+
+dd {
+  color: rgb(var(--ges-color-text-secondary));
+  margin: 0;
+}
+
+blockquote {
+  border-left: var(--ges-border-width-accent) solid rgb(var(--ges-color-civic-blue));
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-body);
+  font-size: var(--ges-type-lg);
+  line-height: var(--ges-line-copy);
+  padding: var(--ges-space-sm) 0 var(--ges-space-sm) var(--ges-space-md);
+}
+
+cite {
+  color: rgb(var(--ges-color-text-muted));
+  display: block;
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-sm);
+  font-style: normal;
+  margin-top: var(--ges-space-sm);
+}
+
+hr {
+  background: rgb(var(--ges-color-border-subtle));
+  border: 0;
+  height: var(--ges-rule-width);
+}
+
+figure {
+  display: grid;
+  gap: var(--ges-space-sm);
+}
+
+figcaption {
+  color: rgb(var(--ges-color-text-muted));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-sm);
+  line-height: var(--ges-line-compact);
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: rgb(var(--ges-color-text));
+  font-variant-numeric: tabular-nums;
+  width: 100%;
+}
+
+caption {
+  color: rgb(var(--ges-color-text-secondary));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-sm);
+  font-weight: var(--ges-weight-semibold);
+  margin-bottom: var(--ges-space-xs);
+  text-align: left;
+}
+
+th,
+td {
+  border-bottom: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  padding: var(--ges-space-sm);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-sm);
+  font-weight: var(--ges-weight-bold);
+}
+
+code,
+kbd,
+samp {
+  background: rgb(var(--ges-color-surface-muted));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-xs);
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-mono);
+  font-size: 0.92em;
+  padding: 0.1em 0.25em;
+}
+
+pre {
+  background: rgb(var(--ges-color-surface-muted));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-md);
+  color: rgb(var(--ges-color-text));
+  overflow: auto;
+  padding: var(--ges-space-md);
+}
+
+pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  background: rgb(var(--ges-color-surface));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-strong));
+  border-radius: var(--ges-radius-sm);
+  color: rgb(var(--ges-color-text));
+  min-height: 2.55rem;
+  padding: 0.58rem 0.7rem;
+}
+
+textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+label {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-ui);
+  font-weight: var(--ges-weight-semibold);
+}
+
+fieldset {
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-md);
+  margin: 0;
+  padding: var(--ges-space-md);
+}
+
+legend {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-sm);
+  font-weight: var(--ges-weight-bold);
+  padding-inline: var(--ges-space-xs);
+}
+
+details {
+  border-block: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  padding-block: var(--ges-space-sm);
+}
+
+summary {
+  color: rgb(var(--ges-color-text));
+  cursor: pointer;
+  font-family: var(--ges-font-ui);
+  font-weight: var(--ges-weight-semibold);
+}
+
+dialog {
+  background: rgb(var(--ges-color-surface));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-lg);
+  color: rgb(var(--ges-color-text));
+  padding: var(--ges-space-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    scroll-behavior: auto;
+    transition-duration: 0.01ms;
+  }
+}

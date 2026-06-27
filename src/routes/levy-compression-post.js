@@ -1,5 +1,6 @@
 import { escapeHtml } from "../utils/html.js";
 import { loadPropertyManifest } from "../data-service.js";
+import { createGesArticleShell } from "../ges/shell.js";
 
 const ARTICLE_AUTHOR_IMAGE = "assets/images/articles/max-quattromani-author.jpg";
 
@@ -697,16 +698,15 @@ export function isLevyCompressionPostRequest(searchParams = new URLSearchParams(
 }
 
 export function renderLevyCompressionPost() {
-  const pageTitle = document.getElementById("pageTitle");
-  const canvas = document.querySelector(".mobile-review-canvas");
-  if (!canvas) return;
+  const shell = createGesArticleShell({
+    htmlClasses: ["levy-compression-shell-route"],
+    routeName: "levy-compression"
+  });
+  if (!shell?.coverRegion) return;
+  const pageTitle = shell.coverRegion;
+  const canvas = shell.bodyRegion;
 
-  document.documentElement.classList.add("article-shell-route", "levy-compression-shell-route");
-  document.querySelector(".guide-review-header")?.classList.add("hidden");
-  document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("hidden"));
-  document.querySelector("[data-footer-resource-shell]")?.classList.add("hidden");
-
-  pageTitle.innerHTML = `
+  shell.setCover(`
     <div class="comp-page-title levy-page-title">
       <p class="guided-kicker">Educational Post</p>
       <h1>Your Assessment Went Up. Does That Mean Your Tax Bill Will Go Up Just as Much?</h1>
@@ -718,9 +718,9 @@ export function renderLevyCompressionPost() {
         </div>
       </div>
     </div>
-  `;
+  `);
 
-  canvas.innerHTML = `
+  shell.setBody(`
     <article class="tax-shorthand-page levy-compression-page tax-article-panel" aria-label="Levy compression educational article">
       ${renderOpeningSection()}
       ${renderTeachingExampleSection()}
@@ -731,7 +731,7 @@ export function renderLevyCompressionPost() {
       ${renderAssumptionsSection()}
       ${renderClosingSection()}
     </article>
-  `;
+  `);
 
   initLevyCompressionCalculator(canvas);
 }
