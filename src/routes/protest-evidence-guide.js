@@ -1,4 +1,5 @@
 import { escapeHtml } from "../utils/html.js";
+import { installGesThemeToggle, renderGesThemeToggle } from "../ges-theme.js";
 import { beforeYouWalkIntoPropertyProtestArticle as articleSource } from "../content/articles/before-you-walk-into-a-property-protest.js";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js";
 
@@ -80,10 +81,10 @@ const ARTICLE_AUTHOR_MAILTO = `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeUR
 function paragraph(item) {
   if (item && typeof item === "object") {
     const text = escapeHtml(item.text ?? "");
-    return `<p>${item.emphasis ? `<strong>${text}</strong>` : text}</p>`;
+    return `<p class="prose">${item.emphasis ? `<strong>${text}</strong>` : text}</p>`;
   }
 
-  return `<p>${escapeHtml(item)}</p>`;
+  return `<p class="prose">${escapeHtml(item)}</p>`;
 }
 
 function paragraphs(items = []) {
@@ -105,6 +106,7 @@ function cautionParagraph(text) {
 function labeledNote(label, text, className = "") {
   return `
     <p class="article-caution-note article-guidance-note ${escapeHtml(className)}">
+      ${editorialIcon("hand-stop", "article-guidance-icon")}
       <span><strong>${escapeHtml(`${label}:`)}</strong> ${escapeHtml(text)}</span>
     </p>
   `;
@@ -166,6 +168,7 @@ function renderSourcesUsedBlock() {
 
   return `
     <aside class="article-sources-used" aria-label="${escapeHtml(ARTICLE_SOURCES_USED.title)}" data-source-ids="${escapeHtml(sourceIds.join(" "))}" data-source-categories="${escapeHtml(sourceCategories.join(" "))}">
+      <h3>${escapeHtml(ARTICLE_SOURCES_USED.title)}</h3>
       <p>${escapeHtml(ARTICLE_SOURCES_USED.intro)}</p>
       <ul>
         ${sourceItems.map(item => `<li>${renderExternalSourceLink(item)}</li>`).join("")}
@@ -561,7 +564,7 @@ function renderProcessStrip() {
 function renderOpeningSection() {
   const section = ARTICLE_SECTIONS.opening;
   return `
-    <section class="tax-article-section tax-story-chapter tax-article-opening levy-wide-panel article-section" data-tone="reflection" aria-labelledby="protestOpeningTitle">
+    <section class="tax-article-section tax-story-chapter tax-article-opening levy-wide-panel article-section ges-opening-section" data-tone="reflection" aria-labelledby="protestOpeningTitle">
       <div class="editorial-narrow ges-section-lead">
         ${renderArticleEntryPanel()}
         ${sectionHeader(section.kicker, section.title, "protestOpeningTitle", section)}
@@ -782,12 +785,10 @@ function renderOrganizationSection() {
           </li>
         `).join("")}
       </ol>
+      ${renderSourceNote(ARTICLE_SOURCE_NOTES.organization)}
       <aside class="guided-transition protest-guide-takeaway pull-quote">
         <p>${escapeHtml(section.pullQuote)}</p>
       </aside>
-      <div class="editorial-narrow">
-        ${renderSourceNote(ARTICLE_SOURCE_NOTES.organization)}
-      </div>
     </section>
   `;
 }
@@ -889,12 +890,13 @@ function renderOneMoreThoughtSection() {
 
 function renderClosingSection() {
   const section = ARTICLE_SECTIONS.closing;
+
   return `
     <section class="tax-article-section tax-story-chapter tax-article-closing levy-article-narrow article-section" data-tone="reflection" aria-labelledby="protestClosingTitle">
       ${sectionHeader(section.kicker, section.title, "protestClosingTitle")}
       ${paragraphs(section.paragraphs)}
-      ${renderContinuationModule(section.continuation)}
       ${renderSourceNote(ARTICLE_SOURCE_NOTES.closing)}
+      ${renderContinuationModule(section.continuation)}
       ${renderSourcesUsedBlock()}
       <aside class="article-share-footer" aria-labelledby="shareArticleTitle">
         <p id="shareArticleTitle">${escapeHtml(section.sharePrompt)}</p>
@@ -950,11 +952,18 @@ export function renderProtestEvidenceGuide() {
   pageTitle.innerHTML = `
     <header class="comp-page-title levy-page-title article-hero" aria-labelledby="protestArticleTitle">
       <div class="article-hero-packet">
+        ${renderGesThemeToggle()}
         <div class="hero-kicker-row">
           <p class="guided-kicker hero-kicker hero-brand-kicker">
-            <img class="hero-brand-mark" src="assets/brand/civic-house-mark.svg" alt="Guided Parcel Review" width="28" height="28" decoding="async" />
-            <span class="hero-kicker-divider" aria-hidden="true">/</span>
-            <span class="hero-kicker-text">Property Protest Prep</span>
+            <span class="hero-brand-mark" role="img" aria-label="Guided Parcel Review">
+              <img class="hero-brand-mark__image hero-brand-mark__image--light" src="assets/brand/civic-house-mark.svg" alt="" width="28" height="28" decoding="async" />
+              <img class="hero-brand-mark__image hero-brand-mark__image--dark" src="assets/brand/civic-house-mark.svg" alt="" width="28" height="28" decoding="async" />
+            </span>
+            <span class="hero-kicker-text">
+              <span class="hero-kicker-label">Article</span>
+              <span class="hero-kicker-divider" aria-hidden="true">/</span>
+              <span class="hero-kicker-subject">Property Protest Prep</span>
+            </span>
           </p>
         </div>
         <h1 id="protestArticleTitle" class="hero-title">${ARTICLE_TITLE}</h1>
@@ -981,6 +990,8 @@ export function renderProtestEvidenceGuide() {
       </figure>
     </header>
   `;
+
+  installGesThemeToggle(pageTitle);
 
   canvas.innerHTML = `
     <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page editorial-guide tax-article-panel" data-county-theme="gage" aria-label="Property protest evidence guide">

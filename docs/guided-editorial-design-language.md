@@ -352,13 +352,18 @@ Use these names as the mature GES component vocabulary. Each component should ha
 | Article Hero / Guide Hero | Orient the reader to title, promise, author context, and media. | Every standalone GES guide. | The guide is embedded in an app workflow. | One `h1`; media has labels/captions. | Preserve title, metadata, and media context. | `article-hero`, `guide-hero`, `hero-title`, `hero-deck` |
 | Hero Media | Carries the primary image or orientation video. | Media reduces uncertainty before reading. | The image is decorative or generic. | Alt/caption text; video controls reachable. | Hide dead controls, keep media context. | `hero-media`, `article-hero-media`, `article-hero-video` |
 | TL;DR Video Orientation | Gives a calm pre-reading summary. | A short video helps readers decide how to proceed. | The video repeats the article without orientation value. | Button label, native controls after play, transcript in source/metadata. | Do not require video for comprehension. | `article-hero-video`, `article-hero-video-player` |
+| Page Theme Toggle | Lets readers choose light or dark display mode. | Standalone GES articles and guides. | Embedded app panels where the surrounding product shell owns theme. | Use labelled buttons with `aria-pressed`; persist the reader choice. | Hide in print and resolve print to light. | `ges-page-utility`, `ges-theme-toggle`, `ges-theme-toggle__button` |
 | Guide Utility Area | Presents consumption choices such as reading time, printable guide, audio version, transcript, or future translations. | A guide offers length or format choices. | The controls would compete with the article opening. | Clear labels; keyboard-accessible links and controls. | Keep reading time if useful; hide controls that do not work on paper. | `guide-utility`, `guide-length`, `guide-formats`, `format-control` |
 | Section Kicker | Places the reader in the learning journey. | Major guide sections. | It duplicates the heading. | Must not replace a real heading. | Legible in grayscale. | `section-kicker`, `guided-kicker` |
 | Margin Insight | Gives a restrained orientation cue beside or below selected long-form sections. | A conceptually important section needs a skimmable handle. | It repeats the heading, competes with a visual, or creates a second reading path. | Supplemental text remains in source order; decorative icons are hidden if used. | Use text and simple rules only. | `ges-margin-insight`, `ges-margin-insight__label`, `ges-margin-insight__text`, `ges-section-companion` |
+| Page Crease Separator | Creates a quiet thematic break before selected non-opening sections. | A section has a Margin Insight or final-thought role and needs a stronger page turn. | The section is at the top of the article or the surrounding rhythm already provides enough separation. | Use a real `hr` so the break remains semantic. | Print as a simple two-tone rule. | `ges-page-crease` |
 | Concept Diagram | Teaches a mental model. | Relationships are clearer visually. | It only restates prose. | Text remains selectable and ordered. | Borders/labels carry meaning. | `concept-diagram`, `concept-card` |
+| Case Timeline | Anchors a case study in a small sequence of dated facts. | A specific record, hearing, or notice sequence explains the article. | The timeline would imply procedural certainty or overstate sparse facts. | Use text dates and ordered/listed events. | Keep date and event list together. | `ges-case-timeline` |
 | Process Strip | Shows a short workflow. | Steps are sequential. | Items are independent checks. | Use an ordered list. | Avoid breaking inside the strip. | `process-strip`, `process-step-heading` |
 | Comparison Module | Contrasts weak and strong choices. | Reader must distinguish similar options. | There is no meaningful contrast. | Labels, not color alone. | Keep paired sides together. | `comparison-card`, `comparison-module` |
 | Decision Diagram | Frames the question behind an outcome. | A decision path reduces uncertainty. | Exceptions would make it misleading. | List/outcome labels remain text. | Include simplification note when needed. | `decision-panel`, `decision-diagram` |
+| Stat Grid | Presents a small set of comparable values, changes, or model outputs. | The reader needs to compare 2 to 4 related metrics. | The numbers require a full table or the label would be unclear without prose. | Labels and values are text; do not rely on position alone. | Grid may stack or compress; keep each stat intact. | `ges-stat-grid`, `ges-stat-card`, `ges-stat-card__label`, `ges-stat-card__value` |
+| Tax Impact Calculator | Lets readers test directional property-tax impact from value, rate, and assumption inputs. | An article teaches a model readers can safely vary. | It would imply a precise tax bill or official estimate. | Real labels, live results, editable fields, explanatory notes. | Preserve starter values and model explanation; inputs may print as static fields. | `ges-tax-impact-calculator`, `ges-tax-impact-calculator__form`, `ges-tax-impact-calculator__results` |
 | Assessment Build Panel | Shows how the current assessed value is shaped by current record facts and related valuation information. | Readers need to connect record review to value review. | The language implies the value is final or beyond review. | Figcaption and text labels explain every part. | Works as a worksheet-like reference list. | `assessment-build-panel` |
 | Record Callout | Points attention to record fields. | Readers need to inspect facts or source rows. | Real or simplified fields would be misleading. | Use `dl` for fields and meanings. | Avoid faint highlights only. | `record-callout` |
 | Evidence Translation Matrix | Connects observation, record issue, and requested correction. | Evidence needs to become action through repeated examples. | The relationship is not action-oriented. | Teach the sequence once, then preserve each example row in DOM order. | Keep each row together. | `evidence-matrix`, `evidence-matrix-header`, `evidence-path-list` |
@@ -389,7 +394,13 @@ HTML structure:
 <header class="article-hero">
   <div class="article-hero-packet">
     <div class="hero-kicker-row">
-      <p class="hero-kicker section-kicker"><span>Guide</span> / Property Protest Prep</p>
+      <p class="hero-kicker hero-brand-kicker">
+        <span class="hero-brand-mark" role="img" aria-label="Guided Parcel Review">
+          <img class="hero-brand-mark__image hero-brand-mark__image--light" src="/assets/brand/civic-house-mark.svg" alt="" width="28" height="28" decoding="async" />
+          <img class="hero-brand-mark__image hero-brand-mark__image--dark" src="/assets/brand/civic-house-mark.svg" alt="" width="28" height="28" decoding="async" />
+        </span>
+        <span class="hero-kicker-text"><span class="hero-kicker-label">Article</span> / <span class="hero-kicker-subject">Property Protest Prep</span></span>
+      </p>
     </div>
     <h1 class="hero-title">Before You Walk Into a Property Protest</h1>
     <p class="hero-deck">Short plain-language deck.</p>
@@ -402,7 +413,7 @@ HTML structure:
 </header>
 ```
 
-Accessibility: One `h1` per article.
+Accessibility: One `h1` per article. The house mark uses the canonical mark in one labeled image wrapper; dark mode presents the second instance with the shared white-mark filter.
 
 Print: Keep with the opening section when possible. The printable PDF should include the same author and location/date stamp. Hide the web print/download CTA inside the printed PDF because it has already served its purpose.
 
@@ -466,7 +477,15 @@ Article entry HTML:
 
 Metadata rule: Authorship, location, and date should read as metadata, not body copy. Keep these lines visually quiet, roughly 12 to 13 px on screen, with modest line height. Use a location/date stamp when the article is tied to a county, hearing cycle, meeting schedule, or local procedural context. Dates may be updated before publication, but the document should always make its local moment clear.
 
-Hero kicker rule: The hero kicker should be text-first and quiet. Avoid decorative icons in the kicker row. When the article type needs a small visual anchor, underline only the article-type word, such as `Guide`, with a partial underline of the same color and weight family. This creates recognition without adding a decorative object.
+Hero kicker rule: The hero kicker should be text-first and quiet. Avoid decorative icons in the kicker row. When the breadcrumb needs a small visual anchor, use a thin full-length underline below the subject/category crumb, such as `Property Protest Prep`, rather than a partial underline below the page type.
+
+Branded kicker rule: Standalone articles should include the Guided Parcel Review house mark in the hero kicker. Keep the mark small, aligned to the kicker text, and treat it as brand identity rather than decoration. Reserve the first kicker label for page type, such as `Article`, then place the subject or article category after the divider, such as `Article / Levy Compression`. The subject/category crumb may carry the thin underline; move the text to accommodate the mark instead of dropping the mark.
+
+Theme toggle rule: Place the GES theme toggle right-aligned inside the hero packet, immediately above the hero kicker and media. Treat it as a page preference rather than article content. Use two states: light and dark. Persist the selection and hide the control in print.
+
+Theme color rule: Light mode should evoke paper. Dark mode should evoke a reading room. Dark theme support is a first-class night edition, not an inverted light mode: use charcoal page color, layered dark surfaces, soft off-white text, and softened semantic accents. Preserve the civic blue, evidence green, amber, action, and reflection roles through dark tokens rather than replacing them with generic white or saturated application colors.
+
+Title scale rule: In the mature GES shell, the hero `h1` is intentionally restrained, topping out around `1.6rem`. The first in-article headline may carry more visual weight, topping out around `3rem`, because the article's teaching path should dominate after the cover signal has done its job. Later section `h2` headings should return to the standard section scale so they do not compete with the opening headline. Keep responsive sizes proportional so the hierarchy remains visible on mobile and in print.
 
 Field-packet rule: For civic process articles, the hero may use a restrained packet or record-jacket treatment: a small document-aware kicker, compact metadata, and a paper/download pathway. Do not default to a left vertical rule. Use whitespace, metadata grouping, and the hero media edge to create the field-packet rhythm. The treatment should make the article feel prepared and document-aware without becoming a legal template, campaign flyer, or dashboard UI.
 
@@ -636,6 +655,8 @@ Accessibility: Use an ordered list when order matters.
 
 Print: Avoid breaking inside the strip. Stack if space is narrow.
 
+Layout rule: A process strip should use only as many columns as it has steps when that count is known. A three-step strip should center as three cards rather than occupying a four-column track with empty visual space.
+
 ### Comparison Card
 
 Purpose: Contrast weak and strong forms of thinking or action.
@@ -732,6 +753,102 @@ Accessibility: Prefer lists or definition lists over visual-only layouts.
 
 Print: Avoid page breaks inside criteria groups.
 
+### Case Timeline
+
+Purpose: Anchor a case-study guide in a small sequence of dated facts before interpretation begins.
+
+Use when: A specific hearing, notice, record update, filing, or tax-year sequence explains why the article exists.
+
+Do not use when: The timeline would make sparse facts feel more complete than they are, when dates are approximate, or when the article is teaching a general process rather than a case.
+
+Typical size: One date or date range plus 2 to 4 short events.
+
+Cognitive role: Grounding. The reader should know what happened before the article asks them to reason from it.
+
+HTML structure:
+
+```html
+<figure class="concept-card concept-diagram ges-case-timeline" aria-labelledby="case-timeline-title">
+  <figcaption id="case-timeline-title">What happened in 2025</figcaption>
+  <div class="case-timeline-card">
+    <strong>July 21, 2025</strong>
+    <ul>
+      <li>Property owner appeared before the Board.</li>
+      <li>Board left valuation unchanged.</li>
+    </ul>
+  </div>
+</figure>
+```
+
+Accessibility: Keep the date and events as text. Use a list for multiple events. Do not encode the sequence only as lines, arrows, or icons.
+
+Print: Keep the date and event list together when possible.
+
+### Stat Grid
+
+Purpose: Present a compact set of related values, changes, or model outputs for comparison.
+
+Use when: The reader needs to compare 2 to 4 metrics, such as value movement, tax movement, rate movement, or calculator results.
+
+Do not use when: The data needs row/column relationships, source footnotes per cell, or more than one level of grouping. Use a table or evidence matrix instead.
+
+Typical size: 2 to 4 stat cards.
+
+Cognitive role: Comparison and proportion.
+
+HTML structure:
+
+```html
+<div class="ges-stat-grid">
+  <article class="ges-stat-card">
+    <span class="ges-stat-card__label">2025 Net Taxes</span>
+    <strong class="ges-stat-card__value">$1,410.22</strong>
+    <p>$220,510 value</p>
+  </article>
+</div>
+```
+
+Accessibility: Each stat needs a text label and value. Do not rely on color, position, or typography alone to explain whether a value increased or decreased.
+
+Print: Keep each card intact. Grids may stack or reduce columns to preserve legibility.
+
+### Tax Impact Calculator
+
+Purpose: Let readers test a directional property-tax impact model from value, rate, and assumption inputs.
+
+Use when: The article teaches a repeatable model that readers can vary safely, and the model has clear assumptions.
+
+Do not use when: The output could be mistaken for an official tax bill, certified levy calculation, appraisal, legal advice, or guaranteed result.
+
+Typical size: One labelled input form, one result grid, one comparison baseline, one model-explanation note.
+
+Cognitive role: Applied reasoning. The calculator should make the article's model inspectable rather than replacing the article's explanation.
+
+HTML structure:
+
+```html
+<figure class="concept-card ges-tax-impact-calculator" aria-labelledby="tax-impact-title">
+  <figcaption id="tax-impact-title">Your numbers</figcaption>
+  <form class="ges-tax-impact-calculator__form" aria-label="Inputs for estimating tax impact">
+    <label>
+      Last year's tax bill
+      <small>Editable starter value</small>
+      <input inputmode="decimal" value="$1,410.22" />
+    </label>
+  </form>
+  <div class="ges-stat-grid ges-tax-impact-calculator__results" aria-live="polite">
+    <article class="ges-stat-card">
+      <span class="ges-stat-card__label">Estimated taxes</span>
+      <strong class="ges-stat-card__value">$1,713.45</strong>
+    </article>
+  </div>
+</figure>
+```
+
+Accessibility: Inputs need visible labels and helpers. Results should update in an `aria-live` region when values change. Preserve the math explanation in text so the model is not a black box.
+
+Print: Include starter values, assumptions, and explanatory notes. Treat interactive fields as static references on paper.
+
 ### Evidence Translation Matrix
 
 Purpose: Connect observation to record issue to requested action.
@@ -791,6 +908,8 @@ HTML structure:
 ```
 
 Accessibility: Preserve the sequence in DOM order. The header teaches the workflow once; row cells should retain accessible labels so screen readers can identify the step without repeating visual headings.
+
+Formula lines: When a path step includes visible math, mark it with `evidence-formula`. Keep the formula compact, bold, and slightly separated from the explanatory sentence so it scans as supporting calculation rather than another paragraph.
 
 Print: Keep each row together when possible.
 
@@ -1102,7 +1221,7 @@ These rules govern every component and article.
 14. Treat publication metadata as context, not decoration.
 15. Preserve printable usefulness even when screen affordances disappear.
 16. If a click-only control does not make sense on paper, hide it in print and preserve the underlying information.
-17. Keep hero kickers text-first. Use a partial underline for article-type emphasis before reaching for icons.
+17. Keep hero kickers text-first. Use a thin full-length underline for subject/category emphasis, and reserve the house mark for brand identity rather than decoration.
 18. Let themed components carry meaning through restrained tokens, not decoration.
 19. Use video as a calm orientation layer only when it reduces uncertainty before the reader enters the article.
 
@@ -1120,10 +1239,14 @@ GEDL uses semantic HTML so articles can survive years of development.
   <section class="article-section resource-section">...</section>
   <section class="article-section closing-reflection">...</section>
   <aside class="continuation-module">...</aside>
-  <aside class="article-sources-used">...</aside>
-  <footer class="article-share-footer">...</footer>
+<aside class="article-sources-used">...</aside>
+<footer class="article-share-footer">...</footer>
 </article>
 ```
+
+Closing reflection rule: Closing body text should use normal weight by default. Use bold only for deliberate emphasis inside the prose, not as the base treatment for the whole closing section.
+
+Sources-used rule: A sources-used block should have an explicit heading using the standard resources heading treatment. The explanatory intro paragraph should remain body/support text, not function visually as the heading.
 
 ### Elements
 

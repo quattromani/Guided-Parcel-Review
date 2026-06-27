@@ -40,6 +40,7 @@ import {
   renderStartPage,
   renderViewHeader
 } from "./render.js";
+import { applyGesTheme } from "./ges-theme.js";
 import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.js";
 import {
   getTaxpayerJourneyRoutes,
@@ -126,6 +127,7 @@ function loadedPropertyCoverageTokens(propertySwitcher = {}) {
 
 syncLayoutViewportWidth();
 window.addEventListener("resize", syncLayoutViewportWidth, { passive: true });
+applyGesTheme();
 
 async function main() {
   await loadSiteCopy();

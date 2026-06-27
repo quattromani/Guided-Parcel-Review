@@ -1,65 +1,42 @@
 import { escapeHtml } from "../utils/html.js";
+import { installGesThemeToggle, renderGesThemeToggle } from "../ges-theme.js";
+import { assessmentUpProtestDeniedTaxesArticle as articleSource } from "../content/articles/assessment-up-protest-denied-taxes.js";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js";
 
 const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg";
-const ARTICLE_ID = "protest-paradox";
-const ARTICLE_SLUG = "assessment-up-protest-denied-taxes";
-const ARTICLE_LEGACY_QUERY_VALUE = "protest-paradox";
-const ARTICLE_CANONICAL_PATH = "articles/assessment-up-protest-denied-taxes/";
-const ARTICLE_TITLE = "Assessment Up. Protest Denied. Taxes?";
-const ARTICLE_SUBTITLE = "A case study showing why property taxes can fall after an assessment increase, and how levy compression changes the tax impact of a valuation notice.";
-const ARTICLE_AUTHOR = "Max Quattromani";
-const ARTICLE_AUTHOR_IMAGE = "assets/images/articles/max-quattromani-author.jpg";
-const ARTICLE_LOCATION = "Gage County";
-const ARTICLE_DISPLAY_DATE = "June 23, 2026";
-const ARTICLE_PUBLISHED_DATE = "2026-06-23";
-const ARTICLE_MODIFIED_DATE = "2026-06-25";
-const ARTICLE_DESCRIPTION = "A Gage County case study showing why property taxes can fall after an assessment increase, and how levy compression changes the tax impact of a valuation notice.";
-const ARTICLE_SOCIAL_IMAGE = "assets/images/protest-paradox-share.jpg";
-const ARTICLE_HERO_IMAGE_ALT = "Aerial view of rural agricultural land and homes.";
-const PRINTABLE_GUIDE_PDF = "assets/guides/assessment-up-protest-denied-taxes.pdf";
+const ARTICLE_SECTIONS = articleSource.sections;
+const ARTICLE_ID = articleSource.id;
+const ARTICLE_SLUG = articleSource.slug;
+const ARTICLE_LEGACY_QUERY_VALUE = articleSource.legacyQueryValue;
+const ARTICLE_CANONICAL_PATH = articleSource.canonicalPath;
+const ARTICLE_TITLE = articleSource.title;
+const ARTICLE_SUBTITLE = articleSource.subtitle;
+const ARTICLE_AUTHOR = articleSource.author;
+const ARTICLE_AUTHOR_EMAIL = articleSource.authorEmail;
+const ARTICLE_AUTHOR_TITLE = articleSource.authorTitle;
+const ARTICLE_AUTHOR_IMAGE = articleSource.assets.authorImage;
+const ARTICLE_LOCATION = articleSource.location;
+const ARTICLE_TAGS = articleSource.tags ?? [ARTICLE_LOCATION].filter(Boolean);
+const ARTICLE_DISPLAY_DATE = articleSource.displayDate;
+const ARTICLE_PUBLISHED_DATE = articleSource.publishedDate;
+const ARTICLE_MODIFIED_DATE = articleSource.modifiedDate;
+const ARTICLE_DESCRIPTION = articleSource.description;
+const ARTICLE_SOCIAL_IMAGE = articleSource.assets.socialImage;
+const ARTICLE_HERO_IMAGE_ALT = articleSource.assets.heroImageAlt;
+const ARTICLE_WORD_COUNT = articleSource.reading.wordCount;
+const ARTICLE_READING_TIME_MINUTES = articleSource.reading.minutes;
+const ARTICLE_READING_TIME = `PT${ARTICLE_READING_TIME_MINUTES}M`;
+const ARTICLE_LENGTH_LABEL = articleSource.reading.lengthLabel ?? "field-note";
+const PRINTABLE_GUIDE_PDF = articleSource.assets.printableGuidePdf;
 const ARTICLE_DEPTH_MILESTONES = [25, 50, 75, 100];
-const ARTICLE_KEYWORDS = [
-  "property tax levy compression",
-  "assessment increase taxes down",
-  "Gage County property assessment",
-  "property valuation protest",
-  "effective tax rate",
-  "property tax estimate"
-];
-
-const STARTER_VALUES = {
-  taxes2025: 1410.22,
-  value2025: 220510,
-  value2026: 285015,
-  valueGrowth: 9.57,
-  budgetGrowth: 3
-};
-
-const CASE_TIMELINE = [
-  "Property owner appeared before the Board of Equalization.",
-  "Protest focused on a roughly $10,000 first-acre homesite increase.",
-  "Board left valuation unchanged."
-];
-
-const LEARNING_POINTS = [
-  "Why taxes can fall after an assessment increase",
-  "What levy compression actually does",
-  "How to estimate the impact of your next notice",
-  "Which question matters more than your new value"
-];
-
-const FRAMEWORK_STEPS = [
-  ["Property Movement", "How much did this property move?", "+4.75%", "The parcel's assessed value moved from $210,510 to $220,510."],
-  ["County Movement", "How much did everyone else move?", "Countywide growth", "When many properties increase together, the tax base expands."],
-  ["Budget Movement", "How much money did local governments need?", "Budget growth", "Budgets determine how much tax pressure must be collected."]
-];
-
-const COMPONENT_CHANGES = [
-  ["Land", "$62,690 -> $62,690", "No change"],
-  ["Dwelling", "$146,455 -> $210,990", "Major increase"],
-  ["Other Improvements", "$11,365 -> $11,335", "Slight decrease"]
-];
+const ARTICLE_KEYWORDS = articleSource.keywords;
+const ARTICLE_SOURCE_NOTES = articleSource.sourceNotes ?? {};
+const CASE_TIMELINE = articleSource.timeline;
+const LEARNING_POINTS = articleSource.learningPoints;
+const FRAMEWORK_STEPS = articleSource.frameworkSteps;
+const COMPONENT_CHANGES = articleSource.componentChanges;
+const CALCULATOR_INPUTS = articleSource.calculatorInputs;
+const ARTICLE_AUTHOR_MAILTO = `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeURIComponent(`Re: ${ARTICLE_TITLE}`)}`;
 
 function normalizedPathname() {
   return window.location.pathname.endsWith("/")
@@ -128,6 +105,8 @@ function updateMetadata() {
   setMeta("description", ARTICLE_DESCRIPTION);
   setMeta("author", ARTICLE_AUTHOR);
   setMeta("keywords", ARTICLE_KEYWORDS.join(", "));
+  setMeta("article:word_count", String(ARTICLE_WORD_COUNT));
+  setMeta("article:reading_time", ARTICLE_READING_TIME);
   setMeta("robots", "index, follow, max-image-preview:large");
   setMeta("article:published_time", ARTICLE_PUBLISHED_DATE);
   setMeta("article:modified_time", ARTICLE_MODIFIED_DATE);
@@ -187,6 +166,8 @@ function updateMetadata() {
         },
         datePublished: ARTICLE_PUBLISHED_DATE,
         dateModified: ARTICLE_MODIFIED_DATE,
+        wordCount: ARTICLE_WORD_COUNT,
+        timeRequired: ARTICLE_READING_TIME,
         articleSection: "Property tax education",
         keywords: ARTICLE_KEYWORDS,
         about: [
@@ -220,7 +201,11 @@ function editorialIcon(name, className = "") {
 }
 
 function paragraph(text) {
-  return `<p>${escapeHtml(text)}</p>`;
+  return `<p class="prose">${escapeHtml(text)}</p>`;
+}
+
+function paragraphs(items = []) {
+  return items.map(paragraph).join("");
 }
 
 function listMarkup(items) {
@@ -231,11 +216,44 @@ function listMarkup(items) {
   `;
 }
 
-function sectionHeader(kicker, title, id) {
+function renderSourceNote(note) {
+  if (!note?.text) return "";
+
   return `
-    <header class="tax-article-header editorial-section-header">
-      <p class="guided-kicker">${escapeHtml(kicker)}</p>
-      <h2 id="${escapeHtml(id)}">${escapeHtml(title)}</h2>
+    <aside class="article-source-note" aria-label="${escapeHtml(note.label ?? "Source note")}">
+      <p>${escapeHtml(note.text)}</p>
+    </aside>
+  `;
+}
+
+function renderMarginInsight(insight) {
+  if (!insight?.text) return "";
+
+  return `
+    <aside class="ges-margin-insight" aria-label="${escapeHtml(insight.label ?? "Margin insight")}">
+      ${insight.label ? `<p class="ges-margin-insight__label">${escapeHtml(insight.label)}</p>` : ""}
+      <p class="ges-margin-insight__text">${escapeHtml(insight.text)}</p>
+    </aside>
+  `;
+}
+
+function renderPageCrease() {
+  return `<hr class="ges-page-crease" />`;
+}
+
+function sectionHeader(kicker, title, id, options = {}) {
+  const companion = options.companion ? `<p class="ges-section-companion">${escapeHtml(options.companion)}</p>` : "";
+  const insight = renderMarginInsight(options.marginInsight);
+  const classes = ["tax-article-header", "editorial-section-header", insight ? "ges-section-header--with-insight" : ""].filter(Boolean).join(" ");
+
+  return `
+    <header class="${classes}">
+      <div class="ges-section-heading">
+        <p class="guided-kicker">${escapeHtml(kicker)}</p>
+        <h2 id="${escapeHtml(id)}">${escapeHtml(title)}</h2>
+        ${companion}
+      </div>
+      ${insight}
     </header>
   `;
 }
@@ -331,19 +349,77 @@ function calculate(values) {
 
 function renderStatCard(label, value, detail = "", outputName = "") {
   return `
-    <article>
-      <span>${escapeHtml(label)}</span>
-      <strong ${outputName ? `data-model-output="${escapeHtml(outputName)}"` : ""}>${escapeHtml(value)}</strong>
+    <article class="ges-stat-card">
+      <span class="ges-stat-card__label">${escapeHtml(label)}</span>
+      <strong class="ges-stat-card__value" ${outputName ? `data-model-output="${escapeHtml(outputName)}"` : ""}>${escapeHtml(value)}</strong>
       ${detail ? `<p>${escapeHtml(detail)}</p>` : ""}
     </article>
   `;
 }
 
-function renderLearningSection() {
+function renderArticleTags() {
+  if (!ARTICLE_TAGS.length) return "";
+
   return `
-    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" aria-labelledby="learningTitle">
-      <figure class="scorecard" aria-labelledby="learningTitle">
-        <figcaption id="learningTitle">${editorialIcon("process")}<span>What you'll learn</span></figcaption>
+        <ul class="article-entry-tags" aria-label="Article tags">
+          ${ARTICLE_TAGS.map((tag) => `<li>${escapeHtml(tag)}</li>`).join("")}
+        </ul>`;
+}
+
+function formatGuideLengthText(minutes) {
+  const numericMinutes = Number.parseInt(minutes, 10);
+  if (!Number.isFinite(numericMinutes) || numericMinutes < 1) return "";
+  const article = /^[8]|^11|^18/.test(String(numericMinutes)) ? "an" : "a";
+  return `About ${article} ${numericMinutes}-minute read`;
+}
+
+function renderGuideUtility() {
+  return `
+    <section class="guide-utility" aria-label="Guide options">
+      <div class="guide-length" aria-label="Estimated guide length" data-guide-length data-reading-minutes="${escapeHtml(ARTICLE_READING_TIME_MINUTES)}" data-word-count="${escapeHtml(ARTICLE_WORD_COUNT)}" data-length-label="${escapeHtml(ARTICLE_LENGTH_LABEL)}">
+        <p class="guide-length-label" data-guide-length-label>${escapeHtml(formatGuideLengthText(ARTICLE_READING_TIME_MINUTES))}</p>
+      </div>
+      <div class="guide-formats hero-utility" aria-label="Available formats">
+        <div class="format-control">
+          <a class="format-control-item hero-utility-button article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable case study PDF">
+            ${editorialIcon("document")}
+            <span>Printable case study</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderArticleEntryPanel() {
+  return `
+    <div class="article-entry-panel">
+      <div class="article-entry-meta" aria-label="Article information">
+        <div class="article-author-attribution">
+          <img class="article-author-photo" src="${escapeHtml(ARTICLE_AUTHOR_IMAGE)}" alt="" loading="lazy" decoding="async" />
+          <div class="article-author-copy">
+            <p class="article-author-name"><a href="${escapeHtml(ARTICLE_AUTHOR_MAILTO)}" data-article-action="author_email" data-article-label="${escapeHtml(ARTICLE_TITLE)}">${escapeHtml(ARTICLE_AUTHOR)}</a></p>
+            <p class="article-author-title">${escapeHtml(ARTICLE_AUTHOR_TITLE)}</p>
+            <p class="article-entry-date">${escapeHtml(ARTICLE_DISPLAY_DATE)}</p>
+          </div>
+        </div>
+      </div>
+      ${renderGuideUtility()}
+    </div>
+  `;
+}
+
+function renderLearningSection() {
+  const section = ARTICLE_SECTIONS.learning;
+
+  return `
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section ges-opening-section" data-tone="information" aria-labelledby="learningTitle">
+      <div class="editorial-narrow ges-section-lead">
+        ${renderArticleEntryPanel()}
+        ${sectionHeader(section.kicker, section.title, "learningTitle", section)}
+      </div>
+      <figure class="scorecard" aria-labelledby="learningCardTitle">
+        <figcaption id="learningCardTitle">${editorialIcon("process")}<span>What you'll learn</span></figcaption>
         <div>
           <section>
             <h3>${editorialIcon("perspective")}<span>A case study that becomes a practical framework</span></h3>
@@ -351,7 +427,7 @@ function renderLearningSection() {
           </section>
           <section>
             <h3>${editorialIcon("request")}<span>The practical question</span></h3>
-            <p>Do not stop at the new value. Ask how the property moved compared with the rest of the tax base.</p>
+            <p>${escapeHtml(section.practicalQuestion)}</p>
           </section>
         </div>
       </figure>
@@ -360,18 +436,20 @@ function renderLearningSection() {
 }
 
 function renderMysterySection() {
+  const section = ARTICLE_SECTIONS.mystery;
+
   return `
     <section class="tax-article-section tax-story-chapter tax-article-opening levy-wide-panel article-section" data-tone="reflection" aria-labelledby="mysteryTitle">
-      <div class="editorial-narrow">
-        ${sectionHeader("1. The Mystery", "A value went up. The protest was denied. The tax bill went down.", "mysteryTitle")}
-        ${paragraph("That sounds wrong at first. If the Board left the value unchanged, many homeowners would expect the tax bill to rise too.")}
-        ${paragraph("This case shows why assessment change and tax change are related, but not identical.")}
+      ${renderPageCrease()}
+      <div class="editorial-narrow ges-section-lead">
+        ${sectionHeader(section.kicker, section.title, "mysteryTitle", section)}
+        ${paragraphs(section.paragraphs)}
       </div>
-      <figure class="concept-card concept-diagram" aria-labelledby="timelineTitle">
+      <figure class="concept-card concept-diagram ges-case-timeline" aria-labelledby="timelineTitle">
         <figcaption id="timelineTitle">${editorialIcon("timeline")}<span>What happened in 2025</span></figcaption>
         <div class="protest-paradox-timeline-card">
-          <strong>July 21, 2025</strong>
-          ${listMarkup(CASE_TIMELINE)}
+          <strong>${escapeHtml(CASE_TIMELINE.date)}</strong>
+          ${listMarkup(CASE_TIMELINE.items)}
         </div>
       </figure>
       <figure class="comparison-card" aria-labelledby="valueChangeTitle">
@@ -380,43 +458,51 @@ function renderMysterySection() {
           ${renderStatCard("2024 Value", "$210,510")}
           ${renderStatCard("2025 Value", "$220,510")}
         </div>
-        <p class="note-box">Dollar increase: $10,000. Percent increase: 4.75%.</p>
+        <p class="note-box">${escapeHtml(section.valueChangeNote)}</p>
       </figure>
+      ${renderSourceNote(ARTICLE_SOURCE_NOTES.mystery)}
     </section>
   `;
 }
 
 function renderTaxResultSection() {
+  const section = ARTICLE_SECTIONS.taxResult;
+
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="comparison" aria-labelledby="taxResultTitle">
-      <div class="editorial-narrow">
-        ${sectionHeader("2. Why It Seems Wrong", "The 2025 tax bill moved the other direction", "taxResultTitle")}
-        ${paragraph("Even though the Board left the valuation unchanged, the property's 2025 taxes did not increase. They decreased.")}
+      ${renderPageCrease()}
+      <div class="editorial-narrow ges-section-lead">
+        ${sectionHeader(section.kicker, section.title, "taxResultTitle", section)}
+        ${paragraph(section.intro)}
       </div>
       <figure class="scorecard" aria-labelledby="taxKpiTitle">
         <figcaption id="taxKpiTitle">${editorialIcon("market-chart")}<span>Value up, taxes down</span></figcaption>
-        <div class="protest-paradox-three-up">
+        <div class="protest-paradox-three-up ges-stat-grid">
           ${renderStatCard("2024 Net Taxes", "$1,463.40", "$210,510 value")}
           ${renderStatCard("2025 Net Taxes", "$1,410.22", "$220,510 value")}
           ${renderStatCard("Tax Change", "-$53.18", "about -3.6%")}
         </div>
       </figure>
       <div class="editorial-narrow">
-        ${paragraph("Many people assume a higher assessment automatically has to mean higher taxes. This property produced a different outcome: while its assessment was up 4.75%, the final tax bill moved the other direction, down about 3.6%.")}
+        ${paragraph(section.closing)}
+        ${renderSourceNote(ARTICLE_SOURCE_NOTES.taxResult)}
       </div>
     </section>
   `;
 }
 
 function renderFrameworkSection() {
+  const section = ARTICLE_SECTIONS.framework;
+
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" aria-labelledby="frameworkTitle">
-      <div class="editorial-narrow">
-        ${sectionHeader("3. The Missing Rule", "Property taxes follow relative movement", "frameworkTitle")}
-        ${paragraph("The tax bill is not a direct translation of the valuation notice. The notice changes the starting point. The bill depends on what happened around that property too.")}
+      ${renderPageCrease()}
+      <div class="editorial-narrow ges-section-lead">
+        ${sectionHeader(section.kicker, section.title, "frameworkTitle", section)}
+        ${paragraph(section.intro)}
       </div>
       <aside class="guided-transition protest-guide-takeaway pull-quote">
-        <p>A higher assessment usually means a property is carrying a larger share of the tax base. But a share only matters in context.</p>
+        <p>${escapeHtml(section.pullQuote)}</p>
       </aside>
       <ol class="process-strip" aria-label="Three-part tax impact framework">
         ${FRAMEWORK_STEPS.map(([label, title, value, detail], index) => `
@@ -436,21 +522,22 @@ function renderFrameworkSection() {
 }
 
 function renderCompressionSection() {
+  const section = ARTICLE_SECTIONS.compression;
+
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-labelledby="compressionTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("4. What Levy Compression Means", "The rate can fall when the base grows faster than the budget", "compressionTitle")}
+        ${sectionHeader(section.kicker, section.title, "compressionTitle", section)}
       </div>
       <figure class="concept-card concept-diagram" aria-labelledby="pieTitle">
         <figcaption id="pieTitle">${editorialIcon("market-chart")}<span>Fixed pie vs. growing pie</span></figcaption>
         <article>
-          <p>Think of the tax levy as a pie. If the pie, meaning the budget, stays the same size but the table, meaning the tax base, gets much larger, each person's slice can get smaller.</p>
-          <p>When many properties rise together, the tax rate does not always need to rise with them. If the tax base grows faster than the budget, tax rates can compress downward.</p>
+          ${paragraphs(section.paragraphs)}
         </article>
       </figure>
       <figure class="scorecard" aria-labelledby="revisitedTitle">
         <figcaption id="revisitedTitle">${editorialIcon("verification")}<span>Case study revisited</span></figcaption>
-        <div class="protest-paradox-three-up">
+        <div class="protest-paradox-three-up ges-stat-grid">
           ${renderStatCard("Property Movement", "+4.75%", "The assessment increased.")}
           ${renderStatCard("Effective Rate", "0.695% -> 0.640%", "The net effective tax rate moved down.")}
           ${renderStatCard("Tax Movement", "-$53.18", "The tax bill decreased about 3.6%.")}
@@ -461,15 +548,17 @@ function renderCompressionSection() {
 }
 
 function renderApplySection() {
+  const section = ARTICLE_SECTIONS.apply;
+
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="action" aria-labelledby="applyTitle">
-      <div class="editorial-narrow">
-        ${sectionHeader("Part 2 - Apply The Framework", "Ready to apply this yourself?", "applyTitle")}
-        ${paragraph("Everything above explained one parcel. Everything below uses the same framework to evaluate a different notice.")}
-        ${paragraph("If you have your own notice nearby, this is where the framework becomes useful.")}
+      ${renderPageCrease()}
+      <div class="editorial-narrow ges-section-lead">
+        ${sectionHeader(section.kicker, section.title, "applyTitle", section)}
+        ${paragraphs(section.paragraphs)}
       </div>
       <aside class="guided-transition protest-guide-takeaway pull-quote">
-        <p>Last year's discussion focused on a roughly $10,000 homesite increase. This year's increase is much larger and comes almost entirely from the dwelling.</p>
+        <p>${escapeHtml(section.pullQuote)}</p>
       </aside>
       <figure class="comparison-card" aria-labelledby="noticeChangeTitle">
         <figcaption id="noticeChangeTitle">${editorialIcon("compare")}<span>The next valuation notice</span></figcaption>
@@ -477,11 +566,11 @@ function renderApplySection() {
           ${renderStatCard("2025 Value", "$220,510")}
           ${renderStatCard("2026 Value", "$285,015")}
         </div>
-        <p class="note-box">Dollar increase: $64,505. Percent increase: 29.25%.</p>
+        <p class="note-box">${escapeHtml(section.noticeChangeNote)}</p>
       </figure>
       <figure class="scorecard" aria-labelledby="componentChangeTitle">
         <figcaption id="componentChangeTitle">${editorialIcon("measurement")}<span>Where the increase occurred</span></figcaption>
-        <div class="protest-paradox-three-up">
+        <div class="protest-paradox-three-up ges-stat-grid">
           ${COMPONENT_CHANGES.map(([label, value, detail]) => renderStatCard(label, value, detail)).join("")}
         </div>
       </figure>
@@ -500,41 +589,40 @@ function renderCalculatorInput(name, label, helper, value, format, editable = fa
 }
 
 function renderCalculatorSection() {
+  const section = ARTICLE_SECTIONS.calculator;
+
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section protest-guide-panel protest-paradox-calculator-section" data-tone="action" aria-labelledby="calculatorTitle">
-      <div class="editorial-narrow">
-        ${sectionHeader("7. Apply The Framework", "Estimate your tax impact", "calculatorTitle")}
-        ${paragraph("Start with your own numbers. The case-study values are loaded as starter values.")}
+      ${renderPageCrease()}
+      <div class="editorial-narrow ges-section-lead">
+        ${sectionHeader(section.kicker, section.title, "calculatorTitle", section)}
+        ${paragraph(section.intro)}
       </div>
-      <section class="concept-card protest-paradox-calculator" aria-labelledby="calculatorFormTitle">
+      <figure class="concept-card protest-paradox-calculator ges-tax-impact-calculator" aria-labelledby="calculatorFormTitle">
         <figcaption id="calculatorFormTitle">${editorialIcon("resources")}<span>Your numbers</span></figcaption>
-        <form class="case-calculator" data-case-calculator aria-label="Inputs for estimating tax impact">
-          ${renderCalculatorInput("taxes2025", "Last year's tax bill", "Editable field - case-study starter", "$1,410.22", "money-cents", true)}
-          ${renderCalculatorInput("value2025", "Last year's value", "Editable field - case-study starter", "$220,510", "money-whole", true)}
-          ${renderCalculatorInput("value2026", "This year's value", "Editable field - case-study starter", "$285,015", "money-whole", true)}
-          ${renderCalculatorInput("valueGrowth", "2026 countywide value growth", "Observed county input", "9.57%", "percent")}
-          ${renderCalculatorInput("budgetGrowth", "Estimated budget growth", "Planning assumption", "3.00%", "percent")}
+        <form class="case-calculator ges-tax-impact-calculator__form" data-case-calculator aria-label="Inputs for estimating tax impact">
+          ${CALCULATOR_INPUTS.map(([name, label, helper, value, format, editable]) => renderCalculatorInput(name, label, helper, value, format, editable)).join("")}
         </form>
-        <div class="protest-paradox-result-grid calculator-results" aria-live="polite">
+        <div class="protest-paradox-result-grid calculator-results ges-stat-grid ges-tax-impact-calculator__results" aria-live="polite">
           ${renderStatCard("Estimated taxes", "$1,713.45", "", "estimatedTaxes")}
           ${renderStatCard("Annual change", "+$303.23", "", "annualChange")}
           ${renderStatCard("Monthly equivalent", "+$25.27", "", "monthlyChange")}
         </div>
-      </section>
+      </figure>
       <figure class="comparison-card" aria-labelledby="sameRateTitle">
         <figcaption id="sameRateTitle">${editorialIcon("market-chart")}<span>What if rates never changed?</span></figcaption>
-        <p>This is often the first calculation taxpayers make. If the 2025 net effective tax rate stayed the same, the 2026 value would produce a larger increase before any levy compression.</p>
-        <div class="protest-paradox-three-up">
+        <p>${escapeHtml(section.sameRateIntro)}</p>
+        <div class="protest-paradox-three-up ges-stat-grid">
           ${renderStatCard("Same-rate taxes", "$1,822.75", "", "sameRateTaxes")}
           ${renderStatCard("Annual change", "+$412.53", "", "sameRateAnnualChange")}
           ${renderStatCard("Monthly equivalent", "+$34.38", "", "sameRateMonthlyChange")}
         </div>
-        <p class="note-box">Baseline only - not the likely outcome.</p>
+        <p class="note-box">${escapeHtml(section.sameRateNote)}</p>
       </figure>
       <figure class="scorecard" aria-labelledby="realWorldTitle">
         <figcaption id="realWorldTitle">${editorialIcon("equalization")}<span>What usually happens in the real world?</span></figcaption>
-        <p>Most properties moved too. The tax base expanded. If countywide value growth outpaces budget growth, levy rates often compress.</p>
-        <div class="protest-paradox-four-up">
+        <p>${escapeHtml(section.realWorldIntro)}</p>
+        <div class="protest-paradox-four-up ges-stat-grid">
           ${renderStatCard("2025 net ETR", "0.640%", "", "currentEtr")}
           ${renderStatCard("Budget growth", "3.00%", "", "budgetGrowth")}
           ${renderStatCard("2026 countywide growth", "9.57%", "", "valueGrowth")}
@@ -544,60 +632,63 @@ function renderCalculatorSection() {
       </figure>
       <figure class="scorecard" aria-labelledby="rangeTitle">
         <figcaption id="rangeTitle">${editorialIcon("verification")}<span>What is the most likely range?</span></figcaption>
-        <p>After the baseline is adjusted for county movement and budget movement, the likely outcome is much smaller than the value increase alone might suggest.</p>
-        <div class="protest-paradox-three-up">
+        <p>${escapeHtml(section.rangeIntro)}</p>
+        <div class="protest-paradox-three-up ges-stat-grid">
           ${renderStatCard("Estimated Range", "$250-$350", "annually")}
           ${renderStatCard("Center Estimate", "About $300", "annually")}
           ${renderStatCard("Monthly Equivalent", "$20-$30", "about $25/month at center")}
         </div>
       </figure>
+      ${renderSourceNote(ARTICLE_SOURCE_NOTES.calculator)}
       <aside class="guided-transition protest-guide-takeaway pull-quote">
-        <p>Most taxpayers begin with a valuation notice. Most elected officials begin with a budget. The tax bill is produced somewhere in the middle.</p>
+        <p>${escapeHtml(section.pullQuote)}</p>
       </aside>
       <figure class="evidence-matrix" aria-labelledby="calculationDetailTitle">
         <figcaption id="calculationDetailTitle">${editorialIcon("document")}<span>How the estimate was built</span></figcaption>
         <ol class="evidence-path-list">
           <li>
-            <section><h3>Step 1</h3><p>Find current tax pressure.</p><p data-model-output="currentEtrMath">$1,410.22 / $220,510 = 0.640%</p></section>
-            <section><h3>Step 2</h3><p>Adjust for levy compression.</p><p data-model-output="adjustedEtrMath">0.640% x (1.03 / 1.0957) = 0.601%</p></section>
-            <section><h3>Step 3</h3><p>Apply the adjusted rate.</p><p data-model-output="taxMath">$285,015 x 0.601% = $1,713.45</p></section>
+            <section><h3>Step 1</h3><p>Find current tax pressure.</p><p class="evidence-formula" data-model-output="currentEtrMath">$1,410.22 / $220,510 = 0.640%</p></section>
+            <section><h3>Step 2</h3><p>Adjust for levy compression.</p><p class="evidence-formula" data-model-output="adjustedEtrMath">0.640% x (1.03 / 1.0957) = 0.601%</p></section>
+            <section><h3>Step 3</h3><p>Apply the adjusted rate.</p><p class="evidence-formula" data-model-output="taxMath">$285,015 x 0.601% = $1,713.45</p></section>
           </li>
         </ol>
       </figure>
-      <p class="note-box">This is not a precise tax bill prediction. It is a directional estimate based on historical levy behavior, countywide value growth, and reasonable budget assumptions.</p>
+      <p class="note-box">${escapeHtml(section.disclaimer)}</p>
     </section>
   `;
 }
 
 function renderClosingSection() {
+  const lesson = ARTICLE_SECTIONS.lesson;
+  const closing = ARTICLE_SECTIONS.closing;
+
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-labelledby="lessonTitle">
       <div class="editorial-narrow">
-        ${sectionHeader("8. The Bigger Lesson", "The question that changes everything", "lessonTitle")}
+        ${sectionHeader(lesson.kicker, lesson.title, "lessonTitle", lesson)}
       </div>
       <figure class="decision-panel" aria-labelledby="betterQuestionTitle">
         <figcaption id="betterQuestionTitle">${editorialIcon("perspective")}<span>Use this on your next notice</span></figcaption>
-        <p class="decision-question">Most homeowners ask: What is my new value?</p>
-        <p class="note-box"><strong>A better question is:</strong> How did my property move compared with everyone else?</p>
+        <p class="decision-question">${escapeHtml(lesson.question)}</p>
+        <p class="note-box decision-answer"><strong>A better question is:</strong> ${escapeHtml(lesson.betterQuestion)}</p>
       </figure>
     </section>
     <section class="tax-article-section tax-story-chapter tax-article-closing levy-article-narrow article-section" data-tone="reflection" aria-labelledby="finalThoughtTitle">
-      ${sectionHeader("One Final Thought", "Accuracy compounds", "finalThoughtTitle")}
-      ${paragraph("Fairness begins with accurate and consistent treatment. Sometimes a property is measured incorrectly, classified incorrectly, or positioned differently than comparable properties. When that happens, a review process helps ensure that each property carries its appropriate share of the tax burden.")}
-      ${paragraph("In this case, the protest focused on a $10,000 increase to the property's first-acre homesite value. Similar adjustments were applied broadly to comparable properties throughout the county based on market studies used to establish site values. Because many similar properties moved together, the adjustment had relatively little effect on the property's position within the larger tax base.")}
-      ${paragraph("A protest or equalization review focuses on how a property compares with its peers. The tax bill that follows reflects something larger: how that property moved relative to other properties, how the overall tax base changed, and how much local governments decide to collect.")}
-      ${paragraph("Sometimes a review results in an adjustment. Sometimes it confirms that a property was already positioned appropriately within the broader tax base. Both outcomes have value. One corrects the record. The other confirms it.")}
-      ${paragraph("The valuation process helps determine where a property fits within the system. The tax bill reflects how that system moves as a whole. Both questions matter.")}
-      <p class="tax-article-final-source">Sources: Gage County property record card for parcel 004817000, generated June 23, 2026; Nebraska Taxes Online tax-year records for parcel 0004817000; 2026 Gage County Report and Opinion (R&amp;O).</p>
+      ${renderPageCrease()}
+      ${sectionHeader(closing.kicker, closing.title, "finalThoughtTitle", closing)}
+      ${paragraphs(closing.paragraphs)}
+      ${renderSourceNote(ARTICLE_SOURCE_NOTES.closing)}
       <aside class="article-share-footer" aria-labelledby="shareArticleTitle">
-        <p id="shareArticleTitle">Know someone trying to make sense of a valuation notice and a tax bill moving in different directions?</p>
-        <button type="button" data-article-share data-article-action="share_article" data-article-label="${ARTICLE_TITLE}">Share this case study</button>
+        <p id="shareArticleTitle">${escapeHtml(closing.sharePrompt)}</p>
+        <button type="button" data-article-share data-article-action="share_article" data-article-label="${ARTICLE_TITLE}">${escapeHtml(closing.shareButton)}</button>
         <span data-share-status role="status" aria-live="polite"></span>
       </aside>
-      <aside class="related-article-coda" aria-labelledby="relatedEvidenceGuideTitle">
-        <hr />
-        <p id="relatedEvidenceGuideTitle">Need to prepare for the hearing side of the process?</p>
-        <a href="articles/before-you-walk-into-a-property-protest/" data-article-action="related_article" data-article-label="Before You Walk Into a Property Protest">Read the companion guide: <span>Before You Walk Into a Property Protest</span></a>
+      <aside class="continuation-module related-article-coda" aria-labelledby="relatedEvidenceGuideTitle">
+        <p id="relatedEvidenceGuideTitle">${escapeHtml(closing.continuation.title)}</p>
+        <p class="continuation-link">
+          <span>${escapeHtml(closing.continuation.link.label)}</span>
+          <a href="${escapeHtml(closing.continuation.link.href)}" data-article-action="related_article" data-article-label="${escapeHtml(closing.continuation.link.title)}">${escapeHtml(closing.continuation.link.title)}</a>
+        </p>
       </aside>
     </section>
   `;
@@ -623,21 +714,23 @@ export function renderProtestParadox() {
   pageTitle.innerHTML = `
     <header class="comp-page-title levy-page-title article-hero" aria-labelledby="protestParadoxTitle">
       <div class="article-hero-packet">
+        ${renderGesThemeToggle()}
         <div class="hero-kicker-row">
-          <p class="guided-kicker hero-kicker"><span>Case Study</span> / Levy Compression</p>
+          <p class="guided-kicker hero-kicker hero-brand-kicker">
+            <span class="hero-brand-mark" role="img" aria-label="Guided Parcel Review">
+              <img class="hero-brand-mark__image hero-brand-mark__image--light" src="assets/brand/civic-house-mark.svg" alt="" width="28" height="28" decoding="async" />
+              <img class="hero-brand-mark__image hero-brand-mark__image--dark" src="assets/brand/civic-house-mark.svg" alt="" width="28" height="28" decoding="async" />
+            </span>
+            <span class="hero-kicker-text">
+              <span class="hero-kicker-label">Article</span>
+              <span class="hero-kicker-divider" aria-hidden="true">/</span>
+              <span class="hero-kicker-subject">Levy Compression</span>
+            </span>
+          </p>
         </div>
         <h1 id="protestParadoxTitle" class="hero-title">${ARTICLE_TITLE}</h1>
         <p class="hero-deck">${ARTICLE_SUBTITLE}</p>
-        <div class="hero-meta" aria-label="Article information">
-          <div class="article-author-attribution">
-            <img class="article-author-photo" src="${ARTICLE_AUTHOR_IMAGE}" alt="" loading="lazy" decoding="async" />
-            <p>Prepared by ${ARTICLE_AUTHOR}</p>
-          </div>
-          <p>${ARTICLE_DISPLAY_DATE} · ${ARTICLE_LOCATION}</p>
-        </div>
-        <div class="hero-action">
-          <a class="article-print-cta" href="${PRINTABLE_GUIDE_PDF}" download data-article-action="download_pdf" data-article-label="Printable case study PDF">Prefer paper? Download the printable case study.</a>
-        </div>
+        ${renderArticleTags()}
       </div>
       <figure class="article-hero-media hero-media">
         <img src="${escapeHtml(ARTICLE_SOCIAL_IMAGE)}" alt="${escapeHtml(ARTICLE_HERO_IMAGE_ALT)}" loading="eager" decoding="async" />
@@ -645,8 +738,10 @@ export function renderProtestParadox() {
     </header>
   `;
 
+  installGesThemeToggle(pageTitle);
+
   canvas.innerHTML = `
-    <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page protest-paradox-page editorial-guide tax-article-panel" aria-label="Assessment increase and levy compression case study">
+    <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page protest-paradox-page editorial-guide tax-article-panel" data-county-theme="gage" aria-label="Assessment increase and levy compression case study">
       ${renderArticleDepthMarkers()}
       ${renderLearningSection()}
       ${renderMysterySection()}

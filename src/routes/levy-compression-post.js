@@ -157,15 +157,15 @@ function renderOpeningSection() {
       <header class="tax-article-header">
         <p class="guided-kicker">Short Answer</p>
         <h2 id="levyOpeningTitle">Usually, no.</h2>
-        <p>A higher assessment matters, but it is only one part of the property-tax equation.</p>
+        <p class="prose">A higher assessment matters, but it is only one part of the property-tax equation.</p>
       </header>
-      <p>Your final tax bill depends on three things:</p>
+      <p class="prose">Your final tax bill depends on three things:</p>
       <ol class="levy-basic-list">
         <li>How much your property value changed.</li>
         <li>How much other property values changed.</li>
         <li>How much local governments need to collect.</li>
       </ol>
-      <p>The important comparison is not just how much your value went up. It is how your increase compares with the rest of the county.</p>
+      <p class="prose">The important comparison is not just how much your value went up. It is how your increase compares with the rest of the county.</p>
     </section>
   `;
 }
@@ -177,11 +177,11 @@ function renderTeachingExampleSection() {
         <p class="guided-kicker">Why Taxes Do Not Always Rise With Assessments</p>
         <h2 id="levyExampleTitle">When values rise faster than budgets, tax rates can move down</h2>
       </div>
-      <p>If property values rise faster than local budgets, the tax rate can adjust downward. That rate adjustment is called levy compression.</p>
+      <p class="prose">If property values rise faster than local budgets, the tax rate can adjust downward. That rate adjustment is called levy compression.</p>
       <aside class="tax-article-pullquote tax-article-pullquote-subtle">
         If assessments rise about <strong>10%</strong> and budgets rise about <strong>3%</strong>, the levy may compress by about <strong>7%</strong> to balance the difference.
       </aside>
-      <p>This is a teaching shortcut, not an official tax calculation. Your actual bill depends on your taxing districts, exemptions, credits, bond levies, TIF districts, and final budgets.</p>
+      <p class="prose">This is a teaching shortcut, not an official tax calculation. Your actual bill depends on your taxing districts, exemptions, credits, bond levies, TIF districts, and final budgets.</p>
     </section>
   `;
 }
@@ -192,7 +192,7 @@ function renderDefaultAssumptionsSection() {
       <div class="levy-article-copy">
         <p class="guided-kicker">Default Assumptions</p>
         <h2 id="levyDefaultsTitle">The calculator starts with countywide estimates</h2>
-        <p>Most homeowners can leave these alone. They are starting points, not final tax rates.</p>
+        <p class="prose">Most homeowners can leave these alone. They are starting points, not final tax rates.</p>
       </div>
       <div class="levy-default-kpis" aria-label="Default assumptions">
         <article>
@@ -229,8 +229,8 @@ function renderExplainerSection() {
         <div class="levy-article-copy">
           <p class="guided-kicker">Plain-Language Terms</p>
           <h2 id="levyExplainerTitle">A few words explain most of the tax math</h2>
-          <p>Assessments distribute value among properties. Budgets determine how much public money must be collected. Levies convert those budget requests into tax rates.</p>
-          <p>If the whole tax base grows, the same budget can be funded with a lower rate. If budgets also rise, the final levy depends on the relationship between budget growth and value growth.</p>
+          <p class="prose">Assessments distribute value among properties. Budgets determine how much public money must be collected. Levies convert those budget requests into tax rates.</p>
+          <p class="prose">If the whole tax base grows, the same budget can be funded with a lower rate. If budgets also rise, the final levy depends on the relationship between budget growth and value growth.</p>
         </div>
         <div class="levy-explainer-list" aria-label="Tax relationship summary">
           ${items.map(([term, copy]) => `
@@ -251,7 +251,7 @@ function renderCalculatorSection() {
       <div class="levy-calculator-intro">
         <p class="guided-kicker">Estimate Your Own Result</p>
         <h2 id="levyCalculatorTitle">Enter your numbers to see a rough estimate</h2>
-        <p>This is not a tax bill. It is a quick way to see how assessment changes, countywide value growth, and budget growth can work together.</p>
+        <p class="prose">This is not a tax bill. It is a quick way to see how assessment changes, countywide value growth, and budget growth can work together.</p>
       </div>
       <form class="levy-calculator-form" data-levy-calculator novalidate>
         <section class="levy-primary-input-group" aria-labelledby="levyPrimaryInputsTitle">
@@ -391,7 +391,7 @@ function renderAssumptionsSection() {
         <span class="guided-kicker">Assumptions And Limits</span>
         <h2 id="levyAssumptionsTitle">This is an estimate, not a tax bill</h2>
       </header>
-      <p>This page is designed to show the relationship between value growth, budget growth, levy compression, and estimated taxes. It should not be treated as an official tax calculation.</p>
+      <p class="prose">This page is designed to show the relationship between value growth, budget growth, levy compression, and estimated taxes. It should not be treated as an official tax calculation.</p>
       <ul>
         ${assumptions.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
       </ul>
@@ -404,8 +404,8 @@ function renderClosingSection() {
     <section class="tax-article-section tax-story-chapter tax-article-closing levy-article-narrow" aria-label="Closing takeaway">
       <p class="guided-kicker">The One Thing To Remember</p>
       <h2>If your assessment rises 20%, your taxes do not automatically rise 20%.</h2>
-      <p>Your final bill depends on countywide value growth, local government budgets, exemptions, credits, bond levies, TIF districts, and your specific taxing districts.</p>
-      <p>Because assessments determine each property's share of the tax base, two properties in the same taxing district can experience very different tax changes even when they are subject to the same levies.</p>
+      <p class="prose">Your final bill depends on countywide value growth, local government budgets, exemptions, credits, bond levies, TIF districts, and your specific taxing districts.</p>
+      <p class="prose">Because assessments determine each property's share of the tax base, two properties in the same taxing district can experience very different tax changes even when they are subject to the same levies.</p>
       <p class="tax-article-final-source">Sources: Gage County 2026 Report & Opinion countywide valuation growth figure; local budget-growth and effective-tax-rate assumptions entered by the user.</p>
     </section>
   `;
@@ -710,7 +710,7 @@ export function renderLevyCompressionPost() {
     <div class="comp-page-title levy-page-title">
       <p class="guided-kicker">Educational Post</p>
       <h1>Your Assessment Went Up. Does That Mean Your Tax Bill Will Go Up Just as Much?</h1>
-      <p>A plain-language guide for homeowners worried about rising valuations.</p>
+      <p class="prose">A plain-language guide for homeowners worried about rising valuations.</p>
       <div class="levy-author-byline">
         <div class="article-author-attribution">
           <img class="article-author-photo" src="${ARTICLE_AUTHOR_IMAGE}" alt="" loading="lazy" decoding="async" />
