@@ -50,6 +50,47 @@ Mobile: controls wrap inside a compact segmented row.
 
 Print: hide dead controls; preserve visible URLs where useful.
 
+## Project Navigation Utility
+
+Purpose: unlock a compact project table of contents from the Guided Parcel Review house mark during Max review sessions.
+
+Triggering parameter: enabled only when the current URL contains `gpr_person=max-quattromani`. That parameter name and value come from the existing tracking URL pattern. Do not rename it, replace it, or add a second internal-mode parameter.
+
+Link organization: group destinations by type, such as Parcel Review, Articles, Explainers and Calculators, Experiments, and Design System and Patterns. Use sliding drawers so the menu stays compact as the project grows.
+
+Link propagation: dropdown links are passed through `appendTrackingParam()`, which preserves the active first-party tracking context for internal project page URLs. The helper appends missing tracking fields with `?` or `&` as appropriate, preserves hash fragments, and does not duplicate existing parameters. It skips external URLs, `mailto:`, `tel:`, downloaded assets, PDFs, images, and other non-page resources.
+
+Public/private behavior: public visitors do not get the dropdown and the house mark remains normal static branding. The UI does not use visible "admin," "private," or "internal" language.
+
+Accessibility: the enhanced house mark becomes a real `button` with `aria-expanded` and `aria-controls`. Each drawer heading is also a real button with `aria-expanded` and `aria-controls`; collapsed drawer links are removed from the tab order. The menu is a non-modal navigation region, remains keyboard reachable, closes on Escape, closes on outside click, and does not trap focus.
+
+Markup: use `ges-project-nav`, `ges-project-nav__trigger`, `ges-project-nav__menu`, `ges-project-nav__section`, `ges-project-nav__drawer-trigger`, `ges-project-nav__drawer-panel`, and `ges-project-nav__link`.
+
+Future links: add project destinations in `INTERNAL_PROJECT_NAV_SECTIONS` in `src/ges/project-nav.js`. Use internal page URLs only. Do not add PDFs, images, downloads, email links, phone links, or external URLs unless the propagation rules are intentionally changed.
+
+## Field Kit Utility Belt
+
+Purpose: provide Max-only productivity tools while testing, demonstrating, sharing, and developing Guided Parcel Review. This is a field kit, not a public toolbar.
+
+Permission behavior: mounted only when the current URL contains `gpr_person=max-quattromani`. Project navigation and Field Kit permissions are intentionally separate in `src/ges/internal-permissions.js`: `INTERNAL_MENU_PERSON_SLUGS` can grow for trusted menu users, but `hasInternalToolPermission()` remains owner-only.
+
+Public/private behavior: public visitors do not receive the Field Kit markup, styles, controls, local notes UI, parcel search launcher, share utility, or component inspector. Avoid visible "admin," "private," or "internal" labels.
+
+Available utilities:
+
+- Parcel Search: searches loaded parcel records by owner name, owner last name after background hydration, property address, and parcel identifiers. Selecting a result opens the existing property view with `property` and `view=property` while preserving the active tracking query.
+- Share / Tracked Link: exposes the current URL for copy or native share. It preserves the current article, parcel query, hash, and tracking identity already present in the address bar.
+- Quick Notes: a local scratchpad autosaved to `localStorage` under `guidedParcelReview.internalFieldKit.notes.v1`. Notes stay on the device and are not sent to analytics.
+- Component Inspector: toggles subtle outlines and badges for major GES components such as Article Cover, Margin Insight, Decision Tree, Evidence Translation Matrix, Process Strip, Resource Panel, Practical Note, Continuation Module, and Authority Citation.
+
+Visual treatment: use `ges-field-kit`, `ges-field-kit__button`, `ges-field-kit__panel`, and `ges-field-kit__tooltip`. The belt is a bottom-centered smoke-glass capsule with slightly more opaque circular glass icon buttons, gentle elevation, and no text labels by default.
+
+Accessibility: the belt is a toolbar of real buttons with accessible labels. Panel triggers use `aria-expanded` and `aria-controls`; the inspector uses `aria-pressed`. Panels are non-modal, keyboard reachable, close on Escape, close on outside click, and do not trap focus. Focus states must remain visible.
+
+Theme and mobile behavior: the component uses GES surface, border, text, focus, spacing, radius, motion, and shadow tokens with fallbacks. It supports light and dark themes and remains in the bottom thumb zone on mobile without widening the viewport.
+
+Adding tools: add a new tool descriptor, panel markup if needed, and initialization handler in `src/ges/field-kit.js`; add only component-specific styles in `src/ges/field-kit.css`. Keep new tools behind `hasInternalToolPermission()` unless the permission model is deliberately changed.
+
 ## Section Header
 
 Purpose: introduce a cognitive task.

@@ -1,0 +1,233 @@
+.ges-project-nav {
+  --ges-project-nav-surface: var(--ges-color-surface, var(--county-color-surface, 255 255 255));
+  --ges-project-nav-surface-muted: var(--ges-color-surface-muted, var(--color-slate-50, 248 250 252));
+  --ges-project-nav-text: var(--ges-color-text, var(--color-ink, 31 51 71));
+  --ges-project-nav-text-secondary: var(--ges-color-text-secondary, var(--color-slate-600, 71 85 105));
+  --ges-project-nav-text-muted: var(--ges-color-text-muted, var(--color-slate-500, 102 112 133));
+  --ges-project-nav-border: var(--ges-color-border-subtle, var(--border-muted, 215 222 226));
+  --ges-project-nav-border-strong: var(--ges-color-border-strong, var(--county-color-border, 173 182 190));
+  --ges-project-nav-focus: var(--ges-color-focus, var(--ges-color-action, 62 73 122));
+  --ges-project-nav-shadow: var(--ges-color-shadow, 0 0 0);
+  display: inline-flex;
+  flex: 0 0 auto;
+  line-height: 1;
+  position: relative;
+  vertical-align: middle;
+  z-index: 20;
+}
+
+html[data-ges-theme-resolved="dark"] .ges-project-nav {
+  --ges-project-nav-surface: 25 43 58;
+  --ges-project-nav-surface-muted: 22 39 54;
+  --ges-project-nav-text: 232 237 240;
+  --ges-project-nav-text-secondary: 193 204 209;
+  --ges-project-nav-text-muted: 146 160 166;
+  --ges-project-nav-border: 49 72 88;
+  --ges-project-nav-border-strong: 77 101 116;
+  --ges-project-nav-focus: 139 151 188;
+  --ges-project-nav-shadow: 0 0 0;
+}
+
+.ges-project-nav__trigger {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: var(--ges-radius-xs, 0.35rem);
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  text-align: inherit;
+}
+
+.article-hero .ges-project-nav__trigger.hero-brand-mark {
+  display: block;
+}
+
+.ges-project-nav--standalone {
+  margin-block-end: var(--ges-space-xs, 0.5rem);
+}
+
+.ges-project-nav--standalone .ges-project-nav__trigger {
+  height: 1.9rem;
+  width: 1.95rem;
+}
+
+.ges-project-nav--standalone .hero-brand-mark {
+  display: block;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.ges-project-nav__trigger:hover {
+  color: rgb(var(--ges-project-nav-text));
+}
+
+.ges-project-nav__trigger:focus-visible {
+  outline: var(--ges-focus-ring-width, 3px) solid rgb(var(--ges-project-nav-focus) / 0.36);
+  outline-offset: var(--ges-focus-ring-offset, 3px);
+}
+
+.ges-project-nav__trigger[aria-expanded="true"] {
+  color: rgb(var(--ges-project-nav-text));
+}
+
+.ges-project-nav__menu {
+  background: rgb(var(--ges-project-nav-surface) / 0.98);
+  border: 1px solid rgb(var(--ges-project-nav-border) / 0.92);
+  border-radius: var(--ges-radius-sm, 0.5rem);
+  box-shadow: 0 0.45rem 1.1rem rgb(var(--ges-project-nav-shadow) / 0.10);
+  color: rgb(var(--ges-project-nav-text));
+  display: grid;
+  gap: var(--ges-space-xs, 0.5rem);
+  left: 0;
+  max-height: min(32rem, calc(100vh - 6rem));
+  min-width: min(22rem, calc(100vw - 2rem));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--ges-space-xs, 0.5rem);
+  position: absolute;
+  top: calc(100% + var(--ges-space-sm, 0.75rem));
+  width: min(22rem, calc(100vw - 2rem));
+  z-index: 60;
+}
+
+.ges-project-nav__menu[hidden] {
+  display: none;
+}
+
+.ges-project-nav__section {
+  display: grid;
+  gap: 0;
+}
+
+.ges-project-nav__section + .ges-project-nav__section {
+  border-top: 1px solid rgb(var(--ges-project-nav-border) / 0.72);
+}
+
+.ges-project-nav__drawer-trigger {
+  appearance: none;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--ges-radius-xs, 0.35rem);
+  color: rgb(var(--ges-project-nav-text-secondary));
+  cursor: pointer;
+  display: grid;
+  font: inherit;
+  gap: var(--ges-space-xs, 0.5rem);
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  margin: 0;
+  padding: 0.52rem 0.48rem;
+  text-align: left;
+  width: 100%;
+}
+
+.ges-project-nav__drawer-trigger:hover,
+.ges-project-nav__drawer-trigger[aria-expanded="true"] {
+  background: rgb(var(--ges-project-nav-surface-muted));
+  color: rgb(var(--ges-project-nav-text));
+}
+
+.ges-project-nav__drawer-trigger:focus-visible {
+  outline: var(--ges-focus-ring-width, 3px) solid rgb(var(--ges-project-nav-focus) / 0.36);
+  outline-offset: 2px;
+}
+
+.ges-project-nav__drawer-title {
+  font-family: var(--ges-font-ui, var(--county-font-ui, system-ui, sans-serif));
+  font-size: var(--ges-type-xs, 0.75rem);
+  font-weight: var(--ges-weight-bold, 780);
+  letter-spacing: 0.055em;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.ges-project-nav__drawer-meta {
+  color: rgb(var(--ges-project-nav-text-muted));
+  font-family: var(--ges-font-ui, var(--county-font-ui, system-ui, sans-serif));
+  font-size: var(--ges-type-2xs, 0.6875rem);
+  font-weight: var(--ges-weight-semibold, 650);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.ges-project-nav__drawer-icon {
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  height: 0.42rem;
+  opacity: 0.62;
+  transform: rotate(45deg) translateY(-0.08rem);
+  transition: transform var(--ges-motion-duration, 160ms) var(--ges-motion-ease, cubic-bezier(0.2, 0, 0.2, 1));
+  width: 0.42rem;
+}
+
+.ges-project-nav__drawer-trigger[aria-expanded="true"] .ges-project-nav__drawer-icon {
+  transform: rotate(-135deg) translate(-0.08rem, -0.02rem);
+}
+
+.ges-project-nav__drawer-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    grid-template-rows var(--ges-motion-duration-slow, 260ms) var(--ges-motion-ease, cubic-bezier(0.2, 0, 0.2, 1)),
+    opacity var(--ges-motion-duration, 160ms) var(--ges-motion-ease, cubic-bezier(0.2, 0, 0.2, 1));
+}
+
+.ges-project-nav__drawer-panel[data-open] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.ges-project-nav__link-stack {
+  display: grid;
+  gap: 0.125rem;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0.2rem 0 0.42rem;
+}
+
+.ges-project-nav__link {
+  border-radius: var(--ges-radius-xs, 0.35rem);
+  color: rgb(var(--ges-project-nav-text-secondary));
+  display: block;
+  font-family: var(--ges-font-ui, var(--county-font-ui, system-ui, sans-serif));
+  font-size: var(--ges-type-sm, 0.875rem);
+  font-weight: var(--ges-weight-semibold, 650);
+  line-height: var(--ges-line-compact, 1.38);
+  padding: 0.42rem 0.48rem;
+  text-decoration: none;
+}
+
+.ges-project-nav__link:hover {
+  background: rgb(var(--ges-project-nav-surface-muted));
+  color: rgb(var(--ges-project-nav-text));
+  text-decoration: none;
+}
+
+.ges-project-nav__link:focus-visible {
+  outline: var(--ges-focus-ring-width, 3px) solid rgb(var(--ges-project-nav-focus) / 0.36);
+  outline-offset: 2px;
+}
+
+@media (max-width: 420px) {
+  .ges-project-nav__menu {
+    min-width: min(19rem, calc(100vw - 1.5rem));
+    width: min(19rem, calc(100vw - 1.5rem));
+  }
+}
+
+@media print {
+  .ges-project-nav {
+    display: none;
+  }
+}

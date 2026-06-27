@@ -37,6 +37,12 @@ Every visit event includes:
 
 These fields are appended to the Google Sheet by `apps-script/visit-analytics/Code.gs`.
 
+## Internal Project Navigation
+
+Tracked Max review URLs that include `gpr_person=max-quattromani` unlock the GES project navigation utility. The utility uses the house mark as a button and propagates the current tracking context across internal project-page links, including `gpr_track`, `gpr_person`, `gpr_label`, UTM fields, and legacy `invite` when present.
+
+Menu and tool access are separate. Future trusted reviewers can be added to the project-navigation allow-list in `src/ges/internal-permissions.js` without granting them the Field Kit. The Field Kit utility belt is owner-only and remains limited to `gpr_person=max-quattromani`.
+
 ## Privacy Rule
 
 Do not put private facts, email addresses, phone numbers, parcel IDs, or sensitive labels in the URL. Use human-readable but non-sensitive slugs. These values are visible in the browser address bar, server logs, shared screenshots, and the analytics spreadsheet.
