@@ -80,6 +80,16 @@ Public/private behavior: public visitors do not get the dropdown and the house m
 
 Accessibility: the enhanced house mark becomes a real `button` with `aria-expanded` and `aria-controls`. Each drawer heading is also a real button with `aria-expanded` and `aria-controls`; collapsed drawer links are removed from the tab order. The menu is a non-modal navigation region, remains keyboard reachable, closes on Escape, closes on outside click, and does not trap focus.
 
+Navigation toggle: the trigger uses the Civic House mark as its closed state and a quiet close mark as its open state. Do not replace the mark with a hamburger or route-specific icon. The close state is built inside the same trigger so the icon communicates "dismiss" and "return to content" while preserving the project identity.
+
+Closed state: show the Civic House mark at normal scale and opacity. The button label is "Open Guided Parcel Review project navigation" and `aria-expanded` is `false`.
+
+Open state: collapse and fade the house mark while two short strokes resolve into a close mark. The button label is "Close Guided Parcel Review project navigation" and `aria-expanded` is `true`.
+
+Animation timing: use transform and opacity only, approximately 190ms, with the GES ease-in-out token. The motion should feel deliberate and editorial: no bounce, spring, elastic easing, or decorative flourish. Repeated taps must be able to interrupt the transition without leaving mixed visual states.
+
+Reduced-motion behavior: under `prefers-reduced-motion: reduce`, keep the same states but shorten transitions to an effectively immediate change.
+
 Markup: use `ges-project-nav`, `ges-project-nav__trigger`, `ges-project-nav__menu`, `ges-project-nav__section`, `ges-project-nav__drawer-trigger`, `ges-project-nav__drawer-panel`, and `ges-project-nav__link`.
 
 Future links: add project destinations in `INTERNAL_PROJECT_NAV_SECTIONS` in `src/ges/project-nav.js`. Use internal page URLs only. Do not add PDFs, images, downloads, email links, phone links, or external URLs unless the propagation rules are intentionally changed.

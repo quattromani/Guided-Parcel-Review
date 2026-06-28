@@ -348,9 +348,13 @@ function defaultHouseMarkMarkup() {
   const logoHref = projectRootHref("assets/brand/civic-house-mark.svg");
 
   return `
-    <span class="hero-brand-mark" aria-hidden="true">
+    <span class="hero-brand-mark ges-project-nav__mark" aria-hidden="true">
       <img class="hero-brand-mark__image hero-brand-mark__image--light" src="${escapeHtml(logoHref)}" alt="" width="28" height="28" decoding="async" />
       <img class="hero-brand-mark__image hero-brand-mark__image--dark" src="${escapeHtml(logoHref)}" alt="" width="28" height="28" decoding="async" />
+      <span class="ges-project-nav__close-mark" aria-hidden="true">
+        <span class="ges-project-nav__close-stroke ges-project-nav__close-stroke--a"></span>
+        <span class="ges-project-nav__close-stroke ges-project-nav__close-stroke--b"></span>
+      </span>
     </span>
   `;
 }
@@ -390,6 +394,7 @@ function closeProjectNav(nav) {
   if (!trigger || !menu) return;
 
   trigger.setAttribute("aria-expanded", "false");
+  trigger.setAttribute("aria-label", "Open Guided Parcel Review project navigation");
   menu.hidden = true;
 }
 
@@ -403,6 +408,7 @@ function openProjectNav(nav) {
   });
 
   trigger.setAttribute("aria-expanded", "true");
+  trigger.setAttribute("aria-label", "Close Guided Parcel Review project navigation");
   menu.hidden = false;
 }
 
