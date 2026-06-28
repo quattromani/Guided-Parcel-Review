@@ -8,6 +8,10 @@ import {
   renderSectionHeader as sectionHeader
 } from "../ges/article-components.js?v=db3aed6";
 import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
+import {
+  installGesReadingProgress,
+  renderGesReadingProgressEndMarker
+} from "../ges/reading-progress.js?v=db3aed6";
 import { assessmentUpProtestDeniedTaxesArticle as articleSource } from "../content/articles/assessment-up-protest-denied-taxes.js?v=db3aed6";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=db3aed6";
 
@@ -625,6 +629,7 @@ function renderClosingSection() {
       ${sectionHeader(closing.kicker, closing.title, "finalThoughtTitle", closing)}
       ${paragraphs(closing.paragraphs)}
       ${renderSourceNote(ARTICLE_SOURCE_NOTES.closing)}
+      ${renderGesReadingProgressEndMarker()}
       <aside class="article-share-footer" aria-labelledby="shareArticleTitle">
         <p id="shareArticleTitle">${escapeHtml(closing.sharePrompt)}</p>
         <button type="button" data-article-share data-article-action="share_article" data-article-label="${ARTICLE_TITLE}">${escapeHtml(closing.shareButton)}</button>
@@ -687,7 +692,7 @@ export function renderProtestParadox() {
   `);
 
   shell.setBody(`
-    <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page protest-paradox-page editorial-guide tax-article-panel" data-county-theme="gage" aria-label="Assessment increase and levy compression case study">
+    <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page protest-paradox-page editorial-guide tax-article-panel" data-county-theme="gage" data-ges-reading-progress-target aria-label="Assessment increase and levy compression case study">
       ${renderArticleDepthMarkers()}
       ${renderLearningSection()}
       ${renderMysterySection()}
@@ -704,6 +709,7 @@ export function renderProtestParadox() {
   installCalculator(canvas);
   installGuideUtilityLanguage(canvas);
   installArticleAnalytics(canvas);
+  installGesReadingProgress({ root: canvas });
 }
 
 function readValues(root = document) {

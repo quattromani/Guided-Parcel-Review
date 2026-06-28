@@ -7,6 +7,10 @@ import {
   renderSectionHeader as sectionHeader
 } from "../ges/article-components.js?v=db3aed6";
 import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
+import {
+  installGesReadingProgress,
+  renderGesReadingProgressEndMarker
+} from "../ges/reading-progress.js?v=db3aed6";
 import { beforeYouWalkIntoPropertyProtestArticle as articleSource } from "../content/articles/before-you-walk-into-a-property-protest.js?v=db3aed6";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=db3aed6";
 
@@ -858,6 +862,7 @@ function renderClosingSection() {
       ${sectionHeader(section.kicker, section.title, "protestClosingTitle")}
       ${paragraphs(section.paragraphs)}
       ${renderSourceNote(ARTICLE_SOURCE_NOTES.closing)}
+      ${renderGesReadingProgressEndMarker()}
       <aside class="article-share-footer" aria-labelledby="shareArticleTitle">
         <p id="shareArticleTitle">${escapeHtml(section.sharePrompt)}</p>
         <button type="button" data-article-share data-article-action="share_article" data-article-label="${ARTICLE_TITLE}">
@@ -955,7 +960,7 @@ export function renderProtestEvidenceGuide() {
   `);
 
   shell.setBody(`
-    <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page editorial-guide tax-article-panel" data-county-theme="gage" aria-label="Property protest evidence guide">
+    <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page editorial-guide tax-article-panel" data-county-theme="gage" data-ges-reading-progress-target aria-label="Property protest evidence guide">
       ${renderArticleDepthMarkers()}
       ${renderOpeningSection()}
       ${renderProcessStrip()}
@@ -978,6 +983,7 @@ export function renderProtestEvidenceGuide() {
   installHeroAudio(canvas);
   installHeroUtilityTracking(canvas);
   installGuideUtilityLanguage(canvas);
+  installGesReadingProgress({ root: canvas });
 }
 
 function renderArticleEntryPanel() {

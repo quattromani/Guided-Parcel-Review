@@ -2,6 +2,10 @@ import { escapeHtml } from "../utils/html.js?v=db3aed6";
 import { loadPropertyManifest } from "../data-service.js?v=db3aed6";
 import { renderResourcesBlock as renderGesResourcesBlock } from "../ges/article-components.js?v=db3aed6";
 import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
+import {
+  installGesReadingProgress,
+  renderGesReadingProgressEndMarker
+} from "../ges/reading-progress.js?v=db3aed6";
 
 const ARTICLE_AUTHOR_IMAGE = "assets/images/articles/max-quattromani-author.jpg";
 const LEVY_REFERENCES = {
@@ -444,6 +448,7 @@ function renderClosingSection() {
       <p class="prose">Your final bill depends on countywide value growth, local government budgets, exemptions, credits, bond levies, TIF districts, and your specific taxing districts.</p>
       <p class="prose">Because assessments determine each property's share of the tax base, two properties in the same taxing district can experience very different tax changes even when they are subject to the same levies.</p>
       <p class="tax-article-final-source">Sources: Gage County 2026 Report & Opinion countywide valuation growth figure; local budget-growth and effective-tax-rate assumptions entered by the user.</p>
+      ${renderGesReadingProgressEndMarker()}
     </section>
   `;
 }
@@ -764,7 +769,7 @@ export function renderLevyCompressionPost() {
   `);
 
   shell.setBody(`
-    <article class="tax-shorthand-page levy-compression-page tax-article-panel" aria-label="Levy compression educational article">
+    <article class="tax-shorthand-page levy-compression-page tax-article-panel" data-ges-reading-progress-target aria-label="Levy compression educational article">
       ${renderOpeningSection()}
       ${renderTeachingExampleSection()}
       ${renderCalculatorSection()}
@@ -778,4 +783,5 @@ export function renderLevyCompressionPost() {
   `);
 
   initLevyCompressionCalculator(canvas);
+  installGesReadingProgress({ root: canvas });
 }

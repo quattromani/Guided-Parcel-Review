@@ -50,6 +50,22 @@ Mobile: controls wrap inside a compact segmented row.
 
 Print: hide dead controls; preserve visible URLs where useful.
 
+## Reading Progress
+
+Purpose: provide a calm, persistent sense of progress through the editorial body of a long-form GES page.
+
+Behavior: mount one fixed `ges-reading-progress` element at the top of the viewport and mark the measured body with `data-ges-reading-progress-target`. Add `data-ges-reading-progress-end` at the end of the actual article text when the article element also contains share controls, related articles, resources, comments, or source appendices. The component should not measure the hero, navigation, public footer, resource appendix, or future comments.
+
+Animation philosophy: movement follows scroll position directly through `requestAnimationFrame`. The filled line scales on the X axis and the marker moves with `translate3d`; there is no bounce, elastic easing, or decorative animation.
+
+Color usage: the completed portion and marker use `--ges-reading-progress-accent`, which defaults to the GES Hyper Blue value through `--ges-color-hyper-blue` when available. The remaining baseline uses muted GES border color. Keep the subtle glow tied to the same accent and avoid expanding the component beyond a thin editorial cue.
+
+Accessibility: the indicator is decorative and `aria-hidden`. It has no focusable controls, no announced percentage, and no screen-reader interruption. Respect `prefers-reduced-motion`; reduced-motion users receive direct state updates without compositor hints.
+
+Performance considerations: cache article geometry and recompute on resize, visual viewport resize, load, and target resize. Scroll handling must stay passive and be throttled through `requestAnimationFrame`. Use transforms rather than width/left changes so long articles remain smooth.
+
+Future usage guidance: use this for articles, guides, explainers, campaign platform pages, legal references, and tutorials. Prefer explicit target/end markers over hard-coded route classes. If an article body is split across multiple containers, wrap the measurable editorial body in a lightweight target container instead of broadening the component to the whole page.
+
 ## Project Navigation Utility
 
 Purpose: unlock a compact project table of contents from the Guided Parcel Review house mark during Max review sessions.

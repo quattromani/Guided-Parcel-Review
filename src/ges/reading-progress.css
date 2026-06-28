@@ -1,0 +1,78 @@
+.ges-reading-progress {
+  --ges-reading-progress-accent: var(--ges-color-hyper-blue, 45 118 232);
+  --ges-reading-progress-track: var(--ges-color-border-subtle, 215 222 226);
+  --ges-reading-progress-line-size: 0.18rem;
+  --ges-reading-progress-marker-size: 0.38rem;
+  --ges-reading-progress-value: 0;
+  --ges-reading-progress-marker-x: 0px;
+  block-size: var(--ges-reading-progress-marker-size);
+  contain: paint;
+  inline-size: 100%;
+  inset-block-start: env(safe-area-inset-top, 0px);
+  inset-inline: 0;
+  opacity: 0.86;
+  pointer-events: none;
+  position: fixed;
+  transform: translateZ(0);
+  z-index: 95;
+}
+
+.ges-reading-progress__track {
+  background: rgb(var(--ges-reading-progress-track) / 0.42);
+  block-size: var(--ges-reading-progress-line-size);
+  box-shadow: 0 1px 0 rgb(var(--ges-color-highlight, 255 255 255) / 0.22);
+  inset-block-start: calc((var(--ges-reading-progress-marker-size) - var(--ges-reading-progress-line-size)) / 2);
+  inset-inline: 0;
+  overflow: hidden;
+  position: absolute;
+}
+
+.ges-reading-progress__fill {
+  background: rgb(var(--ges-reading-progress-accent));
+  block-size: 100%;
+  box-shadow:
+    0 0 0.42rem rgb(var(--ges-reading-progress-accent) / 0.32),
+    0 0 0.82rem rgb(var(--ges-reading-progress-accent) / 0.18);
+  display: block;
+  inline-size: 100%;
+  transform: scaleX(var(--ges-reading-progress-value));
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.ges-reading-progress__marker {
+  background: rgb(var(--ges-reading-progress-accent));
+  block-size: var(--ges-reading-progress-marker-size);
+  border-radius: var(--ges-radius-pill, 999px);
+  box-shadow:
+    0 0 0 1px rgb(var(--ges-color-surface, 255 255 255) / 0.72),
+    0 0 0.34rem rgb(var(--ges-reading-progress-accent) / 0.42),
+    0 0 0.72rem rgb(var(--ges-reading-progress-accent) / 0.2);
+  display: block;
+  inline-size: var(--ges-reading-progress-marker-size);
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  position: absolute;
+  transform: translate3d(var(--ges-reading-progress-marker-x), 0, 0);
+  will-change: transform;
+}
+
+.ges-reading-progress__end,
+[data-ges-reading-progress-end] {
+  block-size: 0;
+  display: block;
+  inline-size: 0;
+  overflow: hidden;
+}
+
+html[data-ges-theme-resolved="dark"] .ges-reading-progress {
+  --ges-reading-progress-track: var(--ges-color-border-strong, 77 101 116);
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ges-reading-progress__fill,
+  .ges-reading-progress__marker {
+    will-change: auto;
+  }
+}
