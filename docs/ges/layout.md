@@ -117,12 +117,14 @@ The current route reuses existing Guided Parcel Review footer-panel language whe
 
 Phase 02 prepares clean public routes:
 
-- `/about/`
+- `/about/` - permanent canonical About page for Guided Parcel Review and GES
 - `/faq/`
 - `/contact/`
 - `/administrative/`
 
-About, FAQ, and Contact are placeholders unless existing project copy is safe to reuse. Full content belongs in later editorial tasks. The wrappers exist for static routing; the layout and footer are inherited.
+FAQ and Contact remain placeholders unless existing project copy is safe to reuse. Full content belongs in later editorial tasks. The wrappers exist for static routing; the layout and footer are inherited.
+
+The About page is the first canonical public informational page. It uses the Public Layout, local section navigation, sourced project language, and a compact author profile. It does not own a custom shell.
 
 ## Metadata
 

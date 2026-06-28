@@ -140,18 +140,18 @@ async function main() {
   applyDocumentCopy();
   applyVisualizationPalette();
   applyChartDefaults();
+  const searchParams = new URLSearchParams(window.location.search);
+
+  if (isGesPublicPageRequest()) {
+    renderGesPublicPage();
+    return;
+  }
+
   const propertySwitcher = await loadPropertySwitcherRecords();
   const developmentFeaturePropertyId = developmentFeatureSampleStartPropertyId(propertySwitcher.manifest);
   const directPropertyRequest = hasDirectPropertyRequest(propertySwitcher.manifest);
   const pendingDirectProperty = propertySwitcher.pendingDirectProperty;
-  const searchParams = new URLSearchParams(window.location.search);
   const experimentView = searchParams.get("experiment");
-
-  if (isGesPublicPageRequest()) {
-    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
-    renderGesPublicPage();
-    return;
-  }
 
   if (isLevyCompressionPostRequest(searchParams)) {
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;

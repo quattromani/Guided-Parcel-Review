@@ -12,6 +12,10 @@
   gap: var(--ges-section-space-compact, 2.5rem);
 }
 
+.ges-public-main [data-ges-shell-region="body"]:empty {
+  min-block-size: max(42rem, 100vh);
+}
+
 .ges-public-page-hero {
   display: grid;
   gap: var(--ges-space-sm, 0.75rem);
@@ -141,6 +145,35 @@
   padding-inline-start: 1.1rem;
 }
 
+.ges-public-author-profile {
+  align-items: start;
+  border-block: var(--ges-border-width, 1px) solid rgb(var(--ges-color-border-subtle));
+  display: grid;
+  gap: var(--ges-space-md, 1.25rem);
+  grid-template-columns: 5.25rem 1fr;
+  padding-block: var(--ges-space-md, 1.25rem);
+}
+
+.ges-public-author-profile img {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: 0 0 0 var(--ges-border-width, 1px) rgb(var(--ges-color-border-subtle));
+  display: block;
+  inline-size: 100%;
+  object-fit: cover;
+}
+
+.ges-public-author-profile__body {
+  display: grid;
+  gap: var(--ges-space-sm, 0.75rem);
+}
+
+.ges-public-author-profile strong {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading, system-ui, sans-serif);
+  font-weight: var(--ges-weight-bold, 780);
+}
+
 .ges-public-footer {
   background: rgb(var(--ges-color-surface) / 0.92);
   border-block-start: var(--ges-border-width, 1px) solid rgb(var(--ges-color-border-subtle));
@@ -209,6 +242,14 @@
   .ges-public-section-nav a,
   .ges-public-footer__link {
     width: fit-content;
+  }
+
+  .ges-public-author-profile {
+    grid-template-columns: 1fr;
+  }
+
+  .ges-public-author-profile img {
+    inline-size: 4rem;
   }
 
   .ges-public-footer__meta span + span::before {

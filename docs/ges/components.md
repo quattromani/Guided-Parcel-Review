@@ -82,6 +82,54 @@ Accessibility: render as a `footer` landmark with a labelled navigation region. 
 
 Print: hide the public footer in browser print. Printable and PDF layouts carry their own print-appropriate metadata and citations.
 
+## About Page
+
+Purpose: establish trust in Guided Parcel Review and GES for public readers, future counties, assessors, organizations, and contributors.
+
+Behavior: render through Public Layout only. The About route supplies metadata, hero copy, local section navigation, and content sections; Public Layout supplies landmarks, footer behavior, metadata plumbing, and public/internal visibility.
+
+Source language: reuse project-source language before writing new copy. Current canonical sources include the README, existing `site-copy.json` About panel, GES design bible, and published article metadata. Do not invent campaign biography or resume material.
+
+Sections: Mission, About the Author, Why GES Exists, Project Philosophy, Open Source, and Future Vision. Keep each section concise and informational.
+
+Tone: professional, transparent, and human. Avoid campaign language, endorsement language, persuasion, slogans, or oversized personal narrative.
+
+Accessibility: use one `h1`, section-level `h2` headings, descriptive anchor text, keyboard-accessible section navigation, and semantic article/section structure.
+
+Print: preserve the substantive page content. Hide local section navigation through the existing public-layout print rule.
+
+## Mission Page
+
+Purpose: explain why GES exists and what public understanding it is meant to improve.
+
+Behavior: future mission-focused pages should use Public Layout and the same informational-page rhythm as About. They may expand on assessment, equalization, taxes, Nebraska law, public transparency, and process literacy, but should not become marketing pages.
+
+Writing standard: mission copy should explain practical reader outcomes: what a person can understand, verify, ask, or do next. It should not promise outcomes, replace official determinations, or flatten the complexity of public assessment work.
+
+## Public Author Profile
+
+Purpose: identify the responsible author without turning public informational pages into resumes.
+
+Use when: the author's identity or credential materially supports trust in the page.
+
+Current pattern: use `ges-public-author-profile` inside a normal public page section. The existing author image may be decorative with empty `alt` text when the adjacent prose names the author.
+
+Content: keep biography concise. State sourced credentials, project role, relevant technical/public-administration focus, and commitment to clarity and transparency. Avoid unsupported biography, campaign material, endorsements, and personal persuasion.
+
+Mobile: keep the profile compact. The image should remain secondary to the prose and should not create a new visual language.
+
+## Public Informational Pages
+
+Purpose: provide stable public pages such as About, FAQ, Contact, Administrative, future mission pages, resource pages, glossary pages, and recovery pages.
+
+Behavior: use layout-first inheritance. Pages provide metadata, page type, hero copy, local section navigation when helpful, and content. Public Layout provides structure, navigation/footer behavior, metadata handling, and print relationship.
+
+Styling: use `ges-public-page`, `ges-public-page__body`, `ges-public-page__section`, `ges-public-section-nav`, and small documented variants. Do not create custom layout shells for individual informational pages.
+
+Accessibility: preserve landmarks, logical heading hierarchy, focus states, descriptive links, and source order. Section navigation is optional but should remain usable on mobile when present.
+
+Future guidance: promote placeholder public routes into permanent pages one at a time. Reuse existing project copy first, then add carefully scoped editorial text only where the source material leaves a real gap.
+
 ## Project Navigation Utility
 
 Purpose: unlock a compact project table of contents from the Guided Parcel Review house mark during Max review sessions.
