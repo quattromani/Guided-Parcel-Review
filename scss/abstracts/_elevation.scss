@@ -20,6 +20,7 @@
   --ds-shadow-surface: 0 var(--ds-rule-width) var(--ds-rule-width-strong) rgb(var(--ds-color-text) / 0.05), inset 0 0 0 var(--ds-border-width) rgb(var(--ds-color-border-subtle));
   --ds-shadow-card: 0 0.75rem 1.8rem rgb(var(--ds-color-text) / 0.06);
   --ds-shadow-media: 0 1.2rem 3rem rgb(var(--ds-color-text) / 0.12);
+  --ds-shadow-icon-lift: 0 1px 1px rgb(var(--ds-color-shadow) / 0.08), 0 0.18rem 0.45rem rgb(var(--ds-color-shadow) / 0.06), inset 0 1px 0 rgb(var(--ds-color-white) / 0.34);
   --ds-shadow-sm: 0 1px 2px 0 rgb(var(--ds-color-shadow) / 0.05);
   --ds-shadow-muted-surface: inset 0 0 0 1px rgb(var(--ds-color-slate-200));
 }

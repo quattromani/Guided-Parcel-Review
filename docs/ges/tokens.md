@@ -94,7 +94,9 @@ Density changes rhythm. It must not change component meaning.
 - Radius: `--ges-radius-xs`, `--ges-radius-sm`, `--ges-radius-md`, `--ges-radius-lg`, `--ges-radius-pill`, `--ges-radius-media`
 - Borders and rules: `--ges-border-width`, `--ges-border-width-strong`, `--ges-border-width-accent`, `--ges-rule-width`, `--ges-rule-width-strong`, `--ges-print-rule-width`
 - Focus ring: `--ges-focus-ring-width`, `--ges-focus-ring-offset`
-- Shadows: `--ges-shadow-surface`, `--ges-shadow-card`, `--ges-shadow-media`
+- Shadows: `--ges-shadow-surface`, `--ges-shadow-card`, `--ges-shadow-media`, `--ges-shadow-icon-lift`
+
+`--ges-shadow-icon-lift` is reserved for small circular body/content icon containers. It should read as a slight lift from paper, not a card, button, or floating control.
 - Motion: `--ges-motion-duration`, `--ges-motion-duration-slow`, `--ges-motion-ease`
 
 Reduced motion disables practical animation duration globally in the GES base layer.

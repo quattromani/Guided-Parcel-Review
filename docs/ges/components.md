@@ -191,6 +191,20 @@ Do not use when: ordinary prose works.
 
 Icon rule: semantic only. Use calibration/sliders for overcorrection cautions.
 
+## Body Icon Circles
+
+Purpose: give small circular editorial icons enough lift to remain legible in the restrained paper/document visual language.
+
+Use when: an icon circle appears inside article, guide, educational, experiment, or tool body content as a callout icon, caution/guidance marker, decision disclaimer marker, or circular section/step marker.
+
+Do not use when: the circle is a button, navigation icon, footer utility, home/logo treatment, social icon, form control, chart marker, unrelated SVG, badge-only label, or large illustration container.
+
+Token: use `--ges-shadow-icon-lift` through `.ges-body-icon-circle` or the established component selectors. Do not create local shadow values for individual articles.
+
+Accessibility: the shadow is decorative. Existing labels, alt text, hidden text, or aria labels carry meaning. Interactive icon circles must keep focus styles stronger than the passive lift.
+
+Mobile/print: sizes do not change. Browser print may suppress decorative shadows with the existing print reset.
+
 ## Authority / Source Citation
 
 Purpose: support trust without interrupting reading.

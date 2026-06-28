@@ -110,6 +110,7 @@
   --surface-pad-spacious: var(--ds-surface-pad-spacious);
   --surface-shadow: var(--ds-shadow-surface);
   --surface-muted-shadow: var(--ds-shadow-muted-surface);
+  --shadow-icon-lift: var(--ges-shadow-icon-lift);
   --prose-first-line-indent: var(--ds-prose-first-line-indent);
 }
 
@@ -9501,6 +9502,8 @@ html[data-ges-theme-resolved="dark"].article-shell-route {
   --surface: var(--surface-card);
   --surface-shadow: 0 1px 1px rgb(0 0 0 / 0.18), inset 0 0 0 1px rgb(var(--border-muted) / 0.88);
   --surface-muted-shadow: inset 0 0 0 1px rgb(var(--border-muted) / 0.78);
+  --ges-shadow-icon-lift: 0 1px 1px rgb(0 0 0 / 0.28), 0 0.2rem 0.5rem rgb(0 0 0 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.07);
+  --shadow-icon-lift: var(--ges-shadow-icon-lift);
   color-scheme: dark;
 }
 
@@ -10849,6 +10852,14 @@ html[data-ges-theme-resolved="dark"].article-shell-route .tax-story-chapter {
   width: var(--icon-sm);
 }
 
+.ges-body-icon-circle {
+  align-items: center;
+  border-radius: 999px;
+  box-shadow: var(--shadow-icon-lift);
+  display: inline-flex;
+  justify-content: center;
+}
+
 .editorial-card-heading,
 .scorecard h3,
 .meeting-schedule-card h3,
@@ -10907,6 +10918,7 @@ html[data-ges-theme-resolved="dark"].article-shell-route .tax-story-chapter {
   height: 1rem;
   margin-top: 0.1rem;
   padding: 0.18rem;
+  box-shadow: var(--shadow-icon-lift);
   width: 1rem;
 }
 
@@ -10953,6 +10965,7 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   justify-content: center;
   margin-top: 0.12rem;
   padding: 0.22rem;
+  box-shadow: var(--shadow-icon-lift);
   width: 1.28rem;
 }
 
@@ -11349,6 +11362,7 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   font-weight: 850;
   height: 1.55rem;
   justify-content: center;
+  box-shadow: var(--shadow-icon-lift);
   width: 1.55rem;
 }
 
@@ -11597,6 +11611,7 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   height: 0.92rem;
   margin-top: -0.02rem;
   padding: 0.22rem;
+  box-shadow: var(--shadow-icon-lift);
   width: 0.92rem;
 }
 

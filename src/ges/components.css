@@ -494,6 +494,14 @@
   width: var(--icon-sm);
 }
 
+.ges-body-icon-circle {
+  align-items: center;
+  border-radius: var(--ges-radius-pill);
+  box-shadow: var(--ges-shadow-icon-lift);
+  display: inline-flex;
+  justify-content: center;
+}
+
 .concept-card,
 .comparison-card,
 .comparison-module,
@@ -680,6 +688,7 @@
   font-weight: var(--ges-weight-heavy);
   height: 1.55rem;
   justify-content: center;
+  box-shadow: var(--ges-shadow-icon-lift);
   width: 1.55rem;
 }
 
@@ -937,6 +946,7 @@
   justify-content: center;
   margin-top: 0.1rem;
   padding: 0.18rem;
+  box-shadow: var(--ges-shadow-icon-lift);
   width: 1.3rem;
 }
 
