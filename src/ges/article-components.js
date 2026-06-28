@@ -1,10 +1,21 @@
 import { escapeHtml } from "../utils/html.js?v=db3aed6";
 
-export function renderMarginInsight(insight) {
+function marginInsightClasses(insight = {}, options = {}) {
+  const placement = options.placement ?? insight.placement ?? insight.position ?? "";
+  const classes = ["ges-margin-insight"];
+
+  if (placement === "inline") classes.push("ges-margin-insight--inline");
+  if (placement === "after-content") classes.push("ges-margin-insight--after-content");
+  if (placement === "first" || options.first || insight.first) classes.push("ges-margin-insight--first");
+
+  return classes.join(" ");
+}
+
+export function renderMarginInsight(insight, options = {}) {
   if (!insight?.text) return "";
 
   return `
-    <aside class="ges-margin-insight" aria-label="${escapeHtml(insight.label ?? "Margin insight")}">
+    <aside class="${marginInsightClasses(insight, options)}" aria-label="${escapeHtml(insight.label ?? "Margin insight")}">
       ${insight.label ? `<p class="ges-margin-insight__label">${escapeHtml(insight.label)}</p>` : ""}
       <p class="ges-margin-insight__text">${escapeHtml(insight.text)}</p>
     </aside>
@@ -17,7 +28,7 @@ export function renderPageCrease() {
 
 export function renderSectionHeader(kicker, title, id, options = {}) {
   const companion = options.companion ? `<p class="ges-section-companion">${escapeHtml(options.companion)}</p>` : "";
-  const insight = renderMarginInsight(options.marginInsight);
+  const insight = renderMarginInsight(options.marginInsight, { placement: options.marginInsightPlacement });
   const classes = ["tax-article-header", "editorial-section-header", insight ? "ges-section-header--with-insight" : ""].filter(Boolean).join(" ");
 
   return `

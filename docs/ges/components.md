@@ -115,7 +115,13 @@ Rules: usually 6-14 words; no bullets; no hype; no "remember this!" language.
 
 Accessibility: meaningful supplemental text remains exposed.
 
-Mobile: collapses into the reading column.
+Placement: Margin Insights may sit in the right margin at the top of a section, stack directly below a section heading, or appear below body content. When a section with a Margin Insight follows prior body content, the design system adds a decorative full-width two-line paper-fold crease above the section, before the heading and insight row.
+
+First section exception: do not use the after-content crease on the first section's Margin Insight. There is no preceding body content to separate, so the crease adds noise. Opening sections should keep `ges-opening-section` or use `ges-margin-insight--first` when a manual state is needed.
+
+Authoring: prefer the shared `renderMarginInsight()` / `renderSectionHeader()` helpers. Future article data may set `placement: "after-content"` on a Margin Insight when it is intentionally placed after prose instead of inside a section header.
+
+Mobile: collapses into the reading column. The after-content crease remains decorative and should not create a second reading path.
 
 Print: simple rule and text only.
 

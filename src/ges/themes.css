@@ -153,6 +153,12 @@ html[data-ges-theme-resolved="dark"] .ges-page-crease {
   box-shadow: 0 calc(-1 * var(--ges-rule-width)) 0 rgb(var(--ges-color-highlight) / 0.025);
 }
 
+html[data-ges-theme-resolved="dark"] .tax-story-chapter {
+  --ges-section-crease-dark: rgb(var(--ges-color-shadow) / 0.46);
+  --ges-section-crease-light: rgb(var(--ges-color-highlight) / 0.1);
+  --ges-section-crease-shadow: rgb(var(--ges-color-highlight) / 0.025);
+}
+
 @media (prefers-color-scheme: dark) {
   html:not([data-ges-theme]) {
     color-scheme: dark;

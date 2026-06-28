@@ -409,6 +409,28 @@
   gap: var(--ges-space-xs);
 }
 
+.tax-story-chapter:not(.ges-opening-section):not(:has(> .ges-page-crease)):has(.ges-section-header--with-insight > .ges-margin-insight:not(.ges-margin-insight--first))::before,
+.tax-story-chapter:not(.ges-opening-section):not(:has(> .ges-page-crease)):has(.ges-margin-insight--after-content:not(.ges-margin-insight--first))::before {
+  --ges-section-crease-dark: rgb(var(--ges-color-border-strong) / 0.48);
+  --ges-section-crease-light: rgb(var(--ges-color-highlight) / 0.74);
+  --ges-section-crease-shadow: rgb(var(--ges-color-shadow) / 0.035);
+  background:
+    linear-gradient(
+      180deg,
+      var(--ges-section-crease-light) 0 var(--ges-rule-width),
+      var(--ges-section-crease-dark) var(--ges-rule-width) var(--ges-rule-width-strong)
+    );
+  box-shadow:
+    0 calc(-1 * var(--ges-rule-width)) 0 rgb(var(--ges-color-highlight) / 0.18),
+    0 var(--ges-rule-width) 0 var(--ges-section-crease-shadow);
+  content: "";
+  display: block;
+  height: var(--ges-rule-width-strong);
+  justify-self: center;
+  margin: 0 auto var(--ges-section-space-compact);
+  width: min(calc(100vw - (2 * var(--ges-gutter))), var(--ges-width-wide));
+}
+
 .ges-margin-insight {
   border-top: var(--ges-border-width) solid rgb(var(--ges-color-border-strong) / 0.72);
   color: rgb(var(--ges-color-text-secondary));
