@@ -56,3 +56,13 @@ Weak:
 Body copy should remain narrow enough for sustained reading. Use the reading width unless a component benefits from a wider measure.
 
 Do not center body text.
+
+### Paragraph Indentation
+
+The first prose paragraph after any heading should never be indented. The opening paragraph establishes a new thought and is visually separated by its heading.
+
+Subsequent prose paragraphs belong to the same train of thought and use first-line indentation to reinforce continuity.
+
+Apply this through the global prose system: `prose` and `ges-prose` start flush, and adjacent prose paragraphs receive `--prose-first-line-indent`. Do not add page-level first-paragraph overrides.
+
+This convention applies to articles, educational pages, guides, glossary entries, future published content, and generated article templates. It does not apply to lists, tables, Margin Insights, captions, blockquotes, forms, cards, callouts, or footnotes.

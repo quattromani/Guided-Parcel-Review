@@ -515,6 +515,10 @@ body.property-switcher-guidance-active .property-switcher-empty .property-switch
   line-height: 1.65;
   margin: 0.75rem 0 0;
   max-width: 42rem;
+  text-indent: 0;
+}
+
+.guided-start-copy p:not(.guided-kicker) + p:not(.guided-kicker) {
   text-indent: var(--prose-first-line-indent);
 }
 
@@ -8493,6 +8497,10 @@ footer > [data-footer-resource-shell] {
   line-height: 1.45;
   margin: 0;
   max-width: 44rem;
+  text-indent: 0;
+}
+
+.tax-prediction-hero-copy > p:not(.guided-kicker) + p:not(.guided-kicker) {
   text-indent: var(--prose-first-line-indent);
 }
 
@@ -8815,6 +8823,10 @@ footer > [data-footer-resource-shell] {
   line-height: 1.55;
   margin: 0;
   max-width: 43rem;
+  text-indent: 0;
+}
+
+.tax-article-header > p:not(.guided-kicker) + p:not(.guided-kicker) {
   text-indent: var(--prose-first-line-indent);
 }
 
@@ -8853,6 +8865,15 @@ footer > [data-footer-resource-shell] {
   line-height: 1.62;
   margin: 0;
   max-width: 46rem;
+  text-indent: 0;
+}
+
+.tax-article-section > p + p,
+.tax-article-two-column p + p,
+.tax-historical-explanation p + p,
+.tax-article-closing > p + p,
+.tax-model-check-section > p + p,
+.tax-essay-copy p + p {
   text-indent: var(--prose-first-line-indent);
 }
 
@@ -8955,6 +8976,10 @@ footer > [data-footer-resource-shell] {
   font-weight: 620;
   line-height: 1.45;
   margin: 0;
+  text-indent: 0;
+}
+
+.tax-essay-observations p + p {
   text-indent: var(--prose-first-line-indent);
 }
 
@@ -10264,6 +10289,16 @@ body:has(.levy-compression-page) .comp-page-title h1 {
   font-weight: 400;
   line-height: 1.64;
   max-width: 68ch;
+  text-indent: 0;
+}
+
+.levy-compression-page :is(.prose, .ges-prose) + :is(.prose, .ges-prose),
+.levy-compression-page .tax-article-header > p:not(.guided-kicker):not(.article-caution-note) + p:not(.guided-kicker):not(.article-caution-note),
+.levy-compression-page .tax-article-section > p:not(.guided-kicker):not(.article-caution-note):not(.note-box):not(.tax-article-final-source) + p:not(.guided-kicker):not(.article-caution-note):not(.note-box):not(.tax-article-final-source),
+.levy-compression-page .editorial-narrow > p:not(.guided-kicker):not(.article-caution-note):not(.article-emphasis) + p:not(.guided-kicker):not(.article-caution-note):not(.article-emphasis),
+.levy-compression-page .tax-article-two-column p:not(.guided-kicker) + p:not(.guided-kicker),
+.levy-compression-page .tax-article-closing > p:not(.tax-article-final-source) + p:not(.tax-article-final-source),
+.levy-compression-page .levy-calculator-intro p:not(.guided-kicker) + p:not(.guided-kicker) {
   text-indent: var(--prose-first-line-indent);
 }
 
@@ -10289,7 +10324,7 @@ body:has(.levy-compression-page) .comp-page-title h1 {
 }
 
 .levy-compression-page .tax-article-closing > p {
-  text-indent: var(--prose-first-line-indent);
+  text-indent: 0;
 }
 
 .levy-compression-page .tax-article-closing > p + p,
@@ -11200,6 +11235,13 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   font-weight: 400;
   line-height: 1.64;
   max-width: 68ch;
+  text-indent: 0;
+}
+
+.levy-compression-page p.prose + p.prose,
+.levy-compression-page p.prose + p.ges-prose,
+.levy-compression-page p.ges-prose + p.prose,
+.levy-compression-page p.ges-prose + p.ges-prose {
   text-indent: var(--prose-first-line-indent);
 }
 

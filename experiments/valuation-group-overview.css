@@ -88,7 +88,7 @@ h1 {
   color: var(--muted);
   font-size: 0.98rem;
   line-height: 1.45;
-  text-indent: var(--prose-first-line-indent, 1.35em);
+  text-indent: 0;
 }
 
 .dataset-method {
@@ -101,7 +101,7 @@ h1 {
   font-size: 0.96rem;
   line-height: 1.42;
   padding: 4px 0 4px 13px;
-  text-indent: var(--prose-first-line-indent, 1.35em);
+  text-indent: 0;
 }
 
 .dataset-method strong {

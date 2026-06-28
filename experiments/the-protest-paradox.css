@@ -90,6 +90,11 @@ h1 span {
   font-weight: 420;
   line-height: 1.64;
   max-width: 68ch;
+  text-indent: 0;
+}
+
+.chapter-copy p:not(.kicker) + p:not(.kicker),
+.chapter > p + p {
   text-indent: var(--prose-first-line-indent, 1.35em);
 }
 
@@ -101,7 +106,7 @@ h1 span {
   font-weight: 420;
   line-height: 1.64;
   max-width: 68ch;
-  text-indent: var(--prose-first-line-indent, 1.35em);
+  text-indent: 0;
 }
 
 .hero-subtitle {
@@ -111,7 +116,7 @@ h1 span {
   font-weight: 500;
   line-height: 1.42;
   max-width: 58rem;
-  text-indent: var(--prose-first-line-indent, 1.35em);
+  text-indent: 0;
 }
 
 .hero-context {
@@ -120,6 +125,10 @@ h1 span {
   font-weight: 520;
   line-height: 1.6;
   max-width: 54rem;
+  text-indent: 0;
+}
+
+.case-title > .hero-subtitle + .hero-context {
   text-indent: var(--prose-first-line-indent, 1.35em);
 }
 
@@ -1161,6 +1170,11 @@ h1 span {
   line-height: 1.66;
   margin: 0;
   max-width: 62ch;
+  text-indent: 0;
+}
+
+.final-thought p:not(.information-utility) + p:not(.information-utility) {
+  text-indent: var(--prose-first-line-indent, 1.35em);
 }
 
 .final-thought strong {

@@ -108,6 +108,11 @@
   line-height: var(--ges-line-copy);
   margin: 0;
   max-width: 68ch;
+  text-indent: 0;
+}
+
+:is(.prose, .ges-prose) + :is(.prose, .ges-prose),
+.levy-compression-page p:is(.prose, .ges-prose) + p:is(.prose, .ges-prose) {
   text-indent: var(--prose-first-line-indent, 1.35em);
 }
 
