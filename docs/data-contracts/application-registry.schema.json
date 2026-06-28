@@ -1,0 +1,226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://guidedparcelreview.local/schemas/application-registry.schema.json",
+  "title": "GES Application Registry",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "lastUpdated",
+    "description",
+    "registryOwner",
+    "applicationTypes",
+    "statusModel",
+    "audienceModel",
+    "visibilityModel",
+    "layoutModel",
+    "applications"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "lastUpdated": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "description": {
+      "type": "string"
+    },
+    "registryOwner": {
+      "type": "string"
+    },
+    "applicationTypes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "statusModel": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "audienceModel": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "visibilityModel": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "layoutModel": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "applications": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/application" },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "application": {
+      "type": "object",
+      "required": [
+        "id",
+        "slug",
+        "title",
+        "shortTitle",
+        "description",
+        "type",
+        "status",
+        "audience",
+        "visibility",
+        "layout",
+        "route",
+        "entryPoint",
+        "icon",
+        "category",
+        "tags",
+        "searchable",
+        "navigation",
+        "footer",
+        "permissions",
+        "dataSources",
+        "dependencies",
+        "relatedApplications",
+        "metadata",
+        "version",
+        "owner",
+        "sourceDocs",
+        "futureSQLMetadata",
+        "futureTenantConfig"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "shortTitle": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "audience": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "visibility": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "layout": {
+          "type": "object",
+          "required": ["current", "target"],
+          "properties": {
+            "current": { "type": "string" },
+            "target": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "route": {
+          "type": "object",
+          "properties": {
+            "canonicalPath": { "type": "string" },
+            "currentRoutes": { "$ref": "#/$defs/stringArray" },
+            "routeParams": { "$ref": "#/$defs/stringArray" },
+            "hashRoutes": { "$ref": "#/$defs/stringArray" }
+          },
+          "additionalProperties": true
+        },
+        "entryPoint": {
+          "type": "object",
+          "required": ["kind"],
+          "properties": {
+            "kind": { "type": "string" },
+            "path": { "type": "string" },
+            "paths": { "$ref": "#/$defs/stringArray" },
+            "export": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "icon": { "type": "string" },
+        "category": { "type": "string" },
+        "tags": { "$ref": "#/$defs/stringArray" },
+        "searchable": {
+          "type": "object",
+          "required": ["enabled", "scope", "public", "internal"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "scope": { "type": "string" },
+            "public": { "type": "boolean" },
+            "internal": { "type": "boolean" },
+            "indexSource": { "type": "string" },
+            "notes": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "navigation": {
+          "type": "object",
+          "required": ["primary", "footer", "internal", "utilityBelt", "order", "group", "label"],
+          "properties": {
+            "primary": { "type": "boolean" },
+            "footer": { "type": "boolean" },
+            "internal": { "type": "boolean" },
+            "utilityBelt": { "type": "boolean" },
+            "order": { "type": "number" },
+            "group": { "type": "string" },
+            "label": { "type": "string" },
+            "description": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "footer": {
+          "type": "object",
+          "required": ["public", "internal"],
+          "properties": {
+            "public": { "type": "boolean" },
+            "internal": { "type": "boolean" }
+          },
+          "additionalProperties": true
+        },
+        "permissions": {
+          "type": "object",
+          "required": ["requiresAuth", "requiresPermissionKey", "roles"],
+          "properties": {
+            "requiresAuth": { "type": "boolean" },
+            "requiresPermissionKey": { "type": "boolean" },
+            "roles": { "$ref": "#/$defs/stringArray" },
+            "internalRoles": { "$ref": "#/$defs/stringArray" },
+            "currentPermissionParam": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "dataSources": { "$ref": "#/$defs/stringArray" },
+        "dependencies": { "$ref": "#/$defs/stringArray" },
+        "relatedApplications": { "$ref": "#/$defs/stringArray" },
+        "metadata": { "type": "object", "additionalProperties": true },
+        "version": { "type": "string" },
+        "owner": { "type": "string" },
+        "sourceDocs": { "$ref": "#/$defs/stringArray" },
+        "futureSQLMetadata": { "type": "object", "additionalProperties": true },
+        "futureTenantConfig": { "type": "object", "additionalProperties": true }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
