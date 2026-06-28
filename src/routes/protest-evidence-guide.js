@@ -3,6 +3,7 @@ import {
   installGuideUtilityLanguage,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderArticleTags as renderGesArticleTags,
+  renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader
 } from "../ges/article-components.js?v=db3aed6";
 import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
@@ -47,7 +48,7 @@ const GAGE_COUNTY_PROTESTS_PAGE = articleSource.references.gageCountyProtestsPag
 const GAGE_COUNTY_PROPERTY_SEARCH_PAGE = articleSource.references.gageCountyPropertySearchPage;
 const ARTICLE_REFERENCES = articleSource.references;
 const ARTICLE_SOURCE_NOTES = articleSource.sourceNotes ?? {};
-const ARTICLE_SOURCES_USED = articleSource.sourcesUsed;
+const ARTICLE_RESOURCES_BLOCK = articleSource.resourcesBlock ?? articleSource.sourcesUsed;
 const ARTICLE_KEYWORDS = articleSource.keywords;
 const ARTICLE_DEPTH_MILESTONES = [25, 50, 75, 100];
 const ARTICLE_TLDR_TRANSCRIPT = articleSource.tldrTranscript;
@@ -162,23 +163,6 @@ function renderSourceNote(note) {
   return `
     <aside class="article-source-note" aria-label="${escapeHtml(note.label)}" data-source-label="${escapeHtml(note.label)}" data-source-ids="${escapeHtml(sourceIds.join(" "))}" data-source-categories="${escapeHtml(sourceCategories.join(" "))}">
       <p>${note.items.map(renderExternalSourceLink).join("; ")}.</p>
-    </aside>
-  `;
-}
-
-function renderSourcesUsedBlock() {
-  if (!ARTICLE_SOURCES_USED?.groups?.length) return "";
-  const sourceItems = ARTICLE_SOURCES_USED.groups.flatMap(group => group.items);
-  const sourceIds = uniqueValues(sourceItems.map(citationIdForItem));
-  const sourceCategories = uniqueValues(sourceItems.map(citationCategoryForItem));
-
-  return `
-    <aside class="article-sources-used" aria-label="${escapeHtml(ARTICLE_SOURCES_USED.title)}" data-source-ids="${escapeHtml(sourceIds.join(" "))}" data-source-categories="${escapeHtml(sourceCategories.join(" "))}">
-      <h3>${escapeHtml(ARTICLE_SOURCES_USED.title)}</h3>
-      <p>${escapeHtml(ARTICLE_SOURCES_USED.intro)}</p>
-      <ul>
-        ${sourceItems.map(item => `<li>${renderExternalSourceLink(item)}</li>`).join("")}
-      </ul>
     </aside>
   `;
 }
@@ -874,8 +858,6 @@ function renderClosingSection() {
       ${sectionHeader(section.kicker, section.title, "protestClosingTitle")}
       ${paragraphs(section.paragraphs)}
       ${renderSourceNote(ARTICLE_SOURCE_NOTES.closing)}
-      ${renderContinuationModule(section.continuation)}
-      ${renderSourcesUsedBlock()}
       <aside class="article-share-footer" aria-labelledby="shareArticleTitle">
         <p id="shareArticleTitle">${escapeHtml(section.sharePrompt)}</p>
         <button type="button" data-article-share data-article-action="share_article" data-article-label="${ARTICLE_TITLE}">
@@ -884,8 +866,16 @@ function renderClosingSection() {
         </button>
         <span data-share-status role="status" aria-live="polite"></span>
       </aside>
+      ${renderContinuationModule(section.continuation)}
     </section>
   `;
+}
+
+function renderArticleResourcesBlock() {
+  return renderGesResourcesBlock(ARTICLE_RESOURCES_BLOCK, {
+    id: "protestArticleResources",
+    references: ARTICLE_REFERENCES
+  });
 }
 
 function renderContinuationModule(module) {
@@ -979,6 +969,7 @@ export function renderProtestEvidenceGuide() {
       ${renderResourcesSection()}
       ${renderOneMoreThoughtSection()}
       ${renderClosingSection()}
+      ${renderArticleResourcesBlock()}
     </article>
   `);
 

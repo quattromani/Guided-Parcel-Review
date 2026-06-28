@@ -4,6 +4,7 @@ import {
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderArticleTags as renderGesArticleTags,
   renderPageCrease,
+  renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader
 } from "../ges/article-components.js?v=db3aed6";
 import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
@@ -37,6 +38,8 @@ const ARTICLE_LENGTH_LABEL = articleSource.reading.lengthLabel ?? "field-note";
 const PRINTABLE_GUIDE_PDF = articleSource.assets.printableGuidePdf;
 const ARTICLE_DEPTH_MILESTONES = [25, 50, 75, 100];
 const ARTICLE_KEYWORDS = articleSource.keywords;
+const ARTICLE_REFERENCES = articleSource.references ?? {};
+const ARTICLE_RESOURCES_BLOCK = articleSource.resourcesBlock ?? articleSource.sourcesUsed;
 const ARTICLE_SOURCE_NOTES = articleSource.sourceNotes ?? {};
 const CASE_TIMELINE = articleSource.timeline;
 const LEARNING_POINTS = articleSource.learningPoints;
@@ -638,6 +641,13 @@ function renderClosingSection() {
   `;
 }
 
+function renderArticleResourcesBlock() {
+  return renderGesResourcesBlock(ARTICLE_RESOURCES_BLOCK, {
+    id: "protestParadoxResources",
+    references: ARTICLE_REFERENCES
+  });
+}
+
 export function isProtestParadoxRequest(searchParams = new URLSearchParams(window.location.search)) {
   return searchParams.get("article") === ARTICLE_LEGACY_QUERY_VALUE
     || searchParams.get("article") === ARTICLE_SLUG
@@ -687,6 +697,7 @@ export function renderProtestParadox() {
       ${renderApplySection()}
       ${renderCalculatorSection()}
       ${renderClosingSection()}
+      ${renderArticleResourcesBlock()}
     </article>
   `);
 

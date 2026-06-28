@@ -40,6 +40,61 @@ export const assessmentUpProtestDeniedTaxesArticle = {
     valueGrowth: 9.57,
     budgetGrowth: 3
   },
+  references: {
+    gageCountyPropertySearchPage: "https://report.gworks.com/report.ashx?county=gage&type=assessor",
+    gageCountyRo2026: "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2026/34Gage.pdf",
+    nebraskaPadRoIndex2026: "https://revenue.nebraska.gov/PAD/2026-reports-and-opinions-property-tax-administrator"
+  },
+  sourcesUsed: {
+    title: "Resources and authorities",
+    intro: "This case study relies on the parcel record, tax-year records, and Gage County PAD Report and Opinion context named in the article.",
+    groups: [
+      {
+        heading: "Case record",
+        items: [
+          {
+            title: "Gage County property record card for parcel 004817000",
+            source: "Gage County Assessor / GWorks public record export",
+            description: "Property record used for the case-study valuation movement and component-change context.",
+            urlKey: "gageCountyPropertySearchPage",
+            type: "County record",
+            jurisdiction: "Gage County",
+            note: "The article cites the generated parcel record card rather than a permanent parcel-specific URL."
+          },
+          {
+            title: "Nebraska Taxes Online tax-year records for parcel 0004817000",
+            source: "Nebraska Taxes Online",
+            description: "Tax-year records used for the 2025 tax-bill comparison.",
+            type: "Tax record",
+            jurisdiction: "Nebraska",
+            note: "No durable parcel-specific public URL is stored in the project."
+          }
+        ]
+      },
+      {
+        heading: "Assessment context",
+        items: [
+          {
+            title: "2026 Reports and Opinions of the Property Tax Administrator - Gage County",
+            source: "Nebraska Department of Revenue, Property Assessment Division",
+            description: "Countywide assessment context and market-study material used for the levy-compression explanation.",
+            urlKey: "gageCountyRo2026",
+            type: "PAD report",
+            jurisdiction: "Gage County",
+            lastReviewedDate: "May 14, 2026"
+          },
+          {
+            title: "2026 Reports and Opinions index",
+            source: "Nebraska Department of Revenue, Property Assessment Division",
+            description: "Official landing page for county Reports and Opinions.",
+            urlKey: "nebraskaPadRoIndex2026",
+            type: "Official index",
+            jurisdiction: "Nebraska"
+          }
+        ]
+      }
+    ]
+  },
   learningPoints: [
     "Why taxes can fall after an assessment increase",
     "What levy compression actually does",

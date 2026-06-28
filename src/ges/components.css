@@ -1011,22 +1011,152 @@
   content: none;
 }
 
+.ges-resources-block,
 .article-sources-used {
   border-top: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
   display: grid;
+  gap: var(--ges-space-md);
+  justify-self: center;
+  margin-top: var(--ges-section-space-compact);
+  padding-top: var(--ges-space-lg);
+  width: min(100%, var(--ges-width-wide));
+}
+
+.ges-resources-block__header {
+  display: grid;
+  gap: var(--ges-space-2xs);
+  width: min(100%, var(--ges-width-reading));
+}
+
+.ges-resources-block__header h2,
+.ges-resources-block__header h3 {
+  color: rgb(var(--ges-color-text));
+  font-size: var(--ges-type-2xl);
+  line-height: var(--ges-line-tight);
+  margin: 0;
+}
+
+.ges-resources-block__header p:not(.guided-kicker) {
+  color: rgb(var(--ges-color-text-secondary));
+  font-family: var(--ges-font-heading);
+  font-size: var(--ges-type-sm);
+  line-height: var(--ges-line-normal);
+  margin: 0;
+}
+
+.ges-resources-block__groups,
+.ges-resource-group,
+.ges-resource-list {
+  display: grid;
+  gap: var(--ges-space-sm);
+}
+
+.ges-resource-group h3,
+.ges-resource-group h4 {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-size: var(--ges-type-sm);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: var(--ges-letter-kicker);
+  line-height: var(--ges-line-compact);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.ges-resource-list {
+  list-style: none;
+  padding: 0;
+}
+
+.ges-resource-entry {
+  border-top: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  display: grid;
   gap: var(--ges-space-xs);
-  margin-top: var(--ges-space-sm);
+  margin: 0;
   padding-top: var(--ges-space-sm);
 }
 
-.article-sources-used h3 {
-  font-size: var(--ges-type-lg);
+.ges-resource-entry__type {
+  align-self: start;
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-pill);
+  color: rgb(var(--ges-color-text-muted));
+  display: inline-flex;
+  font-family: var(--ges-font-heading);
+  font-size: var(--ges-type-2xs);
+  font-weight: var(--ges-weight-heavy);
+  justify-self: start;
+  letter-spacing: var(--ges-letter-kicker);
+  line-height: var(--ges-line-compact);
+  margin: 0;
+  padding: var(--ges-space-3xs) var(--ges-space-xs);
+  text-transform: uppercase;
 }
 
-.article-sources-used ul {
+.ges-resource-entry__body {
   display: grid;
-  gap: var(--ges-space-2xs);
+  gap: var(--ges-space-3xs);
+  min-width: 0;
+}
+
+.ges-resource-entry__title,
+.ges-resource-entry__meta,
+.ges-resource-entry__citation,
+.ges-resource-entry__description,
+.ges-resource-entry__note,
+.ges-resource-entry__url {
   margin: 0;
+}
+
+.ges-resource-entry__title {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-size: var(--ges-type-md);
+  font-weight: var(--ges-weight-bold);
+  line-height: var(--ges-line-compact);
+}
+
+.ges-resource-entry__title a {
+  color: inherit;
+  text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
+  text-decoration-thickness: var(--ges-border-width);
+  text-underline-offset: 0.16em;
+}
+
+.ges-resource-entry__title a:hover,
+.ges-resource-entry__title a:focus-visible {
+  color: rgb(var(--ges-color-civic-blue));
+  text-decoration-color: currentColor;
+}
+
+.ges-resource-entry__meta,
+.ges-resource-entry__citation,
+.ges-resource-entry__description,
+.ges-resource-entry__note {
+  color: rgb(var(--ges-color-text-secondary));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-xs);
+  line-height: var(--ges-line-compact);
+}
+
+.ges-resource-entry__note {
+  color: rgb(var(--ges-color-text-muted));
+}
+
+.ges-resource-entry__url {
+  color: rgb(var(--ges-color-text));
+  display: none;
+  font-family: var(--ges-font-mono);
+  font-size: var(--ges-type-2xs);
+  line-height: var(--ges-line-compact);
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 48rem) {
+  .ges-resource-entry {
+    gap: var(--ges-space-md);
+    grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr);
+  }
 }
 
 .assessment-build-panel ul,

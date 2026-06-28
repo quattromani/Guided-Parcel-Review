@@ -170,6 +170,8 @@
   .resource-section,
   .resource-card,
   .article-source-note,
+  .ges-resources-block,
+  .ges-resource-entry,
   .article-sources-used,
   .decision-disclaimer,
   .ges-margin-insight,
@@ -348,6 +350,63 @@
     grid-column: 1 / -1;
     line-height: 1.25;
     overflow-wrap: anywhere;
+  }
+
+  .ges-resources-block {
+    gap: 9pt;
+    margin-top: 0.08in;
+    padding-top: 10pt;
+  }
+
+  .ges-resources-block__header {
+    gap: 3pt;
+  }
+
+  .ges-resources-block__header h2,
+  .ges-resources-block__header h3 {
+    font-size: 13pt;
+    line-height: 1.18;
+  }
+
+  .ges-resource-group,
+  .ges-resource-list {
+    gap: 6pt;
+  }
+
+  .ges-resource-group h3,
+  .ges-resource-group h4,
+  .ges-resource-entry__type {
+    font-size: 7pt;
+    letter-spacing: 0.08em;
+  }
+
+  .ges-resource-entry {
+    gap: 6pt;
+    grid-template-columns: 1.1in minmax(0, 1fr);
+    padding-top: 6pt;
+  }
+
+  .ges-resource-entry__type {
+    border-color: rgb(var(--ges-print-rule));
+    padding: 2pt 5pt;
+  }
+
+  .ges-resource-entry__title {
+    font-size: 9pt;
+  }
+
+  .ges-resource-entry__meta,
+  .ges-resource-entry__citation,
+  .ges-resource-entry__description,
+  .ges-resource-entry__note {
+    font-size: 8pt;
+    line-height: 1.28;
+  }
+
+  .ges-resource-entry__url {
+    display: block;
+    font-size: 7.2pt;
+    line-height: 1.25;
   }
 
   a {

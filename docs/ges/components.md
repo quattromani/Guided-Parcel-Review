@@ -213,6 +213,26 @@ Do not use for loose extra reading.
 
 Print: show complete URLs.
 
+## Resources Block
+
+Purpose: provide a consolidated source appendix for a public article, guide, experiment, tool, generated summary, printable view, or future PDF.
+
+Use when: public content relies on authorities, references, forms, statutes, reports, official pages, research, or internal explainers that readers may reasonably want to inspect after reading.
+
+Placement: after the article body and after any Continuation Module or related-article offering, before the public footer. This preserves the reading journey: finish the article, choose the next reading path, then inspect sources.
+
+Content: keep it sparse and useful. Include meaningful authorities and reader resources already cited or relied upon by the article. Good entries include Nebraska statutes, constitutional provisions, PAD pages, PAD calendars, county forms, county record pages, IAAO standards, research papers, reports, PDFs, internal explainers, and related articles when they are true source material.
+
+Do not include: every possible related link, speculative sources, generic search destinations, marketing links, decorative references, or a duplicate of every inline citation.
+
+Difference from inline citations: inline `article-source-note` citations support a local claim without interrupting reading. The Resources Block consolidates the important authorities and resources at the end for review, printing, and future reuse.
+
+Authoring: configure with `renderResourcesBlock()` from `src/ges/article-components.js`. Resource entries may provide `title`, `source` or `publisher`, `description`, `url` or `urlKey`, `type`, `citationLabel`, `jurisdiction`, `lastReviewedDate`, and `note`. The renderer also understands the older `label` / `urlKey` citation shape while routes migrate.
+
+Accessibility: render as a semantic section with a proper heading. Link text must describe the resource; do not use "click here." The visible type label is editorial metadata, not the accessible name.
+
+Print/PDF: browser print preserves the block and exposes resource URLs. Generated PDFs can call the same renderer for HTML-to-PDF flows; low-level PDF drawing remains a separate wiring task for report generators that do not consume article HTML.
+
 ## Continuation Module
 
 Purpose: preserve the next step in the reading journey.

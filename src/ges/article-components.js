@@ -1,5 +1,18 @@
 import { escapeHtml } from "../utils/html.js?v=db3aed6";
 
+const RESOURCE_TYPE_LABELS = {
+  "assessment-guidance": "Assessment guidance",
+  "case-record": "Case record",
+  "county-record": "County record",
+  "legal-authority": "Legal authority",
+  "model-input": "Model input",
+  "official-form": "Official form",
+  "official-resource": "Official resource",
+  "pad-report": "PAD report",
+  "practice-basis": "Practice basis",
+  "tax-record": "Tax record"
+};
+
 function marginInsightClasses(insight = {}, options = {}) {
   const placement = options.placement ?? insight.placement ?? insight.position ?? "";
   const classes = ["ges-margin-insight"];
@@ -24,6 +37,146 @@ export function renderMarginInsight(insight, options = {}) {
 
 export function renderPageCrease() {
   return `<hr class="ges-page-crease" />`;
+}
+
+function slugValue(value = "") {
+  return `${value}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function uniqueValues(values) {
+  return [...new Set(values.filter(Boolean))];
+}
+
+function clampHeadingLevel(value, fallback = 2) {
+  const level = Number.parseInt(value, 10);
+  if (!Number.isFinite(level)) return fallback;
+  return Math.min(6, Math.max(2, level));
+}
+
+function resourceItemTitle(item = {}) {
+  return item.title ?? item.label ?? item.citationLabel ?? "";
+}
+
+function resourceItemUrl(item = {}, references = {}) {
+  if (item.urlKey) return references[item.urlKey] ?? "";
+  return item.url ?? item.href ?? "";
+}
+
+function resourceItemId(item = {}) {
+  if (item.sourceId) return item.sourceId;
+  if (item.urlKey) return item.urlKey;
+  return slugValue(resourceItemTitle(item));
+}
+
+function resourceItemCategory(item = {}) {
+  if (item.category) return item.category;
+  if (item.type) return slugValue(item.type);
+  if (item.urlKey?.startsWith("nebraska") || item.urlKey?.startsWith("title350")) return "legal-authority";
+  if (/\b(IAAO|PAD|Property Assessment Division|Reports? & Opinions?|R&O)\b/i.test(resourceItemTitle(item))) return "assessment-guidance";
+  return "official-resource";
+}
+
+function resourceTypeLabel(item = {}) {
+  const explicitType = item.type ?? item.resourceType;
+  if (explicitType) return explicitType;
+
+  const category = resourceItemCategory(item);
+  return RESOURCE_TYPE_LABELS[category] ?? category.replace(/-/g, " ");
+}
+
+function normalizeResourceGroups(block = {}) {
+  if (Array.isArray(block)) {
+    return [{ heading: "", items: block }];
+  }
+
+  if (Array.isArray(block.groups) && block.groups.length) {
+    return block.groups
+      .map(group => ({
+        heading: group.heading ?? group.title ?? "",
+        items: Array.isArray(group.items) ? group.items.filter(Boolean) : []
+      }))
+      .filter(group => group.items.length);
+  }
+
+  const items = Array.isArray(block.items) ? block.items.filter(Boolean) : [];
+  return items.length ? [{ heading: block.groupHeading ?? "", items }] : [];
+}
+
+function renderResourceItem(item = {}, references = {}) {
+  const title = resourceItemTitle(item);
+  if (!title) return "";
+
+  const url = resourceItemUrl(item, references);
+  const type = resourceTypeLabel(item);
+  const metaParts = uniqueValues([
+    item.source,
+    item.publisher,
+    item.jurisdiction,
+    item.lastReviewedDate ? `Last reviewed ${item.lastReviewedDate}` : ""
+  ]);
+  const citation = item.citationLabel && item.citationLabel !== title
+    ? `<p class="ges-resource-entry__citation">${escapeHtml(item.citationLabel)}</p>`
+    : "";
+  const description = item.description ? `<p class="ges-resource-entry__description">${escapeHtml(item.description)}</p>` : "";
+  const note = item.note ? `<p class="ges-resource-entry__note">${escapeHtml(item.note)}</p>` : "";
+  const titleMarkup = url
+    ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(title)}</a>`
+    : `<span>${escapeHtml(title)}</span>`;
+
+  return `
+          <li class="ges-resource-entry" data-resource-type="${escapeHtml(slugValue(type))}">
+            <p class="ges-resource-entry__type">${escapeHtml(type)}</p>
+            <div class="ges-resource-entry__body">
+              <p class="ges-resource-entry__title">${titleMarkup}</p>
+              ${metaParts.length ? `<p class="ges-resource-entry__meta">${metaParts.map(escapeHtml).join(" &middot; ")}</p>` : ""}
+              ${citation}
+              ${description}
+              ${note}
+              ${url ? `<code class="ges-resource-entry__url">${escapeHtml(url)}</code>` : ""}
+            </div>
+          </li>
+  `;
+}
+
+export function renderResourcesBlock(block, options = {}) {
+  const groups = normalizeResourceGroups(block);
+  if (!groups.length) return "";
+
+  const references = options.references ?? {};
+  const title = block?.title ?? options.title ?? "Resources and authorities";
+  const intro = block?.intro ?? block?.description ?? options.intro ?? "";
+  const id = options.id ?? block?.id ?? "gesResourcesBlock";
+  const headingLevel = clampHeadingLevel(options.headingLevel ?? block?.headingLevel);
+  const groupHeadingLevel = clampHeadingLevel(headingLevel + 1, 3);
+  const headingTag = `h${headingLevel}`;
+  const groupHeadingTag = `h${groupHeadingLevel}`;
+  const resourceItems = groups.flatMap(group => group.items);
+  const sourceIds = uniqueValues(resourceItems.map(resourceItemId));
+  const sourceCategories = uniqueValues(resourceItems.map(resourceItemCategory));
+  const classes = ["ges-resources-block", "article-sources-used", options.className, block?.className].filter(Boolean).join(" ");
+
+  return `
+    <section class="${escapeHtml(classes)}" aria-labelledby="${escapeHtml(id)}Title" data-source-ids="${escapeHtml(sourceIds.join(" "))}" data-source-categories="${escapeHtml(sourceCategories.join(" "))}">
+      <header class="ges-resources-block__header">
+        <p class="guided-kicker">Resources</p>
+        <${headingTag} id="${escapeHtml(id)}Title">${escapeHtml(title)}</${headingTag}>
+        ${intro ? `<p>${escapeHtml(intro)}</p>` : ""}
+      </header>
+      <div class="ges-resources-block__groups">
+        ${groups.map((group, index) => `
+          <section class="ges-resource-group"${group.heading ? ` aria-labelledby="${escapeHtml(`${id}Group${index + 1}`)}"` : ""}>
+            ${group.heading ? `<${groupHeadingTag} id="${escapeHtml(`${id}Group${index + 1}`)}">${escapeHtml(group.heading)}</${groupHeadingTag}>` : ""}
+            <ul class="ges-resource-list">
+              ${group.items.map(item => renderResourceItem(item, references)).join("")}
+            </ul>
+          </section>
+        `).join("")}
+      </div>
+    </section>
+  `;
 }
 
 export function renderSectionHeader(kicker, title, id, options = {}) {

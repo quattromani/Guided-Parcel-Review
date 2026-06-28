@@ -1,8 +1,44 @@
 import { escapeHtml } from "../utils/html.js?v=db3aed6";
 import { loadPropertyManifest } from "../data-service.js?v=db3aed6";
+import { renderResourcesBlock as renderGesResourcesBlock } from "../ges/article-components.js?v=db3aed6";
 import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
 
 const ARTICLE_AUTHOR_IMAGE = "assets/images/articles/max-quattromani-author.jpg";
+const LEVY_REFERENCES = {
+  gageCountyRo2026: "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2026/34Gage.pdf"
+};
+const LEVY_RESOURCES_BLOCK = {
+  title: "Resources and authorities",
+  intro: "This estimator relies on the countywide value-growth source named in the article and on user-entered assumptions for local budget growth and effective tax rate.",
+  groups: [
+    {
+      heading: "Assessment context",
+      items: [
+        {
+          title: "2026 Reports and Opinions of the Property Tax Administrator - Gage County",
+          source: "Nebraska Department of Revenue, Property Assessment Division",
+          description: "Source for the countywide value-growth context used by the default estimator values.",
+          urlKey: "gageCountyRo2026",
+          type: "PAD report",
+          jurisdiction: "Gage County",
+          lastReviewedDate: "May 14, 2026"
+        }
+      ]
+    },
+    {
+      heading: "Model inputs",
+      items: [
+        {
+          title: "User-entered budget growth and effective tax-rate assumptions",
+          source: "Guided Parcel Review estimator inputs",
+          description: "Editable assumptions used to model levy compression. They are not official tax-bill predictions.",
+          type: "Model input",
+          note: "The article keeps these values editable because final budgets, levies, exemptions, credits, bond levies, TIF districts, and taxing districts can change the result."
+        }
+      ]
+    }
+  ]
+};
 
 const DEFAULTS = {
   taxesPaid: "",
@@ -412,6 +448,13 @@ function renderClosingSection() {
   `;
 }
 
+function renderArticleResourcesBlock() {
+  return renderGesResourcesBlock(LEVY_RESOURCES_BLOCK, {
+    id: "levyCompressionResources",
+    references: LEVY_REFERENCES
+  });
+}
+
 function calculatorValues(form) {
   const taxesPaid = numberFromInput(form.querySelector("#levyTaxesPaid")?.value) ?? DEFAULTS.taxesPaidPlaceholder;
   const assessed2025 = numberFromInput(form.querySelector("#levyAssessed2025")?.value) ?? DEFAULTS.assessed2025Placeholder;
@@ -730,6 +773,7 @@ export function renderLevyCompressionPost() {
       ${renderDefaultAssumptionsSection()}
       ${renderAssumptionsSection()}
       ${renderClosingSection()}
+      ${renderArticleResourcesBlock()}
     </article>
   `);
 

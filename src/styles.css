@@ -9603,6 +9603,9 @@ html[data-ges-theme-resolved="dark"].article-shell-route .article-entry-panel,
 html[data-ges-theme-resolved="dark"].article-shell-route .guide-utility,
 html[data-ges-theme-resolved="dark"].article-shell-route .article-share-footer,
 html[data-ges-theme-resolved="dark"].article-shell-route .continuation-module,
+html[data-ges-theme-resolved="dark"].article-shell-route .ges-resources-block,
+html[data-ges-theme-resolved="dark"].article-shell-route .ges-resource-entry,
+html[data-ges-theme-resolved="dark"].article-shell-route .ges-resource-entry__type,
 html[data-ges-theme-resolved="dark"].article-shell-route .article-sources-used,
 html[data-ges-theme-resolved="dark"].article-shell-route .article-source-note,
 html[data-ges-theme-resolved="dark"].article-shell-route .note-box {
@@ -11636,55 +11639,157 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   text-decoration-color: currentColor;
 }
 
+.ges-resources-block,
 .article-sources-used {
   border-top: 1px solid var(--editorial-border);
   display: grid;
-  gap: 0.42rem;
-  margin-top: 0.62rem;
-  padding-top: 0.68rem;
+  gap: clamp(1rem, 2vw, 1.35rem);
+  justify-self: center;
+  margin-top: clamp(1.45rem, 4vw, 2.4rem);
+  padding-top: clamp(1.15rem, 3vw, 1.8rem);
+  width: min(100%, 64rem);
 }
 
-.article-sources-used h3 {
+.ges-resources-block__header {
+  display: grid;
+  gap: 0.36rem;
+  width: min(100%, 46rem);
+}
+
+.ges-resources-block__header h2,
+.ges-resources-block__header h3 {
   color: rgb(var(--brand-ink));
   font-family: var(--levy-heading-font);
-  font-size: clamp(1.05rem, 1.8vw, 1.22rem);
+  font-size: clamp(1.45rem, 3vw, 2rem);
   font-weight: 820;
   line-height: 1.25;
   margin: 0;
 }
 
-.article-sources-used > p {
+.ges-resources-block__header p:not(.guided-kicker) {
   color: rgb(var(--brand-ink));
   font-family: var(--levy-heading-font);
-  font-size: 1.08rem;
+  font-size: 0.95rem;
   font-weight: 400;
-  line-height: 1.64;
+  line-height: 1.54;
   margin: 0;
 }
 
-.levy-compression-page .article-sources-used > p {
-  font-family: var(--levy-heading-font);
+.ges-resources-block__groups,
+.ges-resource-group,
+.ges-resource-list {
+  display: grid;
+  gap: 0.78rem;
 }
 
-.article-sources-used li {
-  color: rgb(var(--color-slate-500));
+.ges-resource-group h3,
+.ges-resource-group h4 {
+  color: rgb(var(--brand-ink));
   font-family: var(--levy-heading-font);
-  font-size: 0.76rem;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  line-height: 1.18;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.ges-resource-list {
+  list-style: none;
+  padding: 0;
+}
+
+.ges-resource-entry {
+  border-top: 1px solid var(--editorial-border);
+  display: grid;
+  gap: 0.62rem;
+  margin: 0;
+  padding-top: 0.78rem;
+}
+
+.ges-resource-entry__type {
+  align-self: start;
+  border: 1px solid var(--editorial-border);
+  border-radius: 999px;
+  color: rgb(var(--color-slate-500));
+  display: inline-flex;
+  font-family: var(--levy-heading-font);
+  font-size: 0.66rem;
+  font-weight: 850;
+  justify-self: start;
+  letter-spacing: 0.1em;
+  line-height: 1.18;
+  margin: 0;
+  padding: 0.24rem 0.52rem;
+  text-transform: uppercase;
+}
+
+.ges-resource-entry__body {
+  display: grid;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.ges-resource-entry__title,
+.ges-resource-entry__meta,
+.ges-resource-entry__citation,
+.ges-resource-entry__description,
+.ges-resource-entry__note,
+.ges-resource-entry__url {
+  margin: 0;
+}
+
+.ges-resource-entry__title {
+  color: rgb(var(--brand-ink));
+  font-family: var(--levy-heading-font);
+  font-size: 1rem;
+  font-weight: 760;
+  line-height: 1.28;
+}
+
+.ges-resource-entry__title a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.16em;
+}
+
+.ges-resource-entry__title a:focus,
+.ges-resource-entry__title a:hover {
+  color: rgb(var(--brand-blue));
+  text-decoration-color: currentColor;
+}
+
+.ges-resource-entry__meta,
+.ges-resource-entry__citation,
+.ges-resource-entry__description,
+.ges-resource-entry__note {
+  color: rgb(var(--color-slate-600));
+  font-family: var(--levy-heading-font);
+  font-size: 0.78rem;
   font-weight: 420;
   line-height: 1.42;
-  margin: 0;
 }
 
-.article-sources-used li::marker {
-  color: rgb(var(--color-secondary));
+.ges-resource-entry__note {
+  color: rgb(var(--color-slate-500));
 }
 
-.article-sources-used ul {
-  display: grid;
-  gap: 0.24rem;
-  list-style: disc;
-  margin: 0;
-  padding-left: 1.08rem;
+.ges-resource-entry__url {
+  color: rgb(var(--brand-ink));
+  display: none;
+  font-family: var(--levy-mono-font);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 760px) {
+  .ges-resource-entry {
+    gap: 1rem;
+    grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr);
+  }
 }
 
 .print-calendar-url {
@@ -15437,6 +15542,8 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   .resource-section,
   .resource-card,
   .article-source-note,
+  .ges-resources-block,
+  .ges-resource-entry,
   .article-sources-used,
   .decision-disclaimer,
   .ges-margin-insight,
@@ -15734,8 +15841,65 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   }
 
   .article-source-note,
+  .ges-resources-block,
   .article-sources-used {
     margin-top: 0.08in;
+  }
+
+  .ges-resources-block {
+    gap: 9pt;
+    padding-top: 10pt;
+  }
+
+  .ges-resources-block__header {
+    gap: 3pt;
+  }
+
+  .ges-resources-block__header h2,
+  .ges-resources-block__header h3 {
+    font-size: 13pt;
+    line-height: 1.18;
+  }
+
+  .ges-resource-group,
+  .ges-resource-list {
+    gap: 6pt;
+  }
+
+  .ges-resource-group h3,
+  .ges-resource-group h4,
+  .ges-resource-entry__type {
+    font-size: 7pt;
+    letter-spacing: 0.08em;
+  }
+
+  .ges-resource-entry {
+    gap: 6pt;
+    grid-template-columns: 1.1in minmax(0, 1fr);
+    padding-top: 6pt;
+  }
+
+  .ges-resource-entry__type {
+    border-color: #9ca3af;
+    padding: 2pt 5pt;
+  }
+
+  .ges-resource-entry__title {
+    font-size: 9pt;
+  }
+
+  .ges-resource-entry__meta,
+  .ges-resource-entry__citation,
+  .ges-resource-entry__description,
+  .ges-resource-entry__note {
+    font-size: 8pt;
+    line-height: 1.28;
+  }
+
+  .ges-resource-entry__url {
+    display: block;
+    font-size: 7.2pt;
+    line-height: 1.25;
   }
 
   .resource-card a {

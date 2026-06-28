@@ -129,22 +129,87 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     }
   },
   sourcesUsed: {
-    title: "Sources",
+    title: "Resources and authorities",
     intro: "This guide is based on Nebraska property tax law, Nebraska Department of Revenue Property Assessment Division regulations, and generally accepted assessment guidance.",
     groups: [
       {
         heading: "Legal authority",
         items: [
-          { label: "Nebraska Constitution, Article VIII, § 1 — uniform and proportionate taxation.", urlKey: "nebraskaConstitutionArticleViii" },
-          { label: "Nebraska Revised Statutes, Chapter 77 — property valuation, assessment, equalization, protest, and appeal procedures.", urlKey: "nebraskaRevisedStatutesChapter77" },
-          { label: "Title 350, Nebraska Administrative Code, Chapter 10 — Property Assessment Division Real Property Regulations.", urlKey: "title350Chapter10" }
+          {
+            title: "Nebraska Constitution, Article VIII, § 1",
+            source: "Nebraska Legislature",
+            description: "Uniform and proportionate taxation.",
+            urlKey: "nebraskaConstitutionArticleViii",
+            type: "Constitutional provision",
+            citationLabel: "Neb. Const. art. VIII, § 1",
+            jurisdiction: "Nebraska"
+          },
+          {
+            title: "Nebraska Revised Statutes, Chapter 77",
+            source: "Nebraska Legislature",
+            description: "Property valuation, assessment, equalization, protest, and appeal procedures.",
+            urlKey: "nebraskaRevisedStatutesChapter77",
+            type: "Statutes",
+            jurisdiction: "Nebraska"
+          },
+          {
+            title: "Title 350, Nebraska Administrative Code, Chapter 10",
+            source: "Nebraska Department of Revenue, Property Assessment Division",
+            description: "Real property regulations and protest procedure context.",
+            urlKey: "title350Chapter10",
+            type: "Administrative regulation",
+            jurisdiction: "Nebraska"
+          }
         ]
       },
       {
         heading: "Assessment guidance",
         items: [
-          { label: "IAAO Course 101, Fundamentals of Real Property Appraisal — sales comparison, cost approach, depreciation, and appraisal process.", sourceId: "iaaoCourse101Fundamentals", category: "assessment-guidance" },
-          { label: "Nebraska Property Assessment Division Reports & Opinions — used only as assessment-practice context, not as controlling legal authority.", sourceId: "nebraskaPadReportsOpinions", category: "assessment-guidance" }
+          {
+            title: "IAAO Course 101, Fundamentals of Real Property Appraisal",
+            source: "International Association of Assessing Officers",
+            description: "Sales comparison, cost approach, depreciation, and appraisal process guidance.",
+            type: "Assessment guidance",
+            sourceId: "iaaoCourse101Fundamentals",
+            category: "assessment-guidance"
+          },
+          {
+            title: "Nebraska Property Assessment Division Reports & Opinions",
+            source: "Nebraska Department of Revenue, Property Assessment Division",
+            description: "Used as assessment-practice context, not as controlling legal authority.",
+            type: "PAD reports",
+            sourceId: "nebraskaPadReportsOpinions",
+            category: "assessment-guidance"
+          }
+        ]
+      },
+      {
+        heading: "Official reader resources",
+        items: [
+          {
+            title: "Gage County GIS / Property Record Lookup",
+            source: "Gage County Assessor",
+            description: "Find the property record card for your parcel and comparable properties.",
+            url: "https://report.gworks.com/report.ashx?county=gage&type=assessor",
+            type: "County record lookup",
+            jurisdiction: "Gage County"
+          },
+          {
+            title: "Gage County Sales Comparison Map",
+            source: "Gage County Assessor",
+            description: "Find recent sales context for comparison research.",
+            url: "https://experience.arcgis.com/experience/67492767fb8d49a8b321d14022d24e81",
+            type: "County map",
+            jurisdiction: "Gage County"
+          },
+          {
+            title: "Nebraska Property Valuation Protest Form 422",
+            source: "Nebraska Department of Revenue, Property Assessment Division",
+            description: "Official property valuation protest form.",
+            url: "https://revenue.nebraska.gov/sites/default/files/doc/pad/forms/422_Property_Valuation_Protest.pdf",
+            type: "Official form",
+            jurisdiction: "Nebraska"
+          }
         ]
       }
     ]
