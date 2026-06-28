@@ -1,0 +1,121 @@
+@media print {
+  :root {
+    --ges-print-page: 255 255 255;
+    --ges-print-text: 17 24 39;
+    --ges-print-secondary: 55 65 81;
+    --ges-print-muted: 75 85 99;
+    --ges-print-rule: 156 163 175;
+    --ges-print-card: 248 250 252;
+    --ges-print-border: 203 213 225;
+  }
+
+  @page {
+    size: Letter;
+    margin: 0.55in 0.55in 0.6in;
+  }
+
+  html,
+  html[data-ges-theme-resolved],
+  body {
+    background: rgb(var(--ges-print-page)) !important;
+    color: rgb(var(--ges-print-text)) !important;
+    color-scheme: light;
+  }
+
+  body {
+    font-size: 10pt;
+    line-height: 1.42;
+  }
+
+  nav,
+  [role="navigation"],
+  .guide-review-header,
+  .ges-project-nav,
+  .ges-field-kit,
+  .ges-page-utility,
+  .hero-utility,
+  .hero-action,
+  .article-print-cta,
+  .article-share-footer,
+  .article-depth-markers,
+  .ges-pattern-nav,
+  .ges-sandbox-controls,
+  .utility-belt,
+  .interactive-controls,
+  .app-modal-backdrop,
+  .image-modal-backdrop,
+  footer[aria-label="Site footer"] {
+    display: none !important;
+  }
+
+  main,
+  article,
+  section,
+  .ges-guide,
+  .editorial-guide,
+  .ges-pattern-library,
+  .tax-story-chapter,
+  .article-section {
+    background: rgb(var(--ges-print-page)) !important;
+    box-shadow: none !important;
+    color: rgb(var(--ges-print-text)) !important;
+    max-width: none !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .article-hero,
+  .article-hero-packet,
+  .article-entry-panel,
+  .tax-article-header,
+  .editorial-section-header,
+  .ges-section-header--with-insight {
+    break-after: avoid;
+    break-inside: avoid;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  p,
+  li,
+  blockquote,
+  table,
+  figure,
+  .concept-card,
+  .comparison-card,
+  .decision-panel,
+  .scorecard,
+  .assessment-build-panel,
+  .record-callout,
+  .evidence-matrix,
+  .script-card,
+  .meeting-schedule-card,
+  .resource-section,
+  .resource-card,
+  .article-source-note,
+  .article-sources-used,
+  .decision-disclaimer,
+  .ges-margin-insight,
+  .continuation-module,
+  .question-checklist li,
+  .ges-stat-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  a {
+    color: rgb(var(--ges-print-text)) !important;
+    text-decoration-color: rgb(var(--ges-print-muted)) !important;
+  }
+
+  a[href^="http"]::after {
+    color: rgb(var(--ges-print-muted));
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    overflow-wrap: anywhere;
+  }
+}

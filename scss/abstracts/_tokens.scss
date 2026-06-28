@@ -1,0 +1,210 @@
+:root {
+  --ges-version: "1.1.0-sass";
+
+  --ges-font-body: var(--ds-font-body);
+  --ges-font-heading: var(--ds-font-heading);
+  --ges-font-ui: var(--ds-font-ui);
+  --ges-font-mono: var(--ds-font-mono);
+
+  --ges-type-2xs: var(--ds-type-2xs);
+  --ges-type-xs: var(--ds-type-xs);
+  --ges-type-sm: var(--ds-type-sm);
+  --ges-type-md: var(--ds-type-md);
+  --ges-type-lg: var(--ds-type-lg);
+  --ges-type-xl: var(--ds-type-xl);
+  --ges-type-2xl: var(--ds-type-2xl);
+  --ges-type-3xl: var(--ds-type-3xl);
+  --ges-type-4xl: var(--ds-type-4xl);
+
+  --ges-line-tight: var(--ds-line-tight);
+  --ges-line-heading: var(--ds-line-heading);
+  --ges-line-copy: var(--ds-line-copy);
+  --ges-line-compact: var(--ds-line-compact);
+  --ges-weight-regular: var(--ds-weight-regular);
+  --ges-weight-medium: var(--ds-weight-medium);
+  --ges-weight-semibold: var(--ds-weight-semibold);
+  --ges-weight-bold: var(--ds-weight-bold);
+  --ges-weight-heavy: var(--ds-weight-heavy);
+  --ges-letter-kicker: var(--ds-letter-kicker);
+  --ges-letter-label: var(--ds-letter-label);
+
+  --ges-color-page: var(--ds-color-page);
+  --ges-color-page-warm: var(--ds-color-page-warm);
+  --ges-color-surface: var(--ds-color-surface);
+  --ges-color-surface-elevated: var(--ds-color-surface-elevated);
+  --ges-color-surface-muted: var(--ds-color-surface-muted);
+  --ges-color-text: var(--ds-color-text);
+  --ges-color-text-secondary: var(--ds-color-text-secondary);
+  --ges-color-text-muted: var(--ds-color-text-muted);
+  --ges-color-border-subtle: var(--ds-color-border-subtle);
+  --ges-color-border-strong: var(--ds-color-border-strong);
+  --ges-color-civic-blue: var(--ds-color-civic-blue);
+  --ges-color-civic-blue-soft: var(--ds-color-civic-blue-soft);
+  --ges-color-evidence-green: var(--ds-color-evidence-green);
+  --ges-color-evidence-green-soft: var(--ds-color-evidence-green-soft);
+  --ges-color-caution-amber: var(--ds-color-caution-amber);
+  --ges-color-caution-amber-soft: var(--ds-color-caution-amber-soft);
+  --ges-color-process-blue: var(--ds-color-process-blue);
+  --ges-color-process-blue-soft: var(--ds-color-process-blue-soft);
+  --ges-color-reflection: var(--ds-color-reflection);
+  --ges-color-reflection-soft: var(--ds-color-reflection-soft);
+  --ges-color-link: var(--ds-color-link);
+  --ges-color-focus: var(--ds-color-focus);
+  --ges-color-selection: var(--ds-color-selection);
+  --ges-color-shadow: var(--ds-color-shadow);
+  --ges-color-highlight: var(--ds-color-white);
+  --ges-color-success: var(--ds-color-success);
+  --ges-color-success-soft: var(--ds-color-success-soft);
+  --ges-color-error: var(--ds-color-danger);
+  --ges-color-error-soft: var(--ds-color-danger-soft);
+  --ges-color-caution: var(--ds-color-warning);
+  --ges-color-caution-soft: var(--ds-color-warning-soft);
+  --ges-color-neutral: var(--ds-color-text-muted);
+  --ges-color-neutral-soft: var(--ds-color-surface-muted);
+  --ges-color-info: var(--ds-color-info);
+  --ges-color-info-soft: var(--ds-color-info-soft);
+  --ges-color-information: var(--ds-color-civic-blue);
+  --ges-color-information-soft: var(--ds-color-civic-blue-soft);
+  --ges-color-evidence: var(--ds-color-evidence-green);
+  --ges-color-evidence-soft: var(--ds-color-evidence-green-soft);
+  --ges-color-comparison: var(--ds-color-caution-amber);
+  --ges-color-comparison-soft: var(--ds-color-caution-amber-soft);
+  --ges-color-action: var(--ds-color-process-blue);
+  --ges-color-action-soft: var(--ds-color-process-blue-soft);
+
+  --ges-space-3xs: var(--ds-space-3xs);
+  --ges-space-2xs: var(--ds-space-2xs);
+  --ges-space-xs: var(--ds-space-xs);
+  --ges-space-sm: var(--ds-space-sm);
+  --ges-space-md: var(--ds-space-md);
+  --ges-space-lg: var(--ds-space-lg);
+  --ges-space-xl: var(--ds-space-xl);
+  --ges-space-2xl: var(--ds-space-2xl);
+  --ges-space-3xl: var(--ds-space-3xl);
+  --ges-gutter: var(--ds-gutter);
+  --ges-section-space-compact: var(--ds-section-space-compact);
+  --ges-section-space: var(--ds-section-space);
+  --ges-section-space-immersive: var(--ds-section-space-immersive);
+  --ges-component-space-compact: var(--ds-component-space-compact);
+  --ges-component-space: var(--ds-component-space);
+  --ges-component-space-generous: var(--ds-component-space-generous);
+  --ges-card-padding-compact: var(--ds-card-padding-compact);
+  --ges-card-padding: var(--ds-card-padding);
+  --ges-card-padding-generous: var(--ds-card-padding-generous);
+
+  --ges-width-reading: var(--ds-width-reading);
+  --ges-width-wide: var(--ds-width-wide);
+  --ges-width-cover: var(--ds-width-cover);
+  --ges-width-full-bleed: var(--ds-width-full-bleed);
+  --ges-width-margin-insight: var(--ds-width-margin-insight);
+  --ges-min-viewport: var(--ds-min-viewport);
+  --ges-breakpoint-sm: var(--ds-breakpoint-sm);
+  --ges-breakpoint-md: var(--ds-breakpoint-md);
+  --ges-breakpoint-lg: var(--ges-breakpoint-lg-editorial);
+  --ges-breakpoint-xl: var(--ges-breakpoint-xl-editorial);
+
+  --ges-radius-xs: var(--ds-radius-xs);
+  --ges-radius-sm: var(--ds-radius-sm);
+  --ges-radius-md: var(--ds-radius-md);
+  --ges-radius-lg: var(--ds-radius-lg);
+  --ges-radius-pill: var(--ds-radius-pill);
+  --ges-radius-media: var(--ds-radius-media);
+  --ges-border-width: var(--ds-border-width);
+  --ges-border-width-strong: var(--ds-border-width-strong);
+  --ges-border-width-accent: var(--ds-border-width-accent);
+  --ges-rule-width: var(--ds-rule-width);
+  --ges-rule-width-strong: var(--ds-rule-width-strong);
+  --ges-focus-ring-width: var(--ds-focus-ring-width);
+  --ges-focus-ring-offset: var(--ds-focus-ring-offset);
+  --ges-print-rule-width: var(--ds-print-rule-width);
+  --ges-shadow-surface: var(--ds-shadow-surface);
+  --ges-shadow-card: var(--ds-shadow-card);
+  --ges-shadow-media: var(--ds-shadow-media);
+  --ges-motion-duration: var(--ds-motion-duration);
+  --ges-motion-duration-slow: var(--ds-motion-duration-slow);
+  --ges-motion-ease: var(--ds-motion-ease);
+
+  --color-slate-700: var(--ds-color-slate-700);
+  --color-slate-600: var(--ds-color-slate-600);
+  --color-slate-500: var(--ds-color-text-muted);
+  --color-slate-400: var(--ds-color-slate-400);
+  --color-slate-300: var(--ds-color-slate-300);
+  --color-slate-200: var(--ds-color-slate-200);
+  --color-slate-100: var(--ds-color-slate-100);
+  --color-slate-50: var(--ds-color-slate-50);
+  --county-color-primary: var(--ds-color-civic-blue);
+  --county-color-primary-soft: var(--ds-color-civic-blue-soft);
+  --county-color-background: var(--ds-color-page);
+  --county-color-surface: var(--ds-color-surface);
+  --county-color-border: var(--ds-color-border-strong);
+  --county-color-border-soft: var(--ds-color-border-subtle);
+  --county-color-link: var(--county-color-primary);
+  --county-font-ui: var(--ds-font-ui);
+  --county-radius-card: var(--ds-radius-md);
+  --county-space-xs: var(--ds-space-xs);
+  --county-space-sm: var(--ds-space-sm);
+  --county-space-md: var(--ds-space-md);
+  --county-space-lg: var(--ds-space-lg);
+  --county-space-xl: var(--ds-space-xl);
+  --surface-card: var(--ds-color-surface);
+  --surface: var(--surface-card);
+  --surface-base: var(--ds-color-page);
+  --surface-muted: var(--ds-color-slate-50);
+  --surface-raised: var(--surface-card);
+  --border-muted: var(--ds-color-slate-200);
+  --brand-ink: var(--ds-color-slate-700);
+  --article-fallback-text: var(--ds-color-slate-700);
+  --color-ink: var(--ds-color-text);
+  --color-muted: var(--ds-color-text-muted);
+  --color-paper: var(--ds-color-page);
+  --color-surface: var(--ds-color-surface);
+  --color-border: var(--ds-color-border-subtle);
+  --color-information: var(--ges-color-information);
+  --color-information-soft: var(--ges-color-information-soft);
+  --color-evidence: var(--ges-color-evidence);
+  --color-evidence-soft: var(--ges-color-evidence-soft);
+  --color-comparison: var(--ges-color-comparison);
+  --color-comparison-soft: var(--ges-color-comparison-soft);
+  --color-action: var(--ges-color-action);
+  --color-action-soft: var(--ges-color-action-soft);
+  --color-reflection: var(--ges-color-reflection);
+  --color-reflection-soft: var(--ges-color-reflection-soft);
+  --surface-shadow: var(--ges-shadow-surface);
+  --shadow-card: var(--ges-shadow-card);
+
+  --icon-xs: var(--ds-icon-xs);
+  --icon-sm: var(--ds-icon-sm);
+  --icon-md: var(--ds-icon-md);
+  --icon-lg: var(--ds-icon-lg);
+  --icon-xl: var(--ds-icon-xl);
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library) {
+  --levy-body-font: var(--ges-font-body);
+  --levy-heading-font: var(--ges-font-heading);
+  --levy-mono-font: var(--ges-font-mono);
+  --editorial-accent: rgb(var(--color-information));
+  --editorial-accent-soft: rgb(var(--color-information-soft));
+  --editorial-border: rgb(var(--color-border));
+  --editorial-muted: rgb(var(--color-paper));
+  --editorial-surface: rgb(var(--color-surface));
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library)[data-density="compact"] {
+  --ges-current-section-space: var(--ges-section-space-compact);
+  --ges-current-component-gap: var(--ges-component-space-compact);
+  --ges-current-card-padding: var(--ges-card-padding-compact);
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library),
+:where(.editorial-guide, .ges-guide, .ges-pattern-library)[data-density="standard"] {
+  --ges-current-section-space: var(--ges-section-space);
+  --ges-current-component-gap: var(--ges-component-space);
+  --ges-current-card-padding: var(--ges-card-padding);
+}
+
+:where(.editorial-guide, .ges-guide, .ges-pattern-library)[data-density="immersive"] {
+  --ges-current-section-space: var(--ges-section-space-immersive);
+  --ges-current-component-gap: var(--ges-component-space-generous);
+  --ges-current-card-padding: var(--ges-card-padding-generous);
+}

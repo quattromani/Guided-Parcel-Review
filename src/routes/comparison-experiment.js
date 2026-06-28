@@ -502,9 +502,9 @@ export async function renderComparisonExperiment(propertySwitcherContext = {}, c
   const canvas = document.querySelector(".mobile-review-canvas");
   if (!canvas) return;
 
-  document.querySelector(".guide-review-header")?.classList.add("hidden");
-  document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("hidden"));
-  document.querySelector("[data-footer-resource-shell]")?.classList.add("hidden");
+  document.querySelector(".guide-review-header")?.classList.add("is-hidden");
+  document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("is-hidden"));
+  document.querySelector("[data-footer-resource-shell]")?.classList.add("is-hidden");
 
   const manifest = propertySwitcherContext.manifest || {};
   const models = await Promise.all(config.properties.map(item => resolveComparisonModel(manifest, item)));

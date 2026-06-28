@@ -148,7 +148,7 @@ Observations:
 
 Recommendations:
 
-- Long-term: replace CDN Tailwind usage with production-built CSS if the publication moves beyond prototype hosting.
+- Completed in the GES Sass migration: CDN Tailwind usage has been replaced with project-local design-system CSS.
 - Long-term: split GEDL component CSS into clearer modules as the article library grows.
 - Keep future social preview images optimized at the intended share size.
 

@@ -2,6 +2,20 @@
 
 Tokens are the first layer of the cascade. Component CSS should consume tokens, not hard-coded values.
 
+The canonical token source is the Sass tree:
+
+- `scss/abstracts/_colors.scss`
+- `scss/abstracts/_typography.scss`
+- `scss/abstracts/_spacing.scss`
+- `scss/abstracts/_breakpoints.scss`
+- `scss/abstracts/_elevation.scss`
+- `scss/abstracts/_opacity.scss`
+- `scss/abstracts/_animation.scss`
+- `scss/abstracts/_zindex.scss`
+- `scss/abstracts/_tokens.scss`
+
+`scripts/build-scss.mjs` generates `src/ges-system.css`, and `src/ges/tokens.css` remains only as a compatibility import. The style guide and pattern library must read the same custom properties as the public site.
+
 ## Color Roles
 
 - Page background: `--ges-color-page`
@@ -34,6 +48,8 @@ Semantic article roles are exposed through compatibility aliases:
 - `--color-reflection`
 
 Use these roles to describe information behavior, not decoration.
+
+County and app-shell compatibility aliases such as `--county-color-*`, `--surface-*`, `--semantic-*`, and `--accent-*` should point back to `--ds-*` or `--ges-*` tokens. Do not add new literal values to `src/styles.css`.
 
 ## Typography
 
@@ -82,3 +98,9 @@ Density changes rhythm. It must not change component meaning.
 - Motion: `--ges-motion-duration`, `--ges-motion-duration-slow`, `--ges-motion-ease`
 
 Reduced motion disables practical animation duration globally in the GES base layer.
+
+## Utility Policy
+
+GES includes a narrow project utility layer for the former Tailwind utilities actually used by the project. Utility classes should stay semantic enough to read in markup, such as `is-hidden`, `visually-hidden`, `display-grid`, `pad-block-2`, `surface-muted`, `text-primary`, and `mq-lg-grid-cols-12`.
+
+Do not reintroduce Tailwind class names, Tailwind CDN config, or broad framework-style utility generation. If a pattern repeats, prefer a component class over another utility.

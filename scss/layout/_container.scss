@@ -1,0 +1,12 @@
+.site-container,
+.content-container {
+  margin-inline: auto;
+  max-width: var(--ds-width-7xl);
+  width: min(100% - (var(--ds-gutter) * 2), var(--ds-width-7xl));
+}
+
+.reading-container {
+  margin-inline: auto;
+  max-width: var(--ds-width-reading);
+  width: min(100% - (var(--ds-gutter) * 2), var(--ds-width-reading));
+}

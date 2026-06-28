@@ -153,7 +153,7 @@ Frontend placeholders:
 
 Frontend implementation rule:
 
-- Prefer `review-card`, `review-card-muted`, `review-card-spacious`, and `review-note` over repeated Tailwind surface bundles. Keep pills, buttons, circular controls, and step markers on their own shape rules.
+- Prefer `review-card`, `review-card-muted`, `review-card-spacious`, and `review-note` over repeated low-level surface utility bundles. Keep pills, buttons, circular controls, and step markers on their own shape rules.
 
 ## QA / Testing Team
 
@@ -250,13 +250,14 @@ Policy placeholders:
 
 ## DevOps / Deployment Team
 
-The app is currently static and deployable to GitHub Pages or any static host. There is no build step.
+The app is currently static and deployable to GitHub Pages or any static host. Sass has a contributor build step, but the generated CSS is checked in for static hosting.
 
 Current assumptions:
 
 - Static files are served directly.
 - `server.js` is only a local development helper.
-- CDN scripts provide Tailwind and Chart.js.
+- Chart.js is still CDN-hosted.
+- Tailwind is no longer a runtime dependency; GES design-system CSS is generated from `scss/ges.scss` into `src/ges-system.css`.
 - JSON files are browser-readable assets.
 
 Deployment placeholders:

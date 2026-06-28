@@ -2,6 +2,8 @@
 
 > GES 1.0 operational documentation now lives in `docs/ges/`. This file remains as historical design-language source material and long-form rationale.
 
+Current implementation note: the permanent design-system source now lives in `scss/`, with live tokens generated into `src/ges-system.css`. The style guide, pattern library, website, print rules, and future PDF/React work should consume those same token names instead of duplicating values.
+
 Guided Editorial System, or GES, is the publishing language for long-form civic education in Guided Parcel Review. Earlier notes may use GEDL, or Guided Editorial Design Language; treat GEDL as the design-language layer inside the broader GES publishing system.
 
 It is not a visual style guide. A visual style guide describes how things look. GEDL describes how information behaves.
@@ -410,7 +412,7 @@ HTML structure:
   <figure class="hero-media">
     <video class="article-hero-video-player" poster="/assets/images/articles/example-16x9.jpg" preload="metadata" playsinline></video>
     <button class="article-hero-video-play" type="button" aria-label="Play the video summary"></button>
-    <figcaption class="sr-only">Reader reviewing a printed property record. The video provides a short overview of the article.</figcaption>
+    <figcaption class="visually-hidden">Reader reviewing a printed property record. The video provides a short overview of the article.</figcaption>
   </figure>
 </header>
 ```

@@ -45,29 +45,13 @@
       document.documentElement.dataset.gesThemeResolved = selected === "system" ? system : selected;
     })();
   </script>
-  <script>
-    window.tailwind = {
-      config: {
-        theme: {
-          extend: {
-            borderRadius: {
-              lg: "var(--radius-container-lg)",
-              xl: "var(--radius-container-lg)",
-              "2xl": "var(--radius-container-lg)"
-            }
-          }
-        }
-      }
-    };
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="src/styles.css?v=db3aed6" />
   <link id="ges-design-system-stylesheet" rel="stylesheet" href="src/ges/index.css?v=db3aed6" />
 </head>
-<body class="bg-slate-100 text-slate-700">
-  <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8" data-ges-shell="article">
-    <section id="pageTitle" class="mb-4 px-1" data-ges-shell-region="cover"></section>
+<body class="surface-muted-strong text-primary">
+  <main class="center-x measure-7xl pad-4 mq-sm-pad-6 mq-lg-pad-8" data-ges-shell="article">
+    <section id="pageTitle" class="space-bottom-4 pad-inline-1" data-ges-shell-region="cover"></section>
     <div class="mobile-review-canvas" data-ges-shell-region="body"></div>
   </main>
 

@@ -1,0 +1,27 @@
+.dialog-scrim {
+  background: rgb(var(--ds-color-black) / var(--ds-opacity-overlay));
+}
+
+.orientation-modal.orientation-modal {
+  box-sizing: border-box;
+  max-width: min(43rem, calc(100vw - var(--ds-space-8)));
+  min-width: 0;
+  width: 100%;
+}
+
+.orientation-modal :where(.orientation-modal-header, .orientation-modal-body, .orientation-acknowledgment, .orientation-actions) {
+  min-width: 0;
+}
+
+.orientation-modal :where(h2, p, label, strong) {
+  overflow-wrap: anywhere;
+}
+
+.orientation-actions {
+  flex-wrap: wrap;
+}
+
+.orientation-primary-button {
+  max-width: 100%;
+  white-space: normal;
+}

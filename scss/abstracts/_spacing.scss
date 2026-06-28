@@ -1,0 +1,54 @@
+:root {
+  --ds-space-0: 0;
+  --ds-space-0-5: 0.125rem;
+  --ds-space-1: 0.25rem;
+  --ds-space-1-5: 0.375rem;
+  --ds-space-2: 0.5rem;
+  --ds-space-2-5: 0.625rem;
+  --ds-space-3: 0.75rem;
+  --ds-space-4: 1rem;
+  --ds-space-5: 1.25rem;
+  --ds-space-6: 1.5rem;
+  --ds-space-8: 2rem;
+  --ds-space-12: 3rem;
+  --ds-space-16: 4rem;
+  --ds-space-24: 6rem;
+  --ds-space-28: 7rem;
+  --ds-space-40: 10rem;
+  --ds-space-44: 11rem;
+  --ds-space-64: 16rem;
+  --ds-space-72: 18rem;
+  --ds-space-80: 20rem;
+
+  --ds-space-3xs: var(--ds-space-1);
+  --ds-space-2xs: var(--ds-space-1-5);
+  --ds-space-xs: var(--ds-space-2);
+  --ds-space-sm: var(--ds-space-3);
+  --ds-space-md: var(--ds-space-4);
+  --ds-space-lg: var(--ds-space-6);
+  --ds-space-xl: 2.25rem;
+  --ds-space-2xl: 3.5rem;
+  --ds-space-3xl: 5rem;
+
+  --ds-gutter: clamp(1rem, 4vw, 2rem);
+  --ds-section-space-compact: clamp(1rem, 2.5vw, 1.6rem);
+  --ds-section-space: clamp(1.5rem, 4vw, 2.8rem);
+  --ds-section-space-immersive: clamp(2.25rem, 7vw, 5rem);
+  --ds-component-space-compact: 0.75rem;
+  --ds-component-space: 1rem;
+  --ds-component-space-generous: 1.35rem;
+  --ds-card-padding-compact: clamp(0.85rem, 2vw, 1rem);
+  --ds-card-padding: clamp(1rem, 2.4vw, 1.35rem);
+  --ds-card-padding-generous: clamp(1.25rem, 3vw, 1.75rem);
+  --ds-county-space-xs: 0.44rem;
+  --ds-county-space-sm: 0.67rem;
+  --ds-county-space-2xl: 3.38rem;
+  --ds-surface-pad-compact: 1rem;
+  --ds-surface-pad: 1.25rem;
+  --ds-surface-pad-spacious: 1.5rem;
+  --ds-icon-xs: 16px;
+  --ds-icon-sm: 20px;
+  --ds-icon-md: 28px;
+  --ds-icon-lg: 40px;
+  --ds-icon-xl: 56px;
+}

@@ -23,7 +23,7 @@ function resolveElement(value, root = document) {
 export function hideGesAppChrome(root = document, selectors = DEFAULT_APP_CHROME_SELECTORS) {
   normalizeList(selectors).forEach(selector => {
     root.querySelectorAll(selector).forEach(element => {
-      element.classList.add("hidden");
+      element.classList.add("is-hidden");
       element.setAttribute("aria-hidden", "true");
     });
   });

@@ -23,7 +23,7 @@ export function initImageModal(assets = {}) {
 
     modalImage.src = item.src;
     modalImage.alt = item.caption;
-    modalImage.classList.remove("hidden");
+    modalImage.classList.remove("is-hidden");
     modalCaption.textContent = item.caption;
     renderFilmstrip();
   }
@@ -33,10 +33,10 @@ export function initImageModal(assets = {}) {
       <button
         type="button"
         data-gallery-index="${index}"
-        class="h-16 w-24 shrink-0 overflow-hidden rounded-lg ring-2 transition ${index === currentIndex ? "ring-slate-300" : "ring-white/25 hover:ring-white/70"}"
+        class="height-16 width-24 flex-shrink-0 clip-overflow radius-md ring-size-2 transition-base ${index === currentIndex ? "ring-color-control" : "ring-color-inverse-subtle hover-ring-color-inverse"}"
         aria-label="${copyTemplate("modals.image.showTemplate", { caption: item.caption }, `Show ${item.caption}`)}"
       >
-        <img src="${item.src}" alt="${item.caption}" class="h-full w-full object-cover" />
+        <img src="${item.src}" alt="${item.caption}" class="height-full width-full media-cover" />
       </button>
     `).join("");
 
@@ -46,12 +46,12 @@ export function initImageModal(assets = {}) {
   }
 
   function close() {
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
+    modal.classList.add("is-hidden");
+    modal.classList.remove("display-flex");
     modalImage.src = "";
     modalImage.alt = "";
     modalCaption.textContent = "";
-    document.body.classList.remove("overflow-hidden");
+    document.body.classList.remove("clip-overflow");
   }
 
   function open(src, caption) {
@@ -59,9 +59,9 @@ export function initImageModal(assets = {}) {
 
     const itemIndex = galleryItems.findIndex(item => item.src === src || item.caption === caption);
     setCurrentImage(itemIndex >= 0 ? itemIndex : 0);
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    document.body.classList.add("overflow-hidden");
+    modal.classList.remove("is-hidden");
+    modal.classList.add("display-flex");
+    document.body.classList.add("clip-overflow");
   }
 
   function showPrevious() {
@@ -80,7 +80,7 @@ export function initImageModal(assets = {}) {
 
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") close();
-    if (modal.classList.contains("hidden")) return;
+    if (modal.classList.contains("is-hidden")) return;
     if (event.key === "ArrowLeft") showPrevious();
     if (event.key === "ArrowRight") showNext();
   });

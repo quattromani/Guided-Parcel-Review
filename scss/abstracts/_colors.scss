@@ -1,0 +1,81 @@
+:root {
+  color-scheme: light;
+
+  --ds-color-slate-50: 248 250 252;
+  --ds-color-slate-100: 241 245 249;
+  --ds-color-slate-200: 226 232 240;
+  --ds-color-slate-300: 203 213 225;
+  --ds-color-slate-400: 148 163 184;
+  --ds-color-slate-500: 100 116 139;
+  --ds-color-slate-600: 71 85 105;
+  --ds-color-slate-700: 31 51 71;
+  --ds-color-slate-900: 17 24 39;
+  --ds-color-white: 255 255 255;
+  --ds-color-black: 0 0 0;
+
+  --ds-color-page: 246 246 246;
+  --ds-color-page-warm: 248 245 243;
+  --ds-color-surface: 255 255 255;
+  --ds-color-surface-elevated: 252 253 253;
+  --ds-color-surface-muted: 241 245 249;
+  --ds-color-text: 31 51 71;
+  --ds-color-text-secondary: 71 85 105;
+  --ds-color-text-muted: 102 112 133;
+  --ds-color-border-subtle: 215 222 226;
+  --ds-color-border-strong: 173 182 190;
+
+  --ds-color-civic-blue: 86 117 119;
+  --ds-color-civic-blue-soft: 235 243 244;
+  --ds-color-evidence-green: 83 112 92;
+  --ds-color-evidence-green-soft: 239 246 240;
+  --ds-color-caution-amber: 142 100 48;
+  --ds-color-caution-amber-soft: 250 244 233;
+  --ds-color-process-blue: 62 73 122;
+  --ds-color-process-blue-soft: 239 241 249;
+  --ds-color-reflection: 116 104 91;
+  --ds-color-reflection-soft: 246 242 237;
+
+  --ds-color-county-secondary: 109 171 196;
+  --ds-color-county-secondary-soft: 237 247 251;
+  --ds-color-county-accent: 220 211 206;
+  --ds-color-county-accent-soft: 248 245 243;
+  --ds-color-county-ink: 17 17 17;
+  --ds-color-county-muted: 86 99 112;
+
+  --ds-color-app-blue: 0 45 98;
+  --ds-color-app-blue-dark: 0 31 68;
+  --ds-color-app-blue-soft: 232 239 248;
+  --ds-color-app-green: 95 143 114;
+  --ds-color-app-green-dark: 76 116 91;
+  --ds-color-app-green-soft: 239 247 242;
+  --ds-color-app-yellow: 169 121 43;
+  --ds-color-app-yellow-soft: 250 245 235;
+  --ds-color-app-teal: 58 125 140;
+  --ds-color-app-teal-soft: 234 244 246;
+  --ds-color-status-pending: 243 226 194;
+  --ds-color-status-pending-ink: 110 83 27;
+  --ds-color-status-pending-border: 216 184 116;
+  --ds-color-standard-band: 72 101 127;
+
+  --ds-color-success: var(--ds-color-evidence-green);
+  --ds-color-success-soft: var(--ds-color-evidence-green-soft);
+  --ds-color-warning: var(--ds-color-caution-amber);
+  --ds-color-warning-soft: var(--ds-color-caution-amber-soft);
+  --ds-color-danger: 155 61 61;
+  --ds-color-danger-soft: 250 240 240;
+  --ds-color-info: var(--ds-color-civic-blue);
+  --ds-color-info-soft: var(--ds-color-civic-blue-soft);
+  --ds-color-link: var(--ds-color-civic-blue);
+  --ds-color-focus: var(--ds-color-process-blue);
+  --ds-color-selection: 214 229 233;
+  --ds-color-shadow: 0 0 0;
+
+  --ds-color-amber-50: 255 251 235;
+  --ds-color-amber-200: 253 230 138;
+  --ds-color-amber-800: 146 64 14;
+  --ds-color-amber-900: 120 53 15;
+  --ds-color-red-50: 254 242 242;
+  --ds-color-red-200: 254 202 202;
+  --ds-color-red-700: 185 28 28;
+  --ds-color-emerald-700: 4 120 87;
+}

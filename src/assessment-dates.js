@@ -113,20 +113,20 @@ export function initAssessmentDatesPanel(calendarData = {}) {
   function open(event) {
     returnFocusTo = event?.currentTarget || document.activeElement;
     render();
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
+    modal.classList.remove("is-hidden");
+    modal.classList.add("display-flex");
     modal.setAttribute("aria-hidden", "false");
     document.querySelectorAll("[data-assessment-dates-open]").forEach(button => button.setAttribute("aria-expanded", "true"));
-    document.body.classList.add("overflow-hidden");
+    document.body.classList.add("clip-overflow");
     modal.querySelector("[data-close-assessment-dates]")?.focus();
   }
 
   function close() {
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
+    modal.classList.add("is-hidden");
+    modal.classList.remove("display-flex");
     modal.setAttribute("aria-hidden", "true");
     document.querySelectorAll("[data-assessment-dates-open]").forEach(button => button.setAttribute("aria-expanded", "false"));
-    document.body.classList.remove("overflow-hidden");
+    document.body.classList.remove("clip-overflow");
     returnFocusTo?.focus?.();
   }
 
@@ -150,7 +150,7 @@ export function initAssessmentDatesPanel(calendarData = {}) {
   modal.querySelector("[role='dialog']")?.addEventListener("click", event => event.stopPropagation());
 
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && !modal.classList.contains("hidden")) {
+    if (event.key === "Escape" && !modal.classList.contains("is-hidden")) {
       close();
     }
   });

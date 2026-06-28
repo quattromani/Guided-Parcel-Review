@@ -149,7 +149,7 @@ Do not move dynamic values into copy files. Property values, parcel facts, tax a
 - The app is static and demo-data driven; it is not connected to a live CAMA, tax, GIS, payment, or filing system.
 - Sample records combine source-shaped data and app-ready `guidedSnapshot` data. A production integration should separate raw vendor records, normalized records, and app-ready view models more clearly.
 - JSON contracts are lightweight smoke checks, not a full schema-validation pipeline.
-- Browser CDNs are used for Tailwind and Chart.js in the prototype shell.
+- Chart.js still loads from a browser CDN. Tailwind has been replaced by the checked-in GES Sass design-system output at `src/ges-system.css`.
 - Source/provenance ledgers document official PAD references, but source refresh and extraction workflows are manual.
 
 ## Deployment

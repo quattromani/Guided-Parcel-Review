@@ -34,32 +34,16 @@
       }
     }
   </script>
-  <script>
-    window.tailwind = {
-      config: {
-        theme: {
-          extend: {
-            borderRadius: {
-              lg: "var(--radius-container-lg)",
-              xl: "var(--radius-container-lg)",
-              "2xl": "var(--radius-container-lg)"
-            }
-          }
-        }
-      }
-    };
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="src/styles.css?v=db3aed6" />
 </head>
-<body class="bg-slate-100 text-slate-700">
-  <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
-    <section id="pageTitle" class="mb-4 px-1"></section>
+<body class="surface-muted-strong text-primary">
+  <main class="center-x measure-7xl pad-4 mq-sm-pad-6 mq-lg-pad-8">
+    <section id="pageTitle" class="space-bottom-4 pad-inline-1"></section>
 
     <div class="mobile-review-canvas">
       <div class="guide-review-header">
-        <section id="propertyViewContext" class="hidden"></section>
+        <section id="propertyViewContext" class="is-hidden"></section>
 
         <nav aria-label="Guided parcel review path" class="guided-path-nav">
           <div class="guided-progress-shell">
@@ -80,18 +64,18 @@
         </nav>
       </div>
 
-    <section data-guided-panel="your-property" class="hidden space-y-6">
+    <section data-guided-panel="your-property" class="is-hidden flow-space-6">
       <header id="pageHeader" class="review-card review-card-spacious"></header>
 
       <aside class="guided-transition">
         <p>Start with the property record first. If something looks incorrect, mark it for review. We'll keep track of those items and summarize them at the end.</p>
       </aside>
 
-      <section class="grid gap-6 lg:grid-cols-12">
-        <article id="verify-property-information" class="property-details-panel review-card lg:col-span-12">
-          <h2 class="text-xl font-bold text-slate-700">Verify property information</h2>
-          <p class="mt-1 text-sm text-slate-600">These property details shape the value and tax views ahead. If an item looks incorrect or does not match your property, select the circle on that card or row to mark it for review.</p>
-          <dl id="propertyDetails" class="property-details-layout mt-4"></dl>
+      <section class="display-grid layout-gap-6 mq-lg-grid-cols-12">
+        <article id="verify-property-information" class="property-details-panel review-card mq-lg-col-span-12">
+          <h2 class="type-xl weight-bold text-primary">Verify property information</h2>
+          <p class="space-top-1 type-sm text-secondary">These property details shape the value and tax views ahead. If an item looks incorrect or does not match your property, select the circle on that card or row to mark it for review.</p>
+          <dl id="propertyDetails" class="property-details-layout space-top-4"></dl>
           <p id="propertyDetailsSourceNote" class="property-details-source-note"></p>
         </article>
       </section>
@@ -106,19 +90,19 @@
 
     </section>
 
-    <section data-guided-panel="your-assessment" class="guided-panel-assessment hidden space-y-6">
+    <section data-guided-panel="your-assessment" class="guided-panel-assessment is-hidden flow-space-6">
       <aside class="guided-transition">
         <p>Start with the current assessment and the latest change.</p>
       </aside>
 
-      <section id="assessment-notice" class="grid gap-6 lg:grid-cols-5">
-        <article class="review-card lg:col-span-2">
-          <h2 class="text-xl font-bold text-slate-700">Prior & Current Assessments</h2>
-            <p class="mt-1 text-sm text-slate-600">Review land, building, other improvements, and total value before connecting those numbers to taxes.</p>
-          <div id="assessmentNoticeSummary" class="mt-4"></div>
+      <section id="assessment-notice" class="display-grid layout-gap-6 mq-lg-grid-cols-5">
+        <article class="review-card mq-lg-col-span-2">
+          <h2 class="type-xl weight-bold text-primary">Prior & Current Assessments</h2>
+            <p class="space-top-1 type-sm text-secondary">Review land, building, other improvements, and total value before connecting those numbers to taxes.</p>
+          <div id="assessmentNoticeSummary" class="space-top-4"></div>
           <p data-assessment-snapshot-source class="chart-source"></p>
         </article>
-        <article id="property-movement-summary" class="review-card lg:col-span-3">
+        <article id="property-movement-summary" class="review-card mq-lg-col-span-3">
           <div id="propertyMovementSummary"></div>
         </article>
       </section>
@@ -139,15 +123,15 @@
 
     </section>
 
-    <section data-guided-panel="your-taxes" class="hidden space-y-6">
+    <section data-guided-panel="your-taxes" class="is-hidden flow-space-6">
       <aside class="guided-transition">
         <p>Start with the tax district and levy mix. The chart shows where the latest gross levy is allocated before the history view.</p>
       </aside>
 
       <article id="tax-district-authorities" class="review-card">
-        <h2 class="sr-only">Tax district and levy distribution</h2>
-        <div id="taxDistrictAuthoritySummary" class="grid gap-6 lg:grid-cols-2"></div>
-        <section id="tax-distribution" class="mt-4"></section>
+        <h2 class="visually-hidden">Tax district and levy distribution</h2>
+        <div id="taxDistrictAuthoritySummary" class="display-grid layout-gap-6 mq-lg-grid-cols-2"></div>
+        <section id="tax-distribution" class="space-top-4"></section>
         <p id="taxDistrictAuthoritySource" class="chart-source"></p>
       </article>
 
@@ -168,16 +152,16 @@
       </aside>
 
       <article id="equalization-pressure" class="review-card">
-        <h2 class="sr-only">Tax bill pattern</h2>
-        <div class="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]">
+        <h2 class="visually-hidden">Tax bill pattern</h2>
+        <div class="display-grid layout-gap-4 mq-lg-grid-cols-review-aside">
           <div>
-            <div class="review-card-muted h-80">
+            <div class="review-card-muted height-80">
               <canvas id="taxBurdenPatternChart"></canvas>
             </div>
-            <p class="mt-2 text-xs leading-5 text-slate-500">Dashed line: period average. Points use statement net tax after credits.</p>
+            <p class="space-top-2 type-xs line-5 text-muted">Dashed line: period average. Points use statement net tax after credits.</p>
           </div>
           <div>
-            <div id="taxBurdenPatternCards" class="grid gap-3"></div>
+            <div id="taxBurdenPatternCards" class="display-grid layout-gap-3"></div>
           </div>
         </div>
       </article>
@@ -187,27 +171,27 @@
       </aside>
 
       <article id="county-summary" class="review-card">
-        <h2 class="sr-only">Countywide baseline</h2>
-        <p id="countyCtlSummaryIntro" class="sr-only">Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.</p>
-        <section class="county-baseline-pair grid gap-4 lg:grid-cols-5" aria-label="County value and tax charts">
-          <div class="county-baseline-column lg:col-span-3">
+        <h2 class="visually-hidden">Countywide baseline</h2>
+        <p id="countyCtlSummaryIntro" class="visually-hidden">Certified values and taxes levied show the broader value base and the public obligations distributed across it before the parcel-level tax step.</p>
+        <section class="county-baseline-pair display-grid layout-gap-4 mq-lg-grid-cols-5" aria-label="County value and tax charts">
+          <div class="county-baseline-column mq-lg-col-span-3">
             <div id="countyGrowthSummary"></div>
             <section id="county-indexed" class="review-card-muted">
-              <h2 class="text-xl font-bold text-slate-700">How are county values and taxes moving?</h2>
-              <p id="countyIndexedRangeNote" class="mt-1 text-sm text-slate-600">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>
-              <div id="countyIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
-              <div class="mt-4 h-72">
+              <h2 class="type-xl weight-bold text-primary">How are county values and taxes moving?</h2>
+              <p id="countyIndexedRangeNote" class="space-top-1 type-sm text-secondary">Values and taxes are indexed to the same starting point so their movement can be compared over time.</p>
+              <div id="countyIndexedChartLegend" class="chart-disc-legend space-top-4 display-grid layout-gap-x-6 layout-gap-y-2 type-sm text-secondary mq-sm-grid-cols-2"></div>
+              <div class="space-top-4 height-72">
                 <canvas id="countyIndexedChart"></canvas>
               </div>
             </section>
           </div>
-          <div class="county-baseline-column lg:col-span-2">
+          <div class="county-baseline-column mq-lg-col-span-2">
             <div id="countyRateSummary"></div>
             <section id="county-etr" class="review-card-muted">
-              <h2 class="text-xl font-bold text-slate-700">How do county taxes compare with value?</h2>
-              <p class="mt-1 text-sm text-slate-600">The countywide effective tax rate divides taxes levied by certified value, giving a broad tax-rate baseline.</p>
-              <div id="countyEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-              <div class="mt-4 h-72">
+              <h2 class="type-xl weight-bold text-primary">How do county taxes compare with value?</h2>
+              <p class="space-top-1 type-sm text-secondary">The countywide effective tax rate divides taxes levied by certified value, giving a broad tax-rate baseline.</p>
+              <div id="countyEtrChartLegend" class="chart-disc-legend space-top-4 display-grid layout-gap-x-6 layout-gap-y-2 type-sm text-secondary"></div>
+              <div class="space-top-4 height-72">
                 <canvas id="countyEtrChart"></canvas>
               </div>
             </section>
@@ -233,7 +217,7 @@
       </nav>
     </section>
 
-    <section data-guided-panel="market-area" class="hidden space-y-6">
+    <section data-guided-panel="market-area" class="is-hidden flow-space-6">
       <aside class="guided-transition">
         <p>Start with the local comparison group. These sampled properties help show how this property's value has changed relative to similar properties in the same market area.</p>
       </aside>
@@ -243,20 +227,20 @@
           <div class="valuation-group-trend-main">
             <div class="market-position-heading">
               <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Local movement</p>
-                <h3 class="text-xl font-bold text-slate-700">How this property compares locally</h3>
+                <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Local movement</p>
+                <h3 class="type-xl weight-bold text-primary">How this property compares locally</h3>
               </div>
             </div>
-            <p id="marketPositionTrendNote" class="mt-2 text-sm leading-6 text-slate-600"></p>
-            <div id="marketPositionLegend" class="assessment-line-legend mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600"></div>
-            <div class="valuation-group-trend-frame mt-4">
+            <p id="marketPositionTrendNote" class="space-top-2 type-sm line-6 text-secondary"></p>
+            <div id="marketPositionLegend" class="assessment-line-legend space-top-4 display-flex flex-wrap layout-gap-x-5 layout-gap-y-2 type-sm text-secondary"></div>
+            <div class="valuation-group-trend-frame space-top-4">
               <canvas id="marketPositionTrendChart" role="img" tabindex="0" aria-describedby="marketPositionTrendSummary"></canvas>
             </div>
-            <p id="marketPositionTrendSummary" class="sr-only"></p>
+            <p id="marketPositionTrendSummary" class="visually-hidden"></p>
           </div>
           <aside class="valuation-group-sample-summary" aria-labelledby="valuationGroupSampleSummaryTitle">
             <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Valuation group sample</p>
+              <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Valuation group sample</p>
               <h4 id="valuationGroupSampleSummaryTitle">Chart sample context</h4>
             </div>
             <div id="marketTrendSummaryCards" class="valuation-group-sample-cards"></div>
@@ -275,7 +259,7 @@
 
     </section>
 
-    <section data-guided-panel="county-equalization" class="hidden space-y-6">
+    <section data-guided-panel="county-equalization" class="is-hidden flow-space-6">
       <aside class="guided-transition">
         <p>Each year, the county assessor submits an assessment abstract to the state for equalization review before valuation notices are mailed. During that process, qualified property sales from the study period are compared to assessed values to produce the statistical measures below.</p>
       </aside>
@@ -304,41 +288,41 @@
       </nav>
     </section>
 
-    <section data-guided-panel="state-context" class="hidden space-y-6">
+    <section data-guided-panel="state-context" class="is-hidden flow-space-6">
       <article id="county-comparison" class="review-card">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div class="display-flex flex-col layout-gap-4 mq-lg-flex-row mq-lg-align-start mq-lg-justify-between">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County Comparison</p>
-            <h2 id="countyComparisonTitle" class="mt-1 text-2xl font-bold text-slate-700">How does this county compare?</h2>
-            <p id="countyComparisonRangeIntro" class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+            <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">County Comparison</p>
+            <h2 id="countyComparisonTitle" class="space-top-1 type-2xl weight-bold text-primary">How does this county compare?</h2>
+            <p id="countyComparisonRangeIntro" class="space-top-2 measure-3xl type-sm line-6 text-secondary">
               This comparison uses the assessment-year range shown in the charts below. It starts with a simple baseline: Nebraska equals 100. A county above 100 has a higher average tax rate than the statewide average; below 100 has a lower rate. Certified values, taxes levied, and average tax rates provide additional context.
             </p>
           </div>
-          <div class="grid gap-2 text-sm sm:min-w-80">
-            <label class="text-xs font-semibold uppercase tracking-wide text-slate-500" for="countyComparisonTarget">Compare with</label>
-            <select id="countyComparisonTarget" class="market-area-select rounded-xl px-3 py-2 font-semibold shadow-sm focus:outline-none"></select>
+          <div class="display-grid layout-gap-2 type-sm mq-sm-min-width-80">
+            <label class="type-xs weight-semibold text-uppercase tracking-label text-muted" for="countyComparisonTarget">Compare with</label>
+            <select id="countyComparisonTarget" class="market-area-select radius-card pad-inline-3 pad-block-2 weight-semibold elevation-sm focus-outline-none"></select>
           </div>
         </div>
-        <div id="countyComparisonSummary" class="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
+        <div id="countyComparisonSummary" class="space-top-5 display-grid layout-gap-3 mq-md-grid-cols-2 mq-xl-grid-cols-4"></div>
         <div class="ooda-inline-note">
           <p class="guided-kicker">Decision check</p>
           <h3>Does the county stand out?</h3>
             <p>The Nebraska = 100 comparison, value growth, tax growth, and average rate movement show whether the local pattern is unusual or broadly typical.</p>
         </div>
-        <section class="mt-5 grid gap-6 lg:grid-cols-5">
-          <article class="review-card-muted lg:col-span-3">
-            <h3 class="text-lg font-bold text-slate-700">How do value and tax growth compare?</h3>
-            <p id="countyComparisonIndexedNote" class="mt-1 text-sm text-slate-600"></p>
-            <div id="countyComparisonIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
-            <div class="mt-4 h-80">
+        <section class="space-top-5 display-grid layout-gap-6 mq-lg-grid-cols-5">
+          <article class="review-card-muted mq-lg-col-span-3">
+            <h3 class="type-lg weight-bold text-primary">How do value and tax growth compare?</h3>
+            <p id="countyComparisonIndexedNote" class="space-top-1 type-sm text-secondary"></p>
+            <div id="countyComparisonIndexedChartLegend" class="chart-disc-legend space-top-4 display-grid layout-gap-x-6 layout-gap-y-2 type-sm text-secondary mq-sm-grid-cols-2"></div>
+            <div class="space-top-4 height-80">
               <canvas id="countyComparisonIndexedChart"></canvas>
             </div>
           </article>
-          <article class="review-card-muted lg:col-span-2">
-            <h3 class="text-lg font-bold text-slate-700">How do average tax rates compare?</h3>
-            <p id="countyComparisonRateNote" class="mt-1 text-sm text-slate-600"></p>
-            <div id="countyComparisonRateChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-            <div class="mt-4 h-80">
+          <article class="review-card-muted mq-lg-col-span-2">
+            <h3 class="type-lg weight-bold text-primary">How do average tax rates compare?</h3>
+            <p id="countyComparisonRateNote" class="space-top-1 type-sm text-secondary"></p>
+            <div id="countyComparisonRateChartLegend" class="chart-disc-legend space-top-4 display-grid layout-gap-x-6 layout-gap-y-2 type-sm text-secondary"></div>
+            <div class="space-top-4 height-80">
               <canvas id="countyComparisonRateChart"></canvas>
             </div>
           </article>
@@ -351,31 +335,31 @@
       </aside>
 
       <article id="statewide-ctl-context" class="review-card">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Statewide CTL Context</p>
-        <h2 class="mt-1 text-2xl font-bold text-slate-700">What statewide pattern is behind that comparison?</h2>
-        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+        <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Statewide CTL Context</p>
+        <h2 class="space-top-1 type-2xl weight-bold text-primary">What statewide pattern is behind that comparison?</h2>
+        <p class="space-top-2 measure-3xl type-sm line-6 text-secondary">
           After the county comparison, the statewide CTL baseline shows the broader movement in values, taxes levied, and average tax rates.
         </p>
-        <section class="mt-5 grid gap-6 lg:grid-cols-5">
-          <article id="state-indexed" class="review-card-muted lg:col-span-3">
-            <h3 class="text-lg font-bold text-slate-700">How are statewide values and taxes moving?</h3>
-              <p class="mt-1 text-sm text-slate-600">Statewide values and taxes are indexed to 2019 so their movement can be compared over time.</p>
-            <div id="stateIndexedChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600 sm:grid-cols-2"></div>
-            <div class="mt-4 h-72">
+        <section class="space-top-5 display-grid layout-gap-6 mq-lg-grid-cols-5">
+          <article id="state-indexed" class="review-card-muted mq-lg-col-span-3">
+            <h3 class="type-lg weight-bold text-primary">How are statewide values and taxes moving?</h3>
+              <p class="space-top-1 type-sm text-secondary">Statewide values and taxes are indexed to 2019 so their movement can be compared over time.</p>
+            <div id="stateIndexedChartLegend" class="chart-disc-legend space-top-4 display-grid layout-gap-x-6 layout-gap-y-2 type-sm text-secondary mq-sm-grid-cols-2"></div>
+            <div class="space-top-4 height-72">
               <canvas id="stateIndexedChart"></canvas>
             </div>
           </article>
-          <article id="state-etr" class="review-card-muted lg:col-span-2">
-              <h3 class="text-lg font-bold text-slate-700">How is the statewide average tax rate trending?</h3>
-              <p class="mt-1 text-sm text-slate-600">The statewide average tax rate is a broad reference point for understanding local tax patterns.</p>
-            <div id="stateEtrChartLegend" class="chart-disc-legend mt-4 grid gap-x-6 gap-y-2 text-sm text-slate-600"></div>
-            <div class="mt-4 h-72">
+          <article id="state-etr" class="review-card-muted mq-lg-col-span-2">
+              <h3 class="type-lg weight-bold text-primary">How is the statewide average tax rate trending?</h3>
+              <p class="space-top-1 type-sm text-secondary">The statewide average tax rate is a broad reference point for understanding local tax patterns.</p>
+            <div id="stateEtrChartLegend" class="chart-disc-legend space-top-4 display-grid layout-gap-x-6 layout-gap-y-2 type-sm text-secondary"></div>
+            <div class="space-top-4 height-72">
               <canvas id="stateEtrChart"></canvas>
             </div>
           </article>
-          <section id="state-summary" class="review-card-muted lg:col-span-5">
-            <h3 class="text-lg font-bold text-slate-700">Statewide summary</h3>
-            <div id="stateCtlSummary" class="mt-4 grid gap-3 md:grid-cols-3"></div>
+          <section id="state-summary" class="review-card-muted mq-lg-col-span-5">
+            <h3 class="type-lg weight-bold text-primary">Statewide summary</h3>
+            <div id="stateCtlSummary" class="space-top-4 display-grid layout-gap-3 mq-md-grid-cols-3"></div>
           </section>
         </section>
         <p class="chart-source">Source: 2019-2025 Nebraska Certificates of Taxes Levied (CTL).</p>
@@ -392,81 +376,81 @@
 
     </section>
 
-      <section data-guided-panel="review-checklist" class="hidden space-y-6"></section>
+      <section data-guided-panel="review-checklist" class="is-hidden flow-space-6"></section>
     </div>
 
   </main>
 
-  <footer class="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8" aria-label="Site footer">
+  <footer class="center-x measure-7xl pad-inline-4 pad-bottom-8 mq-sm-pad-inline-6 mq-lg-pad-inline-8" aria-label="Site footer">
     <section class="review-card" data-footer-resource-shell>
-      <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between" data-step-footer-resources>
+      <div class="display-flex flex-col layout-gap-4 mq-lg-flex-row mq-lg-align-start mq-lg-justify-between" data-step-footer-resources>
         <div>
-          <h2 class="text-xl font-bold text-slate-700">Resources and policies</h2>
-          <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600">
+          <h2 class="type-xl weight-bold text-primary">Resources and policies</h2>
+          <p class="space-top-1 measure-2xl type-sm line-6 text-secondary">
             Need help with what you just reviewed? Find focused answers and forms.
           </p>
         </div>
         <nav aria-label="Resource menu" class="footer-resource-pills">
-          <a href="#faq" data-footer-target="faq" class="footer-pill-button text-slate-600">FAQs</a>
-          <a href="#forms" data-footer-target="forms" class="footer-pill-button text-slate-600">Forms</a>
+          <a href="#faq" data-footer-target="faq" class="footer-pill-button text-secondary">FAQs</a>
+          <a href="#forms" data-footer-target="forms" class="footer-pill-button text-secondary">Forms</a>
         </nav>
       </div>
 
       <section id="importantCalendarDates" class="important-calendar-dates" aria-labelledby="importantCalendarDatesTitle" data-step-footer-resources></section>
 
-      <div id="footerContent" class="mt-5 hidden border-t border-slate-200 pt-5">
-        <section id="about" data-footer-panel="about" class="footer-panel hidden">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">About</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">About Guided Parcel Review</h3>
-          <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
+      <div id="footerContent" class="space-top-5 is-hidden border-top border-color-subtle pad-top-5">
+        <section id="about" data-footer-panel="about" class="footer-panel is-hidden">
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">About</p>
+          <h3 class="space-top-1 type-lg weight-bold text-primary">About Guided Parcel Review</h3>
+          <p class="space-top-2 measure-4xl type-sm line-6 text-secondary">
             Guided Parcel Review walks through one property in a clear sequence: record, value, market context, equalization, taxes, and review signals.
           </p>
         </section>
 
-        <section id="terms" data-footer-panel="terms" class="footer-panel hidden">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Terms of Use</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Use of this site</h3>
-          <div class="mt-2 grid gap-3 text-sm leading-6 text-slate-600 md:grid-cols-3">
+        <section id="terms" data-footer-panel="terms" class="footer-panel is-hidden">
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Terms of Use</p>
+          <h3 class="space-top-1 type-lg weight-bold text-primary">Use of this site</h3>
+          <div class="space-top-2 display-grid layout-gap-3 type-sm line-6 text-secondary mq-md-grid-cols-3">
             <p class="review-note">This site is provided for public information and general guidance. It is not a legal notice, tax bill, valuation decision, or substitute for official records.</p>
             <p class="review-note">Information may be incomplete, pending, delayed, or updated after publication. Official county, state, court, or agency records control when accuracy, deadlines, rights, or obligations matter.</p>
             <p class="review-note">Links to outside sites are provided for convenience. Those sites have their own terms, privacy practices, forms, and instructions. Use this site lawfully and do not rely on it as professional advice.</p>
           </div>
         </section>
 
-        <section id="privacy" data-footer-panel="privacy" class="footer-panel hidden">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Privacy Policy</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Privacy and public information</h3>
-          <div class="mt-2 grid gap-3 text-sm leading-6 text-slate-600 md:grid-cols-3">
+        <section id="privacy" data-footer-panel="privacy" class="footer-panel is-hidden">
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Privacy Policy</p>
+          <h3 class="space-top-1 type-lg weight-bold text-primary">Privacy and public information</h3>
+          <div class="space-top-2 display-grid layout-gap-3 type-sm line-6 text-secondary mq-md-grid-cols-3">
             <p class="review-note">This site may log basic, cookie-free visit events, such as which linked parcel page opened, which review steps were viewed, approximate time on page, whether resource links were selected, and any tracking-label values included in a shared URL.</p>
             <p class="review-note">If you submit information through a form, email, or support channel, it may be used to respond to your request and may be subject to applicable public-records, retention, or disclosure laws.</p>
             <p class="review-note">This site should not sell personal information. Information may be shared with service providers, official agencies, or others when needed to operate the site, respond to requests, or comply with law.</p>
           </div>
         </section>
 
-        <section id="accessibility" data-footer-panel="accessibility" class="footer-panel hidden">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Accessibility</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Accessibility statement</h3>
-          <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
+        <section id="accessibility" data-footer-panel="accessibility" class="footer-panel is-hidden">
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Accessibility</p>
+          <h3 class="space-top-1 type-lg weight-bold text-primary">Accessibility statement</h3>
+          <p class="space-top-2 measure-4xl type-sm line-6 text-secondary">
               This demonstration is intended to be readable, keyboard-accessible, and usable with assistive technology. Before public release, it should receive formal accessibility review, assistive-technology testing, and color-contrast verification.
           </p>
         </section>
 
-        <section id="faq" data-footer-panel="faq" class="footer-panel hidden">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">FAQs</p>
-          <h3 id="footerFaqTitle" class="mt-1 text-lg font-bold text-slate-700">Property record FAQs</h3>
-          <div id="footerFaqContent" class="mt-4 grid gap-3 lg:grid-cols-2"></div>
+        <section id="faq" data-footer-panel="faq" class="footer-panel is-hidden">
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">FAQs</p>
+          <h3 id="footerFaqTitle" class="space-top-1 type-lg weight-bold text-primary">Property record FAQs</h3>
+          <div id="footerFaqContent" class="space-top-4 display-grid layout-gap-3 mq-lg-grid-cols-2"></div>
         </section>
 
-        <section id="forms" data-footer-panel="forms" class="footer-panel hidden">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Forms</p>
-          <h3 id="footerFormsTitle" class="mt-1 text-lg font-bold text-slate-700">Property record forms</h3>
-          <div id="footerFormsContent" class="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-5"></div>
+        <section id="forms" data-footer-panel="forms" class="footer-panel is-hidden">
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Forms</p>
+          <h3 id="footerFormsTitle" class="space-top-1 type-lg weight-bold text-primary">Property record forms</h3>
+          <div id="footerFormsContent" class="space-top-3 display-grid layout-gap-3 mq-md-grid-cols-2 mq-xl-grid-cols-5"></div>
         </section>
 
-        <section id="contact" data-footer-panel="contact" class="footer-panel hidden">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Contact</p>
-          <h3 class="mt-1 text-lg font-bold text-slate-700">Contact and support</h3>
-          <p class="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
+        <section id="contact" data-footer-panel="contact" class="footer-panel is-hidden">
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Contact</p>
+          <h3 class="space-top-1 type-lg weight-bold text-primary">Contact and support</h3>
+          <p class="space-top-2 measure-4xl type-sm line-6 text-secondary">
               For questions about official records, valuation, exemptions, levies, or payment, contact the appropriate county or state office. This demonstration does not replace official guidance.
           </p>
         </section>
@@ -474,12 +458,12 @@
     </section>
 
     <nav aria-label="Site links" class="footer-site-nav">
-      <a href="#about" data-footer-target="about" class="footer-site-link text-slate-600">About</a>
-      <a href="#terms" data-footer-target="terms" class="footer-site-link text-slate-600">Terms of Use</a>
-      <a href="#privacy" data-footer-target="privacy" class="footer-site-link text-slate-600">Privacy Policy</a>
-      <a href="#accessibility" data-footer-target="accessibility" class="footer-site-link text-slate-600">Accessibility</a>
-      <a href="#contact" data-footer-target="contact" class="footer-site-link text-slate-600">Contact</a>
-      <button type="button" data-reset-property-manifest class="footer-site-link footer-reset-button text-slate-600" aria-label="Reset property selection" title="Reset property selection">
+      <a href="#about" data-footer-target="about" class="footer-site-link text-secondary">About</a>
+      <a href="#terms" data-footer-target="terms" class="footer-site-link text-secondary">Terms of Use</a>
+      <a href="#privacy" data-footer-target="privacy" class="footer-site-link text-secondary">Privacy Policy</a>
+      <a href="#accessibility" data-footer-target="accessibility" class="footer-site-link text-secondary">Accessibility</a>
+      <a href="#contact" data-footer-target="contact" class="footer-site-link text-secondary">Contact</a>
+      <button type="button" data-reset-property-manifest class="footer-site-link footer-reset-button text-secondary" aria-label="Reset property selection" title="Reset property selection">
         <svg class="footer-reset-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M7 19H4.82a1.82 1.82 0 0 1-1.57-.89 1.78 1.78 0 0 1-.01-1.78L7.2 9.5"></path>
           <path d="M11 19h8.2a1.82 1.82 0 0 0 1.56-.89 1.78 1.78 0 0 0 0-1.78l-1.23-2.11"></path>
@@ -493,28 +477,28 @@
     </nav>
   </footer>
 
-  <div id="assessmentDatesPanel" class="app-modal-backdrop hidden" aria-hidden="true">
+  <div id="assessmentDatesPanel" class="app-modal-backdrop is-hidden" aria-hidden="true">
     <section role="dialog" aria-modal="true" aria-labelledby="assessmentDatesTitle" class="app-modal-dialog assessment-dates-dialog">
       <div class="assessment-dates-dialog-bar">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Assessment year reference</p>
-          <p class="mt-1 text-sm leading-6 text-slate-600">Nebraska assessment process dates.</p>
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Assessment year reference</p>
+          <p class="space-top-1 type-sm line-6 text-secondary">Nebraska assessment process dates.</p>
         </div>
         <button type="button" data-close-assessment-dates class="app-modal-close" aria-label="Close assessment dates">
           ×
         </button>
       </div>
-      <div id="assessmentDatesContent" class="overflow-y-auto p-5"></div>
+      <div id="assessmentDatesContent" class="scroll-y pad-5"></div>
     </section>
   </div>
 
-  <div id="reportErrorModal" class="app-modal-backdrop hidden">
+  <div id="reportErrorModal" class="app-modal-backdrop is-hidden">
     <section role="dialog" aria-modal="true" aria-labelledby="reportErrorTitle" class="app-modal-dialog">
       <div class="app-modal-header">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property record correction request</p>
-          <h2 id="reportErrorTitle" class="mt-1 text-2xl font-bold text-slate-700">Report a property record discrepancy</h2>
-          <p class="mt-1 max-w-3xl text-sm leading-6 text-slate-600">
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Property record correction request</p>
+          <h2 id="reportErrorTitle" class="space-top-1 type-2xl weight-bold text-primary">Report a property record discrepancy</h2>
+          <p class="space-top-1 measure-3xl type-sm line-6 text-secondary">
             Use this form to request factual record review when parcel, land, dwelling, improvement, or other property details appear inaccurate, incomplete, or misclassified.
           </p>
         </div>
@@ -523,26 +507,26 @@
         </button>
       </div>
 
-      <div id="reportErrorFormContent" class="overflow-y-auto p-5"></div>
+      <div id="reportErrorFormContent" class="scroll-y pad-5"></div>
     </section>
   </div>
 
-  <div id="sourceTableModal" class="app-modal-backdrop hidden">
+  <div id="sourceTableModal" class="app-modal-backdrop is-hidden">
     <section role="dialog" aria-modal="true" aria-labelledby="sourceTableModalTitle" class="app-modal-dialog source-table-dialog">
       <div class="app-modal-header">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Source table</p>
-          <h2 id="sourceTableModalTitle" class="mt-1 text-2xl font-bold text-slate-700">Statement history</h2>
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Source table</p>
+          <h2 id="sourceTableModalTitle" class="space-top-1 type-2xl weight-bold text-primary">Statement history</h2>
         </div>
         <button type="button" data-close-source-table class="app-modal-close" aria-label="Close expanded source table">
           ×
         </button>
       </div>
-      <div id="sourceTableModalContent" class="overflow-auto p-5"></div>
+      <div id="sourceTableModalContent" class="scroll-auto pad-5"></div>
     </section>
   </div>
 
-  <div id="imageModal" class="image-modal-backdrop hidden">
+  <div id="imageModal" class="image-modal-backdrop is-hidden">
     <div class="image-modal-shell">
       <button id="closeImageModal" type="button" class="image-modal-close" aria-label="Close expanded image">
         ×
@@ -556,7 +540,7 @@
           ›
         </button>
       </div>
-      <p id="modalCaption" class="mt-3 text-center text-sm font-medium text-white"></p>
+      <p id="modalCaption" class="space-top-3 text-align-center type-sm weight-medium text-inverse"></p>
       <div id="modalFilmstrip" class="image-modal-filmstrip"></div>
     </div>
   </div>

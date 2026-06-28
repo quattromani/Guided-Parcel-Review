@@ -1,0 +1,39 @@
+a {
+  color: rgb(var(--ges-color-link));
+  text-decoration-color: rgb(var(--ges-color-link) / 0.34);
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0.16em;
+}
+
+a:hover {
+  color: rgb(var(--ges-color-text));
+  text-decoration-color: currentColor;
+}
+
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: var(--ges-focus-ring-width) solid rgb(var(--ges-color-focus) / 0.32);
+  outline-offset: var(--ges-focus-ring-offset);
+}
+
+p,
+blockquote,
+ul,
+ol,
+dl,
+figure,
+pre,
+table,
+details,
+hr {
+  margin-block: 0;
+}
+
+strong {
+  color: rgb(var(--ges-color-text));
+  font-weight: var(--ges-weight-bold);
+}

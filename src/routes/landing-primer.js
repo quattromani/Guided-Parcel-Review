@@ -386,7 +386,7 @@ function installFinalSummary(data, context = {}) {
   const reviewPanel = document.querySelector('[data-guided-panel="review-checklist"]');
   const section = document.createElement("section");
   section.dataset.guidedPanel = "final-summary";
-  section.className = "hidden space-y-6";
+  section.className = "is-hidden flow-space-6";
 
   section.innerHTML = `
     <aside class="guided-transition">
@@ -495,7 +495,7 @@ function renderReviewFlagsSummary(data) {
 function reviewFlagsIntakeForm() {
   return `
     <form id="reviewFlagsIntakeForm" class="review-flags-intake" novalidate>
-      <div id="reviewFlagsFormErrors" class="review-flags-form-errors hidden" role="alert" aria-live="assertive"></div>
+      <div id="reviewFlagsFormErrors" class="review-flags-form-errors is-hidden" role="alert" aria-live="assertive"></div>
       <div class="review-flags-form-grid">
         <div>
           <label for="reviewFlagsName">Name</label>
@@ -531,11 +531,11 @@ function initReviewFlagsSubmission(data, flags) {
   function setErrors(messages) {
     if (!errors) return;
     if (!messages.length) {
-      errors.classList.add("hidden");
+      errors.classList.add("is-hidden");
       errors.innerHTML = "";
       return;
     }
-    errors.classList.remove("hidden");
+    errors.classList.remove("is-hidden");
     errors.innerHTML = `
       <p>Please review the intake details before preparing the request.</p>
       <ul>${messages.map(message => `<li>${escapeHtml(message)}</li>`).join("")}</ul>

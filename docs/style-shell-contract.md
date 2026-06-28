@@ -4,7 +4,7 @@ This document captures the current visual contract for the guided review shell. 
 
 ## Core Surfaces
 
-Use semantic shell classes for recurring surfaces instead of repeating Tailwind utility bundles in `index.html`, `src/render.js`, or chart renderers.
+Use semantic shell classes for recurring surfaces instead of repeating low-level utility bundles in `index.html`, `src/render.js`, or chart renderers.
 
 | Class | Purpose | Default shape |
 | --- | --- | --- |
@@ -14,7 +14,7 @@ Use semantic shell classes for recurring surfaces instead of repeating Tailwind 
 | `review-note` | Compact legal/source/form note surface. | Slate-50 background, 0.5rem radius, inset ring, 0.75rem padding. |
 | `review-note-compact` | Denser note variant for small legend/detail rows. | Same as `review-note`, 0.5rem vertical padding. |
 
-Do not add new `rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200` or `rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200` fragments. Add or extend a semantic class when a new repeated surface appears. Tailwind CDN is configured in `index.html` so `rounded-lg`, `rounded-xl`, and `rounded-2xl` resolve to the same 0.5rem container radius.
+Do not add new throwaway surface bundles. Add or extend a semantic class when a new repeated surface appears, and source all color, radius, spacing, ring, and elevation decisions from the Sass token layer under `scss/abstracts/`.
 
 ## Radius Rules
 

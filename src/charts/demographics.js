@@ -71,9 +71,9 @@ function renderDemographicCards(contextData) {
     const display = formatCardValue(row);
     return `
     <div class="review-card-muted">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-      <p class="mt-1 text-lg font-bold text-slate-700">${display.value}</p>
-      <p class="mt-1 text-xs text-slate-500">${display.note}</p>
+      <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">${label}</p>
+      <p class="space-top-1 type-lg weight-bold text-primary">${display.value}</p>
+      <p class="space-top-1 type-xs text-muted">${display.note}</p>
     </div>
   `;
   }).join("");
@@ -125,11 +125,11 @@ function buildCountyValueMixChart(contextData) {
 
   notes.innerHTML = categories.map(([label, value], index) => `
     <div class="review-note review-note-compact">
-      <div class="flex items-center gap-2">
-        <span class="h-2.5 w-2.5 rounded-full" style="background-color: ${colors[index]};"></span>
-        <p class="font-semibold leading-5 text-slate-700">${label}</p>
+      <div class="display-flex align-center layout-gap-2">
+        <span class="height-2-5 width-2-5 radius-pill" style="background-color: ${colors[index]};"></span>
+        <p class="weight-semibold line-5 text-primary">${label}</p>
       </div>
-      <p class="mt-0.5 text-xs leading-4 text-slate-600">${percent.format(value / total)} of value</p>
+      <p class="space-top-0-5 type-xs line-4 text-secondary">${percent.format(value / total)} of value</p>
     </div>
   `).join("");
 }
@@ -247,12 +247,12 @@ function renderDemographicFacts(contextData) {
 
   table.innerHTML = rows.map(row => `
     <tr>
-      <td class="px-3 py-2 font-medium text-slate-700">${row.source}</td>
-      <td class="px-3 py-2">${row.category}</td>
-      <td class="px-3 py-2">${row.metric}</td>
-      <td class="px-3 py-2">${row.subgroup}</td>
-      <td class="px-3 py-2 text-right font-medium">${formatContextValue(row)}</td>
-      <td class="px-3 py-2 text-slate-600">${row.year ?? ""}</td>
+      <td class="pad-inline-3 pad-block-2 weight-medium text-primary">${row.source}</td>
+      <td class="pad-inline-3 pad-block-2">${row.category}</td>
+      <td class="pad-inline-3 pad-block-2">${row.metric}</td>
+      <td class="pad-inline-3 pad-block-2">${row.subgroup}</td>
+      <td class="pad-inline-3 pad-block-2 text-align-right weight-medium">${formatContextValue(row)}</td>
+      <td class="pad-inline-3 pad-block-2 text-secondary">${row.year ?? ""}</td>
     </tr>
   `).join("");
 }

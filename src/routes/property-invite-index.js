@@ -56,7 +56,7 @@ function propertyRows(propertySwitcherContext = {}) {
 }
 
 function setFooterResourcesVisible(visible) {
-  document.querySelector("[data-footer-resource-shell]")?.classList.toggle("hidden", !visible);
+  document.querySelector("[data-footer-resource-shell]")?.classList.toggle("is-hidden", !visible);
 }
 
 function rowSearchText(row) {
@@ -189,8 +189,8 @@ export function renderPropertyInviteIndex(propertySwitcherContext = {}) {
   const canvas = document.querySelector(".mobile-review-canvas");
   if (!canvas) return;
 
-  document.querySelector(".guide-review-header")?.classList.add("hidden");
-  document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("hidden"));
+  document.querySelector(".guide-review-header")?.classList.add("is-hidden");
+  document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("is-hidden"));
   setFooterResourcesVisible(false);
 
   const rows = propertyRows(propertySwitcherContext);

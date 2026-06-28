@@ -1,0 +1,32 @@
+html {
+  accent-color: rgb(var(--ges-color-focus));
+  background: rgb(var(--ges-color-page));
+  color: rgb(var(--ges-color-text));
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+}
+
+body {
+  background: rgb(var(--ges-color-page));
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-ui);
+  line-height: var(--ges-line-copy);
+  margin: 0;
+  min-width: var(--ges-min-viewport);
+}
+
+::selection {
+  background: rgb(var(--ges-color-selection));
+  color: rgb(var(--ges-color-text));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,18 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:where(main, article, section, header, footer, nav, aside, div, figure, form, fieldset, dl) {
+  min-width: 0;
+}
+
+:where(img, picture, video, audio, canvas, svg, iframe) {
+  max-width: 100%;
+}
+
+:where(img, video) {
+  display: block;
+  height: auto;
+}

@@ -262,7 +262,7 @@ export function buildIndexedChart(data) {
   const indexedPendingBadge = document.getElementById("indexedPendingBadge");
 
   if (indexedPendingBadge) {
-    indexedPendingBadge.classList.add("hidden");
+    indexedPendingBadge.classList.add("is-hidden");
   }
 
   const indexedTrendsIntro = document.getElementById("indexedTrendsIntro");
@@ -388,10 +388,10 @@ export function buildTaxBurdenPattern(data) {
   ];
 
   cards.innerHTML = cardItems.map(item => `
-    <div class="tax-pattern-card review-note grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
-      <div class="min-w-0">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${item.label}</p>
-        <p class="mt-1 text-2xl font-bold text-slate-700">${item.value}</p>
+    <div class="tax-pattern-card review-note display-grid grid-cols-fluid-action align-start layout-gap-3">
+      <div class="min-width-0">
+        <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">${item.label}</p>
+        <p class="space-top-1 type-2xl weight-bold text-primary">${item.value}</p>
       </div>
       <div class="tax-pattern-context">
         <span class="tax-pattern-pill">${item.pill}</span>
@@ -1013,10 +1013,10 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
     const range = bandConfig[definition.key];
 
     return `
-    <article class="assessment-metric-card assessment-band-card metric-signal-card metric-signal-card-neutral rounded-xl p-4" style="--metric-color: ${card.color}; --metric-bg: ${colorAlpha(card.color, 0.045)}; --metric-border: ${colorAlpha(card.color, 0.24)}; --measure-color: ${definition.color}; --measure-bg: ${colorAlpha(definition.color, 0.045)}; --measure-border: ${colorAlpha(definition.color, 0.25)};">
+    <article class="assessment-metric-card assessment-band-card metric-signal-card metric-signal-card-neutral radius-card pad-4" style="--metric-color: ${card.color}; --metric-bg: ${colorAlpha(card.color, 0.045)}; --metric-border: ${colorAlpha(card.color, 0.24)}; --measure-color: ${definition.color}; --measure-bg: ${colorAlpha(definition.color, 0.045)}; --measure-border: ${colorAlpha(definition.color, 0.25)};">
       <div class="assessment-metric-topline">
-        <div class="min-w-0">
-          <p class="assessment-metric-label assessment-metric-heading text-xs font-semibold uppercase tracking-wide">
+        <div class="min-width-0">
+          <p class="assessment-metric-label assessment-metric-heading type-xs weight-semibold text-uppercase tracking-label">
             <span class="assessment-metric-label-full">${card.label}</span>
             <span class="assessment-metric-label-short" aria-hidden="true">${card.mobileLabel ?? card.label}</span>
             <span class="assessment-metric-help">
@@ -1024,21 +1024,21 @@ function renderAssessmentSummary(selectedClass, iaaoStandards) {
               <span class="assessment-help-tooltip" role="tooltip">${card.help}</span>
             </span>
           </p>
-          <p class="assessment-metric-value mt-1 text-lg font-bold">${card.value}</p>
-          <p class="assessment-metric-note mt-1 text-xs leading-5">${card.note}</p>
-          <p class="metric-signal-text mt-2">${card.status.label}</p>
+          <p class="assessment-metric-value space-top-1 type-lg weight-bold">${card.value}</p>
+          <p class="assessment-metric-note space-top-1 type-xs line-5">${card.note}</p>
+          <p class="metric-signal-text space-top-2">${card.status.label}</p>
         </div>
       </div>
 
       <details class="assessment-detail-drawer" ${detailOpen ? "open" : ""}>
         <summary class="assessment-detail-toggle"><span>See statistics + chart</span></summary>
         <div class="assessment-detail-content">
-          <p class="assessment-band-kicker mt-4">${definition.category}</p>
-          <div class="assessment-band-chart mt-3 h-40">
+          <p class="assessment-band-kicker space-top-4">${definition.category}</p>
+          <div class="assessment-band-chart space-top-3 height-40">
             <canvas id="assessmentBandChart-${definition.key}"></canvas>
           </div>
-          <p class="assessment-band-copy mt-3">${definition.definition}</p>
-          <div class="assessment-band-footer mt-3">
+          <p class="assessment-band-copy space-top-3">${definition.definition}</p>
+          <div class="assessment-band-footer space-top-3">
             <span>${assessmentDefinitionRangeLabel(definition, range)}</span>
           </div>
         </div>
@@ -1083,12 +1083,12 @@ function renderAssessmentRows(selectedClass) {
 
   table.innerHTML = getAssessmentDisplayRecords(selectedClass).slice().reverse().map(row => `
     <tr>
-      <td class="px-3 py-2 font-medium text-slate-700">${row.year}</td>
-      <td class="px-3 py-2 text-right">${row.sales}</td>
-      <td class="px-3 py-2 text-right">${row.cod.toFixed(2)}</td>
-      <td class="px-3 py-2 text-right">${row.prd.toFixed(3)}</td>
-      <td class="px-3 py-2 text-right">${row.cov.toFixed(2)}</td>
-      <td class="px-3 py-2 text-right">${row.levelOfValue.toFixed(2)}<span class="equalization-mobile-optional">%</span></td>
+      <td class="pad-inline-3 pad-block-2 weight-medium text-primary">${row.year}</td>
+      <td class="pad-inline-3 pad-block-2 text-align-right">${row.sales}</td>
+      <td class="pad-inline-3 pad-block-2 text-align-right">${row.cod.toFixed(2)}</td>
+      <td class="pad-inline-3 pad-block-2 text-align-right">${row.prd.toFixed(3)}</td>
+      <td class="pad-inline-3 pad-block-2 text-align-right">${row.cov.toFixed(2)}</td>
+      <td class="pad-inline-3 pad-block-2 text-align-right">${row.levelOfValue.toFixed(2)}<span class="equalization-mobile-optional">%</span></td>
     </tr>
   `).join("");
 }
@@ -1367,26 +1367,26 @@ function renderEqualizationSalePriceRows(
       && String(row.id ?? row.group ?? row.range) === String(selectedGroupId);
     return `
     <tr${isSelected ? ` class="market-sales-current-row" data-current-market-row="true"` : ""}>
-      <td class="equalization-sales-label-cell px-2 py-2 font-medium text-slate-700" title="${priceBandDisplayLabel(row, duplicateLabels)}">
+      <td class="equalization-sales-label-cell pad-inline-2 pad-block-2 weight-medium text-primary" title="${priceBandDisplayLabel(row, duplicateLabels)}">
         <span class="sales-range-label-full equalization-sales-label-text">${priceBandDisplayLabel(row, duplicateLabels)}</span>
         <span class="sales-range-label-compact equalization-sales-label-text">${compactPriceBandDisplayLabel(row, duplicateLabels)}</span>
       </td>
-      <td class="px-2 py-2 text-right">${formatCountValue(row.count)}</td>
-      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.median) : "—"}</td>
-      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.cod) : "—"}</td>
-      <td class="px-2 py-2 text-right">${row.count ? formatRatio(row.prd) : "—"}</td>
-      <td class="px-2 py-2 text-right">${row.count ? formatMoneyValue(row.averageAdjustedSalePrice) : "—"}</td>
+      <td class="pad-inline-2 pad-block-2 text-align-right">${formatCountValue(row.count)}</td>
+      <td class="pad-inline-2 pad-block-2 text-align-right">${row.count ? formatRatio(row.median) : "—"}</td>
+      <td class="pad-inline-2 pad-block-2 text-align-right">${row.count ? formatRatio(row.cod) : "—"}</td>
+      <td class="pad-inline-2 pad-block-2 text-align-right">${row.count ? formatRatio(row.prd) : "—"}</td>
+      <td class="pad-inline-2 pad-block-2 text-align-right">${row.count ? formatMoneyValue(row.averageAdjustedSalePrice) : "—"}</td>
     </tr>
   `;
   }).join("");
   const footerRow = totalRow ? `
-    <tr class="table-total-row font-semibold">
-      <td class="px-2 py-2">Countywide total</td>
-      <td class="px-2 py-2 text-right">${formatCountValue(totalRow.count)}</td>
-      <td class="px-2 py-2 text-right">${formatRatio(totalRow.median)}</td>
-      <td class="px-2 py-2 text-right">${formatRatio(totalRow.cod)}</td>
-      <td class="px-2 py-2 text-right">${formatRatio(totalRow.prd)}</td>
-      <td class="px-2 py-2 text-right">${formatMoneyValue(totalRow.averageAdjustedSalePrice)}</td>
+    <tr class="table-total-row weight-semibold">
+      <td class="pad-inline-2 pad-block-2">Countywide total</td>
+      <td class="pad-inline-2 pad-block-2 text-align-right">${formatCountValue(totalRow.count)}</td>
+      <td class="pad-inline-2 pad-block-2 text-align-right">${formatRatio(totalRow.median)}</td>
+      <td class="pad-inline-2 pad-block-2 text-align-right">${formatRatio(totalRow.cod)}</td>
+      <td class="pad-inline-2 pad-block-2 text-align-right">${formatRatio(totalRow.prd)}</td>
+      <td class="pad-inline-2 pad-block-2 text-align-right">${formatMoneyValue(totalRow.averageAdjustedSalePrice)}</td>
     </tr>
   ` : "";
 
@@ -1546,7 +1546,7 @@ export function initAssessmentRatioAnalysis(
     <button
       type="button"
       data-assessment-class="${item.key}"
-      class="rounded-lg px-3 py-1.5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+      class="radius-md pad-inline-3 pad-block-1-5 transition-base focus-outline-none focus-visible-ring-2 focus-visible-ring-color-control"
       aria-pressed="${item.key === defaultKey}"
     >
       <span class="assessment-class-label-full">${escapeHtml(item.label)}</span>
@@ -1559,10 +1559,10 @@ export function initAssessmentRatioAnalysis(
     const selectedClass = ratioData.classes.find(item => item.key === key) ?? ratioData.classes[0];
     buttons.forEach(button => {
       const active = button.dataset.assessmentClass === selectedClass.key;
-      button.classList.toggle("bg-slate-700", active);
-      button.classList.toggle("text-white", active);
-      button.classList.toggle("text-slate-600", !active);
-      button.classList.toggle("hover:bg-white", !active);
+      button.classList.toggle("surface-inverse", active);
+      button.classList.toggle("text-inverse", active);
+      button.classList.toggle("text-secondary", !active);
+      button.classList.toggle("hover-surface", !active);
       button.setAttribute("aria-pressed", String(active));
     });
     renderAssessmentClass(selectedClass, iaaoStandards, padRatioData, marketPositionData, valuationGroups);
@@ -1662,9 +1662,9 @@ function renderCustomLegend(elementId, datasets) {
   if (!legend) return false;
 
   legend.innerHTML = datasets.map(dataset => `
-    <div class="flex items-center gap-2">
+    <div class="display-flex align-center layout-gap-2">
       <span
-        class="chart-legend-dot inline-block border-2"
+        class="chart-legend-dot display-inline-block border-width-2"
         style="
           border-color: ${dataset.borderColor};
           background-color: ${dataset.borderDash ? palette.white : dataset.borderColor};
@@ -1716,9 +1716,9 @@ function renderMarketComparisonLegend(elementId, selectedLabel = "Selected marke
   ];
 
   legend.innerHTML = items.map(item => `
-    <div class="flex items-center gap-2">
+    <div class="display-flex align-center layout-gap-2">
       <span
-        class="chart-legend-dot inline-block border-2"
+        class="chart-legend-dot display-inline-block border-width-2"
         style="border-color: ${item.borderColor}; background-color: ${item.backgroundColor};"
       ></span>
       <span>${item.label}</span>
@@ -1988,34 +1988,34 @@ function renderMarketSignalCards(selected, summary, standards, context = {}) {
 
     return `
     <article
-      class="metric-signal-card metric-signal-card-neutral market-signal-card rounded-xl p-4"
+      class="metric-signal-card metric-signal-card-neutral market-signal-card radius-card pad-4"
       role="group"
       aria-label="${escapeHtml(ariaLabel)}"
       style="--measure-color: ${card.color}; --measure-border: ${colorAlpha(card.color, 0.26)};"
     >
       <div class="assessment-metric-topline">
-        <div class="min-w-0">
-          <p class="assessment-metric-heading text-xs font-semibold uppercase tracking-wide">
+        <div class="min-width-0">
+          <p class="assessment-metric-heading type-xs weight-semibold text-uppercase tracking-label">
             <span>${escapeHtml(card.label)}</span>
             <span class="assessment-metric-help">
               <button type="button" class="assessment-help-button" aria-label="${escapeHtml(card.label)} explanation">?</button>
               <span class="assessment-help-tooltip" role="tooltip">${escapeHtml(card.definition)}</span>
             </span>
           </p>
-          <p class="mt-1 text-lg font-bold text-slate-700">${escapeHtml(card.value)}</p>
-          <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(card.note)}</p>
-          <p class="metric-signal-text mt-2">${escapeHtml(signal.label)}</p>
+          <p class="space-top-1 type-lg weight-bold text-primary">${escapeHtml(card.value)}</p>
+          <p class="space-top-1 type-xs line-5 text-muted">${escapeHtml(card.note)}</p>
+          <p class="metric-signal-text space-top-2">${escapeHtml(signal.label)}</p>
         </div>
       </div>
       <details class="assessment-detail-drawer" ${detailOpen ? "open" : ""}>
         <summary class="assessment-detail-toggle"><span>See statistics + chart</span></summary>
         <div class="assessment-detail-content">
-          <p class="assessment-band-kicker mt-4">${escapeHtml(card.category)}</p>
-          <div class="assessment-band-chart mt-3 h-40">
+          <p class="assessment-band-kicker space-top-4">${escapeHtml(card.category)}</p>
+          <div class="assessment-band-chart space-top-3 height-40">
             <canvas id="marketSignalChart-${card.metricKey}"></canvas>
           </div>
-          <p class="assessment-band-copy mt-3">${escapeHtml(card.definition)}</p>
-          <div class="assessment-band-footer mt-3">
+          <p class="assessment-band-copy space-top-3">${escapeHtml(card.definition)}</p>
+          <div class="assessment-band-footer space-top-3">
             <span>${escapeHtml(card.range ? rangeLabel : "Benchmark: selected market area vs. countywide")}</span>
           </div>
         </div>
@@ -2440,9 +2440,9 @@ function renderMarketPositionLegend() {
   ];
 
   legend.innerHTML = items.map(item => `
-    <div class="flex items-center gap-2">
+    <div class="display-flex align-center layout-gap-2">
       <span
-        class="chart-legend-dot inline-block border-2"
+        class="chart-legend-dot display-inline-block border-width-2"
         style="
           border-color: ${item.borderColor};
           background-color: ${item.backgroundColor};
@@ -2550,9 +2550,9 @@ function renderMarketPriceSummary(selected, countywide) {
       role="group"
       aria-label="${escapeHtml(`${row.label}: ${row.value}. Countywide: ${row.countyValue}.`)}"
     >
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(row.label)}</p>
-      <p class="mt-1 text-2xl font-bold leading-tight text-slate-700">${escapeHtml(row.value)}</p>
-      <p class="mt-2 text-xs leading-5 text-slate-500">Countywide: ${escapeHtml(row.countyValue)}</p>
+      <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">${escapeHtml(row.label)}</p>
+      <p class="space-top-1 type-2xl weight-bold line-tight text-primary">${escapeHtml(row.value)}</p>
+      <p class="space-top-2 type-xs line-5 text-muted">Countywide: ${escapeHtml(row.countyValue)}</p>
     </div>
   `).join("");
 }
@@ -3436,9 +3436,9 @@ function renderCountyComparisonSummary(primaryRows, comparisonRows, statewideRow
 
   container.innerHTML = cards.map(card => `
     <div class="pressure-card county-comparison-card county-comparison-card-${card.key}">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${card.label}</p>
-      <p class="mt-1 text-lg font-bold text-slate-700">${card.value}</p>
-      <p class="mt-1 text-xs leading-5 text-slate-600">${card.note}</p>
+      <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">${card.label}</p>
+      <p class="space-top-1 type-lg weight-bold text-primary">${card.value}</p>
+      <p class="space-top-1 type-xs line-5 text-secondary">${card.note}</p>
     </div>
   `).join("");
 }
@@ -3638,22 +3638,22 @@ export function buildCtlSummary(data, ctlData) {
     countyGrowthSummary.innerHTML = `
       <div class="county-growth-pair county-baseline-card review-card-muted">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County value growth</p>
-          <p class="mt-1 text-lg font-bold text-slate-700">${valueGrowth}</p>
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">County value growth</p>
+          <p class="space-top-1 type-lg weight-bold text-primary">${valueGrowth}</p>
         </div>
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County tax growth</p>
-          <p class="mt-1 text-lg font-bold text-slate-700">${taxGrowth}</p>
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">County tax growth</p>
+          <p class="space-top-1 type-lg weight-bold text-primary">${taxGrowth}</p>
         </div>
       </div>
       <div class="county-growth-pair county-baseline-card review-card-muted">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property value growth</p>
-          <p class="mt-1 text-lg font-bold text-slate-700">${propertyValueGrowth}</p>
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Property value growth</p>
+          <p class="space-top-1 type-lg weight-bold text-primary">${propertyValueGrowth}</p>
         </div>
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property tax growth</p>
-          <p class="mt-1 text-lg font-bold text-slate-700">${propertyTaxGrowth}</p>
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Property tax growth</p>
+          <p class="space-top-1 type-lg weight-bold text-primary">${propertyTaxGrowth}</p>
         </div>
       </div>`;
   }
@@ -3661,12 +3661,12 @@ export function buildCtlSummary(data, ctlData) {
   if (countyRateSummary) {
     countyRateSummary.innerHTML = `
       <div class="county-baseline-card review-card-muted">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">County rate movement</p>
-        <p class="mt-1 text-lg font-bold text-slate-700">${rateMovement}</p>
+        <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">County rate movement</p>
+        <p class="space-top-1 type-lg weight-bold text-primary">${rateMovement}</p>
       </div>
       <div class="county-baseline-card review-card-muted">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Property rate movement</p>
-        <p class="mt-1 text-lg font-bold text-slate-700">${propertyRateChange}</p>
+        <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Property rate movement</p>
+        <p class="space-top-1 type-lg weight-bold text-primary">${propertyRateChange}</p>
       </div>`;
   }
 
@@ -3695,12 +3695,12 @@ export function buildCtlSummary(data, ctlData) {
 
     stateSummary.innerHTML = stateCards.map(card => `
       <div class="statewide-summary-card review-card">
-        <div class="flex items-center gap-2">
-          <span class="chart-legend-dot inline-block" style="background-color: ${card.color};"></span>
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-700">${card.label}</p>
+        <div class="display-flex align-center layout-gap-2">
+          <span class="chart-legend-dot display-inline-block" style="background-color: ${card.color};"></span>
+          <p class="type-xs weight-semibold text-uppercase tracking-label text-primary">${card.label}</p>
         </div>
-        <p class="mt-2 text-lg font-bold text-slate-700">${card.value}</p>
-        <p class="mt-1 text-sm leading-5 text-slate-600">${card.note}</p>
+        <p class="space-top-2 type-lg weight-bold text-primary">${card.value}</p>
+        <p class="space-top-1 type-sm line-5 text-secondary">${card.note}</p>
       </div>
     `).join("");
   }

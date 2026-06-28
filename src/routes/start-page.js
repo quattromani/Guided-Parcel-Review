@@ -80,10 +80,10 @@ function coverageTokens(propertySwitcherContext = {}) {
 export function renderStartPage(propertySwitcherContext = {}, renderViewHeader) {
   renderViewHeader?.("start", null, propertySwitcherContext);
 
-  document.getElementById("propertyViewContext")?.classList.add("hidden");
-  document.querySelector(".guide-review-header")?.classList.add("hidden");
+  document.getElementById("propertyViewContext")?.classList.add("is-hidden");
+  document.querySelector(".guide-review-header")?.classList.add("is-hidden");
   document.querySelectorAll("[data-guided-panel]").forEach(panel => {
-    panel.classList.add("hidden");
+    panel.classList.add("is-hidden");
   });
 
   const canvas = document.querySelector(".mobile-review-canvas");

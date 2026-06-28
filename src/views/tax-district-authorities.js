@@ -42,8 +42,8 @@ export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
     <div class="metric-pair-card review-card-muted">
       ${pair.map(card => `
         <div>
-          <p class="metric-pair-card-label text-xs font-semibold uppercase tracking-wide">${escapeHtml(card.label)}</p>
-          <p class="mt-1 text-lg font-bold text-slate-700">${escapeHtml(card.value)}</p>
+          <p class="metric-pair-card-label type-xs weight-semibold text-uppercase tracking-label">${escapeHtml(card.label)}</p>
+          <p class="space-top-1 type-lg weight-bold text-primary">${escapeHtml(card.value)}</p>
         </div>
       `).join("")}
     </div>

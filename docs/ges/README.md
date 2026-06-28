@@ -8,8 +8,13 @@ Every component should teach, orient, reassure, clarify, verify, or help the rea
 
 ## Runtime Structure
 
+- `scss/ges.scss` is the canonical Sass entry point for GES design-system source.
+- `scss/abstracts/` owns live design tokens for color, type, spacing, breakpoints, elevation, opacity, motion, and z-index.
+- `scss/base/`, `scss/layout/`, `scss/components/`, and `scss/pages/` own project-local CSS source. These files should not recreate framework utilities.
+- `scripts/build-scss.mjs` compiles the Sass source into `src/ges-system.css` without requiring a package-manager dependency.
+- `src/ges-system.css` is checked in so the static site remains portable to GitHub Pages and minimal third-party host pages.
 - `src/ges/index.css` imports the GES runtime cascade.
-- `src/ges/tokens.css` owns values.
+- `src/ges/tokens.css` is a compatibility shim that imports `src/ges-system.css`.
 - `src/ges/base.css` owns intentional HTML defaults.
 - `src/ges/typography.css` owns text roles.
 - `src/ges/layout.css` owns layout primitives and density.
@@ -21,19 +26,22 @@ Every component should teach, orient, reassure, clarify, verify, or help the rea
 - `src/ges/article-components.js` owns reusable article markup helpers.
 - `ges/index.html` is the live pattern library.
 
-The older `src/styles.css` still owns the non-editorial parcel-review app shell. GES loads as an explicit layer for editorial routes and the pattern library.
+The older `src/styles.css` still owns much of the non-editorial parcel-review app shell, but its public root tokens now alias the Sass token layer. GES loads as an explicit layer for editorial routes and the pattern library.
 
 ## Cascade Ownership
 
 1. Tokens define values.
-2. Base styles define ordinary HTML.
-3. Typography defines reading hierarchy.
-4. Layout primitives define reusable structure.
-5. Components define reusable editorial objects.
-6. Variants modify components intentionally.
-7. Article composition arranges components.
-8. Theme files swap token values.
-9. Print rules preserve substance while removing dead controls.
+2. Generated design-system CSS exposes those values and the project utility vocabulary.
+3. Base styles define ordinary HTML.
+4. Typography defines reading hierarchy.
+5. Layout primitives define reusable structure.
+6. Components define reusable editorial objects.
+7. Variants modify components intentionally.
+8. Article composition arranges components.
+9. Theme files swap token values.
+10. Print rules preserve substance while removing dead controls.
+
+Tailwind is not part of the runtime cascade. If a future view needs a repeated visual pattern, add a semantic component class or a narrow project utility sourced from the Sass tokens.
 
 ## Composition Rule
 
@@ -73,6 +81,12 @@ Then visit:
 
 ```text
 http://localhost:4173/ges/
+```
+
+Rebuild design-system CSS after editing Sass:
+
+```bash
+node scripts/build-scss.mjs
 ```
 
 ## Core Principles

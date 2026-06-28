@@ -160,8 +160,8 @@ function legalAuthorityListHtml(authorities, legalReferences) {
 }
 
 export function renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, summaryContext = {}) {
-  document.getElementById("guidedStartState")?.classList.add("hidden");
-  document.querySelector(".guide-review-header")?.classList.remove("hidden");
+  document.getElementById("guidedStartState")?.classList.add("is-hidden");
+  document.querySelector(".guide-review-header")?.classList.remove("is-hidden");
   renderViewHeader("your-property", data.snapshotModel, summaryContext.propertySwitcher);
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard, valuationGroups);
@@ -228,46 +228,46 @@ function renderValueTaxHistoryShell() {
   if (!container) return;
 
   container.innerHTML = `
-    <div class="value-tax-history-split grid gap-4 lg:grid-cols-2">
+    <div class="value-tax-history-split display-grid layout-gap-4 mq-lg-grid-cols-2">
       <article id="value-history" class="value-tax-history-card">
         <div class="mobile-support-content value-history-content">
-            <h2 class="text-xl font-bold text-slate-700">Value and tax history</h2>
-            <p class="mt-1 text-sm text-slate-600">
+            <h2 class="type-xl weight-bold text-primary">Value and tax history</h2>
+            <p class="space-top-1 type-sm text-secondary">
                 Compare assessed value, net tax, and effective tax rate (ETR) by year.
                 Gross tax starts with value and levy.
                 Credits reduce gross tax to net tax.
                 ETR compares net tax back to assessed value.
             </p>
-            <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-              <table class="value-tax-history-table min-w-full divide-y divide-slate-200 text-sm">
+            <div class="space-top-4 scroll-x radius-card ring-size-1 ring-color-subtle">
+              <table class="value-tax-history-table min-width-full divide-block divide-color-subtle type-sm">
                 <thead>
                   <tr>
-                    <th class="px-3 py-2 text-left font-semibold">Year</th>
-                    <th class="px-3 py-2 text-right font-semibold">Assessed Value</th>
-                    <th class="px-3 py-2 text-right font-semibold">Net Tax</th>
-                    <th class="px-3 py-2 text-right font-semibold">ETR</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Year</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Assessed Value</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Net Tax</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">ETR</th>
                   </tr>
                 </thead>
-                <tbody id="historyRows" class="divide-y divide-slate-200 bg-white"></tbody>
+                <tbody id="historyRows" class="divide-block divide-color-subtle surface"></tbody>
               </table>
             </div>
             <div id="historyMovementSummary" class="history-movement-summary"></div>
-            <p id="historyFootnote" class="mt-2 hidden text-xs leading-5 text-slate-500"></p>
+            <p id="historyFootnote" class="space-top-2 is-hidden type-xs line-5 text-muted"></p>
         </div>
       </article>
 
       <article id="indexed-trends" class="value-tax-history-card">
         <div>
           <div>
-            <h2 class="text-xl font-bold text-slate-700">How are this property’s value and taxes moving together?</h2>
-              <p id="indexedTrendsIntro" class="text-sm text-slate-600">Compare how assessed value and net taxes moved after levy changes and credits are applied.</p>
+            <h2 class="type-xl weight-bold text-primary">How are this property’s value and taxes moving together?</h2>
+              <p id="indexedTrendsIntro" class="type-sm text-secondary">Compare how assessed value and net taxes moved after levy changes and credits are applied.</p>
           </div>
         </div>
-        <div class="indexed-trends-chart mt-4">
-          <span id="indexedPendingBadge" class="indexed-pending-badge hidden">Pending</span>
+        <div class="indexed-trends-chart space-top-4">
+          <span id="indexedPendingBadge" class="indexed-pending-badge is-hidden">Pending</span>
           <canvas id="indexedChart"></canvas>
         </div>
-        <div id="indexedChartLegend" class="chart-disc-legend mt-3 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-600"></div>
+        <div id="indexedChartLegend" class="chart-disc-legend space-top-3 display-flex flex-wrap main-center layout-gap-x-6 layout-gap-y-2 type-sm text-secondary"></div>
       </article>
     </div>
     <p data-tax-history-source class="chart-source"></p>
@@ -279,32 +279,32 @@ function renderTaxHistoryShell() {
   const container = document.getElementById("tax-history-panel");
   if (!container) return;
 
-  container.className = "tax-history-pair review-card grid gap-6 lg:grid-cols-[minmax(0,1.85fr)_minmax(320px,1fr)]";
+  container.className = "tax-history-pair review-card display-grid layout-gap-6 mq-lg-grid-cols-wide-aside";
   container.innerHTML = `
     <article id="tax-history" class="tax-history-detail-panel">
-      <h2 class="sr-only">Levy, credits, and net tax history</h2>
-      <div class="overflow-x-auto rounded-xl ring-1 ring-slate-200">
-        <table class="tax-burden-table min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
+      <h2 class="visually-hidden">Levy, credits, and net tax history</h2>
+      <div class="scroll-x radius-card ring-size-1 ring-color-subtle">
+        <table class="tax-burden-table min-width-full divide-block divide-color-subtle type-xs mq-sm-type-sm">
           <thead class="tax-burden-table-head">
             <tr>
-              <th class="px-2 py-2 text-left font-semibold sm:px-3">Year</th>
-              <th class="px-2 py-2 text-right font-semibold sm:px-3">Levy</th>
-              <th class="tax-history-change-column px-2 py-2 text-center font-semibold sm:px-3">YOY Change</th>
-              <th class="px-2 py-2 text-right font-semibold sm:px-3">Gross</th>
-              <th class="px-2 py-2 text-right font-semibold sm:px-3">Credits</th>
-              <th class="px-2 py-2 text-right font-semibold sm:px-3">Net</th>
-              <th class="px-2 py-2 text-right font-semibold sm:px-3">ETR</th>
+              <th class="pad-inline-2 pad-block-2 text-align-left weight-semibold mq-sm-pad-inline-3">Year</th>
+              <th class="pad-inline-2 pad-block-2 text-align-right weight-semibold mq-sm-pad-inline-3">Levy</th>
+              <th class="tax-history-change-column pad-inline-2 pad-block-2 text-align-center weight-semibold mq-sm-pad-inline-3">YOY Change</th>
+              <th class="pad-inline-2 pad-block-2 text-align-right weight-semibold mq-sm-pad-inline-3">Gross</th>
+              <th class="pad-inline-2 pad-block-2 text-align-right weight-semibold mq-sm-pad-inline-3">Credits</th>
+              <th class="pad-inline-2 pad-block-2 text-align-right weight-semibold mq-sm-pad-inline-3">Net</th>
+              <th class="pad-inline-2 pad-block-2 text-align-right weight-semibold mq-sm-pad-inline-3">ETR</th>
             </tr>
           </thead>
-          <tbody id="taxHistoryRows" class="divide-y divide-slate-200"></tbody>
+          <tbody id="taxHistoryRows" class="divide-block divide-color-subtle"></tbody>
         </table>
       </div>
-      <p id="taxHistorySourceNote" class="mt-2 text-xs leading-5 text-slate-500"></p>
+      <p id="taxHistorySourceNote" class="space-top-2 type-xs line-5 text-muted"></p>
     </article>
 
     <article id="etr-trend" class="tax-history-rate-panel">
-      <h2 class="sr-only">Effective tax rate trend</h2>
-      <div class="h-64 sm:h-72">
+      <h2 class="visually-hidden">Effective tax rate trend</h2>
+      <div class="height-64 mq-sm-height-72">
         <canvas id="etrChart"></canvas>
       </div>
     </article>
@@ -328,12 +328,12 @@ function renderTaxDistributionShell(data) {
   const levyTableOpen = mobileSupportOpenAttribute();
 
   container.innerHTML = `
-    <div class="data-split-view tax-distribution-split-view grid gap-6 lg:grid-cols-2">
+    <div class="data-split-view tax-distribution-split-view display-grid layout-gap-6 mq-lg-grid-cols-2">
       <article>
         <div class="levy-treemap-panel" aria-labelledby="distributionChartTitle">
           <div class="levy-treemap-heading">
-            <h2 id="distributionChartTitle" class="text-xl font-bold text-slate-700">How is the gross levy distributed for this property?</h2>
-            <p class="mt-1 text-sm text-slate-600">The chart shows each taxing body's share of the latest completed levy against this property's assessed value before statement credits.</p>
+            <h2 id="distributionChartTitle" class="type-xl weight-bold text-primary">How is the gross levy distributed for this property?</h2>
+            <p class="space-top-1 type-sm text-secondary">The chart shows each taxing body's share of the latest completed levy against this property's assessed value before statement credits.</p>
           </div>
           <div id="distributionTreemap" class="levy-treemap-shell"></div>
         </div>
@@ -346,19 +346,19 @@ function renderTaxDistributionShell(data) {
             <span class="mobile-support-chevron" aria-hidden="true"></span>
           </summary>
           <div class="mobile-support-content">
-            <h2 class="text-xl font-bold text-slate-700">Which taxing bodies are included?</h2>
-            <p class="mt-1 text-sm text-slate-600">2025 is the latest completed levy breakdown. Levy share and property amount show the gross levy applied to this property before statement credits.</p>
-            <div class="mt-4 overflow-x-auto rounded-xl ring-1 ring-slate-200">
-              <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <h2 class="type-xl weight-bold text-primary">Which taxing bodies are included?</h2>
+            <p class="space-top-1 type-sm text-secondary">2025 is the latest completed levy breakdown. Levy share and property amount show the gross levy applied to this property before statement credits.</p>
+            <div class="space-top-4 scroll-x radius-card ring-size-1 ring-color-subtle">
+              <table class="min-width-full divide-block divide-color-subtle type-sm">
                 <thead>
                   <tr>
-                    <th class="px-3 py-2 text-left font-semibold">Taxing body</th>
-                    <th class="px-3 py-2 text-right font-semibold">Rate</th>
-                    <th class="px-3 py-2 text-right font-semibold">Levy share</th>
-                    <th class="px-3 py-2 text-right font-semibold">Property amount</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Taxing body</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Rate</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Levy share</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Property amount</th>
                   </tr>
                 </thead>
-                <tbody id="levyRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+                <tbody id="levyRows" class="divide-block divide-color-subtle [&>tr:nth-child(even)]:bg-slate-50"></tbody>
               </table>
             </div>
           </div>
@@ -386,42 +386,42 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
     : "Where does each measure stand?";
 
   const unifiedView = `
-    <section class="data-split-view equalization-unified-section grid gap-6 lg:grid-cols-5">
-      <div class="equalization-chart-support lg:col-span-3">
+    <section class="data-split-view equalization-unified-section display-grid layout-gap-6 mq-lg-grid-cols-5">
+      <div class="equalization-chart-support mq-lg-col-span-3">
         <article class="review-card-muted">
           <div class="equalization-chart-heading">
-            <h3 class="text-lg font-bold text-slate-700">How do the assessment measures come together?</h3>
+            <h3 class="type-lg weight-bold text-primary">How do the assessment measures come together?</h3>
             <span id="assessmentClassContextPill" class="equalization-context-pill" aria-live="polite"></span>
           </div>
-          <div id="assessmentAccuracyLegend" class="assessment-line-legend mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600"></div>
-          <div class="mt-4 h-80">
+          <div id="assessmentAccuracyLegend" class="assessment-line-legend space-top-4 display-flex flex-wrap layout-gap-x-5 layout-gap-y-2 type-sm text-secondary"></div>
+          <div class="space-top-4 height-80">
             <canvas id="assessmentAccuracyChart"></canvas>
           </div>
         </article>
-        <p id="assessmentAccuracyConvergenceNote" class="equalization-unified-note mt-3 text-sm text-slate-600">COD, PRD, COV, and level of value use different scales. This view puts each measure into its own band so the trends can be compared together.</p>
+        <p id="assessmentAccuracyConvergenceNote" class="equalization-unified-note space-top-3 type-sm text-secondary">COD, PRD, COV, and level of value use different scales. This view puts each measure into its own band so the trends can be compared together.</p>
       </div>
-      <article class="equalization-year-table-panel review-card-muted lg:col-span-2">
+      <article class="equalization-year-table-panel review-card-muted mq-lg-col-span-2">
         <details class="mobile-support-disclosure equalization-support-disclosure" data-mobile-support${supportOpen}>
           <summary class="mobile-support-toggle">
             <span>See reported values table</span>
             <span class="mobile-support-chevron" aria-hidden="true"></span>
           </summary>
           <div class="mobile-support-content">
-            <h3 class="text-lg font-bold text-slate-700">What changed by year?</h3>
-            <p class="mt-1 text-sm text-slate-600">The latest years appear first. This makes recent county sales-study results easier to compare with prior years.</p>
-            <div class="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
-              <table class="min-w-full divide-y divide-slate-200 text-sm equalization-support-table">
-                <thead class="sticky top-0">
+            <h3 class="type-lg weight-bold text-primary">What changed by year?</h3>
+            <p class="space-top-1 type-sm text-secondary">The latest years appear first. This makes recent county sales-study results easier to compare with prior years.</p>
+            <div class="space-top-4 scroll-x radius-card surface ring-size-1 ring-color-subtle">
+              <table class="min-width-full divide-block divide-color-subtle type-sm equalization-support-table">
+                <thead class="position-sticky top-0">
                   <tr>
-                    <th class="px-3 py-2 text-left font-semibold">Year</th>
-                    <th class="px-3 py-2 text-right font-semibold">Sales</th>
-                    <th class="px-3 py-2 text-right font-semibold">COD</th>
-                    <th class="px-3 py-2 text-right font-semibold">PRD</th>
-                    <th class="px-3 py-2 text-right font-semibold">COV</th>
-                    <th class="px-3 py-2 text-right font-semibold">LOV</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Year</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Sales</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">COD</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">PRD</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">COV</th>
+                    <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">LOV</th>
                   </tr>
                 </thead>
-                <tbody id="assessmentMeasureRows" class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50"></tbody>
+                <tbody id="assessmentMeasureRows" class="divide-block divide-color-subtle [&>tr:nth-child(even)]:bg-slate-50"></tbody>
               </table>
             </div>
           </div>
@@ -435,12 +435,12 @@ function renderAssessmentAccuracyShell(summaryContext = {}) {
     <section aria-labelledby="assessmentBandCardsTitle">
       <div class="assessment-band-header">
         <div>
-          <h3 id="assessmentBandCardsTitle" class="text-lg font-bold text-slate-700">${assessmentBandTitle}</h3>
+          <h3 id="assessmentBandCardsTitle" class="type-lg weight-bold text-primary">${assessmentBandTitle}</h3>
           <p class="assessment-band-helper">Click the question mark next to each term for a plain-language explanation.</p>
         </div>
-        <div id="assessmentClassFilter" class="inline-flex rounded-xl bg-slate-100 p-1 text-sm font-semibold ring-1 ring-slate-200" aria-label="Assessment class filter"></div>
+        <div id="assessmentClassFilter" class="display-inline-flex radius-card surface-muted-strong pad-1 type-sm weight-semibold ring-size-1 ring-color-subtle" aria-label="Assessment class filter"></div>
       </div>
-      <div id="assessmentAccuracySummary" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
+      <div id="assessmentAccuracySummary" class="space-top-4 display-grid layout-gap-3 mq-md-grid-cols-2 mq-xl-grid-cols-4"></div>
       <p id="assessmentBandCardsSourceNote" class="chart-source">${assessmentAccuracySourceNote}</p>
     </section>
   `;
@@ -573,15 +573,15 @@ function renderViewHeaderContent(content, snapshotModel, switcherContext) {
     <div class="page-title-shell${showCountyLogo ? "" : " page-title-shell-no-logo"}">
       <div class="page-title-heading-row">
         <div>
-          <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          <p class="type-sm weight-semibold text-uppercase tracking-label text-muted">
             ${content.eyebrow}
           </p>
 
-          <h1 class="mt-1 text-4xl font-bold tracking-tight text-slate-700">
+          <h1 class="space-top-1 type-4xl weight-bold tracking-normal text-primary">
             ${titleHtml}
           </h1>
 
-          <p class="mt-2 max-w-3xl text-base text-slate-600">
+          <p class="space-top-2 measure-3xl type-base text-secondary">
             ${content.description}
           </p>
 
@@ -1032,7 +1032,7 @@ function valuationNoticeSummary(data, recordCard) {
 
   return `
     <div class="valuation-notice-card">
-      <div class="overflow-hidden rounded-lg ring-1 ring-slate-200">
+      <div class="clip-overflow radius-md ring-size-1 ring-color-subtle">
         <div class="valuation-notice-row valuation-notice-header">
           <p>Value breakdown</p>
           <p>${values.prior.year}</p>
@@ -1131,8 +1131,8 @@ function valuationNoticeRow(label, priorValue, currentValue, emphasized = false)
   return `
     <div class="valuation-notice-row ${emphasized ? "valuation-notice-row-total" : ""}">
       <p>${label}</p>
-      <p class="text-right">${formatNullableMoney(priorValue)}</p>
-      <p class="text-right">${formatNullableMoney(currentValue)}</p>
+      <p class="text-align-right">${formatNullableMoney(priorValue)}</p>
+      <p class="text-align-right">${formatNullableMoney(currentValue)}</p>
     </div>
   `;
 }
@@ -1148,10 +1148,10 @@ function imageButton(src, caption, label) {
   }
 
   return `
-    <button type="button" data-image-src="${src}" data-image-caption="${caption}" class="group relative overflow-hidden rounded-lg bg-slate-100 ring-1 ring-slate-200 transition hover:ring-slate-300">
-      <img src="${src}" alt="${caption}" class="h-28 w-44 object-cover transition duration-200 group-hover:scale-105" />
-      <div class="absolute inset-x-0 bottom-0 bg-black/55 px-2 py-1">
-        <p class="text-xs font-medium text-white">${label}</p>
+    <button type="button" data-image-src="${src}" data-image-caption="${caption}" class="state-group position-relative clip-overflow radius-md surface-muted-strong ring-size-1 ring-color-subtle transition-base hover-ring-color-control">
+      <img src="${src}" alt="${caption}" class="height-28 width-44 media-cover transition-base transition-duration-200 state-group-hover-scale-up" />
+      <div class="position-absolute inset-x-0 bottom-0 surface-scrim pad-inline-2 pad-block-1">
+        <p class="type-xs weight-medium text-inverse">${label}</p>
       </div>
     </button>
   `;
@@ -1247,8 +1247,8 @@ function renderPropertyDetails(data, recordCard) {
         <div class="details-card ${detail.className || "details-card-full"} metric-pair-card">
           ${detail.items.map(([label, value]) => `
             <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</dt>
-              <dd class="mt-1 text-sm font-medium text-slate-700">${displayValue(value)}</dd>
+              <dt class="type-xs weight-semibold text-uppercase tracking-label text-muted">${label}</dt>
+              <dd class="space-top-1 type-sm weight-medium text-primary">${displayValue(value)}</dd>
             </div>
           `).join("")}
         </div>
@@ -1263,13 +1263,13 @@ function renderPropertyDetails(data, recordCard) {
     return `
       <div class="details-card ${compactDetailLabels.has(label) ? "details-card-compact" : "details-card-full"} ${helpClassName} ${selected ? "details-card-marked" : ""}" data-review-flag-card="${escapeHtml(detail.id)}">
         <div class="details-card-heading">
-          <dt class="details-card-label-row text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <dt class="details-card-label-row type-xs weight-semibold text-uppercase tracking-label text-muted">
             <span>${escapeHtml(label)}</span>
             ${renderDetailHelp(detail)}
           </dt>
           ${renderReviewInput(detail)}
         </div>
-        <dd class="mt-1 text-sm font-medium text-slate-700">${valueMarkup}</dd>
+        <dd class="space-top-1 type-sm weight-medium text-primary">${valueMarkup}</dd>
       </div>
     `;
   };
@@ -1326,7 +1326,7 @@ function renderPropertyDetails(data, recordCard) {
         <table class="review-data-table">
           <thead>
             <tr>
-              ${columns.map(column => `<th class="${column.align === "right" ? "text-right" : ""}">${escapeHtml(column.label)}</th>`).join("")}
+              ${columns.map(column => `<th class="${column.align === "right" ? "text-align-right" : ""}">${escapeHtml(column.label)}</th>`).join("")}
               <th class="review-data-table-flag" aria-label="Mark for review"></th>
             </tr>
           </thead>
@@ -1336,7 +1336,7 @@ function renderPropertyDetails(data, recordCard) {
               return `
                 <tr class="${selected ? "review-data-row-marked" : ""}" data-review-flag-card="${escapeHtml(detail.id)}">
                   ${columns.map(column => `
-                    <td class="${column.align === "right" ? "text-right" : ""}">
+                    <td class="${column.align === "right" ? "text-align-right" : ""}">
                       ${escapeHtml(displayValue(detail.cells?.[column.key]))}
                     </td>
                   `).join("")}
@@ -1792,18 +1792,18 @@ function reviewCategoryCards() {
 
     return `
       <fieldset class="review-card">
-        <legend class="text-base font-bold text-slate-700">${escapeHtml(category.title)}</legend>
-        <p class="mt-2 text-sm leading-6 text-slate-600">${escapeHtml(category.description)}</p>
-        <p id="${examplesId}" class="mt-2 text-xs leading-5 text-slate-500">
+        <legend class="type-base weight-bold text-primary">${escapeHtml(category.title)}</legend>
+        <p class="space-top-2 type-sm line-6 text-secondary">${escapeHtml(category.description)}</p>
+        <p id="${examplesId}" class="space-top-2 type-xs line-5 text-muted">
           ${category.examples.map(example => escapeHtml(example)).join(", ")}
         </p>
-        <div class="mt-4 grid gap-2 sm:grid-cols-2" role="presentation">
+        <div class="space-top-4 display-grid layout-gap-2 mq-sm-grid-cols-2" role="presentation">
           ${recordReviewStatuses().map(([value, label]) => {
             const inputId = `${groupName}-${value}`;
             return `
               <label
                 data-category-choice
-                class="flex min-h-12 cursor-pointer items-center gap-3 rounded-xl bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-white hover:ring-slate-300 focus-within:ring-2 focus-within:ring-slate-400"
+                class="display-flex min-height-12 cursor-pointer align-center layout-gap-3 radius-card surface-muted pad-inline-3 pad-block-3 type-sm weight-semibold text-primary ring-size-1 ring-color-subtle transition-base hover-surface hover-ring-color-control focus-within-ring-2 focus-within-ring-color-control"
                 for="${inputId}"
               >
                 <input
@@ -1811,11 +1811,11 @@ function reviewCategoryCards() {
                   name="${groupName}"
                   type="radio"
                   value="${value}"
-                  class="sr-only"
+                  class="visually-hidden"
                   aria-describedby="${examplesId}"
                 />
-                <span data-choice-indicator class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-white" aria-hidden="true">
-                  <span class="h-2.5 w-2.5 rounded-full bg-transparent"></span>
+                <span data-choice-indicator class="display-flex height-5 width-5 flex-shrink-0 align-center main-center radius-pill border-all border-color-control surface" aria-hidden="true">
+                  <span class="height-2-5 width-2-5 radius-pill surface-transparent"></span>
                 </span>
                 <span>${escapeHtml(label)}</span>
               </label>
@@ -1839,8 +1839,8 @@ function renderDiscrepancyForm(data, recordCard) {
   if (!container) return;
 
   container.innerHTML = `
-    <form id="propertyDiscrepancyForm" class="space-y-5">
-      <section class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+    <form id="propertyDiscrepancyForm" class="flow-space-5">
+      <section class="display-grid layout-gap-3 mq-md-grid-cols-2 mq-xl-grid-cols-4">
         ${[
           ["Parcel ID", data.parcel.parcelId],
           ["Situs address", displayAddress(data.parcel.situsAddress)],
@@ -1852,52 +1852,52 @@ function renderDiscrepancyForm(data, recordCard) {
           ["County", `${data.parcel.countyName} County`]
         ].map(([label, value]) => `
           <div class="review-note">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${label}</p>
-            <p class="mt-1 text-sm font-semibold leading-5 text-slate-700">${escapeHtml(value)}</p>
+            <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">${label}</p>
+            <p class="space-top-1 type-sm weight-semibold line-5 text-primary">${escapeHtml(value)}</p>
           </div>
         `).join("")}
       </section>
 
       <section>
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div class="display-flex flex-col layout-gap-2 mq-sm-flex-row mq-sm-align-end mq-sm-justify-between">
           <div>
-            <h3 class="text-lg font-bold text-slate-700">Review property record details</h3>
-            <p class="mt-1 text-sm leading-6 text-slate-600">
+            <h3 class="type-lg weight-bold text-primary">Review property record details</h3>
+            <p class="space-top-1 type-sm line-6 text-secondary">
               You do not need to verify every technical field. Start with the major areas below.
             </p>
           </div>
-          <p id="discrepancyDraftStatus" class="text-xs font-medium text-slate-500" aria-live="polite"></p>
+          <p id="discrepancyDraftStatus" class="type-xs weight-medium text-muted" aria-live="polite"></p>
         </div>
 
-        <div class="mt-3 grid gap-3" aria-label="Property record review categories">
+        <div class="space-top-3 display-grid layout-gap-3" aria-label="Property record review categories">
           ${reviewCategoryCards()}
         </div>
       </section>
 
-      <div id="discrepancyValidationErrors" class="hidden rounded-xl bg-red-50 p-3 text-sm leading-6 text-red-700 ring-1 ring-red-200" role="alert" aria-live="assertive"></div>
+      <div id="discrepancyValidationErrors" class="is-hidden radius-card surface-danger pad-3 type-sm line-6 text-danger ring-size-1 ring-color-danger" role="alert" aria-live="assertive"></div>
 
-      <section class="grid items-start gap-4 lg:grid-cols-3">
-        <div class="lg:col-span-2">
-          <label for="discrepancyComments" class="text-sm font-semibold text-slate-700">Comments or correction narrative</label>
-          <textarea id="discrepancyComments" name="comments" rows="5" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm leading-6 text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Add any specific details you want the Assessor's Office to review."></textarea>
+      <section class="display-grid align-start layout-gap-4 mq-lg-grid-cols-3">
+        <div class="mq-lg-col-span-2">
+          <label for="discrepancyComments" class="type-sm weight-semibold text-primary">Comments or correction narrative</label>
+          <textarea id="discrepancyComments" name="comments" rows="5" class="space-top-2 width-full radius-card border-none surface-muted pad-3 type-sm line-6 text-primary ring-size-1 ring-color-subtle focus-outline-none focus-ring-2 focus-ring-color-control" placeholder="Add any specific details you want the Assessor's Office to review."></textarea>
         </div>
 
-        <div class="space-y-3">
+        <div class="flow-space-3">
           <div>
-            <label for="discrepancySenderName" class="text-sm font-semibold text-slate-700">Your name</label>
-            <input id="discrepancySenderName" name="senderName" type="text" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="Your name" />
+            <label for="discrepancySenderName" class="type-sm weight-semibold text-primary">Your name</label>
+            <input id="discrepancySenderName" name="senderName" type="text" class="space-top-2 width-full radius-card border-none surface-muted pad-3 type-sm text-primary ring-size-1 ring-color-subtle focus-outline-none focus-ring-2 focus-ring-color-control" placeholder="Your name" />
           </div>
 
           <fieldset class="review-note">
-            <legend class="text-sm font-semibold text-slate-700">Preferred contact method</legend>
-            <div class="mt-2 space-y-2 text-sm text-slate-700">
+            <legend class="type-sm weight-semibold text-primary">Preferred contact method</legend>
+            <div class="space-top-2 flow-space-2 type-sm text-primary">
               ${[
                 ["office", "In-office visit"],
                 ["email", "Email"],
                 ["phone", "Phone call"]
               ].map(([value, label]) => `
-                <label class="flex items-center gap-2">
-                  <input type="radio" name="contactMethod" value="${value}" class="h-4 w-4 border-slate-300 text-slate-700 focus:ring-slate-500" />
+                <label class="display-flex align-center layout-gap-2">
+                  <input type="radio" name="contactMethod" value="${value}" class="height-4 width-4 border-color-control text-primary focus-ring-color-strong" />
                   <span>${label}</span>
                 </label>
               `).join("")}
@@ -1905,31 +1905,31 @@ function renderDiscrepancyForm(data, recordCard) {
           </fieldset>
 
           <div>
-            <label for="discrepancyEmail" class="text-sm font-semibold text-slate-700">Email</label>
-            <input id="discrepancyEmail" name="email" type="email" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="name@example.com" />
+            <label for="discrepancyEmail" class="type-sm weight-semibold text-primary">Email</label>
+            <input id="discrepancyEmail" name="email" type="email" class="space-top-2 width-full radius-card border-none surface-muted pad-3 type-sm text-primary ring-size-1 ring-color-subtle focus-outline-none focus-ring-2 focus-ring-color-control" placeholder="name@example.com" />
           </div>
 
           <div>
-            <label for="discrepancyPhone" class="text-sm font-semibold text-slate-700">Phone</label>
-            <input id="discrepancyPhone" name="phone" type="tel" class="mt-2 w-full rounded-xl border-0 bg-slate-50 p-3 text-sm text-slate-700 ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="(555) 555-5555" />
+            <label for="discrepancyPhone" class="type-sm weight-semibold text-primary">Phone</label>
+            <input id="discrepancyPhone" name="phone" type="tel" class="space-top-2 width-full radius-card border-none surface-muted pad-3 type-sm text-primary ring-size-1 ring-color-subtle focus-outline-none focus-ring-2 focus-ring-color-control" placeholder="(555) 555-5555" />
           </div>
         </div>
       </section>
 
-      <section id="discrepancyDeliveryNotice" class="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900 ring-1 ring-amber-200">
+      <section id="discrepancyDeliveryNotice" class="radius-card surface-warning pad-3 type-xs line-5 text-warning-strong ring-size-1 ring-color-warning">
           This demonstration prepares a printable correction request and keeps your draft in this browser. It does not send email to the Assessor's Office.
       </section>
 
-      <div class="flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <p id="discrepancySubmitStatus" class="text-sm font-medium text-slate-600" aria-live="polite"></p>
-        <div class="flex flex-col gap-2 sm:flex-row sm:justify-end">
-          <button type="button" data-clear-discrepancy-draft class="w-full rounded-full px-4 py-2 text-sm font-semibold text-slate-500 ring-1 ring-slate-200 transition hover:bg-slate-50 sm:w-auto">
+      <div class="display-flex flex-col layout-gap-3 border-top border-color-subtle pad-top-4 mq-sm-flex-row mq-sm-align-center mq-sm-justify-between">
+        <p id="discrepancySubmitStatus" class="type-sm weight-medium text-secondary" aria-live="polite"></p>
+        <div class="display-flex flex-col layout-gap-2 mq-sm-flex-row mq-sm-justify-end">
+          <button type="button" data-clear-discrepancy-draft class="width-full radius-pill pad-inline-4 pad-block-2 type-sm weight-semibold text-muted ring-size-1 ring-color-subtle transition-base hover-surface-muted mq-sm-width-auto">
             Clear draft
           </button>
-          <button type="button" data-close-report-error class="w-full rounded-full px-4 py-2 text-sm font-semibold text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 sm:w-auto">
+          <button type="button" data-close-report-error class="width-full radius-pill pad-inline-4 pad-block-2 type-sm weight-semibold text-secondary ring-size-1 ring-color-subtle transition-base hover-surface-muted mq-sm-width-auto">
             Save draft and close
           </button>
-          <button type="submit" class="w-full rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 sm:w-auto">
+          <button type="submit" class="width-full radius-pill surface-inverse pad-inline-4 pad-block-2 type-sm weight-semibold text-inverse transition-base hover-surface-inverse mq-sm-width-auto">
             Prepare correction request PDF
           </button>
         </div>
@@ -2001,14 +2001,14 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
       const dot = label.querySelector("[data-choice-indicator] span");
       const selected = Boolean(input?.checked);
 
-      label.classList.toggle("bg-white", selected);
-      label.classList.toggle("ring-slate-500", selected);
-      label.classList.toggle("shadow-sm", selected);
-      label.classList.toggle("text-slate-900", selected);
-      label.classList.toggle("bg-slate-50", !selected);
+      label.classList.toggle("surface", selected);
+      label.classList.toggle("ring-color-strong", selected);
+      label.classList.toggle("elevation-sm", selected);
+      label.classList.toggle("text-strong", selected);
+      label.classList.toggle("surface-muted", !selected);
       if (dot) {
-        dot.classList.toggle("bg-slate-700", selected);
-        dot.classList.toggle("bg-transparent", !selected);
+        dot.classList.toggle("surface-inverse", selected);
+        dot.classList.toggle("surface-transparent", !selected);
       }
     });
   }
@@ -2016,16 +2016,16 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
   function setValidationMessages(messages) {
     if (!validationErrors) return;
     if (!messages.length) {
-      validationErrors.classList.add("hidden");
+      validationErrors.classList.add("is-hidden");
       validationErrors.innerHTML = "";
       form.removeAttribute("aria-invalid");
       return;
     }
 
-    validationErrors.classList.remove("hidden");
+    validationErrors.classList.remove("is-hidden");
     validationErrors.innerHTML = `
-      <p class="font-semibold">Please review the correction request before submitting.</p>
-      <ul class="mt-1 list-disc space-y-1 pl-5">
+      <p class="weight-semibold">Please review the correction request before submitting.</p>
+      <ul class="space-top-1 list-disc flow-space-1 pad-left-5">
         ${messages.map(message => `<li>${escapeHtml(message)}</li>`).join("")}
       </ul>
     `;
@@ -2116,7 +2116,7 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
     if (status) status.textContent = "Draft cleared";
     if (submitStatus) {
       submitStatus.textContent = "";
-      submitStatus.className = "text-sm font-medium text-slate-600";
+      submitStatus.className = "type-sm weight-medium text-secondary";
     }
     setValidationMessages([]);
   });
@@ -2134,14 +2134,14 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
       setValidationMessages(messages);
       if (submitStatus) {
         submitStatus.textContent = "Correction request needs a little more information before it can be prepared.";
-        submitStatus.className = "text-sm font-semibold text-red-700";
+        submitStatus.className = "type-sm weight-semibold text-danger";
       }
       return;
     }
 
     if (submitStatus) {
       submitStatus.textContent = "Preparing correction request PDF...";
-      submitStatus.className = "text-sm font-semibold text-slate-600";
+      submitStatus.className = "type-sm weight-semibold text-secondary";
     }
 
     try {
@@ -2158,19 +2158,19 @@ function initDiscrepancySubmission(data, recordCard, governingOffice) {
       if (submitStatus) {
         if (delivery.delivered) {
           submitStatus.textContent = "The property record correction request has been sent to the Assessor's Office. A copy has also been sent to the email provided.";
-          submitStatus.className = "text-sm font-semibold text-emerald-700";
+          submitStatus.className = "type-sm weight-semibold text-success";
           localStorage.removeItem(draftKey);
         } else {
           downloadGeneratedPdf(pdfBytes, emailPayload.attachment.fileName);
           submitStatus.textContent = `Correction-request PDF downloaded for review. This demonstration does not send email to ${emailPayload.to}, so your draft remains available in this browser.`;
-          submitStatus.className = "text-sm font-semibold text-amber-800";
+          submitStatus.className = "type-sm weight-semibold text-warning";
         }
       }
     } catch (error) {
       console.error("Property record correction request submission failed", error);
       if (submitStatus) {
         submitStatus.textContent = `Correction request could not be prepared: ${error.message}`;
-        submitStatus.className = "text-sm font-semibold text-red-700";
+        submitStatus.className = "type-sm weight-semibold text-danger";
       }
     }
   });
@@ -2216,15 +2216,15 @@ function initReportErrorModal(data, recordCard, governingOffice) {
   initDiscrepancySubmission(data, recordCard, governingOffice);
 
   function close() {
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-    document.body.classList.remove("overflow-hidden");
+    modal.classList.add("is-hidden");
+    modal.classList.remove("display-flex");
+    document.body.classList.remove("clip-overflow");
   }
 
   function open() {
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    document.body.classList.add("overflow-hidden");
+    modal.classList.remove("is-hidden");
+    modal.classList.add("display-flex");
+    document.body.classList.add("clip-overflow");
   }
 
   document.addEventListener("click", event => {
@@ -2341,11 +2341,11 @@ function initExpandableTables() {
   }
 
   function close() {
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
+    modal.classList.add("is-hidden");
+    modal.classList.remove("display-flex");
     modal.setAttribute("aria-hidden", "true");
     modalContent.innerHTML = "";
-    document.body.classList.remove("overflow-hidden");
+    document.body.classList.remove("clip-overflow");
   }
 
   function open(wrapper) {
@@ -2357,10 +2357,10 @@ function initExpandableTables() {
     table.classList.add("expanded-table-clip");
     modalContent.innerHTML = "";
     modalContent.append(table);
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
+    modal.classList.remove("is-hidden");
+    modal.classList.add("display-flex");
     modal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("overflow-hidden");
+    document.body.classList.add("clip-overflow");
   }
 
   document.addEventListener("click", event => {
@@ -2379,7 +2379,7 @@ function initExpandableTables() {
   closeButtons.forEach(button => button.addEventListener("click", close));
 
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && !modal.classList.contains("hidden")) close();
+    if (event.key === "Escape" && !modal.classList.contains("is-hidden")) close();
   });
 
   modal.dataset.initialized = "true";
@@ -2391,12 +2391,12 @@ function initExpandableTables() {
 
 function disclosure(title, meta, content) {
   return `
-    <details class="record-disclosure rounded-xl">
-      <summary class="record-disclosure-toggle cursor-pointer list-none rounded-xl px-4 py-3 font-semibold">
+    <details class="record-disclosure radius-card">
+      <summary class="record-disclosure-toggle cursor-pointer list-none radius-card pad-inline-4 pad-block-3 weight-semibold">
         <div class="record-disclosure-summary">
           <span class="record-disclosure-summary-copy">
             <span class="record-disclosure-title">${title}</span>
-            <span class="record-disclosure-meta rounded-full px-2 py-0.5 text-xs font-semibold">${meta}</span>
+            <span class="record-disclosure-meta radius-pill pad-inline-2 pad-block-0-5 type-xs weight-semibold">${meta}</span>
           </span>
           <span class="record-disclosure-chevron-shell" aria-hidden="true">
             <span class="record-disclosure-chevron"></span>
@@ -2412,22 +2412,22 @@ function ownershipHistory(recordCard) {
   if (!recordCard?.ownershipHistory?.length) return "";
 
   return disclosure("What sale and ownership history is on record?", `${recordCard.ownershipHistory.length} transfers`, `
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50">
+    <table class="min-width-full divide-block divide-color-subtle type-sm">
+      <thead class="surface-muted">
         <tr>
-          <th class="px-3 py-2 text-left font-semibold">Sale date</th>
-          <th class="px-3 py-2 text-left font-semibold">Book / page</th>
-          <th class="px-3 py-2 text-left font-semibold">Owner</th>
-          <th class="px-3 py-2 text-right font-semibold">Amount</th>
+          <th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Sale date</th>
+          <th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Book / page</th>
+          <th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Owner</th>
+          <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Amount</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
+      <tbody class="divide-block divide-color-subtle [&>tr:nth-child(even)]:bg-slate-50">
         ${recordCard.ownershipHistory.map(row => `
           <tr>
-            <td class="px-3 py-2 font-medium">${row.saleDate}</td>
-            <td class="px-3 py-2">${row.book} / ${row.page}</td>
-            <td class="px-3 py-2">${escapeHtml(row.owner)}</td>
-            <td class="px-3 py-2 text-right">${formatNullableMoney(row.amount)}</td>
+            <td class="pad-inline-3 pad-block-2 weight-medium">${row.saleDate}</td>
+            <td class="pad-inline-3 pad-block-2">${row.book} / ${row.page}</td>
+            <td class="pad-inline-3 pad-block-2">${escapeHtml(row.owner)}</td>
+            <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.amount)}</td>
           </tr>
         `).join("")}
       </tbody>
@@ -2442,26 +2442,26 @@ function recordCardValuationHistory(recordCard) {
     .filter(row => row.year >= 2019 && row.year <= 2026);
 
   return disclosure("What values and taxes appear on the record card?", `${rows.length} years`, `
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50">
+    <table class="min-width-full divide-block divide-color-subtle type-sm">
+      <thead class="surface-muted">
         <tr>
-          <th class="px-3 py-2 text-left font-semibold">Year</th>
-          <th class="px-3 py-2 text-right font-semibold">Building</th>
-          <th class="px-3 py-2 text-right font-semibold">Other</th>
-          <th class="px-3 py-2 text-right font-semibold">Land</th>
-          <th class="px-3 py-2 text-right font-semibold">Taxable</th>
-          <th class="px-3 py-2 text-right font-semibold">Total tax</th>
+          <th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Year</th>
+          <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Building</th>
+          <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Other</th>
+          <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Land</th>
+          <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Taxable</th>
+          <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Total tax</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
+      <tbody class="divide-block divide-color-subtle [&>tr:nth-child(even)]:bg-slate-50">
         ${rows.map(row => `
           <tr>
-            <td class="px-3 py-2 font-medium">${row.year}</td>
-            <td class="px-3 py-2 text-right">${formatNullableMoney(row.building)}</td>
-            <td class="px-3 py-2 text-right">${formatNullableMoney(row.other)}</td>
-            <td class="px-3 py-2 text-right">${formatNullableMoney(row.land)}</td>
-            <td class="px-3 py-2 text-right font-semibold">${formatNullableMoney(row.taxable)}</td>
-            <td class="px-3 py-2 text-right">${formatNullableMoney(row.totalTax, true)}</td>
+            <td class="pad-inline-3 pad-block-2 weight-medium">${row.year}</td>
+            <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.building)}</td>
+            <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.other)}</td>
+            <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.land)}</td>
+            <td class="pad-inline-3 pad-block-2 text-align-right weight-semibold">${formatNullableMoney(row.taxable)}</td>
+            <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.totalTax, true)}</td>
           </tr>
         `).join("")}
       </tbody>
@@ -2510,36 +2510,36 @@ function propertyValueTaxHistory(data, recordCard) {
     "What is the property’s value and tax history?",
     `${taxRowCount} ${rowLabel} · latest known ${formatNullableMoney(latestKnownRow?.totalAssessed)}`,
     `
-      <table class="min-w-full divide-y divide-slate-200 text-sm">
-        <thead class="bg-slate-50">
+      <table class="min-width-full divide-block divide-color-subtle type-sm">
+        <thead class="surface-muted">
           <tr>
-            <th class="px-3 py-2 text-left font-semibold">Year</th>
-            <th class="px-3 py-2 text-right font-semibold">Land</th>
-            <th class="px-3 py-2 text-right font-semibold">Dwelling</th>
-            <th class="px-3 py-2 text-right font-semibold">Outbuilding</th>
-            <th class="px-3 py-2 text-right font-semibold">Taxable value</th>
-            <th class="px-3 py-2 text-right font-semibold">Net tax</th>
-            <th class="px-3 py-2 text-right font-semibold">Paid</th>
-            <th class="px-3 py-2 text-right font-semibold">Balance</th>
+            <th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Year</th>
+            <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Land</th>
+            <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Dwelling</th>
+            <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Outbuilding</th>
+            <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Taxable value</th>
+            <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Net tax</th>
+            <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Paid</th>
+            <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Balance</th>
           </tr>
         </thead>
 
-        <tbody class="divide-y divide-slate-200 bg-white">
+        <tbody class="divide-block divide-color-subtle surface">
           ${rows.map((row, index) => `
-              <tr class="${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
-                <td class="px-3 py-2 font-medium">${row.year}</td>
-                <td class="px-3 py-2 text-right">${formatNullableMoney(row.land)}</td>
-                <td class="px-3 py-2 text-right">${formatNullableMoney(row.dwelling)}</td>
-                <td class="px-3 py-2 text-right">${formatNullableMoney(row.outbuilding)}</td>
-                <td class="px-3 py-2 text-right">${formatNullableMoney(row.taxableValue)}</td>
-                <td class="px-3 py-2 text-right">${formatNullableMoney(row.netTax, true)}</td>
-                <td class="px-3 py-2 text-right">${formatNullableMoney(row.totalPaid, true)}</td>
-                <td class="px-3 py-2 text-right">${formatNullableMoney(row.taxDue, true)}</td>
+              <tr class="${index % 2 === 0 ? "surface" : "surface-muted"}">
+                <td class="pad-inline-3 pad-block-2 weight-medium">${row.year}</td>
+                <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.land)}</td>
+                <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.dwelling)}</td>
+                <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.outbuilding)}</td>
+                <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.taxableValue)}</td>
+                <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.netTax, true)}</td>
+                <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.totalPaid, true)}</td>
+                <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.taxDue, true)}</td>
               </tr>
           `).join("")}
         </tbody>
       </table>
-      <p class="border-t border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">
+      <p class="border-top border-color-subtle surface-muted pad-inline-3 pad-block-3 type-xs line-5 text-muted">
         Value components come from the assessment source where available. Net tax, payment, and balance columns come from tax statements where available, so older tax-only years intentionally leave assessor-value detail blank.
       </p>
     `
@@ -2548,25 +2548,25 @@ function propertyValueTaxHistory(data, recordCard) {
 
 function classificationDetails(data) {
   return disclosure("How is this property classified?", "6 fields", `
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
+    <table class="min-width-full divide-block divide-color-subtle type-sm">
+      <tbody class="divide-block divide-color-subtle [&>tr:nth-child(even)]:bg-slate-50">
         <tr>
-          <td class="px-3 py-2 font-semibold text-slate-700">Status</td>
-          <td class="px-3 py-2">${data.classification.status}</td>
-          <td class="border-l border-slate-200 px-3 py-2 font-semibold text-slate-700">Location</td>
-          <td class="px-3 py-2">${data.classification.location}</td>
+          <td class="pad-inline-3 pad-block-2 weight-semibold text-primary">Status</td>
+          <td class="pad-inline-3 pad-block-2">${data.classification.status}</td>
+          <td class="border-left border-color-subtle pad-inline-3 pad-block-2 weight-semibold text-primary">Location</td>
+          <td class="pad-inline-3 pad-block-2">${data.classification.location}</td>
         </tr>
         <tr>
-          <td class="px-3 py-2 font-semibold text-slate-700">Property class</td>
-          <td class="px-3 py-2">${data.classification.propertyClass}</td>
-          <td class="border-l border-slate-200 px-3 py-2 font-semibold text-slate-700">City size</td>
-          <td class="px-3 py-2">${data.classification.citySize}</td>
+          <td class="pad-inline-3 pad-block-2 weight-semibold text-primary">Property class</td>
+          <td class="pad-inline-3 pad-block-2">${data.classification.propertyClass}</td>
+          <td class="border-left border-color-subtle pad-inline-3 pad-block-2 weight-semibold text-primary">City size</td>
+          <td class="pad-inline-3 pad-block-2">${data.classification.citySize}</td>
         </tr>
         <tr>
-          <td class="px-3 py-2 font-semibold text-slate-700">Zoning</td>
-          <td class="px-3 py-2">${data.classification.zoning}</td>
-          <td class="border-l border-slate-200 px-3 py-2 font-semibold text-slate-700">Lot size</td>
-          <td class="px-3 py-2">${data.classification.lotSize}</td>
+          <td class="pad-inline-3 pad-block-2 weight-semibold text-primary">Zoning</td>
+          <td class="pad-inline-3 pad-block-2">${data.classification.zoning}</td>
+          <td class="border-left border-color-subtle pad-inline-3 pad-block-2 weight-semibold text-primary">Lot size</td>
+          <td class="pad-inline-3 pad-block-2">${data.classification.lotSize}</td>
         </tr>
       </tbody>
     </table>
@@ -2576,13 +2576,13 @@ function classificationDetails(data) {
 function propertyNotes(data) {
   if (!data.propertyNotes.length) return "";
 
-  const rows = data.propertyNotes.map(row => `<tr><td class="px-3 py-2">${row.date}</td><td class="px-3 py-2">${row.note}</td></tr>`).join("");
+  const rows = data.propertyNotes.map(row => `<tr><td class="pad-inline-3 pad-block-2">${row.date}</td><td class="pad-inline-3 pad-block-2">${row.note}</td></tr>`).join("");
   const meta = data.propertyNotes.length === 1 ? "1 note" : `${data.propertyNotes.length} notes`;
 
   return disclosure("Are there notes or special conditions?", meta, `
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Date</th><th class="px-3 py-2 text-left font-semibold">Note</th></tr></thead>
-      <tbody class="divide-y divide-slate-200">${rows}</tbody>
+    <table class="min-width-full divide-block divide-color-subtle type-sm">
+      <thead class="surface-muted"><tr><th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Date</th><th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Note</th></tr></thead>
+      <tbody class="divide-block divide-color-subtle">${rows}</tbody>
     </table>
   `);
 }
@@ -2615,10 +2615,10 @@ function sourceExtractDetails(data, recordCard) {
   const cellValue = value => value === null || value === undefined || value === "" ? "—" : escapeHtml(value);
 
   return disclosure("What details were available from the source export?", meta, `
-    <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+    <div class="surface-muted pad-3 type-sm line-6 text-secondary">
       ${escapeHtml(recordCard.sourceExtract.note || "These are the structured facts visible in the source export. Fields not included by the source are left unavailable rather than inferred.")}
     </div>
-    <div class="grid gap-4 border-t border-slate-200 p-3">
+    <div class="display-grid layout-gap-4 border-top border-color-subtle pad-3">
       ${sections.map(section => sourceExtractSection(section, data, recordCard, cellValue)).join("")}
     </div>
   `);
@@ -2640,9 +2640,9 @@ function sourceExtractSection(section, data, recordCard, cellValue) {
   return `
     <section class="source-extract-section">
       <div class="source-extract-section-header">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${escapeHtml(section.title)}</p>
+        <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">${escapeHtml(section.title)}</p>
         <div class="source-extract-section-actions">
-          ${section.summary ? `<p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">${escapeHtml(sourceSectionSummary(section.summary))}</p>` : ""}
+          ${section.summary ? `<p class="radius-pill surface-muted-strong pad-inline-2 pad-block-1 type-xs weight-semibold text-secondary">${escapeHtml(sourceSectionSummary(section.summary))}</p>` : ""}
         </div>
       </div>
       ${sourceExtractTable(section, data, recordCard, cellValue)}
@@ -2652,14 +2652,14 @@ function sourceExtractSection(section, data, recordCard, cellValue) {
 
 function sourceExtractTable(section, data, recordCard, cellValue) {
   return `
-    <div class="table-clip source-table-clip ring-1 ring-slate-200">
-      <table class="min-w-full divide-y divide-slate-200 text-sm">
-        <thead class="bg-slate-50">
-          <tr>${section.columns.map(column => `<th class="px-3 py-2 text-left font-semibold">${escapeHtml(column)}</th>`).join("")}</tr>
+    <div class="table-clip source-table-clip ring-size-1 ring-color-subtle">
+      <table class="min-width-full divide-block divide-color-subtle type-sm">
+        <thead class="surface-muted">
+          <tr>${section.columns.map(column => `<th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">${escapeHtml(column)}</th>`).join("")}</tr>
         </thead>
-        <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
+        <tbody class="divide-block divide-color-subtle surface [&>tr:nth-child(even)]:bg-slate-50">
           ${sourceSectionRows(section, data, recordCard).map(row => `
-            <tr>${row.map(value => `<td class="px-3 py-2">${cellValue(value)}</td>`).join("")}</tr>
+            <tr>${row.map(value => `<td class="pad-inline-3 pad-block-2">${cellValue(value)}</td>`).join("")}</tr>
           `).join("")}
         </tbody>
       </table>
@@ -2951,42 +2951,42 @@ function technicalCostModel(recordCard, data) {
   ];
 
   return disclosure("What makes up this property's assessed value?", `Latest known total ${formatNullableMoney(totalValue)}`, `
-    <div class="bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+    <div class="surface-muted pad-3 type-sm line-6 text-secondary">
       Land and improvements are valued separately. Land is analyzed as if vacant; structures and site improvements are modeled independently.
     </div>
-    <div class="border-t border-slate-200 p-3">
-      <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Assessed value composition</p>
-      <p class="mb-3 text-sm leading-6 text-slate-600">This shows the land and improvement values that add up to the assessed value.</p>
-      <div class="overflow-hidden rounded-xl ring-1 ring-slate-200">
-        <div class="bg-slate-100 px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Land</div>
-        <div class="grid grid-cols-[1fr_auto] items-center gap-3 border-b border-slate-200 bg-white px-3 py-2 text-sm">
-          <p class="font-medium text-slate-700">${valueStack[0][0]}</p>
-          <p class="font-semibold text-slate-700">${formatNullableMoney(valueStack[0][1])}</p>
+    <div class="border-top border-color-subtle pad-3">
+      <p class="space-bottom-1 type-xs weight-semibold text-uppercase tracking-label text-muted">Assessed value composition</p>
+      <p class="space-bottom-3 type-sm line-6 text-secondary">This shows the land and improvement values that add up to the assessed value.</p>
+      <div class="clip-overflow radius-card ring-size-1 ring-color-subtle">
+        <div class="surface-muted-strong pad-inline-3 pad-block-2 type-2xs weight-semibold text-uppercase tracking-label text-muted">Land</div>
+        <div class="display-grid grid-cols-action align-center layout-gap-3 border-bottom border-color-subtle surface pad-inline-3 pad-block-2 type-sm">
+          <p class="weight-medium text-primary">${valueStack[0][0]}</p>
+          <p class="weight-semibold text-primary">${formatNullableMoney(valueStack[0][1])}</p>
         </div>
-        <div class="bg-slate-100 px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Improvements</div>
+        <div class="surface-muted-strong pad-inline-3 pad-block-2 type-2xs weight-semibold text-uppercase tracking-label text-muted">Improvements</div>
         ${valueStack.map(([label, value], index) => `
           ${index === 0 ? "" : `
-          <div class="grid grid-cols-[1fr_auto] items-center gap-3 border-b border-slate-200 px-3 py-2 text-sm ${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
-            <p class="font-medium text-slate-700">${label}</p>
-            <p class="font-semibold text-slate-700">${formatNullableMoney(value)}</p>
+          <div class="display-grid grid-cols-action align-center layout-gap-3 border-bottom border-color-subtle pad-inline-3 pad-block-2 type-sm ${index % 2 === 0 ? "surface" : "surface-muted"}">
+            <p class="weight-medium text-primary">${label}</p>
+            <p class="weight-semibold text-primary">${formatNullableMoney(value)}</p>
           </div>
           `}
         `).join("")}
-        <div class="grid grid-cols-[1fr_auto] items-center gap-3 bg-slate-700 px-3 py-3 text-sm text-white">
-          <p class="font-semibold">Total assessed value</p>
-          <p class="text-base font-bold">${formatNullableMoney(totalValue)}</p>
+        <div class="display-grid grid-cols-action align-center layout-gap-3 surface-inverse pad-inline-3 pad-block-3 type-sm text-inverse">
+          <p class="weight-semibold">Total assessed value</p>
+          <p class="type-base weight-bold">${formatNullableMoney(totalValue)}</p>
         </div>
       </div>
     </div>
-    <details class="border-t border-slate-200 bg-white">
-      <summary class="valuation-detail-toggle flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-sm font-semibold">
-        <span class="flex min-w-0 items-center gap-2">
+    <details class="border-top border-color-subtle surface">
+      <summary class="valuation-detail-toggle display-flex cursor-pointer list-none align-center main-between layout-gap-3 pad-inline-3 pad-block-3 type-sm weight-semibold">
+        <span class="display-flex min-width-0 align-center layout-gap-2">
           <span class="valuation-detail-chevron" aria-hidden="true"></span>
-          <span class="truncate">View cost model and valuation components</span>
+          <span class="truncate-text">View cost model and valuation components</span>
         </span>
-        <span class="hidden text-xs font-semibold sm:inline">Detailed model</span>
+        <span class="is-hidden type-xs weight-semibold mq-sm-display-inline">Detailed model</span>
       </summary>
-      <div class="grid gap-4 border-t border-slate-200 p-3">
+      <div class="display-grid layout-gap-4 border-top border-color-subtle pad-3">
         <section class="dwelling-model-panel">
           <div class="dwelling-model-heading">
             <p>Marshall & Swift dwelling model</p>
@@ -3057,19 +3057,19 @@ function technicalCostModel(recordCard, data) {
           </div>
         </section>
         <section>
-          <div class="mb-2 flex items-center justify-between gap-3">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Garages</p>
-            <p class="component-subtotal-pill rounded-full px-2 py-1 text-xs font-semibold">Subtotal ${formatNullableMoney(garageTotal)}</p>
+          <div class="space-bottom-2 display-flex align-center main-between layout-gap-3">
+            <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Garages</p>
+            <p class="component-subtotal-pill radius-pill pad-inline-2 pad-block-1 type-xs weight-semibold">Subtotal ${formatNullableMoney(garageTotal)}</p>
           </div>
-          <div class="table-clip ring-1 ring-slate-200">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-              <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Value</th></tr></thead>
-              <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
+          <div class="table-clip ring-size-1 ring-color-subtle">
+            <table class="min-width-full divide-block divide-color-subtle type-sm">
+              <thead class="surface-muted"><tr><th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Description</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Units</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Value</th></tr></thead>
+              <tbody class="divide-block divide-color-subtle surface [&>tr:nth-child(even)]:bg-slate-50">
                 ${garageLines.map(row => `
                   <tr>
-                    <td class="px-3 py-2">${row.description}</td>
-                    <td class="px-3 py-2 text-right">${row.units}</td>
-                    <td class="px-3 py-2 text-right">${formatNullableMoney(row.rcnld)}</td>
+                    <td class="pad-inline-3 pad-block-2">${row.description}</td>
+                    <td class="pad-inline-3 pad-block-2 text-align-right">${row.units}</td>
+                    <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.rcnld)}</td>
                   </tr>
                 `).join("")}
               </tbody>
@@ -3077,19 +3077,19 @@ function technicalCostModel(recordCard, data) {
           </div>
         </section>
         <section>
-          <div class="mb-2 flex items-center justify-between gap-3">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Miscellaneous improvements</p>
-            <p class="component-subtotal-pill rounded-full px-2 py-1 text-xs font-semibold">Subtotal ${formatNullableMoney(miscTotal)}</p>
+          <div class="space-bottom-2 display-flex align-center main-between layout-gap-3">
+            <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Miscellaneous improvements</p>
+            <p class="component-subtotal-pill radius-pill pad-inline-2 pad-block-1 type-xs weight-semibold">Subtotal ${formatNullableMoney(miscTotal)}</p>
           </div>
-          <div class="table-clip ring-1 ring-slate-200">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-              <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Item</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Value</th></tr></thead>
-              <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
+          <div class="table-clip ring-size-1 ring-color-subtle">
+            <table class="min-width-full divide-block divide-color-subtle type-sm">
+              <thead class="surface-muted"><tr><th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Item</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Units</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Value</th></tr></thead>
+              <tbody class="divide-block divide-color-subtle surface [&>tr:nth-child(even)]:bg-slate-50">
                 ${miscLines.map(row => `
                   <tr>
-                    <td class="px-3 py-2">${row.description}</td>
-                    <td class="px-3 py-2 text-right">${Number(row.units).toLocaleString()}</td>
-                    <td class="px-3 py-2 text-right">${formatNullableMoney(row.value)}</td>
+                    <td class="pad-inline-3 pad-block-2">${row.description}</td>
+                    <td class="pad-inline-3 pad-block-2 text-align-right">${Number(row.units).toLocaleString()}</td>
+                    <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.value)}</td>
                   </tr>
                 `).join("")}
               </tbody>
@@ -3098,20 +3098,20 @@ function technicalCostModel(recordCard, data) {
         </section>
         ${outbuildingRows.length ? `
           <section>
-            <div class="mb-2 flex items-center justify-between gap-3">
-              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Outbuildings</p>
-              <p class="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">${outbuildingRows.length === 1 ? "1 record" : `${outbuildingRows.length} records`}</p>
+            <div class="space-bottom-2 display-flex align-center main-between layout-gap-3">
+              <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Outbuildings</p>
+              <p class="radius-pill surface-muted-strong pad-inline-2 pad-block-1 type-xs weight-semibold text-secondary">${outbuildingRows.length === 1 ? "1 record" : `${outbuildingRows.length} records`}</p>
             </div>
-            <div class="table-clip ring-1 ring-slate-200">
-              <table class="min-w-full divide-y divide-slate-200 text-sm">
-                <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Year Built</th><th class="px-3 py-2 text-right font-semibold">Cost</th></tr></thead>
-                <tbody class="divide-y divide-slate-200 bg-white">
+            <div class="table-clip ring-size-1 ring-color-subtle">
+              <table class="min-width-full divide-block divide-color-subtle type-sm">
+                <thead class="surface-muted"><tr><th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Description</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Units</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Year Built</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Cost</th></tr></thead>
+                <tbody class="divide-block divide-color-subtle surface">
                   ${outbuildingRows.map(row => `
                     <tr>
-                      <td class="px-3 py-2">${row.description}</td>
-                      <td class="px-3 py-2 text-right">${row.units}</td>
-                      <td class="px-3 py-2 text-right">${row.yearBuilt}</td>
-                      <td class="px-3 py-2 text-right">${row.cost}</td>
+                      <td class="pad-inline-3 pad-block-2">${row.description}</td>
+                      <td class="pad-inline-3 pad-block-2 text-align-right">${row.units}</td>
+                      <td class="pad-inline-3 pad-block-2 text-align-right">${row.yearBuilt}</td>
+                      <td class="pad-inline-3 pad-block-2 text-align-right">${row.cost}</td>
                     </tr>
                   `).join("")}
                 </tbody>
@@ -3120,28 +3120,28 @@ function technicalCostModel(recordCard, data) {
           </section>
         ` : ""}
         <section>
-          <div class="mb-2 flex items-center justify-between gap-3">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Land added back in</p>
-            <p class="component-subtotal-pill rounded-full px-2 py-1 text-xs font-semibold">Subtotal ${formatNullableMoney(landValue)}</p>
+          <div class="space-bottom-2 display-flex align-center main-between layout-gap-3">
+            <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">Land added back in</p>
+            <p class="component-subtotal-pill radius-pill pad-inline-2 pad-block-1 type-xs weight-semibold">Subtotal ${formatNullableMoney(landValue)}</p>
           </div>
-          <div class="table-clip ring-1 ring-slate-200">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-              <thead class="bg-slate-50"><tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Record detail</th></tr></thead>
-              <tbody class="divide-y divide-slate-200 bg-white [&>tr:nth-child(even)]:bg-slate-50">
+          <div class="table-clip ring-size-1 ring-color-subtle">
+            <table class="min-width-full divide-block divide-color-subtle type-sm">
+              <thead class="surface-muted"><tr><th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Description</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Record detail</th></tr></thead>
+              <tbody class="divide-block divide-color-subtle surface [&>tr:nth-child(even)]:bg-slate-50">
                 ${landRows.length ? landRows.map(row => `
                   <tr>
-                    <td class="px-3 py-2">${row.description}</td>
-                    <td class="px-3 py-2 text-right">${landAreaLabel(row)}</td>
+                    <td class="pad-inline-3 pad-block-2">${row.description}</td>
+                    <td class="pad-inline-3 pad-block-2 text-align-right">${landAreaLabel(row)}</td>
                   </tr>
                 `).join("") : `
                   <tr>
-                    <td class="px-3 py-2">Land value</td>
-                    <td class="px-3 py-2 text-right">${formatNullableMoney(landValue)}</td>
+                    <td class="pad-inline-3 pad-block-2">Land value</td>
+                    <td class="pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(landValue)}</td>
                   </tr>
                 `}
-                <tr class="font-semibold">
-                  <td class="px-3 py-3">Total land value</td>
-                  <td class="px-3 py-3 text-right">${formatNullableMoney(landValue)}</td>
+                <tr class="weight-semibold">
+                  <td class="pad-inline-3 pad-block-3">Total land value</td>
+                  <td class="pad-inline-3 pad-block-3 text-align-right">${formatNullableMoney(landValue)}</td>
                 </tr>
               </tbody>
             </table>
@@ -3178,16 +3178,16 @@ function dwellingData(data) {
   const itemLabel = data.dwellingData.length === 1 ? "item" : "items";
 
   return disclosure("What additional features contribute to value?", `${data.dwellingData.length} ${itemLabel} · ${money.format(totalValue)}`, `
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50">
-        <tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Value</th></tr>
+    <table class="min-width-full divide-block divide-color-subtle type-sm">
+      <thead class="surface-muted">
+        <tr><th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Description</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Units</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Value</th></tr>
       </thead>
-      <tbody class="divide-y divide-slate-200 [&>tr:nth-child(even)]:bg-slate-50">
+      <tbody class="divide-block divide-color-subtle [&>tr:nth-child(even)]:bg-slate-50">
         ${data.dwellingData.map(row => `
           <tr>
-            <td class="px-3 py-2">${row.description}</td>
-            <td class="px-3 py-2 text-right">${row.units}</td>
-            <td class="px-3 py-2 text-right">${money.format(row.value)}</td>
+            <td class="pad-inline-3 pad-block-2">${row.description}</td>
+            <td class="pad-inline-3 pad-block-2 text-align-right">${row.units}</td>
+            <td class="pad-inline-3 pad-block-2 text-align-right">${money.format(row.value)}</td>
           </tr>
         `).join("")}
       </tbody>
@@ -3197,18 +3197,18 @@ function dwellingData(data) {
 
 function outbuildingData(data) {
   const rows = data.outbuildingData.length
-    ? data.outbuildingData.map(row => `<tr><td class="px-3 py-2">${row.description}</td><td class="px-3 py-2 text-right">${row.units}</td><td class="px-3 py-2 text-right">${row.yearBuilt}</td><td class="px-3 py-2 text-right">${row.cost}</td></tr>`).join("")
-    : `<tr><td class="px-3 py-3 text-slate-500" colspan="4">No outbuilding records listed for this property.</td></tr>`;
+    ? data.outbuildingData.map(row => `<tr><td class="pad-inline-3 pad-block-2">${row.description}</td><td class="pad-inline-3 pad-block-2 text-align-right">${row.units}</td><td class="pad-inline-3 pad-block-2 text-align-right">${row.yearBuilt}</td><td class="pad-inline-3 pad-block-2 text-align-right">${row.cost}</td></tr>`).join("")
+    : `<tr><td class="pad-inline-3 pad-block-3 text-muted" colspan="4">No outbuilding records listed for this property.</td></tr>`;
   const meta = data.outbuildingData.length
     ? data.outbuildingData.length === 1 ? "1 outbuilding" : `${data.outbuildingData.length} outbuildings`
     : "No records";
 
   return disclosure("What additional structures are included?", meta, `
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50">
-        <tr><th class="px-3 py-2 text-left font-semibold">Description</th><th class="px-3 py-2 text-right font-semibold">Units</th><th class="px-3 py-2 text-right font-semibold">Year Built</th><th class="px-3 py-2 text-right font-semibold">Cost</th></tr>
+    <table class="min-width-full divide-block divide-color-subtle type-sm">
+      <thead class="surface-muted">
+        <tr><th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Description</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Units</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Year Built</th><th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Cost</th></tr>
       </thead>
-      <tbody class="divide-y divide-slate-200">${rows}</tbody>
+      <tbody class="divide-block divide-color-subtle">${rows}</tbody>
     </table>
   `);
 }
@@ -3440,17 +3440,17 @@ function renderHistoryTable(data) {
     const note = `${row.note ?? ""}`.trim();
 
     return `
-      <tr class="${isCurrentNotice || isPending ? "pending-data-row" : index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
-        <td class="px-3 py-2 font-medium">
-          <div class="flex items-center gap-2">
+      <tr class="${isCurrentNotice || isPending ? "pending-data-row" : index % 2 === 0 ? "surface" : "surface-muted"}">
+        <td class="pad-inline-3 pad-block-2 weight-medium">
+          <div class="display-flex align-center layout-gap-2">
             <span>${row.year}${note ? `<sup class="history-note-marker" title="${escapeHtml(note)}" aria-label="${escapeHtml(`Note: ${note}`)}">*</sup>` : ""}</span>
             ${isCurrentNotice ? `<span class="notice-status-pill">Notice</span>` : ""}
             ${isPending ? `<span class="pending-status-pill">Pending</span>` : ""}
           </div>
         </td>
-        <td class="history-heat-cell px-3 py-2 text-right"${assessedHeat}>${formatNullableMoney(row.assessedValue)}</td>
-        <td class="history-heat-cell px-3 py-2 text-right"${taxesHeat}>${row.taxes === null ? "Pending" : formatNullableMoney(row.taxes, true)}</td>
-        <td class="history-heat-cell px-3 py-2 text-right font-medium"${etrHeat}>${etr === null ? "Pending" : formatNullablePercent(etr)}</td>
+        <td class="history-heat-cell pad-inline-3 pad-block-2 text-align-right"${assessedHeat}>${formatNullableMoney(row.assessedValue)}</td>
+        <td class="history-heat-cell pad-inline-3 pad-block-2 text-align-right"${taxesHeat}>${row.taxes === null ? "Pending" : formatNullableMoney(row.taxes, true)}</td>
+        <td class="history-heat-cell pad-inline-3 pad-block-2 text-align-right weight-medium"${etrHeat}>${etr === null ? "Pending" : formatNullablePercent(etr)}</td>
       </tr>
     `;
   }).join("");
@@ -3458,7 +3458,7 @@ function renderHistoryTable(data) {
   const footnote = document.getElementById("historyFootnote");
   if (footnote) {
     const notes = [...new Set(rows.map(row => `${row.note ?? ""}`.trim()).filter(Boolean))];
-    footnote.classList.toggle("hidden", !notes.length);
+    footnote.classList.toggle("is-hidden", !notes.length);
     footnote.textContent = notes.length ? `* ${notes.join(" ")}` : "";
   }
 
@@ -3774,7 +3774,7 @@ function movementTrendValue(change, display) {
   return `
     <span class="movement-trend-value">
       ${movementTrendIcon(direction)}
-      <span class="sr-only">${directionLabel}: </span>
+      <span class="visually-hidden">${directionLabel}: </span>
       <span>${escapeHtml(display)}</span>
     </span>
   `;
@@ -3851,7 +3851,7 @@ function renderPropertyMovementSummary(data) {
           <p>Recent Movement</p>
           <p>${previousValue?.year && lastValue?.year ? `${previousValue.year}-${lastValue.year}` : "Recent available years"}</p>
         </div>
-        <div class="mt-2 grid gap-3">
+        <div class="space-top-2 display-grid layout-gap-3">
           ${recentCards.map(movementCard).join("")}
         </div>
       </section>
@@ -3871,35 +3871,35 @@ function assessedValuesData(data) {
     "What makes up this property’s assessed value?",
     `${rows.length} ${rowLabel} · ${formatNullableMoney(currentRow?.total)}`,
     `
-      <table class="min-w-full divide-y divide-slate-200 text-sm">
-        <thead class="bg-slate-50">
+      <table class="min-width-full divide-block divide-color-subtle type-sm">
+        <thead class="surface-muted">
           <tr>
-            <th class="px-3 py-2 text-left font-semibold">Year</th>
-            <th class="px-3 py-2 text-right font-semibold">Total</th>
-            <th class="px-3 py-2 text-right font-semibold">Land</th>
-            <th class="px-3 py-2 text-right font-semibold">Dwelling / Improvements</th>
-            <th class="px-3 py-2 text-right font-semibold">Outbuilding</th>
+            <th class="pad-inline-3 pad-block-2 text-align-left weight-semibold">Year</th>
+            <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Total</th>
+            <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Land</th>
+            <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Dwelling / Improvements</th>
+            <th class="pad-inline-3 pad-block-2 text-align-right weight-semibold">Outbuilding</th>
           </tr>
         </thead>
 
-        <tbody class="divide-y divide-slate-200 bg-white">
+        <tbody class="divide-block divide-color-subtle surface">
           ${rows.map((row, index) => `
-            <tr class="${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
-              <td class="px-3 py-2 font-medium">${row.year}</td>
+            <tr class="${index % 2 === 0 ? "surface" : "surface-muted"}">
+              <td class="pad-inline-3 pad-block-2 weight-medium">${row.year}</td>
 
-              <td class="px-3 py-2 text-right font-semibold">
+              <td class="pad-inline-3 pad-block-2 text-align-right weight-semibold">
                 ${formatNullableMoney(row.total)}
               </td>
 
-              <td class="px-3 py-2 text-right">
+              <td class="pad-inline-3 pad-block-2 text-align-right">
                 ${formatNullableMoney(row.land)}
               </td>
 
-              <td class="px-3 py-2 text-right">
+              <td class="pad-inline-3 pad-block-2 text-align-right">
                 ${formatNullableMoney(row.dwelling)}
               </td>
 
-              <td class="px-3 py-2 text-right">
+              <td class="pad-inline-3 pad-block-2 text-align-right">
                 ${formatNullableMoney(row.outbuilding)}
               </td>
             </tr>
@@ -3935,17 +3935,17 @@ function renderTaxHistoryTable(data) {
     const effectiveTaxRate = statement && statement.assessedValue && netTaxes
       ? netTaxes / statement.assessedValue
       : statement?.derived?.netEffectiveTaxRate ?? null;
-    const rowClass = levyRow?.status === "pending" ? "pending-data-row" : index % 2 === 0 ? "bg-white" : "bg-slate-50";
+    const rowClass = levyRow?.status === "pending" ? "pending-data-row" : index % 2 === 0 ? "surface" : "surface-muted";
 
     return `
       <tr class="${rowClass}">
-        <th scope="row" class="px-2 py-2 text-left font-semibold text-slate-700 sm:px-3">${year}</th>
-        <td class="px-2 py-2 text-right font-medium sm:px-3">${taxHistoryLevyDisplay(levyRow)}</td>
-        <td class="tax-history-change-column px-2 py-2 text-center sm:px-3">${levyMovementPill(levyRow, priorLevyRow)}</td>
-        <td class="px-2 py-2 text-right sm:px-3">${formatNullableMoney(statement?.grossTaxAmount, true)}</td>
-        <td class="px-2 py-2 text-right sm:px-3">${statement ? formatNullableMoney(statementTotalCredits(statement), true) : "—"}</td>
-        <td class="px-2 py-2 text-right font-semibold text-slate-700 sm:px-3">${formatNullableMoney(netTaxes, true)}</td>
-        <td class="px-2 py-2 text-right font-semibold text-slate-700 sm:px-3">${formatNullablePercent(effectiveTaxRate)}</td>
+        <th scope="row" class="pad-inline-2 pad-block-2 text-align-left weight-semibold text-primary mq-sm-pad-inline-3">${year}</th>
+        <td class="pad-inline-2 pad-block-2 text-align-right weight-medium mq-sm-pad-inline-3">${taxHistoryLevyDisplay(levyRow)}</td>
+        <td class="tax-history-change-column pad-inline-2 pad-block-2 text-align-center mq-sm-pad-inline-3">${levyMovementPill(levyRow, priorLevyRow)}</td>
+        <td class="pad-inline-2 pad-block-2 text-align-right mq-sm-pad-inline-3">${formatNullableMoney(statement?.grossTaxAmount, true)}</td>
+        <td class="pad-inline-2 pad-block-2 text-align-right mq-sm-pad-inline-3">${statement ? formatNullableMoney(statementTotalCredits(statement), true) : "—"}</td>
+        <td class="pad-inline-2 pad-block-2 text-align-right weight-semibold text-primary mq-sm-pad-inline-3">${formatNullableMoney(netTaxes, true)}</td>
+        <td class="pad-inline-2 pad-block-2 text-align-right weight-semibold text-primary mq-sm-pad-inline-3">${formatNullablePercent(effectiveTaxRate)}</td>
       </tr>
     `;
   }).join("");
@@ -3976,7 +3976,7 @@ function renderTaxEquationWaterfall(data, displayLevyByYear) {
   const panel = document.getElementById("tax-equation-panel");
   const markup = taxStatementShorthandMarkup(data, displayLevyByYear);
   container.innerHTML = markup;
-  panel?.classList.toggle("hidden", !markup);
+  panel?.classList.toggle("is-hidden", !markup);
 }
 
 export function taxStatementShorthandMarkup(data, displayLevyByYear = null) {
@@ -4078,7 +4078,7 @@ export function finalizedTaxStatements(data) {
 
 function levyMovementPill(row, priorRow) {
   if (!row || row.levy === null || row.levy === undefined || priorRow?.levy === null || priorRow?.levy === undefined) {
-    return `<span class="text-slate-400">—</span>`;
+    return `<span class="text-subtle">—</span>`;
   }
 
   const change = ((row.levy - priorRow.levy) / priorRow.levy) * 100;
@@ -4114,21 +4114,21 @@ function renderLevyTable(data, recordCard) {
 
     return `
       <tr>
-        <td class="px-3 py-2 font-medium">${row.description}</td>
-        <td class="whitespace-nowrap px-3 py-2 text-right">${formatNullableLevy(row.rate)}</td>
-        <td class="whitespace-nowrap px-3 py-2 text-right">${percent.format(share)}</td>
-        <td class="whitespace-nowrap px-3 py-2 text-right">${formatNullableMoney(row.amount, true)}</td>
+        <td class="pad-inline-3 pad-block-2 weight-medium">${row.description}</td>
+        <td class="nowrap pad-inline-3 pad-block-2 text-align-right">${formatNullableLevy(row.rate)}</td>
+        <td class="nowrap pad-inline-3 pad-block-2 text-align-right">${percent.format(share)}</td>
+        <td class="nowrap pad-inline-3 pad-block-2 text-align-right">${formatNullableMoney(row.amount, true)}</td>
       </tr>
     `;
   }).join("");
 
   const totalPropertyAmount = sortedRows.reduce((sum, row) => sum + (Number(row.amount) || 0), 0);
   const totalRow = `
-    <tr class="table-total-row font-semibold">
-      <td class="px-3 py-3">Total levy</td>
-      <td class="whitespace-nowrap px-3 py-3 text-right">${formatNullableLevy(total)}</td>
-      <td class="whitespace-nowrap px-3 py-3 text-right">100.00%</td>
-      <td class="whitespace-nowrap px-3 py-3 text-right">${formatNullableMoney(totalPropertyAmount, true)}</td>
+    <tr class="table-total-row weight-semibold">
+      <td class="pad-inline-3 pad-block-3">Total levy</td>
+      <td class="nowrap pad-inline-3 pad-block-3 text-align-right">${formatNullableLevy(total)}</td>
+      <td class="nowrap pad-inline-3 pad-block-3 text-align-right">100.00%</td>
+      <td class="nowrap pad-inline-3 pad-block-3 text-align-right">${formatNullableMoney(totalPropertyAmount, true)}</td>
     </tr>
   `;
 
@@ -4141,8 +4141,8 @@ function renderSources(data) {
 
   container.innerHTML = data.sources.map(source => `
     <div class="review-note">
-      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">${source.label}</p>
-      <p class="mt-1 font-medium text-slate-700">${source.value}</p>
+      <p class="type-xs weight-semibold text-uppercase tracking-label text-muted">${source.label}</p>
+      <p class="space-top-1 weight-medium text-primary">${source.value}</p>
     </div>
   `).join("");
 }

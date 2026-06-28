@@ -1,75 +1,76 @@
+@import url("./ges-system.css?v=db3aed6");
 @import url("./ges/project-nav.css?v=db3aed6");
 @import url("./ges/field-kit.css?v=db3aed6");
 
 :root {
-  --color-slate-700: 31 51 71;
-  --color-slate-600: 71 85 105;
-  --color-slate-500: 102 112 133;
-  --color-slate-400: 148 163 184;
-  --color-slate-300: 203 213 225;
-  --color-slate-200: 226 232 240;
-  --color-slate-100: 241 245 249;
-  --color-slate-50: 248 250 252;
-  --county-color-primary: 86 117 119;
-  --county-color-primary-soft: 235 243 244;
-  --county-color-secondary: 109 171 196;
-  --county-color-secondary-soft: 237 247 251;
-  --county-color-accent: 220 211 206;
-  --county-color-accent-soft: 248 245 243;
-  --county-color-background: 246 246 246;
-  --county-color-surface: 255 255 255;
-  --county-color-border: 173 182 190;
-  --county-color-border-soft: 215 222 226;
+  --color-slate-700: var(--ds-color-slate-700);
+  --color-slate-600: var(--ds-color-slate-600);
+  --color-slate-500: var(--ds-color-text-muted);
+  --color-slate-400: var(--ds-color-slate-400);
+  --color-slate-300: var(--ds-color-slate-300);
+  --color-slate-200: var(--ds-color-slate-200);
+  --color-slate-100: var(--ds-color-slate-100);
+  --color-slate-50: var(--ds-color-slate-50);
+  --county-color-primary: var(--ds-color-civic-blue);
+  --county-color-primary-soft: var(--ds-color-civic-blue-soft);
+  --county-color-secondary: var(--ds-color-county-secondary);
+  --county-color-secondary-soft: var(--ds-color-county-secondary-soft);
+  --county-color-accent: var(--ds-color-county-accent);
+  --county-color-accent-soft: var(--ds-color-county-accent-soft);
+  --county-color-background: var(--ds-color-page);
+  --county-color-surface: var(--ds-color-surface);
+  --county-color-border: var(--ds-color-border-strong);
+  --county-color-border-soft: var(--ds-color-border-subtle);
   --county-color-link: var(--county-color-primary);
   --county-color-button: var(--county-color-secondary);
-  --county-color-button-text: 17 17 17;
-  --county-color-ink: 17 17 17;
-  --county-color-muted: 86 99 112;
-  --county-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  --county-radius-button: 30px;
-  --county-radius-card: 0.65rem;
-  --county-space-xs: 0.44rem;
-  --county-space-sm: 0.67rem;
-  --county-space-md: 1rem;
-  --county-space-lg: 1.5rem;
-  --county-space-xl: 2.25rem;
-  --county-space-2xl: 3.38rem;
+  --county-color-button-text: var(--ds-color-county-ink);
+  --county-color-ink: var(--ds-color-county-ink);
+  --county-color-muted: var(--ds-color-county-muted);
+  --county-font-ui: var(--ds-font-system-ui);
+  --county-radius-button: var(--ds-radius-button);
+  --county-radius-card: var(--ds-radius-md);
+  --county-space-xs: var(--ds-county-space-xs);
+  --county-space-sm: var(--ds-county-space-sm);
+  --county-space-md: var(--ds-space-md);
+  --county-space-lg: var(--ds-space-lg);
+  --county-space-xl: var(--ds-space-xl);
+  --county-space-2xl: var(--ds-county-space-2xl);
   --ges-color-information: var(--county-color-primary);
-  --ges-color-evidence: 83 112 92;
-  --ges-color-comparison: 142 100 48;
-  --ges-color-action: 62 73 122;
-  --ges-color-reflection: 116 104 91;
+  --ges-color-evidence: var(--ds-color-evidence-green);
+  --ges-color-comparison: var(--ds-color-caution-amber);
+  --ges-color-action: var(--ds-color-process-blue);
+  --ges-color-reflection: var(--ds-color-reflection);
   --ges-color-information-soft: var(--county-color-primary-soft);
-  --ges-color-evidence-soft: 239 246 240;
-  --ges-color-comparison-soft: 250 244 233;
-  --ges-color-action-soft: 239 241 249;
-  --ges-color-reflection-soft: 246 242 237;
-  --color-blue: 0 45 98;
-  --color-blue-dark: 0 31 68;
-  --color-blue-soft: 232 239 248;
+  --ges-color-evidence-soft: var(--ds-color-evidence-green-soft);
+  --ges-color-comparison-soft: var(--ds-color-caution-amber-soft);
+  --ges-color-action-soft: var(--ds-color-process-blue-soft);
+  --ges-color-reflection-soft: var(--ds-color-reflection-soft);
+  --color-blue: var(--ds-color-app-blue);
+  --color-blue-dark: var(--ds-color-app-blue-dark);
+  --color-blue-soft: var(--ds-color-app-blue-soft);
   --color-secondary: var(--county-color-primary);
   --color-secondary-soft: var(--county-color-primary-soft);
-  --color-red: 155 61 61;
-  --color-red-soft: 250 240 240;
-  --color-green: 95 143 114;
-  --color-green-dark: 76 116 91;
-  --color-green-soft: 239 247 242;
-  --color-yellow: 169 121 43;
-  --color-yellow-soft: 250 245 235;
-  --color-teal: 58 125 140;
-  --color-teal-soft: 234 244 246;
-  --status-pending: 243 226 194;
-  --status-pending-ink: 110 83 27;
-  --status-pending-border: 216 184 116;
-  --standard-band: 72 101 127;
-  --surface-card: 255 255 255;
+  --color-red: var(--ds-color-danger);
+  --color-red-soft: var(--ds-color-danger-soft);
+  --color-green: var(--ds-color-app-green);
+  --color-green-dark: var(--ds-color-app-green-dark);
+  --color-green-soft: var(--ds-color-app-green-soft);
+  --color-yellow: var(--ds-color-app-yellow);
+  --color-yellow-soft: var(--ds-color-app-yellow-soft);
+  --color-teal: var(--ds-color-app-teal);
+  --color-teal-soft: var(--ds-color-app-teal-soft);
+  --status-pending: var(--ds-color-status-pending);
+  --status-pending-ink: var(--ds-color-status-pending-ink);
+  --status-pending-border: var(--ds-color-status-pending-border);
+  --standard-band: var(--ds-color-standard-band);
+  --surface-card: var(--ds-color-surface);
   --surface: var(--surface-card);
   --surface-base: var(--county-color-background);
   --surface-muted: var(--color-slate-50);
   --surface-raised: var(--surface-card);
   --border-muted: var(--color-slate-200);
   --table-header-bg: var(--color-slate-700);
-  --table-header-rule: 255 255 255;
+  --table-header-rule: var(--ds-color-white);
   --table-total-bg: var(--color-slate-100);
   --table-total-rule: var(--color-slate-300);
   --brand-ink: var(--color-slate-700);
@@ -81,8 +82,8 @@
   --accent-primary: var(--color-blue);
   --accent-primary-dark: var(--color-blue-dark);
   --accent-primary-soft: var(--color-blue-soft);
-  --color-ink: 31 51 71;
-  --color-muted: 102 112 133;
+  --color-ink: var(--ds-color-text);
+  --color-muted: var(--ds-color-text-muted);
   --color-paper: var(--county-color-background);
   --color-surface: var(--county-color-surface);
   --color-border: var(--county-color-border-soft);
@@ -96,20 +97,20 @@
   --color-comparison-soft: var(--ges-color-comparison-soft);
   --color-action-soft: var(--ges-color-action-soft);
   --color-reflection-soft: var(--ges-color-reflection-soft);
-  --icon-xs: 16px;
-  --icon-sm: 20px;
-  --icon-md: 28px;
-  --icon-lg: 40px;
-  --icon-xl: 56px;
-  --radius-container-lg: 0.5rem;
+  --icon-xs: var(--ds-icon-xs);
+  --icon-sm: var(--ds-icon-sm);
+  --icon-md: var(--ds-icon-md);
+  --icon-lg: var(--ds-icon-lg);
+  --icon-xl: var(--ds-icon-xl);
+  --radius-container-lg: var(--ds-radius-container);
   --radius-container-md: var(--radius-container-lg);
   --radius-container-sm: var(--radius-container-lg);
-  --surface-pad: 1.25rem;
-  --surface-pad-compact: 1rem;
-  --surface-pad-spacious: 1.5rem;
-  --surface-shadow: 0 1px 2px rgb(var(--brand-ink) / 0.05), inset 0 0 0 1px rgb(var(--border-muted));
-  --surface-muted-shadow: inset 0 0 0 1px rgb(var(--border-muted));
-  --prose-first-line-indent: 1.35em;
+  --surface-pad: var(--ds-surface-pad);
+  --surface-pad-compact: var(--ds-surface-pad-compact);
+  --surface-pad-spacious: var(--ds-surface-pad-spacious);
+  --surface-shadow: var(--ds-shadow-surface);
+  --surface-muted-shadow: var(--ds-shadow-muted-surface);
+  --prose-first-line-indent: var(--ds-prose-first-line-indent);
 }
 
 /*
@@ -147,7 +148,7 @@ body > main {
   z-index: 2;
 }
 
-body > main.mx-auto.max-w-7xl {
+body > main.center-x.measure-7xl {
   padding-bottom: clamp(1rem, 2vw, 2rem);
 }
 
@@ -156,7 +157,7 @@ body > main.mx-auto.max-w-7xl {
     --guided-shell-gutter: clamp(1rem, 2.4vw, 1.5rem);
   }
 
-  body > main.mx-auto.max-w-7xl {
+  body > main.center-x.measure-7xl {
     padding-top: 0;
   }
 
@@ -189,11 +190,11 @@ body:has(.tax-shorthand-page) > footer[aria-label="Site footer"] {
   min-width: 0;
 }
 
-:where(.grid, .flex, [class*="grid-cols-"]) {
+:where(.display-grid, .display-flex, [class*="grid-cols-"]) {
   min-width: 0;
 }
 
-:where(.grid, .flex, [class*="grid-cols-"]) > * {
+:where(.display-grid, .display-flex, [class*="grid-cols-"]) > * {
   min-width: 0;
 }
 
@@ -744,8 +745,8 @@ body.property-switcher-guidance-active .property-switcher-empty .property-switch
   z-index: 50;
 }
 
-.app-modal-backdrop:not(.hidden),
-.image-modal-backdrop:not(.hidden) {
+.app-modal-backdrop:not(.is-hidden),
+.image-modal-backdrop:not(.is-hidden) {
   display: flex;
 }
 
@@ -901,6 +902,50 @@ body.property-switcher-guidance-active .property-switcher-empty .property-switch
 
   .orientation-modal {
     max-height: calc(100vh - 2rem);
+    max-width: min(22rem, calc(100vw - var(--ds-space-8)));
+    min-width: 0;
+    width: min(22rem, calc(100vw - var(--ds-space-8)));
+  }
+
+  .orientation-modal-header,
+  .orientation-modal-body,
+  .orientation-acknowledgment,
+  .orientation-actions {
+    padding-inline: var(--ds-space-4);
+  }
+
+  .orientation-modal h2 {
+    font-size: clamp(1.35rem, 7vw, 1.75rem);
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .orientation-modal p,
+  .orientation-acknowledgment {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .orientation-modal-header > *,
+  .orientation-modal-body > *,
+  .orientation-acknowledgment > *,
+  .orientation-actions > * {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .orientation-actions {
+    justify-content: stretch;
+  }
+
+  .orientation-primary-button {
+    max-width: 100%;
+    white-space: normal;
+    width: 100%;
   }
 }
 
@@ -1575,7 +1620,7 @@ table thead th[class] + th[class] {
   background: rgb(var(--surface-muted));
 }
 
-.review-data-table .text-right {
+.review-data-table .text-align-right {
   text-align: right;
 }
 
@@ -2105,7 +2150,7 @@ table thead th[class] + th[class] {
 
 .table-shell,
 .table-clip,
-.overflow-x-auto.rounded-xl:has(> table) {
+.scroll-x.radius-card:has(> table) {
   background: white;
   contain: paint;
   overflow-x: auto;
@@ -2171,13 +2216,13 @@ table thead th[class] + th[class] {
 }
 
 .table-clip,
-.overflow-x-auto.rounded-xl:has(> table) {
+.scroll-x.radius-card:has(> table) {
   border-radius: var(--radius-container-lg);
 }
 
 .table-shell table,
 .table-clip table,
-.overflow-x-auto.rounded-xl:has(> table) > table {
+.scroll-x.radius-card:has(> table) > table {
   border-collapse: separate;
   border-spacing: 0;
   min-width: 100%;
@@ -2186,7 +2231,7 @@ table thead th[class] + th[class] {
 
 .table-shell :is(th, td),
 .table-clip :is(th, td),
-.overflow-x-auto.rounded-xl:has(> table) :is(th, td) {
+.scroll-x.radius-card:has(> table) :is(th, td) {
   max-width: none;
   overflow-wrap: normal;
   white-space: nowrap;
@@ -2196,7 +2241,7 @@ table thead th[class] + th[class] {
 @media (max-width: 640px) {
   .table-shell :is(th, td),
   .table-clip :is(th, td),
-  .overflow-x-auto.rounded-xl:has(> table) :is(th, td) {
+  .scroll-x.radius-card:has(> table) :is(th, td) {
     padding-left: 0.75rem !important;
     padding-right: 0.75rem !important;
   }
@@ -3163,7 +3208,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   z-index: 30;
 }
 
-.guide-review-header:has(#propertyViewContext.hidden) {
+.guide-review-header:has(#propertyViewContext.is-hidden) {
   gap: 0;
 }
 
@@ -4859,7 +4904,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     margin-top: 0.85rem;
   }
 
-  .equalization-support-disclosure .overflow-x-auto {
+  .equalization-support-disclosure .scroll-x {
     border-radius: var(--radius-container-lg);
   }
 
@@ -7622,17 +7667,17 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
 .civic-notice-metric dt,
 .adjustment-card .adjustment-card-label,
 .final-review-kpi-card > p:first-child,
-#propertyMovementSummary .rounded-xl > p:first-child,
-#taxBurdenPatternCards .rounded-xl p:first-child,
-#marketSignalCards .rounded-xl > p:first-child,
+#propertyMovementSummary .radius-card > p:first-child,
+#taxBurdenPatternCards .radius-card p:first-child,
+#marketSignalCards .radius-card > p:first-child,
 #countyComparisonSummary .pressure-card > p:first-child,
 .county-baseline-card > p:first-child,
 #countyGrowthSummary .county-baseline-card > div > p:first-child,
-#stateCtlSummary .rounded-xl p:first-child,
-#stateCtlSummary .rounded-xl .flex > p,
-#demographicProfileCards .rounded-xl > p:first-child,
-#taxDistrictAuthoritySummary .rounded-xl > p:first-child,
-#sourceCards .rounded-xl > p:first-child {
+#stateCtlSummary .radius-card p:first-child,
+#stateCtlSummary .radius-card .display-flex > p,
+#demographicProfileCards .radius-card > p:first-child,
+#taxDistrictAuthoritySummary .radius-card > p:first-child,
+#sourceCards .radius-card > p:first-child {
   color: rgb(var(--accent-primary));
 }
 
@@ -7744,15 +7789,15 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
   }
 
   .mobile-review-canvas > [data-guided-panel] > .review-card,
-  .mobile-review-canvas > [data-guided-panel] > .rounded-lg,
+  .mobile-review-canvas > [data-guided-panel] > .radius-md,
   .mobile-review-canvas > [data-guided-panel] > .advanced-context-card,
   .mobile-review-canvas > [data-guided-panel] > .conceptual-interstitial,
   .mobile-review-canvas > [data-guided-panel] > .ooda-decision-card,
   .mobile-review-canvas > [data-guided-panel] > .civic-summary-shell,
   .mobile-review-canvas > [data-guided-panel] > section > .review-card,
-  .mobile-review-canvas > [data-guided-panel] > section > .rounded-lg,
+  .mobile-review-canvas > [data-guided-panel] > section > .radius-md,
   .data-split-view > .review-card,
-  .data-split-view > .rounded-lg {
+  .data-split-view > .radius-md {
     padding: 1rem !important;
   }
 
@@ -7768,7 +7813,7 @@ details[open] > .valuation-detail-toggle .valuation-detail-chevron {
     gap: 0.6rem;
   }
 
-  .metric-signal-card .assessment-metric-topline > .min-w-0 {
+  .metric-signal-card .assessment-metric-topline > .min-width-0 {
     display: grid;
     gap: 0.28rem 0.75rem;
     grid-template-columns: minmax(7.25rem, 0.7fr) minmax(0, 1fr);
@@ -15179,7 +15224,7 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
 .checklist-item,
 .pressure-card,
 .table-clip,
-.overflow-x-auto.rounded-xl:has(> table) {
+.scroll-x.radius-card:has(> table) {
   border-radius: var(--radius-container-md);
 }
 

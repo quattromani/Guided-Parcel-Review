@@ -60,9 +60,9 @@ const longTaxHistoryByParcelId = new Map([
 ]);
 
 function prepareExperimentShell() {
-  document.querySelector(".guide-review-header")?.classList.add("hidden");
-  document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("hidden"));
-  document.querySelector("[data-footer-resource-shell]")?.classList.add("hidden");
+  document.querySelector(".guide-review-header")?.classList.add("is-hidden");
+  document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("is-hidden"));
+  document.querySelector("[data-footer-resource-shell]")?.classList.add("is-hidden");
 }
 
 function percentChange(current, prior) {
@@ -333,7 +333,7 @@ function taxIndexBaseYear(rows) {
 
 function renderRows(rows, taxIndexYear) {
   return rows.map((row, index) => `
-    <tr class="${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
+    <tr class="${index % 2 === 0 ? "surface" : "surface-muted"}">
       <th scope="row" class="tax-shorthand-year-cell">
         <strong>${row.year}</strong>
         <span>${escapeHtml(rowComparisonLabel(row))}</span>
@@ -1319,7 +1319,7 @@ function renderCountyMarketAverageSection(countyContext) {
           </thead>
           <tbody>
             ${rows.map((row, index) => `
-              <tr class="${index % 2 === 0 ? "bg-white" : "bg-slate-50"}">
+              <tr class="${index % 2 === 0 ? "surface" : "surface-muted"}">
                 <th scope="row" class="tax-shorthand-year-cell">
                   <strong>${row.year}</strong>
                   <span>${row.year === marketAverageYearRange.start ? "baseline" : `vs ${row.year - 1}`}</span>

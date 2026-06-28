@@ -447,10 +447,10 @@ function continueDirectPropertyStart(propertyId) {
 main().catch(error => {
   console.error(error);
   document.body.innerHTML = `
-    <main class="mx-auto max-w-2xl p-6">
+    <main class="center-x measure-2xl pad-6">
       <section class="review-card">
-        <h1 class="text-xl font-bold text-red-700">${copy("site.loadErrorTitle", "Guided Parcel Review could not load")}</h1>
-        <p class="mt-2 text-sm text-slate-700">${error.message}</p>
+        <h1 class="type-xl weight-bold text-danger">${copy("site.loadErrorTitle", "Guided Parcel Review could not load")}</h1>
+        <p class="space-top-2 type-sm text-primary">${error.message}</p>
       </section>
     </main>
   `;
@@ -765,7 +765,7 @@ function initGuidedNavigation(data, options = {}) {
     if (!finalRouteId || currentGuidedRouteId !== finalRouteId || visitedSteps.has(finalRouteId)) return;
 
     const panel = document.querySelector(`[data-guided-panel="${finalRoutePanelId}"]`);
-    if (!panel || panel.classList.contains("hidden")) return;
+    if (!panel || panel.classList.contains("is-hidden")) return;
 
     const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
     const reachedPanelBottom = panel.getBoundingClientRect().bottom <= viewportHeight + 24;
@@ -815,10 +815,10 @@ function initGuidedNavigation(data, options = {}) {
     renderGuidedTabs(progressRouteId || selected);
 
     panels.forEach(panel => {
-      panel.classList.toggle("hidden", panel.dataset.guidedPanel !== selectedPanel);
+      panel.classList.toggle("is-hidden", panel.dataset.guidedPanel !== selectedPanel);
     });
 
-    propertyContext?.classList.remove("hidden");
+    propertyContext?.classList.remove("is-hidden");
     renderViewHeader(selected, snapshotModel, options.propertySwitcher);
     renderGuidedResourceContent(selected);
     if (selectedPanel === "your-taxes") {
@@ -974,8 +974,8 @@ function renderGuidedResourceContent(viewKey) {
   if (faqContent) {
     faqContent.innerHTML = resources.faqs.map(([question, answer]) => `
       <details class="footer-resource-card">
-        <summary class="cursor-pointer list-none font-semibold text-slate-700">${escapeHtml(question)}</summary>
-        <p class="mt-2 text-sm leading-6 text-slate-600">${escapeHtml(answer)}</p>
+        <summary class="cursor-pointer list-none weight-semibold text-primary">${escapeHtml(question)}</summary>
+        <p class="space-top-2 type-sm line-6 text-secondary">${escapeHtml(answer)}</p>
       </details>
     `).join("");
   }
@@ -1091,8 +1091,8 @@ function renderOfficialFormLink(form) {
     <a href="${escapeHtml(form.url)}" target="_blank" rel="noreferrer" class="form-action-button official-form-link">
       <span>
         <span class="form-action-number">${escapeHtml(form.number)}</span>
-        <span class="block font-semibold text-slate-700">${escapeHtml(form.title)}</span>
-        <span class="mt-1 block text-xs leading-5 text-slate-500">${escapeHtml(form.note)}</span>
+        <span class="display-block weight-semibold text-primary">${escapeHtml(form.title)}</span>
+        <span class="space-top-1 display-block type-xs line-5 text-muted">${escapeHtml(form.note)}</span>
       </span>
       <span class="form-action-cta">Open official</span>
     </a>
@@ -1118,10 +1118,10 @@ function setFooterResourcesVisible(visible) {
   const shell = document.querySelector("[data-footer-resource-shell]");
   if (!shell) return;
 
-  shell.classList.toggle("hidden", !visible);
+  shell.classList.toggle("is-hidden", !visible);
   shell.classList.toggle("footer-resource-shell-nav-only", !visible);
   shell.querySelectorAll("[data-step-footer-resources]").forEach(element => {
-    element.classList.toggle("hidden", !visible);
+    element.classList.toggle("is-hidden", !visible);
   });
 }
 
@@ -1190,18 +1190,18 @@ function initFooterNavigation() {
     const { updateHash = false, scroll = true } = options;
     if (!footerTargets.has(selected)) return false;
 
-    footerResourceShell?.classList.remove("hidden");
-    footerContent?.classList.remove("hidden");
+    footerResourceShell?.classList.remove("is-hidden");
+    footerContent?.classList.remove("is-hidden");
 
     links.forEach(item => {
       const active = item.dataset.footerTarget === selected;
       item.classList.toggle("footer-link-active", active);
-      item.classList.toggle("text-slate-600", !active);
+      item.classList.toggle("text-secondary", !active);
       item.setAttribute("aria-expanded", String(active));
     });
 
     panels.forEach(panel => {
-      panel.classList.toggle("hidden", panel.dataset.footerPanel !== selected);
+      panel.classList.toggle("is-hidden", panel.dataset.footerPanel !== selected);
     });
 
     if (updateHash && window.location.hash !== `#${selected}`) {
