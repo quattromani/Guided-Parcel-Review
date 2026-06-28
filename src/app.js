@@ -75,6 +75,10 @@ import {
   isProtestParadoxRequest,
   renderProtestParadox
 } from "./routes/protest-paradox.js?v=db3aed6";
+import {
+  isGesPublicPageRequest,
+  renderGesPublicPage
+} from "./routes/public-pages.js?v=db3aed6";
 import { renderPropertyInviteIndex } from "./routes/property-invite-index.js?v=db3aed6";
 import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js?v=db3aed6";
 import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js?v=db3aed6";
@@ -142,6 +146,12 @@ async function main() {
   const pendingDirectProperty = propertySwitcher.pendingDirectProperty;
   const searchParams = new URLSearchParams(window.location.search);
   const experimentView = searchParams.get("experiment");
+
+  if (isGesPublicPageRequest()) {
+    window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
+    renderGesPublicPage();
+    return;
+  }
 
   if (isLevyCompressionPostRequest(searchParams)) {
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;

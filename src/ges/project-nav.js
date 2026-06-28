@@ -275,6 +275,7 @@ export function isInternalProjectUrl(url, options = {}) {
 }
 
 export function appendTrackingParam(url, options = {}) {
+  if (`${url ?? ""}`.trim().startsWith("#")) return url;
   if (!isInternalProjectUrl(url, options)) return url;
 
   const locationHref = options.currentUrl || currentLocationHref();

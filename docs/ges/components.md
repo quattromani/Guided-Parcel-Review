@@ -66,6 +66,22 @@ Performance considerations: cache article geometry and recompute on resize, visu
 
 Future usage guidance: use this for articles, guides, explainers, campaign platform pages, legal references, and tutorials. Prefer explicit target/end markers over hard-coded route classes. If an article body is split across multiple containers, wrap the measurable editorial body in a lightweight target container instead of broadening the component to the whole page.
 
+## Public Footer
+
+Purpose: provide stable public navigation and publication metadata for every public-facing GES layout.
+
+Behavior: render one `[data-ges-public-footer]` through `ensureGesPublicFooter()` as part of Public Layout inheritance. The footer belongs after the primary public content and after related content or Resources Block sections. Do not place footer markup manually into route files.
+
+Links: include About, FAQ, Contact, and Administrative. The Administrative route owns Privacy Policy, Terms of Use, Accessibility Statement, Legal Notices, Copyright, Source/Data Notices, and future administrative sections.
+
+Metadata: show copyright, Guided Editorial System identity, and deployment version. Reserve future slots for source code, release notes, county attribution, open-source attribution, data/source provenance, and accessibility contact without displaying empty UI.
+
+Public/internal rule: public pages inherit the footer. Internal assessor workspaces, private permission-key tools, internal reports, authenticated utility surfaces, and administrative workspaces do not.
+
+Accessibility: render as a `footer` landmark with a labelled navigation region. Links use descriptive text, visible focus states, and normal keyboard behavior. The footer should not announce dynamic status or add interactive controls unless a future component explicitly owns that behavior.
+
+Print: hide the public footer in browser print. Printable and PDF layouts carry their own print-appropriate metadata and citations.
+
 ## Project Navigation Utility
 
 Purpose: unlock a compact project table of contents from the Guided Parcel Review house mark during Max review sessions.

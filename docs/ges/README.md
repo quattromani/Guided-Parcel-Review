@@ -18,11 +18,13 @@ Every component should teach, orient, reassure, clarify, verify, or help the rea
 - `src/ges/base.css` owns intentional HTML defaults.
 - `src/ges/typography.css` owns text roles.
 - `src/ges/layout.css` owns layout primitives and density.
+- `src/ges/public-layout.css` owns Public Layout and Public Footer styling.
 - `src/ges/utilities.css` owns narrow reusable helpers.
 - `src/ges/components.css` owns editorial components.
 - `src/ges/themes.css` owns light/dark token swaps.
 - `src/ges/print.css` owns printed handout behavior.
 - `src/ges/shell.js` owns semantic shell resolution and route-region mounting.
+- `src/ges/public-layout.js` owns public layout metadata and footer rendering.
 - `src/ges/article-components.js` owns reusable article markup helpers.
 - `ges/index.html` is the live pattern library.
 

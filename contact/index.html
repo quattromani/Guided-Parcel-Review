@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" class="ges-public-layout-route ges-public-page-route">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no" />
+  <base href="../" />
+  <title>Contact | Guided Parcel Review</title>
+  <meta name="description" content="Reserved public Contact route for Guided Parcel Review and the Guided Editorial System." />
+  <meta name="theme-color" content="#dbeafb" />
+  <link rel="icon" href="favicon.ico?v=civic-house-20260626" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg?v=civic-house-20260626" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700;800;900&family=IBM+Plex+Serif:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    (() => {
+      const key = "ges-theme-preference";
+      let stored = null;
+      try {
+        stored = window.localStorage.getItem(key);
+      } catch {}
+      const selected = stored === "light" || stored === "dark" ? stored : "system";
+      const system = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.gesTheme = selected;
+      document.documentElement.dataset.gesThemeResolved = selected === "system" ? system : selected;
+    })();
+  </script>
+  <link id="ges-design-system-stylesheet" rel="stylesheet" href="src/ges/index.css?v=db3aed6" />
+</head>
+<body class="surface-muted-strong text-primary">
+  <main class="center-x measure-7xl pad-4 mq-sm-pad-6 mq-lg-pad-8 ges-public-main" data-ges-shell="minimal">
+    <section id="pageTitle" class="space-bottom-4 pad-inline-1" data-ges-shell-region="cover"></section>
+    <div class="mobile-review-canvas" data-ges-shell-region="body"></div>
+  </main>
+  <script type="module" src="src/app.js?v=db3aed6"></script>
+</body>
+</html>

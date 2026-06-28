@@ -1,4 +1,10 @@
 import { ensureGesStylesheet } from "./loader.js?v=db3aed6";
+import {
+  applyGesLayoutAttributes,
+  applyGesPublicMetadata,
+  ensureGesPublicFooter,
+  GES_LAYOUTS
+} from "./public-layout.js?v=db3aed6";
 
 const DEFAULT_COVER_SELECTOR = '[data-ges-shell-region="cover"], [data-ges-shell-region="title"], #pageTitle';
 const DEFAULT_BODY_SELECTOR = '[data-ges-shell-region="body"], [data-ges-shell-region="content"], .mobile-review-canvas';
@@ -113,9 +119,48 @@ export function createGesShell({
 }
 
 export function createGesArticleShell(options = {}) {
-  return createGesShell({
+  return createGesPublicShell({
     ...options,
     htmlClasses: ["article-shell-route", ...normalizeList(options.htmlClasses)],
+    pageType: options.pageType ?? "article",
     shell: options.shell ?? "article"
   });
+}
+
+export function createGesPublicShell(options = {}) {
+  const routeName = options.routeName ?? "";
+  const shell = createGesShell({
+    ...options,
+    htmlClasses: ["ges-public-layout-route", ...normalizeList(options.htmlClasses)],
+    shell: options.shell ?? "public"
+  });
+
+  if (!shell) return null;
+
+  applyGesLayoutAttributes({
+    layout: GES_LAYOUTS.PUBLIC,
+    pageType: options.pageType ?? options.shell ?? "public",
+    routeName
+  });
+  applyGesPublicMetadata(options.metadata);
+  ensureGesPublicFooter(options.footer);
+  return shell;
+}
+
+export function createGesInternalShell(options = {}) {
+  const shell = createGesShell({
+    ...options,
+    hideAppChrome: options.hideAppChrome ?? false,
+    shell: options.shell ?? "internal"
+  });
+
+  if (!shell) return null;
+
+  applyGesLayoutAttributes({
+    layout: GES_LAYOUTS.INTERNAL,
+    pageType: options.pageType ?? "internal",
+    routeName: options.routeName ?? ""
+  });
+
+  return shell;
 }
