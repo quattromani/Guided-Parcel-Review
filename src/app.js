@@ -76,6 +76,10 @@ import {
   renderProtestParadox
 } from "./routes/protest-paradox.js?v=db3aed6";
 import {
+  isArticleRollRequest,
+  renderArticleRoll
+} from "./routes/article-roll.js?v=db3aed6";
+import {
   isGesPublicPageRequest,
   renderGesPublicPage
 } from "./routes/public-pages.js?v=db3aed6";
@@ -141,6 +145,11 @@ async function main() {
   applyVisualizationPalette();
   applyChartDefaults();
   const searchParams = new URLSearchParams(window.location.search);
+
+  if (isArticleRollRequest()) {
+    await renderArticleRoll();
+    return;
+  }
 
   if (isGesPublicPageRequest()) {
     renderGesPublicPage();

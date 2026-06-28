@@ -130,6 +130,8 @@ The About page is the first canonical public informational page. It uses the Pub
 
 Public Layout metadata is applied through `applyGesPublicMetadata()`. A public page can provide title, description, canonical path or URL, social title, social description, social image, author, published date, modified date, page type, keywords, tags, and categories.
 
+`/articles/` is the canonical Public Layout entry point for the GES article roll. The roll lists published articles from `data/app/articles.json`, hides drafts publicly, and exposes draft metadata only in the existing internal permission context.
+
 Do not scatter equivalent metadata helpers across new routes. Mature article routes may keep existing route-specific JSON-LD while migrating common meta tags into the shared metadata helper.
 
 ## Public vs Internal Visibility

@@ -130,6 +130,18 @@ Accessibility: preserve landmarks, logical heading hierarchy, focus states, desc
 
 Future guidance: promote placeholder public routes into permanent pages one at a time. Reuse existing project copy first, then add carefully scoped editorial text only where the source material leaves a real gap.
 
+## Article Roll
+
+Purpose: serve as the canonical public entry point for the GES knowledge library.
+
+Behavior: render `/articles/` from `data/app/articles.json`. Public readers see only published articles. Internal users with the existing `gpr_person=max-quattromani` context see published and draft metadata, status indicators, and sort controls.
+
+Cards: use `ges-component-card`, existing tag pills, Public Layout spacing, and GES typography. Do not create a separate card system for article listings.
+
+Search and filters: keep search client-side and metadata-driven. Typeahead, category filters, and future glossary/statute/legal references all come from manifest fields.
+
+Workflow: see `article-publishing.md` for the manifest contract, draft workflow, public workflow, internal workflow, and article card requirements.
+
 ## Project Navigation Utility
 
 Purpose: unlock a compact project table of contents from the Guided Parcel Review house mark during Max review sessions.

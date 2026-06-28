@@ -51,6 +51,10 @@ export const INTERNAL_PROJECT_NAV_SECTIONS = Object.freeze([
     title: "Articles",
     links: [
       {
+        label: "Article roll",
+        href: "articles/"
+      },
+      {
         label: "Before You Walk Into a Property Protest",
         href: "articles/before-you-walk-into-a-property-protest/"
       },

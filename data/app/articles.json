@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-28",
+  "description": "Canonical GES article manifest. Public rendering reads from this file and hides drafts unless an internal permission context is active.",
+  "taxonomy": {
+    "categories": [
+      "Property Tax",
+      "Assessment",
+      "Equalization",
+      "Protests",
+      "Calendar",
+      "Research",
+      "Tools",
+      "Campaign",
+      "Legal"
+    ],
+    "futureSearchFields": [
+      "glossaryReferences",
+      "statuteReferences",
+      "legalReferences",
+      "social"
+    ]
+  },
+  "defaults": {
+    "author": {
+      "name": "Max Quattromani",
+      "email": "max@maxquatrromani.com",
+      "title": "Nebraska Certified Assessor",
+      "image": "assets/images/articles/max-quattromani-author.jpg"
+    },
+    "draftHero": {
+      "src": "assets/brand/civic-house/social/og-image-1200x630.png",
+      "alt": "Guided Parcel Review civic house mark."
+    }
+  },
+  "articles": [
+    {
+      "id": "protest-evidence-guide",
+      "title": "Before You Walk Into a Property Protest",
+      "subtitle": "A plain language, cup-of-coffee-length guide for turning a property valuation protest into a clear, evidence-based request.",
+      "slug": "before-you-walk-into-a-property-protest",
+      "legacySlug": "protest-evidence-guide",
+      "published": true,
+      "draft": false,
+      "featured": true,
+      "publishDate": "2026-06-25T17:33:00-05:00",
+      "modifiedDate": "2026-06-26T12:00:00-05:00",
+      "displayDate": "June 25, 2026",
+      "route": {
+        "canonicalPath": "articles/before-you-walk-into-a-property-protest/",
+        "legacyQueryValue": "protest-evidence-guide",
+        "currentRoutes": [
+          "articles/before-you-walk-into-a-property-protest/",
+          "index.html?article=protest-evidence-guide"
+        ]
+      },
+      "hero": {
+        "src": "assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg",
+        "alt": "Homeowner reviewing a printed property record on a clipboard.",
+        "credit": "Photo by RDNE Stock project on Pexels.",
+        "source": "https://www.pexels.com/photo/8292825/"
+      },
+      "excerpt": "A plain language guide to preparing a property valuation protest with comparables, property record cards, evidence, and a specific correction request.",
+      "author": {
+        "name": "Max Quattromani",
+        "email": "max@maxquatrromani.com",
+        "title": "Nebraska Certified Assessor",
+        "image": "assets/images/articles/max-quattromani-author.jpg"
+      },
+      "readingTime": {
+        "minutes": 10,
+        "wordCount": 2070,
+        "lengthLabel": "cup-of-coffee"
+      },
+      "categories": [
+        "Assessment",
+        "Protests",
+        "Legal"
+      ],
+      "tags": [
+        "Gage County",
+        "Property Assessment",
+        "Property Protest",
+        "Board of Equalization",
+        "Property Record Card"
+      ],
+      "keywords": [
+        "property valuation protest",
+        "property record card",
+        "Gage County property protest",
+        "Nebraska Form 422",
+        "comparable properties",
+        "Board of Equalization",
+        "property assessment evidence"
+      ],
+      "compatibility": {
+        "readingProgress": true,
+        "qr": true
+      },
+      "resources": {
+        "hasResources": true,
+        "count": 8,
+        "types": [
+          "Legal authority",
+          "Assessment guidance",
+          "County record lookup",
+          "Official form"
+        ],
+        "printableGuide": "assets/guides/before-you-walk-into-a-property-protest.pdf",
+        "audio": "assets/audio/articles/before-you-walk-into-a-property-protest-audio.mp3",
+        "video": "assets/videos/articles/before-you-walk-into-a-property-protest-summary.mp4"
+      },
+      "references": {
+        "glossaryReferences": [
+          "assessed value",
+          "property record card",
+          "comparable property",
+          "condition rating",
+          "quality rating",
+          "Board of Equalization"
+        ],
+        "statuteReferences": [
+          "Neb. Rev. Stat. 77-112",
+          "Neb. Rev. Stat. 77-1301",
+          "Neb. Rev. Stat. 77-1502",
+          "Neb. Rev. Stat. 77-1504"
+        ],
+        "legalReferences": [
+          "Nebraska Constitution Article VIII, Section 1",
+          "Title 350, Chapter 10"
+        ]
+      },
+      "social": {
+        "image": "assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg",
+        "metadataReady": true
+      }
+    },
+    {
+      "id": "protest-paradox",
+      "title": "Assessment Up. Protest Denied. Taxes?",
+      "subtitle": "A case study showing why property taxes can fall after an assessment increase, and how levy compression changes the tax impact of a valuation notice.",
+      "slug": "assessment-up-protest-denied-taxes",
+      "legacySlug": "protest-paradox",
+      "published": true,
+      "draft": false,
+      "featured": true,
+      "publishDate": "2026-06-23",
+      "modifiedDate": "2026-06-26",
+      "displayDate": "June 23, 2026",
+      "route": {
+        "canonicalPath": "articles/assessment-up-protest-denied-taxes/",
+        "legacyQueryValue": "protest-paradox",
+        "currentRoutes": [
+          "articles/assessment-up-protest-denied-taxes/",
+          "index.html?article=protest-paradox"
+        ]
+      },
+      "hero": {
+        "src": "assets/images/protest-paradox-share.jpg",
+        "alt": "Aerial view of rural agricultural land and homes."
+      },
+      "excerpt": "A Gage County case study showing why property taxes can fall after an assessment increase, and how levy compression changes the tax impact of a valuation notice.",
+      "author": {
+        "name": "Max Quattromani",
+        "email": "max@maxquatrromani.com",
+        "title": "Nebraska Certified Assessor",
+        "image": "assets/images/articles/max-quattromani-author.jpg"
+      },
+      "readingTime": {
+        "minutes": 8,
+        "wordCount": 1850,
+        "lengthLabel": "field-note"
+      },
+      "categories": [
+        "Property Tax",
+        "Assessment",
+        "Research"
+      ],
+      "tags": [
+        "Gage County",
+        "Levy Compression",
+        "Property Tax",
+        "Effective Tax Rate",
+        "Board of Equalization"
+      ],
+      "keywords": [
+        "property tax levy compression",
+        "assessment increase taxes down",
+        "Gage County property assessment",
+        "property valuation protest",
+        "effective tax rate",
+        "property tax estimate"
+      ],
+      "compatibility": {
+        "readingProgress": true,
+        "qr": true
+      },
+      "resources": {
+        "hasResources": true,
+        "count": 4,
+        "types": [
+          "Case record",
+          "Tax record",
+          "PAD report",
+          "Official index"
+        ],
+        "printableGuide": "assets/guides/assessment-up-protest-denied-taxes.pdf"
+      },
+      "references": {
+        "glossaryReferences": [
+          "assessed value",
+          "tax base",
+          "levy compression",
+          "effective tax rate",
+          "relative movement"
+        ],
+        "statuteReferences": [],
+        "legalReferences": [
+          "2026 Reports and Opinions of the Property Tax Administrator - Gage County"
+        ]
+      },
+      "social": {
+        "image": "assets/images/protest-paradox-share.jpg",
+        "metadataReady": true
+      }
+    },
+    {
+      "id": "property-record-card-guide",
+      "title": "How to Read a Property Record Card",
+      "subtitle": "A future GES guide for reading parcel facts before arguing about value.",
+      "slug": "how-to-read-a-property-record-card",
+      "published": false,
+      "draft": true,
+      "featured": false,
+      "publishDate": "",
+      "modifiedDate": "2026-06-28",
+      "route": {
+        "canonicalPath": "articles/how-to-read-a-property-record-card/",
+        "sourceNote": "Future article metadata sourced from docs/publication-reports/protest-evidence-guide-prr-v1.md."
+      },
+      "hero": {
+        "src": "assets/brand/civic-house/social/og-image-1200x630.png",
+        "alt": "Guided Parcel Review civic house mark."
+      },
+      "excerpt": "Draft metadata reserved for a guide that teaches readers how to identify property facts, measurements, condition, quality, and record corrections before moving into valuation arguments.",
+      "author": {
+        "name": "Max Quattromani",
+        "title": "Nebraska Certified Assessor",
+        "image": "assets/images/articles/max-quattromani-author.jpg"
+      },
+      "readingTime": {
+        "minutes": 0,
+        "wordCount": 0
+      },
+      "categories": [
+        "Assessment",
+        "Research"
+      ],
+      "tags": [
+        "Property Record Card",
+        "Assessment",
+        "Record Review"
+      ],
+      "keywords": [
+        "property record card",
+        "assessment record",
+        "condition rating",
+        "quality rating",
+        "record correction"
+      ],
+      "compatibility": {
+        "readingProgress": true,
+        "qr": false
+      },
+      "resources": {
+        "hasResources": false,
+        "count": 0
+      },
+      "references": {
+        "glossaryReferences": [
+          "property record card",
+          "condition rating",
+          "quality rating"
+        ],
+        "statuteReferences": [],
+        "legalReferences": []
+      }
+    },
+    {
+      "id": "comparable-properties-guide",
+      "title": "How to Choose Comparable Properties",
+      "subtitle": "A future GES guide for moving from nearby sales to useful evidence.",
+      "slug": "how-to-choose-comparable-properties",
+      "published": false,
+      "draft": true,
+      "featured": false,
+      "publishDate": "",
+      "modifiedDate": "2026-06-28",
+      "route": {
+        "canonicalPath": "articles/how-to-choose-comparable-properties/",
+        "sourceNote": "Future article metadata sourced from docs/publication-reports/protest-evidence-guide-prr-v1.md."
+      },
+      "hero": {
+        "src": "assets/brand/civic-house/social/og-image-1200x630.png",
+        "alt": "Guided Parcel Review civic house mark."
+      },
+      "excerpt": "Draft metadata reserved for a guide about selecting comparable sales by location, use, size, age, quality, condition, timing, and adjustment reasonableness.",
+      "author": {
+        "name": "Max Quattromani",
+        "title": "Nebraska Certified Assessor",
+        "image": "assets/images/articles/max-quattromani-author.jpg"
+      },
+      "readingTime": {
+        "minutes": 0,
+        "wordCount": 0
+      },
+      "categories": [
+        "Assessment",
+        "Protests",
+        "Research"
+      ],
+      "tags": [
+        "Comparable Properties",
+        "Sales Comparison",
+        "Evidence"
+      ],
+      "keywords": [
+        "comparable properties",
+        "sales comparison",
+        "property protest evidence",
+        "assessment research"
+      ],
+      "compatibility": {
+        "readingProgress": true,
+        "qr": false
+      },
+      "resources": {
+        "hasResources": false,
+        "count": 0
+      },
+      "references": {
+        "glossaryReferences": [
+          "comparable property",
+          "sales comparison"
+        ],
+        "statuteReferences": [],
+        "legalReferences": []
+      }
+    },
+    {
+      "id": "boe-consideration-guide",
+      "title": "What Boards of Equalization Can and Cannot Consider",
+      "subtitle": "A future GES guide for separating usable valuation evidence from frustration that the board cannot act on.",
+      "slug": "what-boards-of-equalization-can-and-cannot-consider",
+      "published": false,
+      "draft": true,
+      "featured": false,
+      "publishDate": "",
+      "modifiedDate": "2026-06-28",
+      "route": {
+        "canonicalPath": "articles/what-boards-of-equalization-can-and-cannot-consider/",
+        "sourceNote": "Future article metadata sourced from docs/publication-reports/protest-evidence-guide-prr-v1.md."
+      },
+      "hero": {
+        "src": "assets/brand/civic-house/social/og-image-1200x630.png",
+        "alt": "Guided Parcel Review civic house mark."
+      },
+      "excerpt": "Draft metadata reserved for a legal and practical guide about Board of Equalization decision boundaries, evidence, taxpayer requests, and appeal posture.",
+      "author": {
+        "name": "Max Quattromani",
+        "title": "Nebraska Certified Assessor",
+        "image": "assets/images/articles/max-quattromani-author.jpg"
+      },
+      "readingTime": {
+        "minutes": 0,
+        "wordCount": 0
+      },
+      "categories": [
+        "Protests",
+        "Legal",
+        "Equalization"
+      ],
+      "tags": [
+        "Board of Equalization",
+        "Property Protest",
+        "Legal"
+      ],
+      "keywords": [
+        "Board of Equalization",
+        "property protest evidence",
+        "Nebraska valuation protest",
+        "equalization"
+      ],
+      "compatibility": {
+        "readingProgress": true,
+        "qr": false
+      },
+      "resources": {
+        "hasResources": false,
+        "count": 0
+      },
+      "references": {
+        "glossaryReferences": [
+          "Board of Equalization",
+          "assessed value"
+        ],
+        "statuteReferences": [
+          "Neb. Rev. Stat. 77-1502",
+          "Neb. Rev. Stat. 77-1504"
+        ],
+        "legalReferences": [
+          "Title 350, Chapter 10"
+        ]
+      }
+    }
+  ]
+}

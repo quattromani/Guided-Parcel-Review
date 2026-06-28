@@ -108,6 +108,7 @@ node scripts/build-scss.mjs
 - `typography.md`: text hierarchy and editorial rhythm.
 - `layout.md`: widths, density, and composition.
 - `components.md`: component lifecycle and markup.
+- `article-publishing.md`: article roll, manifest metadata, draft/public/internal workflows, and article card rules.
 - `themes.md`: light, dark, and print behavior.
 - `accessibility.md`: accessibility requirements.
 - `refactor-guide.md`: migration workflow, review checklist, and anti-patterns.

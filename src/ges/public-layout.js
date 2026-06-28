@@ -10,6 +10,7 @@ export const GES_LAYOUTS = Object.freeze({
 });
 
 export const GES_PUBLIC_FOOTER_LINKS = Object.freeze([
+  { label: "Articles", href: "articles/" },
   { label: "About", href: "about/" },
   { label: "FAQ", href: "faq/" },
   { label: "Contact", href: "contact/" },
