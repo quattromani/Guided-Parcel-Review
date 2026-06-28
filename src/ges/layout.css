@@ -193,7 +193,6 @@
 
   html.article-shell-route body .article-hero .hero-title,
   html.article-shell-route body .article-hero .hero-deck,
-  html.article-shell-route body .article-hero .article-hero-media,
   html.article-shell-route body .tax-story-chapter p,
   html.article-shell-route body .tax-story-chapter li,
   html.article-shell-route body .ges-section-heading,
@@ -202,6 +201,14 @@
     max-width: min(100%, 20rem);
     max-inline-size: min(100%, 20rem);
     width: min(100%, 20rem);
+  }
+
+  html.article-shell-route body .article-hero .article-hero-media {
+    border-radius: 0;
+    justify-self: center;
+    margin-inline: calc((100vw - 100%) / -2);
+    max-inline-size: 100vw;
+    width: 100vw;
   }
 
   html.article-shell-route body .levy-compression-page .tax-story-chapter p,

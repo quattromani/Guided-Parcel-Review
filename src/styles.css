@@ -9811,10 +9811,10 @@ html[data-ges-theme-resolved="dark"].article-shell-route .article-hero .hero-bra
   .article-hero-packet > .hero-kicker-row {
     align-items: center;
     align-self: center;
-    display: flex;
+    display: none;
     grid-column: 1;
     grid-row: 1;
-    height: 2.2rem;
+    height: 0;
   }
 
   .article-hero .hero-brand-mark {
@@ -9825,6 +9825,7 @@ html[data-ges-theme-resolved="dark"].article-shell-route .article-hero .hero-bra
 
   .article-hero .hero-title {
     grid-column: 1 / -1;
+    margin-top: 0;
   }
 
   .article-hero .hero-deck,
@@ -9841,12 +9842,6 @@ html[data-ges-theme-resolved="dark"].article-shell-route .article-hero .hero-bra
   font-weight: 700;
   margin-top: 0;
   max-width: 56rem;
-}
-
-@media (max-width: 640px) {
-  .article-hero .hero-title {
-    margin-top: 1.5rem;
-  }
 }
 
 .article-hero .hero-deck {
@@ -12221,11 +12216,12 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
 }
 
 .continuation-module {
+  background: transparent;
   border-top: 1px solid var(--editorial-border);
   display: grid;
   gap: 0.7rem;
   margin-top: clamp(2rem, 5vw, 3.3rem);
-  padding-top: clamp(1rem, 2.5vw, 1.45rem);
+  padding: clamp(1rem, 2.5vw, 1.45rem) 0 0;
 }
 
 .continuation-module h3 {
@@ -13372,10 +13368,15 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   .disconnect-visual > div,
   .comparison-card > div,
   .scorecard > div,
+  .scorecard > .ges-stat-grid,
+  .scorecard > .protest-paradox-three-up,
+  .scorecard > .protest-paradox-four-up,
   .process-strip,
+  .process-strip:has(> li:nth-child(3):last-child),
   .question-checklist,
   .resource-card-grid {
     grid-template-columns: 1fr;
+    width: 100%;
   }
 
   .decision-outcomes {
