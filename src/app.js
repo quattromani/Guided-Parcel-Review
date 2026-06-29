@@ -77,7 +77,7 @@ import {
 } from "./routes/protest-paradox.js?v=db3aed6";
 import {
   isAssessmentsProtestsLeviesRequest,
-  renderAssessmentsProtestsLeviesActOne
+  renderAssessmentsProtestsLeviesArticle
 } from "./routes/assessments-protests-levies.js?v=db3aed6";
 import {
   isArticleRollRequest,
@@ -173,7 +173,7 @@ async function main() {
 
   if (isAssessmentsProtestsLeviesRequest(searchParams)) {
     setFooterResourcesVisible(false);
-    renderAssessmentsProtestsLeviesActOne();
+    renderAssessmentsProtestsLeviesArticle();
     trackArticleView({
       contentType: "article",
       articleId: "how-your-property-value-becomes-a-tax-bill",

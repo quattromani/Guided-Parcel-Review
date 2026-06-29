@@ -92,6 +92,21 @@
   .ges-annotated-notice,
   .ges-three-lane-map__lane,
   .ges-role-card,
+  .ges-reader-checkpoint,
+  .ges-key-idea,
+  .ges-snapshot-card,
+  .ges-record-checklist__item,
+  .ges-guided-inspection,
+  .ges-comparison-card,
+  .ges-value-builder,
+  .ges-expandable-detail,
+  .ges-protest-path li,
+  .ges-tax-flow li,
+  .ges-year-strip li,
+  .ges-companion-card,
+  .ges-synthesis-card,
+  .ges-next-steps,
+  .ges-exploration-card,
   .ges-act-transition {
     background: rgb(var(--ges-print-card));
     border: 0.5pt solid rgb(var(--ges-print-border));
@@ -103,7 +118,19 @@
   .ges-memory-anchor,
   .ges-annotated-notice__paper,
   .ges-three-lane-map,
-  .ges-role-diagram {
+  .ges-role-diagram,
+  .ges-reader-checkpoint,
+  .ges-record-checklist,
+  .ges-guided-inspection__steps,
+  .ges-issue-comparison,
+  .ges-fairness-comparison,
+  .ges-value-build-diagram ol,
+  .ges-value-builder__layout,
+  .ges-value-builder__tabs,
+  .ges-protest-path,
+  .ges-tax-flow ol,
+  .ges-year-strip ol,
+  .ges-continue-exploring__grid {
     display: block;
   }
 
@@ -111,6 +138,21 @@
   .ges-annotated-notice__paper,
   .ges-three-lane-map__lane,
   .ges-role-card,
+  .ges-reader-checkpoint,
+  .ges-key-idea,
+  .ges-snapshot-card,
+  .ges-record-checklist__item,
+  .ges-guided-inspection,
+  .ges-comparison-card,
+  .ges-value-builder,
+  .ges-expandable-detail,
+  .ges-protest-path li,
+  .ges-tax-flow li,
+  .ges-year-strip li,
+  .ges-companion-card,
+  .ges-synthesis-card,
+  .ges-next-steps,
+  .ges-exploration-card,
   .ges-act-transition {
     margin-block: 0.1in;
     padding: 0.12in;
@@ -185,6 +227,61 @@
     color: rgb(var(--ges-print-muted));
     font-size: 8.4pt;
     line-height: 1.28;
+  }
+
+  .ges-value-builder__tabs,
+  .ges-expandable-detail summary::after,
+  .ges-value-build-diagram li::after,
+  .ges-protest-path li::after,
+  .ges-tax-flow li::after {
+    display: none;
+  }
+
+  .ges-value-builder__panel[hidden],
+  .ges-expandable-detail:not([open]) .ges-expandable-detail__content {
+    display: block;
+  }
+
+  .ges-reader-checkpoint h3,
+  .ges-key-idea__statement,
+  .ges-snapshot-card h3,
+  .ges-comparison-card h3,
+  .ges-value-builder h3,
+  .ges-value-builder h4,
+  .ges-protest-path h3,
+  .ges-tax-flow h3,
+  .ges-companion-card h3,
+  .ges-synthesis-card h3,
+  .ges-next-steps h2,
+  .ges-continue-exploring h2,
+  .ges-exploration-card h3 {
+    color: rgb(var(--ges-print-text));
+    font-size: 11pt;
+    line-height: 1.18;
+  }
+
+  .ges-reader-checkpoint p,
+  .ges-reader-checkpoint li,
+  .ges-key-idea__description,
+  .ges-snapshot-card p,
+  .ges-record-checklist p,
+  .ges-guided-inspection p,
+  .ges-comparison-card dd,
+  .ges-comparison-card li,
+  .ges-value-build-diagram p,
+  .ges-value-builder p,
+  .ges-value-builder li,
+  .ges-expandable-detail,
+  .ges-protest-path p,
+  .ges-tax-flow p,
+  .ges-year-strip p,
+  .ges-companion-card p,
+  .ges-synthesis-card p,
+  .ges-next-steps li,
+  .ges-exploration-card p {
+    color: rgb(var(--ges-print-secondary));
+    font-size: 8.75pt;
+    line-height: 1.32;
   }
 
   .concept-card,

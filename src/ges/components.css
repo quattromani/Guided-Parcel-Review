@@ -2213,23 +2213,761 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   line-height: var(--ges-line-copy);
 }
 
+.ges-reader-checkpoint,
+.ges-key-idea,
+.ges-snapshot-card,
+.ges-guided-inspection,
+.ges-value-builder,
+.ges-companion-card,
+.ges-synthesis-card,
+.ges-next-steps,
+.ges-continue-exploring {
+  justify-self: center;
+  width: min(100%, var(--ges-width-wide));
+}
+
+.ges-reader-checkpoint {
+  --ges-checkpoint-accent: var(--ges-color-evidence-green);
+  background:
+    linear-gradient(135deg, rgb(var(--ges-color-surface)) 0%, rgb(var(--ges-color-surface-muted)) 100%);
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-lg);
+  box-shadow: var(--ges-shadow-card);
+  display: grid;
+  gap: clamp(1rem, 2vw, 1.35rem);
+  grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr);
+  padding: clamp(1rem, 2.5vw, 1.55rem);
+}
+
+.ges-reader-checkpoint__header,
+.ges-reader-checkpoint__list,
+.ges-key-idea,
+.ges-snapshot-card div,
+.ges-guided-inspection__intro,
+.ges-value-builder__header,
+.ges-value-builder__panel,
+.ges-companion-card div,
+.ges-synthesis-card,
+.ges-next-steps {
+  display: grid;
+  gap: var(--ges-space-xs);
+}
+
+.ges-reader-checkpoint__kicker,
+.ges-key-idea__label,
+.ges-value-builder__micro,
+.ges-exploration-card__eyebrow,
+.ges-exploration-card__action,
+.ges-exploration-card__status {
+  color: rgb(var(--ges-color-civic-blue));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-xs);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: var(--ges-letter-kicker);
+  line-height: var(--ges-line-compact);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.ges-reader-checkpoint h3,
+.ges-key-idea__statement,
+.ges-snapshot-card h3,
+.ges-guided-inspection h3,
+.ges-guided-inspection h4,
+.ges-comparison-card h3,
+.ges-value-build-diagram h3,
+.ges-value-builder h3,
+.ges-value-builder h4,
+.ges-protest-path h3,
+.ges-tax-flow h3,
+.ges-companion-card h3,
+.ges-synthesis-card h3,
+.ges-next-steps h2,
+.ges-continue-exploring h2,
+.ges-exploration-card h3 {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: 0;
+  line-height: var(--ges-line-tight);
+  margin: 0;
+}
+
+.ges-reader-checkpoint h3,
+.ges-value-builder h3,
+.ges-continue-exploring h2 {
+  font-size: clamp(1.35rem, 2.5vw, 2rem);
+}
+
+.ges-comparison-card h3,
+.ges-snapshot-card h3,
+.ges-guided-inspection h3,
+.ges-value-build-diagram h3,
+.ges-protest-path h3,
+.ges-tax-flow h3,
+.ges-companion-card h3,
+.ges-synthesis-card h3,
+.ges-next-steps h2,
+.ges-exploration-card h3 {
+  font-size: clamp(1.1rem, 1.65vw, 1.4rem);
+}
+
+.ges-reader-checkpoint p,
+.ges-reader-checkpoint li,
+.ges-key-idea__description,
+.ges-key-idea__items,
+.ges-snapshot-card p,
+.ges-record-checklist p,
+.ges-guided-inspection p,
+.ges-comparison-card dd,
+.ges-comparison-card li,
+.ges-issue-comparison__next,
+.ges-value-build-diagram p,
+.ges-value-builder p,
+.ges-value-builder li,
+.ges-expandable-detail,
+.ges-protest-path p,
+.ges-tax-flow p,
+.ges-year-strip p,
+.ges-companion-card p,
+.ges-synthesis-card p,
+.ges-next-steps li,
+.ges-continue-exploring p,
+.ges-exploration-card p {
+  color: rgb(var(--ges-color-text-secondary));
+  font-size: var(--ges-type-sm);
+  line-height: var(--ges-line-copy);
+  margin: 0;
+}
+
+.ges-reader-checkpoint__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ges-reader-checkpoint__list li {
+  align-items: start;
+  display: grid;
+  gap: var(--ges-space-xs);
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.ges-reader-checkpoint__list li span {
+  align-items: center;
+  background: rgb(var(--ges-checkpoint-accent) / 0.14);
+  border: var(--ges-border-width) solid rgb(var(--ges-checkpoint-accent) / 0.34);
+  border-radius: var(--ges-radius-pill);
+  color: rgb(var(--ges-checkpoint-accent));
+  display: inline-flex;
+  height: 1.35rem;
+  justify-content: center;
+  margin-top: 0.12rem;
+  width: 1.35rem;
+}
+
+.ges-reader-checkpoint__list li span::before {
+  content: "";
+  border-bottom: var(--ges-rule-width-strong) solid currentColor;
+  border-right: var(--ges-rule-width-strong) solid currentColor;
+  height: 0.48rem;
+  transform: rotate(45deg) translateY(-0.08rem);
+  width: 0.24rem;
+}
+
+.ges-key-idea {
+  --ges-key-idea-accent: var(--ges-color-caution-amber);
+  background: rgb(var(--ges-key-idea-accent) / 0.1);
+  border: var(--ges-border-width) solid rgb(var(--ges-key-idea-accent) / 0.32);
+  border-radius: var(--ges-radius-lg);
+  box-shadow: var(--ges-shadow-card);
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.ges-key-idea__label {
+  color: rgb(var(--ges-key-idea-accent));
+}
+
+.ges-key-idea__statement {
+  font-size: clamp(1.65rem, 3.8vw, 3.1rem);
+  max-width: 17ch;
+}
+
+.ges-key-idea__items {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.ges-snapshot-card {
+  align-items: start;
+  background: rgb(var(--ges-color-surface));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-lg);
+  box-shadow: var(--ges-shadow-card);
+  display: grid;
+  gap: var(--ges-space-md);
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: clamp(1rem, 2.5vw, 1.4rem);
+}
+
+.ges-snapshot-card__icon,
+.ges-record-checklist__icon,
+.ges-comparison-card__header > span,
+.ges-value-build-diagram__icon,
+.ges-protest-path__icon,
+.ges-tax-flow__icon,
+.ges-companion-card__icon {
+  align-items: center;
+  background: rgb(var(--ges-color-civic-blue) / 0.13);
+  border: var(--ges-border-width) solid rgb(var(--ges-color-civic-blue) / 0.28);
+  border-radius: var(--ges-radius-pill);
+  color: rgb(var(--ges-color-civic-blue));
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 2.35rem;
+  justify-content: center;
+  width: 2.35rem;
+}
+
+.ges-record-checklist,
+.ges-issue-comparison,
+.ges-fairness-comparison {
+  display: grid;
+  gap: var(--ges-space-md);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(100%, var(--ges-width-wide));
+}
+
+.ges-record-checklist__item,
+.ges-comparison-card,
+.ges-value-builder,
+.ges-companion-card,
+.ges-synthesis-card,
+.ges-next-steps {
+  background: rgb(var(--ges-color-surface));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-lg);
+  box-shadow: var(--ges-shadow-card);
+}
+
+.ges-record-checklist__item {
+  display: grid;
+  gap: var(--ges-space-sm);
+  grid-template-columns: auto minmax(0, 1fr);
+  min-width: 0;
+  padding: clamp(1rem, 2vw, 1.2rem);
+}
+
+.ges-record-checklist__item h3 {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  line-height: var(--ges-line-tight);
+  margin: 0 0 var(--ges-space-3xs);
+}
+
+.ges-guided-inspection {
+  background:
+    linear-gradient(135deg, rgb(var(--ges-color-surface-muted)), rgb(var(--ges-color-surface)));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-lg);
+  box-shadow: var(--ges-shadow-card);
+  gap: clamp(1rem, 2vw, 1.35rem);
+  padding: clamp(1rem, 2.5vw, 1.45rem);
+}
+
+.ges-guided-inspection__intro {
+  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.ges-guided-inspection__intro > span {
+  color: rgb(var(--ges-color-process-blue));
+}
+
+.ges-guided-inspection__steps,
+.ges-protest-path,
+.ges-tax-flow ol,
+.ges-year-strip ol,
+.ges-value-build-diagram ol,
+.ges-next-steps ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ges-guided-inspection__steps {
+  display: grid;
+  gap: var(--ges-space-sm);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.ges-guided-inspection__steps li {
+  background: rgb(var(--ges-color-surface) / 0.76);
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-md);
+  display: grid;
+  gap: var(--ges-space-xs);
+  padding: var(--ges-space-sm);
+}
+
+.ges-guided-inspection__number {
+  align-items: center;
+  background: rgb(var(--ges-color-process-blue));
+  border-radius: var(--ges-radius-pill);
+  color: rgb(var(--ges-color-surface));
+  display: inline-flex;
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-xs);
+  font-weight: var(--ges-weight-heavy);
+  height: 1.7rem;
+  justify-content: center;
+  width: 1.7rem;
+}
+
+.ges-comparison-card {
+  display: grid;
+  gap: var(--ges-space-md);
+  min-width: 0;
+  padding: clamp(1rem, 2vw, 1.35rem);
+}
+
+.ges-comparison-card__header {
+  align-items: start;
+  display: grid;
+  gap: var(--ges-space-sm);
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.ges-comparison-card__header p,
+.ges-comparison-card dt {
+  color: rgb(var(--ges-color-text-muted));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-2xs);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: var(--ges-letter-kicker);
+  line-height: var(--ges-line-compact);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.ges-comparison-card ul,
+.ges-comparison-card dl {
+  display: grid;
+  gap: var(--ges-space-sm);
+  margin: 0;
+  padding: 0;
+}
+
+.ges-comparison-card ul {
+  list-style: none;
+}
+
+.ges-comparison-card li {
+  border-top: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  padding-top: var(--ges-space-xs);
+}
+
+.ges-comparison-card dl div {
+  display: grid;
+  gap: var(--ges-space-3xs);
+}
+
+.ges-issue-comparison__card[data-issue-type="record"] .ges-comparison-card__header > span,
+.ges-fairness-comparison__card[data-fairness-type="equalization"] .ges-comparison-card__header > span {
+  background: rgb(var(--ges-color-evidence-green) / 0.13);
+  border-color: rgb(var(--ges-color-evidence-green) / 0.3);
+  color: rgb(var(--ges-color-evidence-green));
+}
+
+.ges-issue-comparison__card[data-issue-type="value"] .ges-comparison-card__header > span,
+.ges-fairness-comparison__card[data-fairness-type="protest"] .ges-comparison-card__header > span {
+  background: rgb(var(--ges-color-caution-amber) / 0.13);
+  border-color: rgb(var(--ges-color-caution-amber) / 0.34);
+  color: rgb(var(--ges-color-caution-amber));
+}
+
+.ges-issue-comparison__next {
+  background: rgb(var(--ges-color-surface-muted));
+  border-radius: var(--ges-radius-md);
+  padding: var(--ges-space-sm);
+}
+
+.ges-value-build-diagram,
+.ges-tax-flow,
+.ges-year-strip {
+  display: grid;
+  gap: var(--ges-space-sm);
+  justify-self: center;
+  margin: 0;
+  width: min(100%, var(--ges-width-wide));
+}
+
+.ges-value-build-diagram figcaption,
+.ges-tax-flow figcaption,
+.ges-year-strip figcaption {
+  color: rgb(var(--ges-color-text-muted));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-xs);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: var(--ges-letter-kicker);
+  line-height: var(--ges-line-compact);
+  text-transform: uppercase;
+}
+
+.ges-value-build-diagram ol,
+.ges-tax-flow ol {
+  display: grid;
+  gap: var(--ges-space-md);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.ges-value-build-diagram li,
+.ges-protest-path li,
+.ges-tax-flow li,
+.ges-year-strip li {
+  background: rgb(var(--ges-color-surface));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-lg);
+  box-shadow: var(--ges-shadow-card);
+  min-width: 0;
+  position: relative;
+}
+
+.ges-value-build-diagram li,
+.ges-tax-flow li {
+  display: grid;
+  gap: var(--ges-space-sm);
+  padding: clamp(0.9rem, 1.8vw, 1.1rem);
+}
+
+.ges-value-build-diagram li:not(:last-child)::after,
+.ges-tax-flow li:not(:last-child)::after,
+.ges-protest-path li:not(:last-child)::after {
+  background: linear-gradient(90deg, rgb(var(--ges-color-civic-blue) / 0.7), rgb(var(--ges-color-border-strong) / 0.3));
+  block-size: var(--ges-rule-width-strong);
+  content: "";
+  inline-size: var(--ges-space-md);
+  inset-block-start: 2rem;
+  inset-inline-start: calc(100% + (var(--ges-space-md) / 2) * -1);
+  position: absolute;
+}
+
+.ges-value-builder {
+  display: grid;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.ges-value-builder__layout {
+  display: grid;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  grid-template-columns: minmax(13rem, 0.34fr) minmax(0, 1fr);
+}
+
+.ges-value-builder__tabs {
+  align-content: start;
+  display: grid;
+  gap: var(--ges-space-xs);
+}
+
+.ges-value-builder__tabs button {
+  align-items: center;
+  appearance: none;
+  background: rgb(var(--ges-color-surface-muted));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-md);
+  color: rgb(var(--ges-color-text));
+  cursor: pointer;
+  display: grid;
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-sm);
+  font-weight: var(--ges-weight-bold);
+  gap: var(--ges-space-xs);
+  grid-template-columns: auto minmax(0, 1fr);
+  min-height: 2.65rem;
+  padding: 0.64rem 0.75rem;
+  text-align: left;
+  transition: background-color var(--ges-motion-duration) var(--ges-motion-ease), border-color var(--ges-motion-duration) var(--ges-motion-ease), transform var(--ges-motion-duration) var(--ges-motion-ease);
+}
+
+.ges-value-builder__tabs button span {
+  color: rgb(var(--ges-color-civic-blue));
+  display: inline-flex;
+}
+
+.ges-value-builder__tabs button[aria-selected="true"],
+.ges-value-builder__tabs button:hover,
+.ges-value-builder__tabs button:focus-visible {
+  background: rgb(var(--ges-color-civic-blue) / 0.12);
+  border-color: rgb(var(--ges-color-civic-blue) / 0.46);
+}
+
+.ges-value-builder__tabs button:hover {
+  transform: translateY(-0.08rem);
+}
+
+.ges-value-builder__panels {
+  min-width: 0;
+}
+
+.ges-value-builder__panel {
+  background:
+    linear-gradient(135deg, rgb(var(--ges-color-surface-muted)), rgb(var(--ges-color-surface)));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-lg);
+  min-height: 22rem;
+  padding: clamp(1.1rem, 3vw, 2rem);
+}
+
+.ges-value-builder__panel[hidden] {
+  display: none;
+}
+
+.ges-value-builder__micro {
+  color: rgb(var(--ges-color-civic-blue));
+}
+
+.ges-value-builder__panel h4 {
+  font-size: clamp(1.55rem, 3vw, 2.55rem);
+  max-width: 18ch;
+}
+
+.ges-value-builder__panel ul {
+  display: grid;
+  gap: var(--ges-space-sm);
+  margin: var(--ges-space-sm) 0 0;
+  padding-left: 1.1rem;
+}
+
+.ges-expandable-detail {
+  background: rgb(var(--ges-color-surface));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-lg);
+  box-shadow: var(--ges-shadow-card);
+  justify-self: center;
+  overflow: hidden;
+  width: min(100%, var(--ges-width-reading));
+}
+
+.ges-expandable-detail summary {
+  cursor: pointer;
+  display: grid;
+  gap: var(--ges-space-3xs);
+  list-style: none;
+  padding: clamp(0.95rem, 2vw, 1.2rem);
+  position: relative;
+}
+
+.ges-expandable-detail summary::-webkit-details-marker {
+  display: none;
+}
+
+.ges-expandable-detail summary::after {
+  color: rgb(var(--ges-color-civic-blue));
+  content: "+";
+  font-family: var(--ges-font-heading);
+  font-size: 1.5rem;
+  line-height: 1;
+  position: absolute;
+  right: clamp(0.95rem, 2vw, 1.2rem);
+  top: clamp(0.95rem, 2vw, 1.2rem);
+}
+
+.ges-expandable-detail[open] summary::after {
+  content: "-";
+}
+
+.ges-expandable-detail__title {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-size: var(--ges-type-lg);
+  font-weight: var(--ges-weight-heavy);
+  line-height: var(--ges-line-tight);
+  padding-right: 2rem;
+}
+
+.ges-expandable-detail__summary {
+  color: rgb(var(--ges-color-text-secondary));
+  font-size: var(--ges-type-sm);
+  line-height: var(--ges-line-copy);
+  padding-right: 2rem;
+}
+
+.ges-expandable-detail__content {
+  border-top: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  display: grid;
+  gap: var(--ges-space-sm);
+  padding: 0 clamp(0.95rem, 2vw, 1.2rem) clamp(0.95rem, 2vw, 1.2rem);
+}
+
+.ges-protest-path {
+  display: grid;
+  gap: var(--ges-space-md);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  width: min(100%, var(--ges-width-wide));
+}
+
+.ges-protest-path li {
+  display: grid;
+  gap: var(--ges-space-sm);
+  padding: clamp(0.85rem, 1.6vw, 1rem);
+}
+
+.ges-companion-card {
+  align-items: start;
+  display: grid;
+  gap: var(--ges-space-md);
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: clamp(1rem, 2.5vw, 1.45rem);
+  width: min(100%, var(--ges-width-reading));
+}
+
+.ges-companion-card h3 a,
+.ges-exploration-card h3 a {
+  color: inherit;
+}
+
+.ges-companion-card span:not(.ges-companion-card__icon) {
+  color: rgb(var(--ges-color-civic-blue));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-xs);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: var(--ges-letter-kicker);
+  text-transform: uppercase;
+}
+
+.ges-tax-flow .ges-tax-flow__icon {
+  background: rgb(var(--ges-color-caution-amber) / 0.13);
+  border-color: rgb(var(--ges-color-caution-amber) / 0.34);
+  color: rgb(var(--ges-color-caution-amber));
+}
+
+.ges-year-strip ol {
+  display: grid;
+  gap: var(--ges-space-xs);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.ges-year-strip li {
+  display: grid;
+  gap: var(--ges-space-xs);
+  padding: var(--ges-space-sm);
+}
+
+.ges-year-strip li span {
+  color: rgb(var(--ges-color-civic-blue));
+  font-family: var(--ges-font-heading);
+  font-size: clamp(1rem, 1.6vw, 1.28rem);
+  font-weight: var(--ges-weight-heavy);
+  line-height: var(--ges-line-tight);
+}
+
+.ges-synthesis-card,
+.ges-next-steps {
+  padding: clamp(1rem, 2.5vw, 1.45rem);
+  width: min(100%, var(--ges-width-reading));
+}
+
+.ges-next-steps ol {
+  counter-reset: ges-next-step;
+  display: grid;
+  gap: var(--ges-space-sm);
+}
+
+.ges-next-steps li {
+  align-items: start;
+  counter-increment: ges-next-step;
+  display: grid;
+  gap: var(--ges-space-sm);
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.ges-next-steps li::before {
+  align-items: center;
+  background: rgb(var(--ges-color-civic-blue));
+  border-radius: var(--ges-radius-pill);
+  color: rgb(var(--ges-color-surface));
+  content: counter(ges-next-step);
+  display: inline-flex;
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-xs);
+  font-weight: var(--ges-weight-heavy);
+  height: 1.65rem;
+  justify-content: center;
+  width: 1.65rem;
+}
+
+.ges-continue-exploring {
+  display: grid;
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.ges-continue-exploring__header {
+  display: grid;
+  gap: var(--ges-space-xs);
+  justify-self: center;
+  width: min(100%, var(--ges-width-reading));
+}
+
+.ges-continue-exploring__grid {
+  display: grid;
+  gap: var(--ges-space-md);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ges-exploration-card {
+  background: rgb(var(--ges-color-surface));
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-lg);
+  box-shadow: var(--ges-shadow-card);
+  display: grid;
+  gap: var(--ges-space-xs);
+  min-width: 0;
+  padding: clamp(1rem, 2vw, 1.25rem);
+}
+
+.ges-exploration-card__status {
+  color: rgb(var(--ges-color-text-muted));
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .ges-act-section,
   .ges-memory-anchor,
   .ges-annotated-notice,
   .ges-three-lane-map__lane,
   .ges-role-card,
+  .ges-reader-checkpoint,
+  .ges-snapshot-card,
+  .ges-record-checklist__item,
+  .ges-guided-inspection,
+  .ges-comparison-card,
+  .ges-value-build-diagram li,
+  .ges-value-builder,
+  .ges-protest-path li,
+  .ges-tax-flow li,
+  .ges-year-strip li,
+  .ges-key-idea,
+  .ges-continue-exploring,
   .ges-act-transition {
     animation: ges-component-reveal 420ms var(--ges-motion-ease) both;
   }
 
-  .ges-three-lane-map__lane {
-    animation-delay: calc(var(--lane-index, 0) * 72ms);
+  .ges-three-lane-map__lane,
+  .ges-value-build-diagram li,
+  .ges-protest-path li,
+  .ges-tax-flow li,
+  .ges-year-strip li,
+  .ges-record-checklist__item {
+    animation-delay: calc(var(--step-index, var(--item-index, var(--lane-index, 0))) * 72ms);
   }
 
-  .ges-three-lane-map__lane:not(:last-child)::after {
+  .ges-three-lane-map__lane:not(:last-child)::after,
+  .ges-value-build-diagram li:not(:last-child)::after,
+  .ges-protest-path li:not(:last-child)::after,
+  .ges-tax-flow li:not(:last-child)::after {
     animation: ges-connector-draw 620ms var(--ges-motion-ease) both;
-    animation-delay: calc((var(--lane-index, 0) + 1) * 120ms);
+    animation-delay: calc((var(--step-index, var(--lane-index, 0)) + 1) * 120ms);
     transform-origin: left center;
   }
 }
@@ -2269,13 +3007,46 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   .ges-role-diagram {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .ges-guided-inspection__steps,
+  .ges-value-build-diagram ol,
+  .ges-tax-flow ol,
+  .ges-protest-path,
+  .ges-year-strip ol,
+  .ges-continue-exploring__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ges-value-build-diagram li:nth-child(2n)::after,
+  .ges-tax-flow li:nth-child(2n)::after,
+  .ges-protest-path li:nth-child(2n)::after {
+    display: none;
+  }
+
+  .ges-value-builder__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ges-value-builder__tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 54rem) {
   .ges-memory-anchor,
   .ges-annotated-notice__paper,
   .ges-three-lane-map,
-  .ges-role-diagram {
+  .ges-role-diagram,
+  .ges-reader-checkpoint,
+  .ges-record-checklist,
+  .ges-guided-inspection__steps,
+  .ges-issue-comparison,
+  .ges-fairness-comparison,
+  .ges-value-build-diagram ol,
+  .ges-tax-flow ol,
+  .ges-protest-path,
+  .ges-year-strip ol,
+  .ges-continue-exploring__grid {
     grid-template-columns: 1fr;
   }
 
@@ -2291,6 +3062,20 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
     inline-size: var(--ges-rule-width-strong);
     inset-block-start: calc(100% + var(--ges-space-md) / -2);
     inset-inline-start: 1.9rem;
+  }
+
+  .ges-value-build-diagram li:not(:last-child)::after,
+  .ges-tax-flow li:not(:last-child)::after,
+  .ges-protest-path li:not(:last-child)::after {
+    block-size: var(--ges-space-md);
+    display: block;
+    inline-size: var(--ges-rule-width-strong);
+    inset-block-start: calc(100% + var(--ges-space-md) / -2);
+    inset-inline-start: 1.9rem;
+  }
+
+  .ges-value-builder__tabs {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -2341,6 +3126,23 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   .ges-annotated-notice,
   .ges-three-lane-map,
   .ges-role-diagram,
+  .ges-reader-checkpoint,
+  .ges-snapshot-card,
+  .ges-record-checklist,
+  .ges-guided-inspection,
+  .ges-issue-comparison,
+  .ges-fairness-comparison,
+  .ges-value-build-diagram,
+  .ges-value-builder,
+  .ges-expandable-detail,
+  .ges-protest-path,
+  .ges-companion-card,
+  .ges-tax-flow,
+  .ges-year-strip,
+  .ges-key-idea,
+  .ges-synthesis-card,
+  .ges-next-steps,
+  .ges-continue-exploring,
   .ges-act-transition,
   .ges-act-source-note {
     inline-size: min(100%, calc(100vw - (2 * var(--ges-mobile-article-gutter, 1.25rem))));
@@ -2348,8 +3150,18 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
     width: min(100%, calc(100vw - (2 * var(--ges-mobile-article-gutter, 1.25rem))));
   }
 
-  .ges-memory-anchor__statement {
+  .ges-memory-anchor__statement,
+  .ges-key-idea__statement {
     max-width: 100%;
+  }
+
+  .ges-snapshot-card,
+  .ges-companion-card {
+    grid-template-columns: 1fr;
+  }
+
+  .ges-value-builder__panel {
+    min-height: 0;
   }
 
   .ges-annotated-notice__fields {

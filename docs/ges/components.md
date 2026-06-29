@@ -245,6 +245,34 @@ Print: preserve the sentence and contrast terms; decorative rails and shadows ca
 
 Future: use this as the recurring GES pattern for anchors such as "Assessment does not equal taxes" and "Accuracy compounds."
 
+## Reader Checkpoint
+
+Purpose: give readers confidence before the next act begins.
+
+Use when: an article act has taught a new distinction and the reader needs a short self-check before continuing.
+
+Do not use when: the block would merely summarize the preceding section. Checkpoints should answer "what should I now be able to recognize?"
+
+Behavior: render with `renderReaderCheckpoint()` from structured article data. Keep the title in the "Before you continue..." pattern unless the article has a stronger act-specific phrase.
+
+Accessibility: use an `aside` with real list items. Decorative check marks must not be the only meaningful text.
+
+Mobile/print: stack into the reading column and preserve all list items.
+
+## Key Idea
+
+Purpose: pause on a concept that changes how the reader interprets the rest of the article.
+
+Use when: the concept is more than a margin cue but less than a full Memory Anchor.
+
+Do not use when: the statement is just a headline, warning, or decorative pull quote.
+
+Behavior: render with `renderKeyIdea()`. Keep the statement concise and support it with one short explanation or a few bullets.
+
+Accessibility: render as an `aside`; the visible label communicates the role of the block.
+
+Mobile/print: flatten shadows and preserve the statement.
+
 ## Three-Lane System Map
 
 Purpose: separate related public processes before terminology accumulates.
@@ -345,6 +373,36 @@ Accessibility: labels, not color alone.
 
 Print: keep paired sides together.
 
+## Value Builder
+
+Purpose: turn a dense methodology section into an exploratory module.
+
+Use when: readers need to understand related appraisal terms without reading separate full sections for each term.
+
+Do not use when: the content is truly sequential. Use a Process Strip instead.
+
+Behavior: use tabs or equivalent keyboard-accessible progressive disclosure. The first panel should explain the most common reader question. Advanced terminology belongs in later tabs, not in the opening prose.
+
+Accessibility: tabs use `role="tablist"`, `role="tab"`, `aria-selected`, `aria-controls`, keyboard arrow navigation, and one visible panel at a time. Panel content remains normal text and lists.
+
+Mobile: tabs collapse to a grid or single column above the panel. No horizontal scrolling.
+
+Print: hide tab controls and show all panels in source order.
+
+## Expandable Detail
+
+Purpose: keep advanced detail available without making it required reading.
+
+Use when: a technical metric, exception, statutory nuance, or assessor-facing term is useful for some readers but not necessary for the main lesson.
+
+Do not use when: the content is essential to the next section.
+
+Behavior: render with `renderExpandableDetail()` using a native `details` element. The summary should explain what opens, not tease.
+
+Accessibility: rely on native summary behavior. Keep the summary short and descriptive.
+
+Mobile/print: summary stays compact; print can expose the expanded content.
+
 ## Practical Note
 
 Variants: informational, caution, calibration, procedural.
@@ -412,6 +470,20 @@ Authoring: configure with `renderResourcesBlock()` from `src/ges/article-compone
 Accessibility: render as a semantic section with a proper heading. Link text must describe the resource; do not use "click here." The visible type label is editorial metadata, not the accessible name.
 
 Print/PDF: browser print preserves the block and exposes resource URLs. Generated PDFs can call the same renderer for HTML-to-PDF flows; low-level PDF drawing remains a separate wiring task for report generators that do not consume article HTML.
+
+## Continue Exploring
+
+Purpose: connect one guide to the broader GES learning ecosystem after the core lesson is complete.
+
+Use when: the article is a hub and adjacent guides, tools, or future modules deserve a clear next path.
+
+Do not use when: links are merely related or decorative. Each card should answer a likely next reader question.
+
+Behavior: render with `renderContinueExploring()`. Cards may link to existing articles/tools or display a planned status for future ecosystem work.
+
+Accessibility: each card has descriptive link text through the heading. Planned cards are not fake links.
+
+Mobile/print: card grid stacks; useful planned labels can remain visible.
 
 ## Continuation Module
 

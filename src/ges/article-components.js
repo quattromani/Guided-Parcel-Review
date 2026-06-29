@@ -3,6 +3,8 @@ import { escapeHtml } from "../utils/html.js?v=db3aed6";
 const RESOURCE_TYPE_LABELS = {
   "assessment-guidance": "Assessment guidance",
   "case-record": "Case record",
+  "case-study": "Case study",
+  "companion-guide": "Companion guide",
   "county-record": "County record",
   "legal-authority": "Legal authority",
   "model-input": "Model input",
@@ -87,6 +89,117 @@ export function renderActTransition(transition = {}) {
       <p class="ges-act-transition__title">${titleMarkup}</p>
       ${description ? `<p class="ges-act-transition__description">${escapeHtml(description)}</p>` : ""}
     </aside>
+  `;
+}
+
+export function renderReaderCheckpoint(checkpoint = {}) {
+  const items = Array.isArray(checkpoint.items) ? checkpoint.items.filter(Boolean) : [];
+  const title = checkpoint.title ?? "Before you continue...";
+  if (!items.length && !checkpoint.intro) return "";
+
+  return `
+    <aside class="ges-reader-checkpoint" aria-label="${escapeHtml(title)}">
+      <div class="ges-reader-checkpoint__header">
+        <p class="ges-reader-checkpoint__kicker">Checkpoint</p>
+        <h3>${escapeHtml(title)}</h3>
+        ${checkpoint.intro ? `<p>${escapeHtml(checkpoint.intro)}</p>` : ""}
+      </div>
+      ${items.length ? `
+        <ul class="ges-reader-checkpoint__list">
+          ${items.map(item => `<li><span aria-hidden="true"></span>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+      ` : ""}
+    </aside>
+  `;
+}
+
+export function renderKeyIdea(idea = {}) {
+  const title = idea.title ?? idea.text ?? idea.statement ?? "";
+  if (!title) return "";
+
+  const label = idea.label ?? "Key idea";
+  const description = idea.description ?? idea.supportingText ?? "";
+  const items = Array.isArray(idea.items) ? idea.items.filter(Boolean) : [];
+
+  return `
+    <aside class="ges-key-idea" aria-label="${escapeHtml(label)}">
+      <p class="ges-key-idea__label">${escapeHtml(label)}</p>
+      <p class="ges-key-idea__statement">${escapeHtml(title)}</p>
+      ${description ? `<p class="ges-key-idea__description">${escapeHtml(description)}</p>` : ""}
+      ${items.length ? `
+        <ul class="ges-key-idea__items">
+          ${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+      ` : ""}
+    </aside>
+  `;
+}
+
+export function renderExpandableDetail(detail = {}) {
+  const title = detail.title ?? detail.label ?? "";
+  if (!title) return "";
+
+  const summary = detail.summary ?? detail.description ?? "";
+  const content = Array.isArray(detail.content) ? detail.content.filter(Boolean) : [];
+
+  return `
+    <details class="ges-expandable-detail">
+      <summary>
+        <span class="ges-expandable-detail__title">${escapeHtml(title)}</span>
+        ${summary ? `<span class="ges-expandable-detail__summary">${escapeHtml(summary)}</span>` : ""}
+      </summary>
+      ${content.length ? `
+        <div class="ges-expandable-detail__content">
+          ${content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join("")}
+        </div>
+      ` : ""}
+    </details>
+  `;
+}
+
+function isExternalUrl(url = "") {
+  return /^https?:\/\//i.test(url);
+}
+
+function cardHref(card = {}, references = {}) {
+  if (card.hrefKey) return references[card.hrefKey] ?? "";
+  return card.href ?? card.url ?? "";
+}
+
+export function renderContinueExploring(block = {}, options = {}) {
+  const cards = Array.isArray(block.cards) ? block.cards.filter(Boolean) : [];
+  if (!cards.length) return "";
+
+  const references = options.references ?? {};
+  const id = options.id ?? block.id ?? "continueExploring";
+  const title = block.title ?? "Continue exploring";
+  const intro = block.intro ?? "";
+
+  return `
+    <section class="ges-continue-exploring" aria-labelledby="${escapeHtml(id)}Title">
+      <header class="ges-continue-exploring__header">
+        <p class="guided-kicker">Continue Exploring</p>
+        <h2 id="${escapeHtml(id)}Title">${escapeHtml(title)}</h2>
+        ${intro ? `<p>${escapeHtml(intro)}</p>` : ""}
+      </header>
+      <div class="ges-continue-exploring__grid">
+        ${cards.map(card => {
+          const href = cardHref(card, references);
+          const titleText = card.title ?? "";
+          const action = card.action ?? "Open";
+          const status = card.status ?? "";
+          const linkAttrs = href && isExternalUrl(href) ? ` target="_blank" rel="noopener noreferrer"` : "";
+          return `
+            <article class="ges-exploration-card"${status ? ` data-status="${escapeHtml(status)}"` : ""}>
+              ${card.eyebrow ? `<p class="ges-exploration-card__eyebrow">${escapeHtml(card.eyebrow)}</p>` : ""}
+              <h3>${href ? `<a href="${escapeHtml(href)}"${linkAttrs}>${escapeHtml(titleText)}</a>` : escapeHtml(titleText)}</h3>
+              ${card.description ? `<p>${escapeHtml(card.description)}</p>` : ""}
+              ${href ? `<span class="ges-exploration-card__action">${escapeHtml(action)}</span>` : `<span class="ges-exploration-card__status">${escapeHtml(status || "Planned")}</span>`}
+            </article>
+          `;
+        }).join("")}
+      </div>
+    </section>
   `;
 }
 
