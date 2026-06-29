@@ -252,6 +252,12 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
   ],
   boardMeetings: [
     {
+      dateLabel: "Wednesday, June 24, 2026",
+      timeLabel: "1:00 p.m.",
+      endsAt: "2026-06-24T14:00:00-05:00",
+      calendarUrl: "assets/calendar/gage-boe-2026-06-24.ics"
+    },
+    {
       dateLabel: "Monday, July 6, 2026",
       timeLabel: "1:00 p.m.",
       endsAt: "2026-07-06T14:00:00-05:00",

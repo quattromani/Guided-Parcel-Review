@@ -434,7 +434,7 @@
 .ges-margin-insight__text,
 .levy-compression-page .ges-margin-insight .ges-margin-insight__text,
 .levy-compression-page .tax-article-closing .ges-margin-insight__text {
-  color: rgb(var(--ges-color-text-secondary));
+  color: rgb(127 29 29);
   font-family: var(--ges-font-heading);
   font-size: var(--ges-type-sm);
   font-weight: var(--ges-weight-medium);
@@ -446,9 +446,13 @@
   .ges-margin-insight {
     border-left: var(--ges-border-width) solid rgb(var(--ges-color-border-strong) / 0.72);
     border-top: 0;
-    margin-top: calc((var(--ges-type-xs) * var(--ges-line-compact)) + var(--ges-space-xs));
+    inset-block-start: calc(100% + var(--ges-space-sm));
+    inset-inline-end: 0;
+    margin-top: 0;
     padding-left: var(--ges-space-sm);
     padding-top: 0;
+    position: absolute;
+    width: min(100%, var(--ges-width-margin-insight));
   }
 }
 
