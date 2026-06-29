@@ -76,6 +76,10 @@ import {
   renderProtestParadox
 } from "./routes/protest-paradox.js?v=db3aed6";
 import {
+  isAssessmentsProtestsLeviesRequest,
+  renderAssessmentsProtestsLeviesActOne
+} from "./routes/assessments-protests-levies.js?v=db3aed6";
+import {
   isArticleRollRequest,
   renderArticleRoll
 } from "./routes/article-roll.js?v=db3aed6";
@@ -164,6 +168,18 @@ async function main() {
 
   if (isGesPublicPageRequest()) {
     renderGesPublicPage();
+    return;
+  }
+
+  if (isAssessmentsProtestsLeviesRequest(searchParams)) {
+    setFooterResourcesVisible(false);
+    renderAssessmentsProtestsLeviesActOne();
+    trackArticleView({
+      contentType: "article",
+      articleId: "how-your-property-value-becomes-a-tax-bill",
+      articleTitle: "How Your Property Value Becomes a Tax Bill",
+      county: "nebraska"
+    });
     return;
   }
 

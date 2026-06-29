@@ -227,6 +227,70 @@ Mobile: collapses into the reading column. The after-content crease remains deco
 
 Print: simple rule and text only.
 
+## Memory Anchor
+
+Purpose: make one durable teaching sentence impossible to miss.
+
+Use when: an article reaches a concept readers should remember months later.
+
+Do not use when: the sentence is merely a section summary, slogan, or decorative pull quote.
+
+Behavior: render with `renderMemoryAnchor()` from structured article data. Keep the statement short, concrete, and legally accurate. Optional contrast terms should clarify the distinction without adding a second lesson.
+
+Accessibility: the full sentence remains normal text inside an `aside` with an accessible label. Contrast terms use a real definition list.
+
+Mobile: stacks into one column; the statement can occupy the full width.
+
+Print: preserve the sentence and contrast terms; decorative rails and shadows can flatten.
+
+Future: use this as the recurring GES pattern for anchors such as "Assessment does not equal taxes" and "Accuracy compounds."
+
+## Three-Lane System Map
+
+Purpose: separate related public processes before terminology accumulates.
+
+Use when: one reader concern is actually moving through multiple lanes, such as assessment, equalization, and taxation.
+
+Do not use when: a plain sequential process strip is enough.
+
+Behavior: each lane must answer one question, name who handles it, and show the output. The component may animate connectors, but the order and text must carry the meaning without motion.
+
+Accessibility: render as an ordered list. Color and icons support but do not replace lane labels.
+
+Mobile: stack lanes vertically and turn horizontal connectors into vertical connectors.
+
+Print: preserve all three lane cards and outputs.
+
+## Role / Responsibility Diagram
+
+Purpose: route practical questions to the correct office or legal role.
+
+Use when: readers commonly bring the right question to the wrong place.
+
+Do not use when: the article needs a full government org chart.
+
+Structure: one card per role. Each card should include role name, lane/category, "Ask here", and "Not here." Keep each answer one sentence or shorter.
+
+Accessibility: use semantic article cards and definition lists. Avoid relying on icons or color to distinguish authority.
+
+Mobile: two columns on tablet, one column on small screens.
+
+Print: keep each role card intact when possible.
+
+## Act Transition
+
+Purpose: end a GES act with a clear next cognitive step without building the next act.
+
+Use when: an article is designed in acts or modules and the next section should feel inevitable.
+
+Do not use when: a normal paragraph transition is sufficient.
+
+Behavior: render with `renderActTransition()`. The transition may be a link in a finished article or plain text when the next act is not implemented yet.
+
+Accessibility: `aside` label communicates that this is the next step. Linked titles must be descriptive.
+
+Mobile/print: remains compact and text-first.
+
 ## Process Strip
 
 Purpose: show a short workflow.

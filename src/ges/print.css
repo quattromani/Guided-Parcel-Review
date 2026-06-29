@@ -88,6 +88,34 @@
     padding-block: 0.12in;
   }
 
+  .ges-memory-anchor,
+  .ges-annotated-notice,
+  .ges-three-lane-map__lane,
+  .ges-role-card,
+  .ges-act-transition {
+    background: rgb(var(--ges-print-card));
+    border: 0.5pt solid rgb(var(--ges-print-border));
+    box-shadow: none;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .ges-memory-anchor,
+  .ges-annotated-notice__paper,
+  .ges-three-lane-map,
+  .ges-role-diagram {
+    display: block;
+  }
+
+  .ges-memory-anchor,
+  .ges-annotated-notice__paper,
+  .ges-three-lane-map__lane,
+  .ges-role-card,
+  .ges-act-transition {
+    margin-block: 0.1in;
+    padding: 0.12in;
+  }
+
   .article-entry-meta p,
   .guide-length-label {
     color: rgb(var(--ges-print-secondary));

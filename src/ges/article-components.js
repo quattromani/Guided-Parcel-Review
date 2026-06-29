@@ -39,6 +39,57 @@ export function renderPageCrease() {
   return `<hr class="ges-page-crease" />`;
 }
 
+export function renderMemoryAnchor(anchor = {}) {
+  const text = anchor.text ?? anchor.statement ?? "";
+  if (!text) return "";
+
+  const label = anchor.label ?? "Memory anchor";
+  const supporting = anchor.supportingText ?? anchor.description ?? "";
+  const contrast = Array.isArray(anchor.contrast) ? anchor.contrast.filter(Boolean) : [];
+  const classes = ["ges-memory-anchor", anchor.className].filter(Boolean).join(" ");
+
+  return `
+    <aside class="${escapeHtml(classes)}" aria-label="${escapeHtml(label)}">
+      <div class="ges-memory-anchor__body">
+        <p class="ges-memory-anchor__label">${escapeHtml(label)}</p>
+        <p class="ges-memory-anchor__statement">${escapeHtml(text)}</p>
+        ${supporting ? `<p class="ges-memory-anchor__supporting">${escapeHtml(supporting)}</p>` : ""}
+      </div>
+      ${contrast.length ? `
+        <dl class="ges-memory-anchor__contrast">
+          ${contrast.map(item => `
+            <div>
+              <dt>${escapeHtml(item.term ?? item.label ?? "")}</dt>
+              <dd>${escapeHtml(item.description ?? item.value ?? "")}</dd>
+            </div>
+          `).join("")}
+        </dl>
+      ` : ""}
+    </aside>
+  `;
+}
+
+export function renderActTransition(transition = {}) {
+  const title = transition.title ?? "";
+  if (!title) return "";
+
+  const kicker = transition.kicker ?? "Next";
+  const description = transition.description ?? "";
+  const href = transition.href ?? "";
+  const classes = ["ges-act-transition", transition.className].filter(Boolean).join(" ");
+  const titleMarkup = href
+    ? `<a href="${escapeHtml(href)}">${escapeHtml(title)}</a>`
+    : `<span>${escapeHtml(title)}</span>`;
+
+  return `
+    <aside class="${escapeHtml(classes)}" aria-label="${escapeHtml(kicker)}">
+      <p class="ges-act-transition__kicker">${escapeHtml(kicker)}</p>
+      <p class="ges-act-transition__title">${titleMarkup}</p>
+      ${description ? `<p class="ges-act-transition__description">${escapeHtml(description)}</p>` : ""}
+    </aside>
+  `;
+}
+
 function slugValue(value = "") {
   return `${value}`
     .toLowerCase()
@@ -223,6 +274,11 @@ export function renderGuideUtility({
   wordCount = ""
 }) {
   const safeIcon = typeof icon === "function" ? icon : () => "";
+  const printableControl = printableUrl ? `
+          <a class="format-control-item hero-utility-button article-print-cta" href="${escapeHtml(printableUrl)}" download data-article-action="download_pdf" data-article-label="${escapeHtml(`${printableLabel} PDF`)}">
+            ${safeIcon("document")}
+            <span>${escapeHtml(printableLabel)}</span>
+          </a>` : "";
   const audioControl = audioUrl ? `
           <details class="hero-audio format-control-item-shell" data-hero-audio>
             <summary class="format-control-item hero-utility-button article-audio-cta">
@@ -237,21 +293,18 @@ export function renderGuideUtility({
               <a class="hero-audio-download" href="${escapeHtml(audioUrl)}" download data-article-action="audio_article_download" data-article-label="Audio article MP3">Download MP3</a>
             </div>
           </details>` : "";
+  const formatControls = [printableControl, audioControl].filter(Boolean).join("");
 
   return `
     <section class="guide-utility" aria-label="Guide options">
       <div class="guide-length" aria-label="Estimated guide length" data-guide-length data-reading-minutes="${escapeHtml(readingMinutes)}" data-word-count="${escapeHtml(wordCount)}" data-length-label="${escapeHtml(lengthLabel)}">
         <p class="guide-length-label" data-guide-length-label>${escapeHtml(formatGuideLengthText(readingMinutes))}</p>
       </div>
-      <div class="guide-formats hero-utility" aria-label="Available formats">
+      ${formatControls ? `<div class="guide-formats hero-utility" aria-label="Available formats">
         <div class="format-control">
-          <a class="format-control-item hero-utility-button article-print-cta" href="${escapeHtml(printableUrl)}" download data-article-action="download_pdf" data-article-label="${escapeHtml(`${printableLabel} PDF`)}">
-            ${safeIcon("document")}
-            <span>${escapeHtml(printableLabel)}</span>
-          </a>
-          ${audioControl}
+          ${formatControls}
         </div>
-      </div>
+      </div>` : ""}
     </section>
   `;
 }
