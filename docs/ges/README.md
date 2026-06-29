@@ -109,6 +109,8 @@ node scripts/build-scss.mjs
 - `layout.md`: widths, density, and composition.
 - `components.md`: component lifecycle and markup.
 - `article-publishing.md`: article roll, manifest metadata, draft/public/internal workflows, and article card rules.
+- `article-conversion-prompt.md`: reusable source-document-to-GES article planning prompt.
+- `article-plans/`: source-specific GES article planning packages before implementation.
 - `knowledge-platform.md`: existing knowledge inventory, knowledge object taxonomy, relationship model, normalized schema, migration workflow, and platform style bible.
 - `workspace.md`: authenticated assessor Workspace architecture, module strategy, pinning model, workflow awareness, and future personalization boundaries.
 - `themes.md`: light, dark, and print behavior.
