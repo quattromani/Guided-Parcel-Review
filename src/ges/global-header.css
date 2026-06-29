@@ -25,14 +25,14 @@
 }
 
 html[data-ges-theme-resolved="dark"] .gpr-global-header {
-  --gpr-global-header-surface: 25 43 58;
-  --gpr-global-header-muted: 22 39 54;
-  --gpr-global-header-text: 232 237 240;
-  --gpr-global-header-secondary: 193 204 209;
-  --gpr-global-header-border: 49 72 88;
-  --gpr-global-header-strong: 77 101 116;
-  --gpr-global-header-focus: 139 151 188;
-  --gpr-global-header-shadow: 0 0 0;
+  --gpr-global-header-surface: var(--ges-color-surface-floating, 32 46 57);
+  --gpr-global-header-muted: var(--ges-color-surface-muted, 24 35 44);
+  --gpr-global-header-text: var(--ges-color-text, 225 231 234);
+  --gpr-global-header-secondary: var(--ges-color-text-secondary, 184 196 201);
+  --gpr-global-header-border: var(--ges-color-border-subtle, 47 62 72);
+  --gpr-global-header-strong: var(--ges-color-border-strong, 74 91 102);
+  --gpr-global-header-focus: var(--ges-color-focus, 151 160 194);
+  --gpr-global-header-shadow: var(--ges-color-shadow, 0 0 0);
 }
 
 html[data-gpr-global-header="enabled"] body {

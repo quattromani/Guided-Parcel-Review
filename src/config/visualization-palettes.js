@@ -79,58 +79,169 @@ const civicDefault = {
   }
 };
 
+const civicDark = {
+  id: "civic-dark",
+  label: "Civic dark",
+  description: "Softened dark-mode palette for property value, tax, and equalization visuals.",
+  colors: {
+    primary: "#8BB5BF",
+    secondary: "#8FA0A6",
+    accent: "#88AEB8",
+    success: "#8BA58F",
+    warning: "#BE9F6A",
+    danger: "#C98480"
+  },
+  neutrals: {
+    ink: "#E1E7EA",
+    text: "#B8C4C9",
+    mutedText: "#8F9EA5",
+    border: "#4A5B66",
+    gridline: "rgba(143, 158, 165, 0.22)",
+    surface: "#1C2832",
+    surfaceMuted: "#18232C",
+    tooltipSurface: "#263642"
+  },
+  roles: {
+    property: "#E1E7EA",
+    propertySoft: "rgba(143, 158, 165, 0.16)",
+    value: "#8BA58F",
+    valueSoft: "rgba(139, 165, 143, 0.2)",
+    valueSurface: "rgb(31 54 44)",
+    valueBorder: "rgb(79 105 83)",
+    tax: "#C98480",
+    taxSoft: "rgba(201, 132, 128, 0.18)",
+    taxSurface: "rgb(61 41 43)",
+    taxBorder: "rgb(125 76 74)",
+    rate: "#9BA3C6",
+    rateSoft: "rgba(155, 163, 198, 0.18)",
+    rateSurface: "rgb(34 45 68)",
+    rateBorder: "rgb(88 96 130)",
+    equalization: "#8BB5BF",
+    equalizationAlt: "#BE9F6A",
+    equalizationMuted: "#8BA58F",
+    equalizationLevel: "#9BA3C6",
+    equalizationSoft: "rgba(139, 181, 191, 0.18)",
+    equalizationSurface: "rgb(30 53 61)",
+    equalizationBorder: "rgb(79 111 120)",
+    pending: "#3B3122",
+    pendingText: "#E6D1A6",
+    pendingBorder: "#766037",
+    market: "#8BB5BF",
+    marketSoft: "rgba(139, 181, 191, 0.16)",
+    comparison: "#8F9EA5",
+    comparisonSoft: "rgba(143, 158, 165, 0.14)",
+    attention: "#BE9F6A",
+    attentionSoft: "rgba(190, 159, 106, 0.18)",
+    outlier: "#C98480",
+    outlierSoft: "rgba(201, 132, 128, 0.16)",
+    standardBand: "rgba(143, 158, 165, 0.14)",
+    standardBandBorder: "rgba(143, 158, 165, 0.36)"
+  },
+  districtGroups: {
+    School: "#BE9F6A",
+    City: "#E1E7EA",
+    County: "#8BA58F",
+    "Natural resources": "#88AEB8",
+    "Education service": "#8F9EA5",
+    "Community college": "#88AEB8",
+    "Fire district": "#C98480",
+    Township: "#B8C4C9",
+    Agriculture: "#9ABF92",
+    Historical: "#8F9EA5",
+    Other: "#8F9EA5"
+  },
+  sequences: {
+    categorical: ["#8BA58F", "#8BB5BF", "#9BA3C6", "#BE9F6A", "#8F9EA5", "#C98480"],
+    blueScale: ["#263642", "#51707D", "#8BB5BF"],
+    countyHierarchy: {
+      subject: "#8BB5BF",
+      county: "#8BA58F",
+      state: "#8F9EA5"
+    }
+  }
+};
+
 export const VISUALIZATION_PALETTES = {
-  [civicDefault.id]: civicDefault
+  [civicDefault.id]: civicDefault,
+  [civicDark.id]: civicDark
 };
 
 export const DEFAULT_VISUALIZATION_PALETTE_ID = civicDefault.id;
+export const DARK_VISUALIZATION_PALETTE_ID = civicDark.id;
 
 export function getVisualizationPalette(id = DEFAULT_VISUALIZATION_PALETTE_ID) {
   return VISUALIZATION_PALETTES[id] ?? VISUALIZATION_PALETTES[DEFAULT_VISUALIZATION_PALETTE_ID];
 }
 
-export const visualizationTheme = getVisualizationPalette();
+function storedThemePreference() {
+  try {
+    return globalThis.localStorage?.getItem("ges-theme-preference") ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function getActiveVisualizationPalette() {
+  const resolvedTheme = globalThis.document?.documentElement?.dataset?.gesThemeResolved;
+  const storedTheme = storedThemePreference();
+  const systemTheme = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light";
+  const activeTheme = resolvedTheme || storedTheme || systemTheme;
+
+  return activeTheme === "dark" ? civicDark : civicDefault;
+}
+
+export const visualizationTheme = new Proxy(civicDefault, {
+  get(_target, property) {
+    return getActiveVisualizationPalette()[property];
+  },
+  ownKeys() {
+    return Reflect.ownKeys(getActiveVisualizationPalette());
+  },
+  getOwnPropertyDescriptor(_target, property) {
+    return Object.getOwnPropertyDescriptor(getActiveVisualizationPalette(), property);
+  }
+});
 
 export const chartColors = {
-  contextValue: visualizationTheme.roles.value,
-  contextTax: visualizationTheme.roles.tax,
-  contextRate: visualizationTheme.roles.tax,
-  propertyValue: visualizationTheme.roles.property,
-  propertyTax: visualizationTheme.roles.taxSoft,
-  propertyRate: visualizationTheme.roles.tax,
-  equalization: visualizationTheme.roles.equalization,
-  cod: visualizationTheme.roles.equalization,
-  prd: visualizationTheme.roles.equalizationAlt,
-  cov: visualizationTheme.roles.equalizationMuted,
-  levelOfValue: visualizationTheme.roles.equalizationLevel,
-  standardBand: visualizationTheme.roles.standardBand,
-  standardBandBorder: visualizationTheme.roles.standardBandBorder
+  get contextValue() { return visualizationTheme.roles.value; },
+  get contextTax() { return visualizationTheme.roles.tax; },
+  get contextRate() { return visualizationTheme.roles.rate; },
+  get propertyValue() { return visualizationTheme.roles.property; },
+  get propertyTax() { return visualizationTheme.roles.taxSoft; },
+  get propertyRate() { return visualizationTheme.roles.rate; },
+  get equalization() { return visualizationTheme.roles.equalization; },
+  get cod() { return visualizationTheme.roles.equalization; },
+  get prd() { return visualizationTheme.roles.equalizationAlt; },
+  get cov() { return visualizationTheme.roles.equalizationMuted; },
+  get levelOfValue() { return visualizationTheme.roles.equalizationLevel; },
+  get standardBand() { return visualizationTheme.roles.standardBand; },
+  get standardBandBorder() { return visualizationTheme.roles.standardBandBorder; }
 };
 
 export const semanticChartColors = {
-  value: visualizationTheme.roles.value,
-  valueBg: visualizationTheme.roles.valueSoft,
-  valueSoft: visualizationTheme.roles.valueSurface,
-  valueRing: visualizationTheme.roles.valueBorder,
-  tax: visualizationTheme.roles.tax,
-  taxBg: visualizationTheme.roles.taxSoft,
-  taxSoft: visualizationTheme.roles.taxSurface,
-  taxRing: visualizationTheme.roles.taxBorder,
-  etr: visualizationTheme.roles.tax,
-  etrBg: visualizationTheme.roles.taxSoft,
-  etrSoft: visualizationTheme.roles.taxSurface,
-  etrRing: visualizationTheme.roles.taxBorder,
-  equalization: visualizationTheme.roles.equalization,
-  equalizationBg: visualizationTheme.roles.equalizationSoft,
-  equalizationSoft: visualizationTheme.roles.equalizationSurface,
-  equalizationRing: visualizationTheme.roles.equalizationBorder,
-  comparison: visualizationTheme.roles.comparison,
-  comparisonBg: visualizationTheme.roles.comparisonSoft,
-  pending: visualizationTheme.roles.pending,
-  pendingRing: visualizationTheme.roles.pendingBorder
+  get value() { return visualizationTheme.roles.value; },
+  get valueBg() { return visualizationTheme.roles.valueSoft; },
+  get valueSoft() { return visualizationTheme.roles.valueSurface; },
+  get valueRing() { return visualizationTheme.roles.valueBorder; },
+  get tax() { return visualizationTheme.roles.tax; },
+  get taxBg() { return visualizationTheme.roles.taxSoft; },
+  get taxSoft() { return visualizationTheme.roles.taxSurface; },
+  get taxRing() { return visualizationTheme.roles.taxBorder; },
+  get etr() { return visualizationTheme.roles.rate; },
+  get etrBg() { return visualizationTheme.roles.rateSoft; },
+  get etrSoft() { return visualizationTheme.roles.rateSurface; },
+  get etrRing() { return visualizationTheme.roles.rateBorder; },
+  get equalization() { return visualizationTheme.roles.equalization; },
+  get equalizationBg() { return visualizationTheme.roles.equalizationSoft; },
+  get equalizationSoft() { return visualizationTheme.roles.equalizationSurface; },
+  get equalizationRing() { return visualizationTheme.roles.equalizationBorder; },
+  get comparison() { return visualizationTheme.roles.comparison; },
+  get comparisonBg() { return visualizationTheme.roles.comparisonSoft; },
+  get pending() { return visualizationTheme.roles.pending; },
+  get pendingRing() { return visualizationTheme.roles.pendingBorder; }
 };
 
-export function applyVisualizationPalette(palette = visualizationTheme) {
+export function applyVisualizationPalette(palette = getActiveVisualizationPalette()) {
   const root = document.documentElement;
 
   Object.entries({
@@ -144,12 +255,16 @@ export function applyVisualizationPalette(palette = visualizationTheme) {
     "--viz-text": palette.neutrals.text,
     "--viz-muted-text": palette.neutrals.mutedText,
     "--viz-border": palette.neutrals.border,
+    "--viz-surface": palette.neutrals.surface,
     "--viz-surface-muted": palette.neutrals.surfaceMuted,
-    "--chart-gridline": palette.neutrals.gridline
+    "--chart-gridline": palette.neutrals.gridline,
+    "--chart-axis": palette.neutrals.border,
+    "--chart-label": palette.neutrals.text,
+    "--chart-tooltip-surface": palette.neutrals.tooltipSurface ?? palette.neutrals.surface
   }).forEach(([name, value]) => root.style.setProperty(name, value));
 }
 
-export function applyChartDefaults(chart = globalThis.Chart, palette = visualizationTheme) {
+export function applyChartDefaults(chart = globalThis.Chart, palette = getActiveVisualizationPalette()) {
   if (!chart?.defaults) return;
 
   chart.defaults.color = palette.neutrals.text;
@@ -164,6 +279,14 @@ export function applyChartDefaults(chart = globalThis.Chart, palette = visualiza
     chart.defaults.plugins.legend.labels.boxWidth = 18;
     chart.defaults.plugins.legend.labels.boxHeight = 8;
     chart.defaults.plugins.legend.labels.padding = 14;
+  }
+
+  if (chart.defaults.plugins?.tooltip) {
+    chart.defaults.plugins.tooltip.backgroundColor = palette.neutrals.tooltipSurface ?? palette.neutrals.surface;
+    chart.defaults.plugins.tooltip.borderColor = palette.neutrals.border;
+    chart.defaults.plugins.tooltip.borderWidth = 1;
+    chart.defaults.plugins.tooltip.titleColor = palette.neutrals.ink;
+    chart.defaults.plugins.tooltip.bodyColor = palette.neutrals.text;
   }
 
   if (chart.defaults.scale?.grid) {

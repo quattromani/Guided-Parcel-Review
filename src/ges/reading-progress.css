@@ -66,8 +66,22 @@
 }
 
 html[data-ges-theme-resolved="dark"] .ges-reading-progress {
+  --ges-reading-progress-accent: var(--ges-color-hyper-blue, 112 153 202);
   --ges-reading-progress-track: var(--ges-color-border-strong, 77 101 116);
-  opacity: 0.9;
+  opacity: 0.82;
+}
+
+html[data-ges-theme-resolved="dark"] .ges-reading-progress__fill {
+  box-shadow:
+    0 0 0.34rem rgb(var(--ges-reading-progress-accent) / 0.22),
+    0 0 0.68rem rgb(var(--ges-reading-progress-accent) / 0.12);
+}
+
+html[data-ges-theme-resolved="dark"] .ges-reading-progress__marker {
+  box-shadow:
+    0 0 0 1px rgb(var(--ges-color-surface, 28 40 50) / 0.72),
+    0 0 0.28rem rgb(var(--ges-reading-progress-accent) / 0.28),
+    0 0 0.58rem rgb(var(--ges-reading-progress-accent) / 0.16);
 }
 
 @media (prefers-reduced-motion: reduce) {

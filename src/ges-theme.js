@@ -45,10 +45,21 @@ function setPressedState(theme, resolved) {
 export function applyGesTheme(theme = selectedTheme()) {
   const selected = theme === "system" ? "system" : normalizeTheme(theme);
   const resolved = resolvedTheme(selected);
+  const previousSelected = document.documentElement.dataset.gesTheme;
+  const previousResolved = document.documentElement.dataset.gesThemeResolved;
 
   document.documentElement.dataset.gesTheme = selected;
   document.documentElement.dataset.gesThemeResolved = resolved;
   setPressedState(selected, resolved);
+
+  if (
+    typeof window !== "undefined" &&
+    (previousSelected !== selected || previousResolved !== resolved)
+  ) {
+    window.dispatchEvent(new CustomEvent("ges:themechange", {
+      detail: { selected, resolved }
+    }));
+  }
 }
 
 export function setGesTheme(theme) {

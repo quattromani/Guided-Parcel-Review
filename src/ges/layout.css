@@ -139,6 +139,14 @@
 }
 
 @media (max-width: 48rem) {
+  html.article-shell-route {
+    --ges-mobile-article-gutter: 1.25rem;
+  }
+
+  html.article-shell-route body > main.center-x.measure-7xl {
+    padding-inline: 0;
+  }
+
   .ges-guide,
   .editorial-guide,
   .ges-pattern-library {
@@ -168,7 +176,7 @@
   .article-shell-route .levy-wide-panel,
   .article-shell-route .levy-article-narrow {
     inline-size: 100%;
-    max-inline-size: calc(100vw - (2 * var(--ges-space-sm)));
+    max-inline-size: 100%;
   }
 
   html.article-shell-route body #pageTitle,
@@ -176,7 +184,7 @@
     margin-inline: auto;
     max-inline-size: 100vw;
     overflow-x: hidden;
-    padding-inline: var(--ges-space-sm);
+    padding-inline: var(--ges-mobile-article-gutter);
     width: 100%;
   }
 
@@ -185,7 +193,11 @@
     min-width: 0;
   }
 
-  html.article-shell-route body :where(.article-hero .hero-title, .article-hero .hero-deck, .article-entry-tags, .ges-section-heading, .tax-story-chapter p, .tax-story-chapter li) {
+  html.article-shell-route body :where(.editorial-guide, .tax-article-panel, .levy-compression-page, .protest-evidence-guide-page, .article-section, .tax-story-chapter, .levy-wide-panel, .levy-article-narrow) {
+    padding-inline: 0;
+  }
+
+  html.article-shell-route body :where(.article-hero .hero-title, .article-hero .hero-deck, .article-entry-tags, .ges-section-heading, .tax-story-chapter > p, .tax-story-chapter > ul > li, .tax-story-chapter > ol > li) {
     max-inline-size: 100%;
     overflow-wrap: anywhere;
     text-wrap: wrap;
@@ -193,8 +205,9 @@
 
   html.article-shell-route body .article-hero .hero-title,
   html.article-shell-route body .article-hero .hero-deck,
-  html.article-shell-route body .tax-story-chapter p,
-  html.article-shell-route body .tax-story-chapter li,
+  html.article-shell-route body .tax-story-chapter > p,
+  html.article-shell-route body .tax-story-chapter > ul > li,
+  html.article-shell-route body .tax-story-chapter > ol > li,
   html.article-shell-route body .ges-section-heading,
   html.article-shell-route body .ges-margin-insight p {
     justify-self: start;
@@ -205,17 +218,20 @@
 
   html.article-shell-route body .article-hero .article-hero-media {
     border-radius: 0;
+    box-shadow: none;
     justify-self: center;
     margin-inline: calc((100vw - 100%) / -2);
     max-inline-size: 100vw;
     width: 100vw;
   }
 
-  html.article-shell-route body .levy-compression-page .tax-story-chapter p,
-  html.article-shell-route body .levy-compression-page .tax-story-chapter li,
+  html.article-shell-route body .levy-compression-page .tax-story-chapter > p,
+  html.article-shell-route body .levy-compression-page .tax-story-chapter > ul > li,
+  html.article-shell-route body .levy-compression-page .tax-story-chapter > ol > li,
   html.article-shell-route body .levy-compression-page .editorial-narrow > p,
-  html.article-shell-route body .protest-evidence-guide-page .tax-story-chapter p,
-  html.article-shell-route body .protest-evidence-guide-page .tax-story-chapter li,
+  html.article-shell-route body .protest-evidence-guide-page .tax-story-chapter > p,
+  html.article-shell-route body .protest-evidence-guide-page .tax-story-chapter > ul > li,
+  html.article-shell-route body .protest-evidence-guide-page .tax-story-chapter > ol > li,
   html.article-shell-route body .protest-evidence-guide-page .editorial-narrow > p {
     justify-self: start;
     max-width: min(100%, 20rem);

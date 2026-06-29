@@ -23,20 +23,20 @@ export { initDemographicsView } from "./charts/demographics.js?v=db3aed6";
 export { buildDistributionChart } from "./charts/tax-distribution.js?v=db3aed6";
 
 const palette = {
-  slate700: visualizationTheme.neutrals.ink,
-  slate600: visualizationTheme.neutrals.text,
-  slate500: visualizationTheme.neutrals.mutedText,
-  white: visualizationTheme.neutrals.surface,
-  blue: visualizationTheme.colors.primary,
-  blueSoft: visualizationTheme.roles.rateSoft,
-  red: visualizationTheme.colors.danger,
-  redSoft: visualizationTheme.roles.taxSoft,
-  green: visualizationTheme.colors.success,
-  greenSoft: visualizationTheme.roles.valueSoft,
-  yellow: visualizationTheme.colors.warning,
-  yellowSoft: visualizationTheme.roles.attentionSoft,
-  teal: visualizationTheme.colors.accent,
-  tealSoft: visualizationTheme.roles.marketSoft
+  get slate700() { return visualizationTheme.neutrals.ink; },
+  get slate600() { return visualizationTheme.neutrals.text; },
+  get slate500() { return visualizationTheme.neutrals.mutedText; },
+  get white() { return visualizationTheme.neutrals.surface; },
+  get blue() { return visualizationTheme.colors.primary; },
+  get blueSoft() { return visualizationTheme.roles.rateSoft; },
+  get red() { return visualizationTheme.colors.danger; },
+  get redSoft() { return visualizationTheme.roles.taxSoft; },
+  get green() { return visualizationTheme.colors.success; },
+  get greenSoft() { return visualizationTheme.roles.valueSoft; },
+  get yellow() { return visualizationTheme.colors.warning; },
+  get yellowSoft() { return visualizationTheme.roles.attentionSoft; },
+  get teal() { return visualizationTheme.colors.accent; },
+  get tealSoft() { return visualizationTheme.roles.marketSoft; }
 };
 
 let assessmentAccuracyChart;

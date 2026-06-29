@@ -28,22 +28,22 @@ body.ges-component-inspector-enabled {
 }
 
 html[data-ges-theme-resolved="dark"] .ges-field-kit-shell {
-  --ges-field-kit-surface: 25 43 58;
-  --ges-field-kit-surface-muted: 22 39 54;
-  --ges-field-kit-text: 232 237 240;
-  --ges-field-kit-text-secondary: 193 204 209;
-  --ges-field-kit-text-muted: 146 160 166;
-  --ges-field-kit-border: 49 72 88;
-  --ges-field-kit-border-strong: 77 101 116;
-  --ges-field-kit-focus: 139 151 188;
-  --ges-field-kit-shadow: 0 0 0;
-  --ges-field-kit-smoke: 3 8 13;
-  --ges-field-kit-glass: 42 59 74;
-  --ges-field-kit-inspector: 139 151 188;
+  --ges-field-kit-surface: var(--ges-color-surface-floating, 32 46 57);
+  --ges-field-kit-surface-muted: var(--ges-color-surface-muted, 24 35 44);
+  --ges-field-kit-text: var(--ges-color-text, 225 231 234);
+  --ges-field-kit-text-secondary: var(--ges-color-text-secondary, 184 196 201);
+  --ges-field-kit-text-muted: var(--ges-color-text-muted, 143 158 165);
+  --ges-field-kit-border: var(--ges-color-border-subtle, 47 62 72);
+  --ges-field-kit-border-strong: var(--ges-color-border-strong, 74 91 102);
+  --ges-field-kit-focus: var(--ges-color-focus, 151 160 194);
+  --ges-field-kit-shadow: var(--ges-color-shadow, 0 0 0);
+  --ges-field-kit-smoke: 8 13 18;
+  --ges-field-kit-glass: var(--ges-color-surface-raised, 39 54 66);
+  --ges-field-kit-inspector: var(--ges-color-focus, 151 160 194);
 }
 
 html[data-ges-theme-resolved="dark"] body.ges-component-inspector-enabled {
-  --ges-field-kit-inspector: 139 151 188;
+  --ges-field-kit-inspector: var(--ges-color-focus, 151 160 194);
 }
 
 .ges-field-kit {
@@ -63,6 +63,16 @@ html[data-ges-theme-resolved="dark"] body.ges-component-inspector-enabled {
   pointer-events: auto;
   -webkit-backdrop-filter: blur(18px) saturate(145%);
   backdrop-filter: blur(18px) saturate(145%);
+}
+
+html[data-ges-theme-resolved="dark"] .ges-field-kit {
+  background:
+    linear-gradient(180deg, rgb(var(--ges-field-kit-glass) / 0.26), rgb(var(--ges-field-kit-glass) / 0.12)),
+    rgb(var(--ges-field-kit-smoke) / 0.34);
+  border-color: rgb(var(--ges-field-kit-border) / 0.68);
+  box-shadow:
+    0 0.45rem 1.15rem rgb(var(--ges-field-kit-shadow) / 0.28),
+    inset 0 1px 0 rgb(255 255 255 / 0.08);
 }
 
 .ges-field-kit__panels {
@@ -96,6 +106,16 @@ html[data-ges-theme-resolved="dark"] body.ges-component-inspector-enabled {
   width: 2.25rem;
   -webkit-backdrop-filter: blur(16px) saturate(145%);
   backdrop-filter: blur(16px) saturate(145%);
+}
+
+html[data-ges-theme-resolved="dark"] .ges-field-kit__button {
+  background:
+    linear-gradient(180deg, rgb(var(--ges-field-kit-glass) / 0.52), rgb(var(--ges-field-kit-glass) / 0.28)),
+    rgb(var(--ges-field-kit-surface) / 0.78);
+  border-color: rgb(var(--ges-field-kit-border-strong) / 0.48);
+  box-shadow:
+    0 0.16rem 0.48rem rgb(var(--ges-field-kit-shadow) / 0.22),
+    inset 0 1px 0 rgb(255 255 255 / 0.1);
 }
 
 .ges-field-kit__button svg,
@@ -178,6 +198,15 @@ html[data-ges-theme-resolved="dark"] body.ges-component-inspector-enabled {
   width: min(24rem, calc(100vw - 1rem));
   -webkit-backdrop-filter: blur(22px) saturate(145%);
   backdrop-filter: blur(22px) saturate(145%);
+}
+
+html[data-ges-theme-resolved="dark"] .ges-field-kit__panel {
+  background:
+    linear-gradient(180deg, rgb(var(--ges-field-kit-glass) / 0.44), rgb(var(--ges-field-kit-glass) / 0.18)),
+    rgb(var(--ges-field-kit-surface) / 0.94);
+  box-shadow:
+    0 0.7rem 1.8rem rgb(var(--ges-field-kit-shadow) / 0.3),
+    inset 0 1px 0 rgb(255 255 255 / 0.08);
 }
 
 .ges-field-kit__panel[hidden] {

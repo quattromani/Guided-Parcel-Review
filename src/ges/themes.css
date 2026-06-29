@@ -1,33 +1,132 @@
-html[data-ges-theme-resolved="dark"].article-shell-route,
-html[data-ges-theme-resolved="dark"].ges-pattern-library-route {
+html[data-ges-theme-resolved="dark"] {
   color-scheme: dark;
-  --ges-color-page: 18 33 47;
-  --ges-color-page-warm: 23 38 50;
-  --ges-color-surface: 25 43 58;
-  --ges-color-surface-elevated: 31 52 68;
-  --ges-color-surface-muted: 22 39 54;
-  --ges-color-text: 232 237 240;
-  --ges-color-text-secondary: 193 204 209;
-  --ges-color-text-muted: 146 160 166;
-  --ges-color-border-subtle: 49 72 88;
-  --ges-color-border-strong: 77 101 116;
-  --ges-color-civic-blue: 129 163 170;
-  --ges-color-civic-blue-soft: 28 58 72;
-  --ges-color-evidence-green: 138 162 132;
-  --ges-color-evidence-green-soft: 30 58 49;
-  --ges-color-caution-amber: 174 145 92;
-  --ges-color-caution-amber-soft: 58 50 34;
-  --ges-color-process-blue: 139 151 188;
-  --ges-color-process-blue-soft: 31 45 76;
-  --ges-color-reflection: 164 151 133;
-  --ges-color-reflection-soft: 49 45 41;
-  --ges-color-link: var(--ges-color-civic-blue);
-  --ges-color-focus: 139 151 188;
-  --ges-color-selection: 45 75 87;
-  --ges-shadow-surface: 0 var(--ges-rule-width) var(--ges-rule-width) rgb(var(--ges-color-shadow) / 0.18), inset 0 0 0 var(--ges-border-width) rgb(var(--ges-color-border-subtle) / 0.88);
-  --ges-shadow-card: 0 0.9rem 2rem rgb(var(--ges-color-shadow) / 0.22);
-  --ges-shadow-media: 0 1.2rem 3rem rgb(var(--ges-color-shadow) / 0.35);
-  --ges-shadow-icon-lift: 0 1px 1px rgb(var(--ges-color-shadow) / 0.28), 0 0.2rem 0.5rem rgb(var(--ges-color-shadow) / 0.22), inset 0 1px 0 rgb(var(--ges-color-highlight) / 0.07);
+  --ges-color-page: 18 27 35;
+  --ges-color-page-warm: 21 30 37;
+  --ges-color-surface-inset: 21 31 39;
+  --ges-color-surface-muted: 24 35 44;
+  --ges-color-surface: 28 40 50;
+  --ges-color-surface-elevated: 34 48 59;
+  --ges-color-surface-raised: 39 54 66;
+  --ges-color-surface-floating: 32 46 57;
+  --ges-color-text: 225 231 234;
+  --ges-color-text-secondary: 184 196 201;
+  --ges-color-text-muted: 143 158 165;
+  --ges-color-border-subtle: 47 62 72;
+  --ges-color-border-strong: 74 91 102;
+  --ges-color-civic-blue: 136 174 184;
+  --ges-color-civic-blue-soft: 30 53 61;
+  --ges-color-hyper-blue: 112 153 202;
+  --ges-color-evidence-green: 139 165 143;
+  --ges-color-evidence-green-soft: 31 54 44;
+  --ges-color-caution-amber: 190 159 106;
+  --ges-color-caution-amber-soft: 59 49 34;
+  --ges-color-process-blue: 151 160 194;
+  --ges-color-process-blue-soft: 34 45 68;
+  --ges-color-reflection: 166 151 134;
+  --ges-color-reflection-soft: 48 43 39;
+  --ges-color-link: 139 181 191;
+  --ges-color-link-hover: 182 211 218;
+  --ges-color-focus: 151 160 194;
+  --ges-color-selection: 45 70 78;
+  --ges-color-success: var(--ges-color-evidence-green);
+  --ges-color-success-soft: var(--ges-color-evidence-green-soft);
+  --ges-color-error: 201 132 128;
+  --ges-color-error-soft: 61 41 43;
+  --ges-color-caution: var(--ges-color-caution-amber);
+  --ges-color-caution-soft: var(--ges-color-caution-amber-soft);
+  --ges-color-neutral: var(--ges-color-text-muted);
+  --ges-color-neutral-soft: var(--ges-color-surface-muted);
+  --ges-color-info: var(--ges-color-civic-blue);
+  --ges-color-info-soft: var(--ges-color-civic-blue-soft);
+  --ges-color-information: var(--ges-color-civic-blue);
+  --ges-color-information-soft: var(--ges-color-civic-blue-soft);
+  --ges-color-evidence: var(--ges-color-evidence-green);
+  --ges-color-evidence-soft: var(--ges-color-evidence-green-soft);
+  --ges-color-comparison: var(--ges-color-caution-amber);
+  --ges-color-comparison-soft: var(--ges-color-caution-amber-soft);
+  --ges-color-action: var(--ges-color-process-blue);
+  --ges-color-action-soft: var(--ges-color-process-blue-soft);
+  --ges-shadow-surface: 0 var(--ges-rule-width) var(--ges-rule-width) rgb(var(--ges-color-shadow) / 0.22), inset 0 0 0 var(--ges-border-width) rgb(var(--ges-color-border-subtle) / 0.86), inset 0 var(--ges-rule-width) 0 rgb(var(--ges-color-highlight) / 0.035);
+  --ges-shadow-card: 0 0.7rem 1.6rem rgb(var(--ges-color-shadow) / 0.24), inset 0 var(--ges-rule-width) 0 rgb(var(--ges-color-highlight) / 0.025);
+  --ges-shadow-media: 0 1rem 2.4rem rgb(var(--ges-color-shadow) / 0.34);
+  --ges-shadow-icon-lift: 0 1px 1px rgb(var(--ges-color-shadow) / 0.3), 0 0.18rem 0.48rem rgb(var(--ges-color-shadow) / 0.22), inset 0 1px 0 rgb(var(--ges-color-highlight) / 0.08);
+  --color-slate-700: var(--ges-color-text);
+  --color-slate-600: var(--ges-color-text-secondary);
+  --color-slate-500: var(--ges-color-text-muted);
+  --color-slate-400: 113 130 138;
+  --color-slate-300: var(--ges-color-border-strong);
+  --color-slate-200: var(--ges-color-border-subtle);
+  --color-slate-100: var(--ges-color-surface);
+  --color-slate-50: var(--ges-color-surface-muted);
+  --county-color-background: var(--ges-color-page);
+  --county-color-surface: var(--ges-color-surface);
+  --county-color-border: var(--ges-color-border-strong);
+  --county-color-border-soft: var(--ges-color-border-subtle);
+  --county-color-primary: var(--ges-color-civic-blue);
+  --county-color-primary-soft: var(--ges-color-civic-blue-soft);
+  --county-color-secondary: var(--ges-color-link);
+  --county-color-secondary-soft: var(--ges-color-civic-blue-soft);
+  --county-color-accent: var(--ges-color-caution-amber);
+  --county-color-accent-soft: var(--ges-color-caution-amber-soft);
+  --county-color-button: var(--ges-color-link);
+  --county-color-button-text: 15 19 24;
+  --county-color-ink: var(--ges-color-text);
+  --county-color-muted: var(--ges-color-text-muted);
+  --color-blue: var(--ges-color-process-blue);
+  --color-blue-dark: var(--ges-color-link);
+  --color-blue-soft: var(--ges-color-process-blue-soft);
+  --color-secondary: var(--ges-color-civic-blue);
+  --color-secondary-soft: var(--ges-color-civic-blue-soft);
+  --color-red: var(--ges-color-error);
+  --color-red-soft: var(--ges-color-error-soft);
+  --color-green: var(--ges-color-evidence-green);
+  --color-green-dark: 159 184 163;
+  --color-green-soft: var(--ges-color-evidence-green-soft);
+  --color-yellow: var(--ges-color-caution-amber);
+  --color-yellow-soft: var(--ges-color-caution-amber-soft);
+  --color-teal: var(--ges-color-civic-blue);
+  --color-teal-soft: var(--ges-color-civic-blue-soft);
+  --status-pending: var(--ges-color-caution-amber);
+  --status-pending-ink: var(--ges-color-text);
+  --status-pending-border: 118 96 55;
+  --standard-band: var(--ges-color-border-strong);
+  --surface-base: var(--ges-color-page);
+  --surface-card: var(--ges-color-surface);
+  --surface-muted: var(--ges-color-surface-muted);
+  --surface-raised: var(--ges-color-surface-raised);
+  --surface: var(--surface-card);
+  --surface-shadow: var(--ges-shadow-surface);
+  --surface-muted-shadow: inset 0 0 0 1px rgb(var(--ges-color-border-subtle) / 0.78);
+  --border-muted: var(--ges-color-border-subtle);
+  --table-header-bg: var(--ges-color-surface-muted);
+  --table-header-rule: var(--ges-color-border-strong);
+  --table-total-bg: var(--ges-color-surface-raised);
+  --table-total-rule: var(--ges-color-border-strong);
+  --brand-ink: var(--ges-color-text);
+  --article-fallback-text: var(--ges-color-text-secondary);
+  --semantic-value: var(--ges-color-evidence-green);
+  --semantic-tax: var(--ges-color-error);
+  --semantic-rate: var(--ges-color-process-blue);
+  --semantic-etr: var(--ges-color-process-blue);
+  --accent-primary: var(--ges-color-process-blue);
+  --accent-primary-dark: var(--ges-color-link);
+  --accent-primary-soft: var(--ges-color-process-blue-soft);
+  --color-ink: var(--ges-color-text);
+  --color-muted: var(--ges-color-text-muted);
+  --color-paper: var(--ges-color-page);
+  --color-surface: var(--ges-color-surface);
+  --color-border: var(--ges-color-border-subtle);
+  --color-information: var(--ges-color-information);
+  --color-information-soft: var(--ges-color-information-soft);
+  --color-evidence: var(--ges-color-evidence);
+  --color-evidence-soft: var(--ges-color-evidence-soft);
+  --color-comparison: var(--ges-color-comparison);
+  --color-comparison-soft: var(--ges-color-comparison-soft);
+  --color-action: var(--ges-color-action);
+  --color-action-soft: var(--ges-color-action-soft);
+  --color-reflection: var(--ges-color-reflection);
+  --color-reflection-soft: var(--ges-color-reflection-soft);
+  --shadow-icon-lift: var(--ges-shadow-icon-lift);
 }
 
 html[data-ges-theme-resolved="dark"].article-shell-route body,
@@ -42,10 +141,10 @@ html[data-ges-theme-resolved="dark"] :where(.editorial-guide, .ges-guide, .ges-p
   --color-slate-700: var(--ges-color-text);
   --color-slate-600: var(--ges-color-text-secondary);
   --color-slate-500: var(--ges-color-text-muted);
-  --color-slate-400: 113 133 145;
+  --color-slate-400: 113 130 138;
   --color-slate-300: var(--ges-color-border-strong);
   --color-slate-200: var(--ges-color-border-subtle);
-  --color-slate-100: var(--ges-color-page);
+  --color-slate-100: var(--ges-color-surface);
   --color-slate-50: var(--ges-color-surface-muted);
   --county-color-background: var(--ges-color-page);
   --county-color-surface: var(--ges-color-surface);
@@ -69,6 +168,8 @@ html[data-ges-theme-resolved="dark"] :where(.editorial-guide, .ges-guide, .ges-p
   --color-green-soft: var(--ges-color-evidence-green-soft);
   --color-yellow: var(--ges-color-caution-amber);
   --color-yellow-soft: var(--ges-color-caution-amber-soft);
+  --color-red: var(--ges-color-error);
+  --color-red-soft: var(--ges-color-error-soft);
   --ges-color-information: var(--ges-color-civic-blue);
   --ges-color-information-soft: var(--ges-color-civic-blue-soft);
   --ges-color-evidence: var(--ges-color-evidence-green);
@@ -81,6 +182,12 @@ html[data-ges-theme-resolved="dark"] :where(.editorial-guide, .ges-guide, .ges-p
   --table-header-rule: var(--ges-color-border-strong);
   --table-total-bg: var(--ges-color-surface-elevated);
   --table-total-rule: var(--ges-color-border-strong);
+  --surface-base: var(--ges-color-page);
+  --surface-card: var(--ges-color-surface);
+  --surface-muted: var(--ges-color-surface-muted);
+  --surface-raised: var(--ges-color-surface-raised);
+  --surface-shadow: var(--ges-shadow-surface);
+  --shadow-card: var(--ges-shadow-card);
 }
 
 html[data-ges-theme-resolved="dark"] .article-hero .hero-brand-mark__image--light {
@@ -92,13 +199,14 @@ html[data-ges-theme-resolved="dark"] .article-hero .hero-brand-mark__image--dark
 }
 
 html[data-ges-theme-resolved="dark"] .ges-theme-toggle {
-  background: rgb(var(--ges-color-surface-muted) / 0.84);
-  border-color: rgb(var(--ges-color-border-strong) / 0.46);
+  background: rgb(var(--ges-color-surface-floating) / 0.82);
+  border-color: rgb(var(--ges-color-border-subtle) / 0.78);
+  box-shadow: 0 var(--ges-rule-width) var(--ges-rule-width-strong) rgb(var(--ges-color-shadow) / 0.18), inset 0 1px 0 rgb(var(--ges-color-highlight) / 0.04);
 }
 
 html[data-ges-theme-resolved="dark"] .ges-theme-toggle__button[data-active] {
-  background: rgb(var(--ges-color-surface-elevated));
-  box-shadow: 0 0 0 var(--ges-border-width) rgb(var(--ges-color-border-strong) / 0.38), 0 0.28rem 0.78rem rgb(var(--ges-color-shadow) / 0.22);
+  background: rgb(var(--ges-color-surface-raised));
+  box-shadow: 0 0 0 var(--ges-border-width) rgb(var(--ges-color-border-strong) / 0.42), 0 0.22rem 0.58rem rgb(var(--ges-color-shadow) / 0.2);
 }
 
 html[data-ges-theme-resolved="dark"] :where(

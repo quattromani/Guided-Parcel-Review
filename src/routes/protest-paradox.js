@@ -352,7 +352,7 @@ function renderArticleEntryPanel() {
     authorTitle: ARTICLE_AUTHOR_TITLE,
     displayDate: ARTICLE_DISPLAY_DATE,
     icon: editorialIcon,
-    printableLabel: "Printable case study",
+    printableLabel: "Print Version",
     printableUrl: PRINTABLE_GUIDE_PDF,
     readingMinutes: ARTICLE_READING_TIME_MINUTES,
     wordCount: ARTICLE_WORD_COUNT,

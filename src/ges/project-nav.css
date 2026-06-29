@@ -17,15 +17,15 @@
 }
 
 html[data-ges-theme-resolved="dark"] .ges-project-nav {
-  --ges-project-nav-surface: 25 43 58;
-  --ges-project-nav-surface-muted: 22 39 54;
-  --ges-project-nav-text: 232 237 240;
-  --ges-project-nav-text-secondary: 193 204 209;
-  --ges-project-nav-text-muted: 146 160 166;
-  --ges-project-nav-border: 49 72 88;
-  --ges-project-nav-border-strong: 77 101 116;
-  --ges-project-nav-focus: 139 151 188;
-  --ges-project-nav-shadow: 0 0 0;
+  --ges-project-nav-surface: var(--ges-color-surface-floating, 32 46 57);
+  --ges-project-nav-surface-muted: var(--ges-color-surface-muted, 24 35 44);
+  --ges-project-nav-text: var(--ges-color-text, 225 231 234);
+  --ges-project-nav-text-secondary: var(--ges-color-text-secondary, 184 196 201);
+  --ges-project-nav-text-muted: var(--ges-color-text-muted, 143 158 165);
+  --ges-project-nav-border: var(--ges-color-border-subtle, 47 62 72);
+  --ges-project-nav-border-strong: var(--ges-color-border-strong, 74 91 102);
+  --ges-project-nav-focus: var(--ges-color-focus, 151 160 194);
+  --ges-project-nav-shadow: var(--ges-color-shadow, 0 0 0);
 }
 
 .ges-project-nav__trigger {

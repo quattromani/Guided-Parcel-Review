@@ -110,6 +110,7 @@ node scripts/build-scss.mjs
 - `components.md`: component lifecycle and markup.
 - `article-publishing.md`: article roll, manifest metadata, draft/public/internal workflows, and article card rules.
 - `knowledge-platform.md`: existing knowledge inventory, knowledge object taxonomy, relationship model, normalized schema, migration workflow, and platform style bible.
+- `workspace.md`: authenticated assessor Workspace architecture, module strategy, pinning model, workflow awareness, and future personalization boundaries.
 - `themes.md`: light, dark, and print behavior.
 - `accessibility.md`: accessibility requirements.
 - `refactor-guide.md`: migration workflow, review checklist, and anti-patterns.

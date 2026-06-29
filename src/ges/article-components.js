@@ -205,16 +205,6 @@ export function renderArticleTags(tags = []) {
         </ul>`;
 }
 
-function renderAuthorEmailIcon() {
-  return `
-                <span class="article-author-email-icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" focusable="false">
-                    <path d="M4 6h16v12H4Z"></path>
-                    <path d="m4 7 8 6 8-6"></path>
-                  </svg>
-                </span>`;
-}
-
 export function formatGuideLengthText(minutes) {
   const numericMinutes = Number.parseInt(minutes, 10);
   if (!Number.isFinite(numericMinutes) || numericMinutes < 1) return "";
@@ -226,7 +216,7 @@ export function renderGuideUtility({
   articleTitle,
   audioUrl = "",
   icon,
-  printableLabel = "Printable guide",
+  printableLabel = "Print Version",
   printableUrl,
   readingMinutes,
   lengthLabel = "",
@@ -287,7 +277,7 @@ export function renderArticleEntryPanel({
         <div class="article-author-attribution">
           <img class="article-author-photo" src="${escapeHtml(authorImage)}" alt="" loading="lazy" decoding="async" />
           <div class="article-author-copy">
-            <p class="article-author-name"><a href="${escapeHtml(authorMailto)}" data-article-action="author_email" data-article-label="${escapeHtml(articleTitle)}"><span class="article-author-name-text">${escapeHtml(authorName)}</span>${renderAuthorEmailIcon()}</a></p>
+            <p class="article-author-name"><a href="${escapeHtml(authorMailto)}" data-article-action="author_email" data-article-label="${escapeHtml(articleTitle)}"><span class="article-author-name-text">${escapeHtml(authorName)}</span></a></p>
             ${authorTitle ? `<p class="article-author-title">${escapeHtml(authorTitle)}</p>` : ""}
             <p class="article-entry-date">${escapeHtml(displayDate)}</p>
           </div>

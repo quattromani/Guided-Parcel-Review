@@ -139,11 +139,22 @@ window.addEventListener("resize", syncLayoutViewportWidth, { passive: true });
 initGlobalHeader();
 initGesFieldKit();
 
+function refreshVisualizationTheme() {
+  applyVisualizationPalette();
+  applyChartDefaults();
+
+  const chartInstances = window.Chart?.instances ? Object.values(window.Chart.instances) : [];
+  chartInstances.forEach(chart => {
+    if (typeof chart?.update === "function") chart.update("none");
+  });
+}
+
+window.addEventListener("ges:themechange", refreshVisualizationTheme);
+
 async function main() {
   await loadSiteCopy();
   applyDocumentCopy();
-  applyVisualizationPalette();
-  applyChartDefaults();
+  refreshVisualizationTheme();
   const searchParams = new URLSearchParams(window.location.search);
 
   if (isArticleRollRequest()) {

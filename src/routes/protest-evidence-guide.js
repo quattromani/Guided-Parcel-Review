@@ -89,6 +89,12 @@ const EVIDENCE_HEADER_STEPS = [
 const ORGANIZATION_STEPS = articleSource.organizationSteps;
 const ARTICLE_AUTHOR_MAILTO = `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeURIComponent(`Re: ${ARTICLE_TITLE}`)}`;
 
+function formatEvidenceExampleText(text = "") {
+  const trimmedText = String(text).trim();
+  if (!trimmedText) return "";
+  return `${trimmedText.charAt(0).toUpperCase()}${trimmedText.slice(1)}`;
+}
+
 function paragraph(item) {
   if (item && typeof item === "object") {
     const text = escapeHtml(item.text ?? "");
@@ -700,28 +706,24 @@ function renderEvidenceSection() {
         ${sectionHeader(section.kicker, section.title, "protestEvidenceTitle")}
         ${paragraph(section.intro)}
       </div>
-      <figure class="evidence-matrix" aria-labelledby="evidenceMatrixTitle">
-        <figcaption id="evidenceMatrixTitle">${editorialIcon("evidence")}<span>Evidence Translation Matrix</span></figcaption>
-        <div class="evidence-matrix-header" aria-hidden="true">
-          ${EVIDENCE_HEADER_STEPS.map((step, index) => `
-            <div class="evidence-matrix-step">
-              ${editorialIcon(step.icon)}
-              <span>
-                <strong>${escapeHtml(step.label)}</strong>
-                <em>${escapeHtml(step.description)}</em>
-              </span>
-            </div>
-            ${index < EVIDENCE_HEADER_STEPS.length - 1 ? `<span class="evidence-matrix-arrow" aria-hidden="true"></span>` : ""}
-          `).join("")}
-        </div>
+      <figure class="evidence-matrix evidence-matrix--translation" aria-labelledby="evidenceMatrixTitle">
+        <figcaption class="levy-sr-only" id="evidenceMatrixTitle">Evidence Translation Matrix</figcaption>
         <ol class="evidence-path-list">
           ${EVIDENCE_EXAMPLES.map(row => `
             <li>
-              ${row.map((cell, index) => `
-                <div data-evidence-column="${escapeHtml(EVIDENCE_COLUMNS[index])}" aria-label="${escapeHtml(EVIDENCE_COLUMNS[index])}">
-                  <p>${escapeHtml(cell)}</p>
+              ${row.map((cell, index) => {
+                const step = EVIDENCE_HEADER_STEPS[index];
+                return `
+                <div class="evidence-path-step" data-evidence-column="${escapeHtml(step.label)}" aria-label="${escapeHtml(step.label)}">
+                  <span class="evidence-path-step__icon" aria-hidden="true">${editorialIcon(step.icon)}</span>
+                  <span class="evidence-path-step__copy">
+                    <span class="evidence-path-step__label">${escapeHtml(step.label)}</span>
+                    <span class="evidence-path-step__value">${escapeHtml(formatEvidenceExampleText(cell))}</span>
+                    <span class="evidence-path-step__description">${escapeHtml(step.description)}</span>
+                  </span>
                 </div>
-              `).join("")}
+              `;
+              }).join("")}
             </li>
           `).join("")}
         </ol>
@@ -995,7 +997,7 @@ function renderArticleEntryPanel() {
     authorTitle: ARTICLE_AUTHOR_TITLE,
     displayDate: ARTICLE_DISPLAY_DATE,
     icon: editorialIcon,
-    printableLabel: "Printable guide",
+    printableLabel: "Print Version",
     printableUrl: PRINTABLE_GUIDE_PDF,
     audioUrl: ARTICLE_AUDIO_READ,
     readingMinutes: ARTICLE_READING_TIME_MINUTES,
