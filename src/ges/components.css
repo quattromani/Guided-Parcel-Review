@@ -1649,9 +1649,9 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
 }
 
 .ges-act-one-hero {
-  align-items: center;
-  column-gap: clamp(1.5rem, 4vw, 3.2rem);
-  grid-template-columns: minmax(0, 0.92fr) minmax(18rem, 0.82fr);
+  align-items: stretch;
+  gap: var(--ges-space-md);
+  grid-template-columns: 1fr;
   padding-block: clamp(0.5rem, 2vw, 1.75rem) clamp(1.2rem, 3vw, 2rem);
 }
 
@@ -1663,18 +1663,19 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
 .ges-act-one-hero .hero-title {
   font-size: clamp(2.45rem, 5vw, 4.8rem);
   line-height: 0.98;
-  max-width: 11ch;
+  max-width: 56rem;
 }
 
 .ges-act-one-hero .hero-deck {
-  max-width: 40rem;
+  max-width: 46rem;
 }
 
 .ges-act-one-hero__media {
-  aspect-ratio: 4 / 5;
-  border-radius: var(--ges-radius-lg);
+  aspect-ratio: 16 / 9;
+  border-radius: var(--ges-radius-media);
   justify-self: stretch;
-  min-height: 28rem;
+  min-height: 0;
+  width: 100%;
 }
 
 .ges-act-one-hero__media::after {

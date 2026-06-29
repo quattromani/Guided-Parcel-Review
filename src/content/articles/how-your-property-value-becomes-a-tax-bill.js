@@ -37,11 +37,11 @@ export const howYourPropertyValueBecomesATaxBillArticle = {
   },
   assets: {
     authorImage: "assets/images/articles/max-quattromani-author.jpg",
-    heroImage: "assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg",
-    heroImageAlt: "Homeowner reviewing property documents at a table.",
-    heroImageCredit: "Photo by RDNE Stock project on Pexels.",
-    heroImageSource: "https://www.pexels.com/photo/8292825/",
-    socialImage: "assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg"
+    heroImage: "assets/images/articles/property-value-tax-bill-hero-16x9.jpg",
+    heroImageAlt: "Miniature houses on a tabletop, with one orange house standing out among darker homes.",
+    heroImageCredit: "Photo by Jakub Zerdzicki on Pexels.",
+    heroImageSource: "https://www.pexels.com/photo/31370919/",
+    socialImage: "assets/images/articles/property-value-tax-bill-hero-16x9.jpg"
   },
   references: {
     nebraskaConstitutionArticleVIII1: "https://nebraskalegislature.gov/laws/articles.php?article=VIII-1",
