@@ -6,18 +6,18 @@ import {
   moneyCents,
   percent,
   sumRates
-} from "./format.js?v=db3aed6";
+} from "./format.js?v=befd9ce";
 import {
   hasValue,
   latestKnown,
   percentChange,
   sortHistoryAscending
-} from "./calculations/history.js?v=db3aed6";
+} from "./calculations/history.js?v=befd9ce";
 import {
   displayAddress,
   displayMailingAddress
-} from "./utils/address.js?v=db3aed6";
-import { garageRowsFromRecord, garageSummary } from "./domain/property-record-facts.js?v=db3aed6";
+} from "./utils/address.js?v=befd9ce";
+import { garageRowsFromRecord, garageSummary } from "./domain/property-record-facts.js?v=befd9ce";
 import {
   getClassMarketStats,
   getCodInterpretationRange,
@@ -25,8 +25,8 @@ import {
   getMedianRatioRange,
   getParcelMarketClass,
   getSelectedMarketGroup
-} from "./market-stats.js?v=db3aed6";
-import { buildReviewSignalModel } from "./data/review-signal-model.js?v=db3aed6";
+} from "./market-stats.js?v=befd9ce";
+import { buildReviewSignalModel } from "./data/review-signal-model.js?v=befd9ce";
 import {
   addReportPage,
   createReportContext,
@@ -40,8 +40,8 @@ import {
   drawText,
   drawVerticalRule,
   drawWrappedText
-} from "./reports/pdf-report-kit.js?v=db3aed6";
-import { displayValue, fileSafe, hasDisplayValue } from "./utils/display.js?v=db3aed6";
+} from "./reports/pdf-report-kit.js?v=befd9ce";
+import { displayValue, fileSafe, hasDisplayValue } from "./utils/display.js?v=befd9ce";
 
 export function initAssessorsReport({
   data,

@@ -8,7 +8,7 @@ import {
   buildTaxBurdenPattern,
   initCountyComparison,
   initAssessmentRatioAnalysis
-} from "./charts.js?v=db3aed6";
+} from "./charts.js?v=befd9ce";
 import {
   loadAssessmentCalendar,
   loadAssessmentRatioAnalysis,
@@ -32,69 +32,69 @@ import {
   PROPERTY_SELECTION_STORAGE_KEY,
   acceptDirectPropertyRequest,
   hasDirectPropertyRequest
-} from "./data-service.js?v=db3aed6";
-import { applyChartDefaults, applyVisualizationPalette } from "./config/visualization-palettes.js?v=db3aed6";
-import { initImageModal } from "./modal.js?v=db3aed6";
+} from "./data-service.js?v=befd9ce";
+import { applyChartDefaults, applyVisualizationPalette } from "./config/visualization-palettes.js?v=befd9ce";
+import { initImageModal } from "./modal.js?v=befd9ce";
 import {
   renderPage,
   renderStartPage,
   renderViewHeader
-} from "./render.js?v=db3aed6";
-import { initGesFieldKit } from "./ges/field-kit.js?v=db3aed6";
-import { initGlobalHeader } from "./ges/global-header.js?v=db3aed6";
-import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.js?v=db3aed6";
+} from "./render.js?v=befd9ce";
+import { initGesFieldKit } from "./ges/field-kit.js?v=befd9ce";
+import { initGlobalHeader } from "./ges/global-header.js?v=befd9ce";
+import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.js?v=befd9ce";
 import {
   getTaxpayerJourneyRoutes,
   getJourneyRoute,
   getRouteForPanel
-} from "./config/taxpayer-journey.js?v=db3aed6";
-import { installCivicJourneyPanels } from "./routes/landing-primer.js?v=db3aed6";
-import { resourceAliases, resourcesByView } from "./content/route-resources.js?v=db3aed6";
-import { copy, copyObject, copyTemplate, loadSiteCopy } from "./content/site-copy.js?v=db3aed6";
-import { renderTaxDistrictAuthorities } from "./views/tax-district-authorities.js?v=db3aed6";
-import { escapeHtml } from "./utils/html.js?v=db3aed6";
-import { initAssessorsReport } from "./assessors-report.js?v=db3aed6";
-import { initAssessmentDatesPanel } from "./assessment-dates.js?v=db3aed6";
-import { initFirstVisitOrientation, ORIENTATION_STORAGE_KEY } from "./orientation.js?v=db3aed6";
+} from "./config/taxpayer-journey.js?v=befd9ce";
+import { installCivicJourneyPanels } from "./routes/landing-primer.js?v=befd9ce";
+import { resourceAliases, resourcesByView } from "./content/route-resources.js?v=befd9ce";
+import { copy, copyObject, copyTemplate, loadSiteCopy } from "./content/site-copy.js?v=befd9ce";
+import { renderTaxDistrictAuthorities } from "./views/tax-district-authorities.js?v=befd9ce";
+import { escapeHtml } from "./utils/html.js?v=befd9ce";
+import { initAssessorsReport } from "./assessors-report.js?v=befd9ce";
+import { initAssessmentDatesPanel } from "./assessment-dates.js?v=befd9ce";
+import { initFirstVisitOrientation, ORIENTATION_STORAGE_KEY } from "./orientation.js?v=befd9ce";
 import {
   isExperimentIndexRequest,
   renderExperimentsIndex
-} from "./routes/experiments-index.js?v=db3aed6";
-import { renderAmesHighway77ComparableSalesExperiment } from "./routes/ames-highway-77-comparable-sales.js?v=db3aed6";
-import { renderBeekmanCountryClubComparableSalesExperiment } from "./routes/beekman-country-club-comparable-sales.js?v=db3aed6";
-import { renderGrantNeighborCompExperiment } from "./routes/grant-neighbor-comps.js?v=db3aed6";
+} from "./routes/experiments-index.js?v=befd9ce";
+import { renderAmesHighway77ComparableSalesExperiment } from "./routes/ames-highway-77-comparable-sales.js?v=befd9ce";
+import { renderBeekmanCountryClubComparableSalesExperiment } from "./routes/beekman-country-club-comparable-sales.js?v=befd9ce";
+import { renderGrantNeighborCompExperiment } from "./routes/grant-neighbor-comps.js?v=befd9ce";
 import {
   isLevyCompressionPostRequest,
   renderLevyCompressionPost
-} from "./routes/levy-compression-post.js?v=db3aed6";
+} from "./routes/levy-compression-post.js?v=befd9ce";
 import {
   isProtestEvidenceGuideRequest,
   renderProtestEvidenceGuide
-} from "./routes/protest-evidence-guide.js?v=db3aed6";
+} from "./routes/protest-evidence-guide.js?v=befd9ce";
 import {
   isProtestParadoxRequest,
   renderProtestParadox
-} from "./routes/protest-paradox.js?v=db3aed6";
+} from "./routes/protest-paradox.js?v=befd9ce";
 import {
   isAssessmentsProtestsLeviesRequest,
   renderAssessmentsProtestsLeviesArticle
-} from "./routes/assessments-protests-levies.js?v=db3aed6";
+} from "./routes/assessments-protests-levies.js?v=befd9ce";
 import {
   isArticleRollRequest,
   renderArticleRoll
-} from "./routes/article-roll.js?v=db3aed6";
+} from "./routes/article-roll.js?v=befd9ce";
 import {
   isGesPublicPageRequest,
   renderGesPublicPage
-} from "./routes/public-pages.js?v=db3aed6";
-import { renderPropertyInviteIndex } from "./routes/property-invite-index.js?v=db3aed6";
-import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js?v=db3aed6";
-import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js?v=db3aed6";
-import { renderWashington1722ComparableSalesExperiment } from "./routes/washington-1722-comparable-sales.js?v=db3aed6";
+} from "./routes/public-pages.js?v=befd9ce";
+import { renderPropertyInviteIndex } from "./routes/property-invite-index.js?v=befd9ce";
+import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js?v=befd9ce";
+import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js?v=befd9ce";
+import { renderWashington1722ComparableSalesExperiment } from "./routes/washington-1722-comparable-sales.js?v=befd9ce";
 import {
   continueDevelopmentFeatureSampleStart,
   developmentFeatureSampleStartPropertyId
-} from "./development-feature.js?v=db3aed6";
+} from "./development-feature.js?v=befd9ce";
 import {
   configureStepTracking,
   initVisitAnalytics,
@@ -106,7 +106,7 @@ import {
   trackParcelView,
   trackResourceClick,
   trackStepView
-} from "./visit-analytics.js?v=db3aed6";
+} from "./visit-analytics.js?v=befd9ce";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 let importantCalendarDates = { dates: [], metadata: {} };

@@ -1,9 +1,9 @@
-import { calculateEtr, percent } from "./format.js?v=db3aed6";
+import { calculateEtr, percent } from "./format.js?v=befd9ce";
 import {
   chartColors,
   semanticChartColors,
   visualizationTheme
-} from "./config/visualization-palettes.js?v=db3aed6";
+} from "./config/visualization-palettes.js?v=befd9ce";
 import {
   getClassMarketStats,
   getCodInterpretationRange,
@@ -14,13 +14,13 @@ import {
   getParcelMarketGroupId,
   getSelectedMarketGroup,
   normalizeMarketClassKey
-} from "./market-stats.js?v=db3aed6";
-import { getMetricSignal } from "./metric-signals.js?v=db3aed6";
-import { sortHistoryAscending } from "./calculations/history.js?v=db3aed6";
-import { escapeHtml } from "./utils/html.js?v=db3aed6";
+} from "./market-stats.js?v=befd9ce";
+import { getMetricSignal } from "./metric-signals.js?v=befd9ce";
+import { sortHistoryAscending } from "./calculations/history.js?v=befd9ce";
+import { escapeHtml } from "./utils/html.js?v=befd9ce";
 
-export { initDemographicsView } from "./charts/demographics.js?v=db3aed6";
-export { buildDistributionChart } from "./charts/tax-distribution.js?v=db3aed6";
+export { initDemographicsView } from "./charts/demographics.js?v=befd9ce";
+export { buildDistributionChart } from "./charts/tax-distribution.js?v=befd9ce";
 
 const palette = {
   get slate700() { return visualizationTheme.neutrals.ink; },

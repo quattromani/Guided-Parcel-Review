@@ -8,37 +8,37 @@ import {
   moneyCents,
   percent,
   sumRates
-} from "./format.js?v=db3aed6";
+} from "./format.js?v=befd9ce";
 import {
   getPreviousFinalValueHistory,
   getSnapshotHistory,
   sortHistoryAscending,
   sortHistoryDescending
-} from "./calculations/history.js?v=db3aed6";
+} from "./calculations/history.js?v=befd9ce";
 import {
   buildRecordCorrectionEmailPayload,
   buildRecordCorrectionSubmission,
   generateRecordCorrectionPdf
-} from "./recordCorrectionRequest.js?v=db3aed6";
-import { viewHeaderContent } from "./content/view-headers.js?v=db3aed6";
-import { copyArray } from "./content/site-copy.js?v=db3aed6";
-import { PROPERTY_SELECTION_STORAGE_KEY } from "./data-service.js?v=db3aed6";
-import { propertyRecordSourceText, taxHistorySourceText } from "./domain/source-labels.js?v=db3aed6";
+} from "./recordCorrectionRequest.js?v=befd9ce";
+import { viewHeaderContent } from "./content/view-headers.js?v=befd9ce";
+import { copyArray } from "./content/site-copy.js?v=befd9ce";
+import { PROPERTY_SELECTION_STORAGE_KEY } from "./data-service.js?v=befd9ce";
+import { propertyRecordSourceText, taxHistorySourceText } from "./domain/source-labels.js?v=befd9ce";
 import {
   getClassMarketStats,
   getParcelMarketClass,
   getParcelMarketGroupId
-} from "./market-stats.js?v=db3aed6";
-import { renderStartPage as renderStartPageRoute } from "./routes/start-page.js?v=db3aed6";
-import { displayAddress } from "./utils/address.js?v=db3aed6";
-import { garageSummary } from "./domain/property-record-facts.js?v=db3aed6";
-import { displayValue, formatSquareFeet, hasDisplayValue } from "./utils/display.js?v=db3aed6";
-import { escapeHtml } from "./utils/html.js?v=db3aed6";
-import { trackPropertySwitch } from "./visit-analytics.js?v=db3aed6";
+} from "./market-stats.js?v=befd9ce";
+import { renderStartPage as renderStartPageRoute } from "./routes/start-page.js?v=befd9ce";
+import { displayAddress } from "./utils/address.js?v=befd9ce";
+import { garageSummary } from "./domain/property-record-facts.js?v=befd9ce";
+import { displayValue, formatSquareFeet, hasDisplayValue } from "./utils/display.js?v=befd9ce";
+import { escapeHtml } from "./utils/html.js?v=befd9ce";
+import { trackPropertySwitch } from "./visit-analytics.js?v=befd9ce";
 import {
   isReviewFlagSelected,
   setReviewFlag
-} from "./review-flags.js?v=db3aed6";
+} from "./review-flags.js?v=befd9ce";
 
 const fallbackRecordReviewStatuses = [
   ["looks-correct", "No issue noticed"],

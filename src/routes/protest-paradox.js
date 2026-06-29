@@ -1,4 +1,4 @@
-import { escapeHtml } from "../utils/html.js?v=db3aed6";
+import { escapeHtml } from "../utils/html.js?v=befd9ce";
 import {
   installGuideUtilityLanguage,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
@@ -6,14 +6,14 @@ import {
   renderPageCrease,
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader
-} from "../ges/article-components.js?v=db3aed6";
-import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
+} from "../ges/article-components.js?v=befd9ce";
+import { createGesArticleShell } from "../ges/shell.js?v=befd9ce";
 import {
   installGesReadingProgress,
   renderGesReadingProgressEndMarker
-} from "../ges/reading-progress.js?v=db3aed6";
-import { assessmentUpProtestDeniedTaxesArticle as articleSource } from "../content/articles/assessment-up-protest-denied-taxes.js?v=db3aed6";
-import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=db3aed6";
+} from "../ges/reading-progress.js?v=befd9ce";
+import { assessmentUpProtestDeniedTaxesArticle as articleSource } from "../content/articles/assessment-up-protest-denied-taxes.js?v=befd9ce";
+import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=befd9ce";
 
 const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg";
 const ARTICLE_SECTIONS = articleSource.sections;

@@ -1,13 +1,13 @@
-import { calculateEtr, sumRates } from "../format.js?v=db3aed6";
+import { calculateEtr, sumRates } from "../format.js?v=befd9ce";
 import {
   latestKnown,
   percentChange,
   previousKnown,
   sortHistoryAscending
-} from "../calculations/history.js?v=db3aed6";
-import { getTaxpayerJourneyRoutes } from "../config/taxpayer-journey.js?v=db3aed6";
-import { buildAssessmentNoticeModel } from "../data/notice-model.js?v=db3aed6";
-import { buildReviewSignalModel } from "../data/review-signal-model.js?v=db3aed6";
+} from "../calculations/history.js?v=befd9ce";
+import { getTaxpayerJourneyRoutes } from "../config/taxpayer-journey.js?v=befd9ce";
+import { buildAssessmentNoticeModel } from "../data/notice-model.js?v=befd9ce";
+import { buildReviewSignalModel } from "../data/review-signal-model.js?v=befd9ce";
 
 function normalizeProperty(propertyData, recordCard) {
   return {

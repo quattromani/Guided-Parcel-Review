@@ -1,4 +1,4 @@
-import { copyObject } from "./site-copy.js?v=db3aed6";
+import { copyObject } from "./site-copy.js?v=befd9ce";
 
 const fallbackViewHeaderContent = {
   start: {

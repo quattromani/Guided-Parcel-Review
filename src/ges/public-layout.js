@@ -1,5 +1,5 @@
-import { DEPLOY_VERSION } from "../asset-version.js?v=db3aed6";
-import { escapeHtml } from "../utils/html.js?v=db3aed6";
+import { DEPLOY_VERSION } from "../asset-version.js?v=befd9ce";
+import { escapeHtml } from "../utils/html.js?v=befd9ce";
 
 export const GES_LAYOUTS = Object.freeze({
   PUBLIC: "public",

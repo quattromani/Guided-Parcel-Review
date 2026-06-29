@@ -1,10 +1,10 @@
-import { formatNullableMoney } from "../format.js?v=db3aed6";
-import { displayAddress } from "../utils/address.js?v=db3aed6";
+import { formatNullableMoney } from "../format.js?v=befd9ce";
+import { displayAddress } from "../utils/address.js?v=befd9ce";
 import {
   garageRowsFromRecord,
   garageSizeTotal,
   garageSummary
-} from "../utils/garage.js?v=db3aed6";
+} from "../utils/garage.js?v=befd9ce";
 
 export {
   garageRowsFromRecord,

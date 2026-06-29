@@ -1,4 +1,4 @@
-import { renderComparisonExperiment } from "./comparison-experiment.js?v=db3aed6";
+import { renderComparisonExperiment } from "./comparison-experiment.js?v=befd9ce";
 
 export async function renderGrantNeighborCompExperiment(propertySwitcherContext = {}) {
   return renderComparisonExperiment(propertySwitcherContext, {

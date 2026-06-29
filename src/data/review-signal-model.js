@@ -1,4 +1,4 @@
-import { hasValue, latestKnown, percentChange, previousKnown } from "../calculations/history.js?v=db3aed6";
+import { hasValue, latestKnown, percentChange, previousKnown } from "../calculations/history.js?v=befd9ce";
 
 const MATERIAL_VALUE_MOVEMENT_THRESHOLD = 0.15;
 

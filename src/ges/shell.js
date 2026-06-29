@@ -1,10 +1,10 @@
-import { ensureGesStylesheet } from "./loader.js?v=db3aed6";
+import { ensureGesStylesheet } from "./loader.js?v=befd9ce";
 import {
   applyGesLayoutAttributes,
   applyGesPublicMetadata,
   ensureGesPublicFooter,
   GES_LAYOUTS
-} from "./public-layout.js?v=db3aed6";
+} from "./public-layout.js?v=befd9ce";
 
 const DEFAULT_COVER_SELECTOR = '[data-ges-shell-region="cover"], [data-ges-shell-region="title"], #pageTitle';
 const DEFAULT_BODY_SELECTOR = '[data-ges-shell-region="body"], [data-ges-shell-region="content"], .mobile-review-canvas';

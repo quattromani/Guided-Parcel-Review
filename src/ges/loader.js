@@ -1,4 +1,4 @@
-import { versionedAssetUrl } from "../asset-version.js?v=db3aed6";
+import { versionedAssetUrl } from "../asset-version.js?v=befd9ce";
 
 const GES_STYLESHEET_ID = "ges-design-system-stylesheet";
 

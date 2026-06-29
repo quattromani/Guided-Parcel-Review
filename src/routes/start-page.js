@@ -1,4 +1,4 @@
-import { copyArray, copyObject } from "../content/site-copy.js?v=db3aed6";
+import { copyArray, copyObject } from "../content/site-copy.js?v=befd9ce";
 
 const fallbackStartPageContent = {
   kicker: "Ready for review",

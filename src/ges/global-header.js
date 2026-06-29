@@ -1,13 +1,13 @@
-import { versionedAssetUrl } from "../asset-version.js?v=db3aed6";
+import { versionedAssetUrl } from "../asset-version.js?v=befd9ce";
 import {
   applyGesTheme,
   installGesThemeToggle,
   renderGesThemeToggle
-} from "../ges-theme.js?v=db3aed6";
+} from "../ges-theme.js?v=befd9ce";
 import {
   buildProjectNav,
   installTrackingContextLinkEnhancer
-} from "./project-nav.js?v=db3aed6";
+} from "./project-nav.js?v=befd9ce";
 
 const GLOBAL_HEADER_SELECTOR = "[data-gpr-global-header]";
 const GLOBAL_HEADER_STYLESHEET_ID = "gpr-global-header-stylesheet";

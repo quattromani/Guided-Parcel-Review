@@ -1,4 +1,4 @@
-import { enrichRecordCalculations } from "./calculations.js?v=db3aed6";
+import { enrichRecordCalculations } from "./calculations.js?v=befd9ce";
 
 export const STORAGE_KEY = "gpr.boeTracker.v1";
 

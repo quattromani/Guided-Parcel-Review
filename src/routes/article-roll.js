@@ -1,6 +1,6 @@
-import { hasInternalMenuPermission } from "../ges/internal-permissions.js?v=db3aed6";
-import { createGesPublicShell } from "../ges/shell.js?v=db3aed6";
-import { escapeHtml } from "../utils/html.js?v=db3aed6";
+import { hasInternalMenuPermission } from "../ges/internal-permissions.js?v=befd9ce";
+import { createGesPublicShell } from "../ges/shell.js?v=befd9ce";
+import { escapeHtml } from "../utils/html.js?v=befd9ce";
 
 const ARTICLE_MANIFEST_PATH = "data/app/articles.json";
 const ARTICLE_ROLL_ROUTE = "articles/";

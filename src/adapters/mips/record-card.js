@@ -1,4 +1,4 @@
-import { sortHistoryAscending } from "../../calculations/history.js?v=db3aed6";
+import { sortHistoryAscending } from "../../calculations/history.js?v=befd9ce";
 
 function sortByYear(rows, key = "year") {
   return Array.isArray(rows) ? sortHistoryAscending(rows, key) : rows;

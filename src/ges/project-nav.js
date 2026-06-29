@@ -2,7 +2,7 @@ import {
   hasInternalMenuPermission,
   INTERNAL_OWNER_PERSON,
   INTERNAL_PERMISSION_PARAM_NAME
-} from "./internal-permissions.js?v=db3aed6";
+} from "./internal-permissions.js?v=befd9ce";
 
 export const INTERNAL_TRACKING_PARAM = Object.freeze({
   name: INTERNAL_PERMISSION_PARAM_NAME,

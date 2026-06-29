@@ -1,18 +1,18 @@
-import { escapeHtml } from "../utils/html.js?v=db3aed6";
+import { escapeHtml } from "../utils/html.js?v=befd9ce";
 import {
   installGuideUtilityLanguage,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderArticleTags as renderGesArticleTags,
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader
-} from "../ges/article-components.js?v=db3aed6";
-import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
+} from "../ges/article-components.js?v=befd9ce";
+import { createGesArticleShell } from "../ges/shell.js?v=befd9ce";
 import {
   installGesReadingProgress,
   renderGesReadingProgressEndMarker
-} from "../ges/reading-progress.js?v=db3aed6";
-import { beforeYouWalkIntoPropertyProtestArticle as articleSource } from "../content/articles/before-you-walk-into-a-property-protest.js?v=db3aed6";
-import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=db3aed6";
+} from "../ges/reading-progress.js?v=befd9ce";
+import { beforeYouWalkIntoPropertyProtestArticle as articleSource } from "../content/articles/before-you-walk-into-a-property-protest.js?v=befd9ce";
+import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=befd9ce";
 
 const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg?v=20260626t";
 const ARTICLE_SECTIONS = articleSource.sections;

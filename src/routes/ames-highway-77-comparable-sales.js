@@ -1,4 +1,4 @@
-import { renderComparisonExperiment } from "./comparison-experiment.js?v=db3aed6";
+import { renderComparisonExperiment } from "./comparison-experiment.js?v=befd9ce";
 
 const SOURCE_LANGUAGE = "Source: MIPS Gage Public Sales map snapshot captured June 2026, GWorks property record PDFs, Nebraska Taxes Online 2025 statement captures, and selected Highway 77 comparable sales records. This experimental view is for review and layout testing only.";
 

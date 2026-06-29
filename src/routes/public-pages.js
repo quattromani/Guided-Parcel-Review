@@ -1,6 +1,6 @@
-import { copyObject } from "../content/site-copy.js?v=db3aed6";
-import { createGesPublicShell } from "../ges/shell.js?v=db3aed6";
-import { escapeHtml } from "../utils/html.js?v=db3aed6";
+import { copyObject } from "../content/site-copy.js?v=befd9ce";
+import { createGesPublicShell } from "../ges/shell.js?v=befd9ce";
+import { escapeHtml } from "../utils/html.js?v=befd9ce";
 
 const PUBLIC_PAGE_COPY = Object.freeze({
   about: {

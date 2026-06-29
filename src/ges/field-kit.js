@@ -1,8 +1,8 @@
 import {
   loadPropertySwitcherRecords,
   PROPERTY_SELECTION_STORAGE_KEY
-} from "../data-service.js?v=db3aed6";
-import { hasInternalToolPermission } from "./internal-permissions.js?v=db3aed6";
+} from "../data-service.js?v=befd9ce";
+import { hasInternalToolPermission } from "./internal-permissions.js?v=befd9ce";
 
 const FIELD_KIT_ROOT_ID = "gesFieldKit";
 const FIELD_KIT_MOUNTED_KEY = "__gesFieldKitMounted";

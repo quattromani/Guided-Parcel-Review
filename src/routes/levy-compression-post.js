@@ -1,11 +1,11 @@
-import { escapeHtml } from "../utils/html.js?v=db3aed6";
-import { loadPropertyManifest } from "../data-service.js?v=db3aed6";
-import { renderResourcesBlock as renderGesResourcesBlock } from "../ges/article-components.js?v=db3aed6";
-import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
+import { escapeHtml } from "../utils/html.js?v=befd9ce";
+import { loadPropertyManifest } from "../data-service.js?v=befd9ce";
+import { renderResourcesBlock as renderGesResourcesBlock } from "../ges/article-components.js?v=befd9ce";
+import { createGesArticleShell } from "../ges/shell.js?v=befd9ce";
 import {
   installGesReadingProgress,
   renderGesReadingProgressEndMarker
-} from "../ges/reading-progress.js?v=db3aed6";
+} from "../ges/reading-progress.js?v=befd9ce";
 
 const ARTICLE_AUTHOR_IMAGE = "assets/images/articles/max-quattromani-author.jpg";
 const LEVY_REFERENCES = {

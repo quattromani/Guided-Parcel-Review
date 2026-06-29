@@ -10,11 +10,11 @@ import {
   renderReaderCheckpoint,
   renderResourcesBlock,
   renderSectionHeader
-} from "../ges/article-components.js?v=db3aed6";
-import { installGesReadingProgress } from "../ges/reading-progress.js?v=db3aed6";
-import { createGesArticleShell } from "../ges/shell.js?v=db3aed6";
-import { howYourPropertyValueBecomesATaxBillArticle as articleSource } from "../content/articles/how-your-property-value-becomes-a-tax-bill.js?v=db3aed6";
-import { escapeHtml } from "../utils/html.js?v=db3aed6";
+} from "../ges/article-components.js?v=befd9ce";
+import { installGesReadingProgress } from "../ges/reading-progress.js?v=befd9ce";
+import { createGesArticleShell } from "../ges/shell.js?v=befd9ce";
+import { howYourPropertyValueBecomesATaxBillArticle as articleSource } from "../content/articles/how-your-property-value-becomes-a-tax-bill.js?v=befd9ce";
+import { escapeHtml } from "../utils/html.js?v=befd9ce";
 
 const ARTICLE = articleSource;
 const ACT_ONE = ARTICLE.actOne;

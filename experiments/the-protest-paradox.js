@@ -30,7 +30,7 @@ async function initArticleAnalytics() {
   if (window.location.protocol === "file:") return;
 
   try {
-    const analytics = await import("../src/visit-analytics.js?v=db3aed6");
+    const analytics = await import("../src/visit-analytics.js?v=befd9ce");
     trackArticleInteractionEvent = analytics.trackArticleInteraction;
     analytics.trackArticleView(articleAnalyticsContext);
   } catch {

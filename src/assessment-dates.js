@@ -1,4 +1,4 @@
-import { escapeHtml } from "./utils/html.js?v=db3aed6";
+import { escapeHtml } from "./utils/html.js?v=befd9ce";
 
 const MONTHS = [
   "January",
