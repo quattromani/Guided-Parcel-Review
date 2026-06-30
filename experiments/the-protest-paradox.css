@@ -1,11 +1,11 @@
 :root {
-  color-scheme: light;
-  --bg: #f1f5f9;
-  --panel: #ffffff;
-  --muted: #64748b;
-  --line: #d8e2ed;
-  --ink: #1f3347;
-  --blue: #1f4970;
+  color-scheme: light dark;
+  --bg: rgb(var(--ges-color-page, 241 245 249));
+  --panel: rgb(var(--ges-color-surface, 255 255 255));
+  --muted: rgb(var(--ges-color-text-secondary, 100 116 139));
+  --line: rgb(var(--ges-color-border-subtle, 216 226 237));
+  --ink: rgb(var(--ges-color-text, 31 51 71));
+  --blue: rgb(var(--ges-color-action, 31 73 112));
   --blue-soft: #e8eff8;
   --green: #4f8b67;
   --green-soft: #eef7f1;
@@ -13,9 +13,10 @@
   --red-soft: #f8edf0;
   --gold: #a9782b;
   --gold-soft: #faf5eb;
-  --body-font: "EB Garamond", Georgia, "Times New Roman", serif;
-  --heading-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --mono-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --body-font: var(--ges-font-body, "IBM Plex Serif", Georgia, "Times New Roman", serif);
+  --heading-font: var(--ges-font-heading, "IBM Plex Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+  --mono-font: var(--ges-font-mono, "IBM Plex Mono", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+  --experiment-shadow: var(--ges-color-shadow, 31 73 112);
 }
 
 * {
@@ -23,9 +24,7 @@
 }
 
 body {
-  background:
-    radial-gradient(circle at top left, rgb(255 255 255 / 0.85), transparent 30rem),
-    var(--bg);
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--body-font);
   margin: 0;
@@ -1240,6 +1239,55 @@ h1 span {
   color: inherit;
   font: inherit;
   text-decoration: none;
+}
+
+html[data-ges-theme-resolved="dark"] {
+  --bg: rgb(var(--ges-color-page, 18 25 31));
+  --panel: rgb(var(--ges-color-surface-floating, 32 46 57));
+  --muted: rgb(var(--ges-color-text-secondary, 184 196 201));
+  --line: rgb(var(--ges-color-border-subtle, 47 62 72));
+  --ink: rgb(var(--ges-color-text, 225 231 234));
+  --blue: rgb(var(--ges-color-action, 151 160 194));
+  --blue-soft: rgb(var(--ges-color-surface-muted, 24 35 44));
+  --green-soft: rgb(var(--ges-color-success-soft, 24 52 38));
+  --red-soft: rgb(var(--ges-color-danger-soft, 62 34 42));
+  --gold-soft: rgb(var(--ges-color-caution-soft, 68 52 25));
+}
+
+html[data-ges-theme-resolved="dark"] :where(
+  .learning-preview,
+  .timeline-card,
+  .value-change-card,
+  .tax-result-chapter,
+  .core-concept,
+  .levy-callout,
+  .compression-grid article,
+  .framework-grid article,
+  .component-bars article,
+  .calculator-card,
+  .estimate-part,
+  .estimate-part-body,
+  .estimate-insight,
+  .lesson-card,
+  .question-callout,
+  .article-sources,
+  .same-rate-grid article,
+  .model-step-grid article
+) {
+  background: var(--panel);
+  border-color: var(--line);
+  box-shadow: 0 0.75rem 1.7rem rgb(var(--experiment-shadow) / 0.16);
+  color: var(--ink);
+}
+
+html[data-ges-theme-resolved="dark"] :where(.case-calculator input, .model-assumption, .estimate-flow article, .calculator-results article) {
+  background: rgb(var(--ges-color-surface, 24 35 44));
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+html[data-ges-theme-resolved="dark"] :where(.apply-transition, .estimate-panel) {
+  background: linear-gradient(135deg, rgb(var(--ges-color-action, 77 94 153) / 0.86), rgb(var(--ges-color-surface-floating, 32 46 57)));
 }
 
 @media (max-width: 760px) {

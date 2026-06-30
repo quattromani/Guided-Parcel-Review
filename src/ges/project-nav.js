@@ -73,7 +73,7 @@ export const INTERNAL_PROJECT_NAV_SECTIONS = Object.freeze([
       },
       {
         label: "Levy compression calculator",
-        href: "index.html?article=levy-compression#calculatorTitle"
+        href: "index.html?article=levy-compression#levyCalculatorTitle"
       },
       {
         label: "Tax shorthand walkthrough",

@@ -4,6 +4,7 @@ import {
   statementGrossLevy,
   statementTotalCredits
 } from "../render.js?v=befd9ce";
+import { createGesPublicShell } from "../ges/shell.js?v=befd9ce";
 import { escapeHtml } from "../utils/html.js?v=befd9ce";
 
 const percentOneDecimal = new Intl.NumberFormat("en-US", {
@@ -60,9 +61,53 @@ const longTaxHistoryByParcelId = new Map([
 ]);
 
 function prepareExperimentShell() {
+  const shell = createGesPublicShell({
+    htmlClasses: ["ges-public-page-route", "tax-shorthand-shell-route"],
+    hiddenSelectors: [
+      ".guide-review-header",
+      "[data-guided-panel]",
+      "[data-footer-resource-shell]",
+      "body > footer:not([data-ges-public-footer])"
+    ],
+    mainClasses: ["ges-public-main"],
+    metadata: {
+      title: "Tax Shorthand Year-Over-Year Walkthrough",
+      description: "Experimental year-over-year tax statement walkthrough showing assessed value, levy, credits, and final net-tax movement.",
+      canonicalPath: "index.html?experiment=tax-shorthand",
+      pageType: "experiment",
+      ogType: "website",
+      robots: "noindex, follow",
+      socialTitle: "Tax Shorthand Year-Over-Year Walkthrough",
+      socialDescription: "Experimental year-over-year tax statement walkthrough for property tax movement.",
+      socialImage: "assets/brand/civic-house/social/og-image-1200x630.png",
+      socialImageAlt: "Civic house mark for Guided Parcel Review."
+    },
+    pageType: "experiment",
+    routeName: "tax-shorthand",
+    shell: "experiment"
+  });
+
+  if (shell) return shell;
+
   document.querySelector(".guide-review-header")?.classList.add("is-hidden");
   document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("is-hidden"));
   document.querySelector("[data-footer-resource-shell]")?.classList.add("is-hidden");
+  document.querySelectorAll("body > footer:not([data-ges-public-footer])").forEach(footer => footer.classList.add("is-hidden"));
+
+  const coverRegion = document.getElementById("pageTitle");
+  const bodyRegion = document.querySelector(".mobile-review-canvas");
+  return {
+    bodyRegion,
+    coverRegion,
+    setBody(html = "") {
+      if (bodyRegion) bodyRegion.innerHTML = html;
+      return bodyRegion;
+    },
+    setCover(html = "") {
+      if (coverRegion) coverRegion.innerHTML = html;
+      return coverRegion;
+    }
+  };
 }
 
 function percentChange(current, prior) {
@@ -1001,16 +1046,32 @@ function renderValueTaxComboSvg(rows) {
   `;
 }
 
-function renderNoActiveProperty(propertySwitcherContext) {
-  const canvas = document.querySelector(".mobile-review-canvas");
+function renderTaxShorthandCover() {
+  return `
+    <div class="comp-page-title">
+      <p class="guided-kicker">Experiment</p>
+      <h1>Tax Shorthand Year-Over-Year Walkthrough</h1>
+      <p>Assessment, levy, credit, and net-tax movement in one compact tax history view.</p>
+    </div>
+  `;
+}
+
+function renderNoActiveProperty(shell, propertySwitcherContext) {
+  const canvas = shell?.bodyRegion ?? document.querySelector(".mobile-review-canvas");
   if (!canvas) return;
 
-  canvas.innerHTML = `
+  shell?.setCover(renderTaxShorthandCover());
+  const emptyMarkup = `
     <section class="tax-shorthand-page review-card" aria-labelledby="taxShorthandEmptyTitle">
       <h2 id="taxShorthandEmptyTitle">Tax prediction story needs a loaded property</h2>
       <p>Open the S 5th Avenue parcel to render the one-page prediction.</p>
     </section>
   `;
+  if (shell) {
+    shell.setBody(emptyMarkup);
+  } else {
+    canvas.innerHTML = emptyMarkup;
+  }
 }
 
 function renderPredictionHero() {
@@ -1339,18 +1400,19 @@ function renderCountyMarketAverageSection(countyContext) {
 }
 
 export function renderTaxShorthandExperiment(propertySwitcherContext = {}, { data, recordCard, snapshotModel, countyContext } = {}) {
-  prepareExperimentShell();
+  const shell = prepareExperimentShell();
+  shell?.setCover(renderTaxShorthandCover());
 
   if (!data) {
-    renderNoActiveProperty(propertySwitcherContext);
+    renderNoActiveProperty(shell, propertySwitcherContext);
     return;
   }
 
   const rows = statementRows(data);
-  const canvas = document.querySelector(".mobile-review-canvas");
+  const canvas = shell?.bodyRegion ?? document.querySelector(".mobile-review-canvas");
   if (!canvas) return;
 
-  canvas.innerHTML = `
+  const bodyMarkup = `
     <section class="tax-shorthand-page" aria-labelledby="taxArticleTitle">
       ${rows.length ? renderValueTaxChartSection(rows) : `
         <section class="tax-shorthand-area-panel">
@@ -1359,4 +1421,9 @@ export function renderTaxShorthandExperiment(propertySwitcherContext = {}, { dat
       `}
     </section>
   `;
+  if (shell) {
+    shell.setBody(bodyMarkup);
+  } else {
+    canvas.innerHTML = bodyMarkup;
+  }
 }

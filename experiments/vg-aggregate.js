@@ -1339,10 +1339,10 @@ function render(groupKey) {
 }
 
 async function loadRecords() {
-  const manifest = await fetch("../data/app/property-manifest.json").then(response => response.json());
+  const manifest = await fetch("data/app/property-manifest.json").then(response => response.json());
   const gageProperties = manifest.properties.filter(item => item.county === "gage" && item.recordCardStatus === "available");
   const loaded = await Promise.all(gageProperties.map(async property => {
-    const record = await fetch(`../${property.recordCardPath}`).then(response => response.json());
+    const record = await fetch(property.recordCardPath).then(response => response.json());
     return { property, record, group: canonicalGroup(record) };
   }));
   return loaded;
@@ -1350,7 +1350,7 @@ async function loadRecords() {
 
 async function loadSamplingTracker() {
   try {
-    const response = await fetch("../data/sampling/gage-research-sampling-tracker.json");
+    const response = await fetch("data/sampling/gage-research-sampling-tracker.json");
     if (!response.ok) return null;
     return response.json();
   } catch {
@@ -1360,7 +1360,7 @@ async function loadSamplingTracker() {
 
 async function loadSchoolDistrictColors() {
   try {
-    const response = await fetch("../data/counties/gage/school-district-colors.json");
+    const response = await fetch("data/counties/gage/school-district-colors.json");
     if (!response.ok) return [];
     const data = await response.json();
     return Array.isArray(data.districts) ? data.districts : [];

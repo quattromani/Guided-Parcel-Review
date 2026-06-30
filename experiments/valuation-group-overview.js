@@ -538,17 +538,17 @@ function render() {
 }
 
 async function loadRecords() {
-  const manifest = await fetch("../data/app/property-manifest.json").then(response => response.json());
+  const manifest = await fetch("data/app/property-manifest.json").then(response => response.json());
   const gageProperties = manifest.properties
     .filter(item => item.county === "gage" && item.recordCardStatus === "available");
   return Promise.all(gageProperties.map(async property => {
-    const record = await fetch(`../${property.recordCardPath}`).then(response => response.json());
+    const record = await fetch(property.recordCardPath).then(response => response.json());
     return record;
   }));
 }
 
 async function loadSamplingTracker() {
-  const response = await fetch("../data/sampling/gage-research-sampling-tracker.json");
+  const response = await fetch("data/sampling/gage-research-sampling-tracker.json");
   if (!response.ok) throw new Error("Sampling tracker could not be loaded.");
   return response.json();
 }

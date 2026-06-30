@@ -1,4 +1,5 @@
 import { escapeHtml } from "../utils/html.js?v=befd9ce";
+import { createGesPublicShell } from "../ges/shell.js?v=befd9ce";
 
 export const experimentLinks = [
   {
@@ -32,14 +33,14 @@ export const experimentLinks = [
     note: "Active-property tax statement table showing assessed value, levy, credits, and final net-tax movement by year."
   },
   {
-    title: "Levy Compression Educational Post",
+    title: "Levy Compression Explainer and Calculator",
     href: "?article=levy-compression",
-    note: "Standalone article and calculator for estimating future ETR and tax changes when valuations rise."
+    note: "Current GES article route with the plain-language explainer and interactive levy compression estimator."
   },
   {
     title: "Case Study: Assessment Up. Protest Denied. Taxes?",
-    href: "experiments/the-protest-paradox.html",
-    note: "Article-style case study showing a denied valuation protest, levy compression, and a lower tax bill."
+    href: "articles/assessment-up-protest-denied-taxes/",
+    note: "Canonical article route showing a denied valuation protest, levy compression, and a lower tax bill."
   },
   {
     title: "Grant Street Side-by-Side Comparison",
@@ -65,23 +66,44 @@ export function isExperimentIndexRequest(searchParams = new URLSearchParams(wind
 }
 
 export function renderExperimentsIndex() {
-  const pageTitle = document.getElementById("pageTitle");
-  const canvas = document.querySelector(".mobile-review-canvas");
-  if (!canvas) return;
+  const shell = createGesPublicShell({
+    htmlClasses: ["ges-public-page-route", "ges-experiment-index-route"],
+    mainClasses: ["ges-public-main"],
+    metadata: {
+      title: "Experiment Index",
+      description: "Internal links for current Guided Parcel Review experiments, explainers, calculators, and research workbenches.",
+      canonicalPath: "index.html?experiment=index",
+      pageType: "experiment-index",
+      ogType: "website",
+      robots: "noindex, follow",
+      socialTitle: "Guided Parcel Review Experiments",
+      socialDescription: "Internal index for Guided Parcel Review experiments, explainers, calculators, and research workbenches.",
+      socialImage: "assets/brand/civic-house/social/og-image-1200x630.png",
+      socialImageAlt: "Civic house mark for Guided Parcel Review."
+    },
+    hiddenSelectors: [
+      ".guide-review-header",
+      "[data-guided-panel]",
+      "[data-footer-resource-shell]",
+      "body > footer:not([data-ges-public-footer])"
+    ],
+    pageType: "experiment-index",
+    routeName: "experiments-index",
+    shell: "experiment"
+  });
+  const pageTitle = shell?.coverRegion ?? document.getElementById("pageTitle");
+  const canvas = shell?.bodyRegion ?? document.querySelector(".mobile-review-canvas");
+  if (!canvas || !pageTitle) return;
 
-  document.querySelector(".guide-review-header")?.classList.add("is-hidden");
-  document.querySelectorAll("[data-guided-panel]").forEach(panel => panel.classList.add("is-hidden"));
-  document.querySelector("[data-footer-resource-shell]")?.classList.add("is-hidden");
-
-  pageTitle.innerHTML = `
+  const coverMarkup = `
     <div class="comp-page-title">
       <p class="guided-kicker">Experiments</p>
       <h1>Experiment Index</h1>
-      <p>Internal links for moving between current review experiments.</p>
+      <p>Internal links for current Guided Parcel Review experiments, explainers, calculators, and research workbenches.</p>
     </div>
   `;
 
-  canvas.innerHTML = `
+  const bodyMarkup = `
     <section class="experiments-index-page review-card" aria-labelledby="experimentsIndexTitle">
       <h2 id="experimentsIndexTitle">Available experiments</h2>
       <ul class="experiments-index-list">
@@ -94,4 +116,12 @@ export function renderExperimentsIndex() {
       </ul>
     </section>
   `;
+
+  if (shell) {
+    shell.setCover(coverMarkup);
+    shell.setBody(bodyMarkup);
+  } else {
+    pageTitle.innerHTML = coverMarkup;
+    canvas.innerHTML = bodyMarkup;
+  }
 }

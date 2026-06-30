@@ -1,97 +1,117 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="ges-public-layout-route ges-public-page-route ges-experiment-index-route">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Guided Parcel Review Experiments</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --bg: #eef3f8;
-      --panel: #ffffff;
-      --text: #1f3044;
-      --muted: #5b6b7f;
-      --line: #d8e2ed;
-      --link: #0f477b;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    main {
-      width: min(780px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 44px 0;
-    }
-
-    h1,
-    p {
-      margin: 0;
-    }
-
-    h1 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      line-height: 1.05;
-      letter-spacing: 0;
-    }
-
-    p {
-      margin-top: 10px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    ul {
-      display: grid;
-      gap: 12px;
-      margin: 28px 0 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    li {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-    }
-
-    a {
-      display: block;
-      color: var(--link);
-      font-size: 1.05rem;
-      font-weight: 800;
-      line-height: 1.3;
-      padding: 16px 18px;
-      text-decoration: none;
-    }
-
-    a:hover,
-    a:focus-visible {
-      text-decoration: underline;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no" />
+  <base href="../" />
+  <title>Experiment Index | Guided Parcel Review</title>
+  <meta name="description" content="Internal index for Guided Parcel Review experiments, explainers, calculators, and research workbenches." />
+  <meta name="robots" content="noindex, follow" />
+  <meta name="theme-color" content="#dbeafb" />
+  <link rel="canonical" href="https://quattromani.github.io/Guided-Parcel-Review/experiments/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Guided Parcel Review Experiments" />
+  <meta property="og:description" content="Internal index for Guided Parcel Review experiments, explainers, calculators, and research workbenches." />
+  <meta property="og:url" content="https://quattromani.github.io/Guided-Parcel-Review/experiments/" />
+  <meta property="og:image" content="https://quattromani.github.io/Guided-Parcel-Review/assets/brand/civic-house/social/og-image-1200x630.png" />
+  <meta property="og:image:alt" content="Civic house mark for Guided Parcel Review." />
+  <link rel="icon" href="favicon.ico?v=civic-house-20260626" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg?v=civic-house-20260626" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png?v=civic-house-20260626" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/brand/favicon-16.png?v=civic-house-20260626" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/apple-touch-icon.png?v=civic-house-20260626" />
+  <link rel="manifest" href="assets/brand/site.webmanifest?v=civic-house-20260626" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700;800;900&family=IBM+Plex+Serif:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800;900&display=optional" rel="stylesheet" />
+  <script>
+    (() => {
+      const key = "ges-theme-preference";
+      let stored = null;
+      try {
+        stored = window.localStorage.getItem(key);
+      } catch {}
+      const selected = stored === "light" || stored === "dark" ? stored : "system";
+      const system = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.gesTheme = selected;
+      document.documentElement.dataset.gesThemeResolved = selected === "system" ? system : selected;
+    })();
+  </script>
+  <link rel="stylesheet" href="src/styles.css?v=befd9ce" />
+  <link id="ges-design-system-stylesheet" rel="stylesheet" href="src/ges/index.css?v=befd9ce" />
 </head>
-<body>
-  <main>
-    <h1>Experiment Index</h1>
-    <p>Internal links for moving between current Guided Parcel Review experiments.</p>
-    <ul>
-      <li><a href="../?experiment=property-invite-index">Property Invite Index</a></li>
-      <li><a href="../?experiment=1301-s-5th-comps">1301 S 5th Comparable Sales Walkthrough</a></li>
-      <li><a href="../?experiment=grant-neighbor-comps">Grant Street Side-by-Side Comparison</a></li>
-      <li><a href="./the-protest-paradox.html">Case Study: Assessment Up. Protest Denied. Taxes?</a></li>
-      <li><a href="./valuation-group-overview.html">Valuation Group Overview</a></li>
-      <li><a href="./vg-aggregate.html">Valuation Group Aggregate Lab</a></li>
-    </ul>
+<body class="surface-muted-strong text-primary">
+  <main class="center-x measure-7xl pad-4 mq-sm-pad-6 mq-lg-pad-8 ges-public-main" data-ges-shell="experiment">
+    <section id="pageTitle" class="space-bottom-4 pad-inline-1" data-ges-shell-region="cover">
+      <div class="comp-page-title">
+        <p class="guided-kicker">Experiments</p>
+        <h1>Experiment Index</h1>
+        <p>Internal links for current Guided Parcel Review experiments, explainers, calculators, and research workbenches.</p>
+      </div>
+    </section>
+
+    <div class="mobile-review-canvas" data-ges-shell-region="body">
+      <section class="experiments-index-page review-card" aria-labelledby="experimentsIndexTitle">
+        <h2 id="experimentsIndexTitle">Available experiments</h2>
+        <ul class="experiments-index-list">
+          <li>
+            <a href="index.html?experiment=property-invite-index">Property Invite Index</a>
+            <span>Internal searchable table of loaded records with one-click invite links.</span>
+          </li>
+          <li>
+            <a href="index.html?experiment=1301-s-5th-comps">1301 S 5th Comparable Sales Walkthrough</a>
+            <span>Four-property comparable sales experiment with candidate screening and full record comparison.</span>
+          </li>
+          <li>
+            <a href="index.html?experiment=ames-highway-77-comps">Ames Highway 77 Comparable Sales Walkthrough</a>
+            <span>MIPS Highway 77 sale screen and full-record dwelling comparison for 29810 US Hwy 77.</span>
+          </li>
+          <li>
+            <a href="index.html?experiment=beekman-country-club-comps">Beekman Country Club Comparable Sales Walkthrough</a>
+            <span>MIPS Country Club-area sale screen and full-record dwelling comparison for 1417 Country Club Ln.</span>
+          </li>
+          <li>
+            <a href="index.html?experiment=1722-washington-comps">1722 Washington Comparable Sales Walkthrough</a>
+            <span>Residential-3 candidate ranking and full-record comparison for 1722 Washington.</span>
+          </li>
+          <li>
+            <a href="index.html?experiment=grant-neighbor-comps">Grant Street Side-by-Side Comparison</a>
+            <span>Three adjacent Grant Street properties arranged for neighbor comparison.</span>
+          </li>
+          <li>
+            <a href="index.html?experiment=tax-shorthand">Tax Shorthand Year-Over-Year Walkthrough</a>
+            <span>Active-property tax statement table showing assessed value, levy, credits, and final net-tax movement by year.</span>
+          </li>
+          <li>
+            <a href="index.html?article=levy-compression">Levy Compression Explainer and Calculator</a>
+            <span>Current GES article route with the plain-language explainer and interactive levy compression estimator.</span>
+          </li>
+          <li>
+            <a href="articles/assessment-up-protest-denied-taxes/">Case Study: Assessment Up. Protest Denied. Taxes?</a>
+            <span>Canonical article route showing a denied valuation protest, levy compression, and a lower tax bill.</span>
+          </li>
+          <li>
+            <a href="experiments/valuation-group-overview.html">Valuation Group Overview</a>
+            <span>Sampled value and tax movement across loaded valuation groups.</span>
+          </li>
+          <li>
+            <a href="experiments/vg-aggregate.html">Valuation Group Aggregate Lab</a>
+            <span>Aggregate valuation group workbench and projection lab.</span>
+          </li>
+        </ul>
+      </section>
+    </div>
   </main>
-  <script type="module" src="../src/ges/global-header.js?v=befd9ce"></script>
+
+  <script type="application/json" data-ges-experiment-metadata>
+    {
+      "routeName": "experiments-index",
+      "pageType": "experiment-index",
+      "shell": "experiment",
+      "internal": true
+    }
+  </script>
+  <script type="module" src="experiments/ges-experiment.js?v=befd9ce"></script>
 </body>
 </html>
