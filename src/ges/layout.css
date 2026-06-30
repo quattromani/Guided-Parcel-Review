@@ -212,9 +212,9 @@
   html.article-shell-route body .ges-section-heading,
   html.article-shell-route body .ges-margin-insight p {
     justify-self: start;
-    max-width: min(100%, 20rem);
-    max-inline-size: min(100%, 20rem);
-    width: min(100%, 20rem);
+    max-width: 100%;
+    max-inline-size: 100%;
+    width: 100%;
   }
 
   html.article-shell-route body .article-hero .article-hero-media {
@@ -235,10 +235,10 @@
   html.article-shell-route body .protest-evidence-guide-page .tax-story-chapter > ol > li,
   html.article-shell-route body .protest-evidence-guide-page .editorial-narrow > p {
     justify-self: start;
-    max-width: min(100%, 20rem);
-    max-inline-size: min(100%, 20rem);
+    max-width: 100%;
+    max-inline-size: 100%;
     overflow-wrap: anywhere;
     text-wrap: wrap;
-    width: min(100%, 20rem);
+    width: 100%;
   }
 }

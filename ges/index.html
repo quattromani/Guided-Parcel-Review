@@ -246,6 +246,7 @@
         <article class="ges-token-card"><span class="ges-token-swatch" style="--swatch: var(--ges-color-civic-blue)"></span><h3>Civic Blue</h3><code>--ges-color-civic-blue</code></article>
         <article class="ges-token-card"><span class="ges-token-swatch" style="--swatch: var(--ges-color-evidence-green)"></span><h3>Evidence Green</h3><code>--ges-color-evidence-green</code></article>
         <article class="ges-token-card"><span class="ges-token-swatch" style="--swatch: var(--ges-color-caution-amber)"></span><h3>Caution Amber</h3><code>--ges-color-caution-amber</code></article>
+        <article class="ges-token-card"><span class="ges-token-swatch" style="--swatch: var(--ds-color-red-900)"></span><h3>Margin Insight Text</h3><code>--ds-color-red-900</code><p>Dark mode swaps to evidence green.</p></article>
       </div>
       <div class="ges-token-grid">
         <article class="ges-token-card"><p class="ges-specimen-large">Narrative heading</p><code>--ges-type-4xl</code><p>Used for reading-mode section titles, not every headline.</p></article>
@@ -253,8 +254,18 @@
         <article class="ges-token-card"><h3>Paragraph Rhythm</h3><p>Opening prose after a heading starts flush. Adjacent prose paragraphs indent to reinforce continuity.</p><code>.prose + .prose</code></article>
         <article class="ges-token-card"><div class="ges-space-demo" aria-label="Spacing scale"><span></span><span></span><span></span><span></span></div><code>--ges-space-xs to --ges-space-2xl</code></article>
         <article class="ges-token-card"><h3>Radius</h3><p>Small, medium, large, pill, and media radii.</p><code>--ges-radius-md</code></article>
+        <article class="ges-token-card"><h3>Pill Geometry</h3><p>Fixed 26px block size, 12px type, nowrap labels, and row wrapping between pills.</p><code>--ges-pill-*</code></article>
+        <article class="ges-token-card"><h3>Inner Cards</h3><p>Small repeated tiles use shared radius, gap, padding, and a stable minimum block size.</p><code>--ges-inner-*</code></article>
         <article class="ges-token-card"><h3>Elevation</h3><p>Subtle surfaces, media, and small body icon circles only. Avoid decorative shadow stacks.</p><code>--ges-shadow-icon-lift</code></article>
         <article class="ges-token-card"><h3>Widths</h3><p>Reading, wide component, cover, full bleed, and margin insight widths.</p><code>--ges-width-reading</code></article>
+      </div>
+      <div class="editorial-narrow ges-stack ges-stack-compact">
+        <h3>Pill Specimen</h3>
+        <div class="ges-pill-list" role="list" aria-label="Pill geometry examples">
+          <span class="ges-pill" role="listitem">Gage County</span>
+          <span class="ges-tag" role="listitem">Property Assessment</span>
+          <span class="ges-pill" role="listitem">Property Protest</span>
+        </div>
       </div>
       <div class="editorial-narrow ges-stack ges-stack-compact">
         <h3>Editorial Indentation Convention</h3>
@@ -334,9 +345,32 @@
         </header>
         <p class="prose">A Margin Insight orients the reader. It does not summarize the article or replace the reading path.</p>
         <p class="article-caution-note"><svg class="editorial-icon article-caution-icon" aria-hidden="true"><use href="../assets/icons/editorial/sprite.svg#icon-adjustments"></use></svg><span><strong>Calibration:</strong> Do not correct one record by copying another record's mistake.</span></p>
-        <aside class="article-source-note"><p><a href="#patterns">Neb. Rev. Stat. section 77-1502</a>; <a href="#patterns">Title 350, Ch. 10</a>.</p></aside>
+        <p class="article-caution-note article-guidance-note"><svg class="editorial-icon article-guidance-icon" aria-hidden="true"><use href="../assets/icons/editorial/sprite.svg#icon-hand-stop"></use></svg><span><strong>Guidance note:</strong> Guidance and caution notes share the same compact type scale at every breakpoint.</span></p>
+        <aside class="article-source-note" aria-label="Authority">
+          <p>
+            <span class="article-source-note__item"><a href="#patterns">Neb. Rev. Stat. section 77-1502<span class="article-source-note__punctuation">&#8288;;</span></a></span>
+            <span class="article-source-note__item"><a href="#patterns">Title 350, Ch. 10<span class="article-source-note__punctuation">&#8288;.</span></a></span>
+          </p>
+        </aside>
         <aside class="continuation-module"><h3>Need the hearing-side version?</h3><p class="continuation-link"><span>Read next:</span><a href="../articles/before-you-walk-into-a-property-protest/">Before You Walk Into a Property Protest</a></p></aside>
       </div>
+      <section class="tax-article-section tax-story-chapter ges-opening-section levy-wide-panel article-section" data-tone="information" aria-labelledby="sectionCreaseFirstDemoTitle">
+        <div class="editorial-narrow ges-section-lead">
+          <header class="tax-article-header editorial-section-header">
+            <div class="ges-section-heading"><p class="guided-kicker">Section Rhythm</p><h2 id="sectionCreaseFirstDemoTitle">First section stays uncreased</h2></div>
+          </header>
+          <p class="prose">The first story chapter starts the reading path. It does not need a divider because nothing substantive comes before it.</p>
+        </div>
+      </section>
+      <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-labelledby="sectionCreaseDemoTitle">
+        <div class="editorial-narrow ges-section-lead">
+          <header class="tax-article-header editorial-section-header ges-section-header--with-insight">
+            <div class="ges-section-heading"><p class="guided-kicker">Section Divider</p><h2 id="sectionCreaseDemoTitle">The crease divides adjacent sections</h2></div>
+            <aside class="ges-margin-insight"><p class="ges-margin-insight__text">Creases are section boundaries, not content blocks.</p></aside>
+          </header>
+          <p class="prose">The decorative two-line crease appears before a story chapter that directly follows another story chapter. Authors do not place an explicit HR element.</p>
+        </div>
+      </section>
       <section class="resource-section" aria-labelledby="resourceDemoTitle">
         <div class="editorial-narrow"><p class="guided-kicker">Resource Panel</p><h2 id="resourceDemoTitle">Where to find official materials</h2></div>
         <div class="resource-card-grid">
@@ -394,15 +428,35 @@
         <p class="decision-question">Is there support for the requested correction?</p>
         <div class="decision-outcomes" role="list"><div class="decision-branch" data-decision-branch="yes" role="listitem"><strong class="decision-node"><span>Yes</span></strong><span class="decision-result">What correction?</span><p class="decision-followup-question">Does it preserve equalization?</p></div><div class="decision-branch" data-decision-branch="no" role="listitem"><strong class="decision-node"><span>No</span></strong><span class="decision-result">Current record likely remains.</span></div></div>
       </figure>
+      <figure class="assessment-build-panel" aria-labelledby="assessmentBuildDemoTitle">
+        <figcaption id="assessmentBuildDemoTitle"><svg class="editorial-icon" aria-hidden="true"><use href="../assets/icons/editorial/sprite.svg#icon-measurement"></use></svg><span>The current assessment is built from many smaller pieces of information.</span></figcaption>
+        <ul>
+          <li>Living area</li>
+          <li>Quality</li>
+          <li>Condition</li>
+          <li>Lot size</li>
+          <li>Garage</li>
+          <li>Basement</li>
+          <li>Fireplaces</li>
+          <li>Outbuildings</li>
+          <li>Comparable sales</li>
+          <li>Land characteristics</li>
+        </ul>
+      </figure>
       <figure class="evidence-matrix" aria-labelledby="matrixDemoTitle">
         <figcaption id="matrixDemoTitle"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-evidence"></use></svg><span>Evidence Translation Matrix</span></figcaption>
         <div class="evidence-matrix-header" aria-hidden="true"><div class="evidence-matrix-step"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-observe"></use></svg><span><strong>Evidence</strong><em>Your observation</em></span></div><span class="evidence-matrix-arrow"></span><div class="evidence-matrix-step"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-property-record"></use></svg><span><strong>Record</strong><em>What the record says</em></span></div><span class="evidence-matrix-arrow"></span><div class="evidence-matrix-step"><svg class="editorial-icon"><use href="../assets/icons/editorial/sprite.svg#icon-request"></use></svg><span><strong>Request</strong><em>The correction</em></span></div></div>
         <ol class="evidence-path-list"><li><div><p>Photos show sealed fireplace.</p></div><div><p>Record lists functional fireplace.</p></div><div><p>Request fireplace correction.</p></div></li><li><div><p>Measurements show smaller living area.</p></div><div><p>Record shows larger square footage.</p></div><div><p>Request square-footage review.</p></div></li></ol>
       </figure>
-      <figure class="comparison-card" aria-labelledby="comparisonDemoTitle">
+      <figure class="comparison-card comparison-card--directional" aria-labelledby="comparisonDemoTitle">
         <figcaption id="comparisonDemoTitle">Comparison grid</figcaption>
         <div><section><h3>Hard to act on</h3><ul><li>My house is not worth this much.</li><li>This will make my taxes increase.</li></ul></section><section><h3>Easier to evaluate</h3><ul><li>My record lists two fireplaces, but I have one.</li><li>My condition rating appears inconsistent with comparable records.</li></ul></section></div>
       </figure>
+      <ol class="question-checklist" aria-label="Packet questions">
+        <li><h3>What appears incorrect?</h3><p>Name the record fact or value issue as plainly as possible.</p></li>
+        <li><h3>What evidence supports that?</h3><p>Attach the photo, measurement, record, sale, or comparable that helps verify it.</p></li>
+        <li><h3>What correction are you requesting?</h3><p>Ask for the specific record or value adjustment you want considered.</p></li>
+      </ol>
       <figure class="script-card" aria-labelledby="scriptDemoTitle"><figcaption id="scriptDemoTitle">Script card</figcaption><blockquote><p>The property record shows ______.</p><p>My evidence shows ______.</p><p>I am requesting ______.</p></blockquote></figure>
       <figure class="ges-media-block"><video controls preload="metadata" poster="../assets/images/articles/before-you-walk-into-a-property-protest-hero-16x9.jpg"></video><figcaption>Media blocks reserve aspect ratio and keep captions readable.</figcaption></figure>
       <div class="ges-table-scroll"><table class="ges-compact-table"><caption>Compact table</caption><thead><tr><th>Type</th><th>Use</th><th>Print</th></tr></thead><tbody><tr><td>Standard</td><td>Data comparison</td><td>Keep headers</td></tr><tr><td>Citation</td><td>Source list</td><td>Show URLs</td></tr></tbody></table></div>
@@ -415,7 +469,8 @@
       </header>
       <div class="ges-guidance-grid">
         <article class="ges-guidance-card"><h3>Article Cover</h3><p>Purpose: introduce the guide calmly. Use for standalone articles. Do not use inside app task surfaces. Accessibility: one H1; media has alt/caption. Print: preserve title and metadata.</p><code>article-hero</code></article>
-        <article class="ges-guidance-card"><h3>Margin Insight</h3><p>Purpose: orient skimmers with a short cue. Use sparingly, usually 6-14 words. When a later section includes one, a full-width paper-fold crease separates the section before the heading row. First-section insights stay uncreased.</p><code>ges-margin-insight</code></article>
+        <article class="ges-guidance-card"><h3>Margin Insight</h3><p>Purpose: orient skimmers with a short cue. Use sparingly, usually 6-14 words. Adjacent story sections receive the full-width paper-fold crease separately; first story sections stay uncreased.</p><code>ges-margin-insight</code></article>
+        <article class="ges-guidance-card"><h3>Section Crease</h3><p>Purpose: divide adjacent story sections after prior article content. It is generated by the section rhythm rule, not authored with an HR or route helper.</p><code>.tax-story-chapter + .tax-story-chapter</code></article>
         <article class="ges-guidance-card"><h3>Process Strip</h3><p>Purpose: show workflow. Use for ordered steps. Do not use for independent checks. Accessibility: ordered list. Print: avoid breaking inside.</p><code>process-strip</code></article>
         <article class="ges-guidance-card"><h3>Decision Tree</h3><p>Purpose: frame a practical question. Use when a binary branch clarifies the reader's next thought. Do not use for full legal procedure. Accessibility: text labels carry meaning.</p><code>decision-panel</code></article>
         <article class="ges-guidance-card"><h3>Evidence Matrix</h3><p>Purpose: translate observation into requested correction. Do not repeat labels in every row. Mobile: rows stack in source order. Print: keep rows together.</p><code>evidence-matrix</code></article>

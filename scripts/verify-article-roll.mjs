@@ -1,7 +1,19 @@
+import { readFileSync } from "node:fs";
+
 const endpoint = process.env.CDP_ENDPOINT || "http://127.0.0.1:9223";
 const baseUrl = process.env.BASE_URL || "http://127.0.0.1:4217";
 const publicUrl = `${baseUrl}/articles/`;
 const internalUrl = `${baseUrl}/articles/?gpr_person=max-quattromani`;
+const articleManifest = JSON.parse(readFileSync(new URL("../data/app/articles.json", import.meta.url), "utf8"));
+const expectedPublicCount = articleManifest.articles.filter(article => article.published && !article.draft).length;
+const expectedInternalCount = articleManifest.articles.length;
+const expectedDraftCount = articleManifest.articles.filter(article => !article.published || article.draft).length;
+const expectedDraftPreviewCount = articleManifest.articles.filter(article =>
+  (!article.published || article.draft) &&
+  article.route?.canonicalPath &&
+  article.route?.previewable !== false &&
+  (article.route?.previewable === true || !article.route?.sourceNote)
+).length;
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -86,9 +98,11 @@ async function navigate(send, url, expectedCardCount) {
 
 function pageState() {
   const cards = [...document.querySelectorAll("[data-article-card]")];
+  const draftCards = cards.filter(card => card.dataset.articleStatus === "draft");
   return {
     cardCount: cards.length,
-    draftCardCount: cards.filter(card => card.dataset.articleStatus === "draft").length,
+    draftCardCount: draftCards.length,
+    draftPreviewLinkCount: draftCards.filter(card => card.querySelector(".ges-article-card__media-link, h2 a")).length,
     statusTexts: [...document.querySelectorAll(".ges-article-card__status")].map(node => node.textContent.trim()),
     titles: cards.map(card => card.querySelector("h2")?.textContent?.trim()),
     metaRows: cards.map(card => card.querySelector(".ges-article-card__meta-row")?.textContent?.replace(/\s+/g, " ").trim()),
@@ -151,9 +165,9 @@ const { send, ws } = await connect();
 await send("Page.enable");
 await send("Runtime.enable");
 
-await navigate(send, publicUrl, 2);
+await navigate(send, publicUrl, expectedPublicCount);
 const publicState = await evaluate(send, pageState);
-assert(publicState.cardCount === 2, "Public roll should show two published cards.", publicState);
+assert(publicState.cardCount === expectedPublicCount, "Public roll should show published cards.", publicState);
 assert(publicState.draftCardCount === 0, "Public roll should hide drafts.", publicState);
 assert(publicState.statusTexts.length === 0, "Public roll should hide status badges.", publicState);
 assert(publicState.readingProgressCount === 0, "Article roll should not mount Reading Progress.", publicState);
@@ -171,16 +185,17 @@ const filterState = await evaluate(send, filterLegal);
 assert(filterState.cardCount === 1, "Category filter should reduce article cards.", filterState);
 assert(filterState.activeFilter === "true", "Category filter should expose selected state.", filterState);
 
-await navigate(send, internalUrl, 5);
+await navigate(send, internalUrl, expectedInternalCount);
 const internalState = await evaluate(send, pageState);
-assert(internalState.cardCount === 5, "Internal roll should show published and draft entries.", internalState);
-assert(internalState.draftCardCount === 3, "Internal roll should include drafts.", internalState);
+assert(internalState.cardCount === expectedInternalCount, "Internal roll should show published and draft entries.", internalState);
+assert(internalState.draftCardCount === expectedDraftCount, "Internal roll should include drafts.", internalState);
+assert(internalState.draftPreviewLinkCount === expectedDraftPreviewCount, "Internal roll should link previewable draft entries.", internalState);
 assert(internalState.statusTexts.includes("Published") && internalState.statusTexts.includes("Draft"), "Internal roll should show status badges.", internalState);
 assert(internalState.sortExists, "Internal roll should expose sort control.", internalState);
 
 const draftSortState = await evaluate(send, sortDraftsFirst);
 assert(draftSortState.firstStatus === "draft", "Draft sort should put draft entries first.", draftSortState);
-assert(draftSortState.draftCount === 3, "Draft sort should preserve draft entries.", draftSortState);
+assert(draftSortState.draftCount === expectedDraftCount, "Draft sort should preserve draft entries.", draftSortState);
 
 await send("Emulation.setDeviceMetricsOverride", {
   deviceScaleFactor: 1,
@@ -188,7 +203,7 @@ await send("Emulation.setDeviceMetricsOverride", {
   mobile: true,
   width: 390
 });
-await navigate(send, publicUrl, 2);
+await navigate(send, publicUrl, expectedPublicCount);
 const responsiveState = await evaluate(send, mobileState);
 assert(responsiveState.scrollWidth <= responsiveState.clientWidth, "Mobile layout should not overflow horizontally.", responsiveState);
 assert(!responsiveState.gridColumns.includes(" "), "Mobile article cards should stack in one column.", responsiveState);

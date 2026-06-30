@@ -245,11 +245,10 @@ html[data-ges-theme-resolved="dark"] :where(
   .script-card blockquote,
   .meeting-schedule-card li,
   .resource-card,
-  .question-checklist li,
   .note-box
 ) {
-  background: rgb(var(--ges-color-surface-muted));
-  border-color: rgb(var(--ges-color-border-subtle) / 0.76);
+  background: var(--comparison-lane-bg, rgb(var(--ges-color-surface-muted)));
+  border-color: var(--comparison-lane-border, rgb(var(--ges-color-border-subtle) / 0.76));
 }
 
 html[data-ges-theme-resolved="dark"] input,
@@ -258,11 +257,6 @@ html[data-ges-theme-resolved="dark"] select {
   background: rgb(var(--ges-color-surface-elevated));
   border-color: rgb(var(--ges-color-border-strong));
   color: rgb(var(--ges-color-text));
-}
-
-html[data-ges-theme-resolved="dark"] .ges-page-crease {
-  background: linear-gradient(180deg, rgb(var(--ges-color-shadow) / 0.48) 0 var(--ges-rule-width), rgb(var(--ges-color-highlight) / 0.08) var(--ges-rule-width) var(--ges-rule-width-strong));
-  box-shadow: 0 calc(-1 * var(--ges-rule-width)) 0 rgb(var(--ges-color-highlight) / 0.025);
 }
 
 html[data-ges-theme-resolved="dark"] .tax-story-chapter {

@@ -97,6 +97,8 @@ Density changes rhythm. It must not change component meaning.
 ## Shape, Borders, Elevation, Motion
 
 - Radius: `--ges-radius-xs`, `--ges-radius-sm`, `--ges-radius-md`, `--ges-radius-lg`, `--ges-radius-pill`, `--ges-radius-media`
+- Pill geometry: `--ges-pill-font-size`, `--ges-pill-line-height`, `--ges-pill-min-block-size`, `--ges-pill-padding-block`, `--ges-pill-padding-inline`, `--ges-pill-row-gap`, `--ges-pill-letter-spacing`
+- Inner-card geometry: `--ges-inner-card-radius`, `--ges-inner-card-gap`, `--ges-inner-card-padding`, `--ges-inner-tile-min-block-size`, `--ges-inner-tile-padding-block`, `--ges-inner-tile-padding-inline`
 - Borders and rules: `--ges-border-width`, `--ges-border-width-strong`, `--ges-border-width-accent`, `--ges-rule-width`, `--ges-rule-width-strong`, `--ges-print-rule-width`
 - Focus ring: `--ges-focus-ring-width`, `--ges-focus-ring-offset`
 - Shadows: `--ges-shadow-surface`, `--ges-shadow-card`, `--ges-shadow-media`, `--ges-shadow-icon-lift`

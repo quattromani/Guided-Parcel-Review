@@ -3,9 +3,10 @@ import {
   installGuideUtilityLanguage,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderArticleTags as renderGesArticleTags,
-  renderPageCrease,
+  renderContinuationModule,
   renderResourcesBlock as renderGesResourcesBlock,
-  renderSectionHeader as sectionHeader
+  renderSectionHeader as sectionHeader,
+  renderSourceNote
 } from "../ges/article-components.js?v=befd9ce";
 import { createGesArticleShell } from "../ges/shell.js?v=befd9ce";
 import {
@@ -230,16 +231,6 @@ function listMarkup(items) {
   `;
 }
 
-function renderSourceNote(note) {
-  if (!note?.text) return "";
-
-  return `
-    <aside class="article-source-note" aria-label="${escapeHtml(note.label ?? "Source note")}">
-      <p>${escapeHtml(note.text)}</p>
-    </aside>
-  `;
-}
-
 function renderArticleDepthMarkers() {
   return `
     <div class="article-depth-markers" aria-hidden="true">
@@ -391,7 +382,6 @@ function renderMysterySection() {
 
   return `
     <section class="tax-article-section tax-story-chapter tax-article-opening levy-wide-panel article-section" data-tone="reflection" aria-labelledby="mysteryTitle">
-      ${renderPageCrease()}
       <div class="editorial-narrow ges-section-lead">
         ${sectionHeader(section.kicker, section.title, "mysteryTitle", section)}
         ${paragraphs(section.paragraphs)}
@@ -421,7 +411,6 @@ function renderTaxResultSection() {
 
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="comparison" aria-labelledby="taxResultTitle">
-      ${renderPageCrease()}
       <div class="editorial-narrow ges-section-lead">
         ${sectionHeader(section.kicker, section.title, "taxResultTitle", section)}
         ${paragraph(section.intro)}
@@ -447,7 +436,6 @@ function renderFrameworkSection() {
 
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" aria-labelledby="frameworkTitle">
-      ${renderPageCrease()}
       <div class="editorial-narrow ges-section-lead">
         ${sectionHeader(section.kicker, section.title, "frameworkTitle", section)}
         ${paragraph(section.intro)}
@@ -503,7 +491,6 @@ function renderApplySection() {
 
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="action" aria-labelledby="applyTitle">
-      ${renderPageCrease()}
       <div class="editorial-narrow ges-section-lead">
         ${sectionHeader(section.kicker, section.title, "applyTitle", section)}
         ${paragraphs(section.paragraphs)}
@@ -544,7 +531,6 @@ function renderCalculatorSection() {
 
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section protest-guide-panel protest-paradox-calculator-section" data-tone="action" aria-labelledby="calculatorTitle">
-      ${renderPageCrease()}
       <div class="editorial-narrow ges-section-lead">
         ${sectionHeader(section.kicker, section.title, "calculatorTitle", section)}
         ${paragraph(section.intro)}
@@ -625,7 +611,6 @@ function renderClosingSection() {
       </figure>
     </section>
     <section class="tax-article-section tax-story-chapter tax-article-closing levy-article-narrow article-section" data-tone="reflection" aria-labelledby="finalThoughtTitle">
-      ${renderPageCrease()}
       ${sectionHeader(closing.kicker, closing.title, "finalThoughtTitle", closing)}
       ${paragraphs(closing.paragraphs)}
       ${renderSourceNote(ARTICLE_SOURCE_NOTES.closing)}
@@ -635,13 +620,12 @@ function renderClosingSection() {
         <button type="button" data-article-share data-article-action="share_article" data-article-label="${ARTICLE_TITLE}">${escapeHtml(closing.shareButton)}</button>
         <span data-share-status role="status" aria-live="polite"></span>
       </aside>
-      <aside class="continuation-module related-article-coda" aria-labelledby="relatedEvidenceGuideTitle">
-        <p id="relatedEvidenceGuideTitle">${escapeHtml(closing.continuation.title)}</p>
-        <p class="continuation-link">
-          <span>${escapeHtml(closing.continuation.link.label)}</span>
-          <a href="${escapeHtml(closing.continuation.link.href)}" data-article-action="related_article" data-article-label="${escapeHtml(closing.continuation.link.title)}">${escapeHtml(closing.continuation.link.title)}</a>
-        </p>
-      </aside>
+      ${renderContinuationModule(closing.continuation, {
+        action: "related_article",
+        className: "related-article-coda",
+        id: "relatedEvidenceGuideTitle",
+        titleTag: "p"
+      })}
     </section>
   `;
 }

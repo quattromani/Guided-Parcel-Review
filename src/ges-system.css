@@ -92,6 +92,7 @@
   --ds-color-red-50: 254 242 242;
   --ds-color-red-200: 254 202 202;
   --ds-color-red-700: 185 28 28;
+  --ds-color-red-900: 127 29 29;
   --ds-color-emerald-700: 4 120 87;
 }
 
@@ -392,6 +393,19 @@
   --ges-radius-lg: var(--ds-radius-lg);
   --ges-radius-pill: var(--ds-radius-pill);
   --ges-radius-media: var(--ds-radius-media);
+  --ges-pill-font-size: var(--ds-type-xs);
+  --ges-pill-line-height: var(--ds-line-4);
+  --ges-pill-min-block-size: 1.625rem;
+  --ges-pill-padding-block: var(--ds-space-1);
+  --ges-pill-padding-inline: var(--ds-space-2-5);
+  --ges-pill-row-gap: var(--ds-space-2);
+  --ges-pill-letter-spacing: var(--ds-letter-label);
+  --ges-inner-card-radius: var(--ds-radius-md);
+  --ges-inner-card-gap: var(--ds-space-2);
+  --ges-inner-card-padding: var(--ds-space-3);
+  --ges-inner-tile-min-block-size: 3.5rem;
+  --ges-inner-tile-padding-block: var(--ds-space-2-5);
+  --ges-inner-tile-padding-inline: var(--ds-space-4);
   --ges-border-width: var(--ds-border-width);
   --ges-border-width-strong: var(--ds-border-width-strong);
   --ges-border-width-accent: var(--ds-border-width-accent);

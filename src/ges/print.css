@@ -60,6 +60,16 @@
     width: 100%;
   }
 
+  .tax-story-chapter + .tax-story-chapter::before {
+    background: linear-gradient(180deg, rgb(var(--ges-print-rule)) 0 var(--ges-print-rule-width), rgb(var(--ges-print-page)) var(--ges-print-rule-width) 1pt);
+    box-shadow: none;
+    content: "";
+    display: block;
+    height: 1pt;
+    margin: 0 0 0.16in;
+    width: 100%;
+  }
+
   .article-hero,
   .article-hero-packet,
   .article-entry-panel {
@@ -467,6 +477,10 @@
 
   .meeting-schedule-card em {
     display: none;
+  }
+
+  .meeting-schedule-card :is(a, .meeting-date-static) {
+    padding: 0;
   }
 
   .print-calendar-url {

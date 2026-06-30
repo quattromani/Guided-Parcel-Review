@@ -1,10 +1,13 @@
 import { escapeHtml } from "../utils/html.js?v=befd9ce";
 import {
   installGuideUtilityLanguage,
+  renderArticleNote,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderArticleTags as renderGesArticleTags,
+  renderContinuationModule,
   renderResourcesBlock as renderGesResourcesBlock,
-  renderSectionHeader as sectionHeader
+  renderSectionHeader as sectionHeader,
+  renderSourceNote as renderGesSourceNote
 } from "../ges/article-components.js?v=befd9ce";
 import { createGesArticleShell } from "../ges/shell.js?v=befd9ce";
 import {
@@ -86,6 +89,7 @@ const EVIDENCE_HEADER_STEPS = [
     description: "The correction you're requesting"
   }
 ];
+const renderSourceNote = note => renderGesSourceNote(note, { references: ARTICLE_REFERENCES });
 const ORGANIZATION_STEPS = articleSource.organizationSteps;
 const ARTICLE_AUTHOR_MAILTO = `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeURIComponent(`Re: ${ARTICLE_TITLE}`)}`;
 
@@ -108,72 +112,11 @@ function paragraphs(items = []) {
   return items.map(paragraph).join("");
 }
 
-function cautionParagraph(text) {
-  const [lead, ...rest] = text.split(":");
-  if (!rest.length) return paragraph(text);
-
-  return `
-    <p class="article-caution-note">
-      ${editorialIcon("adjustments", "article-caution-icon")}
-      <span><strong>${escapeHtml(`${lead}:`)}</strong> ${escapeHtml(rest.join(":").trim())}</span>
-    </p>
-  `;
-}
-
-function labeledNote(label, text, className = "") {
-  return `
-    <p class="article-caution-note article-guidance-note ${escapeHtml(className)}">
-      ${editorialIcon("hand-stop", "article-guidance-icon")}
-      <span><strong>${escapeHtml(`${label}:`)}</strong> ${escapeHtml(text)}</span>
-    </p>
-  `;
-}
-
 function listMarkup(items) {
   return `
     <ul>
       ${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
     </ul>
-  `;
-}
-
-function renderExternalSourceLink(item) {
-  const url = item.urlKey ? ARTICLE_REFERENCES[item.urlKey] : item.url;
-  if (!url) return `<span>${escapeHtml(item.label)}</span>`;
-
-  return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.label)}</a>`;
-}
-
-function citationIdForItem(item) {
-  if (item.sourceId) return item.sourceId;
-  if (item.urlKey) return item.urlKey;
-
-  return item.label
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-function citationCategoryForItem(item) {
-  if (item.category) return item.category;
-  if (item.urlKey?.startsWith("nebraska") || item.urlKey?.startsWith("title350")) return "legal-authority";
-  if (/\b(IAAO|PAD|Property Assessment Division|Reports & Opinions)\b/.test(item.label)) return "assessment-guidance";
-  return "practice-basis";
-}
-
-function uniqueValues(values) {
-  return [...new Set(values.filter(Boolean))];
-}
-
-function renderSourceNote(note) {
-  if (!note?.items?.length) return "";
-  const sourceIds = uniqueValues(note.items.map(citationIdForItem));
-  const sourceCategories = uniqueValues(note.items.map(citationCategoryForItem));
-
-  return `
-    <aside class="article-source-note" aria-label="${escapeHtml(note.label)}" data-source-label="${escapeHtml(note.label)}" data-source-ids="${escapeHtml(sourceIds.join(" "))}" data-source-categories="${escapeHtml(sourceCategories.join(" "))}">
-      <p>${note.items.map(renderExternalSourceLink).join("; ")}.</p>
-    </aside>
   `;
 }
 
@@ -561,7 +504,7 @@ function renderWhyProtestsFailSection() {
         ${sectionHeader(section.kicker, section.title, "protestFailTitle", section)}
         ${paragraphs(section.paragraphs)}
       </div>
-      <figure class="comparison-card" aria-labelledby="requestCompareTitle">
+      <figure class="comparison-card comparison-card--directional" aria-labelledby="requestCompareTitle">
         <figcaption id="requestCompareTitle">Sincerity is not the same thing as usable evidence</figcaption>
         <div>
           <section>
@@ -691,7 +634,9 @@ function renderRecordsSection() {
       </div>
       ${renderRecordCallout()}
       <div class="editorial-narrow">
-        ${cautionParagraph(section.caution)}
+        ${renderArticleNote({ text: section.caution, splitLead: true }, {
+          iconHtml: editorialIcon("adjustments", "article-caution-icon")
+        })}
         ${renderSourceNote(ARTICLE_SOURCE_NOTES.records)}
       </div>
     </section>
@@ -810,7 +755,11 @@ function renderResourcesSection() {
           </div>
         `).join("")}
       </div>
-      ${labeledNote(section.noteLabel, section.note, "resource-note")}
+      ${renderArticleNote({ label: section.noteLabel, text: section.note }, {
+        className: "resource-note",
+        iconHtml: editorialIcon("hand-stop", "article-guidance-icon"),
+        variant: "guidance"
+      })}
     </section>
   `;
 }
@@ -825,14 +774,24 @@ function renderOneMoreThoughtSection() {
         <ul>
           ${BOARD_MEETINGS.map(meeting => {
             const isPast = boardMeetingIsPast(meeting, now);
+            const meetingDate = `<span>${escapeHtml(meeting.dateLabel)}</span>`;
+            const meetingTime = `<strong>${escapeHtml(meeting.timeLabel)}</strong>`;
             return `
             <li class="${isPast ? "meeting-date-past" : ""}">
-              <a href="${escapeHtml(meeting.calendarUrl)}" download aria-label="${isPast ? "Past hearing: " : "Add "}${escapeHtml(meeting.dateLabel)} at ${escapeHtml(meeting.timeLabel)} Central Time${isPast ? "" : " to calendar"}" data-article-action="calendar_download" data-article-label="${escapeHtml(meeting.dateLabel)}">
-                <span>${escapeHtml(meeting.dateLabel)}</span>
-                <strong>${escapeHtml(meeting.timeLabel)}</strong>
-                <em>${isPast ? "Past hearing" : "Add to calendar"}</em>
-                <code class="print-calendar-url">${escapeHtml(meeting.calendarUrl)}</code>
-              </a>
+              ${isPast ? `
+                <div class="meeting-date-static" aria-label="Past hearing: ${escapeHtml(meeting.dateLabel)} at ${escapeHtml(meeting.timeLabel)} Central Time">
+                  ${meetingDate}
+                  ${meetingTime}
+                  <em>Past hearing</em>
+                </div>
+              ` : `
+                <a href="${escapeHtml(meeting.calendarUrl)}" download aria-label="Add ${escapeHtml(meeting.dateLabel)} at ${escapeHtml(meeting.timeLabel)} Central Time to calendar" data-article-action="calendar_download" data-article-label="${escapeHtml(meeting.dateLabel)}">
+                  ${meetingDate}
+                  ${meetingTime}
+                  <em>Add to calendar</em>
+                  <code class="print-calendar-url">${escapeHtml(meeting.calendarUrl)}</code>
+                </a>
+              `}
             </li>
           `;
           }).join("")}
@@ -873,7 +832,10 @@ function renderClosingSection() {
         </button>
         <span data-share-status role="status" aria-live="polite"></span>
       </aside>
-      ${renderContinuationModule(section.continuation)}
+      ${renderContinuationModule(section.continuation, {
+        id: "protestContinuationTitle",
+        paragraphClass: "prose"
+      })}
     </section>
   `;
 }
@@ -883,23 +845,6 @@ function renderArticleResourcesBlock() {
     id: "protestArticleResources",
     references: ARTICLE_REFERENCES
   });
-}
-
-function renderContinuationModule(module) {
-  if (!module?.paragraphs?.length) return "";
-
-  return `
-    <aside class="continuation-module" aria-labelledby="protestContinuationTitle">
-      <h3 id="protestContinuationTitle">${escapeHtml(module.title)}</h3>
-      ${paragraphs(module.paragraphs)}
-      ${module.link ? `
-        <p class="continuation-link">
-          <span>${escapeHtml(module.link.label)}</span>
-          <a href="${escapeHtml(module.link.href)}" data-article-action="continuation_article" data-article-label="${escapeHtml(module.link.title)}">${escapeHtml(module.link.title)}</a>
-        </p>
-      ` : ""}
-    </aside>
-  `;
 }
 
 export function isProtestEvidenceGuideRequest(searchParams = new URLSearchParams(window.location.search)) {

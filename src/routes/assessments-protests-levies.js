@@ -9,7 +9,8 @@ import {
   renderMemoryAnchor,
   renderReaderCheckpoint,
   renderResourcesBlock,
-  renderSectionHeader
+  renderSectionHeader,
+  renderSourceNote
 } from "../ges/article-components.js?v=befd9ce";
 import { installGesReadingProgress } from "../ges/reading-progress.js?v=befd9ce";
 import { createGesArticleShell } from "../ges/shell.js?v=befd9ce";
@@ -108,7 +109,7 @@ export function renderAssessmentsProtestsLeviesArticle() {
       ${renderSystemMapSection()}
       ${renderResponsibilitySection()}
       ${renderReaderCheckpoint(ACT_ONE.checkpoint)}
-      ${renderSourceNote(ACT_ONE.sourceNote)}
+      ${renderSourceNote(ACT_ONE.sourceNote, { className: "ges-act-source-note", references: ARTICLE.references })}
       ${renderActTransition(ACT_ONE.transition)}
       ${renderValueNumberAct()}
       ${renderActTransition(ARTICLE.actTwo.transition)}
@@ -176,8 +177,7 @@ function renderOpeningSection() {
       })}
       ${renderSectionHeader(ACT_ONE.kicker, ACT_ONE.title, "noticeMomentTitle", {
         companion: "Before the article explains methods, deadlines, or levies, it starts with the question a property owner actually has first.",
-        marginInsight: ACT_ONE.marginInsights.notice,
-        marginInsightPlacement: "first"
+        marginInsight: ACT_ONE.marginInsights.notice
       })}
       <p class="ges-act-lede">${escapeHtml(ACT_ONE.heroHook)}</p>
       ${renderMemoryAnchor(ACT_ONE.memoryAnchor)}
@@ -670,25 +670,6 @@ function renderNextSteps(nextSteps = {}) {
         ${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}
       </ol>
     </section>
-  `;
-}
-
-function renderSourceNote(note = {}) {
-  if (!note.text) return "";
-
-  const links = Array.isArray(note.links) ? note.links : [];
-
-  return `
-    <aside class="article-source-note ges-act-source-note" aria-label="${escapeHtml(note.label ?? "Source note")}">
-      <p>
-        <span>${escapeHtml(note.text)}</span>
-        ${links.map(link => {
-          const href = ARTICLE.references[link.urlKey] ?? link.href ?? "";
-          if (!href) return "";
-          return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}</a>`;
-        }).join(" ")}
-      </p>
-    </aside>
   `;
 }
 

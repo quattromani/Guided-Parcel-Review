@@ -56,6 +56,15 @@ function routeHref(article = {}) {
   return article.route?.canonicalPath || "";
 }
 
+function canPreviewArticle(article = {}, internalView = false) {
+  const href = routeHref(article);
+  if (!href) return false;
+  if (article.status === "published") return true;
+  if (!internalView || article.status !== "draft") return false;
+  if (article.route?.previewable === false) return false;
+  return article.route?.previewable === true || !article.route?.sourceNote;
+}
+
 function readingTimeText(article = {}) {
   const minutes = Number.parseInt(article.readingTime?.minutes, 10);
   if (!Number.isFinite(minutes) || minutes < 1) return "Reading time pending";
@@ -224,20 +233,27 @@ function renderCompatibility(article) {
   `;
 }
 
-function renderCardLink(article, content) {
+function articleLinkLabel(article = {}) {
+  return article.status === "draft" ? `Preview draft: ${article.title}` : `Read ${article.title}`;
+}
+
+function renderCardLink(article, content, { internalView = false } = {}) {
   const href = routeHref(article);
-  if (!href || article.status === "draft") {
+  if (!canPreviewArticle(article, internalView)) {
     return `<div class="ges-article-card__media-placeholder">${content}</div>`;
   }
 
-  return `<a class="ges-article-card__media-link" href="${escapeHtml(href)}" aria-label="Read ${escapeHtml(article.title)}">${content}</a>`;
+  return `<a class="ges-article-card__media-link" href="${escapeHtml(href)}" aria-label="${escapeHtml(articleLinkLabel(article))}">${content}</a>`;
 }
 
 function renderArticleCard(article, { internalView = false } = {}) {
   const href = routeHref(article);
-  const titleMarkup = href && article.status === "published"
+  const previewable = canPreviewArticle(article, internalView);
+  const titleMarkup = previewable
     ? `<a href="${escapeHtml(href)}">${escapeHtml(article.title)}</a>`
     : `<span>${escapeHtml(article.title)}</span>`;
+  const draftNote = article.route?.sourceNote
+    || (previewable ? "Draft preview route is available. Public roll still hides this article." : "Draft metadata only. Public route is not live.");
   const updatedMarkup = article.modifiedDate
     ? `<span>Updated ${escapeHtml(formatDate(article.modifiedDate))}</span>`
     : "";
@@ -250,7 +266,7 @@ function renderArticleCard(article, { internalView = false } = {}) {
       <figure class="ges-article-card__media">
         ${renderCardLink(article, `
           <img src="${escapeHtml(article.hero?.src)}" alt="${escapeHtml(article.hero?.alt || "")}" loading="lazy" decoding="async" />
-        `)}
+        `, { internalView })}
       </figure>
       <div class="ges-article-card__body">
         <div class="ges-article-card__meta-row">
@@ -274,7 +290,7 @@ function renderArticleCard(article, { internalView = false } = {}) {
         ${renderTermList(article.categories, "Article categories", "ges-article-card__categories")}
         ${renderTermList(article.tags, "Article tags", "ges-article-card__tags")}
         ${renderCompatibility(article)}
-        ${internalView && article.status === "draft" ? `<p class="ges-article-card__internal-note">${escapeHtml(article.route?.sourceNote || "Draft metadata only. Public route is not live.")}</p>` : ""}
+        ${internalView && article.status === "draft" ? `<p class="ges-article-card__internal-note">${escapeHtml(draftNote)}</p>` : ""}
       </div>
     </article>
   `;

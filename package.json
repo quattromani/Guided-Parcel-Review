@@ -1,0 +1,22 @@
+{
+  "name": "guided-parcel-review",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Static Guided Parcel Review site and Guided Editorial System article tooling.",
+  "scripts": {
+    "start": "node server.js",
+    "serve": "node server.js",
+    "build:css": "node scripts/build-scss.mjs",
+    "validate:data": "node scripts/validate-data-contracts.js",
+    "check:syntax": "node --check server.js && node --check src/ges/article-components.js && node --check src/routes/article-roll.js && node --check src/routes/assessments-protests-levies.js && node --check src/routes/protest-evidence-guide.js && node --check src/routes/protest-paradox.js && node --check src/routes/levy-compression-post.js && node --check scripts/verify-article-pages.mjs && node --check scripts/verify-article-roll.mjs && node --check scripts/verify-global-header.mjs && node --check scripts/test-internal-field-kit.mjs && node --check scripts/test-internal-project-nav.mjs",
+    "verify:articles": "node scripts/verify-article-pages.mjs",
+    "verify:article-roll": "node scripts/verify-article-roll.mjs",
+    "verify:global-header": "node scripts/verify-global-header.mjs",
+    "test:internal-field-kit": "node scripts/test-internal-field-kit.mjs",
+    "test:internal-project-nav": "node scripts/test-internal-project-nav.mjs",
+    "test": "npm run check:syntax && npm run validate:data"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

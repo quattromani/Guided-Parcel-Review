@@ -21,7 +21,6 @@ function marginInsightClasses(insight = {}, options = {}) {
 
   if (placement === "inline") classes.push("ges-margin-insight--inline");
   if (placement === "after-content") classes.push("ges-margin-insight--after-content");
-  if (placement === "first" || options.first || insight.first) classes.push("ges-margin-insight--first");
 
   return classes.join(" ");
 }
@@ -37,8 +36,82 @@ export function renderMarginInsight(insight, options = {}) {
   `;
 }
 
-export function renderPageCrease() {
-  return `<hr class="ges-page-crease" />`;
+function uniqueValues(values) {
+  return [...new Set(values.filter(Boolean))];
+}
+
+function sourceNoteHref(item = {}, options = {}) {
+  if (typeof options.resolveHref === "function") return options.resolveHref(item) ?? "";
+  if (item.urlKey) return options.references?.[item.urlKey] ?? "";
+  return item.url ?? item.href ?? "";
+}
+
+function sourceNoteId(item = {}) {
+  if (item.sourceId) return item.sourceId;
+  if (item.urlKey) return item.urlKey;
+
+  return (item.label ?? item.title ?? item.text ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function sourceNoteCategory(item = {}) {
+  if (item.category) return item.category;
+  if (item.urlKey?.startsWith("nebraska") || item.urlKey?.startsWith("title350")) return "legal-authority";
+  if (/\b(IAAO|PAD|Property Assessment Division|Reports & Opinions)\b/.test(item.label ?? "")) return "assessment-guidance";
+  return "practice-basis";
+}
+
+function renderSourceNoteLink(item = {}, options = {}, suffix = "") {
+  const label = item.label ?? item.title ?? item.text ?? "";
+  const href = sourceNoteHref(item, options);
+  const suffixMarkup = suffix ? `<span class="article-source-note__punctuation">&#8288;${escapeHtml(suffix)}</span>` : "";
+  if (!href) return `<span>${escapeHtml(label)}${suffixMarkup}</span>`;
+
+  const target = item.target ?? options.linkTarget ?? "_blank";
+  const rel = item.rel ?? options.linkRel ?? "noopener noreferrer";
+  const targetAttribute = target ? ` target="${escapeHtml(target)}"` : "";
+  const relAttribute = rel ? ` rel="${escapeHtml(rel)}"` : "";
+
+  return `<a href="${escapeHtml(href)}"${targetAttribute}${relAttribute}>${escapeHtml(label)}${suffixMarkup}</a>`;
+}
+
+export function renderSourceNote(note = {}, options = {}) {
+  const items = Array.isArray(note.items) ? note.items.filter(Boolean) : [];
+  const links = Array.isArray(note.links) ? note.links.filter(Boolean) : [];
+  const text = note.text ?? "";
+
+  if (!items.length && !links.length && !text) return "";
+
+  const label = note.label ?? "Source note";
+  const classes = ["article-source-note", options.className, note.className].filter(Boolean).join(" ");
+  const metadataAttributes = [];
+
+  if (items.length && options.includeMetadata !== false) {
+    const sourceIds = uniqueValues(items.map(item => (options.sourceIdForItem ?? sourceNoteId)(item)));
+    const sourceCategories = uniqueValues(items.map(item => (options.sourceCategoryForItem ?? sourceNoteCategory)(item)));
+
+    metadataAttributes.push(`data-source-label="${escapeHtml(label)}"`);
+    if (sourceIds.length) metadataAttributes.push(`data-source-ids="${escapeHtml(sourceIds.join(" "))}"`);
+    if (sourceCategories.length) metadataAttributes.push(`data-source-categories="${escapeHtml(sourceCategories.join(" "))}"`);
+  }
+
+  const body = items.length
+    ? items.map((item, index) => {
+      const punctuation = index === items.length - 1 ? "." : ";";
+      return `<span class="article-source-note__item">${renderSourceNoteLink(item, options, punctuation)}</span>`;
+    }).join(" ")
+    : [
+      text ? `<span>${escapeHtml(text)}</span>` : "",
+      links.map(link => renderSourceNoteLink(link, options)).join(" ")
+    ].filter(Boolean).join(" ");
+
+  return `
+    <aside class="${escapeHtml(classes)}" aria-label="${escapeHtml(label)}"${metadataAttributes.length ? ` ${metadataAttributes.join(" ")}` : ""}>
+      <p>${body}</p>
+    </aside>
+  `;
 }
 
 export function renderMemoryAnchor(anchor = {}) {
@@ -88,6 +161,80 @@ export function renderActTransition(transition = {}) {
       <p class="ges-act-transition__kicker">${escapeHtml(kicker)}</p>
       <p class="ges-act-transition__title">${titleMarkup}</p>
       ${description ? `<p class="ges-act-transition__description">${escapeHtml(description)}</p>` : ""}
+    </aside>
+  `;
+}
+
+function renderNoteBody({ label = "", text = "", splitLead = false } = {}) {
+  if (label) {
+    return `<span><strong>${escapeHtml(`${label}:`)}</strong> ${escapeHtml(text)}</span>`;
+  }
+
+  if (splitLead) {
+    const [lead, ...rest] = String(text).split(":");
+    if (rest.length) {
+      return `<span><strong>${escapeHtml(`${lead}:`)}</strong> ${escapeHtml(rest.join(":").trim())}</span>`;
+    }
+  }
+
+  return `<span>${escapeHtml(text)}</span>`;
+}
+
+function safeTextTag(value = "", fallback = "p") {
+  const tag = String(value || fallback).toLowerCase();
+  return ["p", "h2", "h3", "h4", "h5", "h6"].includes(tag) ? tag : fallback;
+}
+
+export function renderArticleNote(note = {}, options = {}) {
+  const text = note.text ?? options.text ?? "";
+  const label = note.label ?? options.label ?? "";
+  if (!text && !label) return "";
+
+  const variant = note.variant ?? options.variant ?? "";
+  const iconHtml = note.iconHtml ?? options.iconHtml ?? "";
+  const classes = [
+    "article-caution-note",
+    variant === "guidance" ? "article-guidance-note" : "",
+    options.className,
+    note.className
+  ].filter(Boolean).join(" ");
+
+  return `
+    <p class="${escapeHtml(classes)}">
+      ${iconHtml}
+      ${renderNoteBody({ label, text, splitLead: note.splitLead ?? options.splitLead })}
+    </p>
+  `;
+}
+
+export function renderContinuationModule(module = {}, options = {}) {
+  const paragraphs = Array.isArray(module.paragraphs) ? module.paragraphs.filter(Boolean) : [];
+  const title = module.title ?? "";
+  const link = module.link ?? null;
+
+  if (!title && !paragraphs.length && !link) return "";
+
+  const id = options.id ?? module.id ?? "gesContinuationTitle";
+  const titleTag = safeTextTag(options.titleTag ?? module.titleTag, "h3");
+  const paragraphClass = options.paragraphClass ?? module.paragraphClass ?? "";
+  const action = options.action ?? module.action ?? "continuation_article";
+  const classes = ["continuation-module", options.className, module.className].filter(Boolean).join(" ");
+  const linkHref = link?.href ?? link?.url ?? "";
+  const linkTitle = link?.title ?? link?.label ?? "";
+  const titleMarkup = title
+    ? `<${titleTag} id="${escapeHtml(id)}">${escapeHtml(title)}</${titleTag}>`
+    : "";
+
+  return `
+    <aside class="${escapeHtml(classes)}"${title ? ` aria-labelledby="${escapeHtml(id)}"` : ""}>
+      ${titleMarkup}
+      ${paragraphs.map(paragraph => `<p${paragraphClass ? ` class="${escapeHtml(paragraphClass)}"` : ""}>${escapeHtml(paragraph)}</p>`).join("")}
+      ${link ? `
+        <p class="continuation-link">
+          ${link.label ? `<span>${escapeHtml(link.label)}</span>` : ""}
+          ${linkHref ? `<a href="${escapeHtml(linkHref)}" data-article-action="${escapeHtml(link.action ?? action)}" data-article-label="${escapeHtml(linkTitle)}">${escapeHtml(linkTitle)}</a>` : `<span>${escapeHtml(linkTitle)}</span>`}
+        </p>
+      ` : ""}
     </aside>
   `;
 }
@@ -208,10 +355,6 @@ function slugValue(value = "") {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
-}
-
-function uniqueValues(values) {
-  return [...new Set(values.filter(Boolean))];
 }
 
 function clampHeadingLevel(value, fallback = 2) {

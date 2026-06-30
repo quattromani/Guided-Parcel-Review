@@ -1,5 +1,29 @@
 # GES Changelog
 
+## Unreleased
+
+### New
+
+- Added a universal adjacent-section paper-fold crease for article story chapters. Authors no longer place one-off `hr`/page-crease markup.
+- Added shared article helpers for source notes, article caution/guidance notes, and continuation modules.
+- Added article-page browser verification coverage for section creases, Margin Insight color, source-note punctuation wrapping, past-hearing static states, internal draft preview links, mobile overflow, and light/dark mode.
+- Added `package.json` scripts for local serving, syntax checks, data validation, article verification, article-roll verification, global-header verification, and internal-tool checks.
+
+### Changed
+
+- Margin Insight text now uses red-900 in light mode and a green evidence tone in dark mode, while labels/headings keep their normal treatment.
+- Source-note punctuation is rendered inside the source link/span so semicolons and periods do not drop before the next link icon.
+- Guidance and caution article notes now share the same compact font size at each breakpoint.
+- Article Roll internally links previewable draft routes while keeping metadata-only drafts non-clickable and public drafts hidden.
+- Directional comparison cards use subtle yellow/green tint only to communicate directionality, not result.
+- Pill/chip geometry now uses shared `--ges-pill-*` tokens across article tags, public filters, status labels, and legacy comparison badges.
+- Small inner list cards and tiles now use shared `--ges-inner-*` geometry across assessment build fields, record-callout rows, comparison lanes, question items, and resource cards.
+
+### Removed / Consolidated
+
+- Removed the stale Margin Insight `first` API/class path.
+- Removed one-off page-crease markup and local source-note, note, and continuation renderers from article routes.
+
 ## 1.0.0 - 2026-06-27
 
 GES 1.0 establishes the reusable civic editorial design system baseline.

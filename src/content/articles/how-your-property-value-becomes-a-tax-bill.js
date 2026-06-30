@@ -76,8 +76,7 @@ export const howYourPropertyValueBecomesATaxBillArticle = {
     marginInsights: {
       notice: {
         label: "Reader cue",
-        text: "A valuation notice is not a tax bill.",
-        first: true
+        text: "A valuation notice is not a tax bill."
       },
       roles: {
         label: "Office cue",
