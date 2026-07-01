@@ -30,4 +30,4 @@ export function formatNullableLevy(value) {
   return value.toFixed(6).replace(/\.?0+$/, "");
 }
 
-export { calculateEtr, groupLevy, latestTaxDistributionRows, sumRates } from "./calculations/tax.js?v=befd9ce";
+export { calculateEtr, groupLevy, latestTaxDistributionRows, sumRates } from "./calculations/tax.js?v=20260701-article-polish-4";

@@ -1,11 +1,11 @@
-import { formatNullableLevy, formatNullableMoney } from "../format.js?v=befd9ce";
+import { formatNullableLevy, formatNullableMoney } from "../format.js?v=20260701-article-polish-4";
 import {
   finalizedTaxStatements,
   statementGrossLevy,
   statementTotalCredits
-} from "../render.js?v=befd9ce";
-import { createGesPublicShell } from "../ges/shell.js?v=befd9ce";
-import { escapeHtml } from "../utils/html.js?v=befd9ce";
+} from "../render.js?v=20260701-article-polish-4";
+import { createGesPublicShell } from "../ges/shell.js?v=20260701-article-polish-4";
+import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 
 const percentOneDecimal = new Intl.NumberFormat("en-US", {
   style: "percent",

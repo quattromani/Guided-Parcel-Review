@@ -1,4 +1,4 @@
-import { escapeHtml } from "../utils/html.js?v=befd9ce";
+import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import {
   installGuideUtilityLanguage,
   renderArticleHero,
@@ -8,14 +8,14 @@ import {
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote as renderGesSourceNote
-} from "../ges/article-components.js?v=befd9ce";
-import { createGesArticleShell } from "../ges/shell.js?v=befd9ce";
+} from "../ges/article-components.js?v=20260701-article-polish-4";
+import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
   renderGesReadingProgressEndMarker
-} from "../ges/reading-progress.js?v=befd9ce";
-import { beforeYouWalkIntoPropertyProtestArticle as articleSource } from "../content/articles/before-you-walk-into-a-property-protest.js?v=befd9ce";
-import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=befd9ce";
+} from "../ges/reading-progress.js?v=20260701-article-polish-4";
+import { beforeYouWalkIntoPropertyProtestArticle as articleSource } from "../content/articles/before-you-walk-into-a-property-protest.js?v=20260701-article-polish-4";
+import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260701-article-polish-4";
 
 const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg?v=20260626t";
 const ARTICLE_SECTIONS = articleSource.sections;
@@ -89,9 +89,26 @@ const EVIDENCE_HEADER_STEPS = [
     description: "The correction you're requesting"
   }
 ];
+const EVIDENCE_CARD_VARIANTS = ["forest", "blue", "violet", "amber", "orange", "teal"];
 const renderSourceNote = note => renderGesSourceNote(note, { references: ARTICLE_REFERENCES });
 const ORGANIZATION_STEPS = articleSource.organizationSteps;
 const ARTICLE_AUTHOR_MAILTO = `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeURIComponent(`Re: ${ARTICLE_TITLE}`)}`;
+
+function getEvidenceCardVariants(count = 0) {
+  const variants = [];
+
+  for (let index = 0; index < count; index += 1) {
+    const preferredVariant = EVIDENCE_CARD_VARIANTS[index % EVIDENCE_CARD_VARIANTS.length];
+    const recentVariants = new Set([variants[index - 1], variants[index - 2]].filter(Boolean));
+    const nextVariant = recentVariants.has(preferredVariant)
+      ? EVIDENCE_CARD_VARIANTS.find(variant => !recentVariants.has(variant)) ?? preferredVariant
+      : preferredVariant;
+
+    variants.push(nextVariant);
+  }
+
+  return variants;
+}
 
 function formatEvidenceExampleText(text = "") {
   const trimmedText = String(text).trim();
@@ -666,6 +683,8 @@ function renderRecordsSection() {
 
 function renderEvidenceSection() {
   const section = ARTICLE_SECTIONS.evidence;
+  const evidenceCardVariants = getEvidenceCardVariants(EVIDENCE_EXAMPLES.length);
+
   return `
     <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="evidence" aria-labelledby="protestEvidenceTitle">
       <div class="editorial-narrow">
@@ -675,8 +694,8 @@ function renderEvidenceSection() {
       <figure class="evidence-matrix evidence-matrix--translation" aria-labelledby="evidenceMatrixTitle">
         <figcaption class="levy-sr-only" id="evidenceMatrixTitle">Evidence Translation Matrix</figcaption>
         <ol class="evidence-path-list">
-          ${EVIDENCE_EXAMPLES.map(row => `
-            <li>
+          ${EVIDENCE_EXAMPLES.map((row, rowIndex) => `
+            <li class="evidence-correction-card" data-variant="${escapeHtml(evidenceCardVariants[rowIndex])}">
               ${row.map((cell, index) => {
                 const step = EVIDENCE_HEADER_STEPS[index];
                 return `

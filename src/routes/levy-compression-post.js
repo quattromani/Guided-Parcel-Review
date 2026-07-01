@@ -1,15 +1,15 @@
-import { escapeHtml } from "../utils/html.js?v=befd9ce";
-import { loadPropertyManifest } from "../data-service.js?v=befd9ce";
+import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
+import { loadPropertyManifest } from "../data-service.js?v=20260701-article-polish-4";
 import {
   renderArticleHero,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderResourcesBlock as renderGesResourcesBlock
-} from "../ges/article-components.js?v=befd9ce";
-import { createGesArticleShell } from "../ges/shell.js?v=befd9ce";
+} from "../ges/article-components.js?v=20260701-article-polish-4";
+import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
   renderGesReadingProgressEndMarker
-} from "../ges/reading-progress.js?v=befd9ce";
+} from "../ges/reading-progress.js?v=20260701-article-polish-4";
 
 const ARTICLE_AUTHOR_IMAGE = "assets/images/articles/max-quattromani-author.jpg";
 const ARTICLE_ID = "levy-compression";

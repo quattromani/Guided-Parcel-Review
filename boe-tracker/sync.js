@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, loadState, markRecordSynced, markRecordSyncFailed } from "./storage.js?v=befd9ce";
+import { DEFAULT_CONFIG, loadState, markRecordSynced, markRecordSyncFailed } from "./storage.js?v=20260701-article-polish-4";
 
 export function syncPayload(session, record, config = {}) {
   return {

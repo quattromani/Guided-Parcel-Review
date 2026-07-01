@@ -1,4 +1,4 @@
-import { copyArray } from "../content/site-copy.js?v=befd9ce";
+import { copyArray } from "../content/site-copy.js?v=20260701-article-polish-4";
 
 const fallbackTaxpayerJourneyRoutes = [
   {

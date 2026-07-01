@@ -4,21 +4,21 @@ import {
   formatNullablePercent,
   money,
   moneyCents
-} from "../format.js?v=befd9ce";
-import { hasValue, latestKnown, percentChange, previousKnown } from "../calculations/history.js?v=befd9ce";
+} from "../format.js?v=20260701-article-polish-4";
+import { hasValue, latestKnown, percentChange, previousKnown } from "../calculations/history.js?v=20260701-article-polish-4";
 import {
   getClassMarketStats,
   getParcelMarketClass,
   getParcelMarketGroupId
-} from "../market-stats.js?v=befd9ce";
-import { quickReadSummaryMarkup, taxStatementShorthandMarkup } from "../render.js?v=befd9ce";
-import { initPropertyReportExport } from "../reports/property-report.js?v=befd9ce";
-import { compactParts, formatSquareFeet } from "../utils/display.js?v=befd9ce";
-import { escapeHtml } from "../utils/html.js?v=befd9ce";
+} from "../market-stats.js?v=20260701-article-polish-4";
+import { quickReadSummaryMarkup, taxStatementShorthandMarkup } from "../render.js?v=20260701-article-polish-4";
+import { initPropertyReportExport } from "../reports/property-report.js?v=20260701-article-polish-4";
+import { compactParts, formatSquareFeet } from "../utils/display.js?v=20260701-article-polish-4";
+import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import {
   getReviewFlags,
   REVIEW_FLAGS_CHANGED_EVENT
-} from "../review-flags.js?v=befd9ce";
+} from "../review-flags.js?v=20260701-article-polish-4";
 
 const integer = new Intl.NumberFormat("en-US");
 

@@ -1,10 +1,10 @@
-import { initGlobalHeader } from "../src/ges/global-header.js?v=befd9ce";
+import { initGlobalHeader } from "../src/ges/global-header.js?v=20260701-article-polish-4";
 import {
   applyGesLayoutAttributes,
   ensureGesPublicFooter,
   GES_LAYOUTS
-} from "../src/ges/public-layout.js?v=befd9ce";
-import { ensureGesStylesheet } from "../src/ges/loader.js?v=befd9ce";
+} from "../src/ges/public-layout.js?v=20260701-article-polish-4";
+import { ensureGesStylesheet } from "../src/ges/loader.js?v=20260701-article-polish-4";
 
 function readPageMetadata() {
   const element = document.querySelector("[data-ges-experiment-metadata]");

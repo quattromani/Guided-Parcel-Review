@@ -1,4 +1,4 @@
-import { escapeHtml } from "../utils/html.js?v=befd9ce";
+import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import {
   installGuideUtilityLanguage,
   renderArticleHero,
@@ -7,14 +7,14 @@ import {
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=befd9ce";
-import { createGesArticleShell } from "../ges/shell.js?v=befd9ce";
+} from "../ges/article-components.js?v=20260701-article-polish-4";
+import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
   renderGesReadingProgressEndMarker
-} from "../ges/reading-progress.js?v=befd9ce";
-import { assessmentUpProtestDeniedTaxesArticle as articleSource } from "../content/articles/assessment-up-protest-denied-taxes.js?v=befd9ce";
-import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=befd9ce";
+} from "../ges/reading-progress.js?v=20260701-article-polish-4";
+import { assessmentUpProtestDeniedTaxesArticle as articleSource } from "../content/articles/assessment-up-protest-denied-taxes.js?v=20260701-article-polish-4";
+import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260701-article-polish-4";
 
 const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg";
 const ARTICLE_SECTIONS = articleSource.sections;
@@ -612,20 +612,81 @@ function renderCalculatorSection() {
   `;
 }
 
+function splitLessonQuestion(question = "") {
+  const [label, ...questionParts] = String(question).split(":");
+
+  if (!questionParts.length) {
+    return {
+      label: "Most homeowners ask",
+      question: String(question).trim()
+    };
+  }
+
+  return {
+    label: label.trim(),
+    question: questionParts.join(":").trim()
+  };
+}
+
+function renderCentralQuestionShift(lesson) {
+  const commonQuestion = splitLessonQuestion(lesson.question);
+
+  return `
+      <div class="central-question-shift" aria-label="The mindset shift behind a better protest question">
+        <div class="central-question-shift__inner">
+          <div class="central-question-shift__pair central-question-shift__pair--before">
+            <span class="central-question-shift__icon central-question-shift__icon--single-home" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M4.5 11.4 12 5.4l7.5 6"></path>
+                <path d="M6.6 10.6v8h10.8v-8"></path>
+                <path d="M9.8 18.6v-4.7h4.4v4.7"></path>
+                <path d="M9.1 12.5h1.8"></path>
+                <path d="M13.1 12.5h1.8"></path>
+              </svg>
+            </span>
+            <div class="central-question-shift__copy">
+              <span class="central-question-shift__eyebrow">${escapeHtml(commonQuestion.label)}</span>
+              <p class="central-question-shift__question central-question-shift__question--before">&ldquo;${escapeHtml(commonQuestion.question)}&rdquo;</p>
+              <p class="central-question-shift__explain">But that question only tells you what happened to one property.</p>
+            </div>
+          </div>
+          <div class="central-question-shift__bridge" aria-hidden="true"><span>&darr;</span></div>
+          <div class="central-question-shift__pair central-question-shift__pair--after">
+            <span class="central-question-shift__icon central-question-shift__icon--many-homes" aria-hidden="true">
+              <svg viewBox="0 0 32 24" focusable="false">
+                <path d="M2.8 13.5 6.9 10.2l4.1 3.3"></path>
+                <path d="M4 12.7v5.6h5.8v-5.6"></path>
+                <path d="M5.9 18.3v-2.5h2v2.5"></path>
+                <path d="M10.3 12.2 16 7.6l5.7 4.6"></path>
+                <path d="M12.1 11.3v8h7.8v-8"></path>
+                <path d="M14.8 19.3v-3.8h2.4v3.8"></path>
+                <path d="M21.4 13.7 25 10.7l3.4 3"></path>
+                <path d="M22.5 13v5.3h5V13"></path>
+                <path d="M24.1 18.3v-2.4h1.8v2.4"></path>
+              </svg>
+            </span>
+            <div class="central-question-shift__copy">
+              <span class="central-question-shift__eyebrow">A better question asks</span>
+              <p class="central-question-shift__question central-question-shift__question--after">&ldquo;${escapeHtml(lesson.betterQuestion)}&rdquo;</p>
+              <span class="central-question-shift__answer-mark" aria-hidden="true"></span>
+              <p class="central-question-shift__why">Because property taxes follow <strong>relative movement.</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+  `;
+}
+
 function renderClosingSection() {
   const lesson = ARTICLE_SECTIONS.lesson;
   const closing = ARTICLE_SECTIONS.closing;
 
   return `
-    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-labelledby="lessonTitle">
+    <section class="tax-article-section tax-story-chapter levy-wide-panel article-section central-question-section" data-tone="reflection" aria-labelledby="lessonTitle">
       <div class="editorial-narrow">
         ${sectionHeader(lesson.kicker, lesson.title, "lessonTitle", lesson)}
       </div>
-      <figure class="decision-panel" aria-labelledby="betterQuestionTitle">
-        <figcaption id="betterQuestionTitle">${editorialIcon("perspective")}<span>Use this on your next notice</span></figcaption>
-        <p class="decision-question">${escapeHtml(lesson.question)}</p>
-        <p class="note-box decision-answer"><strong>A better question is:</strong> ${escapeHtml(lesson.betterQuestion)}</p>
-      </figure>
+      ${renderCentralQuestionShift(lesson)}
     </section>
     <section class="tax-article-section tax-story-chapter tax-article-closing levy-article-narrow article-section" data-tone="reflection" aria-labelledby="finalThoughtTitle">
       ${sectionHeader(closing.kicker, closing.title, "finalThoughtTitle", closing)}

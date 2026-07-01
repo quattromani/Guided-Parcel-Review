@@ -8,37 +8,37 @@ import {
   moneyCents,
   percent,
   sumRates
-} from "./format.js?v=befd9ce";
+} from "./format.js?v=20260701-article-polish-4";
 import {
   getPreviousFinalValueHistory,
   getSnapshotHistory,
   sortHistoryAscending,
   sortHistoryDescending
-} from "./calculations/history.js?v=befd9ce";
+} from "./calculations/history.js?v=20260701-article-polish-4";
 import {
   buildRecordCorrectionEmailPayload,
   buildRecordCorrectionSubmission,
   generateRecordCorrectionPdf
-} from "./recordCorrectionRequest.js?v=befd9ce";
-import { viewHeaderContent } from "./content/view-headers.js?v=befd9ce";
-import { copyArray } from "./content/site-copy.js?v=befd9ce";
-import { PROPERTY_SELECTION_STORAGE_KEY } from "./data-service.js?v=befd9ce";
-import { propertyRecordSourceText, taxHistorySourceText } from "./domain/source-labels.js?v=befd9ce";
+} from "./recordCorrectionRequest.js?v=20260701-article-polish-4";
+import { viewHeaderContent } from "./content/view-headers.js?v=20260701-article-polish-4";
+import { copyArray } from "./content/site-copy.js?v=20260701-article-polish-4";
+import { PROPERTY_SELECTION_STORAGE_KEY } from "./data-service.js?v=20260701-article-polish-4";
+import { propertyRecordSourceText, taxHistorySourceText } from "./domain/source-labels.js?v=20260701-article-polish-4";
 import {
   getClassMarketStats,
   getParcelMarketClass,
   getParcelMarketGroupId
-} from "./market-stats.js?v=befd9ce";
-import { renderStartPage as renderStartPageRoute } from "./routes/start-page.js?v=befd9ce";
-import { displayAddress } from "./utils/address.js?v=befd9ce";
-import { garageSummary } from "./domain/property-record-facts.js?v=befd9ce";
-import { displayValue, formatSquareFeet, hasDisplayValue } from "./utils/display.js?v=befd9ce";
-import { escapeHtml } from "./utils/html.js?v=befd9ce";
-import { trackPropertySwitch } from "./visit-analytics.js?v=befd9ce";
+} from "./market-stats.js?v=20260701-article-polish-4";
+import { renderStartPage as renderStartPageRoute } from "./routes/start-page.js?v=20260701-article-polish-4";
+import { displayAddress } from "./utils/address.js?v=20260701-article-polish-4";
+import { garageSummary } from "./domain/property-record-facts.js?v=20260701-article-polish-4";
+import { displayValue, formatSquareFeet, hasDisplayValue } from "./utils/display.js?v=20260701-article-polish-4";
+import { escapeHtml } from "./utils/html.js?v=20260701-article-polish-4";
+import { trackPropertySwitch } from "./visit-analytics.js?v=20260701-article-polish-4";
 import {
   isReviewFlagSelected,
   setReviewFlag
-} from "./review-flags.js?v=befd9ce";
+} from "./review-flags.js?v=20260701-article-polish-4";
 
 const fallbackRecordReviewStatuses = [
   ["looks-correct", "No issue noticed"],

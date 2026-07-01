@@ -1,10 +1,10 @@
-import { ensureGesStylesheet } from "./loader.js?v=befd9ce";
+import { ensureGesStylesheet } from "./loader.js?v=20260701-article-polish-4";
 import {
   applyGesLayoutAttributes,
   applyGesPublicMetadata,
   ensureGesPublicFooter,
   GES_LAYOUTS
-} from "./public-layout.js?v=befd9ce";
+} from "./public-layout.js?v=20260701-article-polish-4";
 
 const DEFAULT_COVER_SELECTOR = '[data-ges-shell-region="cover"], [data-ges-shell-region="title"], #pageTitle';
 const DEFAULT_BODY_SELECTOR = '[data-ges-shell-region="body"], [data-ges-shell-region="content"], .mobile-review-canvas';
@@ -13,6 +13,16 @@ const DEFAULT_APP_CHROME_SELECTORS = [
   "[data-guided-panel]",
   "[data-footer-resource-shell]"
 ];
+const ARTICLE_PRIMARY_INPUT_SELECTOR = [
+  "input:not([type='hidden']):not([type='submit']):not([type='button']):not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']):not([type='image']):not([type='reset']):not([disabled]):not([readonly]):not([aria-hidden='true'])",
+  "textarea:not([disabled]):not([readonly]):not([aria-hidden='true'])"
+].join(", ");
+const ARTICLE_PRIMARY_INPUT_FIELD_SELECTOR = [
+  ".levy-input-shell",
+  ".ges-field-kit__field",
+  ".case-calculator label",
+  "label"
+].join(", ");
 
 function normalizeList(value) {
   if (!value) return [];
@@ -24,6 +34,39 @@ function resolveElement(value, root = document) {
   if (value.nodeType === 1) return value;
   if (typeof value === "string") return root.querySelector(value);
   return null;
+}
+
+function markPrimaryArticleInput(root = document) {
+  const articleRoot = root?.matches?.("article")
+    ? root
+    : root?.querySelector?.("article");
+  if (!articleRoot) return null;
+
+  articleRoot.querySelectorAll("[data-article-primary-input]").forEach(element => {
+    element.removeAttribute("data-article-primary-input");
+  });
+  articleRoot.querySelectorAll("[data-article-primary-input-field]").forEach(element => {
+    element.removeAttribute("data-article-primary-input-field");
+  });
+
+  const input = articleRoot.querySelector(ARTICLE_PRIMARY_INPUT_SELECTOR);
+  if (!input) return null;
+
+  input.setAttribute("data-article-primary-input", "true");
+  input.closest(ARTICLE_PRIMARY_INPUT_FIELD_SELECTOR)?.setAttribute("data-article-primary-input-field", "true");
+  return input;
+}
+
+function installArticlePrimaryInputMarker(shell) {
+  if (!shell?.setBody) return shell;
+  const setBody = shell.setBody.bind(shell);
+  shell.setBody = (html = "") => {
+    const bodyRegion = setBody(html);
+    markPrimaryArticleInput(bodyRegion);
+    return bodyRegion;
+  };
+  markPrimaryArticleInput(shell.bodyRegion);
+  return shell;
 }
 
 export function hideGesAppChrome(root = document, selectors = DEFAULT_APP_CHROME_SELECTORS) {
@@ -119,13 +162,13 @@ export function createGesShell({
 }
 
 export function createGesArticleShell(options = {}) {
-  return createGesPublicShell({
+  return installArticlePrimaryInputMarker(createGesPublicShell({
     ...options,
     htmlClasses: ["article-shell-route", ...normalizeList(options.htmlClasses)],
     mainClasses: ["ges-public-main", ...normalizeList(options.mainClasses)],
     pageType: options.pageType ?? "article",
     shell: options.shell ?? "article"
-  });
+  }));
 }
 
 export function createGesPublicShell(options = {}) {

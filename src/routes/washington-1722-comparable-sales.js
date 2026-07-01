@@ -1,4 +1,4 @@
-import { renderComparisonExperiment } from "./comparison-experiment.js?v=befd9ce";
+import { renderComparisonExperiment } from "./comparison-experiment.js?v=20260701-article-polish-4";
 
 const SOURCE_LANGUAGE = "Source: GWorks property record PDFs, Nebraska Taxes Online statement captures, and the Residential-3 comparable-candidate ranking generated for 1722 Washington. This experimental view is for review and layout testing only.";
 

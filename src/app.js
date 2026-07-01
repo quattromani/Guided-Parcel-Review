@@ -8,7 +8,7 @@ import {
   buildTaxBurdenPattern,
   initCountyComparison,
   initAssessmentRatioAnalysis
-} from "./charts.js?v=befd9ce";
+} from "./charts.js?v=20260701-article-polish-4";
 import {
   loadAssessmentCalendar,
   loadAssessmentRatioAnalysis,
@@ -32,69 +32,69 @@ import {
   PROPERTY_SELECTION_STORAGE_KEY,
   acceptDirectPropertyRequest,
   hasDirectPropertyRequest
-} from "./data-service.js?v=befd9ce";
-import { applyChartDefaults, applyVisualizationPalette } from "./config/visualization-palettes.js?v=befd9ce";
-import { initImageModal } from "./modal.js?v=befd9ce";
+} from "./data-service.js?v=20260701-article-polish-4";
+import { applyChartDefaults, applyVisualizationPalette } from "./config/visualization-palettes.js?v=20260701-article-polish-4";
+import { initImageModal } from "./modal.js?v=20260701-article-polish-4";
 import {
   renderPage,
   renderStartPage,
   renderViewHeader
-} from "./render.js?v=befd9ce";
-import { initGesFieldKit } from "./ges/field-kit.js?v=befd9ce";
-import { initGlobalHeader } from "./ges/global-header.js?v=befd9ce";
-import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.js?v=befd9ce";
+} from "./render.js?v=20260701-article-polish-4";
+import { initGesFieldKit } from "./ges/field-kit.js?v=20260701-article-polish-4";
+import { initGlobalHeader } from "./ges/global-header.js?v=20260701-article-polish-4";
+import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.js?v=20260701-article-polish-4";
 import {
   getTaxpayerJourneyRoutes,
   getJourneyRoute,
   getRouteForPanel
-} from "./config/taxpayer-journey.js?v=befd9ce";
-import { installCivicJourneyPanels } from "./routes/landing-primer.js?v=befd9ce";
-import { resourceAliases, resourcesByView } from "./content/route-resources.js?v=befd9ce";
-import { copy, copyObject, copyTemplate, loadSiteCopy } from "./content/site-copy.js?v=befd9ce";
-import { renderTaxDistrictAuthorities } from "./views/tax-district-authorities.js?v=befd9ce";
-import { escapeHtml } from "./utils/html.js?v=befd9ce";
-import { initAssessorsReport } from "./assessors-report.js?v=befd9ce";
-import { initAssessmentDatesPanel } from "./assessment-dates.js?v=befd9ce";
-import { initFirstVisitOrientation, ORIENTATION_STORAGE_KEY } from "./orientation.js?v=befd9ce";
+} from "./config/taxpayer-journey.js?v=20260701-article-polish-4";
+import { installCivicJourneyPanels } from "./routes/landing-primer.js?v=20260701-article-polish-4";
+import { resourceAliases, resourcesByView } from "./content/route-resources.js?v=20260701-article-polish-4";
+import { copy, copyObject, copyTemplate, loadSiteCopy } from "./content/site-copy.js?v=20260701-article-polish-4";
+import { renderTaxDistrictAuthorities } from "./views/tax-district-authorities.js?v=20260701-article-polish-4";
+import { escapeHtml } from "./utils/html.js?v=20260701-article-polish-4";
+import { initAssessorsReport } from "./assessors-report.js?v=20260701-article-polish-4";
+import { initAssessmentDatesPanel } from "./assessment-dates.js?v=20260701-article-polish-4";
+import { initFirstVisitOrientation, ORIENTATION_STORAGE_KEY } from "./orientation.js?v=20260701-article-polish-4";
 import {
   isExperimentIndexRequest,
   renderExperimentsIndex
-} from "./routes/experiments-index.js?v=befd9ce";
-import { renderAmesHighway77ComparableSalesExperiment } from "./routes/ames-highway-77-comparable-sales.js?v=befd9ce";
-import { renderBeekmanCountryClubComparableSalesExperiment } from "./routes/beekman-country-club-comparable-sales.js?v=befd9ce";
-import { renderGrantNeighborCompExperiment } from "./routes/grant-neighbor-comps.js?v=befd9ce";
+} from "./routes/experiments-index.js?v=20260701-article-polish-4";
+import { renderAmesHighway77ComparableSalesExperiment } from "./routes/ames-highway-77-comparable-sales.js?v=20260701-article-polish-4";
+import { renderBeekmanCountryClubComparableSalesExperiment } from "./routes/beekman-country-club-comparable-sales.js?v=20260701-article-polish-4";
+import { renderGrantNeighborCompExperiment } from "./routes/grant-neighbor-comps.js?v=20260701-article-polish-4";
 import {
   isLevyCompressionPostRequest,
   renderLevyCompressionPost
-} from "./routes/levy-compression-post.js?v=befd9ce";
+} from "./routes/levy-compression-post.js?v=20260701-article-polish-4";
 import {
   isProtestEvidenceGuideRequest,
   renderProtestEvidenceGuide
-} from "./routes/protest-evidence-guide.js?v=befd9ce";
+} from "./routes/protest-evidence-guide.js?v=20260701-article-polish-4";
 import {
   isProtestParadoxRequest,
   renderProtestParadox
-} from "./routes/protest-paradox.js?v=befd9ce";
+} from "./routes/protest-paradox.js?v=20260701-article-polish-4";
 import {
   isAssessmentsProtestsLeviesRequest,
   renderAssessmentsProtestsLeviesArticle
-} from "./routes/assessments-protests-levies.js?v=befd9ce";
+} from "./routes/assessments-protests-levies.js?v=20260701-article-polish-4";
 import {
   isArticleRollRequest,
   renderArticleRoll
-} from "./routes/article-roll.js?v=befd9ce";
+} from "./routes/article-roll.js?v=20260701-article-polish-4";
 import {
   isGesPublicPageRequest,
   renderGesPublicPage
-} from "./routes/public-pages.js?v=befd9ce";
-import { renderPropertyInviteIndex } from "./routes/property-invite-index.js?v=befd9ce";
-import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js?v=befd9ce";
-import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js?v=befd9ce";
-import { renderWashington1722ComparableSalesExperiment } from "./routes/washington-1722-comparable-sales.js?v=befd9ce";
+} from "./routes/public-pages.js?v=20260701-article-polish-4";
+import { renderPropertyInviteIndex } from "./routes/property-invite-index.js?v=20260701-article-polish-4";
+import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js?v=20260701-article-polish-4";
+import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js?v=20260701-article-polish-4";
+import { renderWashington1722ComparableSalesExperiment } from "./routes/washington-1722-comparable-sales.js?v=20260701-article-polish-4";
 import {
   continueDevelopmentFeatureSampleStart,
   developmentFeatureSampleStartPropertyId
-} from "./development-feature.js?v=befd9ce";
+} from "./development-feature.js?v=20260701-article-polish-4";
 import {
   configureStepTracking,
   initVisitAnalytics,
@@ -106,7 +106,7 @@ import {
   trackParcelView,
   trackResourceClick,
   trackStepView
-} from "./visit-analytics.js?v=befd9ce";
+} from "./visit-analytics.js?v=20260701-article-polish-4";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 let importantCalendarDates = { dates: [], metadata: {} };

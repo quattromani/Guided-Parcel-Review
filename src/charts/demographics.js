@@ -1,5 +1,5 @@
-import { percent } from "../format.js?v=befd9ce";
-import { visualizationTheme } from "../config/visualization-palettes.js?v=befd9ce";
+import { percent } from "../format.js?v=20260701-article-polish-4";
+import { visualizationTheme } from "../config/visualization-palettes.js?v=20260701-article-polish-4";
 
 const integer = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 const compactMoney = new Intl.NumberFormat("en-US", {

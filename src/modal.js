@@ -1,4 +1,4 @@
-import { copy, copyTemplate } from "./content/site-copy.js?v=befd9ce";
+import { copy, copyTemplate } from "./content/site-copy.js?v=20260701-article-polish-4";
 
 export function initImageModal(assets = {}) {
   const modal = document.getElementById("imageModal");

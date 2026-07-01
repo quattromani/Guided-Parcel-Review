@@ -1,5 +1,5 @@
-import { installGesThemeToggle } from "../ges-theme.js?v=befd9ce";
-import { initGlobalHeader } from "./global-header.js?v=befd9ce";
+import { installGesThemeToggle } from "../ges-theme.js?v=20260701-article-polish-4";
+import { initGlobalHeader } from "./global-header.js?v=20260701-article-polish-4";
 
 initGlobalHeader();
 installGesThemeToggle(document);

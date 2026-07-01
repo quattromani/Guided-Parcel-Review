@@ -1,13 +1,13 @@
-import { versionedAssetUrl } from "../asset-version.js?v=befd9ce";
+import { versionedAssetUrl } from "../asset-version.js?v=20260701-article-polish-4";
 import {
   applyGesTheme,
   installGesThemeToggle,
   renderGesThemeToggle
-} from "../ges-theme.js?v=befd9ce";
+} from "../ges-theme.js?v=20260701-article-polish-4";
 import {
   buildProjectNav,
   installTrackingContextLinkEnhancer
-} from "./project-nav.js?v=befd9ce";
+} from "./project-nav.js?v=20260701-article-polish-4";
 
 const GLOBAL_HEADER_SELECTOR = "[data-gpr-global-header]";
 const GLOBAL_HEADER_STYLESHEET_ID = "gpr-global-header-stylesheet";

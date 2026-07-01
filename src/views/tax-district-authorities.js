@@ -1,6 +1,6 @@
-import { formatNullableLevy } from "../format.js?v=befd9ce";
-import { propertyRecordSourceText } from "../domain/source-labels.js?v=befd9ce";
-import { escapeHtml } from "../utils/html.js?v=befd9ce";
+import { formatNullableLevy } from "../format.js?v=20260701-article-polish-4";
+import { propertyRecordSourceText } from "../domain/source-labels.js?v=20260701-article-polish-4";
+import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 
 export function renderTaxDistrictAuthorities(data, taxDistrictAuthorities) {
   const summary = document.getElementById("taxDistrictAuthoritySummary");

@@ -53,6 +53,7 @@
 .ges-section {
   display: grid;
   gap: var(--ges-current-component-gap, var(--ges-component-space));
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .tax-story-chapter,
@@ -121,7 +122,7 @@
   gap: var(--ges-space-xs);
 }
 
-@media (min-width: 60rem) {
+@media (min-width: 64rem) {
   .editorial-narrow.ges-section-lead,
   .ges-section-lead {
     width: min(100%, var(--ges-width-wide));

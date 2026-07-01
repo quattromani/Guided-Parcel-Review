@@ -16,7 +16,7 @@ import {
   siteSizeLabel,
   textLabel,
   valueChange
-} from "./property-record-facts.js?v=befd9ce";
+} from "./property-record-facts.js?v=20260701-article-polish-4";
 
 export {
   moneyLabel,

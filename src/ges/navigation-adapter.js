@@ -1,7 +1,7 @@
 import {
   APPLICATION_REGISTRY_LAYOUTS,
   applicationsForNavigation
-} from "./application-registry.js?v=befd9ce";
+} from "./application-registry.js?v=20260701-article-polish-4";
 
 export const GES_NAVIGATION_TARGETS = Object.freeze({
   PRIMARY: "primary",

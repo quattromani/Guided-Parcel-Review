@@ -1,5 +1,5 @@
-import { formatNullableMoney } from "../format.js?v=befd9ce";
-import { escapeHtml } from "../utils/html.js?v=befd9ce";
+import { formatNullableMoney } from "../format.js?v=20260701-article-polish-4";
+import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 
 const CONDITION_RANKS = ["poor", "fair", "average", "good", "very good", "excellent"];
 

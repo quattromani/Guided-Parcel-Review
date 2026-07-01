@@ -1,4 +1,4 @@
-import { renderComparisonExperiment } from "./comparison-experiment.js?v=befd9ce";
+import { renderComparisonExperiment } from "./comparison-experiment.js?v=20260701-article-polish-4";
 
 const SOURCE_LANGUAGE = "Source: MIPS Gage Public Sales map snapshot, GWorks property record PDFs, Nebraska Taxes Online statement data, and selected comparable sales records. This experimental view is for review and layout testing only.";
 

@@ -1,9 +1,9 @@
-import { latestKnown, percentChange, previousKnown } from "../calculations/history.js?v=befd9ce";
+import { latestKnown, percentChange, previousKnown } from "../calculations/history.js?v=20260701-article-polish-4";
 import {
   displayAddress,
   displayMailingAddress,
   displayMailingAddressLines
-} from "../utils/address.js?v=befd9ce";
+} from "../utils/address.js?v=20260701-article-polish-4";
 
 function monthName(month) {
   return new Date(2000, month - 1, 1).toLocaleString("en-US", { month: "long" });

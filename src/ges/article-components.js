@@ -1,4 +1,4 @@
-import { escapeHtml } from "../utils/html.js?v=befd9ce";
+import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 
 const RESOURCE_TYPE_LABELS = {
   "assessment-guidance": "Assessment guidance",
@@ -189,7 +189,7 @@ export function renderEvidenceSource(source = {}, options = {}) {
     : records.length
       ? renderEvidenceReferenceList(records, options)
       : "";
-  const iconMarkup = source.iconHtml ?? options.iconHtml ?? '<span class="ges-evidence-source__icon" aria-hidden="true"></span>';
+  const iconMarkup = source.iconHtml ?? options.iconHtml ?? "";
 
   return `
     <aside class="${escapeHtml(classes)}" aria-label="${escapeHtml(source.ariaLabel ?? `${sourceLabel}: ${title || subtitle || "supporting evidence"}`)}"${metadataAttributes.length ? ` ${metadataAttributes.join(" ")}` : ""}>
