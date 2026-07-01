@@ -1023,7 +1023,6 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   margin: 0;
 }
 
-.article-source-note,
 .ges-authority-citation {
   color: rgb(var(--ges-color-text-muted));
   justify-self: center;
@@ -1031,7 +1030,6 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   width: min(100%, var(--ges-width-reading));
 }
 
-.article-source-note p,
 .ges-authority-citation p,
 .article-sources-used li {
   color: inherit;
@@ -1040,6 +1038,92 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   font-weight: var(--ges-weight-regular);
   line-height: var(--ges-line-compact);
   margin: 0;
+}
+
+.article-source-note,
+.ges-evidence-source {
+  --ges-evidence-source-accent: var(--ges-color-evidence-green);
+  --ges-evidence-source-bg: color-mix(in srgb, rgb(var(--ges-color-surface-elevated)) 74%, rgb(var(--ges-color-evidence-green-soft)));
+  --ges-evidence-source-border: rgb(var(--ges-color-border-subtle) / 0.82);
+  align-items: start;
+  background: var(--ges-evidence-source-bg);
+  border: var(--ges-border-width) solid var(--ges-evidence-source-border);
+  border-left: calc(var(--ges-border-width-accent) + 1px) solid rgb(var(--ges-evidence-source-accent) / 0.68);
+  border-radius: var(--ges-radius-sm);
+  box-shadow: inset 0 1px 0 rgb(var(--ges-color-highlight) / 0.2);
+  color: rgb(var(--ges-color-text-muted));
+  display: grid;
+  gap: var(--ges-space-sm);
+  grid-template-columns: auto minmax(0, 1fr);
+  justify-self: center;
+  margin-block: var(--ges-space-md) var(--ges-space-lg);
+  padding: var(--ges-space-sm) var(--ges-space-md);
+  width: min(100%, var(--ges-width-reading));
+}
+
+.ges-evidence-source__icon {
+  align-items: center;
+  background: rgb(var(--ges-evidence-source-accent) / 0.1);
+  border: var(--ges-border-width) solid rgb(var(--ges-evidence-source-accent) / 0.18);
+  border-radius: var(--ges-radius-xs);
+  color: rgb(var(--ges-evidence-source-accent));
+  display: inline-flex;
+  height: 1.65rem;
+  justify-content: center;
+  margin-top: 0.08rem;
+  width: 1.65rem;
+}
+
+.ges-evidence-source__icon::before {
+  background: currentColor;
+  content: "";
+  height: 0.98rem;
+  mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Zm0 0v5h5M8 13h8M8 17h5'/%3E%3C/svg%3E") center / contain no-repeat;
+  width: 0.98rem;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Zm0 0v5h5M8 13h8M8 17h5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.ges-evidence-source__body {
+  display: grid;
+  gap: var(--ges-space-2xs);
+  min-width: 0;
+}
+
+.ges-evidence-source p {
+  font-family: var(--ges-font-ui);
+  line-height: var(--ges-line-compact);
+  margin: 0;
+  text-indent: 0;
+}
+
+.ges-evidence-source__label {
+  color: rgb(var(--ges-evidence-source-accent));
+  font-size: var(--ges-type-2xs);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: var(--ges-letter-kicker);
+  text-transform: uppercase;
+}
+
+.ges-evidence-source__title {
+  color: rgb(var(--ges-color-text-secondary));
+  font-size: var(--ges-type-sm);
+  font-weight: var(--ges-weight-semibold);
+}
+
+.ges-evidence-source__subtitle,
+.ges-evidence-source__purpose {
+  color: rgb(var(--ges-color-text-muted));
+  font-size: var(--ges-type-xs);
+  font-weight: var(--ges-weight-regular);
+}
+
+.ges-evidence-source__purpose {
+  color: rgb(var(--ges-color-text-secondary));
+}
+
+.ges-evidence-source__separator {
+  color: rgb(var(--ges-color-border-strong));
+  margin-inline: var(--ges-space-2xs);
 }
 
 .article-source-note__punctuation {
@@ -1054,7 +1138,11 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   text-decoration-color: color-mix(in srgb, currentColor 34%, transparent);
 }
 
-.article-source-note a,
+.ges-evidence-source a {
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.18em;
+}
+
 .ges-authority-citation a,
 .editorial-guide :where(.tax-story-chapter, .article-section, .editorial-narrow) > p a:not(:where(.resource-section *, .resource-card-grid *, .resource-card *, .continuation-module *, .guide-utility *, .article-entry-panel *, .meeting-schedule-card *, .format-control *)),
 .ges-edge-link {
@@ -1065,7 +1153,6 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
   position: relative;
 }
 
-.article-source-note a::before,
 .ges-authority-citation a::before,
 .editorial-guide :where(.tax-story-chapter, .article-section, .editorial-narrow) > p a:not(:where(.resource-section *, .resource-card-grid *, .resource-card *, .continuation-module *, .guide-utility *, .article-entry-panel *, .meeting-schedule-card *, .format-control *))::before,
 .ges-edge-link::before {
@@ -1090,7 +1177,6 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-compression-page 
 }
 
 @media (max-width: 48rem) {
-  .article-source-note a::before,
   .ges-authority-citation a::before,
   .editorial-guide :where(.tax-story-chapter, .article-section, .editorial-narrow) > p a:not(:where(.resource-section *, .resource-card-grid *, .resource-card *, .continuation-module *, .guide-utility *, .article-entry-panel *, .meeting-schedule-card *, .format-control *))::before,
   .ges-edge-link::before {

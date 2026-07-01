@@ -99,42 +99,116 @@ function renderSourceNoteLink(item = {}, options = {}, suffix = "") {
   return `<a href="${escapeHtml(href)}"${targetAttribute}${relAttribute}>${escapeHtml(label)}${suffixMarkup}</a>`;
 }
 
-export function renderSourceNote(note = {}, options = {}) {
-  const items = Array.isArray(note.items) ? note.items.filter(Boolean) : [];
-  const links = Array.isArray(note.links) ? note.links.filter(Boolean) : [];
-  const text = note.text ?? "";
+function renderEvidenceReferenceList(records = [], options = {}) {
+  return records.map((item, index) => {
+    const punctuation = index === records.length - 1 ? "." : ";";
+    return `<span class="article-source-note__item">${renderSourceNoteLink(item, options, punctuation)}</span>`;
+  }).join(" ");
+}
 
-  if (!items.length && !links.length && !text) return "";
-
-  const label = note.label ?? "Source note";
-  const classes = ["article-source-note", options.className, note.className].filter(Boolean).join(" ");
-  const metadataAttributes = [];
-
-  if (items.length && options.includeMetadata !== false) {
-    const sourceIds = uniqueValues(items.map(item => (options.sourceIdForItem ?? sourceNoteId)(item)));
-    const sourceCategories = uniqueValues(items.map(item => (options.sourceCategoryForItem ?? sourceNoteCategory)(item)));
-
-    metadataAttributes.push(`data-source-label="${escapeHtml(label)}"`);
-    if (sourceIds.length) metadataAttributes.push(`data-source-ids="${escapeHtml(sourceIds.join(" "))}"`);
-    if (sourceCategories.length) metadataAttributes.push(`data-source-categories="${escapeHtml(sourceCategories.join(" "))}"`);
+function renderEvidenceText(value = "") {
+  if (Array.isArray(value)) {
+    return value
+      .filter(Boolean)
+      .map(part => `<span>${escapeHtml(part)}</span>`)
+      .join('<span class="ges-evidence-source__separator" aria-hidden="true">&bull;</span>');
   }
 
-  const body = items.length
-    ? items.map((item, index) => {
-      const punctuation = index === items.length - 1 ? "." : ";";
-      return `<span class="article-source-note__item">${renderSourceNoteLink(item, options, punctuation)}</span>`;
-    }).join(" ")
-    : [
-      text ? `<span>${escapeHtml(text)}</span>` : "",
-      links.map(link => renderSourceNoteLink(link, options)).join(" ")
-    ].filter(Boolean).join(" ");
+  return escapeHtml(value);
+}
+
+function evidenceSourceHref(source = {}, options = {}) {
+  if (source.urlKey) return options.references?.[source.urlKey] ?? "";
+  return source.url ?? source.href ?? "";
+}
+
+function evidenceMetadataValue(source = {}, keys = []) {
+  for (const key of keys) {
+    const value = source[key];
+    if (value) return value;
+  }
+  return "";
+}
+
+function evidenceMetadataAttributes(source = {}, records = [], options = {}) {
+  if (options.includeMetadata === false) return [];
+
+  const metadataAttributes = [];
+  const metadataSources = records.length ? records : [source];
+  const label = source.label ?? source.sourceLabel ?? "Source";
+  const sourceIds = uniqueValues(metadataSources.map(item => (options.sourceIdForItem ?? sourceNoteId)(item)));
+  const sourceCategories = uniqueValues(metadataSources.map(item => (options.sourceCategoryForItem ?? sourceNoteCategory)(item)));
+  const metadataFields = {
+    "data-source-label": label,
+    "data-source-ids": sourceIds.join(" "),
+    "data-source-categories": sourceCategories.join(" "),
+    "data-source-type": evidenceMetadataValue(source, ["sourceType", "type", "resourceType"]),
+    "data-source-organization": evidenceMetadataValue(source, ["organization", "source", "publisher"]),
+    "data-source-publication-date": evidenceMetadataValue(source, ["publicationDate", "publishedDate"]),
+    "data-source-last-verified-date": evidenceMetadataValue(source, ["lastVerifiedDate", "lastReviewedDate", "verifiedAsOf"]),
+    "data-source-confidence": evidenceMetadataValue(source, ["confidenceLevel", "confidence"]),
+    "data-source-citation-format": evidenceMetadataValue(source, ["citationFormat", "citation"]),
+    "data-source-version": evidenceMetadataValue(source, ["versionNumber", "version"]),
+    "data-source-coverage": evidenceMetadataValue(source, ["dataCoverage", "coverage"]),
+    "data-source-author": evidenceMetadataValue(source, ["author"])
+  };
+
+  Object.entries(metadataFields).forEach(([name, value]) => {
+    if (value) metadataAttributes.push(`${name}="${escapeHtml(value)}"`);
+  });
+
+  return metadataAttributes;
+}
+
+export function renderEvidenceSource(source = {}, options = {}) {
+  const items = Array.isArray(source.items) ? source.items.filter(Boolean) : [];
+  const links = Array.isArray(source.links) ? source.links.filter(Boolean) : [];
+  const records = [...items, ...links];
+  const sourceLabel = source.sourceLabel ?? options.sourceLabel ?? "Source";
+  const title = source.title ?? source.name ?? source.source ?? source.label ?? "";
+  const subtitle = source.subtitle ?? source.document ?? source.dataset ?? source.citationLabel ?? "";
+  const purpose = source.purpose ?? source.usedFor ?? source.description ?? source.text ?? "";
+  const url = evidenceSourceHref(source, options);
+
+  if (!title && !subtitle && !purpose && !records.length) return "";
+
+  const classes = [
+    "article-source-note",
+    "ges-evidence-source",
+    options.className,
+    source.className
+  ].filter(Boolean).join(" ");
+  const metadataAttributes = evidenceMetadataAttributes(source, records, options);
+  const titleMarkup = title
+    ? url
+      ? `<a class="ges-evidence-source__title-link" href="${escapeHtml(url)}" target="${escapeHtml(source.target ?? options.linkTarget ?? "_blank")}" rel="${escapeHtml(source.rel ?? options.linkRel ?? "noopener noreferrer")}">${escapeHtml(title)}</a>`
+      : escapeHtml(title)
+    : "";
+  const subtitleMarkup = subtitle
+    ? renderEvidenceText(subtitle)
+    : records.length
+      ? renderEvidenceReferenceList(records, options)
+      : "";
+  const iconMarkup = source.iconHtml ?? options.iconHtml ?? '<span class="ges-evidence-source__icon" aria-hidden="true"></span>';
 
   return `
-    <aside class="${escapeHtml(classes)}" aria-label="${escapeHtml(label)}"${metadataAttributes.length ? ` ${metadataAttributes.join(" ")}` : ""}>
-      <p>${body}</p>
+    <aside class="${escapeHtml(classes)}" aria-label="${escapeHtml(source.ariaLabel ?? `${sourceLabel}: ${title || subtitle || "supporting evidence"}`)}"${metadataAttributes.length ? ` ${metadataAttributes.join(" ")}` : ""}>
+      ${iconMarkup}
+      <div class="ges-evidence-source__body">
+        <p class="ges-evidence-source__label">${escapeHtml(sourceLabel)}</p>
+        ${titleMarkup ? `<p class="ges-evidence-source__title">${titleMarkup}</p>` : ""}
+        ${subtitleMarkup ? `<p class="ges-evidence-source__subtitle">${subtitleMarkup}</p>` : ""}
+        ${purpose ? `<p class="ges-evidence-source__purpose">${escapeHtml(purpose)}</p>` : ""}
+      </div>
     </aside>
   `;
 }
+
+export function renderSourceNote(note = {}, options = {}) {
+  return renderEvidenceSource(note, options);
+}
+
+export { renderEvidenceSource as renderEvidence };
 
 export function renderMemoryAnchor(anchor = {}) {
   const text = anchor.text ?? anchor.statement ?? "";

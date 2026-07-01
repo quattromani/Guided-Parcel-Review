@@ -455,6 +455,51 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .ges-evidence-source {
+    border: 0.5pt solid rgb(var(--ges-print-rule));
+    border-left: 2pt solid rgb(var(--ges-print-muted));
+    box-shadow: none !important;
+    display: grid;
+    gap: 6pt;
+    grid-template-columns: auto 1fr;
+    margin: 0.08in 0 0.12in;
+    padding: 6pt 8pt;
+    width: 100%;
+  }
+
+  .ges-evidence-source__icon {
+    border: 0.5pt solid rgb(var(--ges-print-rule));
+    height: 15pt;
+    width: 15pt;
+  }
+
+  .ges-evidence-source__label,
+  .ges-evidence-source__title,
+  .ges-evidence-source__subtitle,
+  .ges-evidence-source__purpose {
+    color: rgb(var(--ges-print-secondary)) !important;
+    font-family: var(--ges-font-ui);
+    line-height: 1.28;
+    margin: 0;
+  }
+
+  .ges-evidence-source__label {
+    font-size: 6.8pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .ges-evidence-source__title {
+    color: rgb(var(--ges-print-text)) !important;
+    font-size: 8.3pt;
+    font-weight: 700;
+  }
+
+  .ges-evidence-source__subtitle,
+  .ges-evidence-source__purpose {
+    font-size: 7.5pt;
+  }
+
   .evidence-path-list div,
   .evidence-path-list section {
     padding: 7pt 8pt;

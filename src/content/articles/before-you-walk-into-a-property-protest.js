@@ -60,6 +60,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
   sourceNotes: {
     process: {
       label: "Authority",
+      title: "Nebraska protest procedure authorities",
+      subtitle: "Assessment date, filing window, county board review, and real property regulations",
+      purpose: "Used to anchor the protest preparation process in Nebraska's assessment and equalization framework.",
+      sourceType: "Legal authority",
       items: [
         { label: "Neb. Rev. Stat. § 77-1301", urlKey: "nebraskaStatute771301" },
         { label: "§ 77-1502", urlKey: "nebraskaStatute771502" },
@@ -69,6 +73,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     },
     whyProtestsFail: {
       label: "Authority / practice basis",
+      title: "Nebraska protest procedure and actual-value framework",
+      subtitle: "Protest procedure, Title 350 guidance, and actual-value law",
+      purpose: "Used to explain why a protest needs evidence tied to value, record accuracy, or equalization rather than frustration with taxes alone.",
+      sourceType: "Legal authority",
       items: [
         { label: "Neb. Rev. Stat. § 77-1502", urlKey: "nebraskaStatute771502" },
         { label: "Title 350, Ch. 10, Protest Procedures", urlKey: "title350Chapter10" },
@@ -77,6 +85,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     },
     boardQuestion: {
       label: "Authority",
+      title: "Nebraska uniformity and county board authority",
+      subtitle: "Constitutional uniformity requirement and county board protest statutes",
+      purpose: "Used to show that the board's job is to review the parcel's assessed value and equalized treatment, not to rewrite taxing-subdivision budgets.",
+      sourceType: "Legal authority",
       items: [
         { label: "Neb. Const. art. VIII, § 1", urlKey: "nebraskaConstitutionArticleViii" },
         { label: "Neb. Rev. Stat. § 77-1501", urlKey: "nebraskaStatute771501" },
@@ -86,6 +98,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     },
     comparables: {
       label: "Legal / appraisal basis",
+      title: "Actual-value law and appraisal guidance",
+      subtitle: "Nebraska actual-value definition and IAAO sales-comparison guidance",
+      purpose: "Used to define why comparable properties should be similar enough to support a value or equalization argument.",
+      sourceType: "Assessment guidance",
       items: [
         { label: "Neb. Rev. Stat. § 77-112", urlKey: "nebraskaStatute77112" },
         { label: "IAAO Course 101, Sales Comparison Approach", sourceId: "iaaoCourse101SalesComparison", category: "assessment-guidance" }
@@ -93,6 +109,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     },
     records: {
       label: "Authority",
+      title: "Nebraska property record requirements",
+      subtitle: "Title 350 property record provisions and assessment record statutes",
+      purpose: "Used to explain why the property record card is the first evidence layer to inspect before making a correction request.",
+      sourceType: "Legal authority",
       items: [
         { label: "Title 350, Ch. 10, Property Record File / Property Record Card provisions", urlKey: "title350Chapter10" },
         { label: "Neb. Rev. Stat. § 77-1303", urlKey: "nebraskaStatute771303" },
@@ -101,6 +121,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     },
     evidence: {
       label: "Authority",
+      title: "Nebraska protest evidence procedure",
+      subtitle: "County board protest statute and Title 350 protest procedures",
+      purpose: "Used to support the evidence-to-request structure shown in the translation matrix.",
+      sourceType: "Legal authority",
       items: [
         { label: "Neb. Rev. Stat. § 77-1502", urlKey: "nebraskaStatute771502" },
         { label: "Title 350, Ch. 10, Protest Procedures", urlKey: "title350Chapter10" }
@@ -108,6 +132,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     },
     organization: {
       label: "Practice basis",
+      title: "Protest procedure and appraisal practice guidance",
+      subtitle: "Title 350 protest procedures and IAAO appraisal guidance",
+      purpose: "Used to explain why organized exhibits should connect observations, records, and requested corrections.",
+      sourceType: "Practice basis",
       items: [
         { label: "Title 350, Ch. 10, Protest Procedures", urlKey: "title350Chapter10" },
         { label: "IAAO appraisal guidance", sourceId: "iaaoAppraisalGuidance", category: "assessment-guidance" }
@@ -115,6 +143,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     },
     afterHearing: {
       label: "Authority",
+      title: "Board decision and appeal authorities",
+      subtitle: "County board decision statute and TERC appeal statute",
+      purpose: "Used to identify what can happen after the hearing and where the next review path comes from.",
+      sourceType: "Legal authority",
       items: [
         { label: "Neb. Rev. Stat. § 77-1504", urlKey: "nebraskaStatute771504" },
         { label: "§ 77-5013", urlKey: "nebraskaStatute775013" }
@@ -122,6 +154,10 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
     },
     closing: {
       label: "Authority / principle",
+      title: "Uniformity and real property regulation anchors",
+      subtitle: "Nebraska constitutional uniformity requirement and Title 350 real property regulations",
+      purpose: "Used to connect the closing principle back to uniform, proportionate treatment and record-based valuation review.",
+      sourceType: "Legal authority",
       items: [
         { label: "Neb. Const. art. VIII, § 1", urlKey: "nebraskaConstitutionArticleViii" },
         { label: "Title 350, Ch. 10, Real Property Regulations", urlKey: "title350Chapter10" }

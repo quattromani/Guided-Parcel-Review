@@ -22,7 +22,7 @@ const COMPONENT_INSPECTOR_TARGETS = Object.freeze([
   ["Resource Panel", ".ges-resource-panel, .resource-section"],
   ["Practical Note", ".ges-practical-note, .note-box"],
   ["Continuation Module", ".continuation-module"],
-  ["Authority Citation", ".article-source-note"],
+  ["Evidence Source", ".ges-evidence-source, .article-source-note"],
   ["Stat Grid", ".ges-stat-grid"],
   ["Assessment Build Panel", ".assessment-build-panel"],
   ["Case Timeline", ".ges-case-timeline, .protest-paradox-timeline-card"]

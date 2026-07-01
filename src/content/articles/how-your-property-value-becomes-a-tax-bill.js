@@ -192,7 +192,10 @@ export const howYourPropertyValueBecomesATaxBillArticle = {
     },
     sourceNote: {
       label: "Statutory anchors",
-      text: "Act 1 relies on Nebraska statutes that separate assessment timing, valuation change notices, county board of equalization review, and levy authority.",
+      title: "Nebraska statutory anchors",
+      subtitle: "Assessment timing, valuation change notices, county board review, and levy authority",
+      purpose: "Used to explain why a valuation notice, protest review, and final tax bill are separate legal steps.",
+      sourceType: "Legal authority",
       links: [
         {
           label: "77-1301",

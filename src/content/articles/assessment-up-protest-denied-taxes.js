@@ -130,19 +130,35 @@ export const assessmentUpProtestDeniedTaxesArticle = {
   sourceNotes: {
     mystery: {
       label: "Case record",
-      text: "Gage County parcel 004817000 record card and Board of Equalization hearing context."
+      title: "Gage County property record card",
+      subtitle: "Parcel 004817000 / Board of Equalization hearing context",
+      purpose: "Used to verify the protested value change and the hearing outcome described above.",
+      sourceType: "Administrative record",
+      organization: "Gage County Assessor"
     },
     taxResult: {
       label: "Tax record",
-      text: "Nebraska Taxes Online tax-year records for parcel 0004817000."
+      title: "Nebraska Taxes Online",
+      subtitle: "Parcel 0004817000 / Tax Years 2024-2025",
+      purpose: "Used to verify the historical tax comparison shown above.",
+      sourceType: "Tax record",
+      organization: "Nebraska Taxes Online",
+      dataCoverage: "Tax Years 2024-2025"
     },
     calculator: {
       label: "Model inputs",
-      text: "Case-study starter values use the 2025 tax record, 2026 valuation notice context, countywide value growth, and a budget-growth planning assumption."
+      title: "Case-study model inputs",
+      subtitle: "2025 tax record / 2026 valuation context / countywide value growth / budget-growth assumption",
+      purpose: "Used to show how the calculator turns parcel value movement, countywide growth, and budget growth into a directional tax estimate.",
+      sourceType: "Internal calculation"
     },
     closing: {
       label: "Sources",
-      text: "Gage County property record card for parcel 004817000, generated June 23, 2026; Nebraska Taxes Online tax-year records for parcel 0004817000; 2026 Gage County Report and Opinion (R&O)."
+      title: "Case-study source set",
+      subtitle: "Gage County record card / Nebraska Taxes Online / 2026 Gage County Report and Opinion",
+      purpose: "Used to tie the parcel-specific example back to official record, tax, and countywide assessment context.",
+      sourceType: "Source set",
+      lastVerifiedDate: "June 23, 2026"
     }
   },
   sections: {
