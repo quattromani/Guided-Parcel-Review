@@ -2,7 +2,7 @@ import {
   installGuideUtilityLanguage,
   renderActTransition,
   renderArticleEntryPanel,
-  renderArticleTags,
+  renderArticleHero,
   renderContinueExploring,
   renderExpandableDetail,
   renderKeyIdea,
@@ -131,22 +131,9 @@ export function renderAssessmentsProtestsLeviesArticle() {
 }
 
 function renderHero() {
-  return `
-    <header class="article-hero ges-act-one-hero" aria-labelledby="assessmentTaxArticleTitle">
-      <div class="article-hero-packet">
-        <div class="hero-kicker-row">
-          <p class="guided-kicker hero-kicker hero-brand-kicker">
-            <span class="hero-kicker-text">
-              <span class="hero-kicker-label">Article</span>
-              <span class="hero-kicker-divider" aria-hidden="true">/</span>
-              <span class="hero-kicker-subject">Assessments, Protests, and Levies</span>
-            </span>
-          </p>
-        </div>
-        <h1 id="assessmentTaxArticleTitle" class="hero-title">${escapeHtml(ARTICLE.title)}</h1>
-        <p class="hero-deck">${escapeHtml(ARTICLE.subtitle)}</p>
-        ${renderArticleTags(ARTICLE.tags)}
-      </div>
+  return renderArticleHero({
+    className: "ges-act-one-hero",
+    mediaHtml: `
       <figure class="article-hero-media hero-media ges-act-one-hero__media">
         <img src="${escapeHtml(ARTICLE.assets.heroImage)}" alt="${escapeHtml(ARTICLE.assets.heroImageAlt)}" loading="eager" decoding="async" fetchpriority="high" />
         <div class="ges-hero-notice" aria-hidden="true">
@@ -156,8 +143,13 @@ function renderHero() {
         </div>
         <figcaption class="levy-sr-only">${escapeHtml(ARTICLE.assets.heroImageAlt)} ${escapeHtml(ARTICLE.assets.heroImageCredit)}</figcaption>
       </figure>
-    </header>
-  `;
+    `,
+    subject: "Assessments, Protests, and Levies",
+    subtitle: ARTICLE.subtitle,
+    tags: ARTICLE.tags,
+    title: ARTICLE.title,
+    titleId: "assessmentTaxArticleTitle"
+  });
 }
 
 function renderOpeningSection() {

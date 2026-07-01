@@ -512,6 +512,42 @@ export function renderArticleTags(tags = []) {
         </ul>`;
 }
 
+export function renderArticleHero({
+  className = "",
+  label = "Article",
+  mediaHtml = "",
+  subject = "",
+  subtitle = "",
+  tags = [],
+  title = "",
+  titleId = "articleTitle"
+} = {}) {
+  const classes = ["comp-page-title", "levy-page-title", "article-hero", className].filter(Boolean).join(" ");
+  const subjectMarkup = subject
+    ? `
+              <span class="hero-kicker-divider" aria-hidden="true">/</span>
+              <span class="hero-kicker-subject">${escapeHtml(subject)}</span>`
+    : "";
+
+  return `
+    <header class="${escapeHtml(classes)}" aria-labelledby="${escapeHtml(titleId)}">
+      <div class="article-hero-packet">
+        <div class="hero-kicker-row">
+          <p class="guided-kicker hero-kicker hero-brand-kicker">
+            <span class="hero-kicker-text">
+              <span class="hero-kicker-label">${escapeHtml(label)}</span>${subjectMarkup}
+            </span>
+          </p>
+        </div>
+        <h1 id="${escapeHtml(titleId)}" class="hero-title">${escapeHtml(title)}</h1>
+        ${subtitle ? `<p class="hero-deck">${escapeHtml(subtitle)}</p>` : ""}
+        ${renderArticleTags(tags)}
+      </div>
+      ${mediaHtml}
+    </header>
+  `;
+}
+
 export function formatGuideLengthText(minutes) {
   const numericMinutes = Number.parseInt(minutes, 10);
   if (!Number.isFinite(numericMinutes) || numericMinutes < 1) return "";

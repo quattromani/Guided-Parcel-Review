@@ -122,6 +122,7 @@ export function createGesArticleShell(options = {}) {
   return createGesPublicShell({
     ...options,
     htmlClasses: ["article-shell-route", ...normalizeList(options.htmlClasses)],
+    mainClasses: ["ges-public-main", ...normalizeList(options.mainClasses)],
     pageType: options.pageType ?? "article",
     shell: options.shell ?? "article"
   });

@@ -196,7 +196,7 @@ async function main() {
     trackArticleView({
       contentType: "article",
       articleId: "levy-compression",
-      articleTitle: "Levy Compression",
+      articleTitle: "Your Assessment Went Up. Does That Mean Your Tax Bill Will Go Up Just as Much?",
       county: "gage"
     });
     return;

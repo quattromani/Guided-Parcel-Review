@@ -63,6 +63,11 @@ const articlePages = [
     expects: { marginInsights: true, sourceNotes: true }
   },
   {
+    name: "levy-compression-draft-canonical",
+    path: "/articles/assessment-went-up-tax-bill/",
+    expects: { articleNotes: true, marginInsights: true }
+  },
+  {
     name: "levy-compression-legacy",
     path: "/index.html?article=levy-compression",
     expects: { articleNotes: true, marginInsights: true }

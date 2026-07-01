@@ -1,8 +1,8 @@
 import { escapeHtml } from "../utils/html.js?v=befd9ce";
 import {
   installGuideUtilityLanguage,
+  renderArticleHero,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
-  renderArticleTags as renderGesArticleTags,
   renderContinuationModule,
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
@@ -107,6 +107,27 @@ function setJsonLd(id, data) {
     document.head.append(element);
   }
   element.textContent = JSON.stringify(data);
+}
+
+function metadata() {
+  return {
+    title: ARTICLE_TITLE,
+    documentTitle: `${ARTICLE_TITLE} | Guided Parcel Review`,
+    description: ARTICLE_DESCRIPTION,
+    socialDescription: ARTICLE_DESCRIPTION,
+    canonicalPath: ARTICLE_CANONICAL_PATH,
+    pageType: "article",
+    ogType: "article",
+    robots: "index, follow, max-image-preview:large",
+    author: ARTICLE_AUTHOR,
+    publishedDate: ARTICLE_PUBLISHED_DATE,
+    modifiedDate: ARTICLE_MODIFIED_DATE,
+    section: "Property tax education",
+    tags: ARTICLE_TAGS,
+    keywords: ARTICLE_KEYWORDS,
+    socialImage: absoluteUrl(ARTICLE_SOCIAL_IMAGE),
+    socialImageAlt: ARTICLE_HERO_IMAGE_ALT
+  };
 }
 
 function updateMetadata() {
@@ -328,10 +349,6 @@ function renderStatCard(label, value, detail = "", outputName = "") {
       ${detail ? `<p>${escapeHtml(detail)}</p>` : ""}
     </article>
   `;
-}
-
-function renderArticleTags() {
-  return renderGesArticleTags(ARTICLE_TAGS);
 }
 
 function renderArticleEntryPanel() {
@@ -645,7 +662,8 @@ export function isProtestParadoxRequest(searchParams = new URLSearchParams(windo
 
 export function renderProtestParadox() {
   const shell = createGesArticleShell({
-    htmlClasses: ["levy-compression-shell-route"],
+    htmlClasses: ["protest-paradox-shell-route"],
+    metadata: metadata(),
     routeName: "protest-paradox"
   });
   if (!shell?.coverRegion) return;
@@ -653,27 +671,18 @@ export function renderProtestParadox() {
 
   updateMetadata();
 
-  shell.setCover(`
-    <header class="comp-page-title levy-page-title article-hero" aria-labelledby="protestParadoxTitle">
-      <div class="article-hero-packet">
-        <div class="hero-kicker-row">
-          <p class="guided-kicker hero-kicker hero-brand-kicker">
-            <span class="hero-kicker-text">
-              <span class="hero-kicker-label">Article</span>
-              <span class="hero-kicker-divider" aria-hidden="true">/</span>
-              <span class="hero-kicker-subject">Levy Compression</span>
-            </span>
-          </p>
-        </div>
-        <h1 id="protestParadoxTitle" class="hero-title">${ARTICLE_TITLE}</h1>
-        <p class="hero-deck">${ARTICLE_SUBTITLE}</p>
-        ${renderArticleTags()}
-      </div>
+  shell.setCover(renderArticleHero({
+    mediaHtml: `
       <figure class="article-hero-media hero-media">
         <img src="${escapeHtml(ARTICLE_SOCIAL_IMAGE)}" alt="${escapeHtml(ARTICLE_HERO_IMAGE_ALT)}" loading="eager" decoding="async" />
       </figure>
-    </header>
-  `);
+    `,
+    subject: "Levy Compression",
+    subtitle: ARTICLE_SUBTITLE,
+    tags: ARTICLE_TAGS,
+    title: ARTICLE_TITLE,
+    titleId: "protestParadoxTitle"
+  }));
 
   shell.setBody(`
     <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page protest-paradox-page editorial-guide tax-article-panel" data-county-theme="gage" data-ges-reading-progress-target aria-label="Assessment increase and levy compression case study">

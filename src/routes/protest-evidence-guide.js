@@ -1,9 +1,9 @@
 import { escapeHtml } from "../utils/html.js?v=befd9ce";
 import {
   installGuideUtilityLanguage,
+  renderArticleHero,
   renderArticleNote,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
-  renderArticleTags as renderGesArticleTags,
   renderContinuationModule,
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
@@ -201,6 +201,27 @@ function setJsonLd(id, data) {
     document.head.append(element);
   }
   element.textContent = JSON.stringify(data);
+}
+
+function articleMetadata() {
+  return {
+    title: ARTICLE_TITLE,
+    documentTitle: `${ARTICLE_TITLE} | Guided Parcel Review`,
+    description: ARTICLE_DESCRIPTION,
+    socialDescription: ARTICLE_DESCRIPTION,
+    canonicalPath: ARTICLE_CANONICAL_PATH,
+    pageType: "article",
+    ogType: "article",
+    robots: "index, follow, max-image-preview:large",
+    author: ARTICLE_AUTHOR,
+    publishedDate: ARTICLE_PUBLISHED_DATE,
+    modifiedDate: ARTICLE_MODIFIED_DATE,
+    section: "Property tax education",
+    tags: ARTICLE_TAGS,
+    keywords: ARTICLE_KEYWORDS,
+    socialImage: absoluteUrl(ARTICLE_SOCIAL_IMAGE),
+    socialImageAlt: ARTICLE_HERO_IMAGE_ALT
+  };
 }
 
 function updateProtestEvidenceGuideMetadata() {
@@ -860,31 +881,17 @@ function normalizedPathname() {
 
 export function renderProtestEvidenceGuide() {
   const shell = createGesArticleShell({
-    htmlClasses: ["levy-compression-shell-route"],
+    htmlClasses: ["protest-evidence-guide-shell-route"],
+    metadata: articleMetadata(),
     routeName: "protest-evidence-guide"
   });
   if (!shell?.coverRegion) return;
-  const pageTitle = shell.coverRegion;
   const canvas = shell.bodyRegion;
 
   updateProtestEvidenceGuideMetadata();
 
-  shell.setCover(`
-    <header class="comp-page-title levy-page-title article-hero" aria-labelledby="protestArticleTitle">
-      <div class="article-hero-packet">
-        <div class="hero-kicker-row">
-          <p class="guided-kicker hero-kicker hero-brand-kicker">
-            <span class="hero-kicker-text">
-              <span class="hero-kicker-label">Article</span>
-              <span class="hero-kicker-divider" aria-hidden="true">/</span>
-              <span class="hero-kicker-subject">Property Protest Prep</span>
-            </span>
-          </p>
-        </div>
-        <h1 id="protestArticleTitle" class="hero-title">${ARTICLE_TITLE}</h1>
-        <p class="hero-deck">${ARTICLE_SUBTITLE}</p>
-        ${renderArticleTags()}
-      </div>
+  shell.setCover(renderArticleHero({
+    mediaHtml: `
       <figure class="article-hero-media hero-media article-hero-video" data-hero-video>
         <video
           class="article-hero-video-player"
@@ -903,8 +910,13 @@ export function renderProtestEvidenceGuide() {
         </button>
         <figcaption class="levy-sr-only">${escapeHtml(ARTICLE_HERO_IMAGE_ALT)} The video provides a short overview of the article.</figcaption>
       </figure>
-    </header>
-  `);
+    `,
+    subject: "Property Protest Prep",
+    subtitle: ARTICLE_SUBTITLE,
+    tags: ARTICLE_TAGS,
+    title: ARTICLE_TITLE,
+    titleId: "protestArticleTitle"
+  }));
 
   shell.setBody(`
     <article class="tax-shorthand-page levy-compression-page protest-evidence-guide-page editorial-guide tax-article-panel" data-county-theme="gage" data-ges-reading-progress-target aria-label="Property protest evidence guide">
@@ -926,7 +938,7 @@ export function renderProtestEvidenceGuide() {
   `);
 
   installArticleAnalytics(canvas);
-  installHeroVideo(pageTitle);
+  installHeroVideo(shell.coverRegion);
   installHeroAudio(canvas);
   installHeroUtilityTracking(canvas);
   installGuideUtilityLanguage(canvas);
@@ -949,10 +961,6 @@ function renderArticleEntryPanel() {
     wordCount: ARTICLE_WORD_COUNT,
     lengthLabel: ARTICLE_LENGTH_LABEL
   });
-}
-
-function renderArticleTags() {
-  return renderGesArticleTags(ARTICLE_TAGS);
 }
 
 function installHeroVideo(root) {

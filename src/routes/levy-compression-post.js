@@ -1,6 +1,10 @@
 import { escapeHtml } from "../utils/html.js?v=befd9ce";
 import { loadPropertyManifest } from "../data-service.js?v=befd9ce";
-import { renderResourcesBlock as renderGesResourcesBlock } from "../ges/article-components.js?v=befd9ce";
+import {
+  renderArticleHero,
+  renderArticleEntryPanel as renderGesArticleEntryPanel,
+  renderResourcesBlock as renderGesResourcesBlock
+} from "../ges/article-components.js?v=befd9ce";
 import { createGesArticleShell } from "../ges/shell.js?v=befd9ce";
 import {
   installGesReadingProgress,
@@ -8,6 +12,31 @@ import {
 } from "../ges/reading-progress.js?v=befd9ce";
 
 const ARTICLE_AUTHOR_IMAGE = "assets/images/articles/max-quattromani-author.jpg";
+const ARTICLE_ID = "levy-compression";
+const ARTICLE_LEGACY_QUERY_VALUE = "levy-compression";
+const ARTICLE_CANONICAL_PATH = "articles/assessment-went-up-tax-bill/";
+const ARTICLE_TITLE = "Your Assessment Went Up. Does That Mean Your Tax Bill Will Go Up Just as Much?";
+const ARTICLE_SUBTITLE = "A plain-language guide and calculator for homeowners trying to estimate how assessment growth, countywide value movement, and local budgets can shape a tax bill.";
+const ARTICLE_DESCRIPTION = "A draft GES article and calculator explaining why a higher assessment does not automatically mean the tax bill rises by the same percentage.";
+const ARTICLE_AUTHOR = "Max Quattromani";
+const ARTICLE_AUTHOR_EMAIL = "max@maxquatrromani.com";
+const ARTICLE_AUTHOR_TITLE = "Nebraska Certified Assessor";
+const ARTICLE_DISPLAY_DATE = "Draft updated July 1, 2026";
+const ARTICLE_MODIFIED_DATE = "2026-07-01";
+const ARTICLE_READING_TIME_MINUTES = 7;
+const ARTICLE_WORD_COUNT = 1450;
+const ARTICLE_LENGTH_LABEL = "guided-explainer";
+const ARTICLE_TAGS = ["Gage County", "Levy Compression", "Property Tax", "Effective Tax Rate"];
+const ARTICLE_KEYWORDS = [
+  "property tax levy compression",
+  "assessment increase tax bill",
+  "effective tax rate",
+  "Gage County property taxes",
+  "property tax calculator",
+  "assessment went up"
+];
+const ARTICLE_SOCIAL_IMAGE = "assets/brand/civic-house/social/og-image-1200x630.png";
+const ARTICLE_SOCIAL_IMAGE_ALT = "Civic house mark for Guided Parcel Review.";
 const LEVY_REFERENCES = {
   gageCountyRo2026: "https://revenue.nebraska.gov/sites/default/files/doc/pad/research/statewide_equalization/counties/2026/34Gage.pdf"
 };
@@ -192,9 +221,57 @@ function calculationStep(id, step, title, purpose, formula = "--", substitution 
   `;
 }
 
+function normalizedPathname() {
+  return window.location.pathname.endsWith("/")
+    ? window.location.pathname
+    : `${window.location.pathname}/`;
+}
+
+function absoluteUrl(path = "/") {
+  if (/^https?:\/\//i.test(path)) return path;
+  const baseUrl = new URL("./", document.baseURI);
+  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
+  return new URL(normalizedPath, baseUrl).href;
+}
+
+function articleMetadata() {
+  return {
+    title: ARTICLE_TITLE,
+    documentTitle: `${ARTICLE_TITLE} | Guided Parcel Review`,
+    description: ARTICLE_DESCRIPTION,
+    socialDescription: ARTICLE_DESCRIPTION,
+    canonicalPath: ARTICLE_CANONICAL_PATH,
+    pageType: "article",
+    ogType: "article",
+    robots: "noindex, follow",
+    author: ARTICLE_AUTHOR,
+    modifiedDate: ARTICLE_MODIFIED_DATE,
+    section: "Property tax education",
+    tags: ARTICLE_TAGS,
+    keywords: ARTICLE_KEYWORDS,
+    socialImage: absoluteUrl(ARTICLE_SOCIAL_IMAGE),
+    socialImageAlt: ARTICLE_SOCIAL_IMAGE_ALT
+  };
+}
+
+function renderArticleEntryPanel() {
+  return renderGesArticleEntryPanel({
+    articleTitle: ARTICLE_TITLE,
+    authorImage: ARTICLE_AUTHOR_IMAGE,
+    authorMailto: `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeURIComponent(`Re: ${ARTICLE_TITLE}`)}`,
+    authorName: ARTICLE_AUTHOR,
+    authorTitle: ARTICLE_AUTHOR_TITLE,
+    displayDate: ARTICLE_DISPLAY_DATE,
+    lengthLabel: ARTICLE_LENGTH_LABEL,
+    readingMinutes: ARTICLE_READING_TIME_MINUTES,
+    wordCount: ARTICLE_WORD_COUNT
+  });
+}
+
 function renderOpeningSection() {
   return `
     <section class="tax-article-section tax-story-chapter tax-article-opening levy-article-narrow" aria-labelledby="levyOpeningTitle">
+      ${renderArticleEntryPanel()}
       <header class="tax-article-header">
         <p class="guided-kicker">Short Answer</p>
         <h2 id="levyOpeningTitle">Usually, no.</h2>
@@ -742,31 +819,27 @@ function initLevyCompressionCalculator(root = document) {
 }
 
 export function isLevyCompressionPostRequest(searchParams = new URLSearchParams(window.location.search)) {
-  return searchParams.get("article") === "levy-compression";
+  return searchParams.get("article") === ARTICLE_LEGACY_QUERY_VALUE
+    || normalizedPathname().endsWith(`/${ARTICLE_CANONICAL_PATH}`);
 }
 
 export function renderLevyCompressionPost() {
   const shell = createGesArticleShell({
     htmlClasses: ["levy-compression-shell-route"],
-    routeName: "levy-compression"
+    metadata: articleMetadata(),
+    routeName: ARTICLE_ID
   });
   if (!shell?.coverRegion) return;
-  const pageTitle = shell.coverRegion;
   const canvas = shell.bodyRegion;
 
-  shell.setCover(`
-    <div class="comp-page-title levy-page-title">
-      <p class="guided-kicker">Educational Post</p>
-      <h1>Your Assessment Went Up. Does That Mean Your Tax Bill Will Go Up Just as Much?</h1>
-      <p class="prose">A plain-language guide for homeowners worried about rising valuations.</p>
-      <div class="levy-author-byline">
-        <div class="article-author-attribution">
-          <img class="article-author-photo" src="${ARTICLE_AUTHOR_IMAGE}" alt="" loading="lazy" decoding="async" />
-          <p>By Max Quattromani</p>
-        </div>
-      </div>
-    </div>
-  `);
+  shell.setCover(renderArticleHero({
+    label: "Article Draft",
+    subject: "Levy Compression",
+    subtitle: ARTICLE_SUBTITLE,
+    tags: ARTICLE_TAGS,
+    title: ARTICLE_TITLE,
+    titleId: "levyCompressionArticleTitle"
+  }));
 
   shell.setBody(`
     <article class="tax-shorthand-page levy-compression-page tax-article-panel" data-ges-reading-progress-target aria-label="Levy compression educational article">
