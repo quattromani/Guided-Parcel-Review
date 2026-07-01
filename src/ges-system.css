@@ -172,9 +172,9 @@
   --ds-space-3xl: 5rem;
 
   --ds-gutter: clamp(1rem, 4vw, 2rem);
-  --ds-section-space-compact: clamp(1rem, 2.5vw, 1.6rem);
-  --ds-section-space: clamp(1.5rem, 4vw, 2.8rem);
-  --ds-section-space-immersive: clamp(2.25rem, 7vw, 5rem);
+  --ds-section-space-compact: clamp(0.667rem, 1.667vw, 1.067rem);
+  --ds-section-space: clamp(1rem, 2.667vw, 1.867rem);
+  --ds-section-space-immersive: clamp(1.5rem, 4.667vw, 3.333rem);
   --ds-component-space-compact: 0.75rem;
   --ds-component-space: 1rem;
   --ds-component-space-generous: 1.35rem;
@@ -1194,6 +1194,29 @@ strong {
   .ges-stat-card {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+
+  .ges-margin-insight {
+    border-left: 0;
+    border-top: 0.5pt solid rgb(var(--ges-print-rule));
+    display: block;
+    inset: auto !important;
+    justify-self: stretch;
+    margin: 0.04in 0 0;
+    max-width: none;
+    padding: 0.06in 0 0;
+    position: static !important;
+    width: 100%;
+  }
+
+  .ges-margin-insight::before {
+    display: none;
+  }
+
+  .ges-section-header--with-insight > .ges-margin-insight:not(.ges-margin-insight--inline):not(.ges-margin-insight--after-content) {
+    inset: auto !important;
+    position: static !important;
+    width: 100%;
   }
 
   a {

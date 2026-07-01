@@ -107,6 +107,29 @@
     page-break-inside: avoid;
   }
 
+  .ges-margin-insight {
+    border-left: 0;
+    border-top: 0.5pt solid rgb(var(--ges-print-rule));
+    display: block;
+    inset: auto !important;
+    justify-self: stretch;
+    margin: 0.04in 0 0;
+    max-width: none;
+    padding: 0.06in 0 0;
+    position: static !important;
+    width: 100%;
+  }
+
+  .ges-margin-insight::before {
+    display: none;
+  }
+
+  .ges-section-header--with-insight > .ges-margin-insight:not(.ges-margin-insight--inline):not(.ges-margin-insight--after-content) {
+    inset: auto !important;
+    position: static !important;
+    width: 100%;
+  }
+
   a {
     color: rgb(var(--ges-print-text)) !important;
     text-decoration-color: rgb(var(--ges-print-muted)) !important;

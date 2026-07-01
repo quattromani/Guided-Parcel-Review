@@ -221,9 +221,24 @@
     border-left: 0;
     border-top: var(--ges-print-rule-width) solid rgb(var(--ges-print-rule));
     color: rgb(var(--ges-print-muted));
-    margin-top: 0;
-    padding-left: 0;
-    padding-top: 0.06in;
+    display: block;
+    inset: auto !important;
+    justify-self: stretch;
+    margin: 0.04in 0 0;
+    max-width: none;
+    padding: 0.06in 0 0;
+    position: static !important;
+    width: 100%;
+  }
+
+  .ges-margin-insight::before {
+    display: none;
+  }
+
+  .ges-section-header--with-insight > .ges-margin-insight:not(.ges-margin-insight--inline):not(.ges-margin-insight--after-content) {
+    inset: auto !important;
+    position: static !important;
+    width: 100%;
   }
 
   .ges-margin-insight__label {
