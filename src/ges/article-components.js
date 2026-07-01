@@ -36,6 +36,28 @@ export function renderMarginInsight(insight, options = {}) {
   `;
 }
 
+function textValueHasContent(value) {
+  if (Array.isArray(value)) return value.some(textValueHasContent);
+  if (value && typeof value === "object") return textValueHasContent(value.text ?? "");
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function hasMarginInsightCompanionText(options = {}) {
+  return [
+    "body",
+    "closing",
+    "closingParagraph",
+    "companion",
+    "description",
+    "heroHook",
+    "intro",
+    "lede",
+    "paragraph",
+    "paragraphs",
+    "text"
+  ].some(key => textValueHasContent(options[key]));
+}
+
 function uniqueValues(values) {
   return [...new Set(values.filter(Boolean))];
 }
@@ -488,7 +510,9 @@ export function renderResourcesBlock(block, options = {}) {
 
 export function renderSectionHeader(kicker, title, id, options = {}) {
   const companion = options.companion ? `<p class="ges-section-companion">${escapeHtml(options.companion)}</p>` : "";
-  const insight = renderMarginInsight(options.marginInsight, { placement: options.marginInsightPlacement });
+  const insight = hasMarginInsightCompanionText(options)
+    ? renderMarginInsight(options.marginInsight, { placement: options.marginInsightPlacement })
+    : "";
   const classes = ["tax-article-header", "editorial-section-header", insight ? "ges-section-header--with-insight" : ""].filter(Boolean).join(" ");
 
   return `
