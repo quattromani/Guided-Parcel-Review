@@ -315,7 +315,7 @@ function renderExperiment() {
           <div><dt>Total Value</dt><dd data-kpi-value="totalValue">${displayCompactMoney(baseline.total)}</dd></div>
           <div><dt>Budget</dt><dd data-kpi-value="budgetValue">${displayCompactMoney(BASE_BUDGET)}</dd></div>
           <div class="tax-roll-baseline__hero"><dt>Levy</dt><dd data-kpi-value="levyRate">${formatCompactLevy(baseline.levy)}</dd></div>
-          <div><dt>House 1 Tax</dt><dd data-kpi-value="sampleTax">${displayCompactMoney(baseline.taxes[0])}</dd></div>
+          <div><dt>Avg. Tax</dt><dd data-kpi-value="sampleTax">${displayCompactMoney(average(baseline.taxes))}</dd></div>
         </dl>
       </div>
 
@@ -476,7 +476,7 @@ function installTaxRollExperiment(root) {
     totalValue: baseline.total,
     budgetValue: BASE_BUDGET,
     levyRate: baseline.levy,
-    sampleTax: baseline.taxes[0]
+    sampleTax: average(baseline.taxes)
   };
   let previousPropertyState = baseline;
 
@@ -502,7 +502,7 @@ function installTaxRollExperiment(root) {
         totalValue: scenario.total,
         budgetValue: lesson.budget,
         levyRate: scenario.levy,
-        sampleTax: scenario.taxes[0]
+        sampleTax: average(scenario.taxes)
       };
       previousPropertyState = scenario;
       const label = button.querySelector("[data-reveal-label]");
@@ -552,17 +552,23 @@ function installBaselineRibbon(root) {
 }
 
 function scrollResultTableIntoView(root, lesson) {
-  const table = root.querySelector(`[data-result-shell="${lesson.id}"] .tax-roll-table-wrap`);
-  const shell = root.querySelector(`[data-result-shell="${lesson.id}"]`);
+  const baselineShell = root.querySelector("[data-tax-roll-baseline-shell]");
+  if (!baselineShell?.classList.contains("is-fixed")) return;
+
   const section = root.querySelector(`[data-lesson="${lesson.id}"]`);
-  const shouldShowHeading = window.matchMedia("(min-width: 760px)").matches;
-  const target = shouldShowHeading ? section : shell || table;
-  if (!target) return;
-  const ribbon = root.querySelector(".tax-roll-baseline");
+  const target = section?.querySelector(".tax-article-header .guided-kicker")
+    || section?.querySelector(".tax-article-header h2")
+    || section;
+  const ribbon = baselineShell.querySelector(".tax-roll-baseline");
   const ribbonRect = ribbon?.getBoundingClientRect();
-  const ribbonBottom = ribbonRect ? Math.max(0, ribbonRect.bottom) : 0;
-  const offset = ribbonBottom + (shouldShowHeading ? 18 : 14);
-  const top = window.scrollY + target.getBoundingClientRect().top - offset;
+  if (!target || !ribbonRect) return;
+
+  const gap = window.matchMedia("(min-width: 760px)").matches ? 16 : 12;
+  const targetTop = target.getBoundingClientRect().top;
+  const desiredTop = Math.max(0, ribbonRect.bottom) + gap;
+  const top = window.scrollY + targetTop - desiredTop;
+  if (Math.abs(targetTop - desiredTop) < 4) return;
+
   const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
   window.scrollTo({ top: Math.max(0, top), behavior });
 }
@@ -690,11 +696,12 @@ function updateMetrics(elements, previous, scenario, budget) {
   animateText(elements.totalValue, previous.totalValue, scenario.total, displayCompactMoney);
   animateText(elements.budgetValue, previous.budgetValue, budget, displayCompactMoney);
   animateText(elements.levyRate, previous.levyRate, scenario.levy, formatCompactLevy);
-  animateText(elements.sampleTax, previous.sampleTax, scenario.taxes[0], displayCompactMoney);
+  const averageTax = average(scenario.taxes);
+  animateText(elements.sampleTax, previous.sampleTax, averageTax, displayCompactMoney);
   pulseMetricText(elements.totalValue, previous.totalValue, scenario.total);
   pulseMetricText(elements.budgetValue, previous.budgetValue, budget);
   pulseMetricText(elements.levyRate, previous.levyRate, scenario.levy);
-  pulseMetricText(elements.sampleTax, previous.sampleTax, scenario.taxes[0]);
+  pulseMetricText(elements.sampleTax, previous.sampleTax, averageTax);
 }
 
 function updatePropertyCards(root, previous, scenario) {
@@ -729,6 +736,10 @@ function calculate(values, budget) {
 
 function sum(values) {
   return values.reduce((total, value) => total + value, 0);
+}
+
+function average(values) {
+  return values.length ? sum(values) / values.length : 0;
 }
 
 function roundDollar(value) {
@@ -861,10 +872,6 @@ function styles() {
       position: absolute;
       white-space: nowrap;
       width: 1px;
-    }
-
-    .editorial-guide .article-section {
-      gap: 0;
     }
 
     .tax-roll-intro,
@@ -1582,7 +1589,8 @@ function styles() {
       display: grid;
       align-items: center;
       border-top: 0;
-      gap: clamp(18px, 4vw, 28px);
+      column-gap: clamp(24px, 4vw, 36px);
+      row-gap: clamp(18px, 4vw, 28px);
       grid-template-columns: 100px minmax(0, 1fr);
       justify-items: start;
       max-width: var(--tax-roll-reading-shell-width);
@@ -1681,7 +1689,8 @@ function styles() {
     @media (max-width: 640px) {
       .tax-roll-final {
         align-items: start;
-        gap: 0.85rem;
+        column-gap: 1rem;
+        row-gap: 0.85rem;
         grid-template-columns: 60px minmax(0, 1fr);
       }
 
@@ -1727,6 +1736,8 @@ function styles() {
 
       .tax-roll-lesson-grid {
         align-items: stretch;
+        column-gap: clamp(28px, 7vw, 40px);
+        row-gap: 0;
         grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
       }
 
