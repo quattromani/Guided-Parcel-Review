@@ -102,10 +102,12 @@ const SHARE_FORMAT = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1, 
 const LESSONS = [
   {
     id: "everyone-up",
-    number: "Question",
+    number: "Experiment 1",
     title: "If everyone's assessment goes up, do everyone's taxes go up too?",
-    question: "Every home's assessed value rises by 10%. The budget does not change.",
-    intro: "What do you think will happen?",
+    setup: [
+      ["All homes", "+10%"],
+      ["Budget", "No change"]
+    ],
     prediction: "The levy should adjust, but the burden should not redistribute.",
     action: "See the Answer",
     values: () => BASE_VALUES.map(value => value * 1.1),
@@ -117,10 +119,12 @@ const LESSONS = [
   },
   {
     id: "everyone-down",
-    number: "Question",
+    number: "Experiment 2",
     title: "If everyone's assessment goes down, would taxes go down?",
-    question: "Every home's assessed value falls by 10%.",
-    intro: "The budget stays exactly the same.",
+    setup: [
+      ["All homes", "-10%"],
+      ["Budget", "No change"]
+    ],
     prediction: "The levy should adjust upward because the budget stayed the same.",
     action: "See the Answer",
     values: () => BASE_VALUES.map(value => value * 0.9),
@@ -132,10 +136,13 @@ const LESSONS = [
   },
   {
     id: "house-four-faster",
-    number: "Question",
+    number: "Experiment 3",
     title: "What happens if one house appreciates much faster than the others?",
-    question: "One home rises by 30%.",
-    intro: "The remaining homes rise by 10%. The budget increases by 3%.",
+    setup: [
+      ["One home", "+30%"],
+      ["Remaining homes", "+10%"],
+      ["Budget", "+3%"]
+    ],
     prediction: "That home should carry more because its share of the tax base grows.",
     action: "See the Answer",
     values: () => BASE_VALUES.map((value, index) => value * (index === 3 ? 1.3 : 1.1)),
@@ -147,10 +154,13 @@ const LESSONS = [
   },
   {
     id: "two-speeds",
-    number: "Question",
+    number: "Experiment 4",
     title: "What happens when one part of town appreciates faster than another?",
-    question: "Half the neighborhood rises 10%.",
-    intro: "Half rises 5%. Budget rises 3%.",
+    setup: [
+      ["Faster half", "+10%"],
+      ["Slower half", "+5%"],
+      ["Budget", "+3%"]
+    ],
     prediction: "The faster-moving half should pick up a larger share of the budget.",
     action: "See the Answer",
     values: () => BASE_VALUES.map((value, index) => value * (index < 5 ? 1.1 : 1.05)),
@@ -162,10 +172,12 @@ const LESSONS = [
   },
   {
     id: "mixed-year",
-    number: "Question",
+    number: "Experiment 5",
     title: "What is a more likely reassessment pattern?",
-    question: "Some homes rise 2%. Others 5%. Others 9%.",
-    intro: "Others 14%. Others 20%. Budget rises 3%.",
+    setup: [
+      ["Homes vary", "+2%, +5%, +9%, +14%, +20%"],
+      ["Budget", "+3%"]
+    ],
     prediction: "Homes that rise faster should gain share. Slower homes should lose share.",
     action: "See the Answer",
     values: () => BASE_VALUES.map((value, index) => value * [1.02, 1.05, 1.09, 1.14, 1.2, 1.2, 1.05, 1.09, 1.14, 1.2][index]),
@@ -232,6 +244,7 @@ export function renderWatchTheTaxRollMoveArticle() {
           <p class="prose">Let's simplify the system before we explore the real one.</p>
           <p class="prose">We'll begin with ten identical homes, one fixed budget, and one levy rate. Then we'll change only one variable at a time and watch what happens.</p>
           <p class="prose">Nothing here predicts an actual tax bill. Instead, it reveals the relationships that determine one.</p>
+          <p class="prose">The main idea is simple: your taxes depend less on what happens to your house alone than on what happens to everyone else's.</p>
         </div>
       </section>
       ${renderExperiment()}
@@ -319,9 +332,16 @@ function renderExperiment() {
         </dl>
       </div>
 
-      ${LESSONS.slice(0, 2).map(renderLesson).join("")}
+      ${renderLessonBridge("The first experiment changes every home together. That is the cleanest way to separate assessment movement from tax-bill movement.")}
+      ${renderLesson(LESSONS[0])}
+      ${renderLessonBridge("That is the simple case. Now we reverse the direction and ask the same question from the other side.")}
+      ${renderLesson(LESSONS[1])}
       ${renderBridge()}
-      ${LESSONS.slice(2).map(renderLesson).join("")}
+      ${renderLesson(LESSONS[2])}
+      ${renderLessonBridge("One house is easy to follow. A neighborhood is where the pattern starts to feel more like real life.")}
+      ${renderLesson(LESSONS[3])}
+      ${renderLessonBridge("So far, the groups have been tidy. A reassessment year is usually less neat.")}
+      ${renderLesson(LESSONS[4])}
 
       <section class="tax-roll-final tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-label="Final takeaway">
         ${renderFinalPie()}
@@ -335,19 +355,21 @@ function renderFinalThought() {
   return `
     <section class="tax-roll-final-thought tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-labelledby="taxRollFinalThoughtTitle">
       <h2 id="taxRollFinalThoughtTitle">One final thought.</h2>
-      <p class="prose">If you've made it this far, you've probably noticed something surprising.</p>
-      <p class="prose">Very little in this article was actually about individual homes.</p>
-      <p class="prose">It was about relationships.</p>
-      <p class="prose">A property's assessment matters because it determines that property's share of the county's tax base. But a tax bill isn't calculated in isolation. It reflects how your property changed relative to every other property around it, how much local government decided it needed to collect, and the levy required to connect those two pieces.</p>
-      <p class="prose">That's why two neighbors can receive similar assessment notices and different tax bills. It's why large assessment increases don't always produce equally large tax increases. And it's why modest assessment increases sometimes do.</p>
+      <p class="prose">Over the last few minutes, we changed only one variable at a time.</p>
+      <p class="prose">When every home moved together, very little changed. The levy adjusted.</p>
+      <p class="prose">When one property moved differently than its neighbors, the tax burden shifted.</p>
+      <p class="prose">That distinction explains why two homeowners in the same taxing district can experience very different tax bills, even when both receive a valuation increase.</p>
+      <p class="prose">As you leave this article, try replacing one question with another.</p>
+      <p class="prose">Instead of asking:</p>
+      <p class="prose">"How much did my assessment go up?"</p>
+      <p class="prose">Ask:</p>
       <aside class="tax-roll-final-transition guided-transition" aria-label="Final thought transition">
-        <p>The system is easier to understand once you stop asking, "What happened to my house?" and begin asking, "How did my house move compared with everyone else's?"</p>
+        <p>"How did my property move compared with everyone else's?"</p>
       </aside>
-      <p class="prose">That's the question this article was designed to answer.</p>
-      <p class="prose">Because in property taxation, assessments determine how the tax base is shared.</p>
+      <p class="prose">That's the question the property tax system is really answering.</p>
+      <p class="prose">Assessments determine each property's share of the tax base.</p>
       <p class="prose">Budgets determine how much money must be collected.</p>
       <p class="prose">The levy connects the two.</p>
-      <p class="prose">Understand that sequence, and the rest begins to make sense.</p>
     </section>
   `;
 }
@@ -406,11 +428,12 @@ function renderProperty(property, index, baseline) {
 function renderLesson(lesson) {
   return `
     <section class="tax-roll-lesson tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" data-lesson="${escapeHtml(lesson.id)}" aria-labelledby="${escapeHtml(lesson.id)}Title">
-      <div class="tax-roll-lesson-grid">
-        ${sectionHeader(lesson.number, lesson.title, `${lesson.id}Title`)}
+      ${sectionHeader(lesson.number, lesson.title, `${lesson.id}Title`)}
+      ${renderExperimentSetup(lesson.setup)}
+      <div class="tax-roll-experiment-card" data-experiment-card="${escapeHtml(lesson.id)}">
+        <div class="tax-roll-lesson-grid">
         <div class="tax-roll-scenario-copy">
-          <p class="tax-roll-question prose">${escapeHtml(lesson.question)}</p>
-          <p class="tax-roll-lesson-intro prose">${escapeHtml(lesson.intro)}</p>
+          ${renderMarginInsight({ label: "Prediction", text: lesson.prediction }, { placement: "inline" })}
           <button type="button" class="tax-roll-reveal" data-run-lesson="${escapeHtml(lesson.id)}">
             <span data-reveal-label>${escapeHtml(lesson.action)}</span>
             <span class="tax-roll-reveal__icon" aria-hidden="true">
@@ -422,7 +445,6 @@ function renderLesson(lesson) {
               </svg>
             </span>
           </button>
-          ${renderMarginInsight({ label: "Prediction", text: lesson.prediction }, { placement: "inline" })}
           <div class="tax-roll-explanation" data-result-explanation="${escapeHtml(lesson.id)}" hidden>
             <section class="tax-roll-explanation-block">
               <h3>Observation</h3>
@@ -433,7 +455,13 @@ function renderLesson(lesson) {
               <p class="prose" data-result-why></p>
             </section>
             <section class="tax-roll-explanation-block tax-roll-explanation-block--remember">
-              <h3>Remember</h3>
+              <h3>
+                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                  <path d="M10 2.5a5.8 5.8 0 0 0-3.35 10.54c.58.42.85.9.85 1.46v.25h5v-.25c0-.56.27-1.04.85-1.46A5.8 5.8 0 0 0 10 2.5Z"></path>
+                  <path d="M7.7 16.2h4.6M8.25 18h3.5"></path>
+                </svg>
+                <span>Key Idea</span>
+              </h3>
               <p class="prose" data-result-remember></p>
             </section>
           </div>
@@ -451,8 +479,33 @@ function renderLesson(lesson) {
             <h3 class="tax-roll-result-title" hidden></h3>
           </div>
         </div>
+        </div>
       </div>
     </section>
+  `;
+}
+
+function renderExperimentSetup(rows) {
+  return `
+    <div class="tax-roll-experiment-setup" aria-label="Experiment setup">
+      <p>Experiment Setup</p>
+      <dl>
+        ${rows.map(([label, value]) => `
+          <div>
+            <dt>${escapeHtml(label)}</dt>
+            <dd>${escapeHtml(value)}</dd>
+          </div>
+        `).join("")}
+      </dl>
+    </div>
+  `;
+}
+
+function renderLessonBridge(text) {
+  return `
+    <aside class="tax-roll-lesson-bridge" aria-label="Experiment transition">
+      <p>${escapeHtml(text)}</p>
+    </aside>
   `;
 }
 
@@ -460,10 +513,9 @@ function renderBridge() {
   return `
     <aside class="tax-roll-bridge guided-transition" aria-label="Guided transition">
       <p>So what actually matters?</p>
-      <p>The first two questions revealed the rule.</p>
-      <p>When every property moves together, very little shifts.</p>
-      <p>Now we'll start changing things up.</p>
-      <p>That's where the tax burden begins to move.</p>
+      <p>At first, these results can feel wrong. They are not wrong. They are showing that assessments and taxes move through different mechanisms.</p>
+      <p>Assessments determine each property's share of the taxable base. Budgets determine how much money must be raised. The levy connects those two things.</p>
+      <p>Tax burden shifts only when one property moves differently than the others.</p>
     </aside>
   `;
 }
@@ -576,6 +628,7 @@ function scrollResultTableIntoView(root, lesson) {
 function renderLessonResult(root, lesson, scenario, baseline) {
   const shell = root.querySelector(`[data-result-shell="${lesson.id}"]`);
   const explanation = root.querySelector(`[data-result-explanation="${lesson.id}"]`);
+  const card = root.querySelector(`[data-experiment-card="${lesson.id}"]`);
   if (!shell) return;
   const kicker = shell.querySelector(".tax-roll-answer-kicker");
   const title = shell.querySelector(".tax-roll-result-title");
@@ -593,6 +646,7 @@ function renderLessonResult(root, lesson, scenario, baseline) {
     explanation.querySelector("[data-result-remember]").textContent = lesson.remember;
   }
   requestAnimationFrame(() => {
+    card?.classList.add("is-revealed");
     shell.classList.add("is-visible");
     explanation?.classList.add("is-visible");
   });
@@ -681,13 +735,14 @@ function renderPendingResultTable() {
 }
 
 function renderTableHouseIdentity(property) {
+  const houseNumber = property.label.replace(/^House\s+/i, "");
   return `
-    <span class="tax-roll-table-house">
+    <span class="tax-roll-table-house" aria-label="${escapeHtml(property.label)}">
       <svg viewBox="0 0 20 18" aria-hidden="true" focusable="false">
         <path class="tax-roll-table-house__roof" d="M2.5 8.4 10 2l7.5 6.4h-2.2v7.1H4.7V8.4H2.5Z"></path>
         <path class="tax-roll-table-house__door" d="M8.45 10.35h3.1v5.15h-3.1Z"></path>
       </svg>
-      <span>${escapeHtml(property.label)}</span>
+      <span aria-hidden="true">${escapeHtml(houseNumber)}</span>
     </span>
   `;
 }
@@ -808,8 +863,9 @@ function assessmentChangeClass(value) {
 function renderAssessmentDelta(value) {
   if (Math.abs(value) < 0.0001) return `<span class="tax-roll-assessment-change__flat">0%</span>`;
   const isUp = value > 0;
+  const direction = isUp ? "Up" : "Down";
   return `
-    <span class="tax-roll-assessment-change__content">
+    <span class="tax-roll-assessment-change__content" aria-label="${direction} ${formatPercentChange(value)}">
       <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false">
         <path d="${isUp ? "M6 2.2 10 6.2H7.4v3.6H4.6V6.2H2Z" : "M6 9.8 2 5.8h2.6V2.2h2.8v3.6H10Z"}"></path>
       </svg>
@@ -928,7 +984,7 @@ function styles() {
     .tax-roll-lesson,
     .tax-roll-final {
       border-top: 1px solid rgba(36, 59, 68, 0.11);
-      padding: clamp(36px, 10vw, 82px) 0;
+      padding: clamp(44px, 10vw, 72px) 0;
     }
 
     .tax-roll-neighborhood {
@@ -938,6 +994,94 @@ function styles() {
     .tax-roll-bridge + .tax-roll-lesson {
       border-top-color: rgba(36, 59, 68, 0.16);
       margin-top: clamp(24px, 5vw, 42px);
+    }
+
+    .tax-roll-lesson-bridge {
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading);
+      font-size: clamp(1rem, 2vw, 1.12rem);
+      font-weight: var(--ges-weight-bold);
+      line-height: 1.48;
+      margin: clamp(28px, 6vw, 46px) 0 clamp(-12px, -1vw, -4px);
+      max-width: 40rem;
+    }
+
+    .tax-roll-lesson-bridge p {
+      margin: 0;
+    }
+
+    .tax-roll-lesson > .tax-article-header {
+      max-width: 780px;
+    }
+
+    .tax-roll-experiment-setup {
+      display: grid;
+      gap: 0.54rem;
+      margin-top: clamp(18px, 4vw, 28px);
+      max-width: min(100%, 34rem);
+    }
+
+    .tax-roll-experiment-setup p,
+    .tax-roll-experiment-setup dl,
+    .tax-roll-experiment-setup dt,
+    .tax-roll-experiment-setup dd {
+      margin: 0;
+    }
+
+    .tax-roll-experiment-setup p {
+      color: rgb(var(--ges-color-civic-blue));
+      font-family: var(--ges-font-heading);
+      font-size: var(--ges-type-xs);
+      font-weight: var(--ges-weight-heavy);
+      letter-spacing: var(--ges-letter-kicker);
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .tax-roll-experiment-setup dl {
+      border-top: 1px solid rgba(36, 59, 68, 0.13);
+      display: grid;
+    }
+
+    .tax-roll-experiment-setup div {
+      align-items: baseline;
+      border-bottom: 1px solid rgba(36, 59, 68, 0.09);
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: minmax(0, 1fr) auto;
+      padding: 0.52rem 0;
+    }
+
+    .tax-roll-experiment-setup dt {
+      color: var(--ges-color-text-muted, #5b6670);
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: 0.82rem;
+      font-weight: 760;
+      line-height: 1.1;
+    }
+
+    .tax-roll-experiment-setup dd {
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: 0.92rem;
+      font-weight: 850;
+      line-height: 1.05;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .tax-roll-experiment-card {
+      background: #fff;
+      border: 1px solid rgba(36, 59, 68, 0.1);
+      border-radius: 16px;
+      box-shadow: 0 1rem 2.6rem rgba(36, 59, 68, 0.075);
+      margin-top: clamp(22px, 5vw, 34px);
+      padding: clamp(18px, 4vw, 32px);
+      transition: box-shadow 280ms ease, transform 280ms ease;
+    }
+
+    .tax-roll-experiment-card.is-revealed {
+      box-shadow: 0 1.1rem 2.8rem rgba(36, 59, 68, 0.09);
     }
 
     .tax-roll-baseline-shell {
@@ -1161,11 +1305,7 @@ function styles() {
 
     .tax-roll-lesson-grid {
       display: grid;
-      gap: clamp(28px, 7vw, 40px);
-    }
-
-    .tax-roll-lesson-grid > .tax-article-header {
-      max-width: 780px;
+      gap: clamp(24px, 6vw, 36px);
     }
 
     .tax-roll-scenario-copy {
@@ -1193,7 +1333,7 @@ function styles() {
       gap: 0.52rem;
       justify-content: center;
       letter-spacing: 0;
-      margin-top: clamp(18px, 5vw, 28px);
+      margin-top: clamp(18px, 5vw, 26px);
       padding: 0.78rem 1.05rem;
       transition: background-color 180ms ease, transform 180ms ease;
       width: auto;
@@ -1260,14 +1400,20 @@ function styles() {
     }
 
     .tax-roll-result-column {
-      margin-top: clamp(24px, 6vw, 38px);
+      margin-top: 0;
     }
 
     .tax-roll-scenario-copy > .ges-margin-insight {
       inset: auto;
-      margin-top: clamp(16px, 4vw, 24px);
+      margin-top: 0;
       position: relative;
+      transform: translateY(0);
+      transition: opacity 260ms ease, transform 260ms ease;
       width: min(100%, 18rem);
+    }
+
+    .tax-roll-experiment-card.is-revealed .tax-roll-scenario-copy > .ges-margin-insight {
+      transform: translateY(-2px);
     }
 
     .tax-roll-result-shell {
@@ -1412,7 +1558,7 @@ function styles() {
     .tax-roll-table-house {
       align-items: center;
       display: inline-flex;
-      gap: 0.5rem;
+      gap: 0.36rem;
       min-width: 0;
     }
 
@@ -1460,13 +1606,15 @@ function styles() {
     .tax-roll-assessment-change__content {
       align-items: center;
       display: inline-flex;
-      gap: 0.22rem;
+      gap: 0.36rem;
+      white-space: nowrap;
     }
 
     .tax-roll-assessment-change svg {
       display: block;
-      height: 0.72rem;
-      width: 0.72rem;
+      flex: 0 0 auto;
+      height: 1.2rem;
+      width: 1.2rem;
     }
 
     .tax-roll-assessment-change path {
@@ -1561,17 +1709,60 @@ function styles() {
 
     .tax-roll-explanation-block {
       border-top: 1px solid rgba(36, 59, 68, 0.1);
+      opacity: 0;
       padding-top: 0.92rem;
+      transform: translateY(6px);
+    }
+
+    .tax-roll-explanation.is-visible .tax-roll-explanation-block {
+      animation: taxRollExplanationReveal 460ms ease both;
+    }
+
+    .tax-roll-explanation.is-visible .tax-roll-explanation-block:nth-child(2) {
+      animation-delay: 90ms;
+    }
+
+    .tax-roll-explanation.is-visible .tax-roll-explanation-block:nth-child(3) {
+      animation-delay: 180ms;
+    }
+
+    @keyframes taxRollExplanationReveal {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .tax-roll-explanation-block h3 {
+      align-items: center;
       color: rgb(var(--ges-color-civic-blue));
+      display: inline-flex;
       font-family: var(--ges-font-heading);
       font-size: var(--ges-type-xs);
       font-weight: var(--ges-weight-heavy);
+      gap: 0.38rem;
       letter-spacing: var(--ges-letter-kicker);
       margin: 0;
       text-transform: uppercase;
+    }
+
+    .tax-roll-explanation-block h3 svg {
+      display: block;
+      height: 0.92rem;
+      width: 0.92rem;
+    }
+
+    .tax-roll-explanation-block h3 svg path {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
     }
 
     .tax-roll-explanation-block p {
@@ -1767,7 +1958,7 @@ function styles() {
       }
 
       .tax-roll-result-col--house {
-        width: 20%;
+        width: 13%;
       }
 
       .tax-roll-result-col--assessment {
@@ -1775,11 +1966,11 @@ function styles() {
       }
 
       .tax-roll-result-col--delta {
-        width: 8%;
+        width: 12%;
       }
 
       .tax-roll-result-col--share {
-        width: 23%;
+        width: 24%;
       }
 
       .tax-roll-result-col--tax,
