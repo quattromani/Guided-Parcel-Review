@@ -102,78 +102,78 @@ const SHARE_FORMAT = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1, 
 const LESSONS = [
   {
     id: "everyone-up",
-    number: "Scenario 1",
-    title: "Everyone increases equally.",
-    question: "If every home rises by the same percentage, what happens?",
-    intro: "Every assessment increases 10%. The budget stays exactly the same.",
-    prediction: "The tax bills should barely move because every share stays equal.",
-    action: "See What Happens",
+    number: "Question",
+    title: "If everyone's assessment goes up, do everyone's taxes go up too?",
+    question: "Every home's assessed value rises by 10%. The budget does not change.",
+    intro: "What do you think will happen?",
+    prediction: "The levy should adjust, but the burden should not redistribute.",
+    action: "See the Answer",
     values: () => BASE_VALUES.map(value => value * 1.1),
     budget: BASE_BUDGET,
-    result: "Almost nothing changes.",
-    observation: "Every property increased by exactly 10%. The levy decreased. Each tax bill stayed at $1,000.",
-    why: "Because every property increased by the same percentage, no property became a larger share of the county tax base. The levy adjusted instead.",
-    remember: "When everyone moves together, the levy changes instead of the burden."
+    result: "Not necessarily.",
+    observation: "Almost nothing changes. Every home's assessed value increased. The levy compressed enough that nearly every tax bill stayed about the same.",
+    why: "Because every property increased by the same percentage. No property became a larger share of the county's tax base. Instead, the levy adjusted.",
+    remember: "Equal movement changes the levy. Unequal movement changes the burden."
   },
   {
     id: "everyone-down",
-    number: "Scenario 2",
-    title: "Everyone decreases equally.",
-    question: "If every home falls together, do tax bills fall automatically?",
-    intro: "Every assessment decreases 10%. The budget stays exactly the same.",
-    prediction: "The tax bills should barely move again because the shares still stay equal.",
-    action: "Reveal the Result",
+    number: "Question",
+    title: "If everyone's assessment goes down, do taxes automatically go down?",
+    question: "Every home's assessed value falls by 10%.",
+    intro: "The budget stays exactly the same.",
+    prediction: "The levy should adjust upward because the budget stayed the same.",
+    action: "See the Answer",
     values: () => BASE_VALUES.map(value => value * 0.9),
     budget: BASE_BUDGET,
     result: "Again, very little changes.",
-    observation: "Every property decreased by exactly 10%. The levy increased. Each tax bill stayed at $1,000.",
-    why: "Because every property fell by the same percentage, each home kept the same share of the tax base. The same budget was collected from a smaller base.",
-    remember: "When everyone moves together, values change but shares do not."
+    observation: "Every home's assessed value fell. The levy expanded. Tax bills remained surprisingly similar.",
+    why: "The county still needs to collect the same amount of money. When every property falls together, the levy simply adjusts upward.",
+    remember: "Lower assessments alone do not guarantee lower taxes."
   },
   {
     id: "house-four-faster",
-    number: "Scenario 3",
-    title: "One house moves faster.",
-    question: "What happens when one property rises faster than the others?",
-    intro: "House 4 increases 30%. Every other home increases 10%. The budget increases 3%.",
-    prediction: "House 4 should carry more of the budget because it becomes a larger share of the base.",
-    action: "Watch the Outcome",
+    number: "Question",
+    title: "What happens if one house appreciates much faster than the others?",
+    question: "One home rises by 30%.",
+    intro: "The remaining homes rise by 10%. The budget increases by 3%.",
+    prediction: "That home should carry more because its share of the tax base grows.",
+    action: "See the Answer",
     values: () => BASE_VALUES.map((value, index) => value * (index === 3 ? 1.3 : 1.1)),
     budget: BUDGET_UP,
-    result: "House 4 takes on a larger share.",
-    observation: "House 4 became a larger part of the tax base. Its tax bill increased more than the other homes.",
-    why: "The budget increased, but the larger shift came from House 4 moving faster than its neighbors. Its share of the base grew, so its share of the budget grew too.",
-    remember: "When one property moves faster than everyone else, its share of the tax base increases."
+    result: "One property now carries more.",
+    observation: "Only one property moved dramatically faster than the neighborhood. Its share of the county tax base increased.",
+    why: "Because property taxes are based on relative movement. That home now represents a larger percentage of the county's total value.",
+    remember: "Higher taxes usually come from becoming a larger share of the tax base, not simply from having a higher assessment."
   },
   {
     id: "two-speeds",
-    number: "Scenario 4",
-    title: "The neighborhood moves at two speeds.",
-    question: "What if one half of the neighborhood outpaces the other half?",
-    intro: "Five homes increase 10%. Five homes increase 5%. The budget increases 3%.",
-    prediction: "The faster half should pick up a little more of the tax burden.",
-    action: "Run the Example",
+    number: "Question",
+    title: "What happens when one part of town appreciates faster than another?",
+    question: "Half the neighborhood rises 10%.",
+    intro: "Half rises 5%. Budget rises 3%.",
+    prediction: "The faster-moving half should pick up a larger share of the budget.",
+    action: "See the Answer",
     values: () => BASE_VALUES.map((value, index) => value * (index < 5 ? 1.1 : 1.05)),
     budget: BUDGET_UP,
-    result: "Burden shifts without an extreme outlier.",
-    observation: "The faster half of the neighborhood paid a little more. The slower half paid a little less than it would have if everyone had moved together.",
-    why: "No single home had an extreme increase. The burden shifted because one group became a slightly larger share of the tax base than the other.",
-    remember: "Relative movement can be quiet and still meaningful."
+    result: "The burden begins to separate.",
+    observation: "Properties that appreciated faster began carrying a larger portion of the budget.",
+    why: "Different neighborhoods can experience different market conditions. Relative movement, not identical movement, creates redistribution.",
+    remember: "Assessment differences redistribute responsibility."
   },
   {
     id: "mixed-year",
-    number: "Scenario 5",
-    title: "A mixed reassessment year.",
-    question: "What happens when every home has its own story?",
-    intro: "Some homes rise 2%, some 8%, some 14%, and some 20%. The budget increases 3%.",
-    prediction: "Homes that rise faster than the group should gain share; slower homes should lose share.",
-    action: "Watch the Outcome",
-    values: () => BASE_VALUES.map((value, index) => value * [1.02, 1.05, 1.08, 1.11, 1.16, 1.2, 1.05, 1.08, 1.11, 1.16][index]),
+    number: "Question",
+    title: "What does a real reassessment year usually look like?",
+    question: "Some homes rise 2%. Others 5%. Others 9%.",
+    intro: "Others 14%. Others 20%. Budget rises 3%.",
+    prediction: "Homes that rise faster should gain share. Slower homes should lose share.",
+    action: "See the Answer",
+    values: () => BASE_VALUES.map((value, index) => value * [1.02, 1.05, 1.09, 1.14, 1.2, 1.2, 1.05, 1.09, 1.14, 1.2][index]),
     budget: BUDGET_UP,
-    result: "The pattern explains the bill.",
-    observation: "Every assessment increased, but the tax changes were not identical. Homes that rose the least carried a smaller share. Homes that rose the most carried a larger share.",
-    why: "In a mixed year, the important question is not simply whether a value increased. The question is how that value changed compared with the rest of the tax base.",
-    remember: "Tax bills move with relative assessment change, budget change, and the levy that connects them."
+    result: "Now the whole system is working together.",
+    observation: "Every property followed its own path. The budget rose by 3%. The levy adjusted. Each property's share shifted differently.",
+    why: "This resembles an actual reassessment cycle. No two neighborhoods move exactly alike.",
+    remember: "Real tax bills are determined by how your property changed compared with everyone else's."
   }
 ];
 
@@ -325,7 +325,7 @@ function renderExperiment() {
 
       <section class="tax-roll-final tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-label="Final takeaway">
         ${renderFinalPie()}
-        <p class="prose">Equal assessments do not automatically produce higher taxes. Relative assessments redistribute the tax base. Budgets determine how much money must be collected. The levy is the bridge between those two ideas.</p>
+        <p class="prose">Assessments determine each property's share of the tax base. Budgets determine how much money local government must collect. The levy connects those two ideas. Understanding property taxes begins with understanding that sequence.</p>
       </section>
     </section>
   `;
@@ -413,7 +413,13 @@ function renderLesson(lesson) {
         </div>
         <div class="tax-roll-result-column">
           <div class="tax-roll-result-shell tax-roll-result-shell--pending" data-result-shell="${escapeHtml(lesson.id)}" aria-live="polite">
-            <div class="tax-roll-table-wrap">${renderPendingResultTable()}</div>
+            <button type="button" class="tax-roll-table-toggle" data-toggle-result-table aria-expanded="false">
+              <span>See Results Table</span>
+              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                <path d="M5 7.5 10 12.5l5-5"></path>
+              </svg>
+            </button>
+            <div class="tax-roll-table-wrap" data-result-table-wrap>${renderPendingResultTable()}</div>
             <h3 class="tax-roll-result-title" hidden></h3>
           </div>
         </div>
@@ -426,8 +432,10 @@ function renderBridge() {
   return `
     <aside class="tax-roll-bridge guided-transition" aria-label="Guided transition">
       <p>So what actually matters?</p>
-      <p>The first two scenarios changed every property together, so very little shifted.</p>
-      <p>Now we'll change one property relative to the others, because that is where tax burden begins to move.</p>
+      <p>The first two questions revealed the rule.</p>
+      <p>When every property moves together, very little shifts.</p>
+      <p>Now we'll change one property relative to the others.</p>
+      <p>That's where the tax burden begins to move.</p>
     </aside>
   `;
 }
@@ -444,6 +452,12 @@ function installTaxRollExperiment(root) {
   };
 
   root.addEventListener("click", event => {
+    const tableToggle = event.target.closest("[data-toggle-result-table]");
+    if (tableToggle && root.contains(tableToggle)) {
+      toggleMobileResultTable(tableToggle);
+      return;
+    }
+
     const button = event.target.closest("[data-run-lesson]");
     if (!button || !root.contains(button)) return;
     const lesson = LESSONS.find(item => item.id === button.dataset.runLesson);
@@ -461,13 +475,19 @@ function installTaxRollExperiment(root) {
         sampleTax: scenario.taxes[0]
       };
       const label = button.querySelector("[data-reveal-label]");
-      if (label) label.textContent = "Result Revealed";
+      if (label) label.textContent = "Answer Revealed";
       button.disabled = false;
       button.classList.remove("is-loading");
       requestAnimationFrame(() => scrollResultTableIntoView(root, lesson));
     }, 180);
     button.classList.add("is-active");
   });
+}
+
+function toggleMobileResultTable(button) {
+  const shell = button.closest("[data-result-shell]");
+  const isOpen = shell?.classList.toggle("is-table-open");
+  button.setAttribute("aria-expanded", String(Boolean(isOpen)));
 }
 
 function installBaselineRibbon(root) {
@@ -502,9 +522,10 @@ function installBaselineRibbon(root) {
 
 function scrollResultTableIntoView(root, lesson) {
   const table = root.querySelector(`[data-result-shell="${lesson.id}"] .tax-roll-table-wrap`);
+  const shell = root.querySelector(`[data-result-shell="${lesson.id}"]`);
   const section = root.querySelector(`[data-lesson="${lesson.id}"]`);
   const shouldShowHeading = window.matchMedia("(min-width: 760px)").matches;
-  const target = shouldShowHeading ? section : table;
+  const target = shouldShowHeading ? section : shell || table;
   if (!target) return;
   const ribbon = root.querySelector(".tax-roll-baseline");
   const ribbonRect = ribbon?.getBoundingClientRect();
@@ -571,7 +592,7 @@ function renderResultTable(scenario, baseline) {
 
 function renderPendingResultTable() {
   return `
-    <table class="tax-roll-result-table tax-roll-result-table--pending" aria-label="Scenario result table waiting to be revealed">
+    <table class="tax-roll-result-table tax-roll-result-table--pending" aria-label="Question result table waiting to be revealed">
       <thead>
         <tr>
           <th scope="col">House</th>
@@ -1107,6 +1128,44 @@ function styles() {
       margin: clamp(0.9rem, 2vw, 1.15rem) 0 0;
     }
 
+    .tax-roll-table-toggle {
+      align-items: center;
+      appearance: none;
+      background: rgba(36, 59, 68, 0.06);
+      border: 1px solid rgba(36, 59, 68, 0.12);
+      border-radius: 8px;
+      color: rgb(var(--ges-color-text));
+      cursor: pointer;
+      display: inline-flex;
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: 0.92rem;
+      font-weight: 780;
+      gap: 0.5rem;
+      justify-content: space-between;
+      line-height: 1.2;
+      padding: 0.72rem 0.82rem;
+      width: 100%;
+    }
+
+    .tax-roll-table-toggle svg {
+      flex: 0 0 auto;
+      height: 1rem;
+      transition: transform 180ms ease;
+      width: 1rem;
+    }
+
+    .tax-roll-table-toggle path {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2.3;
+    }
+
+    .tax-roll-result-shell.is-table-open .tax-roll-table-toggle svg {
+      transform: rotate(180deg);
+    }
+
     .tax-roll-table-wrap {
       margin: 0;
       padding: 0 0 0.5rem;
@@ -1359,6 +1418,17 @@ function styles() {
       padding-top: clamp(16px, 3vw, 22px);
     }
 
+    @media (max-width: 759px) {
+      .tax-roll-result-shell:not(.is-table-open) .tax-roll-table-wrap {
+        display: none;
+      }
+
+      .tax-roll-result-shell.is-table-open .tax-roll-table-wrap {
+        display: block;
+        margin-top: 0.85rem;
+      }
+    }
+
     @media (max-width: 640px) {
       .tax-roll-final {
         align-items: start;
@@ -1382,6 +1452,10 @@ function styles() {
     @media (min-width: 760px) {
       .watch-tax-roll-route .ges-public-main {
         max-width: min(1120px, calc(100vw - 48px));
+      }
+
+      .tax-roll-table-toggle {
+        display: none;
       }
 
       .tax-roll-intro,
