@@ -15,8 +15,8 @@ const ARTICLE = {
   legacyQueryValue: "watch-the-tax-roll-move",
   title: "Watch the Tax Roll Move",
   description: "A guided civic lesson showing how assessed values divide a budget, how budgets determine collections, and how levies connect the two.",
-  modifiedDate: "2026-07-01",
-  displayDate: "July 1, 2026",
+  modifiedDate: "2026-07-02",
+  displayDate: "July 2, 2026",
   author: "Max Quattromani",
   authorEmail: "max@maxquatrromani.com",
   authorTitle: "Nebraska Certified Assessor",
@@ -1344,7 +1344,7 @@ function styles() {
     }
 
     .tax-roll-experiment-setup__group {
-      align-items: baseline;
+      align-items: center;
       display: grid;
       gap: 0.45rem;
       grid-template-columns: auto minmax(0, 1fr);
@@ -1357,6 +1357,7 @@ function styles() {
     }
 
     .tax-roll-experiment-setup dt {
+      align-self: center;
       color: var(--ges-color-text-muted, #5b6670);
       font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
       font-size: 0.7rem;
@@ -2612,14 +2613,29 @@ function styles() {
       }
 
       .tax-roll-experiment-card:not(.is-revealed) {
+        height: auto;
+        min-height: 0;
         padding-bottom: clamp(18px, 5vw, 24px);
       }
 
       .tax-roll-experiment-card:not(.is-revealed) .tax-roll-lesson-grid {
+        align-items: start;
         gap: 0;
+        grid-auto-rows: max-content;
+        min-height: 0;
+      }
+
+      .tax-roll-experiment-card:not(.is-revealed) .tax-roll-scenario-copy {
+        display: grid;
+        gap: 1.35rem;
+        min-height: 0;
       }
 
       .tax-roll-experiment-card:not(.is-revealed) .tax-roll-result-column {
+        display: none;
+      }
+
+      .tax-roll-experiment-card:not(.is-revealed) .tax-roll-explanation {
         display: none;
       }
 
@@ -2806,8 +2822,8 @@ function styles() {
       }
 
       .tax-roll-result-table--pending thead th {
-        background: rgba(36, 59, 68, 0.12);
-        color: rgba(36, 59, 68, 0.58);
+        background: rgba(36, 59, 68, 0.78);
+        color: rgba(255, 255, 255, 0.9);
       }
 
       .tax-roll-result-table tbody th {
