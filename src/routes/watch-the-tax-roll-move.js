@@ -430,6 +430,7 @@ function renderLesson(lesson) {
               </svg>
             </button>
             <div class="tax-roll-table-wrap" data-result-table-wrap>${renderPendingResultTable()}</div>
+            <p class="tax-roll-answer-kicker section-kicker" hidden>Answer</p>
             <h3 class="tax-roll-result-title" hidden></h3>
           </div>
         </div>
@@ -550,8 +551,10 @@ function renderLessonResult(root, lesson, scenario, baseline) {
   const shell = root.querySelector(`[data-result-shell="${lesson.id}"]`);
   const explanation = root.querySelector(`[data-result-explanation="${lesson.id}"]`);
   if (!shell) return;
+  const kicker = shell.querySelector(".tax-roll-answer-kicker");
   const title = shell.querySelector(".tax-roll-result-title");
   shell.classList.remove("tax-roll-result-shell--pending");
+  if (kicker) kicker.hidden = false;
   if (title) {
     title.hidden = false;
     title.textContent = lesson.result;
@@ -1129,13 +1132,17 @@ function styles() {
       transform: translateY(0);
     }
 
+    .tax-roll-answer-kicker {
+      margin: clamp(0.9rem, 2vw, 1.15rem) 0 0.28rem;
+    }
+
     .tax-roll-result-shell .tax-roll-result-title {
       color: rgb(var(--ges-color-text));
       font-family: var(--levy-heading-font);
       font-size: var(--ges-type-xl);
       font-weight: 650;
       line-height: var(--ges-line-tight);
-      margin: clamp(0.9rem, 2vw, 1.15rem) 0 0;
+      margin: 0;
     }
 
     .tax-roll-table-toggle {
