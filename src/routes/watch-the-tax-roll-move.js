@@ -335,7 +335,17 @@ function renderFinalThought() {
   return `
     <section class="tax-roll-final-thought tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-labelledby="taxRollFinalThoughtTitle">
       <h2 id="taxRollFinalThoughtTitle">One final thought.</h2>
-      <p class="prose">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
+      <p class="prose">If you've made it this far, you've probably noticed something surprising.</p>
+      <p class="prose">Very little in this article was actually about individual homes.</p>
+      <p class="prose">It was about relationships.</p>
+      <p class="prose">A property's assessment matters because it determines that property's share of the county's tax base. But a tax bill isn't calculated in isolation. It reflects how your property changed relative to every other property around it, how much local government decided it needed to collect, and the levy required to connect those two pieces.</p>
+      <p class="prose">That's why two neighbors can receive similar assessment notices and different tax bills. It's why large assessment increases don't always produce equally large tax increases. And it's why modest assessment increases sometimes do.</p>
+      <p class="prose">The system is easier to understand once you stop asking, "What happened to my house?" and begin asking, "How did my house move compared with everyone else's?"</p>
+      <p class="prose">That's the question this article was designed to answer.</p>
+      <p class="prose">Because in property taxation, assessments determine how the tax base is shared.</p>
+      <p class="prose">Budgets determine how much money must be collected.</p>
+      <p class="prose">The levy connects the two.</p>
+      <p class="prose">Understand that sequence, and the rest begins to make sense.</p>
     </section>
   `;
 }
