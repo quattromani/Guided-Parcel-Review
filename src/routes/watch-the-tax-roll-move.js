@@ -115,7 +115,12 @@ const LESSONS = [
     result: "Not necessarily.",
     observation: "Almost nothing changes. Every home's assessed value increased. The levy compressed enough that nearly every tax bill stayed about the same.",
     why: "Because every property increased by the same percentage. No property became a larger share of the county's tax base. Instead, the levy adjusted.",
-    remember: "Equal movement changes the levy. Unequal movement changes the burden."
+    remember: "Equal movement changes the levy. Unequal movement changes the burden.",
+    bridge: {
+      icon: "balance",
+      title: "Everyone moved together.",
+      text: "That kept the tax burden in the same shape. Now reverse the direction and ask whether lower assessments, by themselves, change the result."
+    }
   },
   {
     id: "everyone-down",
@@ -132,7 +137,12 @@ const LESSONS = [
     result: "Again, very little changes.",
     observation: "Every home's assessed value fell. The levy expanded. Tax bills remained surprisingly similar.",
     why: "The county still needs to collect the same amount of money. When every property falls together, the levy simply adjusts upward.",
-    remember: "Lower assessments alone do not guarantee lower taxes."
+    remember: "Lower assessments alone do not guarantee lower taxes.",
+    bridge: {
+      icon: "compass",
+      title: "So what actually matters?",
+      text: "At first, these results can feel backwards. They are showing two systems working together: assessments set each property's share, budgets set the amount to raise, and the levy connects the two."
+    }
   },
   {
     id: "house-four-faster",
@@ -150,7 +160,12 @@ const LESSONS = [
     result: "One property now carries more.",
     observation: "Only one property moved dramatically faster than the neighborhood. Its share of the county tax base increased.",
     why: "Because property taxes are based on relative movement. That home now represents a larger percentage of the county's total value.",
-    remember: "Higher taxes usually come from becoming a larger share of the tax base, not simply from having a higher assessment."
+    remember: "Higher taxes usually come from becoming a larger share of the tax base, not simply from having a higher assessment.",
+    bridge: {
+      icon: "map",
+      title: "One house is easy to follow.",
+      text: "A neighborhood is where the pattern starts to feel more like real life. What happens when one part of town moves faster than another?"
+    }
   },
   {
     id: "two-speeds",
@@ -168,7 +183,12 @@ const LESSONS = [
     result: "The burden begins to separate.",
     observation: "Properties that appreciated faster began carrying a larger portion of the budget.",
     why: "Different neighborhoods can experience different market conditions. Relative movement, not identical movement, creates redistribution.",
-    remember: "Assessment differences redistribute responsibility."
+    remember: "Assessment differences redistribute responsibility.",
+    bridge: {
+      icon: "cycle",
+      title: "Now the pattern is less tidy.",
+      text: "Real reassessment years rarely move in two clean groups. Some values rise more, some rise less, and the budget may change at the same time."
+    }
   },
   {
     id: "mixed-year",
@@ -332,16 +352,7 @@ function renderExperiment() {
         </dl>
       </div>
 
-      ${renderLessonBridge("The first experiment changes every home together. That is the cleanest way to separate assessment movement from tax-bill movement.")}
-      ${renderLesson(LESSONS[0])}
-      ${renderLessonBridge("That is the simple case. Now we reverse the direction and ask the same question from the other side.")}
-      ${renderLesson(LESSONS[1])}
-      ${renderBridge()}
-      ${renderLesson(LESSONS[2])}
-      ${renderLessonBridge("One house is easy to follow. A neighborhood is where the pattern starts to feel more like real life.")}
-      ${renderLesson(LESSONS[3])}
-      ${renderLessonBridge("So far, the groups have been tidy. A reassessment year is usually less neat.")}
-      ${renderLesson(LESSONS[4])}
+      ${LESSONS.map(renderLesson).join("")}
 
       <section class="tax-roll-final tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-label="Final takeaway">
         ${renderFinalPie()}
@@ -426,8 +437,9 @@ function renderProperty(property, index, baseline) {
 }
 
 function renderLesson(lesson) {
+  const hasBridge = Boolean(lesson.bridge);
   return `
-    <section class="tax-roll-lesson tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" data-lesson="${escapeHtml(lesson.id)}" aria-labelledby="${escapeHtml(lesson.id)}Title">
+    <section class="tax-roll-lesson ${hasBridge ? "tax-roll-lesson--with-bridge" : ""} tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" data-lesson="${escapeHtml(lesson.id)}" aria-labelledby="${escapeHtml(lesson.id)}Title">
       ${sectionHeader(lesson.number, lesson.title, `${lesson.id}Title`)}
       ${renderExperimentSetup(lesson.setup)}
       <div class="tax-roll-experiment-card" data-experiment-card="${escapeHtml(lesson.id)}">
@@ -481,6 +493,7 @@ function renderLesson(lesson) {
         </div>
         </div>
       </div>
+      ${hasBridge ? renderLessonBridge(lesson.bridge, lesson.id) : ""}
     </section>
   `;
 }
@@ -501,22 +514,30 @@ function renderExperimentSetup(rows) {
   `;
 }
 
-function renderLessonBridge(text) {
+function renderLessonBridge(bridge, lessonId) {
   return `
-    <aside class="tax-roll-lesson-bridge" aria-label="Experiment transition">
-      <p>${escapeHtml(text)}</p>
+    <aside class="tax-roll-lesson-bridge" data-lesson-bridge="${escapeHtml(lessonId)}" aria-label="Experiment transition" hidden>
+      <span class="tax-roll-lesson-bridge__icon" aria-hidden="true">${bridgeIcon(bridge.icon)}</span>
+      <span class="tax-roll-lesson-bridge__copy">
+        <strong>${escapeHtml(bridge.title)}</strong>
+        <span>${escapeHtml(bridge.text)}</span>
+      </span>
     </aside>
   `;
 }
 
-function renderBridge() {
+function bridgeIcon(name) {
+  const paths = {
+    balance: "<path d='M10 3v14'></path><path d='M4 7h12'></path><path d='M6 7 3.5 12h5L6 7Z'></path><path d='m14 7-2.5 5h5L14 7Z'></path><path d='M7 17h6'></path>",
+    compass: "<path d='M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z'></path><path d='m13.2 6.8-1.7 4.7-4.7 1.7 1.7-4.7 4.7-1.7Z'></path>",
+    map: "<path d='M3 6.5 7.5 4l5 2.5L17 4v9.5L12.5 16l-5-2.5L3 16V6.5Z'></path><path d='M7.5 4v9.5'></path><path d='M12.5 6.5V16'></path>",
+    cycle: "<path d='M15.5 6.5A6.5 6.5 0 0 0 4 8'></path><path d='M4 4v4h4'></path><path d='M4.5 13.5A6.5 6.5 0 0 0 16 12'></path><path d='M16 16v-4h-4'></path>"
+  };
+
   return `
-    <aside class="tax-roll-bridge guided-transition" aria-label="Guided transition">
-      <p>So what actually matters?</p>
-      <p>At first, these results can feel wrong. They are not wrong. They are showing that assessments and taxes move through different mechanisms.</p>
-      <p>Assessments determine each property's share of the taxable base. Budgets determine how much money must be raised. The levy connects those two things.</p>
-      <p>Tax burden shifts only when one property moves differently than the others.</p>
-    </aside>
+    <svg viewBox="0 0 20 20" focusable="false">
+      ${paths[name] ?? paths.compass}
+    </svg>
   `;
 }
 
@@ -629,6 +650,7 @@ function renderLessonResult(root, lesson, scenario, baseline) {
   const shell = root.querySelector(`[data-result-shell="${lesson.id}"]`);
   const explanation = root.querySelector(`[data-result-explanation="${lesson.id}"]`);
   const card = root.querySelector(`[data-experiment-card="${lesson.id}"]`);
+  const bridge = root.querySelector(`[data-lesson-bridge="${lesson.id}"]`);
   if (!shell) return;
   const kicker = shell.querySelector(".tax-roll-answer-kicker");
   const title = shell.querySelector(".tax-roll-result-title");
@@ -649,6 +671,10 @@ function renderLessonResult(root, lesson, scenario, baseline) {
     card?.classList.add("is-revealed");
     shell.classList.add("is-visible");
     explanation?.classList.add("is-visible");
+    if (bridge) {
+      bridge.hidden = false;
+      requestAnimationFrame(() => bridge.classList.add("is-visible"));
+    }
   });
 }
 
@@ -991,23 +1017,103 @@ function styles() {
       padding-bottom: clamp(24px, 6vw, 44px);
     }
 
-    .tax-roll-bridge + .tax-roll-lesson {
-      border-top-color: rgba(36, 59, 68, 0.16);
-      margin-top: clamp(24px, 5vw, 42px);
-    }
-
     .tax-roll-lesson-bridge {
+      align-items: center;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(47, 115, 163, 0.24);
+      border-radius: 16px;
+      box-shadow: 0 0.85rem 2.2rem rgba(36, 59, 68, 0.055);
       color: rgb(var(--ges-color-text));
+      column-gap: clamp(14px, 3vw, 20px);
+      display: grid;
       font-family: var(--ges-font-heading);
-      font-size: clamp(1rem, 2vw, 1.12rem);
-      font-weight: var(--ges-weight-bold);
-      line-height: 1.48;
-      margin: clamp(28px, 6vw, 46px) 0 clamp(-12px, -1vw, -4px);
-      max-width: 40rem;
+      grid-template-columns: auto minmax(0, 1fr);
+      line-height: 1.42;
+      margin: clamp(42px, 7vw, 68px) auto 0;
+      max-width: min(100%, 42rem);
+      opacity: 0;
+      padding: clamp(16px, 3vw, 22px);
+      position: relative;
+      transform: translateY(8px);
+      transition: opacity 320ms ease, transform 320ms ease;
     }
 
-    .tax-roll-lesson-bridge p {
+    .tax-roll-lesson-bridge[hidden] {
+      display: none;
+    }
+
+    .tax-roll-lesson-bridge.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tax-roll-lesson-bridge::before,
+    .tax-roll-lesson-bridge::after {
+      background: rgba(47, 115, 163, 0.28);
+      content: "";
+      display: block;
+      inline-size: 1px;
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+    }
+
+    .tax-roll-lesson-bridge::before {
+      block-size: clamp(28px, 5vw, 46px);
+      bottom: 100%;
+    }
+
+    .tax-roll-lesson-bridge::after {
+      block-size: clamp(30px, 6vw, 56px);
+      top: 100%;
+    }
+
+    .tax-roll-lesson-bridge__icon {
+      align-items: center;
+      background: #2f73a3;
+      border-radius: 999px;
+      color: #fff;
+      display: inline-flex;
+      height: clamp(2.45rem, 5vw, 3rem);
+      justify-content: center;
+      width: clamp(2.45rem, 5vw, 3rem);
+    }
+
+    .tax-roll-lesson-bridge__icon svg {
+      display: block;
+      height: 1.25rem;
+      width: 1.25rem;
+    }
+
+    .tax-roll-lesson-bridge__icon path {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+
+    .tax-roll-lesson-bridge__copy {
+      display: grid;
+      gap: 0.24rem;
+    }
+
+    .tax-roll-lesson-bridge__copy strong,
+    .tax-roll-lesson-bridge__copy span {
       margin: 0;
+    }
+
+    .tax-roll-lesson-bridge__copy strong {
+      color: #245c92;
+      font-size: clamp(0.98rem, 2vw, 1.08rem);
+      font-weight: var(--ges-weight-heavy);
+    }
+
+    .tax-roll-lesson-bridge__copy span {
+      color: var(--ges-color-text-muted, #5b6670);
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(0.93rem, 1.7vw, 1rem);
+      font-weight: 650;
     }
 
     .tax-roll-lesson > .tax-article-header {
