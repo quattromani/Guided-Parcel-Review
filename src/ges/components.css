@@ -236,7 +236,7 @@
 }
 
 .article-entry-panel--locked {
-  --article-entry-panel-width: min(100%, var(--ges-width-reading, 46rem));
+  --article-entry-panel-width: min(100%, 46rem);
   --article-avatar-gap: var(--ges-space-sm);
   --article-avatar-size: 2.7rem;
   --article-meta-text-offset: calc(var(--article-avatar-size) + var(--article-avatar-gap));
@@ -2524,7 +2524,7 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-input-shell[data-
 
 .ges-opening-section .article-entry-panel {
   justify-self: center;
-  width: min(100%, var(--ges-width-reading));
+  width: min(100%, 46rem);
 }
 
 .ges-opening-section .article-entry-panel--locked {
