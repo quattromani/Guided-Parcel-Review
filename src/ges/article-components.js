@@ -715,7 +715,7 @@ export function renderArticleEntryPanel({
   lengthLabel
 }) {
   return `
-    <div class="article-entry-panel">
+    <div class="article-entry-panel article-entry-panel--locked" data-article-entry-panel>
       <div class="article-entry-meta" aria-label="Article information">
         <div class="article-author-attribution">
           <img class="article-author-photo" src="${escapeHtml(authorImage)}" alt="" loading="lazy" decoding="async" />

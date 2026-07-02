@@ -80,6 +80,10 @@ import {
   renderAssessmentsProtestsLeviesArticle
 } from "./routes/assessments-protests-levies.js?v=20260701-article-polish-4";
 import {
+  isWatchTheTaxRollMoveRequest,
+  renderWatchTheTaxRollMoveArticle
+} from "./routes/watch-the-tax-roll-move.js?v=20260701-article-polish-4";
+import {
   isArticleRollRequest,
   renderArticleRoll
 } from "./routes/article-roll.js?v=20260701-article-polish-4";
@@ -178,6 +182,18 @@ async function main() {
       contentType: "article",
       articleId: "how-your-property-value-becomes-a-tax-bill",
       articleTitle: "How Your Property Value Becomes a Tax Bill",
+      county: "nebraska"
+    });
+    return;
+  }
+
+  if (isWatchTheTaxRollMoveRequest(searchParams)) {
+    setFooterResourcesVisible(false);
+    renderWatchTheTaxRollMoveArticle();
+    trackArticleView({
+      contentType: "article",
+      articleId: "watch-the-tax-roll-move",
+      articleTitle: "Watch the Tax Roll Move",
       county: "nebraska"
     });
     return;

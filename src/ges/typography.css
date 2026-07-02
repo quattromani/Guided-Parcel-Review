@@ -98,12 +98,22 @@
 }
 
 .prose,
-.ges-prose,
+.ges-prose {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-body);
+  font-size: 1rem;
+  font-weight: var(--ges-weight-regular);
+  line-height: var(--ges-line-copy);
+  margin: 0;
+  max-width: 68ch;
+  text-indent: 0;
+}
+
 .levy-compression-page p.prose,
 .levy-compression-page p.ges-prose {
   color: rgb(var(--ges-color-text));
   font-family: var(--ges-font-body);
-  font-size: clamp(1.03rem, 1.4vw, 1.12rem);
+  font-size: 1rem;
   font-weight: var(--ges-weight-regular);
   line-height: var(--ges-line-copy);
   margin: 0;
