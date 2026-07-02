@@ -14,7 +14,7 @@ const ARTICLE = {
   canonicalPath: "articles/watch-the-tax-roll-move/",
   legacyQueryValue: "watch-the-tax-roll-move",
   title: "Watch the Tax Roll Move",
-  description: "A guided civic experiment showing how assessed values divide a budget, how budgets determine collections, and how levies connect the two.",
+  description: "A guided civic lesson showing how assessed values divide a budget, how budgets determine collections, and how levies connect the two.",
   modifiedDate: "2026-07-01",
   displayDate: "July 1, 2026",
   author: "Max Quattromani",
@@ -62,16 +62,16 @@ const ARTICLE = {
         heading: "Companion reading",
         items: [
           {
-            title: "How Your Property Value Becomes a Tax Bill",
-            type: "companion-guide",
-            url: "articles/how-your-property-value-becomes-a-tax-bill/",
-            description: "A broader article explaining assessments, equalization, budgets, levies, and tax bills."
-          },
-          {
             title: "Assessment Up. Protest Denied. Taxes?",
             type: "case-study",
             url: "articles/assessment-up-protest-denied-taxes/",
             description: "A related case study on assessment movement, levy compression, and tax bill outcomes."
+          },
+          {
+            title: "Before You Walk Into a Property Protest",
+            type: "companion-guide",
+            url: "https://quattromani.github.io/Guided-Parcel-Review/articles/before-you-walk-into-a-property-protest/",
+            description: "A practical guide for reviewing your notice, organizing evidence, and preparing for a property protest."
           }
         ]
       }
@@ -261,10 +261,8 @@ export function renderWatchTheTaxRollMoveArticle() {
       <section class="tax-roll-intro tax-article-section tax-story-chapter tax-article-opening levy-wide-panel article-section ges-opening-section" data-tone="reflection" aria-labelledby="taxRollIntroTitle">
         <div class="editorial-narrow ges-section-lead">
           ${sectionHeader("", "Let's run an experiment.", "taxRollIntroTitle")}
-          <p class="prose">Let's simplify the system before we explore the real one.</p>
+          <p class="prose">Simplify the system before exploring the real one.</p>
           <p class="prose">We'll begin with ten identical homes, one fixed budget, and one levy rate. Then we'll change only one variable at a time and watch what happens.</p>
-          <p class="prose">Nothing here predicts an actual tax bill. Instead, it reveals the relationships that determine one.</p>
-          <p class="prose">The main idea is simple: your taxes depend less on what happens to your house alone than on what happens to everyone else's.</p>
         </div>
       </section>
       ${renderExperiment()}
@@ -342,13 +340,23 @@ function renderExperiment() {
         <div class="tax-roll-homes" aria-label="Static ten-home neighborhood">
           ${PROPERTIES.map((property, index) => renderProperty(property, index, baseline)).join("")}
         </div>
+        ${renderMobileControlSnapshot(baseline)}
       </section>
       <div class="tax-roll-baseline-shell" data-tax-roll-baseline-shell>
+        <div class="tax-roll-baseline-intro">
+          <p class="guided-kicker">System Snapshot</p>
+          <p class="prose">These three numbers define the shared tax environment before the experiment begins. Every change you make throughout the lesson ultimately affects one or more of these values.</p>
+        </div>
         <dl class="tax-roll-baseline" aria-label="Current experiment totals">
           <div><dt>Total Value</dt><dd data-kpi-value="totalValue">${displayCompactMoney(baseline.total)}</dd></div>
           <div><dt>Budget</dt><dd data-kpi-value="budgetValue">${displayCompactMoney(BASE_BUDGET)}</dd></div>
-          <div class="tax-roll-baseline__hero"><dt>Levy</dt><dd data-kpi-value="levyRate">${formatCompactLevy(baseline.levy)}</dd></div>
-          <div><dt>Avg. Tax</dt><dd data-kpi-value="sampleTax">${displayCompactMoney(average(baseline.taxes))}</dd></div>
+          <div class="tax-roll-baseline__hero">
+            <dt>Levy</dt>
+            <dd class="tax-roll-levy-metric">
+              <span class="tax-roll-levy-direction" data-levy-direction aria-label="Levy direction">–</span>
+              <span class="tax-roll-levy-number" data-kpi-value="levyRate">${formatCompactLevy(baseline.levy)}</span>
+            </dd>
+          </div>
         </dl>
       </div>
 
@@ -436,6 +444,48 @@ function renderProperty(property, index, baseline) {
   `;
 }
 
+function renderMobileControlSnapshot(baseline) {
+  const equalShare = baseline.shares[0] ?? 0;
+  const equalTax = baseline.taxes[0] ?? 0;
+  const rows = [
+    ["Each house", displayMoney(PROPERTIES[0].value)],
+    ["Tax-base share", `${SHARE_FORMAT.format(equalShare * 100)}%`],
+    ["Each tax", displayMoney(equalTax)],
+    ["Total value", displayMoney(baseline.total)],
+    ["Budget", displayMoney(baseline.budget)],
+    ["Levy", `${PERCENT_FORMAT.format(baseline.levy * 100)}%`]
+  ];
+
+  return `
+    <div class="tax-roll-control-snapshot" aria-label="Compact control group snapshot">
+      <div class="tax-roll-control-snapshot__houses" aria-label="Ten identical homes">
+        ${PROPERTIES.map((property, index) => `
+          <span class="tax-roll-control-snapshot__house" style="--property-color: ${escapeHtml(property.color)};" aria-label="${escapeHtml(property.label)}">
+            ${renderControlHouseIcon()}
+          </span>
+        `).join("")}
+      </div>
+      <dl class="tax-roll-control-snapshot__summary">
+        ${rows.map(([label, value]) => `
+          <div>
+            <dt>${escapeHtml(label)}</dt>
+            <dd>${escapeHtml(value)}</dd>
+          </div>
+        `).join("")}
+      </dl>
+    </div>
+  `;
+}
+
+function renderControlHouseIcon() {
+  return `
+    <svg viewBox="0 0 20 18" aria-hidden="true" focusable="false">
+      <path d="M2.4 8.6 10 2.4l7.6 6.2h-2v7H4.4v-7h-2Z"></path>
+      <path d="M7.7 10.2h4.6v5.4H7.7z"></path>
+    </svg>
+  `;
+}
+
 function renderLesson(lesson) {
   const hasBridge = Boolean(lesson.bridge);
   return `
@@ -457,25 +507,9 @@ function renderLesson(lesson) {
               </svg>
             </span>
           </button>
-          <div class="tax-roll-explanation" data-result-explanation="${escapeHtml(lesson.id)}" hidden>
-            <section class="tax-roll-explanation-block">
-              <h3>Observation</h3>
-              <p class="prose" data-result-observation></p>
-            </section>
-            <section class="tax-roll-explanation-block">
-              <h3>Why?</h3>
-              <p class="prose" data-result-why></p>
-            </section>
-            <section class="tax-roll-explanation-block tax-roll-explanation-block--remember">
-              <h3>
-                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-                  <path d="M10 2.5a5.8 5.8 0 0 0-3.35 10.54c.58.42.85.9.85 1.46v.25h5v-.25c0-.56.27-1.04.85-1.46A5.8 5.8 0 0 0 10 2.5Z"></path>
-                  <path d="M7.7 16.2h4.6M8.25 18h3.5"></path>
-                </svg>
-                <span>Key Idea</span>
-              </h3>
-              <p class="prose" data-result-remember></p>
-            </section>
+          <div class="tax-roll-answer" data-result-answer="${escapeHtml(lesson.id)}" hidden>
+            <p class="tax-roll-answer-kicker section-kicker">Answer</p>
+            <h3 class="tax-roll-result-title"></h3>
           </div>
         </div>
         <div class="tax-roll-result-column">
@@ -486,10 +520,43 @@ function renderLesson(lesson) {
                 <path d="M5 7.5 10 12.5l5-5"></path>
               </svg>
             </button>
+            <div class="tax-roll-mobile-outcome" data-mobile-outcome hidden></div>
             <div class="tax-roll-table-wrap" data-result-table-wrap>${renderPendingResultTable()}</div>
-            <p class="tax-roll-answer-kicker section-kicker" hidden>Answer</p>
-            <h3 class="tax-roll-result-title" hidden></h3>
           </div>
+        </div>
+        <div class="tax-roll-explanation" data-result-explanation="${escapeHtml(lesson.id)}" hidden>
+          <section class="tax-roll-explanation-block">
+            <h3>
+              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                <path d="M3.2 14.4h13.6"></path>
+                <path d="M4.2 12.1l3.1-3.2 2.8 2.4 4.6-5"></path>
+                <path d="M11.9 6.3h2.8v2.8"></path>
+              </svg>
+              <span>Observation</span>
+            </h3>
+            <p class="prose" data-result-observation></p>
+          </section>
+          <section class="tax-roll-explanation-block">
+            <h3>
+              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                <path d="M10 17a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"></path>
+                <path d="M8.15 7.9A2 2 0 0 1 10.1 6.4c1.15 0 2.05.75 2.05 1.82 0 1.7-2.15 1.55-2.15 3.35"></path>
+                <path d="M10 14h.01"></path>
+              </svg>
+              <span>Why?</span>
+            </h3>
+            <p class="prose" data-result-why></p>
+          </section>
+          <section class="tax-roll-explanation-block tax-roll-explanation-block--remember">
+            <h3>
+              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                <path d="M10 2.5a5.8 5.8 0 0 0-3.35 10.54c.58.42.85.9.85 1.46v.25h5v-.25c0-.56.27-1.04.85-1.46A5.8 5.8 0 0 0 10 2.5Z"></path>
+                <path d="M7.7 16.2h4.6M8.25 18h3.5"></path>
+              </svg>
+              <span>Key Idea</span>
+            </h3>
+            <p class="prose" data-result-remember></p>
+          </section>
         </div>
         </div>
       </div>
@@ -499,19 +566,46 @@ function renderLesson(lesson) {
 }
 
 function renderExperimentSetup(rows) {
+  const assessmentRows = rows.filter(([label]) => !/budget/i.test(label));
+  const budgetRows = rows.filter(([label]) => /budget/i.test(label));
   return `
     <div class="tax-roll-experiment-setup" aria-label="Experiment setup">
-      <p>Experiment Setup</p>
-      <dl>
-        ${rows.map(([label, value]) => `
-          <div>
-            <dt>${escapeHtml(label)}</dt>
-            <dd>${escapeHtml(value)}</dd>
-          </div>
-        `).join("")}
-      </dl>
+      <p>Given</p>
+      <div class="tax-roll-experiment-setup__conditions">
+        <dl class="tax-roll-experiment-setup__group tax-roll-experiment-setup__group--assessment" aria-label="Assessment conditions">
+          <dt>Assessment</dt>
+          <dd>
+            ${assessmentRows.map(([label, value]) => `
+              <span>${assessmentRows.length > 1 ? `<span>${escapeHtml(label)}</span>` : ""}<strong>${renderSetupValue(value)}</strong></span>
+            `).join("")}
+          </dd>
+        </dl>
+        <dl class="tax-roll-experiment-setup__group tax-roll-experiment-setup__group--budget" aria-label="Budget condition">
+          <dt>Budget</dt>
+          <dd>
+            ${budgetRows.map(([, value]) => `
+              <span><strong>${renderSetupValue(value)}</strong></span>
+            `).join("")}
+          </dd>
+        </dl>
+      </div>
     </div>
   `;
+}
+
+function renderSetupValue(value) {
+  const normalized = String(value).trim();
+  if (/^no change$/i.test(normalized)) {
+    return '<span class="tax-roll-setup-arrow" aria-hidden="true">↔</span><span>No change</span>';
+  }
+  if (/^[+-]/.test(normalized)) {
+    return normalized.split(",").map(part => {
+      const item = part.trim();
+      const arrow = item.startsWith("-") ? "↓" : "↑";
+      return `<span><span class="tax-roll-setup-arrow" aria-hidden="true">${arrow}</span><span>${escapeHtml(item.replace(/^[+-]/, ""))}</span></span>`;
+    }).join("");
+  }
+  return escapeHtml(normalized);
 }
 
 function renderLessonBridge(bridge, lessonId) {
@@ -548,8 +642,7 @@ function installTaxRollExperiment(root) {
   let previous = {
     totalValue: baseline.total,
     budgetValue: BASE_BUDGET,
-    levyRate: baseline.levy,
-    sampleTax: average(baseline.taxes)
+    levyRate: baseline.levy
   };
   let previousPropertyState = baseline;
 
@@ -574,8 +667,7 @@ function installTaxRollExperiment(root) {
       previous = {
         totalValue: scenario.total,
         budgetValue: lesson.budget,
-        levyRate: scenario.levy,
-        sampleTax: average(scenario.taxes)
+        levyRate: scenario.levy
       };
       previousPropertyState = scenario;
       const label = button.querySelector("[data-reveal-label]");
@@ -597,17 +689,22 @@ function toggleMobileResultTable(button) {
 function installBaselineRibbon(root) {
   const shell = root.querySelector("[data-tax-roll-baseline-shell]");
   const ribbon = shell?.querySelector(".tax-roll-baseline");
+  const intro = shell?.querySelector(".tax-roll-baseline-intro");
   const experiment = root.querySelector(".tax-roll-experiment");
   if (!shell || !ribbon || !experiment) return;
 
   const update = () => {
     const top = Number.parseFloat(getComputedStyle(ribbon).top) || 0;
     const shellRect = shell.getBoundingClientRect();
+    const introStyles = intro ? getComputedStyle(intro) : null;
+    const introMarginBottom = introStyles ? Number.parseFloat(introStyles.marginBottom) || 0 : 0;
+    const introOffset = intro ? intro.offsetHeight + introMarginBottom : 0;
+    const ribbonNaturalTop = shellRect.top + introOffset;
     const experimentRect = experiment.getBoundingClientRect();
     const ribbonHeight = ribbon.offsetHeight;
-    const shouldStick = shellRect.top <= top && experimentRect.bottom > top + ribbonHeight + 16;
+    const shouldStick = ribbonNaturalTop <= top && experimentRect.bottom > top + ribbonHeight + 16;
 
-    shell.style.minHeight = `${ribbonHeight}px`;
+    shell.style.minHeight = `${introOffset + ribbonHeight}px`;
     if (shouldStick) {
       shell.classList.add("is-fixed");
       ribbon.style.setProperty("--tax-roll-sticky-left", `${shellRect.left}px`);
@@ -649,18 +746,22 @@ function scrollResultTableIntoView(root, lesson) {
 function renderLessonResult(root, lesson, scenario, baseline) {
   const shell = root.querySelector(`[data-result-shell="${lesson.id}"]`);
   const explanation = root.querySelector(`[data-result-explanation="${lesson.id}"]`);
+  const answer = root.querySelector(`[data-result-answer="${lesson.id}"]`);
   const card = root.querySelector(`[data-experiment-card="${lesson.id}"]`);
   const bridge = root.querySelector(`[data-lesson-bridge="${lesson.id}"]`);
   if (!shell) return;
-  const kicker = shell.querySelector(".tax-roll-answer-kicker");
-  const title = shell.querySelector(".tax-roll-result-title");
+  const title = answer?.querySelector(".tax-roll-result-title");
   shell.classList.remove("tax-roll-result-shell--pending");
-  if (kicker) kicker.hidden = false;
   if (title) {
-    title.hidden = false;
     title.textContent = lesson.result;
   }
+  if (answer) answer.hidden = false;
   shell.querySelector(".tax-roll-table-wrap").innerHTML = renderResultTable(scenario, baseline);
+  const mobileOutcome = shell.querySelector("[data-mobile-outcome]");
+  if (mobileOutcome) {
+    mobileOutcome.hidden = false;
+    mobileOutcome.innerHTML = renderMobileOutcomeList(scenario, baseline);
+  }
   if (explanation) {
     explanation.hidden = false;
     explanation.querySelector("[data-result-observation]").textContent = lesson.observation;
@@ -669,6 +770,7 @@ function renderLessonResult(root, lesson, scenario, baseline) {
   }
   requestAnimationFrame(() => {
     card?.classList.add("is-revealed");
+    answer?.classList.add("is-visible");
     shell.classList.add("is-visible");
     explanation?.classList.add("is-visible");
     if (bridge) {
@@ -694,7 +796,7 @@ function renderResultTable(scenario, baseline) {
       </colgroup>
       <thead>
         <tr>
-          <th scope="col"><span class="tax-roll-sr-only">House</span></th>
+          <th scope="col">House</th>
           <th scope="col">Assessment</th>
           <th scope="col"><span aria-label="Assessment change">&Delta;</span></th>
           <th scope="col">Share of Tax Base</th>
@@ -723,6 +825,57 @@ function renderResultTable(scenario, baseline) {
   `;
 }
 
+function resultRowsByTaxChange(scenario, baseline) {
+  return PROPERTIES
+    .map((property, index) => {
+      const taxDelta = scenario.taxes[index] - baseline.taxes[index];
+      const shareDelta = scenario.shares[index] - baseline.shares[index];
+      const valueDelta = baseline.values[index] > 0 ? (scenario.values[index] - baseline.values[index]) / baseline.values[index] : 0;
+      return { property, index, taxDelta, shareDelta, valueDelta };
+    })
+    .sort((a, b) => (b.taxDelta - a.taxDelta) || (a.index - b.index));
+}
+
+function renderMobileOutcomeList(scenario, baseline) {
+  const rows = resultRowsByTaxChange(scenario, baseline);
+  return `
+    <section class="tax-roll-mobile-outcome-card" aria-label="Where the burden moved">
+      <h3>Where the burden moved</h3>
+      <table class="tax-roll-mobile-outcome-table">
+        <colgroup>
+          <col class="tax-roll-mobile-col--house" />
+          <col class="tax-roll-mobile-col--assessment" />
+          <col class="tax-roll-mobile-col--tax" />
+          <col class="tax-roll-mobile-col--change" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col">House</th>
+            <th scope="col">Assessment</th>
+            <th scope="col">Tax</th>
+            <th scope="col">Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(({ property, index, taxDelta }, order) => `
+            <tr style="--property-color: ${escapeHtml(property.color)}; --row-order: ${order};">
+              <th scope="row">
+                <span class="tax-roll-mobile-row__identity">
+                  ${renderMobileHouseIcon(property)}
+                  <span>${escapeHtml(property.label.replace(/^House\s+/i, ""))}</span>
+                </span>
+              </th>
+              <td>${displayMoney(scenario.values[index])}</td>
+              <td>${displayMoney(scenario.taxes[index])}</td>
+              <td class="${deltaClass(taxDelta)}">${formatDelta(taxDelta)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </section>
+  `;
+}
+
 function renderPendingResultTable() {
   return `
     <table class="tax-roll-result-table tax-roll-result-table--pending" aria-label="Question result table waiting to be revealed">
@@ -736,7 +889,7 @@ function renderPendingResultTable() {
       </colgroup>
       <thead>
         <tr>
-          <th scope="col"><span class="tax-roll-sr-only">House</span></th>
+          <th scope="col">House</th>
           <th scope="col">Assessment</th>
           <th scope="col"><span aria-label="Assessment change">&Delta;</span></th>
           <th scope="col">Share of Tax Base</th>
@@ -760,6 +913,15 @@ function renderPendingResultTable() {
   `;
 }
 
+function renderMobileHouseIcon(property) {
+  return `
+    <svg class="tax-roll-mobile-house" viewBox="0 0 20 18" aria-hidden="true" focusable="false">
+      <path class="tax-roll-table-house__roof" d="M2.5 8.4 10 2l7.5 6.4h-2.2v7.1H4.7V8.4H2.5Z"></path>
+      <path class="tax-roll-table-house__door" d="M8.45 10.35h3.1v5.15h-3.1Z"></path>
+    </svg>
+  `;
+}
+
 function renderTableHouseIdentity(property) {
   const houseNumber = property.label.replace(/^House\s+/i, "");
   return `
@@ -777,12 +939,28 @@ function updateMetrics(elements, previous, scenario, budget) {
   animateText(elements.totalValue, previous.totalValue, scenario.total, displayCompactMoney);
   animateText(elements.budgetValue, previous.budgetValue, budget, displayCompactMoney);
   animateText(elements.levyRate, previous.levyRate, scenario.levy, formatCompactLevy);
-  const averageTax = average(scenario.taxes);
-  animateText(elements.sampleTax, previous.sampleTax, averageTax, displayCompactMoney);
+  updateLevyDirection(elements.levyRate, previous.levyRate, scenario.levy);
   pulseMetricText(elements.totalValue, previous.totalValue, scenario.total);
   pulseMetricText(elements.budgetValue, previous.budgetValue, budget);
   pulseMetricText(elements.levyRate, previous.levyRate, scenario.levy);
-  pulseMetricText(elements.sampleTax, previous.sampleTax, averageTax);
+}
+
+function updateLevyDirection(element, from, to) {
+  const direction = element?.closest(".tax-roll-baseline__hero")?.querySelector("[data-levy-direction]");
+  if (!direction) return;
+  const delta = Number(to) - Number(from);
+  direction.classList.remove("is-up", "is-down", "is-flat", "is-pulsing");
+  if (Math.abs(delta) < 0.000001) {
+    direction.textContent = "–";
+    direction.setAttribute("aria-label", "Levy unchanged");
+    direction.classList.add("is-flat");
+    return;
+  }
+  direction.textContent = delta > 0 ? "↑" : "↓";
+  direction.setAttribute("aria-label", delta > 0 ? "Levy increased" : "Levy decreased");
+  direction.classList.add(delta > 0 ? "is-up" : "is-down");
+  void direction.offsetWidth;
+  direction.classList.add("is-pulsing");
 }
 
 function updatePropertyCards(root, previous, scenario) {
@@ -819,10 +997,6 @@ function sum(values) {
   return values.reduce((total, value) => total + value, 0);
 }
 
-function average(values) {
-  return values.length ? sum(values) / values.length : 0;
-}
-
 function roundDollar(value) {
   return Math.round(Number.isFinite(value) ? value : 0);
 }
@@ -833,8 +1007,9 @@ function displayMoney(value) {
 
 function compactNumber(value) {
   const rounded = roundDollar(Math.abs(value));
+  const hasPartialThousands = rounded >= 1000 && rounded < 100000 && rounded % 1000 !== 0;
   const formatter = new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: rounded >= 100000 ? 1 : 0,
+    maximumFractionDigits: rounded >= 100000 || hasPartialThousands ? 1 : 0,
     minimumFractionDigits: 0
   });
 
@@ -1029,7 +1204,7 @@ function styles() {
       font-family: var(--ges-font-heading);
       grid-template-columns: auto minmax(0, 1fr);
       line-height: 1.42;
-      margin: clamp(42px, 7vw, 68px) auto 0;
+      margin: clamp(22px, 4vw, 34px) auto 0;
       max-width: min(100%, 42rem);
       opacity: 0;
       padding: clamp(16px, 3vw, 22px);
@@ -1059,7 +1234,7 @@ function styles() {
     }
 
     .tax-roll-lesson-bridge::before {
-      block-size: clamp(28px, 5vw, 46px);
+      block-size: calc(clamp(22px, 4vw, 34px) + 2px);
       bottom: 100%;
     }
 
@@ -1121,59 +1296,123 @@ function styles() {
     }
 
     .tax-roll-experiment-setup {
-      display: grid;
-      gap: 0.54rem;
-      margin-top: clamp(18px, 4vw, 28px);
-      max-width: min(100%, 34rem);
+      align-items: center;
+      background: rgb(var(--ges-color-page) / 0.96);
+      border: 1px solid rgba(36, 59, 68, 0.11);
+      border-radius: 999px;
+      box-shadow: 0 0.45rem 1.1rem rgba(36, 59, 68, 0.045);
+      column-gap: 0.7rem;
+      display: flex;
+      margin: clamp(16px, 3vw, 22px) auto -0.55rem;
+      max-width: min(100%, 42rem);
+      padding: 0.48rem 0.72rem;
+      position: relative;
+      width: fit-content;
+      z-index: 2;
     }
 
     .tax-roll-experiment-setup p,
-    .tax-roll-experiment-setup dl,
     .tax-roll-experiment-setup dt,
     .tax-roll-experiment-setup dd {
       margin: 0;
     }
 
     .tax-roll-experiment-setup p {
-      color: rgb(var(--ges-color-civic-blue));
+      align-items: center;
+      align-self: stretch;
+      background: rgba(116, 143, 95, 0.15);
+      border-radius: 999px 0 0 999px;
+      border-right: 1px solid rgba(36, 59, 68, 0.14);
+      color: rgb(var(--ges-color-text));
+      display: inline-flex;
       font-family: var(--ges-font-heading);
-      font-size: var(--ges-type-xs);
+      font-size: 0.68rem;
       font-weight: var(--ges-weight-heavy);
-      letter-spacing: var(--ges-letter-kicker);
+      letter-spacing: 0.08em;
       line-height: 1;
+      margin: -0.48rem 0 -0.48rem -0.72rem;
+      padding: 0 0.82rem;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
-    .tax-roll-experiment-setup dl {
-      border-top: 1px solid rgba(36, 59, 68, 0.13);
+    .tax-roll-experiment-setup__conditions {
+      align-items: stretch;
       display: grid;
+      grid-template-columns: minmax(0, auto) minmax(0, auto);
+      min-width: 0;
     }
 
-    .tax-roll-experiment-setup div {
+    .tax-roll-experiment-setup__group {
       align-items: baseline;
-      border-bottom: 1px solid rgba(36, 59, 68, 0.09);
       display: grid;
-      gap: 1rem;
-      grid-template-columns: minmax(0, 1fr) auto;
-      padding: 0.52rem 0;
+      gap: 0.45rem;
+      grid-template-columns: auto minmax(0, 1fr);
+      min-width: 0;
+      padding-inline: 0.72rem;
+    }
+
+    .tax-roll-experiment-setup__group + .tax-roll-experiment-setup__group {
+      border-left: 1px solid rgba(36, 59, 68, 0.15);
     }
 
     .tax-roll-experiment-setup dt {
       color: var(--ges-color-text-muted, #5b6670);
       font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
-      font-size: 0.82rem;
-      font-weight: 760;
+      font-size: 0.7rem;
+      font-weight: 820;
+      letter-spacing: 0;
       line-height: 1.1;
     }
 
     .tax-roll-experiment-setup dd {
       color: rgb(var(--ges-color-text));
       font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
-      font-size: 0.92rem;
+      font-size: 0.78rem;
       font-weight: 850;
       line-height: 1.05;
-      text-align: right;
+    }
+
+    .tax-roll-experiment-setup dd,
+    .tax-roll-experiment-setup dd > span,
+    .tax-roll-experiment-setup dd strong {
+      align-items: center;
+      display: inline-flex;
+      gap: 0.3rem;
+      min-width: 0;
+    }
+
+    .tax-roll-experiment-setup dd {
+      flex-wrap: wrap;
+      row-gap: 0.2rem;
+    }
+
+    .tax-roll-experiment-setup__group--assessment dd {
+      align-items: start;
+      display: grid;
+      gap: 0.18rem;
+    }
+
+    .tax-roll-experiment-setup__group--assessment dd > span {
+      justify-content: space-between;
+    }
+
+    .tax-roll-experiment-setup dd > span > span:first-child {
+      color: var(--ges-color-text-muted, #5b6670);
+      font-weight: 740;
       white-space: nowrap;
+    }
+
+    .tax-roll-experiment-setup dd strong {
+      color: rgb(var(--ges-color-text));
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .tax-roll-setup-arrow {
+      color: rgb(var(--ges-color-civic-blue));
+      font-size: 0.9em;
+      line-height: 1;
     }
 
     .tax-roll-experiment-card {
@@ -1181,7 +1420,7 @@ function styles() {
       border: 1px solid rgba(36, 59, 68, 0.1);
       border-radius: 16px;
       box-shadow: 0 1rem 2.6rem rgba(36, 59, 68, 0.075);
-      margin-top: clamp(22px, 5vw, 34px);
+      margin-top: 0;
       padding: clamp(18px, 4vw, 32px);
       transition: box-shadow 280ms ease, transform 280ms ease;
     }
@@ -1191,17 +1430,36 @@ function styles() {
     }
 
     .tax-roll-baseline-shell {
-      margin: clamp(12px, 3vw, 24px) 0 clamp(18px, 5vw, 36px);
+      margin: clamp(18px, 5vw, 36px) 0 clamp(22px, 5vw, 40px);
+    }
+
+    .tax-roll-baseline-intro {
+      margin: 0 0 clamp(14px, 3vw, 22px);
+      max-width: 46rem;
+    }
+
+    .tax-roll-baseline-intro .guided-kicker {
+      margin: 0 0 0.45rem;
+    }
+
+    .tax-roll-baseline-intro .prose {
+      color: rgb(var(--ges-color-text-muted));
+      font-size: 1rem;
+      line-height: 1.58;
+      margin: 0;
+      max-width: 66ch;
+      text-indent: 0;
     }
 
     .tax-roll-baseline {
       --tax-roll-sticky-top: calc(var(--gpr-global-header-height, 3.35rem) + 0.35rem);
       backdrop-filter: blur(18px);
       background: rgb(var(--ges-color-page) / 0.94);
-      border-block: 1px solid rgba(36, 59, 68, 0.13);
-      box-shadow: 0 0.5rem 1.2rem rgba(36, 59, 68, 0.05);
+      border: 1px solid rgba(36, 59, 68, 0.12);
+      border-radius: 12px;
+      box-shadow: 0 0.7rem 1.8rem rgba(36, 59, 68, 0.06);
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr) minmax(0, 1.08fr);
       gap: 0;
       margin: 0;
       position: sticky;
@@ -1219,15 +1477,55 @@ function styles() {
       z-index: 80;
     }
 
+    .tax-roll-baseline-shell.is-fixed .tax-roll-baseline div {
+      padding-block: 0.42rem 0.48rem;
+    }
+
+    .tax-roll-baseline-shell.is-fixed .tax-roll-baseline dt {
+      font-size: clamp(0.48rem, 1.35vw, 0.58rem);
+    }
+
+    .tax-roll-baseline-shell.is-fixed .tax-roll-baseline dd {
+      font-size: clamp(0.92rem, 4vw, 1.18rem);
+    }
+
+    .tax-roll-baseline-shell.is-fixed .tax-roll-baseline__hero dd {
+      font-size: clamp(1.08rem, 4.8vw, 1.42rem);
+    }
+
     .tax-roll-baseline div {
       display: grid;
       gap: 0.16rem;
       min-width: 0;
-      padding: 0.52rem 0.72rem 0.58rem;
+      padding: 0.62rem 0.86rem 0.68rem;
+      position: relative;
     }
 
     .tax-roll-baseline div:not(:last-child) {
       border-right: 1px solid rgba(36, 59, 68, 0.1);
+    }
+
+    .tax-roll-baseline div:nth-child(1)::after,
+    .tax-roll-baseline div:nth-child(2)::after {
+      background: linear-gradient(90deg, rgba(47, 115, 163, 0.18), rgba(47, 115, 163, 0));
+      block-size: 1px;
+      bottom: 0.42rem;
+      content: "";
+      inline-size: 36%;
+      opacity: 0.7;
+      position: absolute;
+      right: 0.65rem;
+    }
+
+    .tax-roll-baseline__hero::after {
+      background: rgba(47, 115, 163, 0.18);
+      block-size: 54%;
+      bottom: -1px;
+      content: "";
+      inline-size: 1px;
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
     }
 
     .tax-roll-baseline dt {
@@ -1258,7 +1556,8 @@ function styles() {
     }
 
     .tax-roll-baseline__hero {
-      background: rgba(47, 115, 163, 0.07);
+      background: linear-gradient(180deg, rgba(47, 115, 163, 0.12), rgba(47, 115, 163, 0.065));
+      box-shadow: inset 0 3px 0 rgba(47, 115, 163, 0.42);
     }
 
     .tax-roll-baseline__hero dd {
@@ -1266,9 +1565,48 @@ function styles() {
       font-size: clamp(1.12rem, 5.5vw, 1.6rem);
     }
 
+    .tax-roll-levy-metric {
+      align-items: center;
+      display: grid;
+      gap: 0.35rem;
+      grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr);
+      min-width: 0;
+    }
+
+    .tax-roll-levy-direction,
+    .tax-roll-levy-number {
+      display: inline-block;
+      min-width: 0;
+    }
+
+    .tax-roll-levy-direction {
+      color: rgba(36, 59, 68, 0.52);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .tax-roll-levy-direction.is-up {
+      color: #956a20;
+    }
+
+    .tax-roll-levy-direction.is-down {
+      color: #4f8061;
+    }
+
+    .tax-roll-levy-number {
+      overflow: visible;
+      text-align: right;
+    }
+
     .tax-roll-baseline dd.is-pulsing {
       animation: taxRollMetricTextPulse 520ms ease;
       transform-origin: left center;
+      will-change: transform;
+    }
+
+    .tax-roll-levy-direction.is-pulsing {
+      animation: taxRollMetricTextPulse 520ms ease;
+      transform-origin: center;
       will-change: transform;
     }
 
@@ -1288,6 +1626,10 @@ function styles() {
       gap: 12px;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       margin-top: clamp(22px, 7vw, 42px);
+    }
+
+    .tax-roll-control-snapshot {
+      display: none;
     }
 
     .tax-roll-property {
@@ -1537,11 +1879,23 @@ function styles() {
       transform: translateY(0);
     }
 
+    .tax-roll-answer {
+      margin-top: clamp(18px, 5vw, 28px);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 280ms ease, transform 280ms ease;
+    }
+
+    .tax-roll-answer.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .tax-roll-answer-kicker {
       margin: clamp(0.9rem, 2vw, 1.15rem) 0 0.28rem;
     }
 
-    .tax-roll-result-shell .tax-roll-result-title {
+    .tax-roll-answer .tax-roll-result-title {
       color: rgb(var(--ges-color-text));
       font-family: var(--levy-heading-font);
       font-size: var(--ges-type-xl);
@@ -1586,6 +1940,133 @@ function styles() {
 
     .tax-roll-result-shell.is-table-open .tax-roll-table-toggle svg {
       transform: rotate(180deg);
+    }
+
+    .tax-roll-mobile-outcome {
+      display: none;
+    }
+
+    .tax-roll-mobile-outcome-card {
+      display: grid;
+      gap: 0.62rem;
+    }
+
+    .tax-roll-mobile-outcome-card h3 {
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: 1rem;
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 1.15;
+      margin: 0;
+    }
+
+    .tax-roll-mobile-outcome-table {
+      border: 1px solid rgba(36, 59, 68, 0.13);
+      border-collapse: collapse;
+      border-spacing: 0;
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-variant-numeric: tabular-nums;
+      inline-size: 100%;
+      table-layout: fixed;
+    }
+
+    .tax-roll-mobile-col--house {
+      inline-size: 18%;
+    }
+
+    .tax-roll-mobile-col--assessment {
+      inline-size: 31%;
+    }
+
+    .tax-roll-mobile-col--tax {
+      inline-size: 24%;
+    }
+
+    .tax-roll-mobile-col--change {
+      inline-size: 27%;
+    }
+
+    .tax-roll-mobile-outcome-table th,
+    .tax-roll-mobile-outcome-table td {
+      border: 1px solid rgba(36, 59, 68, 0.11);
+      line-height: 1.12;
+      padding: 0.4rem 0.42rem;
+      vertical-align: middle;
+    }
+
+    .tax-roll-mobile-outcome-table thead th {
+      background: rgba(36, 59, 68, 0.08);
+      color: var(--ges-color-text-muted, #5b6670);
+      font-size: 0.58rem;
+      font-weight: 850;
+      letter-spacing: 0;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .tax-roll-mobile-outcome-table thead th:first-child {
+      text-align: left;
+    }
+
+    .tax-roll-mobile-outcome-table tbody tr {
+      animation: taxRollRowReveal 520ms ease both;
+      animation-delay: calc(var(--row-order, 0) * 24ms);
+    }
+
+    .tax-roll-mobile-outcome-table tbody th,
+    .tax-roll-mobile-outcome-table tbody td {
+      font-size: clamp(0.78rem, 3.65vw, 0.9rem);
+      font-weight: 820;
+    }
+
+    .tax-roll-mobile-outcome-table tbody th {
+      text-align: left;
+      width: 18%;
+    }
+
+    .tax-roll-mobile-outcome-table tbody td {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .tax-roll-mobile-outcome-table .tax-roll-heat {
+      border-radius: 0;
+      display: table-cell;
+      padding: 0.4rem 0.42rem;
+    }
+
+    .tax-roll-mobile-row__identity {
+      align-items: center;
+      display: inline-flex;
+      gap: 0.32rem;
+      min-width: 0;
+    }
+
+    .tax-roll-mobile-row__identity span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tax-roll-mobile-house {
+      display: block;
+      flex: 0 0 auto;
+      height: 0.95rem;
+      width: 1rem;
+    }
+
+    @keyframes taxRollMobileDetailReveal {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .tax-roll-table-wrap {
@@ -1803,6 +2284,7 @@ function styles() {
       display: grid;
       gap: clamp(16px, 4vw, 24px);
       margin-top: clamp(18px, 5vw, 28px);
+      min-width: 0;
       opacity: 0;
       transform: translateY(8px);
       transition: opacity 280ms ease, transform 280ms ease;
@@ -1940,11 +2422,22 @@ function styles() {
     }
 
     .tax-roll-final-thought {
-      border-top: 1px solid rgba(36, 59, 68, 0.12);
-      margin: clamp(18px, 4vw, 34px) auto 0;
+      border-top: 0;
+      gap: 0;
+      margin: clamp(30px, 5vw, 48px) auto 0;
       max-width: var(--tax-roll-reading-shell-width);
-      padding: clamp(28px, 5vw, 44px) 0 clamp(22px, 4vw, 34px);
+      padding: clamp(30px, 5vw, 48px) 0 clamp(22px, 4vw, 34px);
+      position: relative;
       width: var(--tax-roll-reading-shell-width);
+    }
+
+    .tax-roll-final-thought::before {
+      background: linear-gradient(to bottom, rgba(36, 59, 68, 0.18), rgba(255, 255, 255, 0.82));
+      block-size: 2px;
+      content: "";
+      inline-size: 100%;
+      inset: 0 auto auto 0;
+      position: absolute;
     }
 
     .tax-roll-final-thought h2 {
@@ -1954,17 +2447,25 @@ function styles() {
       font-weight: var(--ges-weight-heavy);
       letter-spacing: 0;
       line-height: 1.05;
-      margin: 0;
+      margin: 0 0 clamp(1rem, 2vw, 1.25rem);
     }
 
     .tax-roll-final-thought p.prose {
-      margin: 0.9rem 0 0;
+      margin: 0;
       max-width: 62ch;
     }
 
+    .tax-roll-final-thought p.prose + p.prose {
+      margin-top: 0.85rem;
+    }
+
     .tax-roll-final-transition {
-      margin: clamp(1.5rem, 7vw, 1.5rem) auto;
+      margin: clamp(1.1rem, 3vw, 1.45rem) auto;
       max-width: 62ch;
+    }
+
+    .tax-roll-final-transition + p.prose {
+      margin-top: clamp(1rem, 2vw, 1.2rem);
     }
 
     .tax-roll-article .ges-resources-block {
@@ -1973,13 +2474,170 @@ function styles() {
     }
 
     @media (max-width: 759px) {
-      .tax-roll-result-shell:not(.is-table-open) .tax-roll-table-wrap {
+      .tax-roll-homes {
         display: none;
       }
 
-      .tax-roll-result-shell.is-table-open .tax-roll-table-wrap {
+      .tax-roll-control-snapshot {
+        display: grid;
+        gap: 0.8rem;
+        margin-top: clamp(18px, 6vw, 28px);
+      }
+
+      .tax-roll-control-snapshot__houses {
+        background: linear-gradient(180deg, rgba(218, 231, 210, 0.78), rgba(202, 222, 192, 0.62));
+        border: 1px solid rgba(87, 122, 79, 0.16);
+        border-radius: 12px;
+        display: grid;
+        gap: 0.7rem 0.78rem;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        margin-inline: auto;
+        max-width: none;
+        padding: 0.84rem 0.88rem;
+        width: 100%;
+      }
+
+      .tax-roll-control-snapshot__house {
+        align-items: center;
+        display: grid;
+        min-height: 3.05rem;
+        place-items: center;
+      }
+
+      .tax-roll-control-snapshot__house svg {
         display: block;
-        margin-top: 0.85rem;
+        fill: var(--property-color);
+        height: 2.9rem;
+        opacity: 0.94;
+        width: 3.05rem;
+      }
+
+      .tax-roll-control-snapshot__house svg path + path {
+        fill: color-mix(in srgb, var(--property-color) 18%, #fff);
+        stroke: rgba(36, 59, 68, 0.16);
+        stroke-width: 0.5;
+      }
+
+      .tax-roll-control-snapshot__summary {
+        display: grid;
+        font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+        margin: 0;
+      }
+
+      .tax-roll-control-snapshot__summary div {
+        align-items: baseline;
+        border-bottom: 1px solid rgba(36, 59, 68, 0.1);
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: minmax(0, 1fr) auto;
+        padding: 0.42rem 0;
+      }
+
+      .tax-roll-control-snapshot__summary dt {
+        color: var(--ges-color-text-muted, #5b6670);
+        font-size: 0.7rem;
+        font-weight: 780;
+        letter-spacing: 0;
+        line-height: 1.1;
+        margin: 0;
+      }
+
+      .tax-roll-control-snapshot__summary dd {
+        color: rgb(var(--ges-color-text));
+        font-size: 0.86rem;
+        font-variant-numeric: tabular-nums;
+        font-weight: 850;
+        line-height: 1.1;
+        margin: 0;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .tax-roll-baseline {
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 0.88fr) minmax(0, 1.22fr);
+      }
+
+      .tax-roll-baseline div {
+        padding-inline: 0.62rem;
+      }
+
+      .tax-roll-baseline__hero {
+        padding-inline: 0.52rem 0.64rem;
+      }
+
+      .tax-roll-baseline__hero dd,
+      .tax-roll-baseline-shell.is-fixed .tax-roll-baseline__hero dd {
+        font-size: clamp(1.02rem, 5vw, 1.34rem);
+      }
+
+      .tax-roll-levy-metric {
+        gap: 0.22rem;
+        grid-template-columns: minmax(1.15rem, 0.44fr) minmax(3.1rem, 1fr);
+      }
+
+      .tax-roll-experiment-setup {
+        align-items: stretch;
+        border-radius: 14px;
+        display: grid;
+        gap: 0.46rem;
+        margin: clamp(14px, 5vw, 20px) auto -0.45rem;
+        padding: 0.58rem 0.68rem;
+        width: min(100%, 24rem);
+      }
+
+      .tax-roll-experiment-setup p {
+        border-radius: 13px 13px 0 0;
+        border-right: 0;
+        border-bottom: 1px solid rgba(36, 59, 68, 0.12);
+        margin: -0.58rem -0.68rem 0;
+        min-height: 2rem;
+        padding: 0 0.68rem;
+      }
+
+      .tax-roll-experiment-setup__conditions {
+        gap: 0.36rem;
+        grid-template-columns: 1fr;
+      }
+
+      .tax-roll-experiment-setup__group {
+        gap: 0.5rem;
+        grid-template-columns: minmax(5.8rem, auto) minmax(0, 1fr);
+        padding-inline: 0;
+      }
+
+      .tax-roll-experiment-setup__group + .tax-roll-experiment-setup__group {
+        border-left: 0;
+        border-top: 1px solid rgba(36, 59, 68, 0.11);
+        padding-top: 0.36rem;
+      }
+
+      .tax-roll-experiment-card:not(.is-revealed) {
+        padding-bottom: clamp(18px, 5vw, 24px);
+      }
+
+      .tax-roll-experiment-card:not(.is-revealed) .tax-roll-lesson-grid {
+        gap: 0;
+      }
+
+      .tax-roll-experiment-card:not(.is-revealed) .tax-roll-result-column {
+        display: none;
+      }
+
+      .tax-roll-experiment-card.is-revealed .tax-roll-result-column {
+        display: block;
+      }
+
+      .tax-roll-result-shell--pending {
+        display: none;
+      }
+
+      .tax-roll-table-toggle,
+      .tax-roll-table-wrap {
+        display: none !important;
+      }
+
+      .tax-roll-mobile-outcome:not([hidden]) {
+        display: block;
       }
     }
 
@@ -2020,7 +2678,7 @@ function styles() {
       }
 
       .tax-roll-baseline {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr) minmax(0, 0.9fr) minmax(0, 0.82fr);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr) minmax(0, 1.08fr);
       }
 
       .tax-roll-baseline__hero {
@@ -2043,10 +2701,22 @@ function styles() {
         max-width: min(100%, 43rem);
       }
 
+      .tax-roll-scenario-copy {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
       .tax-roll-result-column {
         border-left: 1px solid rgba(36, 59, 68, 0.13);
+        grid-column: 2;
+        grid-row: 1 / span 2;
         margin-top: 0.2rem;
         padding-left: clamp(22px, 3vw, 32px);
+      }
+
+      .tax-roll-explanation {
+        grid-column: 1;
+        grid-row: 2;
       }
 
       .tax-roll-reveal__icon-state--chevron {
