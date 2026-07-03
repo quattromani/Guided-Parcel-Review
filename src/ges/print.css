@@ -562,8 +562,12 @@
 
   .ges-resources-block {
     gap: 9pt;
-    margin-top: 0.08in;
-    padding-top: 10pt;
+    background: transparent;
+    border-top: 0.5pt solid rgb(var(--ges-print-border));
+    box-shadow: none !important;
+    margin: 0.08in 0 0;
+    padding: 10pt 0 0;
+    width: auto;
   }
 
   .ges-resources-block__header {

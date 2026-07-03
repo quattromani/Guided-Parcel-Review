@@ -4,14 +4,19 @@ const RESOURCE_TYPE_LABELS = {
   "assessment-guidance": "Assessment guidance",
   "case-record": "Case record",
   "case-study": "Case study",
+  "calculator": "Calculator",
   "companion-guide": "Companion guide",
   "county-record": "County record",
+  "download": "Download",
+  "experiment": "Experiment",
   "legal-authority": "Legal authority",
   "model-input": "Model input",
+  "office": "Office",
   "official-form": "Official form",
   "official-resource": "Official resource",
   "pad-report": "PAD report",
   "practice-basis": "Practice basis",
+  "report": "Report",
   "tax-record": "Tax record"
 };
 
@@ -484,10 +489,40 @@ function resourceItemCategory(item = {}) {
 
 function resourceTypeLabel(item = {}) {
   const explicitType = item.type ?? item.resourceType;
-  if (explicitType) return explicitType;
+  if (explicitType) {
+    const explicitSlug = slugValue(explicitType);
+    return RESOURCE_TYPE_LABELS[explicitSlug] ?? explicitType;
+  }
 
   const category = resourceItemCategory(item);
   return RESOURCE_TYPE_LABELS[category] ?? category.replace(/-/g, " ");
+}
+
+function resourceBlockTitle(block = {}, options = {}) {
+  const title = block?.title ?? options.title ?? "";
+  if (!title || /^resources(?:\s+and\s+authorities)?$/i.test(title.trim())) return "Administrative Reference";
+  return title;
+}
+
+function resourceBlockIntro(block = {}, options = {}) {
+  const title = block?.title ?? options.title ?? "";
+  const defaultIntro = "Everything below supports the information presented above, including legal authorities, comparison readings, and related tools.";
+  if (!title || /^resources(?:\s+and\s+authorities)?$/i.test(title.trim())) return options.intro ?? defaultIntro;
+  return block?.intro
+    ?? block?.description
+    ?? options.intro
+    ?? defaultIntro;
+}
+
+function resourceGroupHeading(heading = "") {
+  const normalized = `${heading}`.trim();
+  if (!normalized) return "";
+  if (/^legal\s+and\s+public\s+administration\s+context$/i.test(normalized)) return "Legal and Public Administration Context";
+  if (/^(companion|comparison)\s+reading$/i.test(normalized)) return "Comparison Reading";
+  if (/^related\s+tools?$/i.test(normalized)) return "Related Tools";
+  if (/^(downloads?|reports?|downloads?\s*\/\s*reports?)$/i.test(normalized)) return "Downloads / Reports";
+  if (/^(contacts?|offices?|contacts?\s*\/\s*offices?)$/i.test(normalized)) return "Contact / Offices";
+  return normalized;
 }
 
 function normalizeResourceGroups(block = {}) {
@@ -498,14 +533,14 @@ function normalizeResourceGroups(block = {}) {
   if (Array.isArray(block.groups) && block.groups.length) {
     return block.groups
       .map(group => ({
-        heading: group.heading ?? group.title ?? "",
+        heading: resourceGroupHeading(group.label ?? group.heading ?? group.title ?? ""),
         items: Array.isArray(group.items) ? group.items.filter(Boolean) : []
       }))
       .filter(group => group.items.length);
   }
 
   const items = Array.isArray(block.items) ? block.items.filter(Boolean) : [];
-  return items.length ? [{ heading: block.groupHeading ?? "", items }] : [];
+  return items.length ? [{ heading: resourceGroupHeading(block.groupHeading ?? block.label ?? ""), items }] : [];
 }
 
 function renderResourceItem(item = {}, references = {}) {
@@ -549,8 +584,8 @@ export function renderResourcesBlock(block, options = {}) {
   if (!groups.length) return "";
 
   const references = options.references ?? {};
-  const title = block?.title ?? options.title ?? "Resources and authorities";
-  const intro = block?.intro ?? block?.description ?? options.intro ?? "";
+  const title = resourceBlockTitle(block, options);
+  const intro = resourceBlockIntro(block, options);
   const id = options.id ?? block?.id ?? "gesResourcesBlock";
   const headingLevel = clampHeadingLevel(options.headingLevel ?? block?.headingLevel);
   const groupHeadingLevel = clampHeadingLevel(headingLevel + 1, 3);
@@ -559,24 +594,32 @@ export function renderResourcesBlock(block, options = {}) {
   const resourceItems = groups.flatMap(group => group.items);
   const sourceIds = uniqueValues(resourceItems.map(resourceItemId));
   const sourceCategories = uniqueValues(resourceItems.map(resourceItemCategory));
-  const classes = ["ges-resources-block", "article-sources-used", options.className, block?.className].filter(Boolean).join(" ");
+  const classes = [
+    "ges-resources-block",
+    "ges-administrative-reference",
+    "article-sources-used",
+    options.className,
+    block?.className
+  ].filter(Boolean).join(" ");
 
   return `
     <section class="${escapeHtml(classes)}" aria-labelledby="${escapeHtml(id)}Title" data-source-ids="${escapeHtml(sourceIds.join(" "))}" data-source-categories="${escapeHtml(sourceCategories.join(" "))}">
-      <header class="ges-resources-block__header">
-        <p class="guided-kicker">Resources</p>
-        <${headingTag} id="${escapeHtml(id)}Title">${escapeHtml(title)}</${headingTag}>
-        ${intro ? `<p>${escapeHtml(intro)}</p>` : ""}
-      </header>
-      <div class="ges-resources-block__groups">
-        ${groups.map((group, index) => `
-          <section class="ges-resource-group"${group.heading ? ` aria-labelledby="${escapeHtml(`${id}Group${index + 1}`)}"` : ""}>
-            ${group.heading ? `<${groupHeadingTag} id="${escapeHtml(`${id}Group${index + 1}`)}">${escapeHtml(group.heading)}</${groupHeadingTag}>` : ""}
-            <ul class="ges-resource-list">
-              ${group.items.map(item => renderResourceItem(item, references)).join("")}
-            </ul>
-          </section>
-        `).join("")}
+      <div class="ges-resources-block__inner">
+        <header class="ges-resources-block__header">
+          <p class="guided-kicker">Reference</p>
+          <${headingTag} id="${escapeHtml(id)}Title">${escapeHtml(title)}</${headingTag}>
+          ${intro ? `<p>${escapeHtml(intro)}</p>` : ""}
+        </header>
+        <div class="ges-resources-block__groups">
+          ${groups.map((group, index) => `
+            <section class="ges-resource-group"${group.heading ? ` aria-labelledby="${escapeHtml(`${id}Group${index + 1}`)}"` : ""}>
+              ${group.heading ? `<${groupHeadingTag} id="${escapeHtml(`${id}Group${index + 1}`)}">${escapeHtml(group.heading)}</${groupHeadingTag}>` : ""}
+              <ul class="ges-resource-list">
+                ${group.items.map(item => renderResourceItem(item, references)).join("")}
+              </ul>
+            </section>
+          `).join("")}
+        </div>
       </div>
     </section>
   `;

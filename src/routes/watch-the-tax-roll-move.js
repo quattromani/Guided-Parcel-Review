@@ -119,7 +119,7 @@ const LESSONS = [
     bridge: {
       icon: "balance",
       title: "Everyone moved together.",
-      text: "That kept the tax burden in the same shape. Now reverse the direction and ask whether lower assessments, by themselves, change the result."
+      text: "That kept the tax burden in the same shape. Now reverse the direction and test the opening theory directly: do lower assessments, by themselves, change the result?"
     }
   },
   {
@@ -141,7 +141,7 @@ const LESSONS = [
     bridge: {
       icon: "compass",
       title: "So what actually matters?",
-      text: "At first, these results can feel backwards. They are showing two systems working together: assessments set each property's share, budgets set the amount to raise, and the levy connects the two."
+      text: "The original hypothesis did not hold. Lowering or raising every assessment together did not redistribute the tax burden. The levy absorbed that change."
     }
   },
   {
@@ -164,7 +164,7 @@ const LESSONS = [
     bridge: {
       icon: "map",
       title: "One house is easy to follow.",
-      text: "A neighborhood is where the pattern starts to feel more like real life. What happens when one part of town moves faster than another?"
+      text: "This is the point where the opening question begins to answer itself. A neighborhood is where the pattern starts to feel more like real life."
     }
   },
   {
@@ -261,7 +261,12 @@ export function renderWatchTheTaxRollMoveArticle() {
       <section class="tax-roll-intro tax-article-section tax-story-chapter tax-article-opening levy-wide-panel article-section ges-opening-section" data-tone="reflection" aria-labelledby="taxRollIntroTitle">
         <div class="editorial-narrow ges-section-lead">
           ${sectionHeader("", "Let's run an experiment.", "taxRollIntroTitle")}
-          <p class="prose">Simplify the system before exploring the real one.</p>
+          <p class="prose">Every good one begins with a question that can be tested.</p>
+          <p class="prose">This one starts with a familiar assumption: if assessments went down instead of up, taxes should go down too.</p>
+          <p class="prose">That sounds reasonable. If every property owner in a county received a 10% reduction in assessed value, most people would expect the tax bill to move in the same direction.</p>
+          <p class="prose">But what if it did not?</p>
+          <p class="prose">What if lowering every assessment mostly changed the levy instead?</p>
+          <p class="prose">Rather than argue from intuition, we can simplify the system until each relationship is visible.</p>
           <p class="prose">We'll begin with ten identical homes, one fixed budget, and one levy rate. Then we'll change only one variable at a time and watch what happens.</p>
         </div>
       </section>
@@ -374,21 +379,17 @@ function renderFinalThought() {
   return `
     <section class="tax-roll-final-thought tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-labelledby="taxRollFinalThoughtTitle">
       <h2 id="taxRollFinalThoughtTitle">One final thought.</h2>
-      <p class="prose">Over the last few minutes, we changed only one variable at a time.</p>
-      <p class="prose">When every home moved together, very little changed. The levy adjusted.</p>
-      <p class="prose">When one property moved differently than its neighbors, the tax burden shifted.</p>
+      <p class="prose">This article began with a simple question: what would happen if assessments went down instead of up? At first, the answer seems obvious. Lower assessments should mean lower taxes.</p>
+      <p class="prose">But after watching the tax roll move one step at a time, the system becomes easier to see. When every home moved together, very little changed. The levy adjusted. When one property moved differently than its neighbors, the tax burden shifted.</p>
       <p class="prose">That distinction explains why two homeowners in the same taxing district can experience very different tax bills, even when both receive a valuation increase.</p>
-      <p class="prose">As you leave this article, try replacing one question with another.</p>
-      <p class="prose">Instead of asking:</p>
-      <p class="prose">"How much did my assessment go up?"</p>
-      <p class="prose">Ask:</p>
+      <p class="prose">By the final experiment, the neighborhood behaved more like a real county. Assessments reflected actual differences between properties, the levy did not have to compensate for an oversimplified tax base, and the burden spread according to each property's position.</p>
+      <p class="prose">As you leave this article, try replacing one question with another. Instead of asking, "How much did my assessment go up?" ask:</p>
       <aside class="tax-roll-final-transition guided-transition" aria-label="Final thought transition">
         <p>"How did my property move compared with everyone else's?"</p>
       </aside>
-      <p class="prose">That's the question the property tax system is really answering.</p>
-      <p class="prose">Assessments determine each property's share of the tax base.</p>
-      <p class="prose">Budgets determine how much money must be collected.</p>
-      <p class="prose">The levy connects the two.</p>
+      <p class="prose">That's the question the property tax system is really answering. Assessment is not designed to raise taxes by itself. Its job is to position the tax base before the budget is applied.</p>
+      <p class="prose">Assessments determine each property's share of the tax base. Budgets determine how much money must be collected. The levy connects the two.</p>
+      <p class="prose">Once you begin thinking in relationships instead of isolated numbers, the system becomes much easier to understand. Accuracy compounds.</p>
     </section>
   `;
 }
@@ -2467,11 +2468,6 @@ function styles() {
 
     .tax-roll-final-transition + p.prose {
       margin-top: clamp(1rem, 2vw, 1.2rem);
-    }
-
-    .tax-roll-article .ges-resources-block {
-      margin-top: clamp(16px, 3vw, 22px);
-      padding-top: clamp(16px, 3vw, 22px);
     }
 
     @media (max-width: 759px) {

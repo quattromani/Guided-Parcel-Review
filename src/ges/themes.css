@@ -234,6 +234,11 @@ html[data-ges-theme-resolved="dark"] :where(
   border-color: rgb(var(--ges-color-border-subtle) / 0.82);
 }
 
+html[data-ges-theme-resolved="dark"] .ges-resources-block {
+  background: rgb(var(--ges-color-surface-muted) / 0.84);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+}
+
 html[data-ges-theme-resolved="dark"] :where(
   .disconnect-visual article,
   .process-strip li,
