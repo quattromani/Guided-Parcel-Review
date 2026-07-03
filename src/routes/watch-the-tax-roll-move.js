@@ -210,6 +210,8 @@ const LESSONS = [
   }
 ];
 
+const BUDGET_TRANSITION = "Now we'll add one more variable: the budget. Assessments still determine each home's share, but a budget increase changes how much the levy has to collect.";
+
 function normalizedPathname() {
   return window.location.pathname.endsWith("/")
     ? window.location.pathname
@@ -366,7 +368,7 @@ function renderExperiment() {
         </dl>
       </div>
 
-      ${LESSONS.map(renderLesson).join("")}
+      ${renderLessons()}
 
       <section class="tax-roll-final tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="reflection" aria-label="Final takeaway">
         ${renderFinalPie()}
@@ -374,6 +376,15 @@ function renderExperiment() {
       </section>
     </section>
   `;
+}
+
+function renderLessons() {
+  return LESSONS.map(lesson => {
+    const budgetTransition = lesson.id === "everyone-down"
+      ? renderBudgetTransition()
+      : "";
+    return `${renderLesson(lesson)}${budgetTransition}`;
+  }).join("");
 }
 
 function renderFinalThought() {
@@ -608,6 +619,14 @@ function renderLessonBridge(bridge, lessonId) {
         <strong>${escapeHtml(bridge.title)}</strong>
         <span>${escapeHtml(bridge.text)}</span>
       </span>
+    </aside>
+  `;
+}
+
+function renderBudgetTransition() {
+  return `
+    <aside class="tax-roll-budget-transition guided-transition" aria-label="Budget transition">
+      <p>${escapeHtml(BUDGET_TRANSITION)}</p>
     </aside>
   `;
 }
@@ -1281,6 +1300,21 @@ function styles() {
       font-family: "IBM Plex Sans", system-ui, sans-serif;
       font-size: clamp(0.93rem, 1.7vw, 1rem);
       font-weight: 650;
+    }
+
+    .tax-roll-budget-transition {
+      margin-block: clamp(2.5rem, 5vw, 4rem) clamp(2.2rem, 4vw, 3rem);
+      max-width: min(42rem, 88vw);
+      padding-block-start: clamp(1.2rem, 2.5vw, 1.8rem);
+    }
+
+    .tax-roll-budget-transition::before {
+      margin-inline: auto;
+    }
+
+    .tax-roll-budget-transition p {
+      color: rgb(var(--ges-color-text));
+      text-align: center;
     }
 
     .tax-roll-lesson > .tax-article-header {
