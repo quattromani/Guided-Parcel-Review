@@ -628,6 +628,7 @@ function renderBudgetTransition() {
     <aside class="tax-roll-budget-transition guided-transition" aria-label="Budget transition">
       <p>${escapeHtml(BUDGET_TRANSITION)}</p>
     </aside>
+    <hr class="tax-roll-budget-transition-rule" aria-hidden="true">
   `;
 }
 
@@ -1309,12 +1310,24 @@ function styles() {
     }
 
     .tax-roll-budget-transition::before {
-      margin-inline: auto;
+      margin-inline: 0 auto;
     }
 
     .tax-roll-budget-transition p {
       color: rgb(var(--ges-color-text));
-      text-align: center;
+      text-align: left;
+    }
+
+    .tax-roll-budget-transition-rule {
+      border: 0;
+      border-top: 1px solid rgba(36, 59, 68, 0.11);
+      margin: 0 auto;
+      max-width: 1040px;
+      width: 100%;
+    }
+
+    .tax-roll-budget-transition-rule + .tax-roll-lesson {
+      border-top: 0;
     }
 
     .tax-roll-lesson > .tax-article-header {
