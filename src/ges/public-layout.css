@@ -13,6 +13,10 @@
   gap: var(--ges-section-space-compact, 2.5rem);
 }
 
+.article-shell-route:has(.ges-resources-block) body > .ges-public-main {
+  padding-block-end: 0;
+}
+
 .ges-public-main [data-ges-shell-region="body"]:empty {
   min-block-size: max(42rem, 100vh);
 }
@@ -194,6 +198,10 @@
   border-block-start: var(--ges-border-width, 1px) solid rgb(var(--ges-color-border-subtle));
   color: rgb(var(--ges-color-text-secondary));
   margin-block-start: var(--ges-section-space, 4rem);
+}
+
+.article-shell-route:has(.ges-resources-block) .ges-public-footer {
+  margin-block-start: 0;
 }
 
 .ges-public-footer__inner {

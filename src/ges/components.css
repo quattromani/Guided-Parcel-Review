@@ -1653,14 +1653,18 @@ html[data-ges-theme-resolved="dark"].article-shell-route .ges-evidence-source {
 }
 
 .ges-resources-block {
-  background: rgb(var(--ges-color-surface-muted));
+  background: #f3f5f6;
   border-block: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.38);
   display: grid;
   justify-self: center;
-  margin: clamp(3rem, 8vw, 5.5rem) calc(50% - 50vw) clamp(2rem, 5vw, 3.5rem);
-  padding: clamp(2rem, 5vw, 3.25rem) max(1rem, calc((100vw - var(--ges-width-wide)) / 2)) clamp(2.25rem, 5vw, 3.75rem);
+  margin: clamp(1.25rem, 3vw, 2.125rem) calc(50% - 50vw) clamp(2rem, 5vw, 3rem);
+  padding: clamp(3.5rem, 6vw, 4.5rem) max(1rem, calc((100vw - var(--ges-width-wide)) / 2));
   width: 100vw;
+}
+
+.article-shell-route :where(.editorial-guide, .tax-article-panel):has(> .ges-resources-block) {
+  padding-block-end: 0;
 }
 
 .ges-resources-block__inner {
@@ -1674,6 +1678,12 @@ html[data-ges-theme-resolved="dark"].article-shell-route .ges-evidence-source {
   display: grid;
   gap: var(--ges-space-xs);
   width: min(100%, var(--ges-width-reading));
+}
+
+.ges-resources-block__header .guided-kicker {
+  color: color-mix(in srgb, rgb(var(--ges-color-civic-green)) 48%, rgb(var(--ges-color-text-muted)));
+  letter-spacing: 0.12em;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.62);
 }
 
 .ges-resources-block__header h2,

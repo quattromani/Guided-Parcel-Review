@@ -342,15 +342,13 @@ function renderExperiment() {
       <section class="tax-roll-neighborhood tax-article-section tax-story-chapter levy-wide-panel article-section" data-tone="information" aria-labelledby="taxRollNeighborhoodTitle">
         ${sectionHeader("The Control Group", "Start with ten identical homes.", "taxRollNeighborhoodTitle")}
         <p class="prose">To make the relationships easier to see, we'll begin with ten identical homes. Every house is worth $100,000, creating a county tax base of $1 million. With a $10,000 budget, each home initially contributes the same amount.</p>
-        <div class="tax-roll-homes" aria-label="Static ten-home neighborhood">
-          ${PROPERTIES.map((property, index) => renderProperty(property, index, baseline)).join("")}
-        </div>
-        ${renderMobileControlSnapshot(baseline)}
+        ${renderControlNeighborhood()}
+        ${renderBaselineTable(baseline)}
       </section>
       <div class="tax-roll-baseline-shell" data-tax-roll-baseline-shell>
         <div class="tax-roll-baseline-intro">
-          <p class="guided-kicker">System Snapshot</p>
-          <p class="prose">These three numbers define the shared tax environment before the experiment begins. Every change you make throughout the lesson ultimately affects one or more of these values.</p>
+          <p class="guided-kicker">Current Totals</p>
+          <p class="prose">These three numbers stay visible as each experiment changes the roll, the budget, or the relationship between properties.</p>
         </div>
         <dl class="tax-roll-baseline" aria-label="Current experiment totals">
           <div><dt>Total Value</dt><dd data-kpi-value="totalValue">${displayCompactMoney(baseline.total)}</dd></div>
@@ -389,7 +387,7 @@ function renderFinalThought() {
       </aside>
       <p class="prose">That's the question the property tax system is really answering. Assessment is not designed to raise taxes by itself. Its job is to position the tax base before the budget is applied.</p>
       <p class="prose">Assessments determine each property's share of the tax base. Budgets determine how much money must be collected. The levy connects the two.</p>
-      <p class="prose">Once you begin thinking in relationships instead of isolated numbers, the system becomes much easier to understand. Accuracy compounds.</p>
+      <p class="prose">The better the tax base reflects reality, the more naturally the rest of the system can do its job. Accuracy compounds.</p>
     </section>
   `;
 }
@@ -412,69 +410,59 @@ function renderFinalPie() {
   `;
 }
 
-function renderProperty(property, index, baseline) {
-  const scale = houseScale(property.value);
-  const share = baseline.shares[index] ?? 0;
-  const tax = baseline.taxes[index] ?? 0;
+function renderControlNeighborhood() {
   return `
-    <article class="tax-roll-property" data-property-card="${index}" style="--property-color: ${escapeHtml(property.color)}; --house-scale: ${scale};">
-      <svg class="tax-roll-house" viewBox="0 0 120 116" aria-hidden="true" focusable="false">
-        <path class="tax-roll-house__shadow" d="M20 104c12 7 68 7 80 0 5-3 5-7 0-10-12-7-68-7-80 0-5 3-5 7 0 10Z"></path>
-        <path class="tax-roll-house__roof" d="M18 54 60 18l42 36H88v42H32V54H18Z"></path>
-        <path class="tax-roll-house__front" d="M36 55h48v42H36z"></path>
-        <path class="tax-roll-house__foundation" d="M34 97h52"></path>
-        <path class="tax-roll-house__door" d="M54 70h13v27H54z"></path>
-        <path class="tax-roll-house__window" d="M72 66h10v10H72zM41 66h10v10H41z"></path>
-      </svg>
-      <p class="tax-roll-property__label"><span class="tax-roll-chip" aria-hidden="true"></span>${escapeHtml(property.label)}</p>
-      <dl class="tax-roll-property__facts">
-        <div>
-          <dt>Assessment</dt>
-          <dd data-property-value>${displayMoney(property.value)}</dd>
-        </div>
-        <div>
-          <dt>Share of Tax Base</dt>
-          <dd data-property-share>${SHARE_FORMAT.format(share * 100)}%</dd>
-        </div>
-        <div>
-          <dt>Tax</dt>
-          <dd data-property-tax>${displayMoney(tax)}</dd>
-        </div>
-      </dl>
-    </article>
-  `;
-}
-
-function renderMobileControlSnapshot(baseline) {
-  const equalShare = baseline.shares[0] ?? 0;
-  const equalTax = baseline.taxes[0] ?? 0;
-  const rows = [
-    ["Each house", displayMoney(PROPERTIES[0].value)],
-    ["Tax-base share", `${SHARE_FORMAT.format(equalShare * 100)}%`],
-    ["Each tax", displayMoney(equalTax)],
-    ["Total value", displayMoney(baseline.total)],
-    ["Budget", displayMoney(baseline.budget)],
-    ["Levy", `${PERCENT_FORMAT.format(baseline.levy * 100)}%`]
-  ];
-
-  return `
-    <div class="tax-roll-control-snapshot" aria-label="Compact control group snapshot">
-      <div class="tax-roll-control-snapshot__houses" aria-label="Ten identical homes">
-        ${PROPERTIES.map((property, index) => `
-          <span class="tax-roll-control-snapshot__house" style="--property-color: ${escapeHtml(property.color)};" aria-label="${escapeHtml(property.label)}">
-            ${renderControlHouseIcon()}
+    <figure class="tax-roll-control-neighborhood" aria-label="Ten-home control neighborhood">
+      <div class="tax-roll-control-neighborhood__grid">
+        ${PROPERTIES.map(property => `
+          <span class="tax-roll-control-home" style="--property-color: ${escapeHtml(property.color)};" aria-label="${escapeHtml(property.label)}, $100,000">
+            <span class="tax-roll-control-home__icon" aria-hidden="true">${renderControlHouseIcon()}</span>
+            <span class="tax-roll-control-home__label">${escapeHtml(property.label.replace(/^House\s+/i, ""))}</span>
+            <span class="tax-roll-control-home__value">$100,000</span>
           </span>
         `).join("")}
       </div>
-      <dl class="tax-roll-control-snapshot__summary">
-        ${rows.map(([label, value]) => `
-          <div>
-            <dt>${escapeHtml(label)}</dt>
-            <dd>${escapeHtml(value)}</dd>
-          </div>
-        `).join("")}
-      </dl>
-    </div>
+    </figure>
+  `;
+}
+
+function renderBaselineTable(baseline) {
+  return `
+    <section class="tax-roll-control-table" aria-labelledby="taxRollControlTableTitle">
+      <div class="tax-roll-control-table__intro">
+        <p class="guided-kicker">System Snapshot</p>
+        <h3 id="taxRollControlTableTitle">Control group baseline</h3>
+      </div>
+      <div class="tax-roll-table-wrap">
+        <table class="tax-roll-result-table tax-roll-result-table--baseline">
+          <colgroup>
+            <col class="tax-roll-result-col--house" />
+            <col class="tax-roll-baseline-col--assessment" />
+            <col class="tax-roll-baseline-col--share" />
+            <col class="tax-roll-baseline-col--tax" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">House</th>
+              <th scope="col">Assessment</th>
+              <th scope="col">Share of Tax Base</th>
+              <th scope="col">Tax</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${PROPERTIES.map((property, index) => `
+              <tr style="--property-color: ${escapeHtml(property.color)}; --row-order: ${index};">
+                <th scope="row">${renderTableHouseIdentity(property)}</th>
+                <td data-label="Assessment">${displayMoney(baseline.values[index])}</td>
+                <td data-label="Share">${SHARE_FORMAT.format(baseline.shares[index] * 100)}%</td>
+                <td data-label="Tax">${displayMoney(baseline.taxes[index])}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+      <p class="tax-roll-control-table__note">These values establish the control group for every experiment that follows. Each home begins with the same value, carries the same share of the tax base, and pays the same amount toward the budget. Everything below changes only one variable at a time.</p>
+    </section>
   `;
 }
 
@@ -645,7 +633,6 @@ function installTaxRollExperiment(root) {
     budgetValue: BASE_BUDGET,
     levyRate: baseline.levy
   };
-  let previousPropertyState = baseline;
 
   root.addEventListener("click", event => {
     const tableToggle = event.target.closest("[data-toggle-result-table]");
@@ -664,13 +651,11 @@ function installTaxRollExperiment(root) {
     window.setTimeout(() => {
       renderLessonResult(root, lesson, scenario, baseline);
       updateMetrics(metricElements, previous, scenario, lesson.budget);
-      updatePropertyCards(root, previousPropertyState, scenario);
       previous = {
         totalValue: scenario.total,
         budgetValue: lesson.budget,
         levyRate: scenario.levy
       };
-      previousPropertyState = scenario;
       const label = button.querySelector("[data-reveal-label]");
       if (label) label.textContent = "Answer Revealed";
       button.disabled = false;
@@ -964,16 +949,6 @@ function updateLevyDirection(element, from, to) {
   direction.classList.add("is-pulsing");
 }
 
-function updatePropertyCards(root, previous, scenario) {
-  root.querySelectorAll("[data-property-card]").forEach(card => {
-    const index = Number(card.dataset.propertyCard);
-    if (!Number.isInteger(index)) return;
-    animateText(card.querySelector("[data-property-value]"), previous.values[index], scenario.values[index], displayMoney);
-    animateText(card.querySelector("[data-property-share]"), previous.shares[index], scenario.shares[index], formatShare);
-    animateText(card.querySelector("[data-property-tax]"), previous.taxes[index], scenario.taxes[index], displayMoney);
-  });
-}
-
 function pulseMetricText(element, from, to) {
   if (!element || Math.abs(Number(to) - Number(from)) < 0.000001) return;
   element.classList.remove("is-pulsing");
@@ -1090,10 +1065,6 @@ function shareClass(value) {
   if (value < -0.015) return "tax-roll-share tax-roll-share--down";
   if (value < -0.0025) return "tax-roll-share tax-roll-share--soft-down";
   return "tax-roll-share";
-}
-
-function houseScale(value) {
-  return "1";
 }
 
 function animateText(element, from, to, formatter) {
@@ -1623,134 +1594,113 @@ function styles() {
       }
     }
 
-    .tax-roll-homes {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      margin-top: clamp(22px, 7vw, 42px);
+    .tax-roll-control-neighborhood {
+      margin: clamp(22px, 5vw, 36px) auto 0;
+      max-width: 736px;
+      width: min(100%, 736px);
     }
 
-    .tax-roll-control-snapshot {
-      display: none;
+    .tax-roll-control-neighborhood__grid {
+      background: linear-gradient(180deg, rgba(218, 231, 210, 0.72), rgba(203, 222, 194, 0.54));
+      border: 1px solid rgba(87, 122, 79, 0.14);
+      border-radius: 12px;
+      display: grid;
+      gap: clamp(0.48rem, 1.8vw, 0.82rem);
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      padding: clamp(0.72rem, 2vw, 1rem);
     }
 
-    .tax-roll-property {
-      background: rgba(255, 255, 255, 0.75);
-      border: 1px solid rgba(36, 59, 68, 0.08);
-      border-top: 3px solid var(--property-color);
-      border-radius: 8px;
+    .tax-roll-control-home {
+      align-items: center;
       display: grid;
-      gap: 6px;
-      min-height: 206px;
-      padding: 10px 10px 9px;
+      gap: 0.18rem;
+      justify-items: center;
+      min-width: 0;
+      padding: 0.12rem 0;
       text-align: center;
     }
 
-    .tax-roll-house {
-      display: block;
-      height: 66px;
-      margin: 0 auto;
-      overflow: visible;
-      transform: scale(var(--house-scale));
-      transform-origin: 50% 100%;
-      width: 66px;
-    }
-
-    .tax-roll-house__shadow {
-      fill: rgba(30, 41, 48, 0.16);
-    }
-
-    .tax-roll-house__roof,
-    .tax-roll-house__foundation {
-      fill: var(--property-color);
-      stroke: var(--property-color);
-    }
-
-    .tax-roll-house__front {
-      fill: color-mix(in srgb, var(--property-color) 12%, #f4f5f3);
-      stroke: rgba(36, 59, 68, 0.12);
-      stroke-width: 1;
-    }
-
-    .tax-roll-house__foundation {
-      fill: none;
-      stroke-linecap: round;
-      stroke-width: 3;
-    }
-
-    .tax-roll-house__door {
-      fill: #f3d6a1;
-    }
-
-    .tax-roll-house__window {
-      fill: #eef7f2;
-      opacity: 0.92;
-    }
-
-    .tax-roll-property__label,
-    .tax-roll-property__facts {
-      margin: 0;
-    }
-
-    .tax-roll-property__label {
+    .tax-roll-control-home__icon {
       align-items: center;
-      color: var(--ges-color-text-muted, #5b6670);
-      display: inline-flex;
-      font-family: "IBM Plex Mono", ui-monospace, monospace;
-      font-size: 0.68rem;
-      font-weight: 850;
-      gap: 6px;
-      justify-content: center;
-      letter-spacing: 0;
-      text-transform: uppercase;
+      display: inline-grid;
+      min-height: clamp(2.2rem, 7vw, 3.15rem);
+      place-items: center;
     }
 
-    .tax-roll-property__facts {
-      border-top: 1px solid rgba(36, 59, 68, 0.13);
-      display: grid;
+    .tax-roll-control-home__icon svg {
+      display: block;
+      fill: var(--property-color);
+      height: clamp(2.08rem, 6.5vw, 3rem);
+      opacity: 0.94;
+      width: clamp(2.22rem, 6.9vw, 3.15rem);
+    }
+
+    .tax-roll-control-home__icon svg path + path {
+      fill: color-mix(in srgb, var(--property-color) 18%, #fff);
+      stroke: rgba(36, 59, 68, 0.16);
+      stroke-width: 0.5;
+    }
+
+    .tax-roll-control-home__label,
+    .tax-roll-control-home__value {
+      color: rgb(var(--ges-color-text));
+      display: block;
       font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
-      text-align: left;
-    }
-
-    .tax-roll-property__facts div {
-      align-items: baseline;
-      border-bottom: 1px solid rgba(36, 59, 68, 0.09);
-      display: grid;
-      gap: 5px;
-      grid-template-columns: minmax(0, 1fr) auto;
-      padding: 6px 0;
-    }
-
-    .tax-roll-property__facts div:last-child {
-      border-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .tax-roll-property__facts dt {
-      color: var(--ges-color-text-muted, #5b6670);
-      font-size: 0.55rem;
-      font-weight: 800;
-      letter-spacing: var(--ges-letter-kicker);
       line-height: 1;
-      margin: 0;
-      text-transform: uppercase;
+      min-width: 0;
     }
 
-    .tax-roll-property__facts dd {
-      color: #243b44;
-      font-size: 0.88rem;
+    .tax-roll-control-home__label {
+      font-size: clamp(0.66rem, 2vw, 0.74rem);
       font-weight: 850;
-      line-height: 1.05;
-      margin: 0;
-      text-align: right;
     }
 
-    .tax-roll-chip {
-      background: var(--property-color);
-      border-radius: 999px;
-      display: inline-block;
-      height: 0.72rem;
-      width: 0.72rem;
+    .tax-roll-control-home__value {
+      color: var(--ges-color-text-muted, #5b6670);
+      font-size: clamp(0.56rem, 1.8vw, 0.64rem);
+      font-weight: 780;
+      white-space: nowrap;
+    }
+
+    .tax-roll-control-table {
+      margin: clamp(22px, 5vw, 34px) auto 0;
+      max-width: 736px;
+      width: min(100%, 736px);
+    }
+
+    .tax-roll-control-table__intro {
+      margin: 0 0 clamp(0.72rem, 2vw, 1rem);
+    }
+
+    .tax-roll-control-table__intro .guided-kicker {
+      margin: 0 0 0.35rem;
+    }
+
+    .tax-roll-control-table__intro h3 {
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: clamp(1.2rem, 3vw, 1.48rem);
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 1.12;
+      margin: 0;
+    }
+
+    .tax-roll-result-table--baseline tr {
+      animation: none;
+    }
+
+    .tax-roll-result-table--baseline td {
+      font-weight: 800;
+    }
+
+    .tax-roll-control-table__note {
+      color: rgb(var(--ges-color-text-muted));
+      font-size: clamp(0.94rem, 2vw, 1rem);
+      line-height: 1.56;
+      margin: clamp(0.82rem, 2vw, 1rem) 0 0;
+      max-width: 68ch;
+      text-indent: 0;
     }
 
     .tax-roll-lesson-grid {
@@ -2232,6 +2182,98 @@ function styles() {
       text-transform: uppercase;
     }
 
+    .tax-roll-result-table--baseline {
+      border-collapse: collapse;
+      display: table;
+      table-layout: fixed;
+    }
+
+    .tax-roll-result-table--baseline thead {
+      display: table-header-group;
+    }
+
+    .tax-roll-result-table--baseline colgroup {
+      display: table-column-group;
+    }
+
+    .tax-roll-result-table--baseline col {
+      display: table-column;
+    }
+
+    .tax-roll-result-table--baseline tbody {
+      display: table-row-group;
+    }
+
+    .tax-roll-result-table--baseline tr {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      display: table-row;
+      padding: 0;
+    }
+
+    .tax-roll-result-table--baseline th,
+    .tax-roll-result-table--baseline td {
+      border-bottom: 1px solid rgba(36, 59, 68, 0.1);
+      display: table-cell;
+      padding: 0.46rem 0.44rem;
+      text-align: right;
+      white-space: normal;
+    }
+
+    .tax-roll-result-table--baseline th:first-child,
+    .tax-roll-result-table--baseline td:first-child {
+      text-align: left;
+    }
+
+    .tax-roll-result-table--baseline thead th {
+      background: #243b44;
+      color: #ffffff;
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: clamp(0.5rem, 1.8vw, 0.62rem);
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 1;
+      padding-block: 0.58rem 0.4rem;
+      text-transform: uppercase;
+      vertical-align: bottom;
+    }
+
+    .tax-roll-result-table--baseline tbody th {
+      display: table-cell;
+      font-weight: 850;
+      min-width: 0;
+    }
+
+    .tax-roll-result-table--baseline td::before {
+      content: none;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-table-house {
+      gap: 0.24rem;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-table-house svg {
+      height: 1rem;
+      width: 1.08rem;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-result-col--house {
+      width: 16%;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-baseline-col--assessment {
+      width: 31%;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-baseline-col--share {
+      width: 27%;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-baseline-col--tax {
+      width: 26%;
+    }
+
     .tax-roll-heat,
     .tax-roll-share {
       font-weight: 850;
@@ -2471,85 +2513,6 @@ function styles() {
     }
 
     @media (max-width: 759px) {
-      .tax-roll-homes {
-        display: none;
-      }
-
-      .tax-roll-control-snapshot {
-        display: grid;
-        gap: 0.8rem;
-        margin-top: clamp(18px, 6vw, 28px);
-      }
-
-      .tax-roll-control-snapshot__houses {
-        background: linear-gradient(180deg, rgba(218, 231, 210, 0.78), rgba(202, 222, 192, 0.62));
-        border: 1px solid rgba(87, 122, 79, 0.16);
-        border-radius: 12px;
-        display: grid;
-        gap: 0.7rem 0.78rem;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        margin-inline: auto;
-        max-width: none;
-        padding: 0.84rem 0.88rem;
-        width: 100%;
-      }
-
-      .tax-roll-control-snapshot__house {
-        align-items: center;
-        display: grid;
-        min-height: 3.05rem;
-        place-items: center;
-      }
-
-      .tax-roll-control-snapshot__house svg {
-        display: block;
-        fill: var(--property-color);
-        height: 2.9rem;
-        opacity: 0.94;
-        width: 3.05rem;
-      }
-
-      .tax-roll-control-snapshot__house svg path + path {
-        fill: color-mix(in srgb, var(--property-color) 18%, #fff);
-        stroke: rgba(36, 59, 68, 0.16);
-        stroke-width: 0.5;
-      }
-
-      .tax-roll-control-snapshot__summary {
-        display: grid;
-        font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
-        margin: 0;
-      }
-
-      .tax-roll-control-snapshot__summary div {
-        align-items: baseline;
-        border-bottom: 1px solid rgba(36, 59, 68, 0.1);
-        display: grid;
-        gap: 0.75rem;
-        grid-template-columns: minmax(0, 1fr) auto;
-        padding: 0.42rem 0;
-      }
-
-      .tax-roll-control-snapshot__summary dt {
-        color: var(--ges-color-text-muted, #5b6670);
-        font-size: 0.7rem;
-        font-weight: 780;
-        letter-spacing: 0;
-        line-height: 1.1;
-        margin: 0;
-      }
-
-      .tax-roll-control-snapshot__summary dd {
-        color: rgb(var(--ges-color-text));
-        font-size: 0.86rem;
-        font-variant-numeric: tabular-nums;
-        font-weight: 850;
-        line-height: 1.1;
-        margin: 0;
-        text-align: right;
-        white-space: nowrap;
-      }
-
       .tax-roll-baseline {
         grid-template-columns: minmax(0, 0.9fr) minmax(0, 0.88fr) minmax(0, 1.22fr);
       }
@@ -2644,7 +2607,7 @@ function styles() {
       }
 
       .tax-roll-table-toggle,
-      .tax-roll-table-wrap {
+      .tax-roll-experiment-card .tax-roll-table-wrap {
         display: none !important;
       }
 
@@ -2695,10 +2658,6 @@ function styles() {
 
       .tax-roll-baseline__hero {
         padding-left: 0.7rem;
-      }
-
-      .tax-roll-homes {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
       }
 
       .tax-roll-lesson-grid {
@@ -2764,6 +2723,12 @@ function styles() {
       .tax-roll-result-col--tax,
       .tax-roll-result-col--tax-change {
         width: 16%;
+      }
+
+      .tax-roll-baseline-col--assessment,
+      .tax-roll-baseline-col--share,
+      .tax-roll-baseline-col--tax {
+        width: 29%;
       }
 
       .tax-roll-result-table thead {
