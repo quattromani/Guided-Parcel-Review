@@ -12303,7 +12303,7 @@ html[data-ges-theme-resolved="dark"].article-shell-route .ges-evidence-source {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.42);
   display: grid;
   justify-self: center;
-  margin: clamp(1.25rem, 3vw, 2.125rem) calc(50% - 50vw) clamp(2rem, 5vw, 3rem);
+  margin: clamp(1.25rem, 3vw, 2.125rem) calc(50% - 50vw) 0;
   padding: clamp(3.5rem, 6vw, 4.5rem) max(1rem, calc((100vw - 64rem) / 2));
   width: 100vw;
 }

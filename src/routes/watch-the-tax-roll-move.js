@@ -29,7 +29,8 @@ const ARTICLE = {
     heroImage: "assets/images/articles/watch-the-tax-roll-move-hero-16x9.jpg",
     heroImageAlt: "Aerial view of homes, lawns, trees, and a neighborhood street intersection.",
     heroImageCredit: "Photo by Kelly on Pexels.",
-    heroImageSource: "https://www.pexels.com/"
+    heroImageSource: "https://www.pexels.com/",
+    printableGuidePdf: "assets/guides/watch-the-tax-roll-move.pdf"
   },
   resourcesBlock: {
     title: "Resources and authorities",
@@ -322,6 +323,8 @@ function renderEntryPanel() {
     authorTitle: ARTICLE.authorTitle,
     displayDate: ARTICLE.displayDate,
     icon: editorialIcon,
+    printableLabel: "Print Version",
+    printableUrl: ARTICLE.assets.printableGuidePdf,
     readingMinutes: ARTICLE.readingMinutes,
     wordCount: ARTICLE.wordCount,
     lengthLabel: ARTICLE.lengthLabel
@@ -634,6 +637,18 @@ function installTaxRollExperiment(root) {
     levyRate: baseline.levy
   };
 
+  if (shouldRevealForPrint()) {
+    LESSONS.forEach(lesson => {
+      const scenario = calculate(lesson.values().map(roundDollar), lesson.budget);
+      renderLessonResult(root, lesson, scenario, baseline);
+      const button = root.querySelector(`[data-run-lesson="${lesson.id}"]`);
+      const label = button?.querySelector("[data-reveal-label]");
+      button?.classList.add("is-active");
+      button?.setAttribute("aria-disabled", "true");
+      if (label) label.textContent = "Answer Revealed";
+    });
+  }
+
   root.addEventListener("click", event => {
     const tableToggle = event.target.closest("[data-toggle-result-table]");
     if (tableToggle && root.contains(tableToggle)) {
@@ -664,6 +679,11 @@ function installTaxRollExperiment(root) {
     }, 180);
     button.classList.add("is-active");
   });
+}
+
+function shouldRevealForPrint() {
+  const params = new URLSearchParams(window.location.search);
+  return params.has("print") || params.has("pdf");
 }
 
 function toggleMobileResultTable(button) {
@@ -1276,7 +1296,7 @@ function styles() {
       column-gap: 0.7rem;
       display: flex;
       margin: clamp(16px, 3vw, 22px) auto -0.55rem;
-      max-width: min(100%, 42rem);
+      max-width: min(100%, 58rem);
       padding: 0.48rem 0.72rem;
       position: relative;
       width: fit-content;
@@ -1292,7 +1312,7 @@ function styles() {
     .tax-roll-experiment-setup p {
       align-items: center;
       align-self: stretch;
-      background: rgba(116, 143, 95, 0.15);
+      background: linear-gradient(180deg, rgba(218, 231, 210, 0.72), rgba(203, 222, 194, 0.54));
       border-radius: 999px 0 0 999px;
       border-right: 1px solid rgba(36, 59, 68, 0.14);
       color: rgb(var(--ges-color-text));
@@ -1361,13 +1381,21 @@ function styles() {
     }
 
     .tax-roll-experiment-setup__group--assessment dd {
-      align-items: start;
-      display: grid;
-      gap: 0.18rem;
+      align-items: center;
+      display: inline-flex;
+      gap: 0.58rem;
+      white-space: nowrap;
     }
 
     .tax-roll-experiment-setup__group--assessment dd > span {
-      justify-content: space-between;
+      justify-content: flex-start;
+    }
+
+    .tax-roll-experiment-setup__group--assessment dd > span + span::before {
+      color: rgba(36, 59, 68, 0.46);
+      content: "•";
+      font-weight: 900;
+      margin-right: 0.28rem;
     }
 
     .tax-roll-experiment-setup dd > span > span:first-child {
@@ -2421,6 +2449,10 @@ function styles() {
       width: var(--tax-roll-reading-shell-width);
     }
 
+    .levy-compression-page > .ges-resources-block:last-child {
+      margin-bottom: 0;
+    }
+
     .tax-roll-experiment > .tax-roll-final.tax-story-chapter::before {
       background:
         linear-gradient(
@@ -2569,6 +2601,21 @@ function styles() {
         border-left: 0;
         border-top: 1px solid rgba(36, 59, 68, 0.11);
         padding-top: 0.36rem;
+      }
+
+      .tax-roll-experiment-setup__group--assessment dd {
+        align-items: start;
+        display: grid;
+        gap: 0.18rem;
+        white-space: normal;
+      }
+
+      .tax-roll-experiment-setup__group--assessment dd > span {
+        justify-content: space-between;
+      }
+
+      .tax-roll-experiment-setup__group--assessment dd > span + span::before {
+        content: none;
       }
 
       .tax-roll-experiment-card:not(.is-revealed) {

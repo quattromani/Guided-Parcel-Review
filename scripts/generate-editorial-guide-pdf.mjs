@@ -15,6 +15,11 @@ const DEFAULT_TARGETS = [
     name: "protest-paradox",
     out: "assets/guides/assessment-up-protest-denied-taxes.pdf",
     path: "/articles/assessment-up-protest-denied-taxes/"
+  },
+  {
+    name: "watch-the-tax-roll-move",
+    out: "assets/guides/watch-the-tax-roll-move.pdf",
+    path: "/articles/watch-the-tax-roll-move/?print=1"
   }
 ];
 
