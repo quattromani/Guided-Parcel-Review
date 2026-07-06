@@ -625,6 +625,62 @@ export function renderResourcesBlock(block, options = {}) {
   `;
 }
 
+export function renderAdministrativeReference(block, options = {}) {
+  return renderResourcesBlock(block, {
+    id: options.id,
+    headingLevel: options.headingLevel,
+    references: options.references,
+    className: ["ges-administrative-reference-zone", options.className].filter(Boolean).join(" ")
+  });
+}
+
+function normalizeTableCell(cell) {
+  if (cell && typeof cell === "object") return cell;
+  return { value: cell };
+}
+
+export function renderCivicDataTable(table = {}, options = {}) {
+  const columns = Array.isArray(table.columns) ? table.columns : [];
+  const rows = Array.isArray(table.rows) ? table.rows : [];
+  if (!columns.length || !rows.length) return "";
+
+  const caption = table.caption ?? options.caption ?? "";
+  const classes = ["ges-civic-data-table", table.variant ? `ges-civic-data-table--${slugValue(table.variant)}` : "", options.className, table.className].filter(Boolean).join(" ");
+
+  return `
+    <div class="ges-civic-data-table-wrap">
+      <table class="${escapeHtml(classes)}">
+        ${caption ? `<caption>${escapeHtml(caption)}</caption>` : ""}
+        <thead>
+          <tr>
+            ${columns.map(column => `<th scope="col">${escapeHtml(column.label ?? column.key ?? "")}</th>`).join("")}
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(row => `
+            <tr>
+              ${columns.map((column, index) => {
+                const key = column.key ?? index;
+                const cell = normalizeTableCell(Array.isArray(row) ? row[index] : row[key]);
+                const value = cell.value ?? "";
+                const label = column.shortLabel ?? column.label ?? column.key ?? "";
+                const attributes = [
+                  `data-label="${escapeHtml(label)}"`,
+                  cell.tone ? `data-tone="${escapeHtml(cell.tone)}"` : "",
+                  cell.className ? `class="${escapeHtml(cell.className)}"` : ""
+                ].filter(Boolean).join(" ");
+                const tag = index === 0 ? "th" : "td";
+                const scope = index === 0 ? ' scope="row"' : "";
+                return `<${tag}${scope} ${attributes}>${escapeHtml(value)}</${tag}>`;
+              }).join("")}
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
 export function renderSectionHeader(kicker, title, id, options = {}) {
   const companion = options.companion ? `<p class="ges-section-companion">${escapeHtml(options.companion)}</p>` : "";
   const insight = hasMarginInsightCompanionText(options)

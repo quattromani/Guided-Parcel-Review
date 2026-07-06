@@ -4445,3 +4445,132 @@ html[data-ges-theme-resolved="dark"] .evidence-matrix--translation .evidence-pat
     grid-template-columns: 1fr;
   }
 }
+
+.ges-civic-data-table-wrap {
+  margin-block: var(--ges-component-space);
+  max-width: 100%;
+}
+
+.ges-civic-data-table {
+  border-collapse: collapse;
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-sm);
+  inline-size: 100%;
+  line-height: var(--ges-line-compact);
+  table-layout: fixed;
+}
+
+.ges-civic-data-table caption {
+  color: rgb(var(--ges-color-text-secondary));
+  font-family: var(--ges-font-heading);
+  font-size: var(--ges-type-sm);
+  font-weight: var(--ges-weight-semibold);
+  line-height: var(--ges-line-compact);
+  margin-block-end: var(--ges-space-xs);
+  text-align: left;
+}
+
+.ges-civic-data-table th,
+.ges-civic-data-table td {
+  border-block-end: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  padding: var(--ges-space-xs) var(--ges-space-sm);
+  text-align: right;
+  vertical-align: top;
+}
+
+.ges-civic-data-table th:first-child,
+.ges-civic-data-table td:first-child {
+  text-align: left;
+}
+
+.ges-civic-data-table thead th {
+  background: rgb(var(--ges-color-text));
+  color: rgb(var(--ges-color-page));
+  font-family: var(--ges-font-heading);
+  font-size: var(--ges-type-xs);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: var(--ges-letter-label);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.ges-civic-data-table tbody th {
+  color: rgb(var(--ges-color-text));
+  font-weight: var(--ges-weight-bold);
+}
+
+.ges-civic-data-table [data-tone="positive"] {
+  background: rgb(var(--ges-color-success-soft));
+  color: rgb(var(--ges-color-success));
+  font-weight: var(--ges-weight-bold);
+}
+
+.ges-civic-data-table [data-tone="caution"] {
+  background: rgb(var(--ges-color-caution-soft));
+  color: rgb(var(--ges-color-caution));
+  font-weight: var(--ges-weight-bold);
+}
+
+.ges-civic-data-table [data-tone="negative"] {
+  background: rgb(var(--ges-color-error-soft));
+  color: rgb(var(--ges-color-error));
+  font-weight: var(--ges-weight-bold);
+}
+
+@media (max-width: 47.9375rem) {
+  .ges-civic-data-table,
+  .ges-civic-data-table thead,
+  .ges-civic-data-table tbody,
+  .ges-civic-data-table tr,
+  .ges-civic-data-table th,
+  .ges-civic-data-table td {
+    display: block;
+  }
+
+  .ges-civic-data-table thead {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    block-size: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    inline-size: 1px;
+  }
+
+  .ges-civic-data-table tbody {
+    display: grid;
+    gap: var(--ges-space-sm);
+  }
+
+  .ges-civic-data-table tr {
+    background: rgb(var(--ges-color-surface));
+    border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+    border-radius: var(--ges-radius-md);
+    box-shadow: var(--ges-shadow-surface);
+    padding: var(--ges-space-sm);
+  }
+
+  .ges-civic-data-table th,
+  .ges-civic-data-table td {
+    align-items: start;
+    border: 0;
+    display: grid;
+    gap: var(--ges-space-xs);
+    grid-template-columns: minmax(6.5rem, 0.7fr) minmax(0, 1fr);
+    padding: var(--ges-space-2xs) 0;
+    text-align: right;
+  }
+
+  .ges-civic-data-table th::before,
+  .ges-civic-data-table td::before {
+    color: rgb(var(--ges-color-text-muted));
+    content: attr(data-label);
+    font-family: var(--ges-font-mono);
+    font-size: var(--ges-type-2xs);
+    font-weight: var(--ges-weight-bold);
+    line-height: var(--ges-line-compact);
+    text-align: left;
+    text-transform: uppercase;
+  }
+}

@@ -1,0 +1,1781 @@
+    .watch-tax-roll-route .ges-public-main {
+      max-width: min(1120px, calc(100vw - 24px));
+    }
+
+    .tax-roll-article {
+      --tax-roll-reading-shell-width: min(100%, var(--ges-width-reading, 46rem));
+    }
+
+    .tax-roll-sr-only {
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      height: 1px;
+      overflow: hidden;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
+    }
+
+    .tax-roll-intro,
+    .tax-roll-neighborhood,
+    .tax-roll-lesson,
+    .tax-roll-final {
+      margin: 0 auto;
+      max-width: 780px;
+    }
+
+    .tax-roll-neighborhood {
+      max-width: 1040px;
+      width: 100%;
+    }
+
+    .tax-roll-lesson {
+      max-width: 1040px;
+      width: 100%;
+    }
+
+    .tax-roll-neighborhood > .tax-article-header,
+    .tax-roll-neighborhood > p {
+      max-width: 780px;
+    }
+
+    .tax-roll-intro {
+      padding-bottom: clamp(28px, 8vw, 58px);
+    }
+
+    .tax-roll-intro .ges-section-lead > p.prose,
+    .tax-roll-neighborhood > p.prose,
+    .tax-roll-scenario-copy > p.prose,
+    .tax-roll-explanation-block p.prose {
+      margin: 0;
+      max-width: 68ch;
+    }
+
+    .tax-roll-experiment {
+      margin: 0 auto;
+      max-width: 1040px;
+    }
+
+    html.watch-tax-roll-route,
+    html.watch-tax-roll-route body {
+      overflow-x: clip;
+      overflow-y: visible;
+    }
+
+    .tax-roll-article {
+      overflow: visible;
+    }
+
+    .tax-roll-neighborhood,
+    .tax-roll-lesson,
+    .tax-roll-final {
+      border-top: 1px solid rgba(36, 59, 68, 0.11);
+      padding: clamp(44px, 10vw, 72px) 0;
+    }
+
+    .tax-roll-neighborhood {
+      padding-bottom: clamp(24px, 6vw, 44px);
+    }
+
+    .tax-roll-lesson-bridge {
+      align-items: center;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(47, 115, 163, 0.24);
+      border-radius: 16px;
+      box-shadow: 0 0.85rem 2.2rem rgba(36, 59, 68, 0.055);
+      color: rgb(var(--ges-color-text));
+      column-gap: clamp(14px, 3vw, 20px);
+      display: grid;
+      font-family: var(--ges-font-heading);
+      grid-template-columns: auto minmax(0, 1fr);
+      line-height: 1.42;
+      margin: clamp(22px, 4vw, 34px) auto 0;
+      max-width: min(100%, 42rem);
+      opacity: 0;
+      padding: clamp(16px, 3vw, 22px);
+      position: relative;
+      transform: translateY(8px);
+      transition: opacity 320ms ease, transform 320ms ease;
+    }
+
+    .tax-roll-lesson-bridge[hidden] {
+      display: none;
+    }
+
+    .tax-roll-lesson-bridge.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tax-roll-lesson-bridge::before,
+    .tax-roll-lesson-bridge::after {
+      background: rgba(47, 115, 163, 0.28);
+      content: "";
+      display: block;
+      inline-size: 1px;
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+    }
+
+    .tax-roll-lesson-bridge::before {
+      block-size: calc(clamp(22px, 4vw, 34px) + 2px);
+      bottom: 100%;
+    }
+
+    .tax-roll-lesson-bridge::after {
+      block-size: clamp(30px, 6vw, 56px);
+      top: 100%;
+    }
+
+    .tax-roll-lesson-bridge__icon {
+      align-items: center;
+      background: #2f73a3;
+      border-radius: 999px;
+      color: #fff;
+      display: inline-flex;
+      height: clamp(2.45rem, 5vw, 3rem);
+      justify-content: center;
+      width: clamp(2.45rem, 5vw, 3rem);
+    }
+
+    .tax-roll-lesson-bridge__icon svg {
+      display: block;
+      height: 1.25rem;
+      width: 1.25rem;
+    }
+
+    .tax-roll-lesson-bridge__icon path {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+
+    .tax-roll-lesson-bridge__copy {
+      display: grid;
+      gap: 0.24rem;
+    }
+
+    .tax-roll-lesson-bridge__copy strong,
+    .tax-roll-lesson-bridge__copy span {
+      margin: 0;
+    }
+
+    .tax-roll-lesson-bridge__copy strong {
+      color: #245c92;
+      font-size: clamp(0.98rem, 2vw, 1.08rem);
+      font-weight: var(--ges-weight-heavy);
+    }
+
+    .tax-roll-lesson-bridge__copy span {
+      color: var(--ges-color-text-muted, #5b6670);
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(0.93rem, 1.7vw, 1rem);
+      font-weight: 650;
+    }
+
+    .tax-roll-budget-transition {
+      margin-block: clamp(2.5rem, 5vw, 4rem) clamp(2.2rem, 4vw, 3rem);
+      max-width: min(42rem, 88vw);
+      padding-block-start: clamp(1.2rem, 2.5vw, 1.8rem);
+    }
+
+    .tax-roll-budget-transition::before {
+      margin-inline: 0 auto;
+    }
+
+    .tax-roll-budget-transition p {
+      color: rgb(var(--ges-color-text));
+      text-align: left;
+    }
+
+    .tax-roll-budget-transition-rule {
+      border: 0;
+      border-top: 1px solid rgba(36, 59, 68, 0.11);
+      margin: 0 auto;
+      max-width: 1040px;
+      width: 100%;
+    }
+
+    .tax-roll-budget-transition-rule + .tax-roll-lesson {
+      border-top: 0;
+    }
+
+    .tax-roll-lesson > .tax-article-header {
+      max-width: 780px;
+    }
+
+    .tax-roll-experiment-setup {
+      align-items: center;
+      background: rgb(var(--ges-color-page) / 0.96);
+      border: 1px solid rgba(36, 59, 68, 0.11);
+      border-radius: 999px;
+      box-shadow: 0 0.45rem 1.1rem rgba(36, 59, 68, 0.045);
+      column-gap: 0.7rem;
+      display: flex;
+      margin: clamp(16px, 3vw, 22px) auto -0.55rem;
+      max-width: min(100%, 58rem);
+      padding: 0.48rem 0.72rem;
+      position: relative;
+      width: fit-content;
+      z-index: 2;
+    }
+
+    .tax-roll-experiment-setup p,
+    .tax-roll-experiment-setup dt,
+    .tax-roll-experiment-setup dd {
+      margin: 0;
+    }
+
+    .tax-roll-experiment-setup p {
+      align-items: center;
+      align-self: stretch;
+      background: linear-gradient(180deg, rgba(218, 231, 210, 0.72), rgba(203, 222, 194, 0.54));
+      border-radius: 999px 0 0 999px;
+      border-right: 1px solid rgba(36, 59, 68, 0.14);
+      color: rgb(var(--ges-color-text));
+      display: inline-flex;
+      font-family: var(--ges-font-heading);
+      font-size: 0.68rem;
+      font-weight: var(--ges-weight-heavy);
+      letter-spacing: 0.08em;
+      line-height: 1;
+      margin: -0.48rem 0 -0.48rem -0.72rem;
+      padding: 0 0.82rem;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tax-roll-experiment-setup__conditions {
+      align-items: stretch;
+      display: grid;
+      grid-template-columns: minmax(0, auto) minmax(0, auto);
+      min-width: 0;
+    }
+
+    .tax-roll-experiment-setup__group {
+      align-items: center;
+      display: grid;
+      gap: 0.45rem;
+      grid-template-columns: auto minmax(0, 1fr);
+      min-width: 0;
+      padding-inline: 0.72rem;
+    }
+
+    .tax-roll-experiment-setup__group + .tax-roll-experiment-setup__group {
+      border-left: 1px solid rgba(36, 59, 68, 0.15);
+    }
+
+    .tax-roll-experiment-setup dt {
+      align-self: center;
+      color: var(--ges-color-text-muted, #5b6670);
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: 0.7rem;
+      font-weight: 820;
+      letter-spacing: 0;
+      line-height: 1.1;
+    }
+
+    .tax-roll-experiment-setup dd {
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: 0.78rem;
+      font-weight: 850;
+      line-height: 1.05;
+    }
+
+    .tax-roll-experiment-setup dd,
+    .tax-roll-experiment-setup dd > span,
+    .tax-roll-experiment-setup dd strong {
+      align-items: center;
+      display: inline-flex;
+      gap: 0.3rem;
+      min-width: 0;
+    }
+
+    .tax-roll-experiment-setup dd {
+      flex-wrap: wrap;
+      row-gap: 0.2rem;
+    }
+
+    .tax-roll-experiment-setup__group--assessment dd {
+      align-items: center;
+      display: inline-flex;
+      gap: 0.58rem;
+      white-space: nowrap;
+    }
+
+    .tax-roll-experiment-setup__group--assessment dd > span {
+      justify-content: flex-start;
+    }
+
+    .tax-roll-experiment-setup__group--assessment dd > span + span::before {
+      color: rgba(36, 59, 68, 0.46);
+      content: "•";
+      font-weight: 900;
+      margin-right: 0.28rem;
+    }
+
+    .tax-roll-experiment-setup dd > span > span:first-child {
+      color: var(--ges-color-text-muted, #5b6670);
+      font-weight: 740;
+      white-space: nowrap;
+    }
+
+    .tax-roll-experiment-setup dd strong {
+      color: rgb(var(--ges-color-text));
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .tax-roll-setup-arrow {
+      color: rgb(var(--ges-color-civic-blue));
+      font-size: 0.9em;
+      line-height: 1;
+    }
+
+    .tax-roll-experiment-card {
+      background: #fff;
+      border: 1px solid rgba(36, 59, 68, 0.1);
+      border-radius: 16px;
+      box-shadow: 0 1rem 2.6rem rgba(36, 59, 68, 0.075);
+      margin-top: 0;
+      padding: clamp(18px, 4vw, 32px);
+      transition: box-shadow 280ms ease, transform 280ms ease;
+    }
+
+    .tax-roll-experiment-card.is-revealed {
+      box-shadow: 0 1.1rem 2.8rem rgba(36, 59, 68, 0.09);
+    }
+
+    .tax-roll-baseline-shell {
+      margin: clamp(18px, 5vw, 36px) 0 clamp(22px, 5vw, 40px);
+    }
+
+    .tax-roll-baseline-intro {
+      margin: 0 0 clamp(14px, 3vw, 22px);
+      max-width: 46rem;
+    }
+
+    .tax-roll-baseline-intro .guided-kicker {
+      margin: 0 0 0.45rem;
+    }
+
+    .tax-roll-baseline-intro .prose {
+      color: rgb(var(--ges-color-text-muted));
+      font-size: 1rem;
+      line-height: 1.58;
+      margin: 0;
+      max-width: 66ch;
+      text-indent: 0;
+    }
+
+    .tax-roll-baseline {
+      --tax-roll-sticky-top: calc(var(--gpr-global-header-height, 3.35rem) + 0.35rem);
+      backdrop-filter: blur(18px);
+      background: rgb(var(--ges-color-page) / 0.94);
+      border: 1px solid rgba(36, 59, 68, 0.12);
+      border-radius: 12px;
+      box-shadow: 0 0.7rem 1.8rem rgba(36, 59, 68, 0.06);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr) minmax(0, 1.08fr);
+      gap: 0;
+      margin: 0;
+      position: sticky;
+      top: var(--tax-roll-sticky-top);
+      z-index: 30;
+    }
+
+    .tax-roll-baseline-shell.is-fixed .tax-roll-baseline {
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 0.72rem 1.4rem rgba(36, 59, 68, 0.12);
+      inline-size: var(--tax-roll-sticky-width);
+      inset-block-start: var(--tax-roll-sticky-top);
+      inset-inline-start: var(--tax-roll-sticky-left);
+      position: fixed;
+      z-index: 80;
+    }
+
+    .tax-roll-baseline-shell.is-fixed .tax-roll-baseline div {
+      padding-block: 0.42rem 0.48rem;
+    }
+
+    .tax-roll-baseline-shell.is-fixed .tax-roll-baseline dt {
+      font-size: clamp(0.48rem, 1.35vw, 0.58rem);
+    }
+
+    .tax-roll-baseline-shell.is-fixed .tax-roll-baseline dd {
+      font-size: clamp(0.92rem, 4vw, 1.18rem);
+    }
+
+    .tax-roll-baseline-shell.is-fixed .tax-roll-baseline__hero dd {
+      font-size: clamp(1.08rem, 4.8vw, 1.42rem);
+    }
+
+    .tax-roll-baseline div {
+      display: grid;
+      gap: 0.16rem;
+      min-width: 0;
+      padding: 0.62rem 0.86rem 0.68rem;
+      position: relative;
+    }
+
+    .tax-roll-baseline div:not(:last-child) {
+      border-right: 1px solid rgba(36, 59, 68, 0.1);
+    }
+
+    .tax-roll-baseline div:nth-child(1)::after,
+    .tax-roll-baseline div:nth-child(2)::after {
+      background: linear-gradient(90deg, rgba(47, 115, 163, 0.18), rgba(47, 115, 163, 0));
+      block-size: 1px;
+      bottom: 0.42rem;
+      content: "";
+      inline-size: 36%;
+      opacity: 0.7;
+      position: absolute;
+      right: 0.65rem;
+    }
+
+    .tax-roll-baseline__hero::after {
+      background: rgba(47, 115, 163, 0.18);
+      block-size: 54%;
+      bottom: -1px;
+      content: "";
+      inline-size: 1px;
+      left: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+    }
+
+    .tax-roll-baseline dt {
+      color: var(--ges-color-text-muted, #5b6670);
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: clamp(0.5rem, 1.5vw, 0.64rem);
+      font-weight: 750;
+      letter-spacing: 0;
+      line-height: 1.05;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tax-roll-baseline dd {
+      color: #243b44;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(0.95rem, 4.6vw, 1.32rem);
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 1;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tax-roll-baseline__hero {
+      background: linear-gradient(180deg, rgba(47, 115, 163, 0.12), rgba(47, 115, 163, 0.065));
+      box-shadow: inset 0 3px 0 rgba(47, 115, 163, 0.42);
+    }
+
+    .tax-roll-baseline__hero dd {
+      color: #1f5578;
+      font-size: clamp(1.12rem, 5.5vw, 1.6rem);
+    }
+
+    .tax-roll-levy-metric {
+      align-items: center;
+      display: grid;
+      gap: 0.35rem;
+      grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr);
+      min-width: 0;
+    }
+
+    .tax-roll-levy-direction,
+    .tax-roll-levy-number {
+      display: inline-block;
+      min-width: 0;
+    }
+
+    .tax-roll-levy-direction {
+      color: rgba(36, 59, 68, 0.52);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .tax-roll-levy-direction.is-up {
+      color: #956a20;
+    }
+
+    .tax-roll-levy-direction.is-down {
+      color: #4f8061;
+    }
+
+    .tax-roll-levy-number {
+      overflow: visible;
+      text-align: right;
+    }
+
+    .tax-roll-baseline dd.is-pulsing {
+      animation: taxRollMetricTextPulse 520ms ease;
+      transform-origin: left center;
+      will-change: transform;
+    }
+
+    .tax-roll-levy-direction.is-pulsing {
+      animation: taxRollMetricTextPulse 520ms ease;
+      transform-origin: center;
+      will-change: transform;
+    }
+
+    @keyframes taxRollMetricTextPulse {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      42% {
+        transform: scale(1.08);
+      }
+    }
+
+    .tax-roll-control-neighborhood {
+      margin: clamp(22px, 5vw, 36px) auto 0;
+      max-width: 736px;
+      width: min(100%, 736px);
+    }
+
+    .tax-roll-control-neighborhood__grid {
+      background: linear-gradient(180deg, rgba(218, 231, 210, 0.72), rgba(203, 222, 194, 0.54));
+      border: 1px solid rgba(87, 122, 79, 0.14);
+      border-radius: 12px;
+      display: grid;
+      gap: clamp(0.48rem, 1.8vw, 0.82rem);
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      padding: clamp(0.72rem, 2vw, 1rem);
+    }
+
+    .tax-roll-control-home {
+      align-items: center;
+      display: grid;
+      gap: 0.18rem;
+      justify-items: center;
+      min-width: 0;
+      padding: 0.12rem 0;
+      text-align: center;
+    }
+
+    .tax-roll-control-home__icon {
+      align-items: center;
+      display: inline-grid;
+      min-height: clamp(2.2rem, 7vw, 3.15rem);
+      place-items: center;
+    }
+
+    .tax-roll-control-home__icon svg {
+      display: block;
+      fill: var(--property-color);
+      height: clamp(2.08rem, 6.5vw, 3rem);
+      opacity: 0.94;
+      width: clamp(2.22rem, 6.9vw, 3.15rem);
+    }
+
+    .tax-roll-control-home__icon svg path + path {
+      fill: color-mix(in srgb, var(--property-color) 18%, #fff);
+      stroke: rgba(36, 59, 68, 0.16);
+      stroke-width: 0.5;
+    }
+
+    .tax-roll-control-home__label,
+    .tax-roll-control-home__value {
+      color: rgb(var(--ges-color-text));
+      display: block;
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      line-height: 1;
+      min-width: 0;
+    }
+
+    .tax-roll-control-home__label {
+      font-size: clamp(0.66rem, 2vw, 0.74rem);
+      font-weight: 850;
+    }
+
+    .tax-roll-control-home__value {
+      color: var(--ges-color-text-muted, #5b6670);
+      font-size: clamp(0.56rem, 1.8vw, 0.64rem);
+      font-weight: 780;
+      white-space: nowrap;
+    }
+
+    .tax-roll-control-table {
+      margin: clamp(22px, 5vw, 34px) auto 0;
+      max-width: 736px;
+      width: min(100%, 736px);
+    }
+
+    .tax-roll-control-table__intro {
+      margin: 0 0 clamp(0.72rem, 2vw, 1rem);
+    }
+
+    .tax-roll-control-table__intro .guided-kicker {
+      margin: 0 0 0.35rem;
+    }
+
+    .tax-roll-control-table__intro h3 {
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: clamp(1.2rem, 3vw, 1.48rem);
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 1.12;
+      margin: 0;
+    }
+
+    .tax-roll-result-table--baseline tr {
+      animation: none;
+    }
+
+    .tax-roll-result-table--baseline td {
+      font-weight: 800;
+    }
+
+    .tax-roll-control-table__note {
+      color: rgb(var(--ges-color-text-muted));
+      font-size: clamp(0.94rem, 2vw, 1rem);
+      line-height: 1.56;
+      margin: clamp(0.82rem, 2vw, 1rem) 0 0;
+      max-width: 68ch;
+      text-indent: 0;
+    }
+
+    .tax-roll-lesson-grid {
+      display: grid;
+      gap: clamp(24px, 6vw, 36px);
+    }
+
+    .tax-roll-scenario-copy {
+      max-width: 780px;
+    }
+
+    .tax-roll-scenario-copy > p.prose,
+    .levy-compression-page .tax-roll-scenario-copy > p.prose,
+    .levy-compression-page .tax-roll-scenario-copy > p.prose + p.prose {
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      text-indent: 0;
+    }
+
+    .tax-roll-reveal {
+      align-items: center;
+      background: #243b44;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-size: 0.98rem;
+      font-weight: 800;
+      gap: 0.52rem;
+      justify-content: center;
+      letter-spacing: 0;
+      margin-top: clamp(18px, 5vw, 26px);
+      padding: 0.78rem 1.05rem;
+      transition: background-color 180ms ease, transform 180ms ease;
+      width: auto;
+    }
+
+    .tax-roll-reveal:hover {
+      transform: translateY(-1px);
+    }
+
+    .tax-roll-reveal.is-active {
+      background: #2f73a3;
+    }
+
+    .tax-roll-reveal:disabled {
+      cursor: wait;
+      opacity: 0.86;
+    }
+
+    .tax-roll-reveal.is-loading {
+      transform: translateY(0);
+    }
+
+    .tax-roll-reveal__icon {
+      display: inline-grid;
+      height: 1rem;
+      place-items: center;
+      position: relative;
+      width: 1rem;
+    }
+
+    .tax-roll-reveal__icon-state {
+      grid-area: 1 / 1;
+      height: 1rem;
+      transition: opacity 180ms ease, transform 180ms ease;
+      width: 1rem;
+    }
+
+    .tax-roll-reveal__icon-state path {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2.4;
+    }
+
+    .tax-roll-reveal__icon-state--chevron {
+      opacity: 1;
+      transform: rotate(90deg) scale(1);
+    }
+
+    .tax-roll-reveal__icon-state--check {
+      opacity: 0;
+      transform: translateX(-0.18rem) scale(0.72);
+    }
+
+    .tax-roll-reveal.is-active .tax-roll-reveal__icon-state--chevron {
+      opacity: 0;
+      transform: rotate(90deg) translateX(0.18rem) scale(0.72);
+    }
+
+    .tax-roll-reveal.is-active .tax-roll-reveal__icon-state--check {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+
+    .tax-roll-result-column {
+      margin-top: 0;
+    }
+
+    .tax-roll-scenario-copy > .ges-margin-insight {
+      inset: auto;
+      margin-top: 0;
+      position: relative;
+      transform: translateY(0);
+      transition: opacity 260ms ease, transform 260ms ease;
+      width: min(100%, 18rem);
+    }
+
+    .tax-roll-experiment-card.is-revealed .tax-roll-scenario-copy > .ges-margin-insight {
+      transform: translateY(-2px);
+    }
+
+    .tax-roll-result-shell {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 280ms ease, transform 280ms ease;
+    }
+
+    .tax-roll-result-shell--pending {
+      opacity: 0.74;
+    }
+
+    .tax-roll-result-shell.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tax-roll-answer {
+      margin-top: clamp(18px, 5vw, 28px);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 280ms ease, transform 280ms ease;
+    }
+
+    .tax-roll-answer.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tax-roll-answer-kicker {
+      margin: clamp(0.9rem, 2vw, 1.15rem) 0 0.28rem;
+    }
+
+    .tax-roll-answer .tax-roll-result-title {
+      color: rgb(var(--ges-color-text));
+      font-family: var(--levy-heading-font);
+      font-size: var(--ges-type-xl);
+      font-weight: 650;
+      line-height: var(--ges-line-tight);
+      margin: 0;
+    }
+
+    .tax-roll-table-toggle {
+      align-items: center;
+      appearance: none;
+      background: rgba(36, 59, 68, 0.06);
+      border: 1px solid rgba(36, 59, 68, 0.12);
+      border-radius: 8px;
+      color: rgb(var(--ges-color-text));
+      cursor: pointer;
+      display: inline-flex;
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: 0.92rem;
+      font-weight: 780;
+      gap: 0.5rem;
+      justify-content: space-between;
+      line-height: 1.2;
+      padding: 0.72rem 0.82rem;
+      width: 100%;
+    }
+
+    .tax-roll-table-toggle svg {
+      flex: 0 0 auto;
+      height: 1rem;
+      transition: transform 180ms ease;
+      width: 1rem;
+    }
+
+    .tax-roll-table-toggle path {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2.3;
+    }
+
+    .tax-roll-result-shell.is-table-open .tax-roll-table-toggle svg {
+      transform: rotate(180deg);
+    }
+
+    .tax-roll-mobile-outcome {
+      display: none;
+    }
+
+    .tax-roll-mobile-outcome-card {
+      display: grid;
+      gap: 0.62rem;
+    }
+
+    .tax-roll-mobile-outcome-card h3 {
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: 1rem;
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 1.15;
+      margin: 0;
+    }
+
+    .tax-roll-mobile-outcome-table {
+      border: 1px solid rgba(36, 59, 68, 0.13);
+      border-collapse: collapse;
+      border-spacing: 0;
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-variant-numeric: tabular-nums;
+      inline-size: 100%;
+      table-layout: fixed;
+    }
+
+    .tax-roll-mobile-col--house {
+      inline-size: 18%;
+    }
+
+    .tax-roll-mobile-col--assessment {
+      inline-size: 31%;
+    }
+
+    .tax-roll-mobile-col--tax {
+      inline-size: 24%;
+    }
+
+    .tax-roll-mobile-col--change {
+      inline-size: 27%;
+    }
+
+    .tax-roll-mobile-outcome-table th,
+    .tax-roll-mobile-outcome-table td {
+      border: 1px solid rgba(36, 59, 68, 0.11);
+      line-height: 1.12;
+      padding: 0.4rem 0.42rem;
+      vertical-align: middle;
+    }
+
+    .tax-roll-mobile-outcome-table thead th {
+      background: rgba(36, 59, 68, 0.08);
+      color: var(--ges-color-text-muted, #5b6670);
+      font-size: 0.58rem;
+      font-weight: 850;
+      letter-spacing: 0;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .tax-roll-mobile-outcome-table thead th:first-child {
+      text-align: left;
+    }
+
+    .tax-roll-mobile-outcome-table tbody tr {
+      animation: taxRollRowReveal 520ms ease both;
+      animation-delay: calc(var(--row-order, 0) * 24ms);
+    }
+
+    .tax-roll-mobile-outcome-table tbody th,
+    .tax-roll-mobile-outcome-table tbody td {
+      font-size: clamp(0.78rem, 3.65vw, 0.9rem);
+      font-weight: 820;
+    }
+
+    .tax-roll-mobile-outcome-table tbody th {
+      text-align: left;
+      width: 18%;
+    }
+
+    .tax-roll-mobile-outcome-table tbody td {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .tax-roll-mobile-outcome-table .tax-roll-heat {
+      border-radius: 0;
+      display: table-cell;
+      padding: 0.4rem 0.42rem;
+    }
+
+    .tax-roll-mobile-row__identity {
+      align-items: center;
+      display: inline-flex;
+      gap: 0.32rem;
+      min-width: 0;
+    }
+
+    .tax-roll-mobile-row__identity span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tax-roll-mobile-house {
+      display: block;
+      flex: 0 0 auto;
+      height: 0.95rem;
+      width: 1rem;
+    }
+
+    @keyframes taxRollMobileDetailReveal {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tax-roll-table-wrap {
+      margin: 0;
+      padding: 0 0 0.5rem;
+    }
+
+    .tax-roll-result-table {
+      color: var(--ges-color-text, #1f2933);
+      display: grid;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-size: 0.9rem;
+      width: 100%;
+    }
+
+    .tax-roll-result-table thead {
+      display: none;
+    }
+
+    .tax-roll-result-table colgroup {
+      display: none;
+    }
+
+    .tax-roll-result-table--pending {
+      color: rgb(var(--ges-color-text-muted, 91 102 112));
+    }
+
+    .tax-roll-result-table tbody {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tax-roll-result-table tr {
+      animation: taxRollRowReveal 520ms ease both;
+      animation-delay: calc(var(--row-order, 0) * 28ms);
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid rgba(36, 59, 68, 0.09);
+      border-radius: 8px;
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      padding: 0.82rem;
+    }
+
+    .tax-roll-result-table--pending tr {
+      animation: none;
+    }
+
+    @keyframes taxRollRowReveal {
+      from {
+        opacity: 0.58;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tax-roll-result-table--pending tr {
+      background: rgba(36, 59, 68, 0.035);
+      border-color: rgba(36, 59, 68, 0.07);
+    }
+
+    .tax-roll-result-table tbody th {
+      align-items: center;
+      display: flex;
+      gap: 8px;
+      font-weight: 850;
+      grid-column: 1 / -1;
+      min-width: 0;
+      text-align: left;
+    }
+
+    .tax-roll-table-house {
+      align-items: center;
+      display: inline-flex;
+      gap: 0.36rem;
+      min-width: 0;
+    }
+
+    .tax-roll-table-house svg {
+      display: block;
+      flex: 0 0 auto;
+      height: 1.2rem;
+      width: 1.28rem;
+    }
+
+    .tax-roll-table-house__roof {
+      fill: var(--property-color);
+      stroke: color-mix(in srgb, var(--property-color) 76%, #243b44);
+      stroke-linejoin: round;
+      stroke-width: 0.8;
+    }
+
+    .tax-roll-table-house__door {
+      fill: #f3d6a1;
+      opacity: 0.9;
+    }
+
+    .tax-roll-result-table td {
+      align-items: start;
+      display: grid;
+      gap: 0.22rem;
+      min-width: 0;
+      text-align: left;
+    }
+
+    .tax-roll-result-table--pending td {
+      color: rgba(91, 102, 112, 0.72);
+      font-weight: 800;
+    }
+
+    .tax-roll-result-table--pending tbody th {
+      color: rgba(36, 59, 68, 0.78);
+    }
+
+    .tax-roll-assessment-change {
+      color: #52606b;
+      font-weight: 850;
+    }
+
+    .tax-roll-assessment-change__content {
+      align-items: center;
+      display: inline-flex;
+      gap: 0.36rem;
+      white-space: nowrap;
+    }
+
+    .tax-roll-assessment-change svg {
+      display: block;
+      flex: 0 0 auto;
+      height: 1.2rem;
+      width: 1.2rem;
+    }
+
+    .tax-roll-assessment-change path {
+      fill: currentColor;
+    }
+
+    .tax-roll-assessment-change--up {
+      color: #8d6729;
+    }
+
+    .tax-roll-assessment-change--down {
+      color: #4f7957;
+    }
+
+    .tax-roll-assessment-change--flat {
+      color: #52606b;
+    }
+
+    .tax-roll-result-table td::before {
+      color: var(--ges-color-text-muted, #5b6670);
+      content: attr(data-label);
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.64rem;
+      font-weight: 850;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .tax-roll-result-table--baseline {
+      border-collapse: collapse;
+      display: table;
+      table-layout: fixed;
+    }
+
+    .tax-roll-result-table--baseline thead {
+      display: table-header-group;
+    }
+
+    .tax-roll-result-table--baseline colgroup {
+      display: table-column-group;
+    }
+
+    .tax-roll-result-table--baseline col {
+      display: table-column;
+    }
+
+    .tax-roll-result-table--baseline tbody {
+      display: table-row-group;
+    }
+
+    .tax-roll-result-table--baseline tr {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      display: table-row;
+      padding: 0;
+    }
+
+    .tax-roll-result-table--baseline th,
+    .tax-roll-result-table--baseline td {
+      border-bottom: 1px solid rgba(36, 59, 68, 0.1);
+      display: table-cell;
+      padding: 0.46rem 0.44rem;
+      text-align: right;
+      white-space: normal;
+    }
+
+    .tax-roll-result-table--baseline th:first-child,
+    .tax-roll-result-table--baseline td:first-child {
+      text-align: left;
+    }
+
+    .tax-roll-result-table--baseline thead th {
+      background: #243b44;
+      color: #ffffff;
+      font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+      font-size: clamp(0.5rem, 1.8vw, 0.62rem);
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 1;
+      padding-block: 0.58rem 0.4rem;
+      text-transform: uppercase;
+      vertical-align: bottom;
+    }
+
+    .tax-roll-result-table--baseline tbody th {
+      display: table-cell;
+      font-weight: 850;
+      min-width: 0;
+    }
+
+    .tax-roll-result-table--baseline td::before {
+      content: none;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-table-house {
+      gap: 0.24rem;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-table-house svg {
+      height: 1rem;
+      width: 1.08rem;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-result-col--house {
+      width: 16%;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-baseline-col--assessment {
+      width: 31%;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-baseline-col--share {
+      width: 27%;
+    }
+
+    .tax-roll-result-table--baseline .tax-roll-baseline-col--tax {
+      width: 26%;
+    }
+
+    .tax-roll-heat,
+    .tax-roll-share {
+      font-weight: 850;
+    }
+
+    .tax-roll-share {
+      padding: 0.3rem 0.48rem;
+    }
+
+    .tax-roll-heat {
+      padding: 0.3rem 0.48rem;
+    }
+
+    .tax-roll-heat--green {
+      background: rgba(86, 125, 96, 0.18);
+      color: #3f6d48;
+    }
+
+    .tax-roll-heat--soft-green,
+    .tax-roll-share--down {
+      background: rgba(86, 125, 96, 0.11);
+      color: #4f7957;
+    }
+
+    .tax-roll-heat--amber {
+      background: rgba(185, 154, 85, 0.16);
+      color: #8d6729;
+    }
+
+    .tax-roll-heat--red,
+    .tax-roll-share--up {
+      background: rgba(166, 99, 79, 0.16);
+      color: #8b4937;
+    }
+
+    .tax-roll-share--soft-up {
+      background: rgba(185, 154, 85, 0.13);
+      color: #8d6729;
+    }
+
+    .tax-roll-share--soft-down {
+      background: rgba(86, 125, 96, 0.1);
+      color: #4f7957;
+    }
+
+    .tax-roll-heat--neutral {
+      background: rgba(36, 59, 68, 0.07);
+      color: #52606b;
+    }
+
+    .tax-roll-explanation {
+      display: grid;
+      gap: clamp(16px, 4vw, 24px);
+      margin-top: clamp(18px, 5vw, 28px);
+      min-width: 0;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 280ms ease, transform 280ms ease;
+    }
+
+    .tax-roll-explanation.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tax-roll-explanation-block {
+      border-top: 1px solid rgba(36, 59, 68, 0.1);
+      opacity: 0;
+      padding-top: 0.92rem;
+      transform: translateY(6px);
+    }
+
+    .tax-roll-explanation.is-visible .tax-roll-explanation-block {
+      animation: taxRollExplanationReveal 460ms ease both;
+    }
+
+    .tax-roll-explanation.is-visible .tax-roll-explanation-block:nth-child(2) {
+      animation-delay: 90ms;
+    }
+
+    .tax-roll-explanation.is-visible .tax-roll-explanation-block:nth-child(3) {
+      animation-delay: 180ms;
+    }
+
+    @keyframes taxRollExplanationReveal {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tax-roll-explanation-block h3 {
+      align-items: center;
+      color: rgb(var(--ges-color-civic-blue));
+      display: inline-flex;
+      font-family: var(--ges-font-heading);
+      font-size: var(--ges-type-xs);
+      font-weight: var(--ges-weight-heavy);
+      gap: 0.38rem;
+      letter-spacing: var(--ges-letter-kicker);
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .tax-roll-explanation-block h3 svg {
+      display: block;
+      height: 0.92rem;
+      width: 0.92rem;
+    }
+
+    .tax-roll-explanation-block h3 svg path {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+
+    .tax-roll-explanation-block p {
+      margin-top: 0.42rem;
+    }
+
+    .tax-roll-explanation-block--remember p {
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading);
+      font-weight: var(--ges-weight-bold);
+      line-height: 1.42;
+    }
+
+    .tax-roll-final {
+      display: grid;
+      align-items: center;
+      border-top: 0;
+      column-gap: clamp(24px, 4vw, 36px);
+      row-gap: clamp(18px, 4vw, 28px);
+      grid-template-columns: 100px minmax(0, 1fr);
+      justify-items: start;
+      max-width: var(--tax-roll-reading-shell-width);
+      padding-bottom: clamp(34px, 6vw, 58px);
+      width: var(--tax-roll-reading-shell-width);
+    }
+
+    .levy-compression-page > .ges-resources-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .tax-roll-experiment > .tax-roll-final.tax-story-chapter::before {
+      background:
+        linear-gradient(
+          180deg,
+          rgb(var(--ges-color-border-strong) / 0.48) 0 var(--ges-rule-width),
+          rgb(var(--ges-color-highlight) / 0.74) var(--ges-rule-width) var(--ges-rule-width-strong)
+        );
+      box-shadow:
+        0 calc(-1 * var(--ges-rule-width)) 0 rgb(var(--ges-color-highlight) / 0.18),
+        0 var(--ges-rule-width) 0 rgb(var(--ges-color-shadow) / 0.035);
+      content: "";
+      display: block;
+      grid-column: 1 / -1;
+      height: var(--ges-rule-width-strong);
+      inline-size: 100%;
+      justify-self: stretch;
+      margin: 0;
+    }
+
+    .tax-roll-final-pie {
+      display: block;
+      grid-column: 1;
+      grid-row: 2;
+      height: 100px;
+      inline-size: 100px;
+      max-inline-size: none;
+      min-inline-size: 100px;
+      overflow: visible;
+      width: 100px;
+    }
+
+    .tax-roll-final-pie path {
+      opacity: 0.88;
+      stroke: rgba(245, 247, 248, 0.88);
+      stroke-linejoin: round;
+      stroke-width: 1;
+    }
+
+    .tax-roll-final p.prose {
+      grid-column: 2;
+      grid-row: 2;
+      margin: 0;
+    }
+
+    .tax-roll-final-thought {
+      border-top: 0;
+      gap: 0;
+      margin: clamp(30px, 5vw, 48px) auto 0;
+      max-width: var(--tax-roll-reading-shell-width);
+      padding: clamp(30px, 5vw, 48px) 0 clamp(22px, 4vw, 34px);
+      position: relative;
+      width: var(--tax-roll-reading-shell-width);
+    }
+
+    .tax-roll-final-thought::before {
+      background: linear-gradient(to bottom, rgba(36, 59, 68, 0.18), rgba(255, 255, 255, 0.82));
+      block-size: 2px;
+      content: "";
+      inline-size: 100%;
+      inset: 0 auto auto 0;
+      position: absolute;
+    }
+
+    .tax-roll-final-thought h2 {
+      color: rgb(var(--ges-color-text));
+      font-family: var(--ges-font-heading);
+      font-size: clamp(1.65rem, 4vw, 2.35rem);
+      font-weight: var(--ges-weight-heavy);
+      letter-spacing: 0;
+      line-height: 1.05;
+      margin: 0 0 clamp(1rem, 2vw, 1.25rem);
+    }
+
+    .tax-roll-final-thought p.prose {
+      margin: 0;
+      max-width: 62ch;
+    }
+
+    .tax-roll-final-thought p.prose + p.prose {
+      margin-top: 0.85rem;
+    }
+
+    .tax-roll-final-transition {
+      margin: clamp(1.1rem, 3vw, 1.45rem) auto;
+      max-width: 62ch;
+    }
+
+    .tax-roll-final-transition + p.prose {
+      margin-top: clamp(1rem, 2vw, 1.2rem);
+    }
+
+    @media (max-width: 759px) {
+      .tax-roll-baseline {
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 0.88fr) minmax(0, 1.22fr);
+      }
+
+      .tax-roll-baseline div {
+        padding-inline: 0.62rem;
+      }
+
+      .tax-roll-baseline__hero {
+        padding-inline: 0.52rem 0.64rem;
+      }
+
+      .tax-roll-baseline__hero dd,
+      .tax-roll-baseline-shell.is-fixed .tax-roll-baseline__hero dd {
+        font-size: clamp(1.02rem, 5vw, 1.34rem);
+      }
+
+      .tax-roll-levy-metric {
+        gap: 0.22rem;
+        grid-template-columns: minmax(1.15rem, 0.44fr) minmax(3.1rem, 1fr);
+      }
+
+      .tax-roll-experiment-setup {
+        align-items: stretch;
+        border-radius: 14px;
+        display: grid;
+        gap: 0.46rem;
+        margin: clamp(14px, 5vw, 20px) auto -0.45rem;
+        padding: 0.58rem 0.68rem;
+        width: min(100%, 24rem);
+      }
+
+      .tax-roll-experiment-setup p {
+        border-radius: 13px 13px 0 0;
+        border-right: 0;
+        border-bottom: 1px solid rgba(36, 59, 68, 0.12);
+        margin: -0.58rem -0.68rem 0;
+        min-height: 2rem;
+        padding: 0 0.68rem;
+      }
+
+      .tax-roll-experiment-setup__conditions {
+        gap: 0.36rem;
+        grid-template-columns: 1fr;
+      }
+
+      .tax-roll-experiment-setup__group {
+        gap: 0.5rem;
+        grid-template-columns: minmax(5.8rem, auto) minmax(0, 1fr);
+        padding-inline: 0;
+      }
+
+      .tax-roll-experiment-setup__group + .tax-roll-experiment-setup__group {
+        border-left: 0;
+        border-top: 1px solid rgba(36, 59, 68, 0.11);
+        padding-top: 0.36rem;
+      }
+
+      .tax-roll-experiment-setup__group--assessment dd {
+        align-items: start;
+        display: grid;
+        gap: 0.18rem;
+        white-space: normal;
+      }
+
+      .tax-roll-experiment-setup__group--assessment dd > span {
+        justify-content: space-between;
+      }
+
+      .tax-roll-experiment-setup__group--assessment dd > span + span::before {
+        content: none;
+      }
+
+      .tax-roll-experiment-card:not(.is-revealed) {
+        height: auto;
+        min-height: 0;
+        padding-bottom: clamp(18px, 5vw, 24px);
+      }
+
+      .tax-roll-experiment-card:not(.is-revealed) .tax-roll-lesson-grid {
+        align-items: start;
+        gap: 0;
+        grid-auto-rows: max-content;
+        min-height: 0;
+      }
+
+      .tax-roll-experiment-card:not(.is-revealed) .tax-roll-scenario-copy {
+        display: grid;
+        gap: 1.35rem;
+        min-height: 0;
+      }
+
+      .tax-roll-experiment-card:not(.is-revealed) .tax-roll-result-column {
+        display: none;
+      }
+
+      .tax-roll-experiment-card:not(.is-revealed) .tax-roll-explanation {
+        display: none;
+      }
+
+      .tax-roll-experiment-card.is-revealed .tax-roll-result-column {
+        display: block;
+      }
+
+      .tax-roll-result-shell--pending {
+        display: none;
+      }
+
+      .tax-roll-table-toggle,
+      .tax-roll-experiment-card .tax-roll-table-wrap {
+        display: none !important;
+      }
+
+      .tax-roll-mobile-outcome:not([hidden]) {
+        display: block;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .tax-roll-final {
+        align-items: start;
+        column-gap: 1rem;
+        row-gap: 0.85rem;
+        grid-template-columns: 60px minmax(0, 1fr);
+      }
+
+      .tax-roll-final-pie {
+        grid-column: 1;
+        height: 60px;
+        inline-size: 60px;
+        min-inline-size: 60px;
+        width: 60px;
+      }
+
+      .tax-roll-final p.prose {
+        grid-column: 2;
+      }
+    }
+
+    @media (min-width: 760px) {
+      .watch-tax-roll-route .ges-public-main {
+        max-width: min(1120px, calc(100vw - 48px));
+      }
+
+      .tax-roll-table-toggle {
+        display: none;
+      }
+
+      .tax-roll-intro,
+      .tax-roll-neighborhood,
+      .tax-roll-lesson {
+        margin-left: 0;
+      }
+
+      .tax-roll-baseline {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr) minmax(0, 1.08fr);
+      }
+
+      .tax-roll-baseline__hero {
+        padding-left: 0.7rem;
+      }
+
+      .tax-roll-lesson-grid {
+        align-items: stretch;
+        column-gap: clamp(28px, 7vw, 40px);
+        row-gap: 0;
+        grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
+      }
+
+      .tax-roll-lesson-grid > .tax-article-header {
+        grid-column: 1 / -1;
+        max-width: min(100%, 43rem);
+      }
+
+      .tax-roll-scenario-copy {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .tax-roll-result-column {
+        border-left: 1px solid rgba(36, 59, 68, 0.13);
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        margin-top: 0.2rem;
+        padding-left: clamp(22px, 3vw, 32px);
+      }
+
+      .tax-roll-explanation {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .tax-roll-reveal__icon-state--chevron {
+        transform: translateX(0) scale(1);
+      }
+
+      .tax-roll-reveal.is-active .tax-roll-reveal__icon-state--chevron {
+        transform: translateX(0.18rem) scale(0.72);
+      }
+
+      .tax-roll-result-table {
+        border-collapse: collapse;
+        display: table;
+        table-layout: fixed;
+      }
+
+      .tax-roll-result-col--house {
+        width: 13%;
+      }
+
+      .tax-roll-result-col--assessment {
+        width: 17%;
+      }
+
+      .tax-roll-result-col--delta {
+        width: 12%;
+      }
+
+      .tax-roll-result-col--share {
+        width: 24%;
+      }
+
+      .tax-roll-result-col--tax,
+      .tax-roll-result-col--tax-change {
+        width: 16%;
+      }
+
+      .tax-roll-baseline-col--assessment,
+      .tax-roll-baseline-col--share,
+      .tax-roll-baseline-col--tax {
+        width: 29%;
+      }
+
+      .tax-roll-result-table thead {
+        display: table-header-group;
+      }
+
+      .tax-roll-result-table colgroup {
+        display: table-column-group;
+      }
+
+      .tax-roll-result-table col {
+        display: table-column;
+      }
+
+      .tax-roll-result-table tbody {
+        display: table-row-group;
+      }
+
+      .tax-roll-result-table tr {
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        display: table-row;
+        padding: 0;
+      }
+
+      .tax-roll-result-table th,
+      .tax-roll-result-table td {
+        border-bottom: 1px solid rgba(36, 59, 68, 0.1);
+        display: table-cell;
+        padding: 0.48rem 0.62rem;
+        text-align: right;
+        white-space: normal;
+      }
+
+      .tax-roll-result-table th:first-child,
+      .tax-roll-result-table td:first-child {
+        text-align: left;
+      }
+
+      .tax-roll-result-table thead th {
+        background: #243b44;
+        color: #ffffff;
+        font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
+        font-size: 0.62rem;
+        font-weight: 850;
+        letter-spacing: 0;
+        line-height: 1;
+        padding-block: 0.62rem 0.42rem;
+        text-transform: uppercase;
+        vertical-align: bottom;
+      }
+
+      .tax-roll-result-table--pending thead th {
+        background: rgba(36, 59, 68, 0.78);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .tax-roll-result-table tbody th {
+        display: table-cell;
+        font-weight: 850;
+        min-width: 0;
+      }
+
+      .tax-roll-result-table td::before {
+        content: none;
+      }
+
+      .tax-roll-share {
+        border-radius: 0;
+        display: table-cell;
+        min-width: 0;
+        padding: 0.48rem 0.62rem;
+      }
+
+      .tax-roll-heat {
+        border-radius: 0;
+        display: table-cell;
+        min-width: 0;
+        padding: 0.48rem 0.62rem;
+      }
+    }
+  
