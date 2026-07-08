@@ -45,7 +45,8 @@ function metadata() {
     canonicalPath: ARTICLE.canonicalPath,
     pageType: "article",
     ogType: "article",
-    robots: "noindex, follow",
+    robots: "index, follow, max-image-preview:large",
+    publishedDate: ARTICLE.publishedDate,
     modifiedDate: ARTICLE.modifiedDate,
     section: "Property tax education",
     tags: ARTICLE.tags,
@@ -87,6 +88,7 @@ export function renderWatchTheTaxRollMoveArticle() {
     </article>
   `);
 
+  installHeroVideo(shell.coverRegion);
   installTaxRollExperiment(shell.bodyRegion);
   installGuideUtilityLanguage(shell.bodyRegion);
   installGesReadingProgress({ root: shell.bodyRegion });
@@ -97,9 +99,23 @@ function renderCover() {
     className: "tax-roll-hero",
     label: "Interactive Article",
     mediaHtml: `
-      <figure class="article-hero-media hero-media tax-roll-hero__media">
-        <img src="${escapeHtml(ARTICLE.assets.heroImage)}" alt="${escapeHtml(ARTICLE.assets.heroImageAlt)}" loading="eager" decoding="async" fetchpriority="high" />
-        <figcaption>${escapeHtml(ARTICLE.assets.heroImageAlt)} ${escapeHtml(ARTICLE.assets.heroImageCredit)}</figcaption>
+      <figure class="article-hero-media hero-media article-hero-video tax-roll-hero__media" data-hero-video>
+        <video
+          class="article-hero-video-player"
+          data-hero-video-player
+          src="${escapeHtml(ARTICLE.assets.tldrVideo)}"
+          poster="${escapeHtml(ARTICLE.assets.heroImage)}"
+          preload="metadata"
+          playsinline
+          aria-label="Video overview of Watch the Tax Roll Move"
+          title="${escapeHtml(ARTICLE.assets.heroImageCredit)}"
+          data-image-credit="${escapeHtml(ARTICLE.assets.heroImageCredit)}"
+          data-image-source="${escapeHtml(ARTICLE.assets.heroImageSource)}"
+        ></video>
+        <button class="article-hero-video-play" type="button" data-hero-video-play aria-label="Play the video summary">
+          <span class="article-hero-video-play-icon" aria-hidden="true"></span>
+        </button>
+        <figcaption class="levy-sr-only">${escapeHtml(ARTICLE.assets.heroImageAlt)} The video provides a short overview of the article.</figcaption>
       </figure>
     `,
     subject: "Property Tax Education",
@@ -142,10 +158,46 @@ function renderEntryPanel() {
     icon: editorialIcon,
     printableLabel: "Print Version",
     printableUrl: ARTICLE.assets.printableGuidePdf,
+    audioUrl: ARTICLE.assets.audioRead,
     readingMinutes: ARTICLE.readingMinutes,
     wordCount: ARTICLE.wordCount,
     lengthLabel: ARTICLE.lengthLabel
   });
+}
+
+function installHeroVideo(root) {
+  const wrapper = root.querySelector("[data-hero-video]");
+  if (!wrapper || wrapper.dataset.heroVideoReady === "true") return;
+  wrapper.dataset.heroVideoReady = "true";
+
+  const video = wrapper.querySelector("[data-hero-video-player]");
+  const playButton = wrapper.querySelector("[data-hero-video-play]");
+  if (!video || !playButton) return;
+
+  const syncVideoState = () => {
+    wrapper.classList.toggle("is-playing", !video.paused && !video.ended);
+    wrapper.classList.toggle("has-started", video.currentTime > 0 && !video.ended);
+    if (video.ended) wrapper.classList.remove("has-started", "is-playing");
+  };
+
+  playButton.addEventListener("click", async () => {
+    try {
+      await video.play();
+      video.controls = true;
+    } catch {
+      video.controls = true;
+      video.focus({ preventScroll: true });
+    }
+    syncVideoState();
+  });
+
+  video.addEventListener("play", () => {
+    video.controls = true;
+    syncVideoState();
+  });
+  video.addEventListener("pause", syncVideoState);
+  video.addEventListener("timeupdate", syncVideoState);
+  video.addEventListener("ended", syncVideoState);
 }
 
 function renderArticleResources() {

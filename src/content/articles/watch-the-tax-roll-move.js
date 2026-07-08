@@ -3,8 +3,9 @@ export const watchTheTaxRollMoveArticle = {
   legacyQueryValue: "watch-the-tax-roll-move",
   title: "Watch the Tax Roll Move",
   description: "A guided civic lesson showing how assessed values divide a budget, how budgets determine collections, and how levies connect the two.",
-  modifiedDate: "2026-07-02",
-  displayDate: "July 2, 2026",
+  publishedDate: "2026-07-08",
+  modifiedDate: "2026-07-08",
+  displayDate: "July 8, 2026",
   author: "Max Quattromani",
   authorEmail: "max@maxquatrromani.com",
   authorTitle: "Nebraska Certified Assessor",
@@ -18,7 +19,10 @@ export const watchTheTaxRollMoveArticle = {
     heroImageAlt: "Aerial view of homes, lawns, trees, and a neighborhood street intersection.",
     heroImageCredit: "Photo by Kelly on Pexels.",
     heroImageSource: "https://www.pexels.com/",
-    printableGuidePdf: "assets/guides/watch-the-tax-roll-move.pdf"
+    printableGuidePdf: "assets/guides/watch-the-tax-roll-move.pdf",
+    tldrVideo: "assets/videos/articles/watch-the-tax-roll-move-summary.mp4",
+    audioRead: "assets/audio/articles/watch-the-tax-roll-move-audio.mp3",
+    audioDuration: "PT18M58S"
   },
   sections: {
     intro: {
