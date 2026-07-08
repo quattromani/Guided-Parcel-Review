@@ -11,7 +11,7 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
   tags: ["Gage County", "Property Assessment", "Property Protest"],
   displayDate: "June 25, 2026",
   publishedDate: "2026-06-25T17:33:00-05:00",
-  modifiedDate: "2026-06-26T12:00:00-05:00",
+  modifiedDate: "2026-07-08T12:00:00-05:00",
   description: "A plain language guide to preparing a property valuation protest with comparables, property record cards, evidence, and a specific correction request.",
   keywords: [
     "property valuation protest",
@@ -312,10 +312,28 @@ export const beforeYouWalkIntoPropertyProtestArticle = {
       calendarUrl: "assets/calendar/gage-boe-2026-07-20.ics"
     },
     {
+      dateLabel: "Tuesday, July 21, 2026",
+      timeLabel: "8:30 a.m.",
+      endsAt: "2026-07-21T09:30:00-05:00",
+      calendarUrl: "assets/calendar/gage-boe-2026-07-21.ics"
+    },
+    {
       dateLabel: "Wednesday, July 22, 2026",
       timeLabel: "1:00 p.m.",
       endsAt: "2026-07-22T14:00:00-05:00",
       calendarUrl: "assets/calendar/gage-boe-2026-07-22.ics"
+    },
+    {
+      dateLabel: "Thursday, July 23, 2026",
+      timeLabel: "8:30 a.m.",
+      endsAt: "2026-07-23T09:30:00-05:00",
+      calendarUrl: "assets/calendar/gage-boe-2026-07-23.ics"
+    },
+    {
+      dateLabel: "Friday, July 24, 2026",
+      timeLabel: "8:30 a.m.",
+      endsAt: "2026-07-24T09:30:00-05:00",
+      calendarUrl: "assets/calendar/gage-boe-2026-07-24.ics"
     }
   ],
   boardMeetingLocation: "Gage County Courthouse, 612 Grant Street, Beatrice, NE 68310",
