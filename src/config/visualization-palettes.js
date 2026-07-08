@@ -184,8 +184,7 @@ function storedThemePreference() {
 export function getActiveVisualizationPalette() {
   const resolvedTheme = globalThis.document?.documentElement?.dataset?.gesThemeResolved;
   const storedTheme = storedThemePreference();
-  const systemTheme = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light";
-  const activeTheme = resolvedTheme || storedTheme || systemTheme;
+  const activeTheme = resolvedTheme || storedTheme || "light";
 
   return activeTheme === "dark" ? civicDark : civicDefault;
 }

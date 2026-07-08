@@ -4,6 +4,51 @@
 
     .tax-roll-article {
       --tax-roll-reading-shell-width: min(100%, var(--ges-width-reading, 46rem));
+      --tax-roll-rule-color: rgba(36, 59, 68, 0.11);
+      --tax-roll-panel-bg: #ffffff;
+      --tax-roll-panel-bg-strong: rgba(255, 255, 255, 0.92);
+      --tax-roll-panel-border: rgba(36, 59, 68, 0.1);
+      --tax-roll-panel-border-strong: rgba(36, 59, 68, 0.14);
+      --tax-roll-panel-shadow: 0 1rem 2.6rem rgba(36, 59, 68, 0.075);
+      --tax-roll-panel-shadow-raised: 0 1.1rem 2.8rem rgba(36, 59, 68, 0.09);
+      --tax-roll-surface-muted: rgb(var(--ges-color-page) / 0.96);
+      --tax-roll-table-head-bg: #243b44;
+      --tax-roll-table-head-text: #ffffff;
+      --tax-roll-table-row-bg: rgba(255, 255, 255, 0.58);
+      --tax-roll-table-row-border: rgba(36, 59, 68, 0.09);
+      --tax-roll-table-pending-row-bg: rgba(36, 59, 68, 0.035);
+      --tax-roll-table-pending-border: rgba(36, 59, 68, 0.07);
+      --tax-roll-control-bg: linear-gradient(180deg, rgba(218, 231, 210, 0.72), rgba(203, 222, 194, 0.54));
+      --tax-roll-control-border: rgba(87, 122, 79, 0.14);
+      --tax-roll-accent-soft: rgba(47, 115, 163, 0.18);
+      --tax-roll-accent-line: rgba(47, 115, 163, 0.28);
+      --tax-roll-accent-strong: #2f73a3;
+      --tax-roll-muted-ink: var(--ges-color-text-muted, #5b6670);
+      --tax-roll-neutral-ink: #52606b;
+    }
+
+    html[data-ges-theme-resolved="dark"].article-shell-route .tax-roll-article {
+      --tax-roll-rule-color: rgb(var(--ges-color-border-subtle) / 0.82);
+      --tax-roll-panel-bg: rgb(var(--ges-color-surface));
+      --tax-roll-panel-bg-strong: rgb(var(--ges-color-surface-muted) / 0.92);
+      --tax-roll-panel-border: rgb(var(--ges-color-border-subtle) / 0.82);
+      --tax-roll-panel-border-strong: rgb(var(--ges-color-border-strong) / 0.54);
+      --tax-roll-panel-shadow: 0 1px 1px rgb(0 0 0 / 0.14), inset 0 1px 0 rgb(255 255 255 / 0.025);
+      --tax-roll-panel-shadow-raised: 0 0.9rem 1.8rem rgb(0 0 0 / 0.2), inset 0 1px 0 rgb(255 255 255 / 0.03);
+      --tax-roll-surface-muted: rgb(var(--ges-color-surface-muted) / 0.84);
+      --tax-roll-table-head-bg: rgb(var(--ges-color-surface-muted));
+      --tax-roll-table-head-text: rgb(var(--ges-color-text));
+      --tax-roll-table-row-bg: rgb(var(--ges-color-surface-muted) / 0.58);
+      --tax-roll-table-row-border: rgb(var(--ges-color-border-subtle) / 0.72);
+      --tax-roll-table-pending-row-bg: rgb(var(--ges-color-surface-inset) / 0.74);
+      --tax-roll-table-pending-border: rgb(var(--ges-color-border-subtle) / 0.62);
+      --tax-roll-control-bg: linear-gradient(180deg, rgb(var(--ges-color-evidence-green-soft) / 0.62), rgb(var(--ges-color-surface-muted) / 0.72));
+      --tax-roll-control-border: rgb(var(--ges-color-evidence-green) / 0.26);
+      --tax-roll-accent-soft: rgb(var(--ges-color-civic-blue) / 0.2);
+      --tax-roll-accent-line: rgb(var(--ges-color-civic-blue) / 0.32);
+      --tax-roll-accent-strong: rgb(var(--ges-color-civic-blue));
+      --tax-roll-muted-ink: rgb(var(--ges-color-text-muted));
+      --tax-roll-neutral-ink: rgb(var(--ges-color-text-muted));
     }
 
     .tax-roll-sr-only {
@@ -69,7 +114,7 @@
     .tax-roll-neighborhood,
     .tax-roll-lesson,
     .tax-roll-final {
-      border-top: 1px solid rgba(36, 59, 68, 0.11);
+      border-top: 1px solid var(--tax-roll-rule-color);
       padding: clamp(44px, 10vw, 72px) 0;
     }
 
@@ -79,10 +124,10 @@
 
     .tax-roll-lesson-bridge {
       align-items: center;
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid rgba(47, 115, 163, 0.24);
+      background: var(--tax-roll-panel-bg-strong);
+      border: 1px solid var(--tax-roll-panel-border);
       border-radius: 16px;
-      box-shadow: 0 0.85rem 2.2rem rgba(36, 59, 68, 0.055);
+      box-shadow: var(--tax-roll-panel-shadow);
       color: rgb(var(--ges-color-text));
       column-gap: clamp(14px, 3vw, 20px);
       display: grid;
@@ -109,7 +154,7 @@
 
     .tax-roll-lesson-bridge::before,
     .tax-roll-lesson-bridge::after {
-      background: rgba(47, 115, 163, 0.28);
+      background: var(--tax-roll-accent-line);
       content: "";
       display: block;
       inline-size: 1px;
@@ -130,7 +175,7 @@
 
     .tax-roll-lesson-bridge__icon {
       align-items: center;
-      background: #2f73a3;
+      background: var(--tax-roll-accent-strong);
       border-radius: 999px;
       color: #fff;
       display: inline-flex;
@@ -170,7 +215,7 @@
     }
 
     .tax-roll-lesson-bridge__copy span {
-      color: var(--ges-color-text-muted, #5b6670);
+      color: var(--tax-roll-muted-ink);
       font-family: "IBM Plex Sans", system-ui, sans-serif;
       font-size: clamp(0.93rem, 1.7vw, 1rem);
       font-weight: 650;
@@ -193,7 +238,7 @@
 
     .tax-roll-budget-transition-rule {
       border: 0;
-      border-top: 1px solid rgba(36, 59, 68, 0.11);
+      border-top: 1px solid var(--tax-roll-rule-color);
       margin: 0 auto;
       max-width: 1040px;
       width: 100%;
@@ -209,10 +254,10 @@
 
     .tax-roll-experiment-setup {
       align-items: center;
-      background: rgb(var(--ges-color-page) / 0.96);
-      border: 1px solid rgba(36, 59, 68, 0.11);
+      background: var(--tax-roll-surface-muted);
+      border: 1px solid var(--tax-roll-panel-border);
       border-radius: 999px;
-      box-shadow: 0 0.45rem 1.1rem rgba(36, 59, 68, 0.045);
+      box-shadow: var(--tax-roll-panel-shadow);
       column-gap: 0.7rem;
       display: flex;
       margin: clamp(16px, 3vw, 22px) auto -0.55rem;
@@ -232,9 +277,9 @@
     .tax-roll-experiment-setup p {
       align-items: center;
       align-self: stretch;
-      background: linear-gradient(180deg, rgba(218, 231, 210, 0.72), rgba(203, 222, 194, 0.54));
+      background: var(--tax-roll-control-bg);
       border-radius: 999px 0 0 999px;
-      border-right: 1px solid rgba(36, 59, 68, 0.14);
+      border-right: 1px solid var(--tax-roll-panel-border-strong);
       color: rgb(var(--ges-color-text));
       display: inline-flex;
       font-family: var(--ges-font-heading);
@@ -265,12 +310,12 @@
     }
 
     .tax-roll-experiment-setup__group + .tax-roll-experiment-setup__group {
-      border-left: 1px solid rgba(36, 59, 68, 0.15);
+      border-left: 1px solid var(--tax-roll-panel-border-strong);
     }
 
     .tax-roll-experiment-setup dt {
       align-self: center;
-      color: var(--ges-color-text-muted, #5b6670);
+      color: var(--tax-roll-muted-ink);
       font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
       font-size: 0.7rem;
       font-weight: 820;
@@ -312,14 +357,14 @@
     }
 
     .tax-roll-experiment-setup__group--assessment dd > span + span::before {
-      color: rgba(36, 59, 68, 0.46);
+      color: var(--tax-roll-muted-ink);
       content: "•";
       font-weight: 900;
       margin-right: 0.28rem;
     }
 
     .tax-roll-experiment-setup dd > span > span:first-child {
-      color: var(--ges-color-text-muted, #5b6670);
+      color: var(--tax-roll-muted-ink);
       font-weight: 740;
       white-space: nowrap;
     }
@@ -337,17 +382,17 @@
     }
 
     .tax-roll-experiment-card {
-      background: #fff;
-      border: 1px solid rgba(36, 59, 68, 0.1);
+      background: var(--tax-roll-panel-bg);
+      border: 1px solid var(--tax-roll-panel-border);
       border-radius: 16px;
-      box-shadow: 0 1rem 2.6rem rgba(36, 59, 68, 0.075);
+      box-shadow: var(--tax-roll-panel-shadow);
       margin-top: 0;
       padding: clamp(18px, 4vw, 32px);
       transition: box-shadow 280ms ease, transform 280ms ease;
     }
 
     .tax-roll-experiment-card.is-revealed {
-      box-shadow: 0 1.1rem 2.8rem rgba(36, 59, 68, 0.09);
+      box-shadow: var(--tax-roll-panel-shadow-raised);
     }
 
     .tax-roll-baseline-shell {
@@ -375,10 +420,10 @@
     .tax-roll-baseline {
       --tax-roll-sticky-top: calc(var(--gpr-global-header-height, 3.35rem) + 0.35rem);
       backdrop-filter: blur(18px);
-      background: rgb(var(--ges-color-page) / 0.94);
-      border: 1px solid rgba(36, 59, 68, 0.12);
+      background: var(--tax-roll-panel-bg-strong);
+      border: 1px solid var(--tax-roll-panel-border);
       border-radius: 12px;
-      box-shadow: 0 0.7rem 1.8rem rgba(36, 59, 68, 0.06);
+      box-shadow: var(--tax-roll-panel-shadow);
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr) minmax(0, 1.08fr);
       gap: 0;
@@ -390,7 +435,7 @@
 
     .tax-roll-baseline-shell.is-fixed .tax-roll-baseline {
       border-radius: 0 0 8px 8px;
-      box-shadow: 0 0.72rem 1.4rem rgba(36, 59, 68, 0.12);
+      box-shadow: var(--tax-roll-panel-shadow-raised);
       inline-size: var(--tax-roll-sticky-width);
       inset-block-start: var(--tax-roll-sticky-top);
       inset-inline-start: var(--tax-roll-sticky-left);
@@ -423,12 +468,12 @@
     }
 
     .tax-roll-baseline div:not(:last-child) {
-      border-right: 1px solid rgba(36, 59, 68, 0.1);
+      border-right: 1px solid var(--tax-roll-panel-border);
     }
 
     .tax-roll-baseline div:nth-child(1)::after,
     .tax-roll-baseline div:nth-child(2)::after {
-      background: linear-gradient(90deg, rgba(47, 115, 163, 0.18), rgba(47, 115, 163, 0));
+      background: linear-gradient(90deg, var(--tax-roll-accent-soft), transparent);
       block-size: 1px;
       bottom: 0.42rem;
       content: "";
@@ -439,7 +484,7 @@
     }
 
     .tax-roll-baseline__hero::after {
-      background: rgba(47, 115, 163, 0.18);
+      background: var(--tax-roll-accent-soft);
       block-size: 54%;
       bottom: -1px;
       content: "";
@@ -450,7 +495,7 @@
     }
 
     .tax-roll-baseline dt {
-      color: var(--ges-color-text-muted, #5b6670);
+      color: var(--tax-roll-muted-ink);
       font-family: "IBM Plex Mono", ui-monospace, monospace;
       font-size: clamp(0.5rem, 1.5vw, 0.64rem);
       font-weight: 750;
@@ -464,7 +509,7 @@
     }
 
     .tax-roll-baseline dd {
-      color: #243b44;
+      color: rgb(var(--ges-color-text));
       font-family: "IBM Plex Sans", system-ui, sans-serif;
       font-size: clamp(0.95rem, 4.6vw, 1.32rem);
       font-weight: 850;
@@ -477,12 +522,12 @@
     }
 
     .tax-roll-baseline__hero {
-      background: linear-gradient(180deg, rgba(47, 115, 163, 0.12), rgba(47, 115, 163, 0.065));
-      box-shadow: inset 0 3px 0 rgba(47, 115, 163, 0.42);
+      background: linear-gradient(180deg, var(--tax-roll-accent-soft), transparent);
+      box-shadow: inset 0 3px 0 var(--tax-roll-accent-line);
     }
 
     .tax-roll-baseline__hero dd {
-      color: #1f5578;
+      color: var(--tax-roll-accent-strong);
       font-size: clamp(1.12rem, 5.5vw, 1.6rem);
     }
 
@@ -501,17 +546,17 @@
     }
 
     .tax-roll-levy-direction {
-      color: rgba(36, 59, 68, 0.52);
+      color: var(--tax-roll-muted-ink);
       font-weight: 900;
       text-align: center;
     }
 
     .tax-roll-levy-direction.is-up {
-      color: #956a20;
+      color: rgb(var(--ges-color-caution-amber, var(--color-yellow)));
     }
 
     .tax-roll-levy-direction.is-down {
-      color: #4f8061;
+      color: rgb(var(--ges-color-evidence-green, var(--color-green)));
     }
 
     .tax-roll-levy-number {
@@ -549,8 +594,8 @@
     }
 
     .tax-roll-control-neighborhood__grid {
-      background: linear-gradient(180deg, rgba(218, 231, 210, 0.72), rgba(203, 222, 194, 0.54));
-      border: 1px solid rgba(87, 122, 79, 0.14);
+      background: var(--tax-roll-control-bg);
+      border: 1px solid var(--tax-roll-control-border);
       border-radius: 12px;
       display: grid;
       gap: clamp(0.48rem, 1.8vw, 0.82rem);
@@ -584,8 +629,8 @@
     }
 
     .tax-roll-control-home__icon svg path + path {
-      fill: color-mix(in srgb, var(--property-color) 18%, #fff);
-      stroke: rgba(36, 59, 68, 0.16);
+      fill: color-mix(in srgb, var(--property-color) 18%, var(--tax-roll-panel-bg));
+      stroke: var(--tax-roll-panel-border-strong);
       stroke-width: 0.5;
     }
 
@@ -604,7 +649,7 @@
     }
 
     .tax-roll-control-home__value {
-      color: var(--ges-color-text-muted, #5b6670);
+      color: var(--tax-roll-muted-ink);
       font-size: clamp(0.56rem, 1.8vw, 0.64rem);
       font-weight: 780;
       white-space: nowrap;
@@ -669,10 +714,10 @@
 
     .tax-roll-reveal {
       align-items: center;
-      background: #243b44;
+      background: var(--tax-roll-table-head-bg);
       border: 0;
       border-radius: 999px;
-      color: #fff;
+      color: var(--tax-roll-table-head-text);
       cursor: pointer;
       display: inline-flex;
       font-family: "IBM Plex Sans", system-ui, sans-serif;
@@ -807,8 +852,8 @@
     .tax-roll-table-toggle {
       align-items: center;
       appearance: none;
-      background: rgba(36, 59, 68, 0.06);
-      border: 1px solid rgba(36, 59, 68, 0.12);
+      background: var(--tax-roll-surface-muted);
+      border: 1px solid var(--tax-roll-panel-border);
       border-radius: 8px;
       color: rgb(var(--ges-color-text));
       cursor: pointer;
@@ -862,7 +907,7 @@
     }
 
     .tax-roll-mobile-outcome-table {
-      border: 1px solid rgba(36, 59, 68, 0.13);
+      border: 1px solid var(--tax-roll-panel-border);
       border-collapse: collapse;
       border-spacing: 0;
       color: rgb(var(--ges-color-text));
@@ -890,15 +935,15 @@
 
     .tax-roll-mobile-outcome-table th,
     .tax-roll-mobile-outcome-table td {
-      border: 1px solid rgba(36, 59, 68, 0.11);
+      border: 1px solid var(--tax-roll-panel-border);
       line-height: 1.12;
       padding: 0.4rem 0.42rem;
       vertical-align: middle;
     }
 
     .tax-roll-mobile-outcome-table thead th {
-      background: rgba(36, 59, 68, 0.08);
-      color: var(--ges-color-text-muted, #5b6670);
+      background: var(--tax-roll-table-head-bg);
+      color: var(--tax-roll-table-head-text);
       font-size: 0.58rem;
       font-weight: 850;
       letter-spacing: 0;
@@ -1002,8 +1047,8 @@
     .tax-roll-result-table tr {
       animation: taxRollRowReveal 520ms ease both;
       animation-delay: calc(var(--row-order, 0) * 28ms);
-      background: rgba(255, 255, 255, 0.58);
-      border: 1px solid rgba(36, 59, 68, 0.09);
+      background: var(--tax-roll-table-row-bg);
+      border: 1px solid var(--tax-roll-table-row-border);
       border-radius: 8px;
       display: grid;
       gap: 8px;
@@ -1028,8 +1073,8 @@
     }
 
     .tax-roll-result-table--pending tr {
-      background: rgba(36, 59, 68, 0.035);
-      border-color: rgba(36, 59, 68, 0.07);
+      background: var(--tax-roll-table-pending-row-bg);
+      border-color: var(--tax-roll-table-pending-border);
     }
 
     .tax-roll-result-table tbody th {
@@ -1058,7 +1103,7 @@
 
     .tax-roll-table-house__roof {
       fill: var(--property-color);
-      stroke: color-mix(in srgb, var(--property-color) 76%, #243b44);
+      stroke: color-mix(in srgb, var(--property-color) 76%, rgb(var(--ges-color-text)));
       stroke-linejoin: round;
       stroke-width: 0.8;
     }
@@ -1077,16 +1122,16 @@
     }
 
     .tax-roll-result-table--pending td {
-      color: rgba(91, 102, 112, 0.72);
+      color: var(--tax-roll-muted-ink);
       font-weight: 800;
     }
 
     .tax-roll-result-table--pending tbody th {
-      color: rgba(36, 59, 68, 0.78);
+      color: var(--tax-roll-muted-ink);
     }
 
     .tax-roll-assessment-change {
-      color: #52606b;
+      color: var(--tax-roll-neutral-ink);
       font-weight: 850;
     }
 
@@ -1117,11 +1162,11 @@
     }
 
     .tax-roll-assessment-change--flat {
-      color: #52606b;
+      color: var(--tax-roll-neutral-ink);
     }
 
     .tax-roll-result-table td::before {
-      color: var(--ges-color-text-muted, #5b6670);
+      color: var(--tax-roll-muted-ink);
       content: attr(data-label);
       font-family: "IBM Plex Mono", ui-monospace, monospace;
       font-size: 0.64rem;
@@ -1162,7 +1207,7 @@
 
     .tax-roll-result-table--baseline th,
     .tax-roll-result-table--baseline td {
-      border-bottom: 1px solid rgba(36, 59, 68, 0.1);
+      border-bottom: 1px solid var(--tax-roll-panel-border);
       display: table-cell;
       padding: 0.46rem 0.44rem;
       text-align: right;
@@ -1175,8 +1220,8 @@
     }
 
     .tax-roll-result-table--baseline thead th {
-      background: #243b44;
-      color: #ffffff;
+      background: var(--tax-roll-table-head-bg);
+      color: var(--tax-roll-table-head-text);
       font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
       font-size: clamp(0.5rem, 1.8vw, 0.62rem);
       font-weight: 850;
@@ -1268,8 +1313,8 @@
     }
 
     .tax-roll-heat--neutral {
-      background: rgba(36, 59, 68, 0.07);
-      color: #52606b;
+      background: var(--tax-roll-table-pending-row-bg);
+      color: var(--tax-roll-neutral-ink);
     }
 
     .tax-roll-explanation {
@@ -1288,7 +1333,7 @@
     }
 
     .tax-roll-explanation-block {
-      border-top: 1px solid rgba(36, 59, 68, 0.1);
+      border-top: 1px solid var(--tax-roll-panel-border);
       opacity: 0;
       padding-top: 0.92rem;
       transform: translateY(6px);
@@ -1428,7 +1473,7 @@
     }
 
     .tax-roll-final-thought::before {
-      background: linear-gradient(to bottom, rgba(36, 59, 68, 0.18), rgba(255, 255, 255, 0.82));
+      background: linear-gradient(to bottom, var(--tax-roll-rule-color), transparent);
       block-size: 2px;
       content: "";
       inline-size: 100%;
@@ -1500,7 +1545,7 @@
       .tax-roll-experiment-setup p {
         border-radius: 13px 13px 0 0;
         border-right: 0;
-        border-bottom: 1px solid rgba(36, 59, 68, 0.12);
+        border-bottom: 1px solid var(--tax-roll-panel-border);
         margin: -0.58rem -0.68rem 0;
         min-height: 2rem;
         padding: 0 0.68rem;
@@ -1519,7 +1564,7 @@
 
       .tax-roll-experiment-setup__group + .tax-roll-experiment-setup__group {
         border-left: 0;
-        border-top: 1px solid rgba(36, 59, 68, 0.11);
+        border-top: 1px solid var(--tax-roll-panel-border);
         padding-top: 0.36rem;
       }
 
@@ -1645,7 +1690,7 @@
       }
 
       .tax-roll-result-column {
-        border-left: 1px solid rgba(36, 59, 68, 0.13);
+        border-left: 1px solid var(--tax-roll-panel-border);
         grid-column: 2;
         grid-row: 1 / span 2;
         margin-top: 0.2rem;
@@ -1724,7 +1769,7 @@
 
       .tax-roll-result-table th,
       .tax-roll-result-table td {
-        border-bottom: 1px solid rgba(36, 59, 68, 0.1);
+        border-bottom: 1px solid var(--tax-roll-panel-border);
         display: table-cell;
         padding: 0.48rem 0.62rem;
         text-align: right;
@@ -1737,8 +1782,8 @@
       }
 
       .tax-roll-result-table thead th {
-        background: #243b44;
-        color: #ffffff;
+        background: var(--tax-roll-table-head-bg);
+        color: var(--tax-roll-table-head-text);
         font-family: var(--ges-font-heading, "Poppins", system-ui, sans-serif);
         font-size: 0.62rem;
         font-weight: 850;
@@ -1750,8 +1795,8 @@
       }
 
       .tax-roll-result-table--pending thead th {
-        background: rgba(36, 59, 68, 0.78);
-        color: rgba(255, 255, 255, 0.9);
+        background: var(--tax-roll-table-head-bg);
+        color: var(--tax-roll-table-head-text);
       }
 
       .tax-roll-result-table tbody th {

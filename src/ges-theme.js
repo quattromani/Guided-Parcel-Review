@@ -1,7 +1,6 @@
 const GES_THEME_STORAGE_KEY = "ges-theme-preference";
 const GES_THEME_OPTIONS = ["light", "dark"];
-const GES_SYSTEM_THEME_QUERY = "(prefers-color-scheme: dark)";
-let mediaListenerInstalled = false;
+const GES_DEFAULT_THEME = "light";
 
 function safeStorage() {
   try {
@@ -12,7 +11,7 @@ function safeStorage() {
 }
 
 function normalizeTheme(value) {
-  return GES_THEME_OPTIONS.includes(value) ? value : systemTheme();
+  return GES_THEME_OPTIONS.includes(value) ? value : GES_DEFAULT_THEME;
 }
 
 function storedTheme() {
@@ -21,29 +20,24 @@ function storedTheme() {
   return GES_THEME_OPTIONS.includes(value) ? value : null;
 }
 
-function systemTheme() {
-  return window.matchMedia?.(GES_SYSTEM_THEME_QUERY).matches ? "dark" : "light";
-}
-
 function selectedTheme() {
-  return storedTheme() ?? "system";
+  return storedTheme() ?? GES_DEFAULT_THEME;
 }
 
 function resolvedTheme(theme = selectedTheme()) {
-  if (theme === "system") return systemTheme();
   return normalizeTheme(theme);
 }
 
 function setPressedState(theme, resolved) {
   document.querySelectorAll("[data-ges-theme-option]").forEach((button) => {
-    const isActive = button.dataset.gesThemeOption === (theme === "system" ? resolved : theme);
+    const isActive = button.dataset.gesThemeOption === resolved;
     button.setAttribute("aria-pressed", isActive ? "true" : "false");
     button.toggleAttribute("data-active", isActive);
   });
 }
 
 export function applyGesTheme(theme = selectedTheme()) {
-  const selected = theme === "system" ? "system" : normalizeTheme(theme);
+  const selected = normalizeTheme(theme);
   const resolved = resolvedTheme(selected);
   const previousSelected = document.documentElement.dataset.gesTheme;
   const previousResolved = document.documentElement.dataset.gesThemeResolved;
@@ -132,21 +126,4 @@ export function installGesThemeToggle(root = document) {
     button.dataset.gesThemeToggleReady = "true";
     button.addEventListener("click", () => setGesTheme(button.dataset.gesThemeOption));
   });
-
-  if (mediaListenerInstalled || !window.matchMedia) return;
-
-  const systemThemeMedia = window.matchMedia(GES_SYSTEM_THEME_QUERY);
-  const handleDefaultThemeChange = () => {
-    if (!storedTheme()) {
-      applyGesTheme("system");
-    }
-  };
-
-  if (systemThemeMedia.addEventListener) {
-    systemThemeMedia.addEventListener("change", handleDefaultThemeChange);
-  } else if (systemThemeMedia.addListener) {
-    systemThemeMedia.addListener(handleDefaultThemeChange);
-  }
-
-  mediaListenerInstalled = true;
 }

@@ -30,7 +30,7 @@ export const watchTheTaxRollMoveArticle = {
         "That sounds reasonable. If every property owner in a county received a 10% reduction in assessed value, most people would expect the tax bill to move in the same direction.",
         "But what if it did not?",
         "What if lowering every assessment mostly changed the levy instead?",
-        "Rather than argue from intuition, we can simplify the system until each relationship is visible.",
+        "Rather than going off intuition alone, we can simplify the system until each relationship is visible.",
         "We'll begin with ten identical homes, one fixed budget, and one levy rate. Then we'll change only one variable at a time and watch what happens."
       ]
     },
