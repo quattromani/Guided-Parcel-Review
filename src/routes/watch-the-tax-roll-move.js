@@ -9,6 +9,7 @@ import {
   renderSectionHeader as sectionHeader
 } from "../ges/article-components.js?v=20260701-article-polish-4";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
+import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260701-article-polish-4";
 
 import {
   taxRollBudgetTransition as BUDGET_TRANSITION,
@@ -25,6 +26,8 @@ const CURRENCY_FORMAT = new Intl.NumberFormat("en-US", { style: "currency", curr
 const PERCENT_FORMAT = new Intl.NumberFormat("en-US", { maximumFractionDigits: 3, minimumFractionDigits: 3 });
 const SHARE_FORMAT = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1, minimumFractionDigits: 1 });
 const ARTICLE_SECTIONS = ARTICLE.sections ?? {};
+const ARTICLE_ID = ARTICLE.id || ARTICLE.legacyQueryValue;
+const ARTICLE_DEPTH_MILESTONES = [25, 50, 75, 100];
 
 function normalizedPathname() {
   return window.location.pathname.endsWith("/")
@@ -74,6 +77,7 @@ export function renderWatchTheTaxRollMoveArticle() {
   shell.setCover(renderCover());
   shell.setBody(`
     <article class="tax-shorthand-page levy-compression-page editorial-guide tax-article-panel tax-roll-article" data-county-theme="gage" data-ges-reading-progress-target aria-label="${escapeHtml(ARTICLE.title)}">
+      ${renderArticleDepthMarkers()}
       ${renderEntryPanel()}
       <section class="tax-roll-intro tax-article-section tax-story-chapter tax-article-opening levy-wide-panel article-section ges-opening-section" data-tone="reflection" aria-labelledby="taxRollIntroTitle">
         <div class="editorial-narrow ges-section-lead">
@@ -89,6 +93,9 @@ export function renderWatchTheTaxRollMoveArticle() {
   `);
 
   installHeroVideo(shell.coverRegion);
+  installArticleAnalytics(shell.bodyRegion);
+  installHeroAudio(shell.bodyRegion);
+  installHeroUtilityTracking(shell.bodyRegion);
   installTaxRollExperiment(shell.bodyRegion);
   installGuideUtilityLanguage(shell.bodyRegion);
   installGesReadingProgress({ root: shell.bodyRegion });
@@ -147,6 +154,16 @@ function paragraphs(items = []) {
   return items.map(paragraph).join("");
 }
 
+function renderArticleDepthMarkers() {
+  return `
+    <div class="article-depth-markers" aria-hidden="true">
+      ${ARTICLE_DEPTH_MILESTONES.map(depth => `
+        <span class="article-depth-marker" data-article-depth-marker="${depth}"></span>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderEntryPanel() {
   return renderArticleEntryPanel({
     articleTitle: ARTICLE.title,
@@ -174,30 +191,285 @@ function installHeroVideo(root) {
   const playButton = wrapper.querySelector("[data-hero-video-play]");
   if (!video || !playButton) return;
 
+  const progressMilestones = new Set();
+  let visibleTracked = false;
+  let playTracked = false;
+  let completeTracked = false;
+
+  const videoMetrics = (details = {}) => {
+    const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 0;
+    const currentTime = Number.isFinite(video.currentTime) ? video.currentTime : 0;
+    const mediaPercent = duration ? Math.min(100, Math.round((currentTime / duration) * 100)) : "";
+
+    return {
+      placement: "hero",
+      mediaId: "hero_summary",
+      mediaType: "video",
+      mediaCurrentTime: Math.round(currentTime),
+      mediaDuration: duration ? Math.round(duration) : "",
+      mediaPercent,
+      mediaMuted: video.muted,
+      mediaPaused: video.paused,
+      mediaReadyState: video.readyState,
+      mediaNetworkState: video.networkState,
+      ...details
+    };
+  };
+
+  const trackHeroVideo = (action, details = {}) => {
+    trackArticleInteraction(action, {
+      articleId: ARTICLE_ID,
+      detail: "hero video summary",
+      ...videoMetrics(details)
+    });
+  };
+
   const syncVideoState = () => {
     wrapper.classList.toggle("is-playing", !video.paused && !video.ended);
     wrapper.classList.toggle("has-started", video.currentTime > 0 && !video.ended);
     if (video.ended) wrapper.classList.remove("has-started", "is-playing");
   };
 
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(entries => {
+      const visibleEntry = entries.find(entry => entry.isIntersecting);
+      if (!visibleEntry || visibleTracked) return;
+      visibleTracked = true;
+      trackHeroVideo("tldr_video_visible", {
+        mediaPercent: 0
+      });
+      observer.disconnect();
+    }, {
+      threshold: 0.35
+    });
+    observer.observe(wrapper);
+  }
+
   playButton.addEventListener("click", async () => {
+    trackHeroVideo("tldr_video_tap");
     try {
       await video.play();
       video.controls = true;
-    } catch {
+    } catch (error) {
       video.controls = true;
       video.focus({ preventScroll: true });
+      trackHeroVideo("tldr_video_play_error", {
+        errorName: error?.name || "",
+        errorMessage: error?.message || "Video play failed"
+      });
+      trackHeroVideo("tldr_video_controls_fallback");
     }
     syncVideoState();
   });
 
   video.addEventListener("play", () => {
     video.controls = true;
+    if (!playTracked) {
+      playTracked = true;
+      trackHeroVideo("tldr_video_play");
+    }
     syncVideoState();
   });
   video.addEventListener("pause", syncVideoState);
-  video.addEventListener("timeupdate", syncVideoState);
-  video.addEventListener("ended", syncVideoState);
+  video.addEventListener("timeupdate", () => {
+    syncVideoState();
+    if (!Number.isFinite(video.duration) || video.duration <= 0) return;
+    const percent = Math.floor((video.currentTime / video.duration) * 100);
+    [25, 50, 75].forEach(milestone => {
+      if (percent < milestone || progressMilestones.has(milestone)) return;
+      progressMilestones.add(milestone);
+      trackHeroVideo(`tldr_video_${milestone}`, {
+        mediaPercent: milestone
+      });
+    });
+  });
+  video.addEventListener("ended", () => {
+    if (!completeTracked) {
+      completeTracked = true;
+      trackHeroVideo("tldr_video_complete", {
+        mediaPercent: 100
+      });
+    }
+    syncVideoState();
+  });
+}
+
+function installHeroAudio(root) {
+  const wrapper = root.querySelector("[data-hero-audio]");
+  if (!wrapper || wrapper.dataset.heroAudioReady === "true") return;
+  wrapper.dataset.heroAudioReady = "true";
+
+  const audio = wrapper.querySelector("[data-hero-audio-player]");
+  if (!audio) return;
+
+  let expandTracked = false;
+  let playTracked = false;
+  let completeTracked = false;
+
+  const trackHeroAudio = (action, details = {}) => {
+    trackArticleInteraction(action, {
+      articleId: ARTICLE_ID,
+      detail: "audio article version",
+      ...details
+    });
+  };
+
+  wrapper.addEventListener("toggle", () => {
+    if (!wrapper.open || expandTracked) return;
+    expandTracked = true;
+    trackHeroAudio("audio_article_expand", { placement: "hero" });
+  });
+
+  audio.addEventListener("play", () => {
+    if (!playTracked) {
+      playTracked = true;
+      trackHeroAudio("audio_article_play", { placement: "hero" });
+    }
+  });
+
+  audio.addEventListener("pause", () => {
+    if (!audio.ended && audio.currentTime > 0) {
+      trackHeroAudio("audio_article_pause", {
+        placement: "hero",
+        currentTime: Math.round(audio.currentTime)
+      });
+    }
+  });
+
+  audio.addEventListener("ended", () => {
+    if (completeTracked) return;
+    completeTracked = true;
+    trackHeroAudio("audio_article_complete", { placement: "hero" });
+  });
+}
+
+function installHeroUtilityTracking(root) {
+  const utility = root.querySelector(".hero-utility");
+  if (!utility || utility.dataset.heroUtilityReady === "true") return;
+  utility.dataset.heroUtilityReady = "true";
+
+  utility.addEventListener("click", event => {
+    const link = event.target.closest("[data-article-action]");
+    if (!link) return;
+    trackArticleInteraction(link.dataset.articleAction, {
+      articleId: ARTICLE_ID,
+      detail: link.dataset.articleLabel || link.textContent?.trim() || link.getAttribute("href") || "",
+      targetUrl: link.getAttribute("href") || "",
+      placement: "hero"
+    });
+  });
+}
+
+function installArticleAnalytics(root) {
+  const article = root.querySelector(".tax-roll-article");
+  if (!article || article.dataset.analyticsReady === "true") return;
+  article.dataset.analyticsReady = "true";
+
+  article.addEventListener("click", event => {
+    const actionElement = event.target.closest("[data-article-action]");
+    if (actionElement && article.contains(actionElement)) {
+      if (actionElement.closest(".hero-utility")) return;
+      trackArticleInteraction(actionElement.dataset.articleAction, {
+        articleId: ARTICLE_ID,
+        detail: actionElement.dataset.articleLabel || actionElement.textContent?.trim() || actionElement.getAttribute("href") || "",
+        targetUrl: actionElement.getAttribute("href") || ""
+      });
+      return;
+    }
+
+    const resourceLink = event.target.closest(".ges-resources-block a[href]");
+    if (resourceLink && article.contains(resourceLink)) {
+      trackArticleInteraction("resource_click", {
+        articleId: ARTICLE_ID,
+        detail: resourceLink.textContent?.trim() || resourceLink.getAttribute("href") || "",
+        targetUrl: resourceLink.getAttribute("href") || "",
+        placement: "resources"
+      });
+    }
+  });
+
+  installArticleDepthTracking(article);
+}
+
+function installArticleDepthTracking(article) {
+  const markers = Array.from(article.querySelectorAll("[data-article-depth-marker]"));
+  const reached = new Set();
+  let maxScrollPercent = calculateArticleScrollDepth(article);
+  let finalReported = false;
+  let ticking = false;
+
+  const reportDepth = (depth, source = "marker") => {
+    const scrollPercent = Math.max(0, Math.min(100, Number(depth) || 0));
+    if (reached.has(scrollPercent)) return;
+    reached.add(scrollPercent);
+    maxScrollPercent = Math.max(maxScrollPercent, scrollPercent);
+    trackArticleScrollDepth({
+      articleId: ARTICLE_ID,
+      detail: scrollPercent === 100 ? "scroll_complete" : `scroll_${scrollPercent}`,
+      scrollPercent,
+      maxScrollPercent,
+      reachedBottom: scrollPercent === 100,
+      source
+    });
+  };
+
+  const measureDepth = () => {
+    ticking = false;
+    maxScrollPercent = Math.max(maxScrollPercent, calculateArticleScrollDepth(article));
+    ARTICLE_DEPTH_MILESTONES.forEach(depth => {
+      if (maxScrollPercent >= depth) reportDepth(depth, "calculated");
+    });
+  };
+
+  const requestMeasureDepth = () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(measureDepth);
+  };
+
+  const reportFinalDepth = () => {
+    if (finalReported) return;
+    finalReported = true;
+    maxScrollPercent = Math.max(maxScrollPercent, calculateArticleScrollDepth(article));
+    trackArticleScrollDepth({
+      articleId: ARTICLE_ID,
+      detail: "scroll_final",
+      maxScrollPercent,
+      reachedBottom: maxScrollPercent >= 100,
+      source: "final"
+    });
+  };
+
+  if ("IntersectionObserver" in window && markers.length) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        reportDepth(entry.target.dataset.articleDepthMarker, "marker");
+      });
+    }, {
+      root: null,
+      threshold: 0,
+      rootMargin: "0px 0px -1px 0px"
+    });
+    markers.forEach(marker => observer.observe(marker));
+  }
+
+  window.addEventListener("scroll", requestMeasureDepth, { passive: true });
+  window.addEventListener("resize", requestMeasureDepth);
+  window.addEventListener("pagehide", reportFinalDepth);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") reportFinalDepth();
+  });
+  requestMeasureDepth();
+}
+
+function calculateArticleScrollDepth(article) {
+  const rect = article.getBoundingClientRect();
+  const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+  const articleHeight = Math.max(1, article.scrollHeight || rect.height || 1);
+  const viewedDistance = Math.min(articleHeight, Math.max(0, viewportHeight - rect.top));
+
+  return Math.max(0, Math.min(100, Math.round((viewedDistance / articleHeight) * 100)));
 }
 
 function renderArticleResources() {
@@ -538,6 +810,12 @@ function installTaxRollExperiment(root) {
   root.addEventListener("click", event => {
     const tableToggle = event.target.closest("[data-toggle-result-table]");
     if (tableToggle && root.contains(tableToggle)) {
+      const shell = tableToggle.closest("[data-result-shell]");
+      trackArticleInteraction("result_table_toggle", {
+        articleId: ARTICLE_ID,
+        detail: shell?.dataset.resultShell || "",
+        placement: "experiment"
+      });
       toggleMobileResultTable(tableToggle);
       return;
     }
@@ -546,6 +824,12 @@ function installTaxRollExperiment(root) {
     if (!button || !root.contains(button)) return;
     const lesson = LESSONS.find(item => item.id === button.dataset.runLesson);
     if (!lesson) return;
+    trackArticleInteraction("tax_roll_lesson_reveal", {
+      articleId: ARTICLE_ID,
+      detail: lesson.title,
+      placement: "experiment",
+      source: lesson.id
+    });
     const scenario = calculate(lesson.values().map(roundDollar), lesson.budget);
     button.disabled = true;
     button.classList.add("is-loading");
