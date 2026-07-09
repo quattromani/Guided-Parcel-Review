@@ -7,7 +7,7 @@ import {
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260701-article-polish-4";
+} from "../ges/article-components.js?v=20260709-reader-proof-1";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
@@ -353,7 +353,6 @@ function renderStatCard(label, value, detail = "", outputName = "") {
 
 function renderArticleEntryPanel() {
   return renderGesArticleEntryPanel({
-    articleSlug: ARTICLE_ID,
     articleTitle: ARTICLE_TITLE,
     authorImage: ARTICLE_AUTHOR_IMAGE,
     authorMailto: ARTICLE_AUTHOR_MAILTO,
@@ -734,6 +733,7 @@ export function renderProtestParadox() {
   updateMetadata();
 
   shell.setCover(renderArticleHero({
+    articleSlug: ARTICLE_ID,
     mediaHtml: `
       <figure class="article-hero-media hero-media">
         <img src="${escapeHtml(ARTICLE_SOCIAL_IMAGE)}" alt="${escapeHtml(ARTICLE_HERO_IMAGE_ALT)}" loading="eager" decoding="async" />

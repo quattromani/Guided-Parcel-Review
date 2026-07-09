@@ -200,7 +200,7 @@ export function currentArticleSlug(root = document) {
 export function ArticleReaderCount({ articleSlug, count } = {}) {
   if (!articleSlug || !shouldShowReaderCount(count)) return "";
   const formatted = formatReaderCount(count);
-  return formatted ? `${formatted} readers` : "";
+  return formatted ? `Read by ${formatted} people` : "";
 }
 
 export function installArticleReaderCounts(root = document, options = {}) {
@@ -220,7 +220,7 @@ export function installArticleReaderCounts(root = document, options = {}) {
         const label = ArticleReaderCount({ articleSlug: slug, count: result.readers });
         if (!label) return;
         target.textContent = label;
-        target.setAttribute("aria-label", `${result.readers.toLocaleString("en-US")} people have read this article`);
+        target.setAttribute("aria-label", label);
         target.hidden = false;
         window.requestAnimationFrame(() => {
           target.dataset.articleReaderCountVisible = "true";

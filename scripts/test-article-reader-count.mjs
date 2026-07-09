@@ -6,9 +6,9 @@ const source = readFileSync(new URL("../src/article-reader-count.js", import.met
   .replace(/^import .*;\n/, "")
   .replace(/export /g, "");
 const context = {};
-vm.runInNewContext(`${source}\nthis.formatReaderCount = formatReaderCount;\nthis.shouldShowReaderCount = shouldShowReaderCount;`, context);
+vm.runInNewContext(`${source}\nthis.ArticleReaderCount = ArticleReaderCount;\nthis.formatReaderCount = formatReaderCount;\nthis.shouldShowReaderCount = shouldShowReaderCount;`, context);
 
-const { formatReaderCount, shouldShowReaderCount } = context;
+const { ArticleReaderCount, formatReaderCount, shouldShowReaderCount } = context;
 
 const cases = [
   { count: undefined, show: false, label: "" },
@@ -25,6 +25,7 @@ const cases = [
 cases.forEach(({ count, show, label }) => {
   assert.equal(shouldShowReaderCount(count), show, `visibility for ${count}`);
   assert.equal(formatReaderCount(count), label, `format for ${count}`);
+  assert.equal(ArticleReaderCount({ articleSlug: "watch-the-tax-roll-move", count }), label ? `Read by ${label} people` : "", `component copy for ${count}`);
 });
 
 console.log(JSON.stringify({ ok: true, checked: cases.length }, null, 2));

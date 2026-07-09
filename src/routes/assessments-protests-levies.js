@@ -11,7 +11,7 @@ import {
   renderResourcesBlock,
   renderSectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260701-article-polish-4";
+} from "../ges/article-components.js?v=20260709-reader-proof-1";
 import { installGesReadingProgress } from "../ges/reading-progress.js?v=20260701-article-polish-4";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import { howYourPropertyValueBecomesATaxBillArticle as articleSource } from "../content/articles/how-your-property-value-becomes-a-tax-bill.js?v=20260701-article-polish-4";
@@ -132,6 +132,7 @@ export function renderAssessmentsProtestsLeviesArticle() {
 
 function renderHero() {
   return renderArticleHero({
+    articleSlug: ARTICLE.legacyQueryValue,
     className: "ges-act-one-hero",
     mediaHtml: `
       <figure class="article-hero-media hero-media ges-act-one-hero__media">
@@ -156,7 +157,6 @@ function renderOpeningSection() {
   return `
     <section class="tax-story-chapter article-section ges-opening-section ges-act-section ges-act-opening" data-tone="information" aria-labelledby="noticeMomentTitle">
       ${renderArticleEntryPanel({
-        articleSlug: ARTICLE.legacyQueryValue,
         articleTitle: ARTICLE.title,
         authorImage: ARTICLE.assets.authorImage,
         authorMailto: `mailto:${ARTICLE.authorEmail}`,

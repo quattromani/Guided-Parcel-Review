@@ -8,7 +8,7 @@ import {
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote as renderGesSourceNote
-} from "../ges/article-components.js?v=20260701-article-polish-4";
+} from "../ges/article-components.js?v=20260709-reader-proof-1";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
@@ -910,6 +910,7 @@ export function renderProtestEvidenceGuide() {
   updateProtestEvidenceGuideMetadata();
 
   shell.setCover(renderArticleHero({
+    articleSlug: ARTICLE_ID,
     mediaHtml: `
       <figure class="article-hero-media hero-media article-hero-video" data-hero-video>
         <video
@@ -966,7 +967,6 @@ export function renderProtestEvidenceGuide() {
 
 function renderArticleEntryPanel() {
   return renderGesArticleEntryPanel({
-    articleSlug: ARTICLE_ID,
     articleTitle: ARTICLE_TITLE,
     authorImage: ARTICLE_AUTHOR_IMAGE,
     authorMailto: ARTICLE_AUTHOR_MAILTO,

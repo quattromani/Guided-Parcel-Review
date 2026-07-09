@@ -4,7 +4,7 @@ import {
   renderArticleHero,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderResourcesBlock as renderGesResourcesBlock
-} from "../ges/article-components.js?v=20260701-article-polish-4";
+} from "../ges/article-components.js?v=20260709-reader-proof-1";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
@@ -256,7 +256,6 @@ function articleMetadata() {
 
 function renderArticleEntryPanel() {
   return renderGesArticleEntryPanel({
-    articleSlug: ARTICLE_ID,
     articleTitle: ARTICLE_TITLE,
     authorImage: ARTICLE_AUTHOR_IMAGE,
     authorMailto: `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeURIComponent(`Re: ${ARTICLE_TITLE}`)}`,
@@ -834,6 +833,7 @@ export function renderLevyCompressionPost() {
   const canvas = shell.bodyRegion;
 
   shell.setCover(renderArticleHero({
+    articleSlug: ARTICLE_ID,
     label: "Article Draft",
     subject: "Levy Compression",
     subtitle: ARTICLE_SUBTITLE,

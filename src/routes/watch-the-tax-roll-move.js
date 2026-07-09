@@ -7,7 +7,7 @@ import {
   renderMarginInsight,
   renderResourcesBlock,
   renderSectionHeader as sectionHeader
-} from "../ges/article-components.js?v=20260701-article-polish-4";
+} from "../ges/article-components.js?v=20260709-reader-proof-1";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-central-timestamp-1";
 
@@ -103,6 +103,7 @@ export function renderWatchTheTaxRollMoveArticle() {
 
 function renderCover() {
   return renderArticleHero({
+    articleSlug: ARTICLE.canonicalPath,
     className: "tax-roll-hero",
     label: "Interactive Article",
     mediaHtml: `
@@ -189,7 +190,6 @@ function renderArticleDepthMarkers() {
 
 function renderEntryPanel() {
   return renderArticleEntryPanel({
-    articleSlug: ARTICLE.canonicalPath,
     articleTitle: ARTICLE.title,
     authorImage: ARTICLE.assets.authorImage,
     authorMailto: `mailto:${ARTICLE.authorEmail}?subject=${encodeURIComponent(`Re: ${ARTICLE.title}`)}`,

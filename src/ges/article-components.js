@@ -710,6 +710,7 @@ export function renderArticleTags(tags = []) {
 }
 
 export function renderArticleHero({
+  articleSlug = "",
   className = "",
   label = "Article",
   mediaHtml = "",
@@ -737,6 +738,7 @@ export function renderArticleHero({
           </p>
         </div>
         <h1 id="${escapeHtml(titleId)}" class="hero-title">${escapeHtml(title)}</h1>
+        <p class="article-reader-count" data-article-reader-count data-article-slug="${escapeHtml(articleSlug)}" hidden aria-live="polite"></p>
         ${subtitle ? `<p class="hero-deck">${escapeHtml(subtitle)}</p>` : ""}
         ${renderArticleTags(tags)}
       </div>
@@ -799,7 +801,6 @@ export function renderGuideUtility({
 }
 
 export function renderArticleEntryPanel({
-  articleSlug = "",
   articleTitle,
   authorImage,
   authorMailto,
@@ -825,7 +826,6 @@ export function renderArticleEntryPanel({
             <p class="article-entry-date">${escapeHtml(displayDate)}</p>
           </div>
         </div>
-        <span class="article-reader-count" data-article-reader-count data-article-slug="${escapeHtml(articleSlug)}" hidden aria-live="polite"></span>
       </div>
       ${renderGuideUtility({
         articleTitle,

@@ -66,27 +66,27 @@ import { renderGrantNeighborCompExperiment } from "./routes/grant-neighbor-comps
 import {
   isLevyCompressionPostRequest,
   renderLevyCompressionPost
-} from "./routes/levy-compression-post.js?v=20260701-article-polish-4";
+} from "./routes/levy-compression-post.js?v=20260709-reader-proof-1";
 import {
   isProtestEvidenceGuideRequest,
   renderProtestEvidenceGuide
-} from "./routes/protest-evidence-guide.js?v=20260709-central-timestamp-1";
+} from "./routes/protest-evidence-guide.js?v=20260709-reader-proof-1";
 import {
   isProtestParadoxRequest,
   renderProtestParadox
-} from "./routes/protest-paradox.js?v=20260709-central-timestamp-1";
+} from "./routes/protest-paradox.js?v=20260709-reader-proof-1";
 import {
   isAssessmentsProtestsLeviesRequest,
   renderAssessmentsProtestsLeviesArticle
-} from "./routes/assessments-protests-levies.js?v=20260701-article-polish-4";
+} from "./routes/assessments-protests-levies.js?v=20260709-reader-proof-1";
 import {
   isWatchTheTaxRollMoveRequest,
   renderWatchTheTaxRollMoveArticle
-} from "./routes/watch-the-tax-roll-move.js?v=20260709-central-timestamp-1";
+} from "./routes/watch-the-tax-roll-move.js?v=20260709-reader-proof-1";
 import {
   isCostPersonalValueStatisticalRequest,
   renderCostPersonalValueStatisticalArticle
-} from "./routes/cost-is-personal-value-is-statistical.js?v=20260709-central-timestamp-1";
+} from "./routes/cost-is-personal-value-is-statistical.js?v=20260709-reader-proof-1";
 import {
   isArticleRollRequest,
   renderArticleRoll
@@ -115,7 +115,7 @@ import {
   trackResourceClick,
   trackStepView
 } from "./visit-analytics.js?v=20260709-central-timestamp-1";
-import { installArticleReaderCounts } from "./article-reader-count.js?v=20260709-central-timestamp-1";
+import { installArticleReaderCounts } from "./article-reader-count.js?v=20260709-reader-proof-1";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 let importantCalendarDates = { dates: [], metadata: {} };
