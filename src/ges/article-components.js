@@ -700,16 +700,11 @@ export function renderSectionHeader(kicker, title, id, options = {}) {
   `;
 }
 
-export function renderArticleTags(tags = []) {
-  if (!tags.length) return "";
-
-  return `
-        <ul class="article-entry-tags" aria-label="Article tags">
-          ${tags.map((tag) => `<li>${escapeHtml(tag)}</li>`).join("")}
-        </ul>`;
+export function renderArticleTags() {
+  return "";
 }
 
-export function renderArticleHero({
+export function renderArticleMasthead({
   articleSlug = "",
   className = "",
   currentAsOfDate = "",
@@ -723,7 +718,7 @@ export function renderArticleHero({
   title = "",
   titleId = "articleTitle"
 } = {}) {
-  const classes = ["comp-page-title", "levy-page-title", "article-hero", className].filter(Boolean).join(" ");
+  const classes = ["article-masthead", "article-hero", className].filter(Boolean).join(" ");
   const trustSignalMarkup = renderArticleTrustSignalLine({
     articleSlug,
     readingMinutes
@@ -742,22 +737,24 @@ export function renderArticleHero({
   return `
     <header class="${escapeHtml(classes)}" aria-labelledby="${escapeHtml(titleId)}">
       <div class="article-hero-packet">
-        <div class="hero-kicker-row">
-          <p class="guided-kicker hero-kicker hero-brand-kicker">
-            <span class="hero-kicker-text">
-              <span class="hero-kicker-label">${escapeHtml(label)}</span>${subjectMarkup}
+        <div class="article-kicker-row hero-kicker-row">
+          <p class="article-kicker guided-kicker hero-kicker">
+            <span class="article-kicker-text hero-kicker-text">
+              <span class="article-kicker-label hero-kicker-label">${escapeHtml(label)}</span>${subjectMarkup}
             </span>
           </p>
         </div>
-        <h1 id="${escapeHtml(titleId)}" class="hero-title">${escapeHtml(title)}</h1>
+        <h1 id="${escapeHtml(titleId)}" class="article-title hero-title">${escapeHtml(title)}</h1>
         ${trustSignalMarkup}
-        ${subtitle ? `<p class="hero-deck">${escapeHtml(subtitle)}</p>` : ""}
+        ${subtitle ? `<p class="article-standfirst hero-deck">${escapeHtml(subtitle)}</p>` : ""}
         ${publicationMetadataMarkup}
       </div>
       ${mediaHtml}
     </header>
   `;
 }
+
+export const renderArticleHero = renderArticleMasthead;
 
 export function dateKey(dateValue = "") {
   const match = String(dateValue).match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -827,7 +824,7 @@ export function renderArticlePublicationMeta({
         </div>`;
 }
 
-export function renderGuideUtility({
+export function renderArticleTools({
   articleTitle,
   audioUrl = "",
   icon,
@@ -865,9 +862,9 @@ export function renderGuideUtility({
   if (!formatControls) return "";
 
   return `
-    <section class="guide-utility article-tools" aria-labelledby="articleToolsTitle">
+    <section class="article-tools guide-utility" aria-labelledby="articleToolsTitle">
       <h2 id="articleToolsTitle" class="article-meta-section-heading">Article Tools</h2>
-      <div class="guide-formats hero-utility" aria-label="Available formats">
+      <div class="article-tools__formats guide-formats hero-utility" aria-label="Available formats">
         <div class="format-control">
           ${formatControls}
         </div>
@@ -876,6 +873,8 @@ export function renderGuideUtility({
     </section>
   `;
 }
+
+export const renderGuideUtility = renderArticleTools;
 
 function editorialToolIcon(name = "") {
   const paths = {
@@ -906,16 +905,14 @@ export function renderArticleEntryPanel({
 }) {
   return `
     <div class="article-entry-panel article-entry-panel--locked" data-article-entry-panel>
-      <div class="article-entry-meta" aria-label="Article information">
-        <div class="article-author-attribution">
-          <img class="article-author-photo" src="${escapeHtml(authorImage)}" alt="" loading="lazy" decoding="async" />
-          <div class="article-author-copy">
-            <p class="article-author-name"><a href="${escapeHtml(authorMailto)}" data-article-action="author_email" data-article-label="${escapeHtml(articleTitle)}"><span class="article-author-name-text">${escapeHtml(authorName)}</span></a></p>
-            ${authorTitle ? `<p class="article-author-title">${escapeHtml(authorTitle)}</p>` : ""}
-          </div>
-        </div>
-      </div>
-      ${renderGuideUtility({
+      ${renderArticleAuthor({
+        articleTitle,
+        authorImage,
+        authorMailto,
+        authorName,
+        authorTitle
+      })}
+      ${renderArticleTools({
         articleTitle,
         audioUrl,
         icon,
@@ -926,6 +923,30 @@ export function renderArticleEntryPanel({
       })}
     </div>
   `;
+}
+
+export function renderArticleAuthor({
+  articleTitle = "",
+  authorImage = "",
+  authorMailto = "",
+  authorName = "",
+  authorTitle = ""
+} = {}) {
+  if (!authorName) return "";
+  const authorNameMarkup = authorMailto
+    ? `<a href="${escapeHtml(authorMailto)}" data-article-action="author_email" data-article-label="${escapeHtml(articleTitle)}"><span class="article-author-name-text">${escapeHtml(authorName)}</span></a>`
+    : `<span class="article-author-name-text">${escapeHtml(authorName)}</span>`;
+
+  return `
+      <div class="article-entry-meta" aria-label="Article author">
+        <div class="article-author article-author-attribution">
+          ${authorImage ? `<img class="article-author-photo" src="${escapeHtml(authorImage)}" alt="" loading="lazy" decoding="async" />` : ""}
+          <div class="article-author-copy">
+            <p class="article-author-name">${authorNameMarkup}</p>
+            ${authorTitle ? `<p class="article-author-title">${escapeHtml(authorTitle)}</p>` : ""}
+          </div>
+        </div>
+      </div>`;
 }
 
 export function installGuideUtilityLanguage(root = document) {

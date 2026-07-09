@@ -1,3 +1,4 @@
+.article-masthead,
 .article-hero,
 .guide-hero {
   display: grid;
@@ -61,10 +62,12 @@
   color: rgb(var(--ges-color-text));
 }
 
+.article-kicker-row,
 .hero-kicker-row {
   color: rgb(var(--ges-color-text-secondary));
 }
 
+.article-kicker,
 .article-hero .hero-brand-kicker {
   align-items: center;
   display: inline-flex;
@@ -93,6 +96,7 @@
   opacity: 0;
 }
 
+.article-kicker-text,
 .article-hero .hero-kicker-text {
   align-items: center;
   display: inline-flex;
@@ -114,6 +118,7 @@
   width: 100%;
 }
 
+.article-standfirst,
 .article-hero .hero-deck {
   color: rgb(var(--ges-color-text-secondary));
   font-family: var(--ges-font-body);
@@ -124,20 +129,30 @@
   text-indent: 0;
 }
 
+.article-hero .article-kicker-row,
 .article-hero .hero-kicker-row {
   margin-block-end: clamp(0.42rem, 0.78vw, 0.62rem);
 }
 
+.article-title,
 .article-hero .hero-title {
+  color: rgb(var(--ges-color-text));
+  font-size: clamp(2.7rem, 5.2vw, 3.65rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 0.98;
   margin-block-end: clamp(0.56rem, 0.95vw, 0.78rem);
+  max-width: min(100%, 60rem);
 }
 
 .article-hero .article-trust-signals {
   margin-block-end: clamp(0.9rem, 1.42vw, 1.18rem);
 }
 
+.article-hero .article-standfirst,
 .article-hero .hero-deck {
   margin-block-end: clamp(0.95rem, 1.45vw, 1.22rem);
+  max-width: min(100%, 52rem);
 }
 
 .article-entry-tags,
@@ -595,7 +610,7 @@
   justify-content: space-between;
 }
 
-.article-entry-panel--locked .guide-utility {
+.article-entry-panel--locked .article-tools {
   align-items: center;
   border-top: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
   display: grid;
@@ -624,6 +639,7 @@
   min-height: 1em;
 }
 
+.article-tools__formats,
 .guide-formats {
   align-self: center;
   justify-self: end;
@@ -725,11 +741,12 @@
 }
 
 @media (max-width: 640px) {
-  .article-entry-panel--locked .guide-utility {
+  .article-entry-panel--locked .article-tools {
     align-items: flex-start;
     grid-template-columns: 1fr;
   }
 
+  .article-tools__formats,
   .guide-formats {
     justify-self: start;
   }
@@ -741,19 +758,6 @@ html.article-shell-route .article-hero .article-trust-signals {
   font-size: clamp(0.94rem, 1.08vw, 1rem);
   font-weight: 500;
   letter-spacing: 0.01em;
-}
-
-html.article-shell-route .article-hero .hero-title {
-  color: rgb(var(--ges-color-text));
-  font-size: clamp(2.7rem, 5.2vw, 3.65rem);
-  font-weight: 800;
-  letter-spacing: 0;
-  line-height: 0.98;
-  max-width: min(100%, 60rem);
-}
-
-html.article-shell-route .article-hero .hero-deck {
-  max-width: min(100%, 52rem);
 }
 
 html.article-shell-route .article-hero .article-publication-meta {
@@ -769,7 +773,7 @@ html.article-shell-route .ges-opening-section .tax-article-header h2 {
   line-height: 1.05;
 }
 
-html.article-shell-route .article-entry-panel.article-entry-panel--locked .guide-utility.article-tools {
+html.article-shell-route .article-entry-panel.article-entry-panel--locked .article-tools {
   align-items: center;
   border-top: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
   display: grid;
@@ -779,7 +783,7 @@ html.article-shell-route .article-entry-panel.article-entry-panel--locked .guide
   padding-top: var(--ges-space-sm);
 }
 
-html.article-shell-route .article-entry-panel.article-entry-panel--locked .guide-formats.hero-utility {
+html.article-shell-route .article-entry-panel.article-entry-panel--locked .article-tools__formats {
   display: flex;
   justify-self: end;
   width: fit-content;
@@ -808,17 +812,18 @@ html.article-shell-route .article-tools .editorial-icon {
 }
 
 @media (max-width: 640px) {
-  html.article-shell-route .article-entry-panel.article-entry-panel--locked .guide-utility.article-tools {
+  html.article-shell-route .article-entry-panel.article-entry-panel--locked .article-tools {
     align-items: flex-start;
     grid-template-columns: 1fr;
   }
 
-  html.article-shell-route .article-entry-panel.article-entry-panel--locked .guide-formats.hero-utility {
+  html.article-shell-route .article-entry-panel.article-entry-panel--locked .article-tools__formats {
     justify-self: start;
   }
 }
 
 @media (max-width: 640px) {
+  .article-title,
   html.article-shell-route .article-hero .hero-title {
     font-size: clamp(2.35rem, 12vw, 3rem);
     line-height: 1;

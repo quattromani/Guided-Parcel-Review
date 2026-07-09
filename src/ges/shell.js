@@ -1,4 +1,4 @@
-import { ensureGesStylesheet } from "./loader.js?v=20260709-masthead-polish-3";
+import { ensureGesStylesheet } from "./loader.js?v=20260709-article-lockdown-1";
 import {
   applyGesLayoutAttributes,
   applyGesPublicMetadata,

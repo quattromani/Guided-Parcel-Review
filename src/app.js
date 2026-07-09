@@ -66,27 +66,27 @@ import { renderGrantNeighborCompExperiment } from "./routes/grant-neighbor-comps
 import {
   isLevyCompressionPostRequest,
   renderLevyCompressionPost
-} from "./routes/levy-compression-post.js?v=20260709-masthead-polish-3";
+} from "./routes/levy-compression-post.js?v=20260709-article-lockdown-1";
 import {
   isProtestEvidenceGuideRequest,
   renderProtestEvidenceGuide
-} from "./routes/protest-evidence-guide.js?v=20260709-masthead-polish-3";
+} from "./routes/protest-evidence-guide.js?v=20260709-article-lockdown-1";
 import {
   isProtestParadoxRequest,
   renderProtestParadox
-} from "./routes/protest-paradox.js?v=20260709-masthead-polish-3";
+} from "./routes/protest-paradox.js?v=20260709-article-lockdown-1";
 import {
   isAssessmentsProtestsLeviesRequest,
   renderAssessmentsProtestsLeviesArticle
-} from "./routes/assessments-protests-levies.js?v=20260709-masthead-polish-3";
+} from "./routes/assessments-protests-levies.js?v=20260709-article-lockdown-1";
 import {
   isWatchTheTaxRollMoveRequest,
   renderWatchTheTaxRollMoveArticle
-} from "./routes/watch-the-tax-roll-move.js?v=20260709-masthead-polish-3";
+} from "./routes/watch-the-tax-roll-move.js?v=20260709-article-lockdown-1";
 import {
   isCostPersonalValueStatisticalRequest,
   renderCostPersonalValueStatisticalArticle
-} from "./routes/cost-is-personal-value-is-statistical.js?v=20260709-masthead-polish-3";
+} from "./routes/cost-is-personal-value-is-statistical.js?v=20260709-article-lockdown-1";
 import {
   isArticleRollRequest,
   renderArticleRoll
@@ -94,7 +94,7 @@ import {
 import {
   isGesPublicPageRequest,
   renderGesPublicPage
-} from "./routes/public-pages.js?v=20260709-masthead-polish-3";
+} from "./routes/public-pages.js?v=20260709-article-lockdown-1";
 import { renderPropertyInviteIndex } from "./routes/property-invite-index.js?v=20260701-article-polish-4";
 import { renderSFifthComparableSalesExperiment } from "./routes/s-fifth-comparable-sales.js?v=20260701-article-polish-4";
 import { renderTaxShorthandExperiment } from "./routes/tax-shorthand-experiment.js?v=20260701-article-polish-4";
@@ -115,7 +115,7 @@ import {
   trackResourceClick,
   trackStepView
 } from "./visit-analytics.js?v=20260709-central-timestamp-1";
-import { installArticleReaderCounts } from "./article-reader-count.js?v=20260709-masthead-polish-3";
+import { installArticleReaderCounts } from "./article-reader-count.js?v=20260709-article-lockdown-1";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 let importantCalendarDates = { dates: [], metadata: {} };

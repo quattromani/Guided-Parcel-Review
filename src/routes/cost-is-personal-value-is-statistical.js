@@ -1,4 +1,4 @@
-import { createGesArticleShell } from "../ges/shell.js?v=20260709-masthead-polish-3";
+import { createGesArticleShell } from "../ges/shell.js?v=20260709-article-lockdown-1";
 import { installGesReadingProgress } from "../ges/reading-progress.js?v=20260701-article-polish-4";
 import {
   installGuideUtilityLanguage,
@@ -10,10 +10,10 @@ import {
   renderResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-masthead-polish-3";
+} from "../ges/article-components.js?v=20260709-article-lockdown-1";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-central-timestamp-1";
-import { costPersonalValueStatisticalArticle as ARTICLE } from "../content/articles/cost-is-personal-value-is-statistical.js?v=20260709-masthead-polish-3";
+import { costPersonalValueStatisticalArticle as ARTICLE } from "../content/articles/cost-is-personal-value-is-statistical.js?v=20260709-article-lockdown-1";
 
 const ARTICLE_ID = ARTICLE.id;
 const ARTICLE_DEPTH_MILESTONES = [25, 50, 75, 100];

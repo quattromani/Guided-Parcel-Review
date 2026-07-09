@@ -7,13 +7,13 @@ import {
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-masthead-polish-3";
-import { createGesArticleShell } from "../ges/shell.js?v=20260709-masthead-polish-3";
+} from "../ges/article-components.js?v=20260709-article-lockdown-1";
+import { createGesArticleShell } from "../ges/shell.js?v=20260709-article-lockdown-1";
 import {
   installGesReadingProgress,
   renderGesReadingProgressEndMarker
 } from "../ges/reading-progress.js?v=20260701-article-polish-4";
-import { assessmentUpProtestDeniedTaxesArticle as articleSource } from "../content/articles/assessment-up-protest-denied-taxes.js?v=20260709-masthead-polish-3";
+import { assessmentUpProtestDeniedTaxesArticle as articleSource } from "../content/articles/assessment-up-protest-denied-taxes.js?v=20260709-article-lockdown-1";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-central-timestamp-1";
 
 const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg";

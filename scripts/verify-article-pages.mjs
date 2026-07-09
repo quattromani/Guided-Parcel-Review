@@ -33,43 +33,48 @@ const expectedDraftPreviewCards = manifest.articles.filter(article =>
 
 const articlePages = [
   {
+    name: "watch-tax-roll-canonical",
+    path: "/articles/watch-the-tax-roll-move/?readerCountPreview=199",
+    expects: { resources: true }
+  },
+  {
     name: "protest-evidence-canonical",
-    path: "/articles/before-you-walk-into-a-property-protest/",
+    path: "/articles/before-you-walk-into-a-property-protest/?readerCountPreview=199",
     expects: { articleNotes: true, continuation: true, marginInsights: true, schedule: true, sourceNotes: true }
   },
   {
     name: "protest-evidence-legacy",
-    path: "/index.html?article=protest-evidence-guide",
+    path: "/index.html?article=protest-evidence-guide&readerCountPreview=199",
     expects: { articleNotes: true, continuation: true, marginInsights: true, schedule: true, sourceNotes: true }
   },
   {
     name: "protest-paradox-canonical",
-    path: "/articles/assessment-up-protest-denied-taxes/",
+    path: "/articles/assessment-up-protest-denied-taxes/?readerCountPreview=199",
     expects: { continuation: true, marginInsights: true, sourceNotes: true }
   },
   {
     name: "protest-paradox-legacy",
-    path: "/index.html?article=protest-paradox",
+    path: "/index.html?article=protest-paradox&readerCountPreview=199",
     expects: { continuation: true, marginInsights: true, sourceNotes: true }
   },
   {
     name: "apl-draft-canonical",
-    path: "/articles/how-your-property-value-becomes-a-tax-bill/",
+    path: "/articles/how-your-property-value-becomes-a-tax-bill/?readerCountPreview=199",
     expects: { marginInsights: true, sourceNotes: true }
   },
   {
     name: "apl-draft-legacy",
-    path: "/index.html?article=assessments-protests-and-levies",
+    path: "/index.html?article=assessments-protests-and-levies&readerCountPreview=199",
     expects: { marginInsights: true, sourceNotes: true }
   },
   {
     name: "levy-compression-draft-canonical",
-    path: "/articles/assessment-went-up-tax-bill/",
+    path: "/articles/assessment-went-up-tax-bill/?readerCountPreview=199",
     expects: { articleNotes: true, marginInsights: true }
   },
   {
     name: "levy-compression-legacy",
-    path: "/index.html?article=levy-compression",
+    path: "/index.html?article=levy-compression&readerCountPreview=199",
     expects: { articleNotes: true, marginInsights: true }
   }
 ];
@@ -193,8 +198,11 @@ async function auditArticlePage(context, article, viewport, theme) {
         const node = document.querySelector(selector);
         return node ? Number.parseFloat(getComputedStyle(node).fontSize) : null;
       };
+      const text = selector => document.querySelector(selector)?.textContent.replace(/\s+/g, " ").trim() || "";
       const cautionSize = fontSize(".article-caution-note:not(.article-guidance-note)");
       const guidanceSize = fontSize(".article-guidance-note");
+      const h1Size = fontSize(".article-title, .article-hero .hero-title");
+      const openingH2Size = fontSize(".ges-opening-section h2, .tax-story-chapter h2");
 
       const mobileFullWidthSelectors = [
         ".comparison-card",
@@ -222,6 +230,7 @@ async function auditArticlePage(context, article, viewport, theme) {
         clippedMobileElements,
         darkResolved: document.documentElement.dataset.gesThemeResolved,
         guidanceSize,
+        h1Dominant: h1Size !== null && openingH2Size !== null ? h1Size > openingH2Size : true,
         horizontalOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         missingLaterCreases: chapterCreases.filter(item =>
           item.index > 0 &&
@@ -230,6 +239,15 @@ async function auditArticlePage(context, article, viewport, theme) {
         ),
         pastHearingLinks: document.querySelectorAll(".meeting-date-past a").length,
         pastHearingStatic: document.querySelectorAll(".meeting-date-past .meeting-date-static").length,
+        publicationMeta: text(".article-publication-meta"),
+        publicationMetaHasDeadSeparator: /\|\s*\||^\s*\||\|\s*$/.test(text(".article-publication-meta")),
+        trustRow: text(".article-trust-signals"),
+        trustRowHasReaderCount: text(".article-trust-signals").includes("Read by 199 people"),
+        trustRowHasDeadSeparator: /\|\s*\||^\s*\||\|\s*$/.test(text(".article-trust-signals")),
+        authorText: text(".article-author-attribution"),
+        authorHasDateOrByline: /\b(By|Published|Updated|Current as of|Read by|\d{4})\b/.test(text(".article-author-attribution")),
+        visibleTopics: [...document.querySelectorAll(".article-entry-tags, .ges-tags, .ges-pill-list")]
+          .filter(node => node.offsetParent !== null && !node.closest("[data-article-card]")).length,
         sourceNoteCount: document.querySelectorAll(".article-source-note").length,
         sourcePunctuationBreaks,
         staleClasses: {
@@ -242,6 +260,17 @@ async function auditArticlePage(context, article, viewport, theme) {
     results.push({ page: article.name, state, theme, viewport: viewport.name });
     softAssert(state.articleShell, article, viewport, theme, "article shell did not mount");
     softAssert(state.horizontalOverflow <= 1, article, viewport, theme, `horizontal overflow ${state.horizontalOverflow}px`);
+    softAssert(state.h1Dominant, article, viewport, theme, "article H1 is not visually dominant over opening H2");
+    softAssert(state.trustRow.startsWith("About "), article, viewport, theme, `trust row does not start with read time: ${state.trustRow}`);
+    softAssert(state.trustRowHasReaderCount, article, viewport, theme, `reader count preview missing from trust row: ${state.trustRow}`);
+    softAssert(!state.trustRowHasDeadSeparator, article, viewport, theme, "trust row has a dead separator");
+    softAssert(state.publicationMeta.startsWith("Published "), article, viewport, theme, `publication meta missing published label: ${state.publicationMeta}`);
+    softAssert(!state.publicationMetaHasDeadSeparator, article, viewport, theme, "publication meta has a dead separator");
+    softAssert(state.authorText.includes("Max Quattromani"), article, viewport, theme, "author name missing");
+    softAssert(state.authorText.includes("Certified in Nebraska Property Assessment"), article, viewport, theme, "author credential is not normalized");
+    softAssert(!state.authorText.includes("Nebraska Certified Assessor"), article, viewport, theme, "stale author credential found");
+    softAssert(!state.authorHasDateOrByline, article, viewport, theme, `author block includes date/byline/metrics: ${state.authorText}`);
+    softAssert(state.visibleTopics === 0, article, viewport, theme, "visible article topic/tag pills found outside article roll");
     softAssert(state.staleClasses.marginFirst === 0, article, viewport, theme, "stale margin first class found");
     softAssert(state.staleClasses.pageCrease === 0, article, viewport, theme, "stale page crease element found");
     softAssert(state.badFirstCreases.length === 0, article, viewport, theme, "first chapter has generated crease");

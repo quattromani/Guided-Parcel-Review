@@ -8,8 +8,8 @@ import {
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote as renderGesSourceNote
-} from "../ges/article-components.js?v=20260709-masthead-polish-3";
-import { createGesArticleShell } from "../ges/shell.js?v=20260709-masthead-polish-3";
+} from "../ges/article-components.js?v=20260709-article-lockdown-1";
+import { createGesArticleShell } from "../ges/shell.js?v=20260709-article-lockdown-1";
 import {
   installGesReadingProgress,
   renderGesReadingProgressEndMarker
