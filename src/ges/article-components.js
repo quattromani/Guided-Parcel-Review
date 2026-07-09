@@ -817,7 +817,7 @@ export function renderArticlePublicationMeta({
   const shouldShowRevision = updatedLabel && (!publishedKey || !updatedKey || publishedKey !== updatedKey);
   const parts = [
     publishedLabel ? `Published ${publishedLabel}` : "",
-    shouldShowRevision ? `Revised ${updatedLabel}` : ""
+    shouldShowRevision ? `Current as of ${updatedLabel}` : ""
   ].filter(Boolean);
 
   if (!parts.length) return "";
