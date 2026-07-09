@@ -2628,6 +2628,97 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-input-shell[data-
   max-width: 34rem;
 }
 
+.cost-value-thesis {
+  --cost-value-thesis-accent: var(--ges-color-civic-blue);
+  background:
+    linear-gradient(135deg, rgb(var(--ges-color-surface)) 0%, rgb(var(--ges-color-surface-muted)) 100%),
+    radial-gradient(circle at top right, rgb(var(--cost-value-thesis-accent) / 0.14), transparent 36%);
+  border: var(--ges-border-width) solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-lg);
+  box-shadow: var(--ges-shadow-card);
+  display: grid;
+  gap: clamp(0.9rem, 2vw, 1.25rem);
+  justify-self: center;
+  padding: clamp(1.35rem, 3vw, 2.2rem);
+  width: min(100%, var(--ges-width-wide));
+}
+
+.cost-value-article .editorial-narrow.ges-section-lead > .cost-value-thesis {
+  grid-column: 1 / -1;
+  width: min(100%, var(--ges-width-wide));
+}
+
+.cost-value-thesis__label,
+.cost-value-thesis__statement,
+.cost-value-thesis__statement p,
+.cost-value-thesis__supporting {
+  margin: 0;
+}
+
+.cost-value-thesis__label {
+  color: rgb(var(--cost-value-thesis-accent));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-xs);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: var(--ges-letter-kicker);
+  line-height: var(--ges-line-compact);
+  text-transform: uppercase;
+}
+
+.cost-value-thesis__statement {
+  align-items: stretch;
+  display: grid;
+  gap: clamp(1rem, 2.8vw, 2rem);
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+.cost-value-thesis__statement p {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-size: clamp(2.3rem, 5.2vw, 4.9rem);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: 0;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+
+.cost-value-thesis__divider {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--cost-value-thesis-accent) / 0.9) 18%,
+    rgb(var(--cost-value-thesis-accent) / 0.9) 82%,
+    transparent
+  );
+  border-radius: var(--ges-radius-pill);
+  width: 0.125rem;
+}
+
+.cost-value-thesis__supporting {
+  color: rgb(var(--ges-color-text-secondary));
+  font-size: var(--ges-type-base);
+  line-height: var(--ges-line-copy);
+}
+
+@media (max-width: 48rem) {
+  .cost-value-thesis__statement {
+    gap: var(--ges-space-md);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cost-value-thesis__divider {
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgb(var(--cost-value-thesis-accent) / 0.9) 14%,
+      rgb(var(--cost-value-thesis-accent) / 0.9) 86%,
+      transparent
+    );
+    height: 0.125rem;
+    width: 100%;
+  }
+}
+
 .ges-memory-anchor__contrast {
   align-content: center;
   display: grid;
@@ -2656,6 +2747,74 @@ html[data-ges-theme-resolved="dark"].article-shell-route .levy-input-shell[data-
   color: rgb(var(--ges-color-text-secondary));
   font-size: var(--ges-type-sm);
   line-height: var(--ges-line-compact);
+}
+
+.cost-value-sales-counts {
+  --sale-low-color: var(--ges-color-caution-amber);
+  --sale-high-color: var(--ges-color-evidence-green);
+}
+
+.ges-memory-anchor__contrast .cost-value-sales-counts__item {
+  background:
+    linear-gradient(
+      135deg,
+      rgb(var(--sale-high-color) / var(--sale-high-alpha, 0.08)),
+      rgb(var(--sale-low-color) / var(--sale-low-alpha, 0.08)) 48%,
+      rgb(var(--ges-color-surface) / 0.82)
+    );
+  border-color: var(--sale-card-border, rgb(var(--ges-color-border-subtle)));
+}
+
+.ges-memory-anchor__contrast .cost-value-sales-counts__item--max {
+  background:
+    linear-gradient(135deg, rgb(var(--ges-color-evidence-green) / 0.22), rgb(var(--ges-color-surface) / 0.84));
+  border-color: rgb(var(--ges-color-evidence-green) / 0.42);
+  box-shadow:
+    0 0 0 var(--ges-border-width) rgb(var(--ges-color-evidence-green) / 0.12),
+    0 0.7rem 1.7rem rgb(var(--ges-color-evidence-green) / 0.12);
+}
+
+.ges-memory-anchor__contrast .cost-value-sales-counts__item--min {
+  background:
+    linear-gradient(135deg, rgb(var(--ges-color-caution-amber) / 0.24), rgb(var(--ges-color-surface) / 0.84));
+  border-color: rgb(var(--ges-color-caution-amber) / 0.44);
+  box-shadow:
+    0 0 0 var(--ges-border-width) rgb(var(--ges-color-caution-amber) / 0.14),
+    0 0.7rem 1.7rem rgb(var(--ges-color-caution-amber) / 0.11);
+}
+
+.cost-value-sales-counts__item dt {
+  align-items: center;
+  display: flex;
+  gap: var(--ges-space-xs);
+  justify-content: space-between;
+}
+
+.cost-value-sales-counts__item dt em {
+  border: var(--ges-border-width) solid currentColor;
+  border-radius: var(--ges-radius-pill);
+  color: rgb(var(--ges-color-text-secondary));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-2xs);
+  font-style: normal;
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: var(--ges-letter-kicker);
+  line-height: 1;
+  padding: 0.25rem 0.4rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cost-value-sales-counts__item--max dt em {
+  color: rgb(var(--ges-color-evidence-green));
+}
+
+.cost-value-sales-counts__item--min dt em {
+  color: rgb(var(--ges-color-caution-amber));
+}
+
+.cost-value-sales-counts__item meter {
+  accent-color: var(--sale-meter-color, rgb(var(--ges-color-evidence-green)));
 }
 
 .ges-annotated-notice {

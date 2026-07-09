@@ -10,7 +10,7 @@
     "build:article-pdfs": "node scripts/generate-editorial-guide-pdf.mjs",
     "build:articles": "npm run build:css && npm run build:article-pdfs",
     "validate:data": "node scripts/validate-data-contracts.js",
-    "check:syntax": "node --check server.js && node --check src/ges/article-components.js && node --check src/routes/article-roll.js && node --check src/routes/assessments-protests-levies.js && node --check src/routes/protest-evidence-guide.js && node --check src/routes/protest-paradox.js && node --check src/routes/levy-compression-post.js && node --check scripts/verify-article-pages.mjs && node --check scripts/verify-article-roll.mjs && node --check scripts/verify-global-header.mjs && node --check scripts/test-internal-field-kit.mjs && node --check scripts/test-internal-project-nav.mjs",
+    "check:syntax": "node --check server.js && node --check src/ges/article-components.js && node --check src/routes/article-roll.js && node --check src/routes/assessments-protests-levies.js && node --check src/routes/cost-is-personal-value-is-statistical.js && node --check src/routes/protest-evidence-guide.js && node --check src/routes/protest-paradox.js && node --check src/routes/levy-compression-post.js && node --check scripts/verify-article-pages.mjs && node --check scripts/verify-article-roll.mjs && node --check scripts/verify-global-header.mjs && node --check scripts/test-internal-field-kit.mjs && node --check scripts/test-internal-project-nav.mjs",
     "verify:articles": "node scripts/verify-article-pages.mjs",
     "verify:article-roll": "node scripts/verify-article-roll.mjs",
     "verify:global-header": "node scripts/verify-global-header.mjs",

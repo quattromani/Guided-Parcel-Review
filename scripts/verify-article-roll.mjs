@@ -8,6 +8,9 @@ const articleManifest = JSON.parse(readFileSync(new URL("../data/app/articles.js
 const expectedPublicCount = articleManifest.articles.filter(article => article.published && !article.draft).length;
 const expectedInternalCount = articleManifest.articles.length;
 const expectedDraftCount = articleManifest.articles.filter(article => !article.published || article.draft).length;
+const expectedNewestPublishedTitle = articleManifest.articles
+  .filter(article => article.published && !article.draft)
+  .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime())[0]?.title;
 const expectedDraftPreviewCount = articleManifest.articles.filter(article =>
   (!article.published || article.draft) &&
   article.route?.canonicalPath &&
@@ -172,7 +175,7 @@ assert(publicState.draftCardCount === 0, "Public roll should hide drafts.", publ
 assert(publicState.statusTexts.length === 0, "Public roll should hide status badges.", publicState);
 assert(publicState.readingProgressCount === 0, "Article roll should not mount Reading Progress.", publicState);
 assert(publicState.layout === "public" && publicState.route === "article-roll", "Article roll should inherit Public Layout.", publicState);
-assert(publicState.titles[0] === "Before You Walk Into a Property Protest", "Public roll should sort newest first.", publicState);
+assert(publicState.titles[0] === expectedNewestPublishedTitle, "Public roll should sort newest first.", publicState);
 assert(publicState.metaRows[1].includes("June 23, 2026"), "Date-only article dates should not shift by timezone.", publicState);
 assert(publicState.footerLinks.includes("Articles"), "Public footer should link to Articles.", publicState);
 

@@ -84,6 +84,10 @@ import {
   renderWatchTheTaxRollMoveArticle
 } from "./routes/watch-the-tax-roll-move.js?v=20260701-article-polish-4";
 import {
+  isCostPersonalValueStatisticalRequest,
+  renderCostPersonalValueStatisticalArticle
+} from "./routes/cost-is-personal-value-is-statistical.js?v=20260701-article-polish-4";
+import {
   isArticleRollRequest,
   renderArticleRoll
 } from "./routes/article-roll.js?v=20260701-article-polish-4";
@@ -194,6 +198,18 @@ async function main() {
       contentType: "article",
       articleId: "watch-the-tax-roll-move",
       articleTitle: "Watch the Tax Roll Move",
+      county: "nebraska"
+    });
+    return;
+  }
+
+  if (isCostPersonalValueStatisticalRequest(searchParams)) {
+    setFooterResourcesVisible(false);
+    renderCostPersonalValueStatisticalArticle();
+    trackArticleView({
+      contentType: "article",
+      articleId: "cost-personal-value-statistical",
+      articleTitle: "Cost Is Personal. Value Is Statistical.",
       county: "nebraska"
     });
     return;
