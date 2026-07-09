@@ -7,7 +7,7 @@ import {
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-updated-proof-2";
+} from "../ges/article-components.js?v=20260709-editorial-meta-1";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
@@ -734,11 +734,14 @@ export function renderProtestParadox() {
 
   shell.setCover(renderArticleHero({
     articleSlug: ARTICLE_ID,
+    displayDate: ARTICLE_DISPLAY_DATE,
     mediaHtml: `
       <figure class="article-hero-media hero-media">
         <img src="${escapeHtml(ARTICLE_SOCIAL_IMAGE)}" alt="${escapeHtml(ARTICLE_HERO_IMAGE_ALT)}" loading="eager" decoding="async" />
       </figure>
     `,
+    publishedDate: ARTICLE_PUBLISHED_DATE,
+    readingMinutes: ARTICLE_READING_TIME_MINUTES,
     subject: "Levy Compression",
     subtitle: ARTICLE_SUBTITLE,
     tags: ARTICLE_TAGS,

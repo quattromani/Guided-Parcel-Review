@@ -712,8 +712,11 @@ export function renderArticleTags(tags = []) {
 export function renderArticleHero({
   articleSlug = "",
   className = "",
+  displayDate = "",
   label = "Article",
   mediaHtml = "",
+  publishedDate = "",
+  readingMinutes = "",
   subject = "",
   subtitle = "",
   tags = [],
@@ -722,7 +725,12 @@ export function renderArticleHero({
   updatedDate = ""
 } = {}) {
   const classes = ["comp-page-title", "levy-page-title", "article-hero", className].filter(Boolean).join(" ");
-  const updatedLabel = formatArticleDisplayDate(updatedDate);
+  const articleMetadataMarkup = renderArticleMetadataLine({
+    displayDate,
+    publishedDate,
+    readingMinutes,
+    updatedDate
+  });
   const subjectMarkup = subject
     ? `
               <span class="hero-kicker-divider" aria-hidden="true">/</span>
@@ -730,17 +738,6 @@ export function renderArticleHero({
     : "";
   const readerCountMarkup = articleSlug
     ? `<p class="article-reader-count" data-article-reader-count data-article-slug="${escapeHtml(articleSlug)}" hidden aria-live="polite"></p>`
-    : "";
-  const updatedMarkup = updatedLabel
-    ? `<p class="article-updated-date">Updated ${escapeHtml(updatedLabel)}</p>`
-    : "";
-  const heroMetaMarkup = readerCountMarkup || updatedMarkup
-    ? `
-        <div class="article-hero-meta-line">
-          ${readerCountMarkup}
-          ${readerCountMarkup && updatedMarkup ? `<span class="article-hero-meta-divider" data-reader-count-divider hidden aria-hidden="true"></span>` : ""}
-          ${updatedMarkup}
-        </div>`
     : "";
 
   return `
@@ -754,13 +751,19 @@ export function renderArticleHero({
           </p>
         </div>
         <h1 id="${escapeHtml(titleId)}" class="hero-title">${escapeHtml(title)}</h1>
-        ${heroMetaMarkup}
+        ${readerCountMarkup}
         ${subtitle ? `<p class="hero-deck">${escapeHtml(subtitle)}</p>` : ""}
+        ${articleMetadataMarkup}
         ${renderArticleTags(tags)}
       </div>
       ${mediaHtml}
     </header>
   `;
+}
+
+export function dateKey(dateValue = "") {
+  const match = String(dateValue).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return match ? `${match[1]}-${match[2]}-${match[3]}` : "";
 }
 
 export function formatArticleDisplayDate(dateValue = "") {
@@ -782,7 +785,32 @@ export function formatGuideLengthText(minutes) {
   const numericMinutes = Number.parseInt(minutes, 10);
   if (!Number.isFinite(numericMinutes) || numericMinutes < 1) return "";
   const article = /^[8]|^11|^18/.test(String(numericMinutes)) ? "an" : "a";
-  return `About ${article} ${numericMinutes}-minute read`;
+  return `About ${article} ${numericMinutes} minute read`;
+}
+
+export function renderArticleMetadataLine({
+  displayDate = "",
+  publishedDate = "",
+  readingMinutes = "",
+  updatedDate = ""
+} = {}) {
+  const publishedLabel = formatArticleDisplayDate(publishedDate) || displayDate;
+  const updatedLabel = formatArticleDisplayDate(updatedDate);
+  const publishedKey = dateKey(publishedDate);
+  const updatedKey = dateKey(updatedDate);
+  const shouldShowRevision = updatedLabel && (!publishedKey || !updatedKey || publishedKey !== updatedKey);
+  const parts = [
+    publishedLabel ? `Published ${publishedLabel}` : "",
+    shouldShowRevision ? `Revised ${updatedLabel}` : "",
+    formatGuideLengthText(readingMinutes)
+  ].filter(Boolean);
+
+  if (!parts.length) return "";
+
+  return `
+        <p class="article-document-meta" aria-label="${escapeHtml(parts.join(", "))}">
+          ${parts.map(part => `<span>${escapeHtml(part)}</span>`).join('<span class="article-document-meta-separator" aria-hidden="true">•</span>')}
+        </p>`;
 }
 
 export function renderGuideUtility({
@@ -790,10 +818,7 @@ export function renderGuideUtility({
   audioUrl = "",
   icon,
   printableLabel = "Print Version",
-  printableUrl,
-  readingMinutes,
-  lengthLabel = "",
-  wordCount = ""
+  printableUrl
 }) {
   const safeIcon = typeof icon === "function" ? icon : () => "";
   const printableControl = printableUrl ? `
@@ -816,17 +841,15 @@ export function renderGuideUtility({
             </div>
           </details>` : "";
   const formatControls = [printableControl, audioControl].filter(Boolean).join("");
+  if (!formatControls) return "";
 
   return `
     <section class="guide-utility" aria-label="Guide options">
-      <div class="guide-length" aria-label="Estimated guide length" data-guide-length data-reading-minutes="${escapeHtml(readingMinutes)}" data-word-count="${escapeHtml(wordCount)}" data-length-label="${escapeHtml(lengthLabel)}">
-        <p class="guide-length-label" data-guide-length-label>${escapeHtml(formatGuideLengthText(readingMinutes))}</p>
-      </div>
-      ${formatControls ? `<div class="guide-formats hero-utility" aria-label="Available formats">
+      <div class="guide-formats hero-utility" aria-label="Available formats">
         <div class="format-control">
           ${formatControls}
         </div>
-      </div>` : ""}
+      </div>
     </section>
   `;
 }
@@ -837,7 +860,6 @@ export function renderArticleEntryPanel({
   authorMailto,
   authorName,
   authorTitle = "",
-  displayDate,
   icon,
   printableLabel,
   printableUrl,
@@ -854,7 +876,6 @@ export function renderArticleEntryPanel({
           <div class="article-author-copy">
             <p class="article-author-name"><a href="${escapeHtml(authorMailto)}" data-article-action="author_email" data-article-label="${escapeHtml(articleTitle)}"><span class="article-author-name-text">${escapeHtml(authorName)}</span></a></p>
             ${authorTitle ? `<p class="article-author-title">${escapeHtml(authorTitle)}</p>` : ""}
-            <p class="article-entry-date">Published: ${escapeHtml(displayDate)}</p>
           </div>
         </div>
       </div>
@@ -863,10 +884,7 @@ export function renderArticleEntryPanel({
         audioUrl,
         icon,
         printableLabel,
-        printableUrl,
-        readingMinutes,
-        wordCount,
-        lengthLabel
+        printableUrl
       })}
     </div>
   `;

@@ -4,7 +4,7 @@ import {
   renderArticleHero,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderResourcesBlock as renderGesResourcesBlock
-} from "../ges/article-components.js?v=20260709-updated-proof-2";
+} from "../ges/article-components.js?v=20260709-editorial-meta-1";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
@@ -834,7 +834,9 @@ export function renderLevyCompressionPost() {
 
   shell.setCover(renderArticleHero({
     articleSlug: ARTICLE_ID,
+    displayDate: ARTICLE_DISPLAY_DATE,
     label: "Article Draft",
+    readingMinutes: ARTICLE_READING_TIME_MINUTES,
     subject: "Levy Compression",
     subtitle: ARTICLE_SUBTITLE,
     tags: ARTICLE_TAGS,

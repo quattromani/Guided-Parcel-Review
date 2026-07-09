@@ -10,7 +10,7 @@ import {
   renderResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-updated-proof-2";
+} from "../ges/article-components.js?v=20260709-editorial-meta-1";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-central-timestamp-1";
 import { costPersonalValueStatisticalArticle as ARTICLE } from "../content/articles/cost-is-personal-value-is-statistical.js?v=20260701-article-polish-4";
@@ -85,6 +85,7 @@ function renderCover() {
   return renderArticleHero({
     articleSlug: ARTICLE.canonicalPath,
     className: "cost-value-hero",
+    displayDate: ARTICLE.displayDate,
     label: "Assessment Explainer",
     mediaHtml: `
       <figure class="article-hero-media hero-media">
@@ -98,6 +99,8 @@ function renderCover() {
         <figcaption class="levy-sr-only">${escapeHtml(ARTICLE.assets.heroImageAlt)} ${escapeHtml(ARTICLE.assets.heroImageCredit)}</figcaption>
       </figure>
     `,
+    publishedDate: ARTICLE.publishedDate,
+    readingMinutes: ARTICLE.readingMinutes,
     subject: "Property Tax Education",
     subtitle: ARTICLE.subtitle,
     tags: ARTICLE.tags,

@@ -11,7 +11,7 @@ import {
   renderResourcesBlock,
   renderSectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-updated-proof-2";
+} from "../ges/article-components.js?v=20260709-editorial-meta-1";
 import { installGesReadingProgress } from "../ges/reading-progress.js?v=20260701-article-polish-4";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import { howYourPropertyValueBecomesATaxBillArticle as articleSource } from "../content/articles/how-your-property-value-becomes-a-tax-bill.js?v=20260701-article-polish-4";
@@ -134,6 +134,7 @@ function renderHero() {
   return renderArticleHero({
     articleSlug: ARTICLE.legacyQueryValue,
     className: "ges-act-one-hero",
+    displayDate: ARTICLE.displayDate,
     mediaHtml: `
       <figure class="article-hero-media hero-media ges-act-one-hero__media">
         <img src="${escapeHtml(ARTICLE.assets.heroImage)}" alt="${escapeHtml(ARTICLE.assets.heroImageAlt)}" loading="eager" decoding="async" fetchpriority="high" />
@@ -145,6 +146,8 @@ function renderHero() {
         <figcaption class="levy-sr-only">${escapeHtml(ARTICLE.assets.heroImageAlt)} ${escapeHtml(ARTICLE.assets.heroImageCredit)}</figcaption>
       </figure>
     `,
+    publishedDate: ARTICLE.publishedDate,
+    readingMinutes: ARTICLE.reading.minutes,
     subject: "Assessments, Protests, and Levies",
     subtitle: ARTICLE.subtitle,
     tags: ARTICLE.tags,

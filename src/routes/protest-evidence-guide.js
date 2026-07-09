@@ -8,7 +8,7 @@ import {
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote as renderGesSourceNote
-} from "../ges/article-components.js?v=20260709-updated-proof-2";
+} from "../ges/article-components.js?v=20260709-editorial-meta-1";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
@@ -911,6 +911,7 @@ export function renderProtestEvidenceGuide() {
 
   shell.setCover(renderArticleHero({
     articleSlug: ARTICLE_ID,
+    displayDate: ARTICLE_DISPLAY_DATE,
     mediaHtml: `
       <figure class="article-hero-media hero-media article-hero-video" data-hero-video>
         <video
@@ -931,6 +932,8 @@ export function renderProtestEvidenceGuide() {
         <figcaption class="levy-sr-only">${escapeHtml(ARTICLE_HERO_IMAGE_ALT)} The video provides a short overview of the article.</figcaption>
       </figure>
     `,
+    publishedDate: ARTICLE_PUBLISHED_DATE,
+    readingMinutes: ARTICLE_READING_TIME_MINUTES,
     subject: "Property Protest Prep",
     subtitle: ARTICLE_SUBTITLE,
     tags: ARTICLE_TAGS,

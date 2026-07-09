@@ -222,8 +222,6 @@ export function installArticleReaderCounts(root = document, options = {}) {
         target.textContent = label;
         target.setAttribute("aria-label", label);
         target.hidden = false;
-        const divider = target.parentElement?.querySelector?.("[data-reader-count-divider]");
-        if (divider) divider.hidden = false;
         window.requestAnimationFrame(() => {
           target.dataset.articleReaderCountVisible = "true";
         });
