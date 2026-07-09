@@ -8,7 +8,7 @@ export const watchTheTaxRollMoveArticle = {
   displayDate: "July 8, 2026",
   author: "Max Quattromani",
   authorEmail: "max@maxquatrromani.com",
-  authorTitle: "Nebraska Certified Assessor",
+  authorTitle: "Certified in Nebraska Property Assessment",
   readingMinutes: 6,
   wordCount: 1200,
   lengthLabel: "interactive-case-study",

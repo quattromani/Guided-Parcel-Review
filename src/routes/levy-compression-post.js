@@ -4,7 +4,7 @@ import {
   renderArticleHero,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderResourcesBlock as renderGesResourcesBlock
-} from "../ges/article-components.js?v=20260709-masthead-2";
+} from "../ges/article-components.js?v=20260709-author-credential-1";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
@@ -20,7 +20,7 @@ const ARTICLE_SUBTITLE = "A plain-language guide and calculator for homeowners t
 const ARTICLE_DESCRIPTION = "A draft GES article and calculator explaining why a higher assessment does not automatically mean the tax bill rises by the same percentage.";
 const ARTICLE_AUTHOR = "Max Quattromani";
 const ARTICLE_AUTHOR_EMAIL = "max@maxquatrromani.com";
-const ARTICLE_AUTHOR_TITLE = "Nebraska Certified Assessor";
+const ARTICLE_AUTHOR_TITLE = "Certified in Nebraska Property Assessment";
 const ARTICLE_DISPLAY_DATE = "Draft updated July 1, 2026";
 const ARTICLE_MODIFIED_DATE = "2026-07-01";
 const ARTICLE_READING_TIME_MINUTES = 7;

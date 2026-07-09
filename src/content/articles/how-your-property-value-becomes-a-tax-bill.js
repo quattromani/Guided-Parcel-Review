@@ -7,7 +7,7 @@ export const howYourPropertyValueBecomesATaxBillArticle = {
   subtitle: "A guided Nebraska explainer for understanding what a valuation notice means, what to check first, how fairness is reviewed, and how value eventually becomes taxes.",
   author: "Max Quattromani",
   authorEmail: "max@maxquatrromani.com",
-  authorTitle: "Nebraska Certified Assessor",
+  authorTitle: "Certified in Nebraska Property Assessment",
   location: "Nebraska",
   tags: [
     "Nebraska property taxes",

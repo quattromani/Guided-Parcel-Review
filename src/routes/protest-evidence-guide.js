@@ -8,7 +8,7 @@ import {
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote as renderGesSourceNote
-} from "../ges/article-components.js?v=20260709-masthead-2";
+} from "../ges/article-components.js?v=20260709-author-credential-1";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
@@ -29,7 +29,7 @@ const ARTICLE_SUBTITLE = articleSource.subtitle;
 const ARTICLE_AUTHOR = articleSource.author;
 const ARTICLE_AUTHOR_EMAIL = articleSource.authorEmail;
 const ARTICLE_AUTHOR_IMAGE = articleSource.assets.authorImage;
-const ARTICLE_AUTHOR_TITLE = "Nebraska Certified Assessor";
+const ARTICLE_AUTHOR_TITLE = "Certified in Nebraska Property Assessment";
 const ARTICLE_LOCATION = articleSource.location;
 const ARTICLE_TAGS = articleSource.tags ?? [ARTICLE_LOCATION].filter(Boolean);
 const ARTICLE_DISPLAY_DATE = articleSource.displayDate;

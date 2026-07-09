@@ -7,7 +7,7 @@ export const assessmentUpProtestDeniedTaxesArticle = {
   subtitle: "A case study showing why property taxes can fall after an assessment increase, and how levy compression changes the tax impact of a valuation notice.",
   author: "Max Quattromani",
   authorEmail: "max@maxquatrromani.com",
-  authorTitle: "Nebraska Certified Assessor",
+  authorTitle: "Certified in Nebraska Property Assessment",
   location: "Gage County",
   tags: ["Gage County", "Levy Compression", "Property Tax"],
   displayDate: "June 23, 2026",

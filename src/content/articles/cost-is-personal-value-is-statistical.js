@@ -8,7 +8,7 @@ export const costPersonalValueStatisticalArticle = {
   description: "A plain-English explanation of why Nebraska assessments use market value, qualified sales, and mass appraisal instead of treating each purchase price as the tax value forever.",
   author: "Max Quattromani",
   authorEmail: "max@maxquatrromani.com",
-  authorTitle: "Nebraska Certified Assessor",
+  authorTitle: "Certified in Nebraska Property Assessment",
   displayDate: "July 8, 2026",
   publishedDate: "2026-07-08T15:00:00-05:00",
   modifiedDate: "2026-07-08T15:00:00-05:00",

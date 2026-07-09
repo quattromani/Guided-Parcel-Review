@@ -7,7 +7,7 @@ import {
   renderMarginInsight,
   renderResourcesBlock,
   renderSectionHeader as sectionHeader
-} from "../ges/article-components.js?v=20260709-masthead-2";
+} from "../ges/article-components.js?v=20260709-author-credential-1";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-central-timestamp-1";
 
@@ -17,7 +17,7 @@ import {
   taxRollLessons as LESSONS,
   taxRollProperties as PROPERTIES,
   watchTheTaxRollMoveArticle as ARTICLE
-} from "../content/articles/watch-the-tax-roll-move.js?v=20260709-masthead-2";
+} from "../content/articles/watch-the-tax-roll-move.js?v=20260709-author-credential-1";
 
 const BASE_VALUES = PROPERTIES.map(property => property.value);
 const BASE_TOTAL = sum(BASE_VALUES);

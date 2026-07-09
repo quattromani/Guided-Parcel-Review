@@ -11,10 +11,10 @@ import {
   renderResourcesBlock,
   renderSectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-masthead-2";
+} from "../ges/article-components.js?v=20260709-author-credential-1";
 import { installGesReadingProgress } from "../ges/reading-progress.js?v=20260701-article-polish-4";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
-import { howYourPropertyValueBecomesATaxBillArticle as articleSource } from "../content/articles/how-your-property-value-becomes-a-tax-bill.js?v=20260701-article-polish-4";
+import { howYourPropertyValueBecomesATaxBillArticle as articleSource } from "../content/articles/how-your-property-value-becomes-a-tax-bill.js?v=20260709-author-credential-1";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 
 const ARTICLE = articleSource;

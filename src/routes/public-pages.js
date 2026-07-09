@@ -196,7 +196,7 @@ function renderAboutAuthorSection() {
       <div class="ges-public-author-profile">
         <img src="assets/images/articles/max-quattromani-author.jpg" alt="" loading="lazy" decoding="async" />
         <div class="ges-public-author-profile__body">
-          <p><strong>Max Quattromani</strong> authors Guided Parcel Review and the public GES articles. Published GES article metadata identifies him as a Nebraska Certified Assessor.</p>
+          <p><strong>Max Quattromani</strong> authors Guided Parcel Review and the public GES articles. Published GES article metadata identifies him as Certified in Nebraska Property Assessment.</p>
           <p>The technical work in this repository reflects an interest in public tools, structured civic information, static publishing, and clearer interfaces around assessment material. The author profile stays intentionally concise because the public platform is the focus.</p>
           <p>The work is guided by a practical public-administration goal: make assessment information easier to understand, easier to verify, and easier to discuss with official sources.</p>
         </div>
