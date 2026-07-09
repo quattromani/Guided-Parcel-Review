@@ -17,6 +17,10 @@
   z-index: 95;
 }
 
+html[data-gpr-global-header="enabled"] .ges-reading-progress {
+  inset-block-start: calc(env(safe-area-inset-top, 0px) + var(--gpr-global-header-height, 0px));
+}
+
 .ges-reading-progress__track {
   background: rgb(var(--ges-reading-progress-track) / 0.42);
   block-size: var(--ges-reading-progress-line-size);
@@ -60,7 +64,7 @@
 .ges-reading-progress__end,
 [data-ges-reading-progress-end] {
   block-size: 0;
-  display: none;
+  display: block;
   inline-size: 0;
   overflow: hidden;
 }

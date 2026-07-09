@@ -110,7 +110,6 @@ function renderCover() {
         <video
           class="article-hero-video-player"
           data-hero-video-player
-          src="${escapeHtml(ARTICLE.assets.tldrVideo)}"
           poster="${escapeHtml(ARTICLE.assets.heroImage)}"
           preload="metadata"
           playsinline
@@ -118,10 +117,34 @@ function renderCover() {
           title="${escapeHtml(ARTICLE.assets.heroImageCredit)}"
           data-image-credit="${escapeHtml(ARTICLE.assets.heroImageCredit)}"
           data-image-source="${escapeHtml(ARTICLE.assets.heroImageSource)}"
-        ></video>
+        >
+          <source src="${escapeHtml(ARTICLE.assets.tldrVideoDesktop ?? ARTICLE.assets.tldrVideo)}" type="video/mp4" />
+        </video>
+        <div class="article-hero-video-expectation" aria-hidden="true">
+          <span class="article-hero-video-expectation__desktop">${escapeHtml(ARTICLE.assets.tldrVideoDesktopDurationLabel ?? "Video overview")}</span>
+          <span class="article-hero-video-expectation__mobile">${escapeHtml(ARTICLE.assets.tldrVideoMobileDurationLabel ?? "Short video")}</span>
+          <strong class="article-hero-video-expectation__desktop">${escapeHtml(ARTICLE.assets.tldrVideoDesktopPromise ?? "Quick overview")}</strong>
+          <strong class="article-hero-video-expectation__mobile">${escapeHtml(ARTICLE.assets.tldrVideoMobilePromise ?? "Quick overview")}</strong>
+        </div>
         <button class="article-hero-video-play" type="button" data-hero-video-play aria-label="Play the video summary">
           <span class="article-hero-video-play-icon" aria-hidden="true"></span>
         </button>
+        <div class="article-hero-video-modal" data-hero-video-modal hidden role="dialog" aria-modal="true" aria-label="Mobile video summary">
+          <div class="article-hero-video-modal__backdrop" data-hero-video-modal-close aria-hidden="true"></div>
+          <div class="article-hero-video-modal__panel">
+            <button class="article-hero-video-modal__close" type="button" data-hero-video-modal-close aria-label="Close video summary">Close</button>
+            <video
+              class="article-hero-video-modal__player"
+              data-hero-video-modal-player
+              src="${escapeHtml(ARTICLE.assets.tldrVideoMobile ?? ARTICLE.assets.tldrVideo)}"
+              poster="${escapeHtml(ARTICLE.assets.heroImage)}"
+              preload="metadata"
+              playsinline
+              controls
+              aria-label="One-minute mobile video overview of Watch the Tax Roll Move"
+            ></video>
+          </div>
+        </div>
         <figcaption class="levy-sr-only">${escapeHtml(ARTICLE.assets.heroImageAlt)} The video provides a short overview of the article.</figcaption>
       </figure>
     `,
@@ -189,29 +212,42 @@ function installHeroVideo(root) {
 
   const video = wrapper.querySelector("[data-hero-video-player]");
   const playButton = wrapper.querySelector("[data-hero-video-play]");
+  const modal = wrapper.querySelector("[data-hero-video-modal]");
+  const modalVideo = wrapper.querySelector("[data-hero-video-modal-player]");
+  const modalCloseControls = wrapper.querySelectorAll("[data-hero-video-modal-close]");
   if (!video || !playButton) return;
 
   const progressMilestones = new Set();
   let visibleTracked = false;
   let playTracked = false;
   let completeTracked = false;
+  let activeVideo = video;
+  const mobileVideoQuery = window.matchMedia?.("(max-width: 54rem)");
 
   const videoMetrics = (details = {}) => {
-    const duration = Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 0;
-    const currentTime = Number.isFinite(video.currentTime) ? video.currentTime : 0;
+    const sourceVideo = details.sourceVideo || activeVideo || video;
+    const duration = Number.isFinite(sourceVideo.duration) && sourceVideo.duration > 0 ? sourceVideo.duration : 0;
+    const currentTime = Number.isFinite(sourceVideo.currentTime) ? sourceVideo.currentTime : 0;
     const mediaPercent = duration ? Math.min(100, Math.round((currentTime / duration) * 100)) : "";
+    const mediaSourceUrl = sourceVideo.currentSrc || sourceVideo.getAttribute("src") || sourceVideo.querySelector("source")?.getAttribute("src") || "";
+    const mediaSourceName = mediaSourceUrl ? mediaSourceUrl.split("/").pop()?.split("?")[0] || mediaSourceUrl : "";
+    const mediaVariant = sourceVideo === modalVideo ? "mobile_modal" : "desktop_inline";
+
+    delete details.sourceVideo;
 
     return {
       placement: "hero",
       mediaId: "hero_summary",
       mediaType: "video",
+      mediaVariant,
+      mediaSrc: mediaSourceName,
       mediaCurrentTime: Math.round(currentTime),
       mediaDuration: duration ? Math.round(duration) : "",
       mediaPercent,
-      mediaMuted: video.muted,
-      mediaPaused: video.paused,
-      mediaReadyState: video.readyState,
-      mediaNetworkState: video.networkState,
+      mediaMuted: sourceVideo.muted,
+      mediaPaused: sourceVideo.paused,
+      mediaReadyState: sourceVideo.readyState,
+      mediaNetworkState: sourceVideo.networkState,
       ...details
     };
   };
@@ -225,9 +261,43 @@ function installHeroVideo(root) {
   };
 
   const syncVideoState = () => {
-    wrapper.classList.toggle("is-playing", !video.paused && !video.ended);
-    wrapper.classList.toggle("has-started", video.currentTime > 0 && !video.ended);
-    if (video.ended) wrapper.classList.remove("has-started", "is-playing");
+    const playingVideo = activeVideo || video;
+    wrapper.classList.toggle("is-playing", !playingVideo.paused && !playingVideo.ended);
+    wrapper.classList.toggle("has-started", playingVideo.currentTime > 0 && !playingVideo.ended);
+    if (playingVideo.ended) wrapper.classList.remove("has-started", "is-playing");
+  };
+
+  const shouldUseMobileModal = () => Boolean(modal && modalVideo && mobileVideoQuery?.matches);
+
+  const openMobileModal = async () => {
+    if (!modal || !modalVideo) return;
+    activeVideo = modalVideo;
+    modal.hidden = false;
+    document.documentElement.classList.add("has-article-video-modal");
+    wrapper.classList.add("has-mobile-video-modal");
+    trackHeroVideo("tldr_video_mobile_modal_open", { sourceVideo: modalVideo });
+    try {
+      await modalVideo.play();
+    } catch (error) {
+      modalVideo.focus({ preventScroll: true });
+      trackHeroVideo("tldr_video_play_error", {
+        sourceVideo: modalVideo,
+        errorName: error?.name || "",
+        errorMessage: error?.message || "Mobile video play failed"
+      });
+      trackHeroVideo("tldr_video_controls_fallback", { sourceVideo: modalVideo });
+    }
+    syncVideoState();
+  };
+
+  const closeMobileModal = () => {
+    if (!modal || !modalVideo || modal.hidden) return;
+    modalVideo.pause();
+    modal.hidden = true;
+    document.documentElement.classList.remove("has-article-video-modal");
+    wrapper.classList.remove("has-mobile-video-modal");
+    activeVideo = video;
+    syncVideoState();
   };
 
   if ("IntersectionObserver" in window) {
@@ -246,7 +316,14 @@ function installHeroVideo(root) {
   }
 
   playButton.addEventListener("click", async () => {
-    trackHeroVideo("tldr_video_tap");
+    if (shouldUseMobileModal()) {
+      trackHeroVideo("tldr_video_tap", { sourceVideo: modalVideo });
+      await openMobileModal();
+      return;
+    }
+
+    trackHeroVideo("tldr_video_tap", { sourceVideo: video });
+    activeVideo = video;
     try {
       await video.play();
       video.controls = true;
@@ -262,35 +339,55 @@ function installHeroVideo(root) {
     syncVideoState();
   });
 
-  video.addEventListener("play", () => {
-    video.controls = true;
-    if (!playTracked) {
-      playTracked = true;
-      trackHeroVideo("tldr_video_play");
-    }
-    syncVideoState();
-  });
-  video.addEventListener("pause", syncVideoState);
-  video.addEventListener("timeupdate", () => {
-    syncVideoState();
-    if (!Number.isFinite(video.duration) || video.duration <= 0) return;
-    const percent = Math.floor((video.currentTime / video.duration) * 100);
-    [25, 50, 75].forEach(milestone => {
-      if (percent < milestone || progressMilestones.has(milestone)) return;
-      progressMilestones.add(milestone);
-      trackHeroVideo(`tldr_video_${milestone}`, {
-        mediaPercent: milestone
+  const wireVideoEvents = observedVideo => {
+    observedVideo.addEventListener("play", () => {
+      activeVideo = observedVideo;
+      observedVideo.controls = true;
+      if (!playTracked) {
+        playTracked = true;
+        trackHeroVideo("tldr_video_play", { sourceVideo: observedVideo });
+      }
+      syncVideoState();
+    });
+    observedVideo.addEventListener("pause", syncVideoState);
+    observedVideo.addEventListener("timeupdate", () => {
+      activeVideo = observedVideo;
+      syncVideoState();
+      if (!Number.isFinite(observedVideo.duration) || observedVideo.duration <= 0) return;
+      const percent = Math.floor((observedVideo.currentTime / observedVideo.duration) * 100);
+      [25, 50, 75].forEach(milestone => {
+        if (percent < milestone || progressMilestones.has(milestone)) return;
+        progressMilestones.add(milestone);
+        trackHeroVideo(`tldr_video_${milestone}`, {
+          sourceVideo: observedVideo,
+          mediaPercent: milestone
+        });
       });
     });
+    observedVideo.addEventListener("ended", () => {
+      if (!completeTracked) {
+        completeTracked = true;
+        trackHeroVideo("tldr_video_complete", {
+          sourceVideo: observedVideo,
+          mediaPercent: 100
+        });
+      }
+      if (observedVideo === modalVideo) {
+        window.setTimeout(closeMobileModal, 240);
+      }
+      syncVideoState();
+    });
+  };
+
+  wireVideoEvents(video);
+  if (modalVideo) wireVideoEvents(modalVideo);
+
+  modalCloseControls.forEach(control => {
+    control.addEventListener("click", closeMobileModal);
   });
-  video.addEventListener("ended", () => {
-    if (!completeTracked) {
-      completeTracked = true;
-      trackHeroVideo("tldr_video_complete", {
-        mediaPercent: 100
-      });
-    }
-    syncVideoState();
+
+  window.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeMobileModal();
   });
 }
 

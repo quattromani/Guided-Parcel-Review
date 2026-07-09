@@ -21,6 +21,12 @@ export const watchTheTaxRollMoveArticle = {
     heroImageSource: "https://www.pexels.com/",
     printableGuidePdf: "assets/guides/watch-the-tax-roll-move.pdf",
     tldrVideo: "assets/videos/articles/watch-the-tax-roll-move-summary.mp4",
+    tldrVideoDesktop: "assets/videos/articles/watch-the-tax-roll-move-summary.mp4",
+    tldrVideoMobile: "assets/videos/articles/watch-the-tax-roll-move-mobile-summary.mp4",
+    tldrVideoDesktopDurationLabel: "Short on time?",
+    tldrVideoDesktopPromise: "Watch this 4-minute video.",
+    tldrVideoMobileDurationLabel: "About 1 minute",
+    tldrVideoMobilePromise: "We will get through this fast.",
     audioRead: "assets/audio/articles/watch-the-tax-roll-move-audio.mp3",
     audioDuration: "PT18M58S"
   },
