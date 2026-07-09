@@ -39,7 +39,7 @@ import {
   renderPage,
   renderStartPage,
   renderViewHeader
-} from "./render.js?v=20260709-analytics-endpoint-1";
+} from "./render.js?v=20260709-central-timestamp-1";
 import { initGesFieldKit } from "./ges/field-kit.js?v=20260701-article-polish-4";
 import { initGlobalHeader } from "./ges/global-header.js?v=20260701-article-polish-4";
 import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.js?v=20260701-article-polish-4";
@@ -70,11 +70,11 @@ import {
 import {
   isProtestEvidenceGuideRequest,
   renderProtestEvidenceGuide
-} from "./routes/protest-evidence-guide.js?v=20260709-analytics-endpoint-1";
+} from "./routes/protest-evidence-guide.js?v=20260709-central-timestamp-1";
 import {
   isProtestParadoxRequest,
   renderProtestParadox
-} from "./routes/protest-paradox.js?v=20260709-analytics-endpoint-1";
+} from "./routes/protest-paradox.js?v=20260709-central-timestamp-1";
 import {
   isAssessmentsProtestsLeviesRequest,
   renderAssessmentsProtestsLeviesArticle
@@ -82,11 +82,11 @@ import {
 import {
   isWatchTheTaxRollMoveRequest,
   renderWatchTheTaxRollMoveArticle
-} from "./routes/watch-the-tax-roll-move.js?v=20260709-analytics-endpoint-1";
+} from "./routes/watch-the-tax-roll-move.js?v=20260709-central-timestamp-1";
 import {
   isCostPersonalValueStatisticalRequest,
   renderCostPersonalValueStatisticalArticle
-} from "./routes/cost-is-personal-value-is-statistical.js?v=20260709-analytics-endpoint-1";
+} from "./routes/cost-is-personal-value-is-statistical.js?v=20260709-central-timestamp-1";
 import {
   isArticleRollRequest,
   renderArticleRoll
@@ -114,8 +114,8 @@ import {
   trackParcelView,
   trackResourceClick,
   trackStepView
-} from "./visit-analytics.js?v=20260709-analytics-endpoint-1";
-import { installArticleReaderCounts } from "./article-reader-count.js?v=20260709-analytics-endpoint-1";
+} from "./visit-analytics.js?v=20260709-central-timestamp-1";
+import { installArticleReaderCounts } from "./article-reader-count.js?v=20260709-central-timestamp-1";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 let importantCalendarDates = { dates: [], metadata: {} };

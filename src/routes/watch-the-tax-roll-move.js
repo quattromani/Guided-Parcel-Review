@@ -9,7 +9,7 @@ import {
   renderSectionHeader as sectionHeader
 } from "../ges/article-components.js?v=20260701-article-polish-4";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
-import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-analytics-endpoint-1";
+import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-central-timestamp-1";
 
 import {
   taxRollBudgetTransition as BUDGET_TRANSITION,

@@ -1,4 +1,4 @@
-import { VISIT_ANALYTICS_ENDPOINT } from "./visit-analytics.js?v=20260709-analytics-endpoint-1";
+import { VISIT_ANALYTICS_ENDPOINT } from "./visit-analytics.js?v=20260709-central-timestamp-1";
 
 const ARTICLE_READER_COUNT_CACHE_KEY = "guidedParcelReview.articleReaderCounts.v1";
 const ARTICLE_READER_COUNT_CACHE_TTL_MS = 20 * 60 * 1000;

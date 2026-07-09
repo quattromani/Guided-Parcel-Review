@@ -3,7 +3,7 @@ import {
   finalizedTaxStatements,
   statementGrossLevy,
   statementTotalCredits
-} from "../render.js?v=20260709-analytics-endpoint-1";
+} from "../render.js?v=20260709-central-timestamp-1";
 import { createGesPublicShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 

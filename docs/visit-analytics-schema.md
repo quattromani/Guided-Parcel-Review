@@ -14,7 +14,7 @@ The v2 payload keeps the old fields but adds stable identifiers and named fields
 - `eventId`: unique ID for the individual event.
 - `visitId`: session-scoped ID stored in `sessionStorage`.
 - `pageViewId`: page-load-scoped ID for distinguishing refreshes and multiple article opens in one visit.
-- `timestamp`: client-side event time.
+- `timestamp`: client-side event time in America/Chicago with an explicit UTC offset, for example `2026-07-09T14:40:00.000-05:00`.
 - `receivedAt`: Apps Script receipt time.
 
 ## Content Fields

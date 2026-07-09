@@ -1,6 +1,7 @@
 export const VISIT_ANALYTICS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzeQYfADnXXiJrs0UrCMRWVOQaw2Jo1cPnuIrf3dECOwX9PjYdNaEfMRIEpRTm-zd8b_g/exec";
 const VISIT_ANALYTICS_SECRET = "parcel-visits-2026-private-log";
 const VISIT_ANALYTICS_SCHEMA_VERSION = "visit-analytics.v2";
+const ANALYTICS_TIME_ZONE = "America/Chicago";
 const VISIT_ID_SESSION_KEY = "guidedParcelReview.visitId.v1";
 const HEARTBEAT_INTERVAL_MS = 30000;
 const INTERACTION_DEDUPE_WINDOW_MS = 1500;
@@ -182,7 +183,7 @@ function trackVisitEvent(event, details = {}) {
     secret: VISIT_ANALYTICS_SECRET,
     schemaVersion: VISIT_ANALYTICS_SCHEMA_VERSION,
     eventId: eventId(),
-    timestamp: new Date().toISOString(),
+    timestamp: formatAnalyticsTimestamp(),
     event,
     visitId: visitId(),
     pageViewId: analyticsState.pageViewId,
@@ -201,6 +202,58 @@ function trackVisitEvent(event, details = {}) {
   };
 
   sendPayload(payload);
+}
+
+export function formatAnalyticsTimestamp(date = new Date(), timeZone = ANALYTICS_TIME_ZONE) {
+  const sourceDate = date instanceof Date ? date : new Date(date);
+  if (Number.isNaN(sourceDate.getTime())) return new Date().toISOString();
+
+  const parts = timeZoneDateParts(sourceDate, timeZone);
+  const offsetMinutes = timeZoneOffsetMinutes(sourceDate, parts);
+  const offsetSign = offsetMinutes >= 0 ? "+" : "-";
+  const absoluteOffset = Math.abs(offsetMinutes);
+  const offsetHours = String(Math.floor(absoluteOffset / 60)).padStart(2, "0");
+  const offsetRemainder = String(absoluteOffset % 60).padStart(2, "0");
+
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}.${parts.millisecond}${offsetSign}${offsetHours}:${offsetRemainder}`;
+}
+
+function timeZoneDateParts(date, timeZone) {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    day: "2-digit",
+    hour: "2-digit",
+    hourCycle: "h23",
+    minute: "2-digit",
+    month: "2-digit",
+    second: "2-digit",
+    timeZone,
+    year: "numeric"
+  });
+  const values = Object.fromEntries(formatter.formatToParts(date).map(part => [part.type, part.value]));
+
+  return {
+    year: values.year,
+    month: values.month,
+    day: values.day,
+    hour: values.hour,
+    minute: values.minute,
+    second: values.second,
+    millisecond: String(date.getMilliseconds()).padStart(3, "0")
+  };
+}
+
+function timeZoneOffsetMinutes(date, parts) {
+  const localAsUtc = Date.UTC(
+    Number(parts.year),
+    Number(parts.month) - 1,
+    Number(parts.day),
+    Number(parts.hour),
+    Number(parts.minute),
+    Number(parts.second),
+    Number(parts.millisecond)
+  );
+
+  return Math.round((localAsUtc - date.getTime()) / 60000);
 }
 
 function sendPayload(payload) {
