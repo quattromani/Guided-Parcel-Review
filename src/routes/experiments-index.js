@@ -1,5 +1,5 @@
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
-import { createGesPublicShell } from "../ges/shell.js?v=20260701-article-polish-4";
+import { createGesPublicShell } from "../ges/shell.js?v=20260709-masthead-polish-3";
 
 export const experimentLinks = [
   {

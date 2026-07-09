@@ -1,4 +1,4 @@
-import { versionedAssetUrl } from "../asset-version.js?v=20260701-article-polish-4";
+import { versionedAssetUrl } from "../asset-version.js?v=20260709-masthead-polish-3";
 
 const GES_STYLESHEET_ID = "ges-design-system-stylesheet";
 

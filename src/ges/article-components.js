@@ -712,6 +712,7 @@ export function renderArticleTags(tags = []) {
 export function renderArticleHero({
   articleSlug = "",
   className = "",
+  currentAsOfDate = "",
   displayDate = "",
   label = "Article",
   mediaHtml = "",
@@ -719,10 +720,8 @@ export function renderArticleHero({
   readingMinutes = "",
   subject = "",
   subtitle = "",
-  tags = [],
   title = "",
-  titleId = "articleTitle",
-  updatedDate = ""
+  titleId = "articleTitle"
 } = {}) {
   const classes = ["comp-page-title", "levy-page-title", "article-hero", className].filter(Boolean).join(" ");
   const trustSignalMarkup = renderArticleTrustSignalLine({
@@ -730,9 +729,9 @@ export function renderArticleHero({
     readingMinutes
   });
   const publicationMetadataMarkup = renderArticlePublicationMeta({
+    currentAsOfDate,
     displayDate,
-    publishedDate,
-    updatedDate
+    publishedDate
   });
   const subjectMarkup = subject
     ? `
@@ -800,24 +799,24 @@ export function renderArticleTrustSignalLine({
   return `
         <p class="article-trust-signals" aria-label="${escapeHtml(readTime || "Article trust signals")}">
           ${readTimeMarkup}
-          ${readTimeMarkup && readerMarkup ? `<span class="article-meta-dot" data-reader-count-divider hidden aria-hidden="true">•</span>` : ""}
+          ${readTimeMarkup && readerMarkup ? `<span class="article-meta-divider" data-reader-count-divider hidden aria-hidden="true"></span>` : ""}
           ${readerMarkup}
         </p>`;
 }
 
 export function renderArticlePublicationMeta({
+  currentAsOfDate = "",
   displayDate = "",
-  publishedDate = "",
-  updatedDate = ""
+  publishedDate = ""
 } = {}) {
   const publishedLabel = formatArticleDisplayDate(publishedDate) || displayDate;
-  const updatedLabel = formatArticleDisplayDate(updatedDate);
+  const currentAsOfLabel = formatArticleDisplayDate(currentAsOfDate);
   const publishedKey = dateKey(publishedDate);
-  const updatedKey = dateKey(updatedDate);
-  const shouldShowRevision = updatedLabel && (!publishedKey || !updatedKey || publishedKey !== updatedKey);
+  const currentAsOfKey = dateKey(currentAsOfDate);
+  const shouldShowCurrentAsOf = currentAsOfLabel && (!publishedKey || !currentAsOfKey || publishedKey !== currentAsOfKey);
   const parts = [
     publishedLabel ? `Published ${publishedLabel}` : "",
-    shouldShowRevision ? `Current as of ${updatedLabel}` : ""
+    shouldShowCurrentAsOf ? `Current as of ${currentAsOfLabel}` : ""
   ].filter(Boolean);
 
   if (!parts.length) return "";
@@ -903,8 +902,7 @@ export function renderArticleEntryPanel({
   printableUrl,
   audioUrl = "",
   shareDescription = "",
-  shareUrl = "",
-  tags = []
+  shareUrl = ""
 }) {
   return `
     <div class="article-entry-panel article-entry-panel--locked" data-article-entry-panel>
@@ -912,7 +910,6 @@ export function renderArticleEntryPanel({
         <div class="article-author-attribution">
           <img class="article-author-photo" src="${escapeHtml(authorImage)}" alt="" loading="lazy" decoding="async" />
           <div class="article-author-copy">
-            <p class="article-author-byline">By</p>
             <p class="article-author-name"><a href="${escapeHtml(authorMailto)}" data-article-action="author_email" data-article-label="${escapeHtml(articleTitle)}"><span class="article-author-name-text">${escapeHtml(authorName)}</span></a></p>
             ${authorTitle ? `<p class="article-author-title">${escapeHtml(authorTitle)}</p>` : ""}
           </div>
@@ -927,19 +924,8 @@ export function renderArticleEntryPanel({
         shareDescription,
         shareUrl
       })}
-      ${renderArticleTopicSection(tags)}
     </div>
   `;
-}
-
-export function renderArticleTopicSection(tags = []) {
-  if (!tags.length) return "";
-
-  return `
-      <section class="article-topic-section" aria-labelledby="articleTopicsTitle">
-        <h2 id="articleTopicsTitle" class="article-meta-section-heading">Topics</h2>
-        ${renderArticleTags(tags)}
-      </section>`;
 }
 
 export function installGuideUtilityLanguage(root = document) {

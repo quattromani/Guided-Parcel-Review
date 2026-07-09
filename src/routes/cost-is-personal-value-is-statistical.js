@@ -1,4 +1,4 @@
-import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
+import { createGesArticleShell } from "../ges/shell.js?v=20260709-masthead-polish-3";
 import { installGesReadingProgress } from "../ges/reading-progress.js?v=20260701-article-polish-4";
 import {
   installGuideUtilityLanguage,
@@ -10,10 +10,10 @@ import {
   renderResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-current-as-of-1";
+} from "../ges/article-components.js?v=20260709-masthead-polish-3";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-central-timestamp-1";
-import { costPersonalValueStatisticalArticle as ARTICLE } from "../content/articles/cost-is-personal-value-is-statistical.js?v=20260709-current-as-of-1";
+import { costPersonalValueStatisticalArticle as ARTICLE } from "../content/articles/cost-is-personal-value-is-statistical.js?v=20260709-masthead-polish-3";
 
 const ARTICLE_ID = ARTICLE.id;
 const ARTICLE_DEPTH_MILESTONES = [25, 50, 75, 100];
@@ -103,10 +103,8 @@ function renderCover() {
     readingMinutes: ARTICLE.readingMinutes,
     subject: "Property Tax Education",
     subtitle: ARTICLE.subtitle,
-    tags: ARTICLE.tags,
     title: ARTICLE.title,
-    titleId: "costValueArticleTitle",
-    updatedDate: ARTICLE.modifiedDate
+    titleId: "costValueArticleTitle"
   });
 }
 
@@ -131,8 +129,7 @@ function renderEntryPanel() {
     authorTitle: ARTICLE.authorTitle,
     icon: editorialIcon,
     shareDescription: ARTICLE.description,
-    shareUrl: ARTICLE.canonicalPath,
-    tags: ARTICLE.tags
+    shareUrl: ARTICLE.canonicalPath
   });
 }
 

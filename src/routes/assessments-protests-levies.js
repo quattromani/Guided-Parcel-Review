@@ -11,10 +11,10 @@ import {
   renderResourcesBlock,
   renderSectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-current-as-of-1";
+} from "../ges/article-components.js?v=20260709-masthead-polish-3";
 import { installGesReadingProgress } from "../ges/reading-progress.js?v=20260701-article-polish-4";
-import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
-import { howYourPropertyValueBecomesATaxBillArticle as articleSource } from "../content/articles/how-your-property-value-becomes-a-tax-bill.js?v=20260709-current-as-of-1";
+import { createGesArticleShell } from "../ges/shell.js?v=20260709-masthead-polish-3";
+import { howYourPropertyValueBecomesATaxBillArticle as articleSource } from "../content/articles/how-your-property-value-becomes-a-tax-bill.js?v=20260709-masthead-polish-3";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 
 const ARTICLE = articleSource;
@@ -150,10 +150,8 @@ function renderHero() {
     readingMinutes: ARTICLE.reading.minutes,
     subject: "Assessments, Protests, and Levies",
     subtitle: ARTICLE.subtitle,
-    tags: ARTICLE.tags,
     title: ARTICLE.title,
-    titleId: "assessmentTaxArticleTitle",
-    updatedDate: ARTICLE.modifiedDate
+    titleId: "assessmentTaxArticleTitle"
   });
 }
 
@@ -168,8 +166,7 @@ function renderOpeningSection() {
         authorTitle: ARTICLE.authorTitle,
         icon,
         shareDescription: ARTICLE.description,
-        shareUrl: ARTICLE.canonicalPath,
-        tags: ARTICLE.tags
+        shareUrl: ARTICLE.canonicalPath
       })}
       ${renderSectionHeader(ACT_ONE.kicker, ACT_ONE.title, "noticeMomentTitle", {
         companion: "Before the article explains methods, deadlines, or levies, it starts with the question a property owner actually has first.",

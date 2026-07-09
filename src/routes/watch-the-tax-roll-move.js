@@ -1,4 +1,4 @@
-import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
+import { createGesArticleShell } from "../ges/shell.js?v=20260709-masthead-polish-3";
 import { installGesReadingProgress } from "../ges/reading-progress.js?v=20260701-article-polish-4";
 import {
   installGuideUtilityLanguage,
@@ -7,7 +7,7 @@ import {
   renderMarginInsight,
   renderResourcesBlock,
   renderSectionHeader as sectionHeader
-} from "../ges/article-components.js?v=20260709-current-as-of-1";
+} from "../ges/article-components.js?v=20260709-masthead-polish-3";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-central-timestamp-1";
 
@@ -17,7 +17,7 @@ import {
   taxRollLessons as LESSONS,
   taxRollProperties as PROPERTIES,
   watchTheTaxRollMoveArticle as ARTICLE
-} from "../content/articles/watch-the-tax-roll-move.js?v=20260709-current-as-of-1";
+} from "../content/articles/watch-the-tax-roll-move.js?v=20260709-masthead-polish-3";
 
 const BASE_VALUES = PROPERTIES.map(property => property.value);
 const BASE_TOTAL = sum(BASE_VALUES);
@@ -105,6 +105,7 @@ function renderCover() {
   return renderArticleHero({
     articleSlug: ARTICLE.canonicalPath,
     className: "tax-roll-hero",
+    currentAsOfDate: ARTICLE.currentAsOfDate,
     displayDate: ARTICLE.displayDate,
     label: "Interactive Article",
     mediaHtml: `
@@ -154,10 +155,8 @@ function renderCover() {
     readingMinutes: ARTICLE.readingMinutes,
     subject: "Property Tax Education",
     subtitle: ARTICLE.description,
-    tags: ARTICLE.tags,
     title: ARTICLE.title,
-    titleId: "watchTaxRollTitle",
-    updatedDate: ARTICLE.modifiedDate
+    titleId: "watchTaxRollTitle"
   });
 }
 
@@ -204,8 +203,7 @@ function renderEntryPanel() {
     printableUrl: ARTICLE.assets.printableGuidePdf,
     audioUrl: ARTICLE.assets.audioRead,
     shareDescription: ARTICLE.description,
-    shareUrl: ARTICLE.canonicalPath,
-    tags: ARTICLE.tags
+    shareUrl: ARTICLE.canonicalPath
   });
 }
 

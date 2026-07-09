@@ -8,8 +8,8 @@ import {
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote as renderGesSourceNote
-} from "../ges/article-components.js?v=20260709-current-as-of-1";
-import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
+} from "../ges/article-components.js?v=20260709-masthead-polish-3";
+import { createGesArticleShell } from "../ges/shell.js?v=20260709-masthead-polish-3";
 import {
   installGesReadingProgress,
   renderGesReadingProgressEndMarker
@@ -936,10 +936,8 @@ export function renderProtestEvidenceGuide() {
     readingMinutes: ARTICLE_READING_TIME_MINUTES,
     subject: "Property Protest Prep",
     subtitle: ARTICLE_SUBTITLE,
-    tags: ARTICLE_TAGS,
     title: ARTICLE_TITLE,
-    titleId: "protestArticleTitle",
-    updatedDate: ARTICLE_MODIFIED_DATE
+    titleId: "protestArticleTitle"
   }));
 
   shell.setBody(`
@@ -981,8 +979,7 @@ function renderArticleEntryPanel() {
     printableUrl: PRINTABLE_GUIDE_PDF,
     audioUrl: ARTICLE_AUDIO_READ,
     shareDescription: ARTICLE_DESCRIPTION,
-    shareUrl: ARTICLE_CANONICAL_PATH,
-    tags: ARTICLE_TAGS
+    shareUrl: ARTICLE_CANONICAL_PATH
   });
 }
 

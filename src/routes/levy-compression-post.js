@@ -4,8 +4,8 @@ import {
   renderArticleHero,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderResourcesBlock as renderGesResourcesBlock
-} from "../ges/article-components.js?v=20260709-current-as-of-1";
-import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
+} from "../ges/article-components.js?v=20260709-masthead-polish-3";
+import { createGesArticleShell } from "../ges/shell.js?v=20260709-masthead-polish-3";
 import {
   installGesReadingProgress,
   renderGesReadingProgressEndMarker
@@ -262,8 +262,7 @@ function renderArticleEntryPanel() {
     authorName: ARTICLE_AUTHOR,
     authorTitle: ARTICLE_AUTHOR_TITLE,
     shareDescription: ARTICLE_DESCRIPTION,
-    shareUrl: ARTICLE_CANONICAL_PATH,
-    tags: ARTICLE_TAGS
+    shareUrl: ARTICLE_CANONICAL_PATH
   });
 }
 
@@ -838,10 +837,8 @@ export function renderLevyCompressionPost() {
     readingMinutes: ARTICLE_READING_TIME_MINUTES,
     subject: "Levy Compression",
     subtitle: ARTICLE_SUBTITLE,
-    tags: ARTICLE_TAGS,
     title: ARTICLE_TITLE,
-    titleId: "levyCompressionArticleTitle",
-    updatedDate: ARTICLE_MODIFIED_DATE
+    titleId: "levyCompressionArticleTitle"
   }));
 
   shell.setBody(`
