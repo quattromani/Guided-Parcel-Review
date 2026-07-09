@@ -10,7 +10,7 @@ import {
   renderResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-editorial-meta-1";
+} from "../ges/article-components.js?v=20260709-masthead-2";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-central-timestamp-1";
 import { costPersonalValueStatisticalArticle as ARTICLE } from "../content/articles/cost-is-personal-value-is-statistical.js?v=20260701-article-polish-4";
@@ -129,11 +129,10 @@ function renderEntryPanel() {
     authorMailto: `mailto:${ARTICLE.authorEmail}?subject=${encodeURIComponent(`Re: ${ARTICLE.title}`)}`,
     authorName: ARTICLE.author,
     authorTitle: ARTICLE.authorTitle,
-    displayDate: ARTICLE.displayDate,
     icon: editorialIcon,
-    readingMinutes: ARTICLE.readingMinutes,
-    wordCount: ARTICLE.wordCount,
-    lengthLabel: ARTICLE.lengthLabel
+    shareDescription: ARTICLE.description,
+    shareUrl: ARTICLE.canonicalPath,
+    tags: ARTICLE.tags
   });
 }
 

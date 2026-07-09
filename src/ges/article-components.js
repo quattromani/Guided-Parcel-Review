@@ -725,19 +725,19 @@ export function renderArticleHero({
   updatedDate = ""
 } = {}) {
   const classes = ["comp-page-title", "levy-page-title", "article-hero", className].filter(Boolean).join(" ");
-  const articleMetadataMarkup = renderArticleMetadataLine({
+  const trustSignalMarkup = renderArticleTrustSignalLine({
+    articleSlug,
+    readingMinutes
+  });
+  const publicationMetadataMarkup = renderArticlePublicationMeta({
     displayDate,
     publishedDate,
-    readingMinutes,
     updatedDate
   });
   const subjectMarkup = subject
     ? `
               <span class="hero-kicker-divider" aria-hidden="true">/</span>
               <span class="hero-kicker-subject">${escapeHtml(subject)}</span>`
-    : "";
-  const readerCountMarkup = articleSlug
-    ? `<p class="article-reader-count" data-article-reader-count data-article-slug="${escapeHtml(articleSlug)}" hidden aria-live="polite"></p>`
     : "";
 
   return `
@@ -751,10 +751,9 @@ export function renderArticleHero({
           </p>
         </div>
         <h1 id="${escapeHtml(titleId)}" class="hero-title">${escapeHtml(title)}</h1>
-        ${readerCountMarkup}
+        ${trustSignalMarkup}
         ${subtitle ? `<p class="hero-deck">${escapeHtml(subtitle)}</p>` : ""}
-        ${articleMetadataMarkup}
-        ${renderArticleTags(tags)}
+        ${publicationMetadataMarkup}
       </div>
       ${mediaHtml}
     </header>
@@ -788,10 +787,27 @@ export function formatGuideLengthText(minutes) {
   return `About ${article} ${numericMinutes} minute read`;
 }
 
-export function renderArticleMetadataLine({
+export function renderArticleTrustSignalLine({
+  articleSlug = "",
+  readingMinutes = ""
+} = {}) {
+  const readTime = formatGuideLengthText(readingMinutes);
+  const readTimeMarkup = readTime ? `<span>${escapeHtml(readTime)}</span>` : "";
+  const readerMarkup = articleSlug ? `<span class="article-reader-count" data-article-reader-count data-article-slug="${escapeHtml(articleSlug)}" hidden aria-live="polite"></span>` : "";
+
+  if (!readTimeMarkup && !readerMarkup) return "";
+
+  return `
+        <p class="article-trust-signals" aria-label="${escapeHtml(readTime || "Article trust signals")}">
+          ${readTimeMarkup}
+          ${readTimeMarkup && readerMarkup ? `<span class="article-meta-dot" data-reader-count-divider hidden aria-hidden="true">•</span>` : ""}
+          ${readerMarkup}
+        </p>`;
+}
+
+export function renderArticlePublicationMeta({
   displayDate = "",
   publishedDate = "",
-  readingMinutes = "",
   updatedDate = ""
 } = {}) {
   const publishedLabel = formatArticleDisplayDate(publishedDate) || displayDate;
@@ -801,16 +817,15 @@ export function renderArticleMetadataLine({
   const shouldShowRevision = updatedLabel && (!publishedKey || !updatedKey || publishedKey !== updatedKey);
   const parts = [
     publishedLabel ? `Published ${publishedLabel}` : "",
-    shouldShowRevision ? `Revised ${updatedLabel}` : "",
-    formatGuideLengthText(readingMinutes)
+    shouldShowRevision ? `Revised ${updatedLabel}` : ""
   ].filter(Boolean);
 
   if (!parts.length) return "";
 
   return `
-        <p class="article-document-meta" aria-label="${escapeHtml(parts.join(", "))}">
-          ${parts.map(part => `<span>${escapeHtml(part)}</span>`).join('<span class="article-document-meta-separator" aria-hidden="true">•</span>')}
-        </p>`;
+        <div class="article-publication-meta" aria-label="${escapeHtml(parts.join(", "))}">
+          ${parts.map(part => `<p>${escapeHtml(part)}</p>`).join("")}
+        </div>`;
 }
 
 export function renderGuideUtility({
@@ -818,19 +833,21 @@ export function renderGuideUtility({
   audioUrl = "",
   icon,
   printableLabel = "Print Version",
-  printableUrl
+  printableUrl,
+  shareDescription = "",
+  shareUrl = ""
 }) {
-  const safeIcon = typeof icon === "function" ? icon : () => "";
+  const safeIcon = typeof icon === "function" ? icon : editorialToolIcon;
   const printableControl = printableUrl ? `
           <a class="format-control-item hero-utility-button article-print-cta" href="${escapeHtml(printableUrl)}" download data-article-action="download_pdf" data-article-label="${escapeHtml(`${printableLabel} PDF`)}">
             ${safeIcon("document")}
-            <span>${escapeHtml(printableLabel)}</span>
+            <span>Print</span>
           </a>` : "";
   const audioControl = audioUrl ? `
           <details class="hero-audio format-control-item-shell" data-hero-audio>
             <summary class="format-control-item hero-utility-button article-audio-cta">
               ${safeIcon("audio")}
-              <span>Audio version</span>
+              <span>Listen</span>
             </summary>
             <div class="hero-audio-panel">
               <p>Full audio version of this guide.</p>
@@ -840,17 +857,38 @@ export function renderGuideUtility({
               <a class="hero-audio-download" href="${escapeHtml(audioUrl)}" download data-article-action="audio_article_download" data-article-label="Audio article MP3">Download MP3</a>
             </div>
           </details>` : "";
-  const formatControls = [printableControl, audioControl].filter(Boolean).join("");
+  const shareControl = `
+          <button class="format-control-item hero-utility-button article-share-tool" type="button" data-article-share-tool data-article-action="share_article" data-article-label="${escapeHtml(articleTitle)}" data-share-title="${escapeHtml(articleTitle)}" data-share-description="${escapeHtml(shareDescription)}" data-share-url="${escapeHtml(shareUrl)}">
+            ${editorialToolIcon("share")}
+            <span data-share-button-label>Share</span>
+          </button>`;
+  const formatControls = [audioControl, printableControl, shareControl].filter(Boolean).join("");
   if (!formatControls) return "";
 
   return `
-    <section class="guide-utility" aria-label="Guide options">
+    <section class="guide-utility article-tools" aria-labelledby="articleToolsTitle">
+      <h2 id="articleToolsTitle" class="article-meta-section-heading">Article Tools</h2>
       <div class="guide-formats hero-utility" aria-label="Available formats">
         <div class="format-control">
           ${formatControls}
         </div>
       </div>
+      <span class="article-tool-status" data-share-status role="status" aria-live="polite"></span>
     </section>
+  `;
+}
+
+function editorialToolIcon(name = "") {
+  const paths = {
+    audio: "<path d='M5 9v6h4l5 4V5L9 9H5Z'></path><path d='M17 9.5a4 4 0 0 1 0 5'></path>",
+    document: "<path d='M7 3h7l4 4v14H7z'></path><path d='M14 3v5h5'></path><path d='M9.5 12h5'></path><path d='M9.5 16h5'></path>",
+    share: "<path d='M18 8a3 3 0 1 0-2.8-4'></path><path d='M6 15a3 3 0 1 0 2.8 4'></path><path d='M18 16a3 3 0 1 0-2.8 4'></path><path d='m8.7 14.1 6.6-4.2'></path><path d='m8.7 9.9 6.6 4.2'></path>"
+  };
+
+  return `
+    <svg class="editorial-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      ${paths[name] ?? paths.document}
+    </svg>
   `;
 }
 
@@ -864,9 +902,9 @@ export function renderArticleEntryPanel({
   printableLabel,
   printableUrl,
   audioUrl = "",
-  readingMinutes,
-  wordCount,
-  lengthLabel
+  shareDescription = "",
+  shareUrl = "",
+  tags = []
 }) {
   return `
     <div class="article-entry-panel article-entry-panel--locked" data-article-entry-panel>
@@ -874,6 +912,7 @@ export function renderArticleEntryPanel({
         <div class="article-author-attribution">
           <img class="article-author-photo" src="${escapeHtml(authorImage)}" alt="" loading="lazy" decoding="async" />
           <div class="article-author-copy">
+            <p class="article-author-byline">By</p>
             <p class="article-author-name"><a href="${escapeHtml(authorMailto)}" data-article-action="author_email" data-article-label="${escapeHtml(articleTitle)}"><span class="article-author-name-text">${escapeHtml(authorName)}</span></a></p>
             ${authorTitle ? `<p class="article-author-title">${escapeHtml(authorTitle)}</p>` : ""}
           </div>
@@ -884,20 +923,91 @@ export function renderArticleEntryPanel({
         audioUrl,
         icon,
         printableLabel,
-        printableUrl
+        printableUrl,
+        shareDescription,
+        shareUrl
       })}
+      ${renderArticleTopicSection(tags)}
     </div>
   `;
 }
 
+export function renderArticleTopicSection(tags = []) {
+  if (!tags.length) return "";
+
+  return `
+      <section class="article-topic-section" aria-labelledby="articleTopicsTitle">
+        <h2 id="articleTopicsTitle" class="article-meta-section-heading">Topics</h2>
+        ${renderArticleTags(tags)}
+      </section>`;
+}
+
 export function installGuideUtilityLanguage(root = document) {
-  root.querySelectorAll("[data-guide-length]").forEach(lengthElement => {
-    const label = lengthElement.querySelector("[data-guide-length-label]");
-    const text = formatGuideLengthText(lengthElement.dataset.readingMinutes);
-    if (!text) {
-      lengthElement.hidden = true;
+  installArticleToolSharing(root);
+}
+
+function installArticleToolSharing(root = document) {
+  root.querySelectorAll("[data-article-share-tool]").forEach(button => {
+    if (button.dataset.shareToolReady === "true") return;
+    button.dataset.shareToolReady = "true";
+    button.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      shareArticleFromTool(button);
+    });
+  });
+}
+
+async function shareArticleFromTool(button) {
+  const status = button.closest(".article-tools")?.querySelector("[data-share-status]");
+  const label = button.querySelector("[data-share-button-label]");
+  const originalLabel = button.dataset.originalShareLabel || label?.textContent || "Share";
+  button.dataset.originalShareLabel = originalLabel;
+  const title = button.dataset.shareTitle || document.title;
+  const description = button.dataset.shareDescription || "";
+  const shareUrl = new URL(button.dataset.shareUrl || window.location.href, document.baseURI).href;
+  const shareText = [title, description, shareUrl].filter(Boolean).join("\n\n");
+  const shareData = { title, text: description || title, url: shareUrl };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      setShareToolStatus({ button, label, status, message: "Shared" });
       return;
     }
-    if (label) label.textContent = text;
-  });
+    await copyTextToClipboard(shareText);
+    setShareToolStatus({ button, label, status, message: "Copied" });
+  } catch (error) {
+    if (error?.name === "AbortError") return;
+    if (status) status.textContent = "Copy this page URL from your browser.";
+  }
+}
+
+function setShareToolStatus({ button, label, status, message }) {
+  if (status) status.textContent = message === "Copied" ? "Article link copied." : "Share sheet opened.";
+  if (!label) return;
+  window.clearTimeout(button._shareToolTimer);
+  label.textContent = message;
+  button.classList.add("is-share-confirmed");
+  button._shareToolTimer = window.setTimeout(() => {
+    label.textContent = button.dataset.originalShareLabel || "Share";
+    button.classList.remove("is-share-confirmed");
+  }, 2200);
+}
+
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.inset = "0 auto auto 0";
+  textarea.style.opacity = "0";
+  document.body.append(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
 }

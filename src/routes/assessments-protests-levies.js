@@ -11,7 +11,7 @@ import {
   renderResourcesBlock,
   renderSectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-editorial-meta-1";
+} from "../ges/article-components.js?v=20260709-masthead-2";
 import { installGesReadingProgress } from "../ges/reading-progress.js?v=20260701-article-polish-4";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import { howYourPropertyValueBecomesATaxBillArticle as articleSource } from "../content/articles/how-your-property-value-becomes-a-tax-bill.js?v=20260701-article-polish-4";
@@ -166,11 +166,10 @@ function renderOpeningSection() {
         authorMailto: `mailto:${ARTICLE.authorEmail}`,
         authorName: ARTICLE.author,
         authorTitle: ARTICLE.authorTitle,
-        displayDate: ARTICLE.displayDate,
         icon,
-        readingMinutes: ARTICLE.reading.minutes,
-        wordCount: ARTICLE.reading.wordCount,
-        lengthLabel: ARTICLE.reading.lengthLabel
+        shareDescription: ARTICLE.description,
+        shareUrl: ARTICLE.canonicalPath,
+        tags: ARTICLE.tags
       })}
       ${renderSectionHeader(ACT_ONE.kicker, ACT_ONE.title, "noticeMomentTitle", {
         companion: "Before the article explains methods, deadlines, or levies, it starts with the question a property owner actually has first.",

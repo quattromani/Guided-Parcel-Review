@@ -4,7 +4,7 @@ import {
   renderArticleHero,
   renderArticleEntryPanel as renderGesArticleEntryPanel,
   renderResourcesBlock as renderGesResourcesBlock
-} from "../ges/article-components.js?v=20260709-editorial-meta-1";
+} from "../ges/article-components.js?v=20260709-masthead-2";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
@@ -261,10 +261,9 @@ function renderArticleEntryPanel() {
     authorMailto: `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeURIComponent(`Re: ${ARTICLE_TITLE}`)}`,
     authorName: ARTICLE_AUTHOR,
     authorTitle: ARTICLE_AUTHOR_TITLE,
-    displayDate: ARTICLE_DISPLAY_DATE,
-    lengthLabel: ARTICLE_LENGTH_LABEL,
-    readingMinutes: ARTICLE_READING_TIME_MINUTES,
-    wordCount: ARTICLE_WORD_COUNT
+    shareDescription: ARTICLE_DESCRIPTION,
+    shareUrl: ARTICLE_CANONICAL_PATH,
+    tags: ARTICLE_TAGS
   });
 }
 
