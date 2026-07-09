@@ -34,7 +34,7 @@ import { displayAddress } from "./utils/address.js?v=20260701-article-polish-4";
 import { garageSummary } from "./domain/property-record-facts.js?v=20260701-article-polish-4";
 import { displayValue, formatSquareFeet, hasDisplayValue } from "./utils/display.js?v=20260701-article-polish-4";
 import { escapeHtml } from "./utils/html.js?v=20260701-article-polish-4";
-import { trackPropertySwitch } from "./visit-analytics.js?v=20260701-article-polish-4";
+import { trackPropertySwitch } from "./visit-analytics.js?v=20260709-analytics-endpoint-1";
 import {
   isReviewFlagSelected,
   setReviewFlag

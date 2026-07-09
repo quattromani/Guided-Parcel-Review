@@ -15,7 +15,7 @@ import {
   renderGesReadingProgressEndMarker
 } from "../ges/reading-progress.js?v=20260701-article-polish-4";
 import { beforeYouWalkIntoPropertyProtestArticle as articleSource } from "../content/articles/before-you-walk-into-a-property-protest.js?v=20260701-article-polish-4";
-import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260701-article-polish-4";
+import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-analytics-endpoint-1";
 
 const EDITORIAL_ICON_SPRITE = "assets/icons/editorial/sprite.svg?v=20260626t";
 const ARTICLE_SECTIONS = articleSource.sections;

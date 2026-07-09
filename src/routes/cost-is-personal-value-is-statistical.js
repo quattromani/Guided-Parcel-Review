@@ -12,7 +12,7 @@ import {
   renderSourceNote
 } from "../ges/article-components.js?v=20260701-article-polish-4";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
-import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260701-article-polish-4";
+import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-analytics-endpoint-1";
 import { costPersonalValueStatisticalArticle as ARTICLE } from "../content/articles/cost-is-personal-value-is-statistical.js?v=20260701-article-polish-4";
 
 const ARTICLE_ID = ARTICLE.id;

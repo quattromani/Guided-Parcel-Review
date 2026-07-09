@@ -11,7 +11,7 @@ import {
   getParcelMarketClass,
   getParcelMarketGroupId
 } from "../market-stats.js?v=20260701-article-polish-4";
-import { quickReadSummaryMarkup, taxStatementShorthandMarkup } from "../render.js?v=20260701-article-polish-4";
+import { quickReadSummaryMarkup, taxStatementShorthandMarkup } from "../render.js?v=20260709-analytics-endpoint-1";
 import { initPropertyReportExport } from "../reports/property-report.js?v=20260701-article-polish-4";
 import { compactParts, formatSquareFeet } from "../utils/display.js?v=20260701-article-polish-4";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
