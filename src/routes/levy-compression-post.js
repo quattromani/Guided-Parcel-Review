@@ -256,6 +256,7 @@ function articleMetadata() {
 
 function renderArticleEntryPanel() {
   return renderGesArticleEntryPanel({
+    articleSlug: ARTICLE_ID,
     articleTitle: ARTICLE_TITLE,
     authorImage: ARTICLE_AUTHOR_IMAGE,
     authorMailto: `mailto:${ARTICLE_AUTHOR_EMAIL}?subject=${encodeURIComponent(`Re: ${ARTICLE_TITLE}`)}`,

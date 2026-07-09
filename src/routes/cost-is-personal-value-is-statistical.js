@@ -119,6 +119,7 @@ function editorialIcon(name) {
 
 function renderEntryPanel() {
   return renderArticleEntryPanel({
+    articleSlug: ARTICLE.canonicalPath,
     articleTitle: ARTICLE.title,
     authorImage: ARTICLE.assets.authorImage,
     authorMailto: `mailto:${ARTICLE.authorEmail}?subject=${encodeURIComponent(`Re: ${ARTICLE.title}`)}`,

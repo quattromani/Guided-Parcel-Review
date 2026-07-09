@@ -156,6 +156,7 @@ function renderOpeningSection() {
   return `
     <section class="tax-story-chapter article-section ges-opening-section ges-act-section ges-act-opening" data-tone="information" aria-labelledby="noticeMomentTitle">
       ${renderArticleEntryPanel({
+        articleSlug: ARTICLE.legacyQueryValue,
         articleTitle: ARTICLE.title,
         authorImage: ARTICLE.assets.authorImage,
         authorMailto: `mailto:${ARTICLE.authorEmail}`,

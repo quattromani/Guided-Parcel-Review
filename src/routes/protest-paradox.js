@@ -353,6 +353,7 @@ function renderStatCard(label, value, detail = "", outputName = "") {
 
 function renderArticleEntryPanel() {
   return renderGesArticleEntryPanel({
+    articleSlug: ARTICLE_ID,
     articleTitle: ARTICLE_TITLE,
     authorImage: ARTICLE_AUTHOR_IMAGE,
     authorMailto: ARTICLE_AUTHOR_MAILTO,

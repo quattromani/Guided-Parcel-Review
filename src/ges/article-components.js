@@ -799,6 +799,7 @@ export function renderGuideUtility({
 }
 
 export function renderArticleEntryPanel({
+  articleSlug = "",
   articleTitle,
   authorImage,
   authorMailto,
@@ -824,6 +825,7 @@ export function renderArticleEntryPanel({
             <p class="article-entry-date">${escapeHtml(displayDate)}</p>
           </div>
         </div>
+        <span class="article-reader-count" data-article-reader-count data-article-slug="${escapeHtml(articleSlug)}" hidden aria-live="polite"></span>
       </div>
       ${renderGuideUtility({
         articleTitle,

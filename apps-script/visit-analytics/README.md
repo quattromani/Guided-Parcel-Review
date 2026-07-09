@@ -12,4 +12,22 @@ Tracking URL fields are included as first-party attribution columns:
 - `trackingPerson`
 - `trackingLabel`
 
-Redeploy the web app after changing `Code.gs` so the live endpoint can add those headers to the sheet.
+The web app also exposes a public reader-count aggregate for article pages:
+
+- `GET ?view=article-reader-counts`
+- Optional JSONP fallback: `GET ?view=article-reader-counts&callback=callbackName`
+
+The response shape is:
+
+```json
+{
+  "articles": {
+    "watch-the-tax-roll-move": {
+      "readers": 199,
+      "updatedAt": "2026-07-09T18:48:45.310Z"
+    }
+  }
+}
+```
+
+Redeploy the web app after changing `Code.gs` so the live endpoint can add schema changes and serve the latest aggregate.

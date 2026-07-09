@@ -115,6 +115,7 @@ import {
   trackResourceClick,
   trackStepView
 } from "./visit-analytics.js?v=20260701-article-polish-4";
+import { installArticleReaderCounts } from "./article-reader-count.js?v=20260709-reader-count-1";
 
 let officialRealPropertyForms = { forms: [], sourceLinks: [], metadata: {} };
 let importantCalendarDates = { dates: [], metadata: {} };
@@ -182,6 +183,7 @@ async function main() {
   if (isAssessmentsProtestsLeviesRequest(searchParams)) {
     setFooterResourcesVisible(false);
     renderAssessmentsProtestsLeviesArticle();
+    installArticleReaderCounts();
     trackArticleView({
       contentType: "article",
       articleId: "how-your-property-value-becomes-a-tax-bill",
@@ -194,6 +196,7 @@ async function main() {
   if (isWatchTheTaxRollMoveRequest(searchParams)) {
     setFooterResourcesVisible(false);
     renderWatchTheTaxRollMoveArticle();
+    installArticleReaderCounts();
     trackArticleView({
       contentType: "article",
       articleId: "watch-the-tax-roll-move",
@@ -206,6 +209,7 @@ async function main() {
   if (isCostPersonalValueStatisticalRequest(searchParams)) {
     setFooterResourcesVisible(false);
     renderCostPersonalValueStatisticalArticle();
+    installArticleReaderCounts();
     trackArticleView({
       contentType: "article",
       articleId: "cost-personal-value-statistical",
@@ -225,6 +229,7 @@ async function main() {
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
     setFooterResourcesVisible(false);
     renderLevyCompressionPost();
+    installArticleReaderCounts();
     trackArticleView({
       contentType: "article",
       articleId: "levy-compression",
@@ -238,6 +243,7 @@ async function main() {
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
     setFooterResourcesVisible(false);
     renderProtestEvidenceGuide();
+    installArticleReaderCounts();
     trackArticleView({
       contentType: "article",
       articleId: "protest-evidence-guide",
@@ -251,6 +257,7 @@ async function main() {
     window.__PROPERTY_SWITCHER_CONTEXT__ = propertySwitcher;
     setFooterResourcesVisible(false);
     renderProtestParadox();
+    installArticleReaderCounts();
     trackArticleView({
       contentType: "case-study",
       articleId: "protest-paradox",
