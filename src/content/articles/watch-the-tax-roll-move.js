@@ -4,7 +4,7 @@ export const watchTheTaxRollMoveArticle = {
   title: "Watch the Tax Roll Move",
   description: "A guided civic lesson showing how assessed values divide a budget, how budgets determine collections, and how levies connect the two.",
   publishedDate: "2026-07-08",
-  modifiedDate: "2026-07-08",
+  modifiedDate: "2026-07-09",
   displayDate: "July 8, 2026",
   author: "Max Quattromani",
   authorEmail: "max@maxquatrromani.com",

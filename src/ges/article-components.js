@@ -718,13 +718,29 @@ export function renderArticleHero({
   subtitle = "",
   tags = [],
   title = "",
-  titleId = "articleTitle"
+  titleId = "articleTitle",
+  updatedDate = ""
 } = {}) {
   const classes = ["comp-page-title", "levy-page-title", "article-hero", className].filter(Boolean).join(" ");
+  const updatedLabel = formatArticleDisplayDate(updatedDate);
   const subjectMarkup = subject
     ? `
               <span class="hero-kicker-divider" aria-hidden="true">/</span>
               <span class="hero-kicker-subject">${escapeHtml(subject)}</span>`
+    : "";
+  const readerCountMarkup = articleSlug
+    ? `<p class="article-reader-count" data-article-reader-count data-article-slug="${escapeHtml(articleSlug)}" hidden aria-live="polite"></p>`
+    : "";
+  const updatedMarkup = updatedLabel
+    ? `<p class="article-updated-date">Updated ${escapeHtml(updatedLabel)}</p>`
+    : "";
+  const heroMetaMarkup = readerCountMarkup || updatedMarkup
+    ? `
+        <div class="article-hero-meta-line">
+          ${readerCountMarkup}
+          ${readerCountMarkup && updatedMarkup ? `<span class="article-hero-meta-divider" data-reader-count-divider hidden aria-hidden="true"></span>` : ""}
+          ${updatedMarkup}
+        </div>`
     : "";
 
   return `
@@ -738,13 +754,28 @@ export function renderArticleHero({
           </p>
         </div>
         <h1 id="${escapeHtml(titleId)}" class="hero-title">${escapeHtml(title)}</h1>
-        <p class="article-reader-count" data-article-reader-count data-article-slug="${escapeHtml(articleSlug)}" hidden aria-live="polite"></p>
+        ${heroMetaMarkup}
         ${subtitle ? `<p class="hero-deck">${escapeHtml(subtitle)}</p>` : ""}
         ${renderArticleTags(tags)}
       </div>
       ${mediaHtml}
     </header>
   `;
+}
+
+export function formatArticleDisplayDate(dateValue = "") {
+  if (!dateValue) return "";
+  const match = String(dateValue).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    const [, year, month, day] = match;
+    return new Intl.DateTimeFormat("en-US", {
+      day: "numeric",
+      month: "long",
+      timeZone: "UTC",
+      year: "numeric"
+    }).format(new Date(Date.UTC(Number(year), Number(month) - 1, Number(day))));
+  }
+  return String(dateValue).trim();
 }
 
 export function formatGuideLengthText(minutes) {
@@ -823,7 +854,7 @@ export function renderArticleEntryPanel({
           <div class="article-author-copy">
             <p class="article-author-name"><a href="${escapeHtml(authorMailto)}" data-article-action="author_email" data-article-label="${escapeHtml(articleTitle)}"><span class="article-author-name-text">${escapeHtml(authorName)}</span></a></p>
             ${authorTitle ? `<p class="article-author-title">${escapeHtml(authorTitle)}</p>` : ""}
-            <p class="article-entry-date">${escapeHtml(displayDate)}</p>
+            <p class="article-entry-date">Published: ${escapeHtml(displayDate)}</p>
           </div>
         </div>
       </div>

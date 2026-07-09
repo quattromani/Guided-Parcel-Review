@@ -8,7 +8,7 @@ import {
   renderResourcesBlock as renderGesResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote as renderGesSourceNote
-} from "../ges/article-components.js?v=20260709-reader-proof-1";
+} from "../ges/article-components.js?v=20260709-updated-proof-2";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import {
   installGesReadingProgress,
@@ -935,7 +935,8 @@ export function renderProtestEvidenceGuide() {
     subtitle: ARTICLE_SUBTITLE,
     tags: ARTICLE_TAGS,
     title: ARTICLE_TITLE,
-    titleId: "protestArticleTitle"
+    titleId: "protestArticleTitle",
+    updatedDate: ARTICLE_MODIFIED_DATE
   }));
 
   shell.setBody(`

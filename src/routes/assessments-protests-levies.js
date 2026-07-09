@@ -11,7 +11,7 @@ import {
   renderResourcesBlock,
   renderSectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-reader-proof-1";
+} from "../ges/article-components.js?v=20260709-updated-proof-2";
 import { installGesReadingProgress } from "../ges/reading-progress.js?v=20260701-article-polish-4";
 import { createGesArticleShell } from "../ges/shell.js?v=20260701-article-polish-4";
 import { howYourPropertyValueBecomesATaxBillArticle as articleSource } from "../content/articles/how-your-property-value-becomes-a-tax-bill.js?v=20260701-article-polish-4";
@@ -149,7 +149,8 @@ function renderHero() {
     subtitle: ARTICLE.subtitle,
     tags: ARTICLE.tags,
     title: ARTICLE.title,
-    titleId: "assessmentTaxArticleTitle"
+    titleId: "assessmentTaxArticleTitle",
+    updatedDate: ARTICLE.modifiedDate
   });
 }
 

@@ -10,7 +10,7 @@ import {
   renderResourcesBlock,
   renderSectionHeader as sectionHeader,
   renderSourceNote
-} from "../ges/article-components.js?v=20260709-reader-proof-1";
+} from "../ges/article-components.js?v=20260709-updated-proof-2";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-central-timestamp-1";
 import { costPersonalValueStatisticalArticle as ARTICLE } from "../content/articles/cost-is-personal-value-is-statistical.js?v=20260701-article-polish-4";
@@ -102,7 +102,8 @@ function renderCover() {
     subtitle: ARTICLE.subtitle,
     tags: ARTICLE.tags,
     title: ARTICLE.title,
-    titleId: "costValueArticleTitle"
+    titleId: "costValueArticleTitle",
+    updatedDate: ARTICLE.modifiedDate
   });
 }
 
