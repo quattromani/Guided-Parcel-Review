@@ -3,6 +3,10 @@ import {
   PROPERTY_SELECTION_STORAGE_KEY
 } from "../data-service.js?v=20260701-article-polish-4";
 import { hasInternalToolPermission } from "./internal-permissions.js?v=20260701-article-polish-4";
+import {
+  appendTrackingParam,
+  projectRootHref
+} from "./project-nav.js?v=20260710-documents-library-1";
 
 const FIELD_KIT_ROOT_ID = "gesFieldKit";
 const FIELD_KIT_MOUNTED_KEY = "__gesFieldKitMounted";
@@ -140,6 +144,7 @@ function panelMarkup(id, title, body) {
 function shellMarkup() {
   const tools = [
     { id: "parcel-search", label: "Parcel Search", icon: "search", panel: true },
+    { id: "documents", label: "Documents", icon: "clipboard" },
     { id: "share", label: "Share Tracked Link", icon: "link", panel: true },
     { id: "notes", label: "Quick Notes", icon: "clipboard", panel: true },
     { id: "inspector", label: "Component Inspector", icon: "layers", toggle: true }
@@ -257,6 +262,10 @@ function toggleFieldKitPanel(root, panelId) {
   } else {
     openFieldKitPanel(root, panelId);
   }
+}
+
+function openDocuments() {
+  window.location.assign(appendTrackingParam(projectRootHref("documents/")));
 }
 
 function propertyRowsFromContext(context = {}) {
@@ -564,6 +573,12 @@ function initFieldKitBehavior(root) {
     if (!button) return;
 
     const tool = button.dataset.gesFieldKitTool;
+    if (tool === "documents") {
+      closeFieldKitPanel(root);
+      openDocuments();
+      return;
+    }
+
     if (tool === "inspector") {
       closeFieldKitPanel(root);
       toggleComponentInspector(root);

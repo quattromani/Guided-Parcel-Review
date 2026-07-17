@@ -40,7 +40,7 @@ import {
   renderStartPage,
   renderViewHeader
 } from "./render.js?v=20260709-central-timestamp-1";
-import { initGesFieldKit } from "./ges/field-kit.js?v=20260701-article-polish-4";
+import { initGesFieldKit } from "./ges/field-kit.js?v=20260710-documents-library-1";
 import { initGlobalHeader } from "./ges/global-header.js?v=20260701-article-polish-4";
 import { buildPropertySnapshotModel, withSnapshotModel } from "./snapshot-model.js?v=20260701-article-polish-4";
 import {
@@ -91,6 +91,12 @@ import {
   isArticleRollRequest,
   renderArticleRoll
 } from "./routes/article-roll.js?v=20260701-article-polish-4";
+import {
+  isDocumentRequest,
+  isDocumentsIndexRequest,
+  renderDocument,
+  renderDocumentsIndex
+} from "./routes/documents.js?v=20260710-documents-library-1";
 import {
   isGesPublicPageRequest,
   renderGesPublicPage
@@ -169,6 +175,16 @@ async function main() {
   applyDocumentCopy();
   refreshVisualizationTheme();
   const searchParams = new URLSearchParams(window.location.search);
+
+  if (isDocumentsIndexRequest()) {
+    renderDocumentsIndex();
+    return;
+  }
+
+  if (isDocumentRequest()) {
+    renderDocument();
+    return;
+  }
 
   if (isArticleRollRequest()) {
     await renderArticleRoll();

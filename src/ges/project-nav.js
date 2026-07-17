@@ -245,7 +245,7 @@ function formatProjectHref(url, locationUrl) {
   return `${projectBase}${relativePath}${url.search}${url.hash}`;
 }
 
-function projectRootHref(value) {
+export function projectRootHref(value) {
   const locationUrl = parseUrl(currentLocationHref());
   if (!locationUrl) return value;
 

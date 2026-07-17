@@ -1,25 +1,16 @@
 <!doctype html>
-<html lang="en" class="ges-public-layout-route ges-public-page-route ges-article-roll-route">
+<html lang="en" class="ges-public-layout-route article-shell-route" data-ges-layout="internal" data-ges-page-type="document" data-ges-route="operational-transition-plan">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="format-detection" content="telephone=no,address=no,email=no,date=no" />
-  <base href="../" />
-  <title>Articles | Guided Parcel Review</title>
-  <meta name="description" content="The canonical GES knowledge library for published property assessment, equalization, protest, tax, and research articles." />
+  <base href="../../" />
+  <title>Document | Guided Parcel Review</title>
+  <meta name="description" content="Controlled document-viewer scaffold for an approved internal document rendering." />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
   <meta name="theme-color" content="#dbeafb" />
-  <link rel="canonical" href="https://quattromani.github.io/Guided-Parcel-Review/articles/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="GES Articles | Guided Parcel Review" />
-  <meta property="og:description" content="A structured knowledge library for Guided Parcel Review educational articles." />
-  <meta property="og:url" content="https://quattromani.github.io/Guided-Parcel-Review/articles/" />
-  <meta property="og:image" content="https://quattromani.github.io/Guided-Parcel-Review/assets/brand/civic-house/social/og-image-1200x630.png" />
-  <meta property="og:image:alt" content="Civic house mark for Guided Parcel Review." />
   <link rel="icon" href="favicon.ico?v=civic-house-20260626" sizes="any" />
   <link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg?v=civic-house-20260626" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png?v=civic-house-20260626" />
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/brand/favicon-16.png?v=civic-house-20260626" />
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/apple-touch-icon.png?v=civic-house-20260626" />
   <link rel="manifest" href="assets/brand/site.webmanifest?v=civic-house-20260626" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,19 +19,17 @@
     (() => {
       const key = "ges-theme-preference";
       let stored = null;
-      try {
-        stored = window.localStorage.getItem(key);
-      } catch {}
+      try { stored = window.localStorage.getItem(key); } catch {}
       const selected = stored === "light" || stored === "dark" ? stored : "system";
       const system = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       document.documentElement.dataset.gesTheme = selected;
       document.documentElement.dataset.gesThemeResolved = selected === "system" ? system : selected;
     })();
   </script>
-  <link id="ges-design-system-stylesheet" rel="stylesheet" href="src/ges/index.css?v=20260709-article-lockdown-1" />
+  <link id="ges-design-system-stylesheet" rel="stylesheet" href="src/ges/index.css?v=20260710-documents-library-1" />
 </head>
 <body class="surface-muted-strong text-primary">
-  <main class="center-x measure-7xl pad-4 mq-sm-pad-6 mq-lg-pad-8 ges-public-main" data-ges-shell="public">
+  <main class="center-x measure-7xl pad-4 mq-sm-pad-6 mq-lg-pad-8 ges-public-main" data-ges-shell="documents">
     <section id="pageTitle" class="space-bottom-4 pad-inline-1" data-ges-shell-region="cover"></section>
     <div class="mobile-review-canvas" data-ges-shell-region="body"></div>
   </main>

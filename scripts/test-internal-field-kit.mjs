@@ -86,12 +86,24 @@ try {
     const toolbar = page.locator(".ges-field-kit[role='toolbar']");
     await assert.doesNotReject(() => toolbar.waitFor({ timeout: 10000 }));
     assert.equal(await shell.count(), 1, "owner tracked URL should mount one Field Kit");
-    assert.equal(await page.locator(".ges-field-kit__button").count(), 4, "Field Kit should expose four current tools");
+    assert.equal(await page.locator(".ges-field-kit__button").count(), 5, "Field Kit should expose five current tools");
     assert.equal(await page.locator('[data-ges-field-kit-tool="parcel-search"]').getAttribute("aria-label"), "Parcel Search");
+    assert.equal(await page.locator('[data-ges-field-kit-tool="documents"]').getAttribute("aria-label"), "Documents");
     assert.equal(await page.locator('[data-ges-field-kit-tool="share"]').getAttribute("aria-label"), "Share Tracked Link");
     assert.equal(await page.locator('[data-ges-field-kit-tool="notes"]').getAttribute("aria-label"), "Quick Notes");
     assert.equal(await page.locator('[data-ges-field-kit-tool="inspector"]').getAttribute("aria-label"), "Component Inspector");
     await page.screenshot({ path: join(artifactDir, "field-kit-light.png"), fullPage: false });
+    await context.close();
+  }
+
+  {
+    const { context, page } = await ownerArticlePage();
+    await page.locator('[data-ges-field-kit-tool="documents"]').click();
+    await page.waitForURL(/\/documents\/\?/, { timeout: 10000 });
+    await waitForApp(page);
+    assert.match(page.url(), /gpr_person=max-quattromani/);
+    assert.match(page.url(), /gpr_track=max-protest-guide-20260627/);
+    assert.equal(await page.locator("[data-document-id='operational-transition-plan']").count(), 1, "Documents control should open the registered document library");
     await context.close();
   }
 
@@ -128,7 +140,7 @@ try {
 
     await page.locator("[data-field-kit-copy-link]").click();
     await assert.doesNotReject(() => page.locator("[data-field-kit-share-status]").getByText(/Link copied|Copy failed/).waitFor({ timeout: 3000 }));
-    await page.mouse.click(40, 40);
+    await page.locator(".article-hero .hero-title").click();
     await expectPanelVisible(page, "share", false);
     await context.close();
   }
