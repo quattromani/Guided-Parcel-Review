@@ -8,7 +8,7 @@ import {
   renderSectionHeader,
   renderSourceNote
 } from "../ges/article-components.js?v=20260731-assessment-season-12";
-import { assessmentSeasonEndsBudgetSeasonBeginsArticle as ARTICLE } from "../content/articles/assessment-season-ends-budget-season-begins.js?v=20260731-assessment-season-12";
+import { assessmentSeasonEndsBudgetSeasonBeginsArticle as ARTICLE } from "../content/articles/assessment-season-ends-budget-season-begins.js?v=20260731-assessment-season-13";
 import { escapeHtml } from "../utils/html.js?v=20260701-article-polish-4";
 import { trackArticleInteraction, trackArticleScrollDepth } from "../visit-analytics.js?v=20260709-central-timestamp-1";
 
