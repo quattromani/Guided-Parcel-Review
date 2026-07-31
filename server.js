@@ -15,7 +15,10 @@ const types = {
   ".png": "image/png",
   ".svg": "image/svg+xml",
   ".pdf": "application/pdf",
-  ".ics": "text/calendar"
+  ".ics": "text/calendar",
+  ".m4a": "audio/mp4",
+  ".mp3": "audio/mpeg",
+  ".mp4": "video/mp4"
 };
 
 http.createServer((request, response) => {

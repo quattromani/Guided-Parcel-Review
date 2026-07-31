@@ -1,0 +1,818 @@
+.assessment-season-hero__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.assessment-season-article .editorial-narrow,
+.assessment-season-chart-shell,
+.assessment-budget-timeline {
+  width: min(100% - 2rem, 58rem);
+  margin-inline: auto;
+}
+
+.assessment-season-chart-shell {
+  margin-block: clamp(2rem, 4vw, 4rem);
+}
+
+.assessment-technical-note {
+  margin-top: 1.4rem;
+  border-top: 1px solid rgb(var(--ges-color-border-subtle));
+  border-bottom: 1px solid rgb(var(--ges-color-border-subtle));
+}
+
+.assessment-technical-note summary {
+  cursor: pointer;
+  padding: 0.9rem 0;
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-ui);
+  font-weight: var(--ges-weight-bold);
+}
+
+.assessment-technical-note p {
+  margin: 0 0 0.9rem;
+  font-size: var(--ges-type-sm);
+}
+
+.assessment-legal-note {
+  margin-top: 1.5rem;
+}
+
+.assessment-legal-note__title {
+  margin: 0 0 0.35rem;
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-size: var(--ges-type-md);
+  font-weight: var(--ges-weight-heavy);
+}
+
+.assessment-legal-note p {
+  margin-block: 0;
+}
+
+.assessment-legal-note__sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.65rem;
+  margin-top: 0.65rem !important;
+}
+
+.assessment-history-figure {
+  margin: 0;
+  padding: clamp(1.1rem, 3vw, 2rem);
+  border: 1px solid rgb(var(--ges-color-border-subtle));
+  border-radius: 1.25rem;
+  background: rgb(var(--ges-color-surface-raised));
+  box-shadow: var(--ges-shadow-surface);
+}
+
+.assessment-history-figure__heading h3 {
+  max-width: 28ch;
+  margin: 0.35rem 0 1.25rem;
+  font-family: var(--ges-font-heading);
+  font-size: clamp(1.45rem, 3vw, 2.25rem);
+  line-height: 1.08;
+}
+
+.assessment-history-figure__title-break {
+  display: block;
+}
+
+.assessment-history-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1rem;
+  margin: -0.25rem 0 1rem;
+  color: rgb(var(--ges-color-text-secondary));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-sm);
+  font-weight: var(--ges-weight-bold);
+}
+
+.assessment-history-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.assessment-history-legend__swatch {
+  width: 1.4rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgb(var(--ges-color-evidence-green));
+}
+
+.assessment-history-legend__swatch--tax {
+  background: rgb(var(--ges-color-error));
+}
+
+.assessment-history-legend__hint {
+  margin-left: auto;
+  font-weight: var(--ges-weight-medium);
+}
+
+.assessment-history-scroll,
+.assessment-history-table__scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.assessment-history-chart {
+  display: block;
+  width: 100%;
+  min-width: 44rem;
+  height: auto;
+}
+
+.assessment-history-chart text {
+  fill: rgb(var(--ges-color-text-secondary));
+  font: 600 14px var(--ges-font-ui);
+}
+
+.assessment-history-chart__panels rect {
+  fill: rgb(var(--ges-color-surface-muted) / 0.62);
+  stroke: rgb(var(--ges-color-border-subtle));
+  stroke-width: 1;
+}
+
+.assessment-history-chart__grid line,
+.assessment-history-chart__horizontal-guides line {
+  stroke: rgb(var(--ges-color-border-subtle));
+  stroke-width: 1;
+}
+
+.assessment-history-chart__grid line {
+  stroke-dasharray: 2 8;
+  opacity: 0.72;
+}
+
+.assessment-history-chart__horizontal-guides line {
+  opacity: 0.58;
+}
+
+.assessment-history-chart__panel-title {
+  fill: rgb(var(--ges-color-text)) !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+}
+
+.assessment-history-chart__value,
+.assessment-history-chart__tax {
+  fill: none;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.assessment-history-chart__value {
+  stroke: rgb(var(--ges-color-evidence-green));
+}
+
+.assessment-history-chart__tax {
+  stroke: rgb(var(--ges-color-error));
+}
+
+.assessment-history-chart__area {
+  pointer-events: none;
+}
+
+.assessment-history-chart__area--value {
+  fill: url(#assessmentValueFill);
+}
+
+.assessment-history-chart__area--tax {
+  fill: url(#assessmentTaxFill);
+}
+
+.assessment-history-chart__dot--value {
+  fill: rgb(var(--ges-color-evidence-green));
+  stroke: rgb(var(--ges-color-surface-raised));
+  stroke-width: 2.5;
+}
+
+.assessment-history-chart__dot--tax {
+  fill: rgb(var(--ges-color-error));
+  stroke: rgb(var(--ges-color-surface-raised));
+  stroke-width: 2.5;
+}
+
+.assessment-history-chart__year-point {
+  cursor: crosshair;
+  outline: none;
+}
+
+.assessment-history-chart__hit-area {
+  fill: transparent;
+  pointer-events: all;
+}
+
+.assessment-history-chart__focus-line {
+  opacity: 0;
+  stroke: rgb(var(--ges-color-civic-blue));
+  stroke-dasharray: 3 5;
+  stroke-width: 1.5;
+  transition: opacity 120ms ease;
+}
+
+.assessment-history-chart__tooltip {
+  opacity: 0;
+  pointer-events: none;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 120ms ease;
+}
+
+.assessment-history-chart__tooltip rect {
+  fill: rgb(var(--ges-color-surface-raised));
+  stroke: rgb(var(--ges-color-border-strong));
+  stroke-width: 1;
+  filter: drop-shadow(0 5px 9px rgb(var(--ges-color-shadow) / 0.16));
+}
+
+.assessment-history-chart__tooltip text {
+  fill: rgb(var(--ges-color-text));
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.assessment-history-chart__tooltip .assessment-history-chart__tooltip-year {
+  fill: rgb(var(--ges-color-text-secondary));
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.assessment-history-chart__year-point:hover .assessment-history-chart__tooltip,
+.assessment-history-chart__year-point:focus .assessment-history-chart__tooltip,
+.assessment-history-chart__year-point.is-active .assessment-history-chart__tooltip,
+.assessment-history-chart__year-point:hover .assessment-history-chart__focus-line,
+.assessment-history-chart__year-point:focus .assessment-history-chart__focus-line,
+.assessment-history-chart__year-point.is-active .assessment-history-chart__focus-line {
+  opacity: 1;
+}
+
+.assessment-history-chart__year-point:hover .assessment-history-chart__dot,
+.assessment-history-chart__year-point:focus .assessment-history-chart__dot,
+.assessment-history-chart__year-point.is-active .assessment-history-chart__dot {
+  r: 6.5px;
+}
+
+.assessment-history-chart__pending-marker line {
+  stroke: rgb(var(--ges-color-text-secondary));
+  stroke-dasharray: 4 6;
+  stroke-width: 1.5;
+}
+
+.assessment-history-chart__pending-marker text {
+  fill: rgb(var(--ges-color-text-secondary));
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.assessment-history-chart__callout text {
+  fill: rgb(var(--ges-color-text));
+  font-weight: 800;
+  paint-order: stroke;
+  stroke: rgb(var(--ges-color-surface-muted));
+  stroke-width: 5px;
+  stroke-linejoin: round;
+}
+
+.assessment-history-figure figcaption {
+  max-width: 72ch;
+  margin-top: 1rem;
+  color: rgb(var(--ges-color-text-secondary));
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 44rem) {
+  .assessment-history-legend {
+    align-items: flex-start;
+  }
+
+  .assessment-history-legend__hint {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+}
+
+.assessment-endpoints {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-block: 1rem;
+}
+
+.assessment-endpoint-card {
+  --assessment-endpoint-accent: var(--ges-color-evidence-green);
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 1.1rem 1.2rem 1.2rem;
+  border: 1px solid rgb(var(--ges-color-border-subtle));
+  border-top: 4px solid rgb(var(--assessment-endpoint-accent));
+  border-radius: var(--ges-radius-md);
+  background: rgb(var(--ges-color-surface-muted));
+}
+
+.assessment-endpoint-card--tax {
+  --assessment-endpoint-accent: var(--ges-color-error);
+}
+
+.assessment-endpoint-card > p {
+  margin: 0;
+  color: rgb(var(--ges-color-text-secondary));
+  font-family: var(--ges-font-ui);
+  font-size: var(--ges-type-sm);
+  font-weight: var(--ges-weight-heavy);
+  letter-spacing: 0.02em;
+}
+
+.assessment-endpoint-card__range {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  gap: 0.65rem;
+}
+
+.assessment-endpoint-card__range > span:not(.assessment-endpoint-card__arrow),
+.assessment-endpoint-card__metrics > div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.assessment-endpoint-card__range > span:last-child {
+  text-align: right;
+}
+
+.assessment-endpoint-card__range small,
+.assessment-endpoint-card__metrics span,
+.assessment-endpoint-card__arrow {
+  color: rgb(var(--ges-color-text-secondary));
+}
+
+.assessment-endpoint-card__range strong {
+  font: 800 clamp(1.15rem, 2.3vw, 1.55rem) var(--ges-font-heading);
+  color: rgb(var(--ges-color-text));
+}
+
+.assessment-endpoint-card__arrow {
+  padding-bottom: 0.15rem;
+  font-size: 1.4rem;
+}
+
+.assessment-endpoint-card__metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.assessment-endpoint-card__metrics > div + div {
+  margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 1px solid rgb(var(--ges-color-border-strong));
+}
+
+.assessment-endpoint-card__metrics strong {
+  color: rgb(var(--ges-color-text));
+  font: 800 clamp(1.65rem, 3.8vw, 2.25rem) var(--ges-font-heading);
+  line-height: 1.05;
+}
+
+.assessment-current-note {
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  border-left: 4px solid rgb(var(--ges-color-civic-blue));
+  background: rgb(var(--ges-color-civic-blue-soft) / 0.42);
+  color: rgb(var(--ges-color-text-secondary));
+  font-size: var(--ges-type-sm);
+}
+
+.assessment-current-note strong {
+  color: rgb(var(--ges-color-text));
+}
+
+.assessment-season-guided-transition {
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.assessment-example-outlook {
+  margin-top: 0;
+}
+
+.assessment-history-table {
+  margin-top: 1rem;
+  border: 1px solid rgb(var(--ges-color-border-subtle));
+  border-radius: 0.8rem;
+  background: rgb(var(--ges-color-surface-raised));
+}
+
+.assessment-history-table summary {
+  cursor: pointer;
+  padding: 1rem 1.1rem;
+  font-weight: 750;
+}
+
+.assessment-history-table__scroll,
+.assessment-history-table > p {
+  margin: 0 1rem 1rem;
+}
+
+.assessment-history-table table {
+  width: 100%;
+  min-width: 38rem;
+  border-collapse: collapse;
+}
+
+.assessment-history-table caption {
+  padding: 0.5rem 0;
+  text-align: left;
+  color: rgb(var(--ges-color-text-secondary));
+}
+
+.assessment-history-table th,
+.assessment-history-table td {
+  padding: 0.65rem;
+  border-bottom: 1px solid rgb(var(--ges-color-border-subtle));
+  text-align: right;
+}
+
+.assessment-tax-process {
+  margin-block: 1.5rem;
+}
+
+.assessment-tax-process__footer {
+  margin: 0 0 1.2rem;
+  padding: 0.8rem 1rem;
+  border-left: 3px solid rgb(var(--ges-color-civic-blue));
+  background: rgb(var(--ges-color-civic-blue-soft) / 0.35);
+  color: rgb(var(--ges-color-text-secondary));
+  font-size: var(--ges-type-sm);
+}
+
+.assessment-opinion-callout {
+  --ges-key-idea-accent: var(--ges-color-reflection);
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.assessment-market-context-qualifier {
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.15em;
+}
+
+.assessment-opinion-callout p {
+  margin: 0;
+}
+
+.assessment-opinion-callout__lead strong {
+  color: rgb(var(--ges-color-text));
+}
+
+.assessment-continuity-bridge {
+  margin-top: clamp(1.25rem, 2.5vw, 1.75rem) !important;
+}
+
+.assessment-watch-panel {
+  margin-block: 2rem 1rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  border: 1px solid rgb(var(--ges-color-border-subtle));
+  border-radius: var(--ges-radius-lg);
+  background: rgb(var(--ges-color-surface-raised));
+  box-shadow: var(--ges-shadow-card);
+}
+
+.assessment-watch-panel h3 {
+  margin: 0.35rem 0 1rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.assessment-watch-panel ul {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.assessment-watch-panel li {
+  display: grid;
+  gap: 0.25rem;
+  padding-block: 0.85rem;
+}
+
+.assessment-watch-panel li + li {
+  border-top: 1px solid rgb(var(--ges-color-border-subtle));
+}
+
+.assessment-watch-panel strong {
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+}
+
+.assessment-watch-panel span {
+  color: rgb(var(--ges-color-text-secondary));
+}
+
+.assessment-history-table th:first-child {
+  text-align: left;
+}
+
+.assessment-budget-timeline {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  margin-block: 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.assessment-budget-timeline li {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  margin: 0;
+  min-height: 9rem;
+  padding: 1.2rem;
+  border-top: 4px solid rgb(var(--ges-color-civic-blue));
+  background: rgb(var(--ges-color-surface-muted));
+}
+
+.assessment-budget-timeline li + li {
+  border-left: 1px solid rgb(var(--ges-color-border-subtle));
+}
+
+.assessment-budget-timeline time {
+  color: rgb(var(--ges-color-text));
+  font: 800 1rem var(--ges-font-ui);
+}
+
+.assessment-budget-timeline span {
+  color: rgb(var(--ges-color-text-secondary));
+  font-size: 0.94rem;
+  line-height: 1.45;
+}
+
+.assessment-season-close {
+  background: linear-gradient(180deg, transparent, rgb(var(--ges-color-civic-blue) / 0.08));
+}
+
+.assessment-town-hall-card {
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.assessment-town-hall-card h3 {
+  align-items: center;
+  display: flex;
+  gap: 0.65rem;
+  margin: 0;
+  color: rgb(var(--ges-color-text));
+  font-family: var(--ges-font-heading);
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+}
+
+.assessment-town-hall-card h3 .editorial-icon {
+  color: var(--editorial-accent);
+  flex: 0 0 auto;
+  height: 1.35rem;
+  width: 1.35rem;
+}
+
+.assessment-town-hall-card__location {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  color: rgb(var(--ges-color-text-secondary));
+  line-height: 1.45;
+}
+
+.assessment-town-hall-card__location strong {
+  color: rgb(var(--ges-color-text));
+  justify-self: start;
+}
+
+@media (max-width: 46rem) {
+  .assessment-endpoints,
+  .assessment-budget-timeline {
+    grid-template-columns: 1fr;
+    row-gap: var(--ges-space-2xs);
+  }
+
+  .assessment-budget-timeline li {
+    min-height: auto;
+  }
+
+  .assessment-budget-timeline li + li {
+    border-left: 0;
+  }
+}
+
+@media print {
+  .assessment-season-article .editorial-narrow,
+  .assessment-season-chart-shell,
+  .assessment-budget-timeline {
+    width: 100%;
+  }
+
+  .assessment-season-chart-shell {
+    margin-block: 0.16in;
+  }
+
+  .assessment-technical-note,
+  .assessment-history-table {
+    background: rgb(var(--ges-print-page));
+    border-color: rgb(var(--ges-print-border));
+    box-shadow: none;
+  }
+
+  .assessment-technical-note summary,
+  .assessment-history-table summary {
+    color: rgb(var(--ges-print-text));
+    cursor: default;
+    font-size: 9pt;
+    list-style: none;
+  }
+
+  .assessment-technical-note summary::-webkit-details-marker,
+  .assessment-history-table summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .assessment-history-figure {
+    background: rgb(var(--ges-print-page));
+    border: 0.5pt solid rgb(var(--ges-print-border));
+    border-radius: 7pt;
+    box-shadow: none;
+    break-inside: avoid;
+    padding: 10pt;
+    page-break-inside: avoid;
+  }
+
+  .assessment-history-figure__heading h3 {
+    font-size: 16pt;
+    margin-block: 3pt 7pt;
+    max-width: none;
+  }
+
+  .assessment-history-legend {
+    font-size: 7.5pt;
+    margin: 0 0 5pt;
+  }
+
+  body .assessment-history-legend__hint {
+    display: none !important;
+  }
+
+  .assessment-history-scroll,
+  .assessment-history-table__scroll {
+    overflow: visible;
+  }
+
+  .assessment-history-chart {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .assessment-history-figure figcaption {
+    color: rgb(var(--ges-print-secondary));
+    font-size: 7.5pt;
+    line-height: 1.3;
+    margin-top: 5pt;
+  }
+
+  .assessment-endpoints {
+    gap: 6pt;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-block: 7pt;
+  }
+
+  .assessment-endpoint-card {
+    background: rgb(var(--ges-print-card));
+    border-color: rgb(var(--ges-print-border));
+    border-radius: 5pt;
+    border-top-width: 2pt;
+    break-inside: avoid;
+    gap: 5pt;
+    page-break-inside: avoid;
+    padding: 7pt;
+  }
+
+  .assessment-endpoint-card > p,
+  .assessment-endpoint-card__range small,
+  .assessment-endpoint-card__metrics span {
+    color: rgb(var(--ges-print-secondary));
+    font-size: 7pt;
+  }
+
+  .assessment-endpoint-card__range strong,
+  .assessment-endpoint-card__metrics strong {
+    color: rgb(var(--ges-print-text));
+    font-size: 13pt;
+  }
+
+  .assessment-current-note,
+  .assessment-tax-process__footer {
+    background: rgb(var(--ges-print-card));
+    border-color: rgb(var(--ges-print-rule));
+    color: rgb(var(--ges-print-secondary));
+    font-size: 8pt;
+    margin-block: 6pt;
+    padding: 6pt 8pt;
+  }
+
+  .assessment-history-table {
+    margin-top: 0;
+  }
+
+  .assessment-history-table__scroll,
+  .assessment-history-table > p {
+    margin: 0 8pt 8pt;
+  }
+
+  .assessment-history-table table {
+    min-width: 0;
+  }
+
+  .assessment-history-table caption,
+  .assessment-history-table th,
+  .assessment-history-table td {
+    color: rgb(var(--ges-print-text));
+    font-size: 7.3pt;
+    padding: 3.5pt 5pt;
+  }
+
+  .assessment-season-guided-transition,
+  .assessment-opinion-callout,
+  .assessment-watch-panel,
+  .assessment-town-hall-card,
+  .assessment-tax-process {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .assessment-watch-panel {
+    background: rgb(var(--ges-print-card));
+    border-color: rgb(var(--ges-print-border));
+    box-shadow: none;
+    margin-block: 8pt;
+    padding: 8pt;
+  }
+
+  .assessment-watch-panel h3 {
+    font-size: 13pt;
+    margin-block: 2pt 5pt;
+  }
+
+  .assessment-watch-panel li {
+    padding-block: 4pt;
+  }
+
+  .assessment-budget-timeline {
+    break-inside: avoid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-block: 8pt;
+    page-break-inside: avoid;
+  }
+
+  .assessment-season-budget-section {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  .assessment-budget-timeline li {
+    background: rgb(var(--ges-print-card));
+    border-color: rgb(var(--ges-print-border));
+    gap: 3pt;
+    min-height: 0;
+    padding: 6pt;
+  }
+
+  .assessment-budget-timeline time {
+    color: rgb(var(--ges-print-text));
+    font-size: 8pt;
+  }
+
+  .assessment-budget-timeline span {
+    color: rgb(var(--ges-print-secondary));
+    font-size: 7.2pt;
+    line-height: 1.25;
+  }
+
+  .assessment-season-article :is(.article-source-note, .assessment-legal-note, .ges-resources-block) a[href]::after {
+    content: none;
+  }
+
+  .assessment-season-article .ges-resource-entry {
+    grid-template-columns: 1.35in minmax(0, 1fr);
+  }
+
+  .assessment-season-article .ges-resource-entry__type {
+    font-size: 6.3pt;
+  }
+}

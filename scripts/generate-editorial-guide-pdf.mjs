@@ -20,6 +20,12 @@ const DEFAULT_TARGETS = [
     name: "watch-the-tax-roll-move",
     out: "assets/guides/watch-the-tax-roll-move.pdf",
     path: "/articles/watch-the-tax-roll-move/?print=1"
+  },
+  {
+    name: "assessment-season-ends-budget-season-begins",
+    out: "assets/guides/assessment-season-ends-budget-season-begins.pdf",
+    path: "/articles/assessment-season-ends-budget-season-begins/?print=1",
+    expandDetails: true
   }
 ];
 
@@ -72,7 +78,7 @@ function parseArgs(argv) {
     if (!args.url || !args.out) {
       throw new Error("--url and --out must be provided together for single-PDF generation.");
     }
-    args.targets = [{ name: "custom", out: args.out, url: args.url }];
+    args.targets = [{ name: "custom", out: args.out, url: args.url, expandDetails: true }];
   }
 
   return args;
@@ -139,6 +145,11 @@ try {
 
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForLoadState("load", { timeout: 60000 });
+    if (target.expandDetails) {
+      await page.locator("details").evaluateAll(elements => {
+        elements.forEach(element => { element.open = true; });
+      });
+    }
     await page.emulateMedia({ media: "print" });
     await page.evaluate(() => document.fonts?.ready);
 

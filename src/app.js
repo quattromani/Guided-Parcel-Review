@@ -88,6 +88,10 @@ import {
   renderCostPersonalValueStatisticalArticle
 } from "./routes/cost-is-personal-value-is-statistical.js?v=20260709-article-lockdown-1";
 import {
+  isAssessmentSeasonEndsBudgetSeasonBeginsRequest,
+  renderAssessmentSeasonEndsBudgetSeasonBeginsArticle
+} from "./routes/assessment-season-ends-budget-season-begins.js?v=20260731-assessment-season-12";
+import {
   isArticleRollRequest,
   renderArticleRoll
 } from "./routes/article-roll.js?v=20260701-article-polish-4";
@@ -188,6 +192,19 @@ async function main() {
 
   if (isArticleRollRequest()) {
     await renderArticleRoll();
+    return;
+  }
+
+  if (isAssessmentSeasonEndsBudgetSeasonBeginsRequest(searchParams)) {
+    setFooterResourcesVisible(false);
+    await renderAssessmentSeasonEndsBudgetSeasonBeginsArticle();
+    installArticleReaderCounts();
+    trackArticleView({
+      contentType: "article",
+      articleId: "assessment-season-ends-budget-season-begins",
+      articleTitle: "Assessment Season Is Ending. Budget Season Starts Now.",
+      county: "gage"
+    });
     return;
   }
 

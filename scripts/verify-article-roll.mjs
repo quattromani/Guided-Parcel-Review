@@ -176,12 +176,12 @@ assert(publicState.statusTexts.length === 0, "Public roll should hide status bad
 assert(publicState.readingProgressCount === 0, "Article roll should not mount Reading Progress.", publicState);
 assert(publicState.layout === "public" && publicState.route === "article-roll", "Article roll should inherit Public Layout.", publicState);
 assert(publicState.titles[0] === expectedNewestPublishedTitle, "Public roll should sort newest first.", publicState);
-assert(publicState.metaRows[1].includes("June 23, 2026"), "Date-only article dates should not shift by timezone.", publicState);
+assert(publicState.metaRows.some(row => row.includes("June 23, 2026")), "Date-only article dates should not shift by timezone.", publicState);
 assert(publicState.footerLinks.includes("Articles"), "Public footer should link to Articles.", publicState);
 
 const searchState = await evaluate(send, searchLevy);
-assert(searchState.cardCount === 1, "Search should filter rendered cards.", searchState);
-assert(searchState.titles[0] === "Assessment Up. Protest Denied. Taxes?", "Search should match article metadata.", searchState);
+assert(searchState.cardCount >= 1 && searchState.cardCount < expectedPublicCount, "Search should filter rendered cards.", searchState);
+assert(searchState.titles.includes("Assessment Up. Protest Denied. Taxes?"), "Search should match article metadata.", searchState);
 assert(searchState.suggestions.some(value => value.includes("Levy")), "Typeahead should surface matching metadata.", searchState);
 
 const filterState = await evaluate(send, filterLegal);

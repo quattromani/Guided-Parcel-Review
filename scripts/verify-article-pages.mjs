@@ -33,6 +33,16 @@ const expectedDraftPreviewCards = manifest.articles.filter(article =>
 
 const articlePages = [
   {
+    name: "assessment-season-canonical",
+    path: "/articles/assessment-season-ends-budget-season-begins/?readerCountPreview=199",
+    expects: { resources: true, sourceNotes: true }
+  },
+  {
+    name: "assessment-season-legacy",
+    path: "/index.html?article=assessment-season-ends-budget-season-begins&readerCountPreview=199",
+    expects: { resources: true, sourceNotes: true }
+  },
+  {
     name: "watch-tax-roll-canonical",
     path: "/articles/watch-the-tax-roll-move/?readerCountPreview=199",
     expects: { resources: true }

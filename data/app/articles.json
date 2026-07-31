@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-06-28",
+  "generatedAt": "2026-07-31",
   "description": "Canonical GES article manifest. Public rendering reads from this file and hides drafts unless an internal permission context is active.",
   "taxonomy": {
     "categories": [
@@ -34,6 +34,112 @@
     }
   },
   "articles": [
+    {
+      "id": "assessment-season-ends-budget-season-begins",
+      "title": "Assessment Season Is Ending. Budget Season Starts Now.",
+      "subtitle": "Gage County's 2026 values and protests are largely settled. The next decisions shaping final tax bills belong to local budgets and levies.",
+      "slug": "assessment-season-ends-budget-season-begins",
+      "legacySlug": "assessment-season-ends-budget-season-begins",
+      "published": true,
+      "draft": false,
+      "featured": true,
+      "publishDate": "2026-07-31T12:00:00-05:00",
+      "modifiedDate": "2026-07-31T12:00:00-05:00",
+      "displayDate": "July 31, 2026",
+      "route": {
+        "canonicalPath": "articles/assessment-season-ends-budget-season-begins/",
+        "legacyQueryValue": "assessment-season-ends-budget-season-begins",
+        "previewable": true,
+        "currentRoutes": [
+          "articles/assessment-season-ends-budget-season-begins/",
+          "index.html?article=assessment-season-ends-budget-season-begins"
+        ]
+      },
+      "hero": {
+        "src": "assets/images/articles/assessment-season-budget-season-og.png",
+        "alt": "Editorial graphic with two distinct paths representing assessed value and net taxes, moving from a completed assessment file toward public budget documents.",
+        "credit": "Generated editorial illustration for Guided Parcel Review.",
+        "source": "OpenAI image generation, July 2026"
+      },
+      "excerpt": "Gage County's 2026 assessment season is ending. One anonymous Beatrice home shows why values and net taxes diverge—and why budgets and levies come next.",
+      "author": {
+        "name": "Max Quattromani",
+        "email": "max@maxquatrromani.com",
+        "title": "Certified in Nebraska Property Assessment",
+        "image": "assets/images/articles/max-quattromani-author.jpg"
+      },
+      "readingTime": {
+        "minutes": 5,
+        "wordCount": 990,
+        "lengthLabel": "assessment-season feature"
+      },
+      "categories": [
+        "Property Tax",
+        "Assessment",
+        "Equalization",
+        "Calendar",
+        "Research"
+      ],
+      "tags": [
+        "Gage County",
+        "2026 Assessment",
+        "Property Tax",
+        "Budgets",
+        "Levies",
+        "Equalization"
+      ],
+      "keywords": [
+        "Gage County 2026 assessment",
+        "Beatrice property tax",
+        "property tax budget levy",
+        "assessment season",
+        "county equalization",
+        "Nebraska property tax calendar"
+      ],
+      "statuteReferences": [
+        "77-1301",
+        "77-1311.03",
+        "77-1504",
+        "77-1601"
+      ],
+      "legalReferences": [
+        "annual-assessment",
+        "systematic-inspection-review",
+        "county-equalization",
+        "levy-setting"
+      ],
+      "compatibility": {
+        "readingProgress": true,
+        "qr": true
+      },
+      "resources": {
+        "hasResources": true,
+        "count": 14,
+        "types": [
+          "Tax record",
+          "Legal authority",
+          "Assessment guidance",
+          "Official resource",
+          "Companion guide"
+        ],
+        "printableGuide": "assets/guides/assessment-season-ends-budget-season-begins.pdf",
+        "audio": "assets/audio/articles/assessment-season-ends-budget-season-begins-audio.m4a",
+        "audioDuration": "PT15M19S"
+      },
+      "social": {
+        "title": "Assessment Season Is Ending. Budget Season Starts Now.",
+        "description": "One anonymous Beatrice home's verified history shows why assessed values and net taxes can move differently—and why Gage County's budgets and levies come next.",
+        "image": "assets/images/articles/assessment-season-budget-season-og.png",
+        "imageAlt": "Editorial graphic separating assessed value from net taxes and pointing toward public budget decisions.",
+        "card": "summary_large_image"
+      },
+      "source": {
+        "content": "src/content/articles/assessment-season-ends-budget-season-begins.js",
+        "route": "src/routes/assessment-season-ends-budget-season-begins.js",
+        "research": "docs/publication-reports/assessment-season-ends-budget-season-begins-research-note.md",
+        "dataset": "data/articles/one-beatrice-home-assessment-tax-history.csv"
+      }
+    },
     {
       "id": "cost-personal-value-statistical",
       "title": "Cost Is Personal. Value Is Statistical.",

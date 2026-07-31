@@ -834,6 +834,7 @@ export function renderArticleTools({
   shareUrl = ""
 }) {
   const safeIcon = typeof icon === "function" ? icon : editorialToolIcon;
+  const audioFileLabel = /\.m4a(?:$|[?#])/i.test(audioUrl) ? "M4A" : "MP3";
   const printableControl = printableUrl ? `
           <a class="format-control-item hero-utility-button article-print-cta" href="${escapeHtml(printableUrl)}" download data-article-action="download_pdf" data-article-label="${escapeHtml(`${printableLabel} PDF`)}">
             ${safeIcon("document")}
@@ -848,9 +849,9 @@ export function renderArticleTools({
             <div class="hero-audio-panel">
               <p>Full audio version of this guide.</p>
               <audio class="hero-audio-player" data-hero-audio-player controls preload="none" src="${escapeHtml(audioUrl)}">
-                <a href="${escapeHtml(audioUrl)}">Download the MP3 audio version.</a>
+                <a href="${escapeHtml(audioUrl)}">Download the ${audioFileLabel} audio version.</a>
               </audio>
-              <a class="hero-audio-download" href="${escapeHtml(audioUrl)}" download data-article-action="audio_article_download" data-article-label="Audio article MP3">Download MP3</a>
+              <a class="hero-audio-download" href="${escapeHtml(audioUrl)}" download data-article-action="audio_article_download" data-article-label="Audio article ${audioFileLabel}">Download ${audioFileLabel}</a>
             </div>
           </details>` : "";
   const shareControl = `
