@@ -178,3 +178,8 @@ Completed after publication in response to a focused voice, length, and repetiti
 - Media inspection reports a 15-minute, 19-second stereo AAC recording at 44.1 kHz and approximately 256 kbps. Canonical article data and the article manifest record the duration as `PT15M19S`.
 - The entry panel uses the established native, no-preload audio treatment with an M4A download link. Analytics record audio-panel expansion, first play, pauses with elapsed time, completion, and file download.
 - Article structured data identifies the recording as an `AudioObject` with `audio/mp4` encoding, a stable content URL, publication date, and duration. The print edition remains separately identified as an associated media object.
+
+### Post-publication opening edit
+
+- Removed the opening sentence “We made it through another assessment season.” because it repeated the section heading verbatim. The section now begins directly with the completed protest and equalization work.
+- Narrative metadata moved from 990 to 983 words. The five-minute reading-time treatment remains appropriate, and the printable edition was regenerated from the updated canonical article.

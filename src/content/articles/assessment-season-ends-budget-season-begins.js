@@ -14,7 +14,7 @@ export const assessmentSeasonEndsBudgetSeasonBeginsArticle = {
   authorEmail: "max@maxquatrromani.com",
   authorTitle: "Certified in Nebraska Property Assessment",
   readingMinutes: 5,
-  wordCount: 990,
+  wordCount: 983,
   categories: ["Property Tax", "Assessment", "Equalization", "Calendar", "Research"],
   tags: ["Gage County", "2026 Assessment", "Property Tax", "Budgets", "Levies", "Equalization"],
   keywords: [
@@ -61,7 +61,7 @@ export const assessmentSeasonEndsBudgetSeasonBeginsArticle = {
       kicker: "Assessment season",
       title: "We made it through another assessment season",
       paragraphs: [
-        "We made it through another assessment season. Protest hearings are complete, and the county board has finished its equalization work.",
+        "Protest hearings are complete, and the county board has finished its equalization work.",
         "Some owners received the changes they asked for. Some received partial changes. Some properties remained as assessed, and some cases may continue to the Nebraska Tax Equalization and Review Commission. That range is fairly typical, but every result matters to the owner involved. Before turning to budgets and levies, it is worth looking at what this year's work accomplished—and at what the history of one real home can teach us."
       ]
     },
