@@ -3,12 +3,19 @@
     "title": "IAAO Assessment Standards",
     "source": {
       "sourceType": "standard",
-      "displayCitation": "2025 IAAO Standard on Ratio Studies",
-      "notes": "Standards and definitions are used for ratio-study interpretation in the assessment-ratio views. COV ranges are derived from IAAO guidance that COV is approximately 1.25 times COD in a normal distribution."
+      "displayCitation": "IAAO Standard on Ratio Studies, approved April 2013",
+      "officialUrl": "https://www.iaao.org/wp-content/uploads/Standard_on_Ratio_Studies.pdf",
+      "notes": "PRD and COD professional guidance is projected from canonical Shared Authority objects. Nebraska assessment ranges, GPR sample signals, and derived COV estimates retain separate authority classes."
     },
-    "version": "2026-reference",
+    "version": "shared-authority-iaao-2013-v1",
+    "legacyVersion": "2026-reference",
+    "canonicalProjection": {
+      "pilot": "shared-authority/pilots/iaao",
+      "sourceEdition": "ED-IAAO-RATIO-2013",
+      "generatedBy": "run-pilot.py"
+    },
     "notes": [
-      "COV is approximately 1.25 times the COD in a normal distribution.",
+      "COV estimates are derived analysis, not IAAO threshold standards.",
       "PRD above 1.03 tends to indicate regressivity.",
       "PRD below 0.98 tends to indicate progressivity."
     ]
@@ -167,11 +174,11 @@
         "min": 5.0,
         "max": 10.0
       },
+      "key": "residential-improved-very-large",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 12.5
-      },
-      "key": "residential-improved-very-large"
+      }
     },
     {
       "propertyClass": "Residential improved",
@@ -189,11 +196,11 @@
         "min": 5.0,
         "max": 15.0
       },
+      "key": "residential-improved-mid-sized",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 18.75
-      },
-      "key": "residential-improved-mid-sized"
+      }
     },
     {
       "propertyClass": "Residential improved",
@@ -211,11 +218,11 @@
         "min": 5.0,
         "max": 20.0
       },
+      "key": "residential-improved-rural",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 25.0
-      },
-      "key": "residential-improved-rural"
+      }
     },
     {
       "propertyClass": "Income-producing properties",
@@ -232,11 +239,11 @@
         "min": 5.0,
         "max": 15.0
       },
+      "key": "income-producing-very-large",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 18.75
-      },
-      "key": "income-producing-very-large"
+      }
     },
     {
       "propertyClass": "Income-producing properties",
@@ -253,11 +260,11 @@
         "min": 5.0,
         "max": 20.0
       },
+      "key": "income-producing-mid-sized",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 25.0
-      },
-      "key": "income-producing-mid-sized"
+      }
     },
     {
       "propertyClass": "Income-producing properties",
@@ -274,11 +281,11 @@
         "min": 5.0,
         "max": 25.0
       },
+      "key": "income-producing-rural",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 31.25
-      },
-      "key": "income-producing-rural"
+      }
     },
     {
       "propertyClass": "Residential vacant land",
@@ -291,11 +298,11 @@
         "min": 5.0,
         "max": 15.0
       },
+      "key": "residential-vacant-very-large",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 18.75
-      },
-      "key": "residential-vacant-very-large"
+      }
     },
     {
       "propertyClass": "Residential vacant land",
@@ -308,11 +315,11 @@
         "min": 5.0,
         "max": 20.0
       },
+      "key": "residential-vacant-mid-sized",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 25.0
-      },
-      "key": "residential-vacant-mid-sized"
+      }
     },
     {
       "propertyClass": "Residential vacant land",
@@ -325,11 +332,11 @@
         "min": 5.0,
         "max": 25.0
       },
+      "key": "residential-vacant-rural",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 31.25
-      },
-      "key": "residential-vacant-rural"
+      }
     },
     {
       "propertyClass": "Agricultural and horticultural land",
@@ -347,11 +354,11 @@
         "min": 5.0,
         "max": 30.0
       },
+      "key": "agricultural-rural",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 37.5
-      },
-      "key": "agricultural-rural"
+      }
     },
     {
       "propertyClass": "Other (non-agricultural) vacant land",
@@ -364,11 +371,11 @@
         "min": 5.0,
         "max": 20.0
       },
+      "key": "other-vacant-very-large",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 25.0
-      },
-      "key": "other-vacant-very-large"
+      }
     },
     {
       "propertyClass": "Other (non-agricultural) vacant land",
@@ -381,11 +388,11 @@
         "min": 5.0,
         "max": 25.0
       },
+      "key": "other-vacant-mid-sized",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 31.25
-      },
-      "key": "other-vacant-mid-sized"
+      }
     },
     {
       "propertyClass": "Other (non-agricultural) vacant land",
@@ -398,11 +405,11 @@
         "min": 5.0,
         "max": 30.0
       },
+      "key": "other-vacant-rural",
       "estimatedCovRange": {
         "min": 6.25,
         "max": 37.5
-      },
-      "key": "other-vacant-rural"
+      }
     }
   ]
 }
