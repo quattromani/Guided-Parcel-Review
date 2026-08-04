@@ -9,8 +9,10 @@ Canonical inputs, authority separation, provenance, and the generator are mainta
 Regenerate and verify from the Knowledge System repository with:
 
 ```sh
-python3 shared-authority/pilots/iaao/scripts/run-pilot.py --install
-node shared-authority/pilots/iaao/scripts/verify-consumer-parity.mjs
+python3 shared-authority/pilots/iaao/scripts/run-pilot.py --install --consumer-root ../Guided-Parcel-Review
+node shared-authority/pilots/iaao/scripts/verify-consumer-parity.mjs --consumer-root ../Guided-Parcel-Review
 ```
+
+The compatibility default still recognizes the legacy sibling checkout. `--consumer-root` (or `ASSESSOR_CONSUMER_ROOT`) makes the dependency explicit and supports other checkout layouts.
 
 The legacy JSON keys and consumer shapes remain supported. The corrected source citation identifies the approved April 2013 Standard on Ratio Studies; the 2025 and 2026 documents remain exposure drafts.
