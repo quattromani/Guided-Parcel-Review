@@ -162,6 +162,7 @@ function legalAuthorityListHtml(authorities, legalReferences) {
 export function renderPage(data, imageModal, calendar, recordCard, valuationGroups, governingOffice, summaryContext = {}) {
   document.getElementById("guidedStartState")?.classList.add("is-hidden");
   document.querySelector(".guide-review-header")?.classList.remove("is-hidden");
+  document.getElementById("propertyRecordReconciliationNotice")?.classList.remove("is-hidden");
   renderViewHeader("your-property", data.snapshotModel, summaryContext.propertySwitcher);
   renderPropertyViewContext(data, recordCard, valuationGroups);
   renderHeader(data, imageModal, recordCard, valuationGroups);
@@ -1212,7 +1213,10 @@ function renderPropertyDetails(data, recordCard) {
     "Style",
     "Building size",
     "Basement size",
+    "Minimum basement finish",
+    "Partial basement finish",
     "Bedrooms / bathrooms",
+    "Plumbing fixtures",
     "Quality / condition"
   ]);
 
@@ -1773,7 +1777,10 @@ function physicalDetailsForProperty(data, recordCard) {
     ["Style", data.residential?.style],
     ["Building size", formatSquareFeet(data.residential?.buildingSize)],
     ["Basement size", formatSquareFeet(data.residential?.basementSize)],
+    ["Minimum basement finish", formatSquareFeet(data.residential?.minFinish)],
+    ["Partial basement finish", formatSquareFeet(data.residential?.partFinish)],
     ["Bedrooms / bathrooms", [data.residential?.bedrooms, data.residential?.bathrooms].every(value => value !== null && value !== undefined) ? `${data.residential.bedrooms} / ${data.residential.bathrooms}` : null],
+    ["Plumbing fixtures", data.residential?.plumbingFixtures],
     ["Quality / condition", [data.residential?.quality, data.residential?.condition].filter(Boolean).join(" / ")],
     ["Garage", garageSummary(recordCard, null)],
     ["Exterior", data.residential?.exterior]

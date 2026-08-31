@@ -599,6 +599,8 @@ function renderStaticContent() {
   setHtml("[data-guided-progress-status]", "navigation.initialProgress", "You're reviewing <strong>Property Record</strong>");
   setText(".property-details-panel h2", "pages.your-property.propertyDetails.title", "Verify property information");
   setText(".property-details-panel > p", "pages.your-property.propertyDetails.description", "These property details shape the value and tax views ahead. If an item looks incorrect or does not match your property, select the circle on that card or row to mark it for review.");
+  setText("#propertyRecordReconciliationNoticeTitle", "pages.your-property.reconciliationNotice.title", "Property details may not be fully updated");
+  setText("#propertyRecordReconciliationNotice p", "pages.your-property.reconciliationNotice.body", "A parcel's current value may reflect information considered during valuation review, protest, or equalization even when every related detail has not been updated on the public property record. Review the information below and mark anything that remains incorrect.");
   setText("[data-report-error]", "pages.your-property.decisionCheck.button", "Open record review");
   setText(".ooda-decision-card .guided-kicker", "pages.your-property.decisionCheck.kicker", "Decision check");
   setText(".ooda-decision-card h2", "pages.your-property.decisionCheck.title", "Does the record look right?");

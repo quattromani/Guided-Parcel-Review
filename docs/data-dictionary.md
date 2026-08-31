@@ -31,6 +31,7 @@ Adapter notes: `src/adapters/mips/record-card.js` extracts the current demo `gui
 | `valuationHistory` | Record-card value/tax history by statement year. |
 | `propertyValuation` | Current recorded valuation rollup. |
 | `valuationReconciliation` | Notes and bridge values when source card values differ from final assessed values. |
+| `recordRevisionHistory` | Same-assessment-year source snapshots ordered by capture time. This distinguishes a revised published card from ordinary year-to-year history. |
 | `residentialInformation` | Vendor-style dwelling facts used by the cost model. |
 | `costApproach` | Cost model inputs and RCNLD/depreciation outputs. |
 | `garageCostLines` | Garage valuation components. |

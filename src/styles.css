@@ -3294,6 +3294,61 @@ html[data-ges-theme-resolved="dark"] .guide-review-header.guided-path-nav-stuck 
   border-radius: 0;
 }
 
+.property-record-reconciliation-notice {
+  align-items: flex-start;
+  background: color-mix(in srgb, rgb(var(--color-yellow-soft)) 72%, rgb(var(--surface-card)) 28%);
+  border: 1px solid rgb(var(--color-yellow) / 0.28);
+  border-left: 0.28rem solid rgb(var(--color-yellow) / 0.72);
+  border-radius: var(--radius-card);
+  color: rgb(var(--ges-color-text, var(--color-slate-700)));
+  display: flex;
+  gap: 0.8rem;
+  margin: -0.35rem 0 1.25rem;
+  padding: 0.9rem clamp(0.95rem, 2.4vw, 1.25rem);
+}
+
+.property-record-reconciliation-notice__icon {
+  align-items: center;
+  background: rgb(var(--color-yellow) / 0.16);
+  border: 1px solid rgb(var(--color-yellow) / 0.34);
+  border-radius: 999px;
+  color: rgb(var(--ges-color-text, var(--color-slate-700)));
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  font-weight: 800;
+  height: 1.55rem;
+  justify-content: center;
+  line-height: 1;
+  margin-top: 0.06rem;
+  width: 1.55rem;
+}
+
+.property-record-reconciliation-notice h2 {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+}
+
+.property-record-reconciliation-notice p {
+  color: rgb(var(--ges-color-text-secondary, var(--color-slate-600)));
+  font-size: 0.78rem;
+  line-height: 1.55;
+  margin-top: 0.18rem;
+  max-width: 88ch;
+}
+
+@media (max-width: 639px) {
+  .property-record-reconciliation-notice {
+    border-left-width: 0.22rem;
+    gap: 0.65rem;
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+    padding: 0.8rem 0.85rem;
+  }
+}
+
 .guided-path-nav {
   --guided-step-size: 2.35rem;
   --guided-step-slot: 3.2rem;
@@ -3383,9 +3438,13 @@ html[data-ges-theme-resolved="dark"] .guide-review-header.guided-path-nav-stuck 
 }
 
 .guided-step {
+  -webkit-appearance: none;
   align-items: center;
+  appearance: none;
   background: transparent;
-  border-radius: var(--radius-container-lg);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
   color: rgb(var(--color-slate-500));
   display: inline-flex;
   flex-direction: column;
@@ -3398,6 +3457,14 @@ html[data-ges-theme-resolved="dark"] .guide-review-header.guided-path-nav-stuck 
   position: relative;
   transition: color 0.18s ease;
   width: var(--guided-step-slot);
+}
+
+.guided-step:hover,
+.guided-step:active,
+.guided-step[disabled] {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .guided-step::after {

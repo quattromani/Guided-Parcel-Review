@@ -16,6 +16,8 @@
         "reportName": { "type": "string" },
         "recordType": { "type": "string" },
         "printedAt": { "type": "string" },
+        "sourceDocumentPath": { "type": "string" },
+        "priorSourceDocumentPaths": { "type": "array", "items": { "type": "string" } },
         "notes": { "type": "string" }
       }
     },
@@ -42,6 +44,7 @@
     "propertyValuation": { "type": "object" },
     "valuationReconciliation": { "type": "object" },
     "reviewHistory": { "type": "array" },
+    "recordRevisionHistory": { "type": "array" },
     "residentialInformation": { "type": "object" },
     "costApproach": { "type": "object" },
     "garageCostLines": { "type": "array" },

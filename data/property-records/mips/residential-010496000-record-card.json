@@ -6,7 +6,11 @@
     "county": "Gage County",
     "reportName": "Gage County Assessor property report",
     "recordType": "GWORKS_PROPERTY_REPORT",
-    "printedAt": null,
+    "printedAt": "2026-08-30T17:19:42-05:00",
+    "sourceDocumentPath": "research/gworks-pdfs/source-pdfs/2026/010496000-2026-08-30.pdf",
+    "priorSourceDocumentPaths": [
+      "research/gworks-pdfs/source-pdfs/2026/010496000.pdf"
+    ],
     "sourceImages": [
       "assets/images/010496000_1.jpg",
       "assets/images/010496000_2.jpg"
@@ -25,7 +29,7 @@
       "https://gage.gworks.com/photos/0010496000_12.jpg",
       "https://gage.gworks.com/photos/0010496000_13.jpg"
     ],
-    "notes": "Generated from GWorks PDF facts, with 2019-and-newer tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions added from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
+    "notes": "Current parcel facts and 2026 assessed values come from the GWorks property report printed August 30, 2026 at 5:19:42 PM CDT. The earlier June 1, 2026 GWorks report is preserved as a prior same-year source snapshot. Tax-statement history, assessed valuation components, credit breakdowns, payment status, and levy distributions come from Nebraska Taxes Online detail captures. The GWorks export does not expose Marshall & Swift cost-source, base-cost, adjustment, depreciation, or RCNLD detail."
   },
   "guidedSnapshot": {
     "snapshotYear": 2026,
@@ -60,22 +64,22 @@
       "style": "100% One Story",
       "yearBuilt": 1948,
       "buildingSize": 1810,
-      "basementSize": 1684,
+      "basementSize": 1558,
       "bedrooms": 3,
       "bathrooms": 2.5,
-      "plumbingFixtures": 12,
-      "quality": "Good",
+      "plumbingFixtures": 11,
+      "quality": "Average +",
       "condition": "Good",
       "exterior": "95% Masonry, Face Brick or Stone 5% Frame, Siding, Wood",
       "heatingCooling": "100% Warmed & Cooled Air",
       "garage1": null,
-      "minFinish": 512,
-      "partFinish": 0
+      "minFinish": 0,
+      "partFinish": 1216
     },
     "taxpayerHistory": [
       {
         "year": 2026,
-        "assessedValue": 384850,
+        "assessedValue": 376180,
         "taxes": null,
         "status": "assessment-only",
         "assessmentSource": "GWorks PDF"
@@ -452,10 +456,10 @@
     "assessedValueBreakdown": [
       {
         "year": 2026,
-        "dwelling": 336830,
+        "dwelling": 328160,
         "land": 31920,
         "outbuilding": 16100,
-        "total": 384850,
+        "total": 376180,
         "source": "GWorks PDF"
       },
       {
@@ -577,27 +581,22 @@
       {
         "description": "Wood Deck",
         "units": 125,
-        "value": 4105
+        "value": 3685
       },
       {
         "description": "Enclosed Porch, Screened Walls",
         "units": 131,
-        "value": 7455
+        "value": 6645
       },
       {
         "description": "Wood Deck",
         "units": 290,
-        "value": 6260
+        "value": 5575
       },
       {
         "description": "Open Slab Porch",
         "units": 354,
-        "value": 3505
-      },
-      {
-        "description": "Single 1-Story Fireplace",
-        "units": 2,
-        "value": 14455
+        "value": 3225
       }
     ],
     "outbuildingData": [
@@ -626,8 +625,8 @@
         "actualFrontFeet": null,
         "effectiveFrontFeet": null,
         "depth": null,
-        "recordedValue": 23025,
-        "source": "Nebraska Taxes Online detail modal and GWorks PDF classification"
+        "recordedValue": 31920,
+        "source": "August 30, 2026 GWorks PDF"
       }
     ],
     "sources": [
@@ -668,23 +667,30 @@
       "landLots": 23025,
       "total": 278930
     },
-    "current": {
+    "initialCurrent": {
       "buildings": 336830,
       "improvement": 16100,
       "landLots": 31920,
       "total": 384850,
-      "note": "2026 assessed values from the GWorks PDF. Latest finalized tax data remains 2025."
+      "note": "Earlier 2026 public record printed June 1, 2026."
+    },
+    "current": {
+      "buildings": 328160,
+      "improvement": 16100,
+      "landLots": 31920,
+      "total": 376180,
+      "note": "Current 2026 assessed values from the GWorks PDF printed August 30, 2026. Latest finalized tax data remains 2025."
     }
   },
   "ownershipHistory": [],
   "valuationHistory": [
     {
       "year": 2026,
-      "total": 384850,
+      "total": 376180,
       "land": 31920,
       "outbuilding": 16100,
-      "dwelling": 336830,
-      "source": "GWorks PDF"
+      "dwelling": 328160,
+      "source": "GWorks PDF printed August 30, 2026"
     },
     {
       "year": 2025,
@@ -696,26 +702,48 @@
     }
   ],
   "propertyValuation": {
-    "buildings": 336830,
+    "buildings": 328160,
     "improvement": 16100,
     "landLot": 31920,
-    "total": 384850
+    "total": 376180
   },
   "valuationReconciliation": {
     "source": "GWorks public export and Nebraska Taxes Online detail modal",
     "initialMipsTotal": null,
-    "finalAssessedTotal": 384850,
-    "finalDwellingValue": 336830,
+    "finalAssessedTotal": 376180,
+    "finalDwellingValue": 328160,
     "landLot": 31920,
     "modeledDetailSubtotal": null,
     "cardToFinalAdjustment": null,
     "modelToFinalReconciliation": null,
-    "note": "The GWorks export gives value rollups and visible component rows, but not the Marshall & Swift cost/depreciation bridge used by the older MIPS-style card."
+    "note": "The August 30, 2026 GWorks export gives the current value rollups and visible component rows after the earlier 2026 record changed, but not the Marshall & Swift cost/depreciation bridge or proof that every underlying technical field was reconciled."
   },
   "reviewHistory": [],
+  "recordRevisionHistory": [
+    {
+      "assessmentYear": 2026,
+      "capturedAt": "2026-06-01T07:15:24-05:00",
+      "status": "superseded",
+      "sourceDocumentPath": "research/gworks-pdfs/source-pdfs/2026/010496000.pdf",
+      "total": 384850,
+      "land": 31920,
+      "outbuilding": 16100,
+      "dwelling": 336830
+    },
+    {
+      "assessmentYear": 2026,
+      "capturedAt": "2026-08-30T17:19:42-05:00",
+      "status": "current",
+      "sourceDocumentPath": "research/gworks-pdfs/source-pdfs/2026/010496000-2026-08-30.pdf",
+      "total": 376180,
+      "land": 31920,
+      "outbuilding": 16100,
+      "dwelling": 328160
+    }
+  ],
   "residentialInformation": {
     "type": "Single Family",
-    "quality": "Good",
+    "quality": "Average +",
     "condition": "Good",
     "architecture": null,
     "baseTotalArea": "1,810",
@@ -725,9 +753,11 @@
     "roofCover": null,
     "areaOfSlab": null,
     "areaOfCrawl": null,
-    "fixtureRoughin": "12",
+    "fixtureRoughin": "11",
     "bedBathroom": "3 / 2.5",
-    "basementArea": "1,684"
+    "basementArea": "1,558",
+    "minimumBasementFinish": "0",
+    "partialBasementFinish": "1,216"
   },
   "costApproach": {
     "available": false,
@@ -756,40 +786,34 @@
     {
       "description": "Wood Deck",
       "units": 125,
-      "value": 4105,
+      "value": 3685,
       "source": "GWorks PDF dwelling data"
     },
     {
       "description": "Enclosed Porch, Screened Walls",
       "units": 131,
-      "value": 7455,
+      "value": 6645,
       "source": "GWorks PDF dwelling data"
     },
     {
       "description": "Wood Deck",
       "units": 290,
-      "value": 6260,
+      "value": 5575,
       "source": "GWorks PDF dwelling data"
     },
     {
       "description": "Open Slab Porch",
       "units": 354,
-      "value": 3505,
-      "source": "GWorks PDF dwelling data"
-    },
-    {
-      "description": "Single 1-Story Fireplace",
-      "units": 2,
-      "value": 14455,
+      "value": 3225,
       "source": "GWorks PDF dwelling data"
     }
   ],
   "sourceExtract": {
-    "note": "Generated from GWorks PDF facts and Nebraska Taxes Online 2019-current statement details. Review unavailable cost-model fields before publishing.",
+    "note": "Current GWorks facts come from the property report printed August 30, 2026 at 5:19:42 PM CDT. Nebraska Taxes Online supplies 2019-current statement details. The earlier June 1, 2026 GWorks report remains preserved as a superseded same-year snapshot.",
     "sections": [
       {
         "title": "GWorks Current/Prior Assessed Values",
-        "summary": "2 assessment years from the exported PDF",
+        "summary": "3 assessment years from the exported PDF",
         "columns": [
           "Year",
           "Total",
@@ -800,10 +824,10 @@
         "rows": [
           [
             "2026",
-            "$384,850",
+            "$376,180",
             "$31,920",
             "$16,100",
-            "$336,830"
+            "$328,160"
           ],
           [
             "2025",
@@ -811,6 +835,13 @@
             "$23,025",
             "$0",
             "$255,905"
+          ],
+          [
+            "2024",
+            "$275,290",
+            "$23,025",
+            "$0",
+            "$252,265"
           ]
         ]
       },
@@ -998,11 +1029,19 @@
           ],
           [
             "Plumbing fixtures",
-            "12"
+            "11"
           ],
           [
             "Basement size",
-            "1684 sq. ft."
+            "1558 sq. ft."
+          ],
+          [
+            "Minimum finish",
+            "0 sq. ft."
+          ],
+          [
+            "Partial finish",
+            "1216 sq. ft."
           ],
           [
             "Building size",
@@ -1014,7 +1053,7 @@
           ],
           [
             "Quality",
-            "Good"
+            "Average +"
           ],
           [
             "Condition",
@@ -1024,7 +1063,7 @@
       },
       {
         "title": "Dwelling Data",
-        "summary": "5 visible rows",
+        "summary": "4 visible rows",
         "columns": [
           "Description",
           "Units",
@@ -1034,27 +1073,22 @@
           [
             "Wood Deck",
             "125",
-            "$4,105"
+            "$3,685"
           ],
           [
             "Enclosed Porch, Screened Walls",
             "131",
-            "$7,455"
+            "$6,645"
           ],
           [
             "Wood Deck",
             "290",
-            "$6,260"
+            "$5,575"
           ],
           [
             "Open Slab Porch",
             "354",
-            "$3,505"
-          ],
-          [
-            "Single 1-Story Fireplace",
-            "2",
-            "$14,455"
+            "$3,225"
           ]
         ]
       },
